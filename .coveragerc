@@ -1,0 +1,10 @@
+[run]
+omit =
+    # omit generated files
+    ansys/mechanical/pymechanical/mechanical_pb2.py
+    ansys/mechanical/pymechanical/mechanical_pb2_grpc.py
+    #.tox\py37-coverage\Lib\site-packages\ansys\mechanical\pymechanical\mechanical_pb2.py
+    */*/*/*/ansys/mechanical/pymechanical/mechanical_pb2.py
+    */*/*/*/ansys/mechanical/pymechanical/mechanical_pb2_grpc.py
+	
+
