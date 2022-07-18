@@ -1,6 +1,6 @@
 ignore:
-  - "src/ansys/mechanical/pymechanical/mechanical_pb2.py"
-  - "src/ansys/mechanical/pymechanical/mechanical_pb2_grpc.py"
+  - "src/ansys/mechanical/core/mechanical_pb2.py"
+  - "src/ansys/mechanical/core/mechanical_pb2_grpc.py"
 
 comment:
   layout: "diff"

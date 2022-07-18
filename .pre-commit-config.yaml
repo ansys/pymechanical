@@ -33,6 +33,7 @@ repos:
           tests/scripts/mech_workflow.py |
           tests/scripts/run_python_error.py |
           tests/scripts/run_python_success.py |
-          src/ansys/mechanical/pymechanical/mechanical_pb2_grpc.py
+          tests/scripts/log_message.py |
+          src/ansys/mechanical/core/mechanical_pb2_grpc.py
         )$
 

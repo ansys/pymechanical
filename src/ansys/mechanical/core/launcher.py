@@ -1,18 +1,18 @@
 """Launch Mechanical in batch or UI mode."""
 import errno
-import logging
 import os
 import subprocess
 
-from ansys.mechanical.pymechanical.platform_helper import PlatformHelper
-
-log = logging.getLogger(__name__)
+from ansys.mechanical.core import LOG
+from ansys.mechanical.core.misc import is_windows
 
 
 class MechanicalLauncher:
     """Launch Mechanical in batch or UI mode."""
 
-    def __init__(self, batch, port, exe_path, additional_args, additional_envs):
+    def __init__(
+        self, batch, port, exe_path, additional_args=None, additional_envs=None, verbose=False
+    ):
         """Initialize the MechanicalLauncher.
 
         Parameters
@@ -25,14 +25,18 @@ class MechanicalLauncher:
             Path of the Mechanical application
         additional_args : list, optional
             List of additional arguments to pass. Default - None
-        additional_envs : list, optional
+        additional_envs : dict, optional
             List of additional environment variables to pass. Default - None
+        verbose : bool
+            Print all output when launching and running Mechanical.
+            Not recommended unless debugging the Mechanical start.  Default ``False``.
         """
         self.batch = batch
         self.port = port
         self.exe_path = exe_path
         self.additional_args = additional_args
         self.additional_envs = additional_envs
+        self.verbose = verbose
         self.__ui_arg_list = ["-DSApplet", "-nosplash", "-notabctrl", "-AppModeMech"]
         self.__batch_arg_list = ["-DSApplet", "-b", "-AppModeMech"]
 
@@ -48,12 +52,16 @@ class MechanicalLauncher:
 
         shell_value = False
 
-        if PlatformHelper.is_windows():
+        if is_windows():
             shell_value = True
 
-        log.info(f"starting the process using {args_list}")
+        LOG.info(f"starting the process using {args_list}")
+        if self.verbose:
+            command = " ".join(args_list)
+            print(f"Running {command}")
+
         process = subprocess.Popen(args_list, shell=shell_value, env=env_variables)
-        log.info(f"started the process:{process} using {args_list}")
+        LOG.info(f"started the process:{process} using {args_list}")
 
     def __get_env_variables(self):
         """Return the dictionary of environment variable used while launching Mechanical.
@@ -65,7 +73,7 @@ class MechanicalLauncher:
         """
         default_env = dict(WB1_STANDALONE="1")
         if self.additional_envs is not None and isinstance(self.additional_envs, dict):
-            log.info(f"using these additional env: {self.additional_envs}")
+            LOG.info(f"using these additional env: {self.additional_envs}")
             ansyswbu_env = {**os.environ, **default_env, **self.additional_envs}
         else:
             ansyswbu_env = {**os.environ, **default_env}
@@ -94,7 +102,7 @@ class MechanicalLauncher:
         args_list.append(str(self.port))
 
         if self.additional_args is not None and isinstance(self.additional_args, list):
-            log.info(f"using these additional args: {self.additional_args}")
+            LOG.info(f"using these additional args: {self.additional_args}")
             args_list.extend(self.additional_args)
 
         return args_list
@@ -107,6 +115,7 @@ class MechanicalLauncher:
         str
             exe path of the Mechanical application
         """
+        exe_path = None
         if self.exe_path is not None and isinstance(self.exe_path, str):
             exe_path = self.exe_path
 

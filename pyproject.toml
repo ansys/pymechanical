@@ -4,8 +4,8 @@ build-backend = "flit_core.buildapi"
 
 [project]
 # Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
-name = "ansys-mechanical-pymechanical"
-version = "0.1.dev0"
+name = "ansys-mechanical-core"
+version = "0.4.dev0"
 description = "A python wrapper for ansys mechanical pymechanical"
 readme = "README.rst"
 requires-python = ">=3.7"
@@ -25,13 +25,14 @@ classifiers = [
 ]
 dependencies = [
     "importlib-metadata >=4.0",
+    "appdirs>=1.4.0",
     "grpcio>=1.30.0",
     "protobuf>=3.12.2",
     "ansys-platform-instancemanagement>=1.0.1",
 ]
 
 [tool.flit.module]
-name = "ansys.mechanical.pymechanical"
+name = "ansys.mechanical.core"
 
 [project.urls]
 Source = "https://tfs.ansys.com:8443/tfs/ANSYS_Development/Mechanical/_git/pymechanical"
@@ -49,8 +50,8 @@ src_paths = ["doc", "src", "tests"]
 [tool.coverage.run]
 source = ["ansys.mechanical"]
 # omit = [
-#         "src/ansys/mechanical/pymechanical/mechanical_pb2.py",
-#         "src/ansys/mechanical/pymechanical/mechanical_pb2_grpc.py"
+#         "src/ansys/mechanical/core/mechanical_pb2.py",
+#         "src/ansys/mechanical/core/mechanical_pb2_grpc.py"
 #        ]
 
 [tool.coverage.report]

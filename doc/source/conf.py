@@ -3,10 +3,10 @@ from datetime import datetime
 
 from pyansys_sphinx_theme import pyansys_logo_black
 
-from ansys.mechanical.pymechanical import __version__
+from ansys.mechanical.core import __version__
 
 # Project information
-project = "ansys-mechanical-pymechanical"
+project = "ansys-mechanical-core"
 copyright = f"(c) {datetime.now().year} ANSYS, Inc. All rights reserved"
 author = "ANSYS, Inc."
 release = version = __version__
@@ -15,7 +15,7 @@ release = version = __version__
 html_logo = pyansys_logo_black
 html_theme = "pyansys_sphinx_theme"
 
-html_short_title = html_title = "ansys-mechanical-pymechanical"
+html_short_title = html_title = "ansys-mechanical-core"
 
 # specify the location of your github repo
 html_theme_options = {

@@ -1,4 +1,4 @@
-"""Version of ansys-mechanical-pymechanical module.
+"""Version of ansys-mechanical-core module.
 
 On the ``main`` branch, use 'dev0' to denote a development version.
 For example:
@@ -15,4 +15,4 @@ except ModuleNotFoundError:  # pragma: no cover
 
 # Read from the pyproject.toml
 # major, minor, patch
-__version__ = importlib_metadata.version("ansys-mechanical-pymechanical")
+__version__ = importlib_metadata.version("ansys-mechanical-core")
