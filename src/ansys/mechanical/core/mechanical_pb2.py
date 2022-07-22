@@ -15,7 +15,7 @@ _sym_db = _symbol_database.Default()
 
 
 DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
-    b'\n\x10mechanical.proto\x12\x17\x61nsys.api.mechanical.v1"\x9c\x01\n\x10RunScriptRequest\x12\x13\n\x0bscript_code\x18\x01 \x01(\t\x12\x16\n\x0e\x65nable_logging\x18\x02 \x01(\x08\x12@\n\x0flogger_severity\x18\x03 \x01(\x0e\x32\'.ansys.api.mechanical.v1.LoggerSeverity\x12\x19\n\x11progress_interval\x18\x04 \x01(\x05"<\n\x11RunScriptResponse\x12\x15\n\rscript_result\x18\x01 \x01(\t\x12\x10\n\x08log_info\x18\x02 \x01(\t"%\n\x0fShutdownRequest\x12\x12\n\nforce_exit\x18\x01 \x01(\x08"\x12\n\x10ShutdownResponse"&\n\x05\x43hunk\x12\x0f\n\x07payload\x18\x01 \x01(\x0c\x12\x0c\n\x04size\x18\x02 \x01(\x03"l\n\x11\x46ileUploadRequest\x12\x11\n\tfile_name\x18\x01 \x01(\t\x12\x15\n\rfile_location\x18\x02 \x01(\t\x12-\n\x05\x63hunk\x18\x03 \x01(\x0b\x32\x1e.ansys.api.mechanical.v1.Chunk"#\n\x12\x46ileUploadResponse\x12\r\n\x05is_ok\x18\x01 \x01(\x08"<\n\x13\x46ileDownloadRequest\x12\x11\n\tfile_path\x18\x01 \x01(\t\x12\x12\n\nchunk_size\x18\x02 \x01(\x03"E\n\x14\x46ileDownloadResponse\x12-\n\x05\x63hunk\x18\x01 \x01(\x0b\x32\x1e.ansys.api.mechanical.v1.Chunk*\xb3\x01\n\x0eLoggerSeverity\x12\x19\n\x15LOGGER_SEVERITY_TRACE\x10\x00\x12\x19\n\x15LOGGER_SEVERITY_DEBUG\x10\x01\x12\x18\n\x14LOGGER_SEVERITY_INFO\x10\x02\x12\x1b\n\x17LOGGER_SEVERITY_WARNING\x10\x03\x12\x19\n\x15LOGGER_SEVERITY_ERROR\x10\x04\x12\x19\n\x15LOGGER_SEVERITY_FATAL\x10\x05\x32\x9f\x04\n\x11MechanicalService\x12\x65\n\nRunJScript\x12).ansys.api.mechanical.v1.RunScriptRequest\x1a*.ansys.api.mechanical.v1.RunScriptResponse0\x01\x12j\n\x0fRunPythonScript\x12).ansys.api.mechanical.v1.RunScriptRequest\x1a*.ansys.api.mechanical.v1.RunScriptResponse0\x01\x12_\n\x08Shutdown\x12(.ansys.api.mechanical.v1.ShutdownRequest\x1a).ansys.api.mechanical.v1.ShutdownResponse\x12g\n\nUploadFile\x12*.ansys.api.mechanical.v1.FileUploadRequest\x1a+.ansys.api.mechanical.v1.FileUploadResponse(\x01\x12m\n\x0c\x44ownloadFile\x12,.ansys.api.mechanical.v1.FileDownloadRequest\x1a-.ansys.api.mechanical.v1.FileDownloadResponse0\x01\x42\x1a\xaa\x02\x17\x41nsys.Api.Mechanical.V1b\x06proto3'
+    b'\n\x10mechanical.proto\x12!ansys.api.mechanical.scripting.v1"\xa6\x01\n\x10RunScriptRequest\x12\x13\n\x0bscript_code\x18\x01 \x01(\t\x12\x16\n\x0e\x65nable_logging\x18\x02 \x01(\x08\x12J\n\x0flogger_severity\x18\x03 \x01(\x0e\x32\x31.ansys.api.mechanical.scripting.v1.LoggerSeverity\x12\x19\n\x11progress_interval\x18\x04 \x01(\x05"<\n\x11RunScriptResponse\x12\x15\n\rscript_result\x18\x01 \x01(\t\x12\x10\n\x08log_info\x18\x02 \x01(\t"%\n\x0fShutdownRequest\x12\x12\n\nforce_exit\x18\x01 \x01(\x08"\x12\n\x10ShutdownResponse"&\n\x05\x43hunk\x12\x0f\n\x07payload\x18\x01 \x01(\x0c\x12\x0c\n\x04size\x18\x02 \x01(\x03"v\n\x11\x46ileUploadRequest\x12\x11\n\tfile_name\x18\x01 \x01(\t\x12\x15\n\rfile_location\x18\x02 \x01(\t\x12\x37\n\x05\x63hunk\x18\x03 \x01(\x0b\x32(.ansys.api.mechanical.scripting.v1.Chunk"#\n\x12\x46ileUploadResponse\x12\r\n\x05is_ok\x18\x01 \x01(\x08"<\n\x13\x46ileDownloadRequest\x12\x11\n\tfile_path\x18\x01 \x01(\t\x12\x12\n\nchunk_size\x18\x02 \x01(\x03"b\n\x14\x46ileDownloadResponse\x12\x37\n\x05\x63hunk\x18\x01 \x01(\x0b\x32(.ansys.api.mechanical.scripting.v1.Chunk\x12\x11\n\tfile_size\x18\x02 \x01(\x03*\xb3\x01\n\x0eLoggerSeverity\x12\x19\n\x15LOGGER_SEVERITY_TRACE\x10\x00\x12\x19\n\x15LOGGER_SEVERITY_DEBUG\x10\x01\x12\x18\n\x14LOGGER_SEVERITY_INFO\x10\x02\x12\x1b\n\x17LOGGER_SEVERITY_WARNING\x10\x03\x12\x19\n\x15LOGGER_SEVERITY_ERROR\x10\x04\x12\x19\n\x15LOGGER_SEVERITY_FATAL\x10\x05\x32\x84\x05\n\x11MechanicalService\x12y\n\nRunJScript\x12\x33.ansys.api.mechanical.scripting.v1.RunScriptRequest\x1a\x34.ansys.api.mechanical.scripting.v1.RunScriptResponse0\x01\x12~\n\x0fRunPythonScript\x12\x33.ansys.api.mechanical.scripting.v1.RunScriptRequest\x1a\x34.ansys.api.mechanical.scripting.v1.RunScriptResponse0\x01\x12s\n\x08Shutdown\x12\x32.ansys.api.mechanical.scripting.v1.ShutdownRequest\x1a\x33.ansys.api.mechanical.scripting.v1.ShutdownResponse\x12{\n\nUploadFile\x12\x34.ansys.api.mechanical.scripting.v1.FileUploadRequest\x1a\x35.ansys.api.mechanical.scripting.v1.FileUploadResponse(\x01\x12\x81\x01\n\x0c\x44ownloadFile\x12\x36.ansys.api.mechanical.scripting.v1.FileDownloadRequest\x1a\x37.ansys.api.mechanical.scripting.v1.FileDownloadResponse0\x01\x42$\xaa\x02!Ansys.Api.Mechanical.Scripting.V1b\x06proto3'
 )
 
 _LOGGERSEVERITY = DESCRIPTOR.enum_types_by_name["LoggerSeverity"]
@@ -43,7 +43,7 @@ RunScriptRequest = _reflection.GeneratedProtocolMessageType(
     {
         "DESCRIPTOR": _RUNSCRIPTREQUEST,
         "__module__": "mechanical_pb2"
-        # @@protoc_insertion_point(class_scope:ansys.api.mechanical.v1.RunScriptRequest)
+        # @@protoc_insertion_point(class_scope:ansys.api.mechanical.scripting.v1.RunScriptRequest)
     },
 )
 _sym_db.RegisterMessage(RunScriptRequest)
@@ -54,7 +54,7 @@ RunScriptResponse = _reflection.GeneratedProtocolMessageType(
     {
         "DESCRIPTOR": _RUNSCRIPTRESPONSE,
         "__module__": "mechanical_pb2"
-        # @@protoc_insertion_point(class_scope:ansys.api.mechanical.v1.RunScriptResponse)
+        # @@protoc_insertion_point(class_scope:ansys.api.mechanical.scripting.v1.RunScriptResponse)
     },
 )
 _sym_db.RegisterMessage(RunScriptResponse)
@@ -65,7 +65,7 @@ ShutdownRequest = _reflection.GeneratedProtocolMessageType(
     {
         "DESCRIPTOR": _SHUTDOWNREQUEST,
         "__module__": "mechanical_pb2"
-        # @@protoc_insertion_point(class_scope:ansys.api.mechanical.v1.ShutdownRequest)
+        # @@protoc_insertion_point(class_scope:ansys.api.mechanical.scripting.v1.ShutdownRequest)
     },
 )
 _sym_db.RegisterMessage(ShutdownRequest)
@@ -76,7 +76,7 @@ ShutdownResponse = _reflection.GeneratedProtocolMessageType(
     {
         "DESCRIPTOR": _SHUTDOWNRESPONSE,
         "__module__": "mechanical_pb2"
-        # @@protoc_insertion_point(class_scope:ansys.api.mechanical.v1.ShutdownResponse)
+        # @@protoc_insertion_point(class_scope:ansys.api.mechanical.scripting.v1.ShutdownResponse)
     },
 )
 _sym_db.RegisterMessage(ShutdownResponse)
@@ -87,7 +87,7 @@ Chunk = _reflection.GeneratedProtocolMessageType(
     {
         "DESCRIPTOR": _CHUNK,
         "__module__": "mechanical_pb2"
-        # @@protoc_insertion_point(class_scope:ansys.api.mechanical.v1.Chunk)
+        # @@protoc_insertion_point(class_scope:ansys.api.mechanical.scripting.v1.Chunk)
     },
 )
 _sym_db.RegisterMessage(Chunk)
@@ -98,7 +98,7 @@ FileUploadRequest = _reflection.GeneratedProtocolMessageType(
     {
         "DESCRIPTOR": _FILEUPLOADREQUEST,
         "__module__": "mechanical_pb2"
-        # @@protoc_insertion_point(class_scope:ansys.api.mechanical.v1.FileUploadRequest)
+        # @@protoc_insertion_point(class_scope:ansys.api.mechanical.scripting.v1.FileUploadRequest)
     },
 )
 _sym_db.RegisterMessage(FileUploadRequest)
@@ -109,7 +109,7 @@ FileUploadResponse = _reflection.GeneratedProtocolMessageType(
     {
         "DESCRIPTOR": _FILEUPLOADRESPONSE,
         "__module__": "mechanical_pb2"
-        # @@protoc_insertion_point(class_scope:ansys.api.mechanical.v1.FileUploadResponse)
+        # @@protoc_insertion_point(class_scope:ansys.api.mechanical.scripting.v1.FileUploadResponse)
     },
 )
 _sym_db.RegisterMessage(FileUploadResponse)
@@ -120,7 +120,7 @@ FileDownloadRequest = _reflection.GeneratedProtocolMessageType(
     {
         "DESCRIPTOR": _FILEDOWNLOADREQUEST,
         "__module__": "mechanical_pb2"
-        # @@protoc_insertion_point(class_scope:ansys.api.mechanical.v1.FileDownloadRequest)
+        # @@protoc_insertion_point(class_scope:ansys.api.mechanical.scripting.v1.FileDownloadRequest)
     },
 )
 _sym_db.RegisterMessage(FileDownloadRequest)
@@ -131,7 +131,7 @@ FileDownloadResponse = _reflection.GeneratedProtocolMessageType(
     {
         "DESCRIPTOR": _FILEDOWNLOADRESPONSE,
         "__module__": "mechanical_pb2"
-        # @@protoc_insertion_point(class_scope:ansys.api.mechanical.v1.FileDownloadResponse)
+        # @@protoc_insertion_point(class_scope:ansys.api.mechanical.scripting.v1.FileDownloadResponse)
     },
 )
 _sym_db.RegisterMessage(FileDownloadResponse)
@@ -140,27 +140,27 @@ _MECHANICALSERVICE = DESCRIPTOR.services_by_name["MechanicalService"]
 if _descriptor._USE_C_DESCRIPTORS == False:
 
     DESCRIPTOR._options = None
-    DESCRIPTOR._serialized_options = b"\252\002\027Ansys.Api.Mechanical.V1"
-    _LOGGERSEVERITY._serialized_start = 646
-    _LOGGERSEVERITY._serialized_end = 825
-    _RUNSCRIPTREQUEST._serialized_start = 46
-    _RUNSCRIPTREQUEST._serialized_end = 202
-    _RUNSCRIPTRESPONSE._serialized_start = 204
-    _RUNSCRIPTRESPONSE._serialized_end = 264
-    _SHUTDOWNREQUEST._serialized_start = 266
-    _SHUTDOWNREQUEST._serialized_end = 303
-    _SHUTDOWNRESPONSE._serialized_start = 305
-    _SHUTDOWNRESPONSE._serialized_end = 323
-    _CHUNK._serialized_start = 325
-    _CHUNK._serialized_end = 363
-    _FILEUPLOADREQUEST._serialized_start = 365
-    _FILEUPLOADREQUEST._serialized_end = 473
-    _FILEUPLOADRESPONSE._serialized_start = 475
-    _FILEUPLOADRESPONSE._serialized_end = 510
-    _FILEDOWNLOADREQUEST._serialized_start = 512
-    _FILEDOWNLOADREQUEST._serialized_end = 572
-    _FILEDOWNLOADRESPONSE._serialized_start = 574
-    _FILEDOWNLOADRESPONSE._serialized_end = 643
-    _MECHANICALSERVICE._serialized_start = 828
-    _MECHANICALSERVICE._serialized_end = 1371
+    DESCRIPTOR._serialized_options = b"\252\002!Ansys.Api.Mechanical.Scripting.V1"
+    _LOGGERSEVERITY._serialized_start = 705
+    _LOGGERSEVERITY._serialized_end = 884
+    _RUNSCRIPTREQUEST._serialized_start = 56
+    _RUNSCRIPTREQUEST._serialized_end = 222
+    _RUNSCRIPTRESPONSE._serialized_start = 224
+    _RUNSCRIPTRESPONSE._serialized_end = 284
+    _SHUTDOWNREQUEST._serialized_start = 286
+    _SHUTDOWNREQUEST._serialized_end = 323
+    _SHUTDOWNRESPONSE._serialized_start = 325
+    _SHUTDOWNRESPONSE._serialized_end = 343
+    _CHUNK._serialized_start = 345
+    _CHUNK._serialized_end = 383
+    _FILEUPLOADREQUEST._serialized_start = 385
+    _FILEUPLOADREQUEST._serialized_end = 503
+    _FILEUPLOADRESPONSE._serialized_start = 505
+    _FILEUPLOADRESPONSE._serialized_end = 540
+    _FILEDOWNLOADREQUEST._serialized_start = 542
+    _FILEDOWNLOADREQUEST._serialized_end = 602
+    _FILEDOWNLOADRESPONSE._serialized_start = 604
+    _FILEDOWNLOADRESPONSE._serialized_end = 702
+    _MECHANICALSERVICE._serialized_start = 887
+    _MECHANICALSERVICE._serialized_end = 1531
 # @@protoc_insertion_point(module_scope)

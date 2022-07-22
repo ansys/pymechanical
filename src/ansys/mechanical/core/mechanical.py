@@ -1,9 +1,11 @@
 """Connect to Mechanical grpc server and issues commands."""
 from contextlib import closing
 import datetime
+import fnmatch
 from functools import wraps
-from glob import glob
+import glob
 import os
+import pathlib
 import re
 import socket
 import threading
@@ -12,12 +14,18 @@ import warnings
 import weakref
 
 import ansys.platform.instancemanagement as pypim
+from ansys.platform.instancemanagement import Instance
 import appdirs
 import grpc
 
 import ansys.mechanical.core
 from ansys.mechanical.core import LOG
-from ansys.mechanical.core.errors import MechanicalExitedError, MechanicalRuntimeError, VersionError
+from ansys.mechanical.core.errors import (
+    MechanicalExitedError,
+    MechanicalRuntimeError,
+    VersionError,
+    protect_grpc,
+)
 from ansys.mechanical.core.launcher import MechanicalLauncher
 import ansys.mechanical.core.mechanical_pb2 as mechanical_pb2
 import ansys.mechanical.core.mechanical_pb2_grpc as mechanical_pb2_grpc
@@ -30,8 +38,21 @@ from ansys.mechanical.core.misc import (
     threaded,
 )
 
+# Checking if tqdm is installed.
+# If it is, the default value for progress_bar is true.
+try:
+    from tqdm import tqdm
+
+    _HAS_TQDM = True
+except ModuleNotFoundError:  # pragma: no cover
+    _HAS_TQDM = False
+
 # Default 256 MB message length
 MAX_MESSAGE_LENGTH = int(os.environ.get("PYMECHANICAL_MAX_MESSAGE_LENGTH", 256 * 1024**2))
+
+# chunk sizes for streaming and file streaming
+DEFAULT_CHUNK_SIZE = 256 * 1024  # 256 kB
+DEFAULT_FILE_CHUNK_SIZE = 1024 * 1024  # 1MB
 
 
 def setup_logger(loglevel="INFO", log_file=True, mechanical_instance=None):
@@ -308,7 +329,7 @@ def _get_available_base_mechanical():
     if base_path is None:
         return {}
 
-    paths = glob(os.path.join(base_path, "v*"))
+    paths = glob.glob(os.path.join(base_path, "v*"))
 
     if not paths:
         return {}
@@ -485,7 +506,7 @@ def save_mechanical_path(exe_loc=None):  # pragma: no cover
         "(.workbench. This file is very likely to contained in path ending in "
         "'vXXX/aisol/.workbench', but it is not required.\n \nIf you experience problems "
         "with the input path you can overwrite the configuration file by typing:\n"
-        ">>> from ansys.mechanical.core.launcher import save_mechanical_path\n"
+        ">>> from ansys.mechanical.core.mechanical import save_mechanical_path\n"
         ">>> save_mechanical_path('/new/path/to/executable/')\n"
     )
     need_path = True
@@ -701,7 +722,6 @@ class Mechanical(object):
         # useful when we run some dummy calls
         self._disable_logging = False
 
-        self._stub = None
         self._cleanup_on_exit = cleanup_on_exit
         self._busy = False  # used to check if running a command on the server
 
@@ -933,7 +953,7 @@ class Mechanical(object):
             return True
 
         try:
-            self.__make_dummy_call()
+            self._make_dummy_call()
             return True
         except grpc.RpcError:
             return False
@@ -1239,7 +1259,7 @@ class Mechanical(object):
             Override any environment variables that may inhibit exiting Mechanical.
         """
         if not force:
-            if get_start_instance():
+            if not get_start_instance():
                 self.log_info("Ignoring exit due to PYMECHANICAL_START_INSTANCE=False")
                 return
 
@@ -1261,6 +1281,7 @@ class Mechanical(object):
             self._busy = False
 
         self._exited = True
+        self._stub = None
 
         if self._remote_instance is not None:
             self.log_debug("pypim delete started")
@@ -1277,65 +1298,492 @@ class Mechanical(object):
 
         self.log_info("shutdown done")
 
-    def upload_file(self, file_path, file_location_destination="", chunk_size=1048576):
-        """Upload given file to the server.
+    @protect_grpc
+    def upload(
+        self,
+        file_name,
+        file_location_destination=None,
+        chunk_size=DEFAULT_FILE_CHUNK_SIZE,
+        progress_bar=True,
+    ):
+        """Upload a file to the grpc instance.
 
-        Parameters
-        ----------
-        file_path  :
-            Path of the local file to be uploaded
-        file_location_destination
-            Destination path on the server where file needs to be copied
-        chunk_size
-            Sends chunk_size bytes at a time to the server
+        file_name : str
+            Local file to upload. File name relative to current working directory or full path
+
+        file_location_destination : str, optional
+            File location to copy to on the server. Default location is project directory
+
+        chunk_size : int, optional
+            Chunk size in bytes.  Defaults to 1MB.
+
+        progress_bar : bool, optional Display a progress bar using
+            ``tqdm`` when ``True``.  Helpful for showing upload
+            progress.
+
+        Returns
+        -------
+        str
+            Base name of the file uploaded.
+
+        Examples
+        --------
+        Upload "hsec.x_t" while disabling the progress bar
+
+        >>> mechanical.upload('hsec.x_t', progress_bar=False)
         """
         self.verify_valid_connection()
 
+        if not os.path.isfile(file_name):
+            raise FileNotFoundError(f"Unable to locate filename {file_name}")
+
+        self._log.debug(f"Uploading file '{file_name}' to the Mechanical instance.")
+
+        if file_location_destination is None:
+            file_location_destination = self.project_directory
+
         self._busy = True
         try:
-            chunks = Mechanical.get_file_chunks(file_location_destination, file_path, chunk_size)
-            response = self._stub.UploadFile(chunks)
+            chunks_generator = self.get_file_chunks(
+                file_location_destination,
+                file_name,
+                chunk_size=chunk_size,
+                progress_bar=progress_bar,
+            )
+            response = self._stub.UploadFile(chunks_generator)
             self.log_debug(f"upload_file response is {response.is_ok}")
         finally:
             self._busy = False
 
-    def download_file(self, file_path, file_location_destination="", chunk_size=1048576):
-        """Download a given file from the server.
+        if not response.is_ok:
+            raise IOError("File failed to upload")
+        return os.path.basename(file_name)
+
+    def get_file_chunks(self, file_location, file_name, chunk_size, progress_bar):
+        """Construct the file upload request for the server."""
+        pbar = None
+        if progress_bar:
+            if not _HAS_TQDM:  # pragma: no cover
+                raise ModuleNotFoundError(
+                    f"To use the keyword argument 'progress_bar', you need to have "
+                    f"installed the 'tqdm' package.To avoid this message you can "
+                    f"set 'progress_bar=False'."
+                )
+
+            n_bytes = os.path.getsize(file_name)
+
+            base_name = os.path.basename(file_name)
+            pbar = tqdm(
+                total=n_bytes,
+                desc=f"Uploading {base_name} to {self._channel_str}:{file_location}",
+                unit="B",
+                unit_scale=True,
+                unit_divisor=1024,
+            )
+
+        with open(file_name, "rb") as f:
+            while True:
+                piece = f.read(chunk_size)
+                length = len(piece)
+                if length == 0:
+                    if pbar is not None:
+                        pbar.close()
+                    return
+
+                if pbar is not None:
+                    pbar.update(length)
+
+                chunk = mechanical_pb2.Chunk(payload=piece, size=length)
+                yield mechanical_pb2.FileUploadRequest(
+                    file_name=os.path.basename(file_name), file_location=file_location, chunk=chunk
+                )
+
+    @property
+    def project_directory(self):
+        """Return the project directory of the currently connected mechanical instance."""
+        return self.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
+
+    def list_files(self):
+        """List the files in the working directory of Mechanical.
+
+        Returns
+        -------
+        list
+            List of files in the working directory of Mechanical.
+
+        Examples
+        --------
+        >>> files = mechanical.list_files()
+        >>> for file in files: print(file)
+        """
+        result = self.run_python_script(
+            "import pymechanical_helpers\npymechanical_helpers.GetAllProjectFiles(ExtAPI)"
+        )
+
+        files_out = result.splitlines()
+        if not files_out:
+            self.log_warning("No files listed")
+        return files_out
+
+    def _get_files(self, files, recursive=False):
+        self_files = self.list_files()  # to avoid calling it too much
+
+        if isinstance(files, str):
+            if self._local:  # pragma: no cover
+                # in local mode
+                if os.path.exists(files):
+                    if not os.path.isabs(files):
+                        list_files = [os.path.join(os.getcwd(), files)]
+                    else:
+                        # file exist
+                        list_files = [files]
+                elif "*" in files:
+                    # using filter
+                    list_files = glob.glob(files, recursive=recursive)
+                    if not list_files:
+                        raise ValueError(
+                            f"The `'files'` parameter ({files}) didn't match any file using "
+                            f"glob expressions in the local client."
+                        )
+                else:
+                    raise ValueError(
+                        f"The files parameter ('{files}') does not match any file or pattern."
+                    )
+            else:  # Remote or looking into Mechanical working directory
+                if files in self_files:
+                    list_files = [files]
+                elif "*" in files:
+                    # try filter on the list_files
+                    if recursive:
+                        self.log_warning(
+                            "The 'recursive' keyword argument does not work with "
+                            "remote instances. So it is ignored."
+                        )
+                    list_files = fnmatch.filter(self_files, files)
+                    if not list_files:
+                        raise ValueError(
+                            f"The `'files'` parameter ({files}) didn't match any file using "
+                            f"glob expressions in the remote server."
+                        )
+                else:
+                    raise ValueError(
+                        f"The `'files'` parameter ('{files}') does not match any file or pattern."
+                    )
+
+        elif isinstance(files, (list, tuple)):
+            if not all([isinstance(each, str) for each in files]):
+                raise ValueError(
+                    "The parameter `'files'` can be a list or tuple, but it "
+                    "should only contain strings."
+                )
+            list_files = files
+        else:
+            raise ValueError(
+                f"The `file` parameter type ({type(files)}) is not supported."
+                "Only strings, tuple of strings or list of strings are allowed."
+            )
+
+        return list_files
+
+    def download(
+        self,
+        files,
+        target_dir=None,
+        chunk_size=DEFAULT_CHUNK_SIZE,
+        progress_bar=None,
+        recursive=False,
+    ):  # pragma: no cover
+        """Download files from the gRPC instance workind directory.
+
+        .. warning:: This feature is only available for Mechanical 2023 R1 or newer.
 
         Parameters
         ----------
-        file_path  :
-            Path of the server file to be downloaded
-        file_location_destination
-            Destination path on the local machine where file needs to be copied
-        chunk_size
-            Receives chunk_size bytes at a time from the server
+        files : str or List[str] or Tuple(str)
+            Name of the file on the server. File must be in the same
+            directory as the Mechanical instance. A list of string names or
+            tuples of string names can also be used.
+            List current files with :func:`Mechanical.directory
+            <ansys.mechanical.core.mechanical.list_files>`.
+
+            Alternatively, you can also specify **glob expressions** to
+            match file names. For example: `'file*'` to match every file whose
+            name starts with `'file'`.
+
+        target_dir: str
+            Default directory to copy the downloaded file(s)
+
+        chunk_size : int, optional
+            Chunk size in bytes.  Must be less than 4MB.  Defaults to 256 kB.
+
+        progress_bar : bool, optional
+            Display a progress bar using
+            ``tqdm`` when ``True``.  Helpful for showing download
+            progress.
+
+        recursive : bool
+            Use recursion when using glob pattern.
+
+        Notes
+        -----
+        There are some considerations to keep in mind when using this command:
+
+        * The glob pattern search does not search recursively in remote instances.
+        * In a remote instance, it is not possible to list or download files in different
+          locations than the Mechanical working directory.
+        * If you are in local and provide a file path, downloading files
+          from a different folder is allowed.
+          However it is not a recommended approach.
+
+        Examples
+        --------
+        Download a single file:
+
+        >>> mechanical.download('file.out')
+
+        Download all the files starting with `'file'`:
+
+        >>> mechanical.download('file*')
+
+        Download every single file in the Mechanical workind directory:
+
+        >>> mechanical.download('*.*')
+
+        Alternatively, you can download all the files using
+        :func:`Mechanical.download_project
+        <ansys.mechanical.core.mechanical.Mechanical.download_project>`
+        (recommended):
+
+        >>> mechanical.download_project()
+
         """
         self.verify_valid_connection()
 
-        if len(file_location_destination) == 0:
-            directory = os.getcwd()
+        if chunk_size > 4 * 1024 * 1024:  # 4MB
+            raise ValueError(
+                f"Chunk sizes bigger than 4 MB can generate unstable behaviour in PyMechanical. "
+                "Please decrease ``chunk_size`` value."
+            )
+
+        list_files = self._get_files(files, recursive=recursive)
+
+        if target_dir:
+            path = pathlib.Path(target_dir)
+            path.mkdir(parents=True, exist_ok=True)
         else:
-            directory = file_location_destination
+            target_dir = os.getcwd()
 
-        base_name = os.path.basename(file_path)
-        output_path = os.path.join(directory, base_name)
+        for each_file in list_files:
+            try:
+                file_name = os.path.basename(each_file)  # Getting only the name of the file.
+                #  We try to avoid that when the full path is supplied, it will crash when trying
+                # to do `os.path.join(target_dir"os.getcwd()", file_name "full filename path"`
+                # This will produce the file structure to flat out, but it is find,
+                # because recursive does not work in remote.
+                self._busy = True
+                self._download(
+                    each_file,
+                    out_file_name=os.path.join(target_dir, file_name),
+                    chunk_size=chunk_size,
+                    progress_bar=progress_bar,
+                )
+            except FileNotFoundError:
+                # So far the grpc interface returns size of the file equal
+                # zero, if the file does not exists or its size is zero,
+                # but they are two different things!
+                # In theory, since we are obtaining the files name from
+                # `mechanical.list_files()` they do exist, so
+                # if there is any error, it means their size is zero.
+                pass  # this is not the best.
+            finally:
+                self._busy = False
 
-        request = mechanical_pb2.FileDownloadRequest(file_path=file_path, chunk_size=chunk_size)
+        return list_files
 
-        self._busy = True
-        try:
-            with open(output_path, "wb") as f:
-                for file_download_response in self._stub.DownloadFile(request):
-                    f.write(file_download_response.chunk.payload)
-        finally:
-            self._busy = False
+    @protect_grpc
+    def _download(
+        self,
+        target_name,
+        out_file_name=None,
+        chunk_size=DEFAULT_CHUNK_SIZE,
+        progress_bar=None,
+    ):
+        """Download a file from the gRPC instance.
+
+        Parameters
+        ----------
+        target_name : str
+            Target file on the server.  File must be in the same
+            directory as the Mechanical instance.  List current files with
+            ``mechanical.list_files()``
+
+        out_file_name : str, optional
+            Save the filename as a different name other than the
+            ``target_name``.
+
+        chunk_size : int, optional
+            Chunk size in bytes.  Must be less than 4MB.  Defaults to 256 kB.
+
+        progress_bar : bool, optional Display a progress bar using
+            ``tqdm`` when ``True``.  Helpful for showing download
+            progress.
+
+        Examples
+        --------
+        Download the remote result file "file.rst" as "my_result.rst"
+
+        >>> mechanical.download('file.rst', 'my_result.rst')
+        """
+        self.verify_valid_connection()
+
+        if not progress_bar and _HAS_TQDM:
+            progress_bar = True
+
+        if out_file_name is None:
+            out_file_name = target_name
+
+        request = mechanical_pb2.FileDownloadRequest(file_path=target_name, chunk_size=chunk_size)
+
+        responses = self._stub.DownloadFile(request)
+
+        file_size = self.save_chunks_to_file(
+            responses, out_file_name, progress_bar=progress_bar, target_name=target_name
+        )
+
+        if not file_size:
+            raise FileNotFoundError(f'File "{target_name}" is empty or does not exist')
+
+    def save_chunks_to_file(self, responses, filename, progress_bar=False, target_name=""):
+        """Save chunks to a local file.
+
+        Returns
+        -------
+        file_size : int
+            File size saved in bytes.  ``0`` means no file was written.
+        """
+        pbar = None
+        if progress_bar:
+            if not _HAS_TQDM:  # pragma: no cover
+                raise ModuleNotFoundError(
+                    f"To use the keyword argument 'progress_bar', you need to have installed "
+                    f"the 'tqdm' package.To avoid this message you can set 'progress_bar=False'."
+                )
+
+        file_size = 0
+        with open(filename, "wb") as f:
+            for response in responses:
+                f.write(response.chunk.payload)
+                payload_size = len(response.chunk.payload)
+                file_size += payload_size
+                if pbar is None:
+                    pbar = tqdm(
+                        total=response.file_size,
+                        desc=f"Downloading to {target_name} from {self._channel_str}",
+                        unit="B",
+                        unit_scale=True,
+                        unit_divisor=1024,
+                    )
+                    pbar.update(payload_size)
+                else:
+                    pbar.update(payload_size)
+
+        if pbar is not None:
+            pbar.close()
+
+        return file_size
+
+    def download_project(self, extensions=None, target_dir=None, progress_bar=False):
+        """Download all the project files located in the Mechanical working directory.
+
+        Parameters
+        ----------
+        extensions : List[Str], Tuple[Str], optional
+            List of extensions to filter the files before downloading,
+            by default None.
+
+        target_dir : Str, optional
+            Path where the downloaded files will be located, by default None.
+
+        progress_bar : bool, optional
+            Display a progress bar using
+            ``tqdm`` when ``True``.  Helpful for showing download
+            progress. Default to ``False``.
+
+        Returns
+        -------
+        List[Str]
+            List of downloaded files.
+        """
+        destination_directory = target_dir
+
+        # let us create the directory, if it doesn't exist
+        if destination_directory:
+            path = pathlib.Path(destination_directory)
+            path.mkdir(parents=True, exist_ok=True)
+        else:
+            destination_directory = os.getcwd()
+
+        # relative directory?
+        if os.path.isdir(destination_directory):
+            if not os.path.isabs(destination_directory):
+                # construct full path
+                destination_directory = os.path.join(os.getcwd(), destination_directory)
+
+        project_directory = self.project_directory
+        # remove the trailing slash - server could be windows or linux
+        project_directory = project_directory.rstrip("\\/")
+
+        # this is where .mechddb resides
+        parent_directory = os.path.dirname(project_directory)
+
+        list_of_files = []
+
+        if not extensions:
+            files = self.list_files()
+        else:
+            files = []
+            for each_extension in extensions:
+                # mechdb resides one level above project directory
+                if "mechdb" == each_extension.lower():
+                    file_temp = os.path.join(parent_directory, f"*.{each_extension}")
+                else:
+                    file_temp = os.path.join(project_directory, "**", f"*.{each_extension}")
+
+                if self._local:
+                    list_files_expanded = self._get_files(file_temp, recursive=True)
+
+                    if "mechdb" == each_extension.lower():
+                        # if we have more than one .mechdb in the parent folder
+                        # filter to have only the current mechdb
+                        self_files = self.list_files()
+                        filtered_files = []
+                        for temp_file in list_files_expanded:
+                            if temp_file in self_files:
+                                filtered_files.append(temp_file)
+                        list_files = filtered_files
+                    else:
+                        list_files = list_files_expanded
+                else:
+                    list_files = self._get_files(file_temp, recursive=False)
+
+                files.extend(list_files)
+
+        for file in files:
+            # create similar hierarchy locally
+            new_path = file.replace(parent_directory, destination_directory)
+            new_path_dir = os.path.dirname(new_path)
+            temp_files = self.download(
+                files=file, target_dir=new_path_dir, progress_bar=progress_bar
+            )
+            list_of_files.extend(temp_files)
+
+        return list_of_files
 
     def clear(self):
         """Clear the database."""
         self.run_python_script("ExtAPI.DataModel.Project.New()")
 
-    def __make_dummy_call(self):
+    def _make_dummy_call(self):
         try:
             self._disable_logging = True
             self.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
@@ -1343,20 +1791,6 @@ class Mechanical(object):
             raise
         finally:
             self._disable_logging = False
-
-    @staticmethod
-    def get_file_chunks(file_location, file_path, chunk_size):
-        """Construct the file upload request for the server."""
-        with open(file_path, "rb") as f:
-            while True:
-                piece = f.read(chunk_size)
-                length = len(piece)
-                if length == 0:
-                    return
-                chunk = mechanical_pb2.Chunk(payload=piece, size=length)
-                yield mechanical_pb2.FileUploadRequest(
-                    file_name=os.path.basename(file_path), file_location=file_location, chunk=chunk
-                )
 
     @staticmethod
     def __readfile(file_path):
@@ -1470,7 +1904,7 @@ class Mechanical(object):
     def verify_valid_connection(self):
         """Verify whether we have any valid connection to Mechanical."""
         if self._exited:
-            raise MechanicalExitedError
+            raise MechanicalExitedError("Mechanical has already exited.")
 
         if self._stub is None:
             raise ValueError(
@@ -1627,10 +2061,7 @@ def launch_grpc(
     return port
 
 
-def launch_remote_mechanical(
-    version=None,
-    cleanup_on_exit=True,
-) -> Mechanical:
+def launch_remote_mechanical(version=None) -> (grpc.Channel, Instance):
     """Start Mechanical remotely using the product instance management API.
 
     When calling this method, you need to ensure that you are in an environment
@@ -1644,15 +2075,9 @@ def launch_remote_mechanical(
 
         If unspecified, the version will be chosen by the server.
 
-    cleanup_on_exit : bool, optional
-        Exit Mechanical when python exits or the Mechanical Python instance is
-        garbage collected.
-
-        If unspecified, it will be cleaned up.
-
     Returns
     -------
-    ansys.mechanical.mechanical.core.Mechanical
+        Return tuple containing channel, remote_instance
     """
     pim = pypim.connect()
     instance = pim.create_instance(product_name="mechanical", product_version=version)
@@ -1666,7 +2091,9 @@ def launch_remote_mechanical(
             ("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
         ]
     )
-    return Mechanical(channel=channel, cleanup_on_exit=cleanup_on_exit, remote_instance=instance)
+
+    return channel, instance
+    # return Mechanical(channel=channel, cleanup_on_exit=cleanup_on_exit, remote_instance=instance)
 
 
 def launch_mechanical(
@@ -1806,7 +2233,17 @@ def launch_mechanical(
     # and the user did not pass a directive on how to launch it.
     if pypim.is_configured() and exec_file is None:
         LOG.info("Starting Mechanical remotely. The startup configuration will be ignored.")
-        return launch_remote_mechanical(version=version, cleanup_on_exit=cleanup_on_exit)
+        channel, remote_instance = launch_remote_mechanical(version=version)
+        return Mechanical(
+            channel=channel,
+            remote_instance=remote_instance,
+            loglevel=loglevel,
+            log_file=log_file,
+            log_mechanical=log_mechanical,
+            timeout=start_timeout,
+            cleanup_on_exit=cleanup_on_exit,
+            keep_connection_alive=keep_connection_alive,
+        )
 
     if ip is None:
         ip = os.environ.get("PYMECHANICAL_IP", LOCALHOST)

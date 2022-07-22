@@ -166,8 +166,8 @@ return_total_deformation()
     assert math.isclose(min_value, 0)
 
     if is_windows():
-        assert math.isclose(max_value, 0.0001144438029641797)
-        assert math.isclose(avg_value, 4.48765448814899e-05)
+        assert math.isclose(max_value, 0.0029068727071322174)
+        assert math.isclose(avg_value, 0.0011398642407684763)
     else:
         assert math.isclose(max_value, 2.9068725331072863e-06)
         assert math.isclose(avg_value, 1.1398642395560755e-06)
@@ -175,14 +175,16 @@ return_total_deformation()
 
 # @pytest.mark.skip(reason="avoid long running")
 @pytest.mark.parametrize("file_name", [r"hsec.x_t"])
-def test_upload_file(mechanical, file_name):
+def test_upload(mechanical, file_name):
     mechanical.run_python_script("ExtAPI.DataModel.Project.New()")
     directory = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
     print(directory)
 
     current_working_directory = os.getcwd()
     file_path = os.path.join(current_working_directory, "tests", "parts", file_name)
-    mechanical.upload_file(file_path, directory, 1024 * 1024)
+    mechanical.upload(
+        file_name=file_path, file_location_destination=directory, chunk_size=1024 * 1024
+    )
 
     base_name = os.path.basename(file_path)
     combined_path = os.path.join(directory, base_name)
@@ -200,12 +202,14 @@ def test_upload_file(mechanical, file_name):
 # change the chunk_size for that
 # ideally this will be 64*1024, 1024*1024, etc.
 @pytest.mark.parametrize("chunk_size", [10, 50, 100])
-def test_upload_file_with_different_chunk_size(mechanical, chunk_size):
+def test_upload_with_different_chunk_size(mechanical, chunk_size):
     current_working_directory = os.getcwd()
     file_path = os.path.join(current_working_directory, "tests", "parts", "hsec.x_t")
     mechanical.run_python_script("ExtAPI.DataModel.Project.New()")
     directory = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
-    mechanical.upload_file(file_path, directory, chunk_size=chunk_size)
+    mechanical.upload(
+        file_name=file_path, file_location_destination=directory, chunk_size=chunk_size
+    )
 
 
 # @pytest.mark.skip(reason="avoid long running")
@@ -215,7 +219,9 @@ def test_upload_attach_mesh_solve_use_api(mechanical):
 
     mechanical.run_python_script("ExtAPI.DataModel.Project.New()")
     directory = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
-    mechanical.upload_file(file_path, directory, 1024 * 1024)
+    mechanical.upload(
+        file_name=file_path, file_location_destination=directory, chunk_size=1024 * 1024
+    )
 
     python_script = os.path.join(current_working_directory, "tests", "scripts", "api.py")
 
@@ -250,8 +256,8 @@ return_total_deformation()
     assert math.isclose(min_value, 0)
 
     if is_windows():
-        assert math.isclose(max_value, 0.0001144438029641797)
-        assert math.isclose(avg_value, 4.48765448814899e-05)
+        assert math.isclose(max_value, 0.0029068727071322174)
+        assert math.isclose(avg_value, 0.0011398642407684763)
     else:
         assert math.isclose(max_value, 2.9068725331072863e-06)
         assert math.isclose(avg_value, 1.1398642395560755e-06)
@@ -264,7 +270,7 @@ def test_download_file(mechanical, tmpdir, file_name):
     file_path = os.path.join(current_working_directory, "tests", "parts", file_name)
     local_directory = tmpdir.strpath
 
-    mechanical.download_file(file_path, local_directory, 1024 * 1024)
+    mechanical.download(files=file_path, target_dir=local_directory, chunk_size=1024 * 1024)
 
     base_name = os.path.basename(file_path)
     local_path = os.path.join(local_directory, base_name)
@@ -282,7 +288,7 @@ def test_download_file_different_chunk_size1(mechanical, tmpdir, chunk_size):
     file_path = os.path.join(current_working_directory, "tests", "parts", "hsec.x_t")
     local_directory = tmpdir.strpath
 
-    mechanical.download_file(file_path, local_directory, chunk_size=chunk_size)
+    mechanical.download(files=file_path, target_dir=local_directory, chunk_size=chunk_size)
 
     base_name = os.path.basename(file_path)
     local_path = os.path.join(local_directory, base_name)
@@ -291,30 +297,36 @@ def test_download_file_different_chunk_size1(mechanical, tmpdir, chunk_size):
 
 
 # def test_call_before_launch_or_connect():
+#     import ansys.mechanical.core as pymechanical
+#     from ansys.mechanical.core.errors import MechanicalExitedError
+#
 #     # we are not checking any valid value passed to each call,
 #     # we just verify an exception being raised.
 #
-#     mechanical = pymechanical.Mechanical()
+#     mechanical1 = pymechanical.launch_mechanical(start_instance=True)
+#     mechanical1.exit()
 #
-#     error = "Don't have a valid connection to mechanical. Use either launch or connect first."
+#     error = "Mechanical has already exited."
 #
-#     with pytest.raises(ValueError, match=error):
-#         mechanical.run_jscript("2+5")
+#     with pytest.raises(MechanicalExitedError, match=error):
+#         mechanical1.run_jscript("2+5")
 #
-#     with pytest.raises(ValueError, match=error):
-#         mechanical.run_jscript_from_file("test.js")
+#     with pytest.raises(MechanicalExitedError, match=error):
+#         mechanical1.run_jscript_from_file("test.js")
 #
-#     with pytest.raises(ValueError, match=error):
-#         mechanical.run_python_script("2+5")
+#     with pytest.raises(MechanicalExitedError, match=error):
+#         mechanical1.run_python_script("2+5")
 #
-#     with pytest.raises(ValueError, match=error):
-#         mechanical.run_python_script_from_file("test.py")
+#     with pytest.raises(MechanicalExitedError, match=error):
+#         mechanical1.run_python_script_from_file("test.py")
 #
-#     with pytest.raises(ValueError, match=error):
-#         mechanical.exit(force_exit=True)
+#     # currently we exit silently
+#     # with pytest.raises(ValueError, match=error):
+#     #     mechanical.exit(force_exit=True)
 #
-#     with pytest.raises(ValueError, match=error):
-#         mechanical.upload_file("test.x_t", "some_destination", 1024)
+#     with pytest.raises(MechanicalExitedError, match=error):
+#         mechanical1.upload(file_name="test.x_t", file_location_destination="some_destination",
+#                           chunk_size=1024)
 #
-#     with pytest.raises(ValueError, match=error):
-#         mechanical.download_file("test.x_t", "some_local_directory", 1024)
+#     with pytest.raises(MechanicalExitedError, match=error):
+#         mechanical1.download(files="test.x_t", target_dir="some_local_directory", chunk_size=1024)

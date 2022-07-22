@@ -15,27 +15,27 @@ class MechanicalServiceStub(object):
             channel: A grpc.Channel.
         """
         self.RunJScript = channel.unary_stream(
-            "/ansys.api.mechanical.v1.MechanicalService/RunJScript",
+            "/ansys.api.mechanical.scripting.v1.MechanicalService/RunJScript",
             request_serializer=mechanical__pb2.RunScriptRequest.SerializeToString,
             response_deserializer=mechanical__pb2.RunScriptResponse.FromString,
         )
         self.RunPythonScript = channel.unary_stream(
-            "/ansys.api.mechanical.v1.MechanicalService/RunPythonScript",
+            "/ansys.api.mechanical.scripting.v1.MechanicalService/RunPythonScript",
             request_serializer=mechanical__pb2.RunScriptRequest.SerializeToString,
             response_deserializer=mechanical__pb2.RunScriptResponse.FromString,
         )
         self.Shutdown = channel.unary_unary(
-            "/ansys.api.mechanical.v1.MechanicalService/Shutdown",
+            "/ansys.api.mechanical.scripting.v1.MechanicalService/Shutdown",
             request_serializer=mechanical__pb2.ShutdownRequest.SerializeToString,
             response_deserializer=mechanical__pb2.ShutdownResponse.FromString,
         )
         self.UploadFile = channel.stream_unary(
-            "/ansys.api.mechanical.v1.MechanicalService/UploadFile",
+            "/ansys.api.mechanical.scripting.v1.MechanicalService/UploadFile",
             request_serializer=mechanical__pb2.FileUploadRequest.SerializeToString,
             response_deserializer=mechanical__pb2.FileUploadResponse.FromString,
         )
         self.DownloadFile = channel.unary_stream(
-            "/ansys.api.mechanical.v1.MechanicalService/DownloadFile",
+            "/ansys.api.mechanical.scripting.v1.MechanicalService/DownloadFile",
             request_serializer=mechanical__pb2.FileDownloadRequest.SerializeToString,
             response_deserializer=mechanical__pb2.FileDownloadResponse.FromString,
         )
@@ -104,7 +104,7 @@ def add_MechanicalServiceServicer_to_server(servicer, server):
         ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-        "ansys.api.mechanical.v1.MechanicalService", rpc_method_handlers
+        "ansys.api.mechanical.scripting.v1.MechanicalService", rpc_method_handlers
     )
     server.add_generic_rpc_handlers((generic_handler,))
 
@@ -129,7 +129,7 @@ class MechanicalService(object):
         return grpc.experimental.unary_stream(
             request,
             target,
-            "/ansys.api.mechanical.v1.MechanicalService/RunJScript",
+            "/ansys.api.mechanical.scripting.v1.MechanicalService/RunJScript",
             mechanical__pb2.RunScriptRequest.SerializeToString,
             mechanical__pb2.RunScriptResponse.FromString,
             options,
@@ -158,7 +158,7 @@ class MechanicalService(object):
         return grpc.experimental.unary_stream(
             request,
             target,
-            "/ansys.api.mechanical.v1.MechanicalService/RunPythonScript",
+            "/ansys.api.mechanical.scripting.v1.MechanicalService/RunPythonScript",
             mechanical__pb2.RunScriptRequest.SerializeToString,
             mechanical__pb2.RunScriptResponse.FromString,
             options,
@@ -187,7 +187,7 @@ class MechanicalService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            "/ansys.api.mechanical.v1.MechanicalService/Shutdown",
+            "/ansys.api.mechanical.scripting.v1.MechanicalService/Shutdown",
             mechanical__pb2.ShutdownRequest.SerializeToString,
             mechanical__pb2.ShutdownResponse.FromString,
             options,
@@ -216,7 +216,7 @@ class MechanicalService(object):
         return grpc.experimental.stream_unary(
             request_iterator,
             target,
-            "/ansys.api.mechanical.v1.MechanicalService/UploadFile",
+            "/ansys.api.mechanical.scripting.v1.MechanicalService/UploadFile",
             mechanical__pb2.FileUploadRequest.SerializeToString,
             mechanical__pb2.FileUploadResponse.FromString,
             options,
@@ -245,7 +245,7 @@ class MechanicalService(object):
         return grpc.experimental.unary_stream(
             request,
             target,
-            "/ansys.api.mechanical.v1.MechanicalService/DownloadFile",
+            "/ansys.api.mechanical.scripting.v1.MechanicalService/DownloadFile",
             mechanical__pb2.FileDownloadRequest.SerializeToString,
             mechanical__pb2.FileDownloadResponse.FromString,
             options,
