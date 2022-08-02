@@ -173,44 +173,6 @@ def check_ports(port_range, ip="localhost"):
     return ports
 
 
-# def close_all_local_instances(port_range=None):
-#     """Close all Mechanical instances within a port_range.
-#
-#     This function can be used when cleaning up from a failed pool or
-#     batch run.
-#
-#     Parameters
-#     ----------
-#     port_range : list, optional
-#         Defaults to ``range(10000, 10200)``.  Expand this range if
-#         there are many potential instances of Mechanical in gRPC mode.
-#
-#     Examples
-#     --------
-#     Close all instances on in the range of 10000 and 10199.
-#
-#     >>> import ansys.mechanical.core as pymechanical
-#     >>> pymechanical.close_all_local_instances()
-#
-#     """
-#     if port_range is None:
-#         port_range = range(10000, 10200)
-#
-#     @threaded
-#     def close_mechanical(port, name="Closing mechanical thread."):
-#         try:
-#             LOG.debug(name)
-#             mechanical = Mechanical(port=port)
-#             mechanical.exit()
-#         except OSError:
-#             pass
-#
-#     ports = check_ports(port_range)
-#     for port_temp, state in ports.items():
-#         if state:
-#             close_mechanical(port_temp)
-
-
 def close_all_local_instances(port_range=None):
     """Close all Mechanical instances within a port_range.
 
@@ -237,8 +199,8 @@ def close_all_local_instances(port_range=None):
     @threaded
     def close_mechanical(port, name="Closing mechanical thread."):
         try:
-            LOG.debug(name)
             mechanical = Mechanical(port=port)
+            LOG.debug(f"Closing mechanical instance: {mechanical.get_name()} in a thread")
             mechanical.exit(force=True)
         except OSError:
             pass
@@ -247,45 +209,6 @@ def close_all_local_instances(port_range=None):
     for port_temp, state in ports.items():
         if state:
             close_mechanical(port_temp)
-
-
-# the below implementation doesn't work quite right
-# def close_all_local_instances(port_range=None):
-#     """Close all Mechanical instances within a port_range.
-#
-#     This function can be used when cleaning up from a failed pool or
-#     batch run.
-#
-#     Parameters
-#     ----------
-#     port_range : list, optional
-#         Defaults to ``range(10000, 10200)``.  Expand this range if
-#         there are many potential instances of Mechanical in gRPC mode.
-#
-#     Examples
-#     --------
-#     Close all instances on in the range of 10000 and 10199.
-#
-#     >>> import ansys.mechanical.core as pymechanical
-#     >>> pymechanical.close_all_local_instances()
-#
-#     """
-#     if port_range is None:
-#         port_range = range(10000, 10200)
-#
-#     @threaded
-#     def close_mechanical(port, name="Closing mechanical thread."):
-#         try:
-#             LOG.debug(name)
-#             mechanical = Mechanical(port=port)
-#             mechanical.exit()
-#         except OSError:
-#             pass
-#
-#     ports = check_ports(port_range)
-#     for port_temp, state in ports.items():
-#         if state:
-#             close_mechanical(port_temp)
 
 
 def create_ip_file(ip, path):
@@ -681,7 +604,10 @@ class Mechanical(object):
         >>> mechanical = pymechanical.Mechanical(channel=channel_temp)
         """
         self._remote_instance = remote_instance
+        self._channel = channel
         self._keep_connection_alive = keep_connection_alive
+
+        self._locked = False  # being used within MechanicalPool
 
         # ip could be a machine name. Convert it to ip address
         ip_temp = ip
@@ -750,7 +676,7 @@ class Mechanical(object):
         # connect and validate to the channel
         self._multi_connect(timeout=timeout)
 
-        self.log_info("mechanical is ready to accept grpc calls")
+        self.log_info("Mechanical is ready to accept grpc calls")
 
     def __del__(self):  # pragma: no cover
         """Clean up when complete."""
@@ -772,15 +698,39 @@ class Mechanical(object):
     @property
     def _name(self):
         """Instance unique identifier."""
-        if self._ip or self._port:
-            return f"GRPC_{self._ip}:{self._port}"
+        # if self._ip or self._port:
+        #     return f"GRPC_{self._ip}:{self._port}"
+        try:
+            if self._channel is not None:
+                if self._remote_instance is not None:
+                    return f"GRPC_{self._channel._channel._channel.target().decode()}"
+                else:
+                    return f"GRPC_{self._channel._channel.target().decode()}"
+        except Exception:
+            pass
+
         return f"GRPC_instance_{id(self)}"
 
     def get_name(self):
         """Return the instance unique identifier."""
         return self._name
 
-    def _multi_connect(self, n_attempts=5, timeout=15):
+    @property
+    def busy(self):
+        """Return True when Mechanical gRPC server is executing a command."""
+        return self._busy
+
+    @property
+    def locked(self):
+        """Instance is in use within a pool."""
+        return self._locked
+
+    @locked.setter
+    def locked(self, new_value):
+        """Instance is in use within a pool."""
+        self._locked = new_value
+
+    def _multi_connect(self, n_attempts=5, timeout=60):
         """Try to connect over a series of attempts to the channel.
 
         Parameters
@@ -794,16 +744,21 @@ class Mechanical(object):
         # This prevents a single failed connection from blocking other attempts
         connected = False
         attempt_timeout = timeout / n_attempts
+        self.log_debug(
+            f"timetout:{timeout} n_attempts:{n_attempts} attempt_timeout={attempt_timeout}"
+        )
 
         max_time = time.time() + timeout
         i = 1
         while time.time() < max_time and i <= n_attempts:
-            self.log_debug(f"Connection attempt {i}")
+            self.log_debug(f"Connection attempt {i} with attempt timeout {attempt_timeout}s")
             connected = self._connect(timeout=attempt_timeout)
-            i += 1
+
             if connected:
-                self.log_debug("Connected")
+                self.log_debug(f"Connection attempt {i} succeeded.")
                 break
+
+            i += 1
         else:
             self.log_debug(
                 f"Reached either maximum amount of connection attempts "
@@ -821,10 +776,13 @@ class Mechanical(object):
 
         """
         if self._channel is not None:
-            return self._channel._channel.target().decode()
+            if self._remote_instance is not None:
+                return self._channel._channel._channel.target().decode()
+            else:
+                return self._channel._channel.target().decode()
         return ""
 
-    def _connect(self, timeout=5, enable_health_check=False):
+    def _connect(self, timeout=12, enable_health_check=False):
         """Establish a gRPC channel to a remote or local Mechanical instance.
 
         Parameters
@@ -842,6 +800,7 @@ class Mechanical(object):
 
         if not self._state._matured:  # pragma: no cover
             return False
+
         self.log_debug("Established connection to Mechanical gRPC")
 
         self.wait_till_mechanical_is_ready(timeout)
@@ -1056,28 +1015,25 @@ class Mechanical(object):
 
         sleep_time = 0.5
         if wait_time == -1:
-            self.log_info("going to try until the mechanical grpc server is ready")
+            self.log_info("Waiting for mechanical to be ready...")
         else:
-            self.log_info(
-                f"going to try for {wait_time} seconds to connect to " f"mechanical grpc server"
-            )
+            self.log_info(f"Waiting for mechanical to be ready: max wait time: {wait_time}s")
 
         while not self.__isMechanicalReady():
             time_2 = datetime.datetime.now()
             time_interval = time_2 - time_1
             time_interval_seconds = int(time_interval.total_seconds())
 
-            self.log_debug(f"mechanical is not ready. waiting so far {time_interval_seconds}")
+            self.log_debug(f"Mechanical is not ready. Waiting so far {time_interval_seconds}")
             if self._timeout != -1:
                 if time_interval_seconds > wait_time:
                     self.log_debug(
-                        f"allowed wait time {wait_time} seconds. "
-                        f"waited for {time_interval_seconds} seconds,"
-                        f" before throwing error"
+                        f"Allowed wait time {wait_time}s. "
+                        f"Waited so for {time_interval_seconds}s, "
+                        f"before throwing the error."
                     )
                     raise RuntimeError(
-                        f"Couldn't connect to mechanical. "
-                        f"waited for {time_interval_seconds} seconds"
+                        f"Couldn't connect to mechanical. " f"waited for {time_interval_seconds}s"
                     )
 
             time.sleep(sleep_time)
@@ -1086,7 +1042,7 @@ class Mechanical(object):
         time_interval = time_2 - time_1
         time_interval_seconds = int(time_interval.total_seconds())
 
-        self.log_info(f"mechanical is ready. took {time_interval_seconds} seconds to verify")
+        self.log_info(f"Mechanical is ready. took {time_interval_seconds} seconds to verify")
 
     def __isMechanicalReady(self):
         """Return whether the Mechanical grpc server is ready or not.
@@ -1099,7 +1055,7 @@ class Mechanical(object):
             jscript_block = "DS.Script.isDistributed()"
             self.run_jscript(jscript_block)
         except grpc.RpcError as error:
-            self.log_debug(f"mechanical is not ready. error:{error.details()}")
+            self.log_debug(f"mechanical is not ready. error:{error}")
             return False
 
         return True
@@ -1277,6 +1233,8 @@ class Mechanical(object):
         self._busy = True
         try:
             self._stub.Shutdown(request)
+        except grpc._channel._InactiveRpcError as error:
+            self.log_warning("Mechanical exit failed: {str(error}")
         finally:
             self._busy = False
 
@@ -1285,10 +1243,14 @@ class Mechanical(object):
 
         if self._remote_instance is not None:
             self.log_debug("pypim delete started")
-            self._remote_instance.delete()
+            try:
+                self._remote_instance.delete()
+            except Exception as error:
+                self.log_warning("remote instance delete failed: {str(error}")
             self.log_debug("pypim delete done")
 
             self._remote_instance = None
+            self._channel = None
         else:
             self.log_debug("No pypim cleanup needed")
 
@@ -2082,9 +2044,9 @@ def launch_remote_mechanical(version=None) -> (grpc.Channel, Instance):
     pim = pypim.connect()
     instance = pim.create_instance(product_name="mechanical", product_version=version)
 
-    print("pypim wait for ready started")
+    LOG.info("pypim wait for ready started")
     instance.wait_for_ready()
-    print("pypim wait for ready done")
+    LOG.info("pypim wait for ready done")
 
     channel = instance.build_grpc_channel(
         options=[
@@ -2093,7 +2055,6 @@ def launch_remote_mechanical(version=None) -> (grpc.Channel, Instance):
     )
 
     return channel, instance
-    # return Mechanical(channel=channel, cleanup_on_exit=cleanup_on_exit, remote_instance=instance)
 
 
 def launch_mechanical(

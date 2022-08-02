@@ -12,6 +12,8 @@ from ansys.mechanical.core.mechanical import close_all_local_instances, launch_m
 # manage the package level ports
 LOCAL_PORTS = []
 
+from ansys.mechanical.core.pool import LocalMechanicalPool
+
 try:
     import importlib.metadata as importlib_metadata
 except ModuleNotFoundError:  # pragma: no cover
