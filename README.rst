@@ -42,14 +42,7 @@ At least two installation modes are provided: user and developer.
 For users
 ^^^^^^^^^
 
-In order to install Pymechanical pymechanical, make sure you
-have the required build system tool. To do so, run:
-
-.. code:: bash
-
-    python -m pip install -U pip flit
-
-Then, you can simply execute:
+Simply execute:
 
 .. code:: bash
 
@@ -66,47 +59,47 @@ need to follow these steps:
 
 1. Start by cloning this repository:
 
-    .. code:: bash
+.. code:: bash
 
-        git clone https://tfs.ansys.com:8443/tfs/ANSYS_Development/Mechanical/_git/pymechanical
+   git clone https://github.com/pyansys/pymechanical
 
 2. Create a fresh-clean Python environment and activate it:
 
-    .. code:: bash
+.. code:: bash
 
-        # Create a virtual environment
-        python -m venv .venv
+   # Create a virtual environment
+   python -m venv .venv
 
-        # Activate it in a POSIX system
-        source .venv/bin/activate
+   # Activate it in a POSIX system
+   source .venv/bin/activate
 
-        # Activate it in Windows CMD environment
-        .venv\Scripts\activate.bat
+   # Activate it in Windows CMD environment
+   .venv\Scripts\activate.bat
 
-        # Activate it in Windows Powershell
-        .venv\Scripts\Activate.ps1
+   # Activate it in Windows Powershell
+   .venv\Scripts\Activate.ps1
 
 3. Make sure you have the latest required build system and doc, testing, and CI tools:
 
-    .. code:: bash
+.. code:: bash
 
-        python -m pip install -U pip flit tox
-        python -m pip install -r requirements/requirements_build.txt
-        python -m pip install -r requirements/requirements_doc.txt
-        python -m pip install -r requirements/requirements_tests.txt
+   python -m pip install -U pip flit tox
+   python -m pip install -r requirements/requirements_build.txt
+   python -m pip install -r requirements/requirements_doc.txt
+   python -m pip install -r requirements/requirements_tests.txt
 
 
 4. Install the project in editable mode:
 
-    .. code:: bash
+.. code:: bash
     
-        python -m pip install --editable .
+   python -m pip install -e .
     
-    5. Finally, verify your development installation by running:
+5. Finally, verify your development installation by running:
 
-    .. code:: bash
+.. code:: bash
         
-        tox
+   tox
 
 
 How to testing
@@ -123,10 +116,10 @@ As Makefile has rules, `tox`_ has environments. In fact, the tool creates its
 own virtual environment so anything being tested is isolated from the project in
 order to guarantee project's integrity. The following environments commands are provided:
 
-- **tox -e style**: will check for coding style quality.
-- **tox -e py**: checks for unit tests.
-- **tox -e py-coverage**: checks for unit testing and code coverage.
-- **tox -e doc**: checs for documentation building process.
+- `tox -e style`: will check for coding style quality.
+- `tox -e py`: checks for unit tests.
+- `tox -e py-coverage`: checks for unit testing and code coverage.
+- `tox -e doc`: checs for documentation building process.
 
 
 Raw testing
@@ -180,8 +173,8 @@ Then, you can execute:
 
 .. code:: bash
 
-        flit build
-        python -m twine check dist/*
+   flit build
+   python -m twine check dist/*
 
 .. LINKS AND REFERENCES
 .. _black: https://github.com/psf/black
