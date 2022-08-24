@@ -73,6 +73,15 @@ jobs:
       - name: Generate the documentation with tox
         run: tox -e doc
 
+      - name: Deploy
+        if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
+        uses: JamesIves/github-pages-deploy-action@v4.4.0
+        with:
+          repository-name: pyansys/pymechanical-dev-docs
+          token: ${{ steps.get_workflow_token.outputs.token }}
+          branch: gh-pages
+          folder: .tox/doc_out
+          clean: true
 
   build:
     name: Build library
