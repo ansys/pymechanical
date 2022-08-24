@@ -90,8 +90,6 @@ def protect_grpc(func):
 
             # Must close unfinished processes
             if mechanical is not None:
-                # TODO: compare this with MAPDL
-                # mechanical._close_process()
                 mechanical.exit(force=True)
 
             raise MechanicalExitedError("Mechanical server connection terminated") from None

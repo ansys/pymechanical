@@ -5,7 +5,7 @@
 SPHINXOPTS    = -j auto
 SPHINXBUILD   = sphinx-build
 SOURCEDIR     = source
-BUILDDIR      = _build
+BUILDDIR      = build
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -19,8 +19,40 @@ help:
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
 
-# Customized clean due to examples gallery
+# customized clean due to examples gallery
 clean:
 	rm -rf $(BUILDDIR)/*
-	rm -rf $(SOURCEDIR)/examples
+	rm -rf source/examples/gallery_examples
 	find . -type d -name "_autosummary" -exec rm -rf {} +
+
+# customized clean due to examples gallery
+clean-except-examples:
+	rm -rf $(BUILDDIR)/*
+	rm -rf images/auto-generated
+	find . -type d -name "_autosummary" -exec rm -rf {} +
+
+# customized to build the pdf rather than using latexpdf due to various issues
+# with our docs like GIFs being written as PNG.
+pdf:
+	@$(SPHINXBUILD) -M latex "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+	python validate_png.py  # clean-up GIFs mislabeled as PNG
+	cd build/latex && latexmk -r latexmkrc -pdf *.tex -interaction=nonstopmode || true
+	(test -f build/latex/*.pdf && echo pdf exists) || exit 1
+
+# manually deploy to https://github.com/pyansys/pymechanical-docs
+# WARNING: Use with care as this overwrites history of gh-pages
+# deploy:
+# 	@echo "*** Warning ***"
+# 	@echo "You are about to deploy to 'PyMechanical docs'."
+# 	@echo "This overwrites the history of gh-pages."
+# 	@echo "Are you sure? [y/N] " && read ans && [ $${ans:-N} = y ]
+# 	@echo "Deploying..."
+# 	touch build/html/.nojekyll
+# 	echo "mechanical.docs.pyansys.com" >> build/html/CNAME
+# 	cd build/html && git init
+# 	cd build/html && git add .
+# 	cd build/html && git checkout -b gh-pages
+# 	cd build/html && git commit -am "manual build"
+# 	cd build/html && git remote add origin https://github.com/pyansys/pymechanical-docs
+# 	cd build/html && git push -u origin gh-pages --force
+# 	rm -rf build/html/.git

@@ -1,4 +1,5 @@
 """Connect to Mechanical grpc server and issues commands."""
+import atexit
 from contextlib import closing
 import datetime
 import fnmatch
@@ -18,7 +19,7 @@ from ansys.platform.instancemanagement import Instance
 import appdirs
 import grpc
 
-import ansys.mechanical.core
+import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core import LOG
 from ansys.mechanical.core.errors import (
     MechanicalExitedError,
@@ -108,6 +109,21 @@ CONFIG_FILE = os.path.join(SETTINGS_DIR, "config.txt")
 LOCALHOST = "127.0.0.1"
 MECHANICAL_DEFAULT_PORT = 10000
 
+GALLERY_INSTANCE = [None]
+
+
+def _cleanup_gallery_instance():  # pragma: no cover
+    """Clean up any left over instances of Mechanical from building the gallery."""
+    if GALLERY_INSTANCE[0] is not None:
+        mechanical = Mechanical(
+            ip=GALLERY_INSTANCE[0]["ip"],
+            port=GALLERY_INSTANCE[0]["port"],
+        )
+        mechanical.exit(force=True)
+
+
+atexit.register(_cleanup_gallery_instance)
+
 
 def _version_from_path(path):
     """Extract ansys version from a path.
@@ -194,7 +210,7 @@ def close_all_local_instances(port_range=None):
 
     """
     if port_range is None:
-        port_range = ansys.mechanical.core.LOCAL_PORTS
+        port_range = pymechanical.LOCAL_PORTS
 
     @threaded
     def close_mechanical(port, name="Closing mechanical thread."):
@@ -1219,6 +1235,11 @@ class Mechanical(object):
                 self.log_info("Ignoring exit due to PYMECHANICAL_START_INSTANCE=False")
                 return
 
+            # or building the gallery
+            if pymechanical.BUILDING_GALLERY:
+                self._log.info("Ignoring exit due as BUILDING_GALLERY=True")
+                return
+
         if self._exited:
             return
 
@@ -1254,7 +1275,7 @@ class Mechanical(object):
         else:
             self.log_debug("No pypim cleanup needed")
 
-        local_ports = ansys.mechanical.core.LOCAL_PORTS
+        local_ports = pymechanical.LOCAL_PORTS
         if self._local and self._port in local_ports:
             local_ports.remove(self._port)
 
@@ -1994,7 +2015,7 @@ def launch_grpc(
         raise VersionError("The Mechanical gRPC interface requires Mechanical 231 or later")
 
     # get the next available port
-    local_ports = ansys.mechanical.core.LOCAL_PORTS
+    local_ports = pymechanical.LOCAL_PORTS
     if port is None:
         if not local_ports:
             port = MECHANICAL_DEFAULT_PORT
@@ -2223,6 +2244,45 @@ def launch_mechanical(
         start_instance = check_valid_start_instance(
             os.environ.get("PYMECHANICAL_START_INSTANCE", True)
         )
+
+        # special handling when building the gallery outside of CI. This
+        # creates an instance of mapdl the first time if PYMAPDL start instance
+        # is False.
+        if pymechanical.BUILDING_GALLERY:  # pragma: no cover
+            # launch an instance of pymapdl if it does not already exist and
+            # we're allowed to start instances
+            if start_instance and GALLERY_INSTANCE[0] is None:
+                mechanical = launch_mechanical(
+                    start_instance=True,
+                    cleanup_on_exit=False,
+                    loglevel=loglevel,
+                )
+                GALLERY_INSTANCE[0] = {"ip": mechanical._ip, "port": mechanical._port}
+                return mechanical
+
+                # otherwise, connect to the existing gallery instance if available
+            elif GALLERY_INSTANCE[0] is not None:
+                mechanical = Mechanical(
+                    ip=GALLERY_INSTANCE[0]["ip"],
+                    port=GALLERY_INSTANCE[0]["port"],
+                    cleanup_on_exit=False,
+                    loglevel=loglevel,
+                )
+                if clear_on_connect:
+                    mechanical.clear()
+                return mechanical
+
+                # finally, if running on CI/CD, connect to the default instance
+            else:
+                mechanical = Mechanical(
+                    ip=ip,
+                    port=port,
+                    cleanup_on_exit=False,
+                    loglevel=loglevel,
+                )
+            if clear_on_connect:
+                mechanical.clear()
+            return mechanical
 
     if not start_instance:
         mechanical = Mechanical(

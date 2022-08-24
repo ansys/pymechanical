@@ -1,14 +1,42 @@
 # Created by https://www.toptal.com/developers/gitignore/api/python
 # Edit at https://www.toptal.com/developers/gitignore?templates=python
 
+# Compiled source #
+###################
+*.pyc
+*.pyd
+*.c
+*.cpp
+*.so
+*.o
+*.cache
+
+# OS generated files #
+######################
+.fuse_hidden*
+*~
+*swp
+
+# emacs
+flycheck*
+
+# Old files #
+_old/
+
+# MISC
+*.out
+*.tar.gz
+*.mypy_cache
+
+# docs
+_autosummary
+doc/build_errors.txt
+
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
-
-# C extensions
-*.so
 
 # Distribution / packaging
 .Python
@@ -147,6 +175,9 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# Visual studio code local settings
+.vscode/
 
 # PyCharm
 #  JetBrains specific template is maintainted in a separate JetBrains.gitignore that can
