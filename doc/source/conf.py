@@ -12,12 +12,10 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 from datetime import datetime
-import os
 import sys
 import warnings
 
 from ansys_sphinx_theme import pyansys_logo_black
-import numpy as np
 from sphinx_gallery.sorting import FileNameSortKey
 
 from ansys.mechanical import core as pymechanical
