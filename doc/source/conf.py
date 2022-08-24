@@ -18,29 +18,12 @@ import warnings
 
 from ansys_sphinx_theme import pyansys_logo_black
 import numpy as np
-import pyvista
 from sphinx_gallery.sorting import FileNameSortKey
 
 from ansys.mechanical import core as pymechanical
 from ansys.mechanical.core import __version__
 
-# Manage errors
-pyvista.set_error_output_file("errors.txt")
-
-# Ensure that offscreen rendering is used for docs generation
-pyvista.OFF_SCREEN = True
-
-# must be less than or equal to the XVFB window size
-pyvista.rcParams["window_size"] = np.array([1024, 768])
-
-# Save figures in specified directory
-pyvista.FIGURE_PATH = os.path.join(os.path.abspath("./images/"), "auto-generated/")
-if not os.path.exists(pyvista.FIGURE_PATH):
-    os.makedirs(pyvista.FIGURE_PATH)
-
-
 # necessary when building the sphinx gallery
-pyvista.BUILDING_GALLERY = True
 pymechanical.BUILDING_GALLERY = True
 
 sys.path.insert(0, "..")
@@ -91,8 +74,6 @@ intersphinx_mapping = {
     "scipy": ("https://docs.scipy.org/doc/scipy/", None),
     "numpy": ("https://numpy.org/devdocs", None),
     "matplotlib": ("https://matplotlib.org/stable", None),
-    "pandas": ("https://pandas.pydata.org/pandas-docs/stable", None),
-    "pyvista": ("https://docs.pyvista.org/", None),
     "grpc": ("https://grpc.github.io/grpc/python/", None),
     "pypim": ("https://pypim.docs.pyansys.com/", None),
 }
@@ -192,7 +173,7 @@ sphinx_gallery_conf = {
     "backreferences_dir": None,
     # Modules for which function level galleries are created.  In
     "doc_module": "ansys-mechanical-core",
-    "image_scrapers": ("pyvista", "matplotlib"),
+    "image_scrapers": ("matplotlib"),
     "ignore_pattern": "flycheck*",
     "thumbnail_size": (350, 350),
 }

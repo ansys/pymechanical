@@ -7,7 +7,6 @@ jupyter_sphinx==0.4.0
 jupyterlab>=3.2.8
 matplotlib==3.5.3
 numpydoc==1.4.0
-pandas==1.4.3
 plotly==5.10.0
 pypandoc==1.8.1
 pytest-sphinx==0.4.0
@@ -20,4 +19,3 @@ sphinx-gallery==0.11.0
 sphinx-notfound-page==0.8.3
 sphinxcontrib-websupport==1.2.4
 sphinxemoji==0.2.0
-vtk==9.0.3
