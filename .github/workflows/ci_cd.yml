@@ -40,7 +40,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest]
+        os: [ubuntu-latest]
         python-version: ['3.7', '3.8', '3.9', '3.10']
       fail-fast: false
 
@@ -59,7 +59,7 @@ jobs:
           registry: ghcr.io
           username: ${{ secrets.GH_USERNAME }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Pull, launch, and validate MAPDL service
+      - name: Pull, launch, and validate Mechanical service
         run: .ci/start_mechanical.sh
         env:
           LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
