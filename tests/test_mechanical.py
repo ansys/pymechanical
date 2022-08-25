@@ -265,9 +265,17 @@ return_total_deformation()
 
 @pytest.mark.parametrize("file_name", ["hsec.x_t"])
 def test_download_file(mechanical, tmpdir, file_name):
-    print(f"using the temporary directory: {tmpdir}")
+    directory = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
+    print(directory)
+
     current_working_directory = os.getcwd()
     file_path = os.path.join(current_working_directory, "tests", "parts", file_name)
+    mechanical.upload(
+        file_name=file_path, file_location_destination=directory, chunk_size=1024 * 1024
+    )
+
+    print(f"using the temporary directory: {tmpdir}")
+    file_path = os.path.join(directory, file_name)
     local_directory = tmpdir.strpath
 
     mechanical.download(files=file_path, target_dir=local_directory, chunk_size=1024 * 1024)
@@ -283,9 +291,18 @@ def test_download_file(mechanical, tmpdir, file_name):
 # ideally this will be 64*1024, 1024*1024, etc.
 @pytest.mark.parametrize("chunk_size", [10, 50, 100])
 def test_download_file_different_chunk_size1(mechanical, tmpdir, chunk_size):
-    print(f"using the temporary directory: {tmpdir}")
+    file_name = "hsec.x_t"
+    directory = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
+    print(directory)
+
     current_working_directory = os.getcwd()
-    file_path = os.path.join(current_working_directory, "tests", "parts", "hsec.x_t")
+    file_path = os.path.join(current_working_directory, "tests", "parts", file_name)
+    mechanical.upload(
+        file_name=file_path, file_location_destination=directory, chunk_size=1024 * 1024
+    )
+
+    print(f"using the temporary directory: {tmpdir}")
+    file_path = os.path.join(directory, file_name)
     local_directory = tmpdir.strpath
 
     mechanical.download(files=file_path, target_dir=local_directory, chunk_size=chunk_size)
