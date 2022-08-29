@@ -46,7 +46,7 @@ Simply execute:
 
 .. code:: bash
 
-    python -m pip install ansys-mechanical-core
+   python -m pip install ansys-mechanical-core
 
 For developers
 ^^^^^^^^^^^^^^
@@ -61,7 +61,7 @@ need to follow these steps:
 
 .. code:: bash
 
-        git clone https://tfs.ansys.com:8443/tfs/ANSYS_Development/Mechanical/_git/pymechanical
+    git clone https://github.com/pyansys/pymechanical.git
 
 2. Create a fresh-clean Python environment and activate it:
 
@@ -139,7 +139,7 @@ encouraged to install this tool via:
 
 .. code:: bash
 
-    python -m pip install pre-commit && pre-commit install
+   python -m pip install pre-commit && pre-commit install
 
 
 Documentation
@@ -150,13 +150,13 @@ For building documentation, you can either run the usual rules provided in the
 
 .. code:: bash
 
-    make -C doc/ html && your_browser_name doc/html/index.html
+   make -C doc/ html && your_browser_name doc/html/index.html
 
 However, the recommended way of checking documentation integrity is using:
 
 .. code:: bash
 
-    tox -e doc && your_browser_name .tox/doc_out/html/index.html
+   tox -e doc && your_browser_name .tox/doc_out/html/index.html
 
 
 Distributing
@@ -167,7 +167,7 @@ the building requirements:
 
 .. code:: bash
 
-    python -m pip install -r requirements/requirements_build.txt
+   python -m pip install -r requirements/requirements_build.txt
 
 Then, you can execute:
 
