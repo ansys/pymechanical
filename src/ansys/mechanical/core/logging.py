@@ -1,6 +1,6 @@
 """Logging module.
 
-This module supplies a general framework for logging in Pymechanical.  This module is
+This module supplies a general framework for logging in PyMechanical.  This module is
 built upon `logging <https://docs.python.org/3/library/logging.html>`_ library
 and it does not intend to replace it rather provide a way to interact between
 ``logging`` and PyMechanical.
@@ -167,7 +167,7 @@ class PyMechanicalCustomAdapter(logging.LoggerAdapter):
     stdout_handler = None
 
     def __init__(self, logger, extra=None):
-        """Initialize the PymechanicalCustomAdapter."""
+        """Initialize the PyMechanicalCustomAdapter."""
         # super().__init__(logger,extra)
 
         self.logger = logger
