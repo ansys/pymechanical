@@ -61,7 +61,7 @@ need to follow these steps:
 
 .. code:: bash
 
-    git clone https://github.com/pyansys/pymechanical.git
+   git clone https://github.com/pyansys/pymechanical.git
 
 2. Create a fresh-clean Python environment and activate it:
 
