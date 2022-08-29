@@ -140,6 +140,7 @@ jobs:
 
   build_docs:
     name: Documentation
+    needs: [style]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
