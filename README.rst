@@ -116,10 +116,10 @@ As Makefile has rules, `tox`_ has environments. In fact, the tool creates its
 own virtual environment so anything being tested is isolated from the project in
 order to guarantee project's integrity. The following environments commands are provided:
 
-- `tox -e style`: will check for coding style quality.
-- `tox -e py`: checks for unit tests.
-- `tox -e py-coverage`: checks for unit testing and code coverage.
-- `tox -e doc`: checs for documentation building process.
+- ``tox -e style``: will check for coding style quality.
+- ``tox -e py``: checks for unit tests.
+- ``tox -e py-coverage``: checks for unit testing and code coverage.
+- ``tox -e doc``: checs for documentation building process.
 
 
 Raw testing
