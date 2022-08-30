@@ -1,0 +1,19 @@
+documentation:
+- doc/**/*
+- examples/**/*
+maintenance:
+- .github/**/*
+- codecov.yml
+- .flake8
+- .coveragerc
+- .codespellrc
+- .pre-commit-config.yaml
+- pyproject.toml
+- pytest.ini
+- tox.ini
+dependencies:
+- pyproject.toml
+- requirements/*
+CI/CD:
+- .github/**/*
+- .ci/**/*
