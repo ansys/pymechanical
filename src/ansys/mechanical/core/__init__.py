@@ -5,6 +5,7 @@ from ansys.mechanical.core.logging import Logger
 LOG = Logger(level=logging.ERROR, to_file=False, to_stdout=True)
 LOG.debug("Loaded logging module as LOG")
 
+from ansys.mechanical.core._version import __version__
 from ansys.mechanical.core.mechanical import (
     change_default_mechanical_path,
     close_all_local_instances,
@@ -20,12 +21,5 @@ from ansys.mechanical.core.mechanical import Mechanical as Mechanical
 LOCAL_PORTS = []
 
 from ansys.mechanical.core.pool import LocalMechanicalPool
-
-try:
-    import importlib.metadata as importlib_metadata
-except ModuleNotFoundError:  # pragma: no cover
-    import importlib_metadata
-
-__version__ = importlib_metadata.version(__name__.replace(".", "-"))
 
 BUILDING_GALLERY = False

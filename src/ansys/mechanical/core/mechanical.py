@@ -94,7 +94,7 @@ def suppress_logging(func):
 
 
 SETTINGS_DIR = appdirs.user_data_dir("ansys_mechanical_core")
-print(f"ansys_mechanical_core settings directory: {SETTINGS_DIR}")
+LOG.info(f"ansys_mechanical_core settings directory: {SETTINGS_DIR}")
 
 if not os.path.isdir(SETTINGS_DIR):
     try:
