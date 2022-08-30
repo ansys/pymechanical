@@ -6,7 +6,7 @@ PyMechanical
    :target: https://docs.pyansys.com/
    :alt: PyAnsys
 
-.. |python| image:: https://img.shields.io/pypi/ansys-mechanical-core/pyansys?logo=pypi
+.. |python| image:: https://img.shields.io/pypi/pyversions/ansys-mechanical-core?logo=pypi
    :target: https://pypi.org/project/ansys-mechanical-core
    :alt: Python
 
