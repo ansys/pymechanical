@@ -124,7 +124,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ secrets.BOT_APPLICATION_ID }}
-          password: ${{ secrets.BOT_APPLICATION_PRIVATE_KEY }}
+          password: ${{ steps.get_workflow_token.outputs.token }}
 
       - name: Pull, launch, and validate Mechanical service
         run: .ci/start_mechanical.sh
