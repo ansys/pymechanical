@@ -1,10 +1,9 @@
 .. _ref_user_guide:
 
 ==========
-User Guide
+User guide
 ==========
-This guide provides a general overview of the basics and usage of the
-PyMechanical library.
+This guide provides a general overview of how you use PyMechanical library.
 
 
 ..

@@ -24,8 +24,9 @@ page on the Ansys website.
 Install the package
 -------------------
 The ``ansys.mechanical.core`` package supports Python 3.6 through
-Python 3.9 on Windows, Mac OS, and Linux. You should consider installing
-PyMechanical in a `virtual environment <https://docs.python.org/3/library/venv.html>`_.
+Python 3.9 on Windows, Mac, and Linux. You should consider installing
+PyMechanical in a virtual environment. For more information, see Python's
+`venv --Creation of virutaion environments <https://docs.python.org/3/library/venv.html>`_.
 
 Install the latest package from `PyPi
 <https://pypi.org/project/ansys-mechanical-core/>`_ with:
@@ -43,7 +44,7 @@ Alternatively, install the latest package from `GitHub
    pip install git+https://github.com/pyansys/pymechanical.git
 
 
-Installing a development version of PyMechanical allows you to make modifications
+Installing a *development* version of PyMechanical allows you to make modifications
 locally and have these changes reflected in your setup once you restart the
 Python kernel.
 
@@ -74,9 +75,8 @@ For example, on Linux with Python 3.7, unzip the wheelhouse archive and install 
    unzip PyMechanical-v0.62.dev1-wheelhouse-Linux-3.7.zip wheelhouse
    pip install ansys-mechanical-core -f wheelhouse --no-index --upgrade --ignore-installed
 
-If you are on Windows with Python 3.9, extract the wheelhouse archive to a ``wheelhouse``
+If you are on Windows with Python 3.9, unzip the wheelhouse archive to a ``wheelhouse``
 directory and then install using the preceding code.
-
 
 Verify your installation
 ------------------------

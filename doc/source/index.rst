@@ -14,8 +14,8 @@ PyMechanical documentation |version|
 
 
 
-Introduction and Purpose
-------------------------
+Introduction
+------------
 PyMechanical is part of the larger `PyAnsys <https://docs.pyansys.com>`_
 effort to facilitate the use of Ansys technologies directly from
 Python. Its primary package, ``ansys-mechanical-core``, provides
@@ -24,15 +24,15 @@ scripting of Ansys Mechanical through Python.
 With PyMechanical, you can integrate the simulation capabilities
 of the Mechanical multi-physics solver directly into novel apps.
 The package presents a Python-friendly interface to drive the software
-that manages the submission of low-level Mechanical scripting commands, while exchanging
-data through high-performance gRPC interfaces.
+that manages the submission of low-level Mechanical scripting commands,
+while exchanging data through high-performance gRPC interfaces.
 
 Accelerate the preparation of your simulations using PyMechanical. Combine the
 expressiveness of general-purpose Python code to control the flow in your
 input decks with methods that drive the solver. Explore proof of concept
 studies or capture knowledge using interactive Jupyter notebooks. Tap
 the solver as the physics engine in your next Artificial Intelligence
-application. It is now open source: Enjoy it! Contributions are welcome.
+application. Contributions to this open source library are welcome.
 
 
 Background
@@ -42,16 +42,16 @@ source, high-performance Remote Procedure Call (RPC) framework. PyMechanical
 allows the Mechanical application to function as a server, ready to
 respond to connecting clients.
 
-gRPC establishes secure connections so that a client app can directly call methods on
-a potentially remote Mechanical instance as if it were a local object. The
-use of HTTP/2 makes it friendly to modern internet infrastructures.
+gRPC establishes secure connections so that a client app can directly call
+methods on a potentially remote Mechanical instance as if it were a local
+object. The use of HTTP/2 makes it friendly to modern internet infrastructures.
 This, along with the use of binary transmission formats, favors higher
 performance. Using gRPC, PyMechanical can send Mechanical scripting API
-commands transmitted to an Mechanical instance running anywhere,
-while producing network footprints that are compact and efficient.
+commands to an Mechanical instance running anywhere, while producing
+network footprints that are compact and efficient.
 
 
-Quick code
+Brief code
 ----------
 Here's a brief example of how PyMechanical works:
 
@@ -81,7 +81,7 @@ in to the logging module. Or, you can immediately print the result::
 
 Errors are caught immediately and Pythonically.
 
-For more information on PyMechanical features, see the
+For comprehensive information on PyMechanical features, see the
 :ref:`ref_user_guide`.
 
 

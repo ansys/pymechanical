@@ -68,7 +68,7 @@ Mechanical 2023 R1 with:
 
     /usr/ansys_inc/v231/aisol/.workbench -dsapplet -AppModeMech -nosplash -notabctrl -grpc 10000
 
-As Mechanical starts and after it has started, you can see status information:
+As Mechanical starts, you can see status information:
 
 .. code::
 
@@ -203,7 +203,8 @@ product section, and posts about licensing are common. For example, see
 
 If you are responsible for maintaining an Ansys license or have a personal installation
 of Ansys, you likely can access the **Installation and Licensing** section of the
-Ansys Help, where you can download the :download:`Ansys, Inc. Licensing Guide <ANSYS_Inc._Licensing_Guide.pdf>`.
+Ansys Help, where you can view or download the *Ansys, Inc. Licensing Guide* for
+comprehensive licensing information.
 
 
 VPN issues
