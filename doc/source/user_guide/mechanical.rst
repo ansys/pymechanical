@@ -1,7 +1,7 @@
 .. _ref_mechanical_user_guide:
 
 ******************
-PyMechanical Usage
+PyMechanical usage
 ******************
 This section gives you an overview of the PyMechanical API for the
 :class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>` class.

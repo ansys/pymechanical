@@ -1,10 +1,9 @@
-Create a Pool of Mechanical Instances
+Create a pool of Mechanical instances
 =====================================
-The PyMechanical library contains the :class:`MechanicalLocalPool
-<ansys.mechanical.core.MechanicalLocalPool>` class to simplify creating multiple
-local instances of :class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>`
-for batch processing.  This can be used for the batch processing of a
-set of input files or other batch related processes.
+PyMechanical contains the :class:`MechanicalLocalPool <ansys.mechanical.core.MechanicalLocalPool>`
+class to simplify creating multiple local instances of the :class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>`
+class for batch processing. This can be used for the batch processing of a
+set of input files or other batch-related processes.
 
 To create the pool:
 
@@ -15,7 +14,7 @@ To create the pool:
     'Mechanical Pool with 10 active instances'
 
 You can also supply additional keyword arguments when creating the
-pool.  For instance, to restart failed instances.
+pool. For instance, to restart failed instances.
 
 .. code:: python
 
@@ -31,13 +30,12 @@ Each individual instance of mechanical can be accessed with:
     >>> pool[0]
     <ansys.mechanical.core.mechanical.Mechanical at 0x7fabf0230d90>
 
-Note that this is a self healing pool.  If an instance of Mechanical dies
-during a batch process, that instance will be automatically restarted.
-You can disable this behavior by setting ``restart_failed=False`` when
-creating the pool.
+Note that this is a self healing pool. If an instance of Mechanical dies
+during a batch process, this instance is automatically restarted.
+When creating the pool, you can disable this behavior by setting ``restart_failed=False``.
 
 
-Run a Set of Input Files
+Run a set of input files
 ~~~~~~~~~~~~~~~~~~~~~~~~
 You can use the pool to run a set of pre-generated input files using
 :func:`run_batch <ansys.mechanical.core.MechanicalLocalPool.run_batch>`.  For
@@ -51,10 +49,10 @@ example, you can run the first set of 20 verification files with:
      >>> len(outputs)
      20
 
-Run a User Function
-~~~~~~~~~~~~~~~~~~~
-You can also use the pool to run a custom user function to run on each
-instance of Mechanical over a set of inputs.  This example again uses set
+Run a user-defined function
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+You can also use the pool to run a custom user-defined function on each
+instance of Mechanical over a set of inputs. This example again uses set
 of verification files as in the :func:`run_batch
 <ansys.mechanical.core.MechanicalLocalPool.run_batch>` example, but implements
 it as a function and outputs the final routine instead of the text
@@ -82,6 +80,6 @@ output from Mechanical.
      'result9']
 
 
-API Description
-~~~~~~~~~~~~~~~
-For a full description of the PyMechanical Pool API see :ref:`ref_pool_api`.
+API reference
+~~~~~~~~~~~~~
+For more information, see :ref:`ref_pool_api`.
