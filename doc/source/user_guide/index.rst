@@ -3,7 +3,7 @@
 ==========
 User guide
 ==========
-This guide provides a general overview of how you use PyMechanical library.
+This section  provides an overview of how you use PyMechanical.
 
 
 ..
@@ -22,17 +22,14 @@ This guide provides a general overview of how you use PyMechanical library.
 
 PyMechanical overview
 ======================
-The :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` function
-within the ``ansys-mechanical-core`` library creates an instance of of
-:class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>` in the background and sends
-commands to that service. Errors and warnings are processed
-Pythonically, letting you develop a script in real time without
-worrying about if it functions correctly when deployed in batch
-mode.
+The :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` method
+creates an instance of the :class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>`
+class in the background and sends commands to it as a service. Because errors and warnings
+are processed Pythonically, you can develop a script in real time without worrying about
+whether the script functions correctly when deployed in batch mode.
 
-Mechanical can be started from Python in gRPC mode using the
-:func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>`
-method.
+Here is how you use the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>`
+method to launch Mechanical from Python in gRPC mode:
 
 .. code:: python
 
@@ -41,17 +38,19 @@ method.
 
     mechanical = launch_mechanical()
 
-Mechanical is now active. You can send commands to Mechanical as a genuine
-Python class. For example, if can send a Python script:
+When Mechanical is active, you can send commands to it as a genuine
+Python class. For example, you can send a Python script:
 
 .. code:: python
 
     result = mechanical.run_python_script('2+3')
     result = mechanical.run_python_script('ExtAPI.DataModel.Project.ProjectDirectory')
 
-Mechanical interactively returns the result of each command and it is
-stored to the logging module. Errors are caught immediately. For
-example, if you input an invalid command:
+Mechanical interactively returns the result of each command that you send,
+storing the result to the logging module.
+
+Errors are caught immediately. In the following code, an invalid command is sent,
+and an error is raised:
 
 .. code:: python
 
@@ -60,14 +59,13 @@ example, if you input an invalid command:
    grpc.RpcError:
    "unexpected token '**'"
 
-This ``grpc.RpcError`` was caught immediately, and this means that
-you can write your Mechanical scripts in Python, run them interactively, and
-then as a batch, without worrying if the script runs correctly if
-you had instead outputted it to a script file.
+Because the error is caught immediately, you can write your Mechanical scripts in
+Python, run them interactively, and then run them in batch without worrying if the
+script runs correctly. This would not be the case if you had instead outputted the
+script that you wrote to a script file.
 
-The :class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>` class supports much more
-than just sending text to Mechanical and includes higher level wrapping
-allowing for better scripting and interaction with Mechanical. See the
-:ref:`ref_examples` for an overview of the various advanced
-methods to interact with Mechanical.
+The :class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>` class supports
+much more than sending text to Mechanical. It includes higher-level wrapping
+that provides for better scripting and interaction with Mechanical. For information
+on various advanced methods for interacting with Mechanical, see :ref:`ref_examples`.
 

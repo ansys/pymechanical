@@ -4,17 +4,18 @@
 Contribute
 ==========
 Overall guidance on contributing to a PyAnsys library appears in the
-`Contributing <https://dev.docs.pyansys.com/overview/contributing.html>`_ topic
+`Contribute <https://dev.docs.pyansys.com/overview/contributing.html>`_ topic
 in the *PyAnsys Developer's Guide*. Ensure that you are thoroughly familiar
-with it and all `Guidelines and Best Practices
-<https://dev.docs.pyansys.com/guidelines/index.html>`_ before attempting to
+with it, and all `Guidelines and Best Practices
+<https://dev.docs.pyansys.com/guidelines/index.html>`_, before attempting to
 contribute to PyMechanical.
  
 The following contribution information is specific to PyMechanical.
 
 Clone the repository
 --------------------
-Run this code to clone and install the latest version of PyMechanical in development mode:
+Run this code to clone and install the latest version of PyMechanical in
+development mode:
 
 .. code::
 
@@ -28,12 +29,12 @@ Post issues
 -----------
 Use the `PyMechanical Issues <https://github.com/pyansys/pymechanical/issues>`_
 page to submit questions, report bugs, and request new features. When possible,
-you should use these issue templates:
+you should use these templates:
 
 * Bug report template
 * Feature request template
 
-If your issue does not fit into one of these categories, create your own issue.
+If your issue does not fit into one of these template categories, create your own issue.
 
 To reach the PyAnsys support team, email `pyansys.support@ansys.com <pyansys.support@ansys.com>`_.
 
@@ -43,15 +44,16 @@ Documentation for the latest stable release of PyMechanical is hosted at
 `PyMechanical Documentation <https://mechanical.docs.pyansys.com>`_.
 
 Documentation for the latest development version, which tracks the
-``main`` branch, is hosted at  `Development PyMechanical Documentation <https://dev.mechanical.docs.pyansys.com/>`_.
+``main`` branch, is hosted at `Development PyMechanical Documentation <https://dev.mechanical.docs.pyansys.com/>`_.
 This version is automatically kept up to date via GitHub actions.
 
 Test PyMechanical
 -----------------
-If you do not have Mechanical installed locally but still want to run
-PyMechanical unit testing, you must set up the following environment variables.
+If you do not have a licensed copy of Mechanical installed locally but
+still want to run PyMechanical unit tests, you must set up environment
+variables.
 
-In Windows, use:
+**On Windows**
 
 .. code::
 
@@ -59,7 +61,7 @@ In Windows, use:
     SET PYMECHANICAL_PORT=<MECHANICAL Port> (default 10000)
     SET PYMECHANICAL_IP=<MECHANICAL IP> (default 127.0.0.1)
 
-In Linux, use:
+**On Linux**
 
 .. code::
 
@@ -67,13 +69,15 @@ In Linux, use:
     export PYMECHANICAL_PORT=<MECHANICAL Port> (default 10000)
     export PYMECHANICAL_IP=<MECHANICAL IP> (default 127.0.0.1)
 
-This tells ``ansys.mechanical.core`` to attempt to connect to the existing
-Mechanical service by default when the ``launch_mechanical`` function is used.
+
+The environment variables for your operating system tell PyMechanical 
+to attempt to connect to the existing Mechanical service by default
+when you use the ``launch_mechanical`` method.
 
 
 Code style
 ----------
-PyMechanical follows PEP8 standard as outlined in the `PyAnsys Development Guide
+PyMechanical follows the PEP8 standard as outlined in the `PyAnsys Development Guide
 <https://dev.docs.pyansys.com>`_ and implements style checking using
 `pre-commit <https://pre-commit.com/>`_.
 

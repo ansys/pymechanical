@@ -1,11 +1,12 @@
 Create a pool of Mechanical instances
 =====================================
-PyMechanical contains the :class:`MechanicalLocalPool <ansys.mechanical.core.MechanicalLocalPool>`
-class to simplify creating multiple local instances of the :class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>`
-class for batch processing. This can be used for the batch processing of a
+The :class:`MechanicalLocalPool <ansys.mechanical.core.MechanicalLocalPool>`
+class simplifies creating multiple local instances of the :class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>`
+class for batch processing. You can use the
+:class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>` for batch processing a
 set of input files or other batch-related processes.
 
-To create the pool:
+To create a pool:
 
 .. code:: python
 
@@ -13,8 +14,8 @@ To create the pool:
     >>> pool = LocalMechanicalPool(10, version="231")
     'Mechanical Pool with 10 active instances'
 
-You can also supply additional keyword arguments when creating the
-pool. For instance, to restart failed instances.
+When creating the pool, you can supply additional keyword arguments.
+For example, to restart failed instances, you can set ``restart_failed=True``:
 
 .. code:: python
 
@@ -23,23 +24,23 @@ pool. For instance, to restart failed instances.
     >>> pool = LocalMechanicalPool(10, version="231", restart_failed=True)
     Creating Pool: 100%|########| 10/10 [00:01<00:00,  1.43it/s]
 
-Each individual instance of mechanical can be accessed with:
+You can access each individual instance of Mechanical with:
 
 .. code:: python
 
     >>> pool[0]
     <ansys.mechanical.core.mechanical.Mechanical at 0x7fabf0230d90>
 
-Note that this is a self healing pool. If an instance of Mechanical dies
-during a batch process, this instance is automatically restarted.
-When creating the pool, you can disable this behavior by setting ``restart_failed=False``.
-
+Because this is a *self-healing pool*, if an instance of Mechanical stops
+during a batch process, this instance is automatically restarted. When creating
+the pool, you can disable this behavior by setting ``restart_failed=False``.
 
 Run a set of input files
 ~~~~~~~~~~~~~~~~~~~~~~~~
-You can use the pool to run a set of pre-generated input files using
-:func:`run_batch <ansys.mechanical.core.MechanicalLocalPool.run_batch>`.  For
-example, you can run the first set of 20 verification files with:
+You can use the pool to run a set of pre-generated input files using the
+:func:`run_batch <ansys.mechanical.core.MechanicalLocalPool.run_batch>` method.
+
+For example, you can run the first set of 20 verification files with:
 
 .. code:: python
 
@@ -52,11 +53,10 @@ example, you can run the first set of 20 verification files with:
 Run a user-defined function
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 You can also use the pool to run a custom user-defined function on each
-instance of Mechanical over a set of inputs. This example again uses set
-of verification files as in the :func:`run_batch
-<ansys.mechanical.core.MechanicalLocalPool.run_batch>` example, but implements
-it as a function and outputs the final routine instead of the text
-output from Mechanical.
+instance of Mechanical over a set of inputs. While the previous example
+uses the :func:`run_batch <ansys.mechanical.core.MechanicalLocalPool.run_batch>`
+method to run a set of inputs files, the following example uses a function
+to output the final routine rather than the text output from Mechanical.
 
 .. code:: python
 
