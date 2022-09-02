@@ -66,7 +66,7 @@ Here's a brief example of how PyMechanical works:
     Software build date:Wednesday, August 10, 2022 4:28:15 PM
 
 Mechanical is now active and you can send commands to it as a genuine
-Python class.  For example, you can send some scripts:
+Python class. For example, you can send some scripts:
 
 .. code:: python
 

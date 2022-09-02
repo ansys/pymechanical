@@ -6,7 +6,7 @@ installed locally. The version installed dictates the interface and
 features that are available to you.
 
 PyMechanical is compatible with Mechanical 2023 R1 and later on Windows
-and on Linux. Later releses provide significantly better support and features.
+and on Linux. Later releases provide significantly better support and features.
 
 For more information, see the `Ansys Mechanical <https://www.ansys.com/products/structures/ansys-mechanical>`_ 
 page on the Ansys website.
@@ -26,7 +26,7 @@ Install the package
 The ``ansys.mechanical.core`` package supports Python 3.6 through
 Python 3.9 on Windows, Mac, and Linux. You should consider installing
 PyMechanical in a virtual environment. For more information, see Python's
-`venv --Creation of virutaion environments <https://docs.python.org/3/library/venv.html>`_.
+`venv -- Creation of virtual environments <https://docs.python.org/3/library/venv.html>`_.
 
 Install the latest package from `PyPi
 <https://pypi.org/project/ansys-mechanical-core/>`_ with:

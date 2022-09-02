@@ -4,8 +4,8 @@
 Frequently asked questions
 **************************
 
-How should I report issues?
----------------------------
+How do you report issues?
+-------------------------
 
 You can report issues with PyMechanical, such as bugs, feature requests,
 and documentation errors, on the repository's `Issues
@@ -43,10 +43,10 @@ like to develop software.
 Why use PyMechanical other Ansys products like Ansys Workbench?
 ---------------------------------------------------------------
 
-There will always be tasks where it's better to use one over the
-other. Workbench is great tool to rapidly prototype, mesh, set
+There are always tasks where one product is better than another.
+Workbench is great tool to rapidly prototype, mesh, set
 boundary conditions, and solve. A huge amount of Workbench development
-effort has yeilded many features that make it easy to run analyses.
+effort has yielded many features that make it easy to run analyses.
 However, Workbench is limited by its IronPython scripting. Additionally,
 you cannot call multiple products at either a granular or high-level or
 use Python packages such as ``numpy``, ``scipy``, ``pytorch``, and

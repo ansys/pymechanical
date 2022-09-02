@@ -3,7 +3,7 @@
 Mechanical
 ==========
 
-Mechanical Class Specific Classes or Attributes
+Mechanical class-specific classes and attributes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. currentmodule:: ansys.mechanical.core
 

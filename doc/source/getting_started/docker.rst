@@ -7,8 +7,8 @@ You can run Mechanical within a container on any operating system
 using `Docker <https://www.docker.com/>`_ and connect to it with
 PyMechanical.
 
-Running Mechanical in a containerized environment like Docker or `Apptainer <http://apptainer.org/>`_`
-(formerly Singularity) is advantageous for serveral reasons, including:
+Running Mechanical in a containerized environment like Docker or `Apptainer <http://apptainer.org/>`_
+(formerly Singularity) is advantageous for several reasons, including:
 
 - Run in a consistent environment regardless of the host operating system.
 - Portability and ease of installation
