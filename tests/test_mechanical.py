@@ -1,5 +1,4 @@
 import json
-import math
 import os
 
 import grpc
@@ -275,7 +274,7 @@ def verify_download(mechanical, tmpdir, file_name, chunk_size):
 
 @pytest.mark.parametrize("file_name", ["hsec.x_t"])
 def test_download_file(mechanical, tmpdir, file_name):
-    verify_download(mechanical, tmpdir, file_name, 1024*1024)
+    verify_download(mechanical, tmpdir, file_name, 1024 * 1024)
 
 
 # we are using only a small test file
