@@ -5,7 +5,15 @@ import os
 import grpc
 import pytest
 
-from ansys.mechanical.core.misc import is_windows
+
+def validate_real(value, expected, tol):
+    low = 1 - tol
+    high = 1 + tol
+
+    if expected * low <= value <= expected * high:
+        return True
+
+    return False
 
 
 def test_run_jscript_success(mechanical):
@@ -119,17 +127,7 @@ def test_run_python_script_from_file_error(mechanical):
     assert exc_info.value.details() == "name 'get_myname' is not defined"
 
 
-# def test_attach_mesh_solve(mechanical):
-#     python_script = r".\scripts\mech_workflow.py"
-#     result = mechanical.run_python_script_from_file(python_script)
-#     dict = json.loads(result)
-#
-#     assert dict["Minimum"] == "0 [m]"
-#     assert dict["Maximum"] == "9.70153746362981E-06 [m]"
-#     assert dict["Average"] == "3.8532601588897765E-06 [m]"
-
 # @pytest.mark.skip(reason="avoid long running")
-@pytest.mark.skip(reason="Under investigation")
 def test_attach_mesh_solve_use_api(mechanical):
     current_working_directory = os.getcwd()
     python_script = os.path.join(current_working_directory, "tests", "scripts", "api.py")
@@ -164,17 +162,11 @@ return_total_deformation()
     max_value = float(dict_result["Maximum"].split(" ")[0])
     avg_value = float(dict_result["Average"].split(" ")[0])
 
-    assert math.isclose(min_value, 0)
-
-    if is_windows():
-        assert math.isclose(max_value, 0.0029068727071322174)
-        assert math.isclose(avg_value, 0.0011398642407684763)
-    else:
-        assert math.isclose(max_value, 2.9068725331072863e-06)
-        assert math.isclose(avg_value, 1.1398642395560755e-06)
+    assert validate_real(min_value, 0, 0.1)
+    assert validate_real(max_value, 2.9068725331072863e-06, 0.1)
+    assert validate_real(avg_value, 1.1398642395560755e-06, 0.1)
 
 
-# @pytest.mark.skip(reason="avoid long running")
 @pytest.mark.parametrize("file_name", [r"hsec.x_t"])
 def test_upload(mechanical, file_name):
     mechanical.run_python_script("ExtAPI.DataModel.Project.New()")
@@ -214,7 +206,6 @@ def test_upload_with_different_chunk_size(mechanical, chunk_size):
 
 
 # @pytest.mark.skip(reason="avoid long running")
-@pytest.mark.skip(reason="Under investigation")
 def test_upload_attach_mesh_solve_use_api(mechanical):
     current_working_directory = os.getcwd()
     file_path = os.path.join(current_working_directory, "tests", "parts", "hsec.x_t")
@@ -255,19 +246,12 @@ return_total_deformation()
     max_value = float(dict_result["Maximum"].split(" ")[0])
     avg_value = float(dict_result["Average"].split(" ")[0])
 
-    assert math.isclose(min_value, 0)
-
-    if is_windows():
-        assert math.isclose(max_value, 0.0029068727071322174)
-        assert math.isclose(avg_value, 0.0011398642407684763)
-    else:
-        assert math.isclose(max_value, 2.9068725331072863e-06)
-        assert math.isclose(avg_value, 1.1398642395560755e-06)
+    assert validate_real(min_value, 0, 0.1)
+    assert validate_real(max_value, 2.9068725331072863e-06, 0.1)
+    assert validate_real(avg_value, 1.1398642395560755e-06, 0.1)
 
 
-# @pytest.mark.parametrize("file_name", ["hsec.x_t"])
-@pytest.mark.skip(reason="Under investigation")
-def test_download_file(mechanical, tmpdir, file_name):
+def verify_download(mechanical, tmpdir, file_name, chunk_size):
     directory = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
     print(directory)
 
@@ -289,32 +273,18 @@ def test_download_file(mechanical, tmpdir, file_name):
     assert os.path.exists(local_path) and os.path.getsize(local_path) > 0
 
 
+@pytest.mark.parametrize("file_name", ["hsec.x_t"])
+def test_download_file(mechanical, tmpdir, file_name):
+    verify_download(mechanical, tmpdir, file_name, 1024*1024)
+
+
 # we are using only a small test file
 # change the chunk_size for that
 # ideally this will be 64*1024, 1024*1024, etc.
-# @pytest.mark.parametrize("chunk_size", [10, 50, 100])
-@pytest.mark.skip(reason="Under investigation")
+@pytest.mark.parametrize("chunk_size", [10, 50, 100])
 def test_download_file_different_chunk_size1(mechanical, tmpdir, chunk_size):
     file_name = "hsec.x_t"
-    directory = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
-    print(directory)
-
-    current_working_directory = os.getcwd()
-    file_path = os.path.join(current_working_directory, "tests", "parts", file_name)
-    mechanical.upload(
-        file_name=file_path, file_location_destination=directory, chunk_size=1024 * 1024
-    )
-
-    print(f"using the temporary directory: {tmpdir}")
-    file_path = os.path.join(directory, file_name)
-    local_directory = tmpdir.strpath
-
-    mechanical.download(files=file_path, target_dir=local_directory, chunk_size=chunk_size)
-
-    base_name = os.path.basename(file_path)
-    local_path = os.path.join(local_directory, base_name)
-
-    assert os.path.exists(local_path) and os.path.getsize(local_path) > 0
+    verify_download(mechanical, tmpdir, file_name, chunk_size)
 
 
 # def test_call_before_launch_or_connect():
