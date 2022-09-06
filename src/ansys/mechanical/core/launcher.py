@@ -8,28 +8,30 @@ from ansys.mechanical.core.misc import is_windows
 
 
 class MechanicalLauncher:
-    """Launch Mechanical in batch or UI mode."""
+    """Launches Mechanical in batch or UI mode."""
 
     def __init__(
         self, batch, port, exe_path, additional_args=None, additional_envs=None, verbose=False
     ):
-        """Initialize the MechanicalLauncher.
+        """Initialize the Mechanical launcher.
 
         Parameters
         ----------
         batch : bool, optional
-            Launches mechanical in batch or UI mode. Default is True
+            Whether to launch Mechanical in batch mode. The default is ``True``. When ``False``,
+            Mechanical is launched in UI mode.
         port : int, optional
-            Port to connect to the Mechanical grpc server.  Default - find a free port
-        exe_path :
-            Path of the Mechanical application
+            Port to connect to the Mechanical gRPC server. Default - find a free port
+        exe_path : str
+            Path to where the executable file for Mechanical is located.
         additional_args : list, optional
-            List of additional arguments to pass. Default - None
+            List of additional arguments to pass. The default is ``None``.
         additional_envs : dict, optional
-            List of additional environment variables to pass. Default - None
-        verbose : bool
-            Print all output when launching and running Mechanical.
-            Not recommended unless debugging the Mechanical start.  Default ``False``.
+            List of additional environment variables to pass. The default is ``None``.
+        verbose : bool, optional
+            Whether to print all output when launching and running Mechanical. The
+            default is ``False``. Only set this parameter to ``True`` if you are
+            debugging the startup of Mechanical.
         """
         self.batch = batch
         self.port = port
@@ -41,10 +43,10 @@ class MechanicalLauncher:
         self.__batch_arg_list = ["-DSApplet", "-b", "-AppModeMech"]
 
     def launch(self):
-        """Launch Mechanical with grpc server."""
+        """Launch Mechanical with the gRPC server."""
         exe_path = self.__get_exe_path()
         if not os.path.exists(exe_path):
-            print(f"startup file:{exe_path} doesn't exist")
+            print(f"Startup file:{exe_path} does't exist.")
             raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), exe_path)
 
         env_variables = self.__get_env_variables()
@@ -55,25 +57,25 @@ class MechanicalLauncher:
         if is_windows():
             shell_value = True
 
-        LOG.info(f"starting the process using {args_list}")
+        LOG.info(f"Starting the process using {args_list}.")
         if self.verbose:
             command = " ".join(args_list)
-            print(f"Running {command}")
+            print(f"Running {command}.")
 
         process = subprocess.Popen(args_list, shell=shell_value, env=env_variables)
-        LOG.info(f"started the process:{process} using {args_list}")
+        LOG.info(f"Started the process:{process} using {args_list}.")
 
     def __get_env_variables(self):
-        """Return the dictionary of environment variable used while launching Mechanical.
+        """Get the dictionary of environment variables used while launching Mechanical.
 
         Returns
         -------
         dict
-            dictionary of environment variables
+            Dictionary of environment variables.
         """
         default_env = dict(WB1_STANDALONE="1")
         if self.additional_envs is not None and isinstance(self.additional_envs, dict):
-            LOG.info(f"using these additional env: {self.additional_envs}")
+            LOG.info(f"Using these additional env: {self.additional_envs}.")
             ansyswbu_env = {**os.environ, **default_env, **self.additional_envs}
         else:
             ansyswbu_env = {**os.environ, **default_env}
@@ -81,12 +83,12 @@ class MechanicalLauncher:
         return ansyswbu_env
 
     def __get_commandline_args(self):
-        """Return the list of commandline arguments used while launching Mechanical.
+        """Get the list of command-line arguments used while launching Mechanical.
 
         Returns
         -------
         list
-            list of commandline arguments
+            List of command-line arguments.
         """
         args_list = []
 
@@ -102,18 +104,18 @@ class MechanicalLauncher:
         args_list.append(str(self.port))
 
         if self.additional_args is not None and isinstance(self.additional_args, list):
-            LOG.info(f"using these additional args: {self.additional_args}")
+            LOG.info(f"Using these additional args: {self.additional_args}.")
             args_list.extend(self.additional_args)
 
         return args_list
 
     def __get_exe_path(self):
-        """Return the exe path used while launching Mechanical.
+        """Get the path to the executable file used to launch Mechanical.
 
         Returns
         -------
         str
-            exe path of the Mechanical application
+            Path to the executable file for launching Mechanical.
         """
         exe_path = None
         if self.exe_path is not None and isinstance(self.exe_path, str):

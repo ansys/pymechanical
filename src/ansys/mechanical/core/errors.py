@@ -1,4 +1,4 @@
-"""pymechanical specific errors."""
+"""PyMechanical-specific errors."""
 
 from functools import wraps
 import signal
@@ -12,35 +12,35 @@ SIGINT_TRACKER = []
 
 
 class VersionError(ValueError):
-    """Raise when Mechanical is the wrong version."""
+    """Raises an error when the version of Mechanical is invalid."""
 
     def __init__(self, msg="Invalid Mechanical version"):
-        """Initialize the VersionError.
+        """Initialize the version error.
 
         Parameters
         ----------
         msg : str
-            Use the message describe about the invalid Mechanical version
+            Error message to display for an invalid version of Mechanical.
         """
         ValueError.__init__(self, msg)
 
 
 class MechanicalRuntimeError(RuntimeError):
-    """Raise when Mechanical passes an error."""
+    """Raises an error when Mechanical passes a runtime error."""
 
     pass
 
 
 class MechanicalExitedError(RuntimeError):
-    """Raise when Mechanical has exited."""
+    """Raises an error when Mechanical has exited."""
 
-    def __init__(self, msg="Mechanical has exited"):
+    def __init__(self, msg="Mechanical has exited."):
         """Initialize the MechanicalExitedError.
 
         Parameters
         ----------
         msg: str
-            use the message to describe about the Mechanical exited error.
+            Error message to display when Mechanical has exited.
         """
         RuntimeError.__init__(self, msg)
 
@@ -57,7 +57,7 @@ def protect_grpc(func):
 
     Capture KeyboardInterrupt to avoid segfaulting Mechanical.
 
-    This works some of the time, but not all the time.  For some
+    This works some of the time, but not all the time. For some
     reason gRPC still captures SIGINT.
 
     """
@@ -75,7 +75,7 @@ def protect_grpc(func):
         try:
             out = func(*args, **kwargs)
         except (_InactiveRpcError, _MultiThreadedRendezvous) as error:
-            # can't use isinstance here due to circular imports
+            # Can't use isinstance here due to circular imports
             try:
                 class_name = args[0].__class__.__name__
             except:
@@ -92,18 +92,18 @@ def protect_grpc(func):
             if mechanical is not None:
                 mechanical.exit(force=True)
 
-            raise MechanicalExitedError("Mechanical server connection terminated") from None
+            raise MechanicalExitedError("Mechanical server connection terminated.") from None
 
         if threading.current_thread().__class__.__name__ == "_MainThread":
             received_interrupt = bool(SIGINT_TRACKER)
 
-            # always clear and revert to old handler
+            # Always clear and revert to old handler
             SIGINT_TRACKER.clear()
             if old_handler:
                 signal.signal(signal.SIGINT, old_handler)
 
             if received_interrupt:  # pragma: no cover
-                raise KeyboardInterrupt("Interrupted during Mechanical execution")
+                raise KeyboardInterrupt("Interrupted during Mechanical execution.")
 
         return out
 
