@@ -784,7 +784,7 @@ class Mechanical(object):
             )
 
         if not connected:
-            raise IOError(f"Unable to connect to Mechanical gRPC instance at {self._channel_str}.")
+            raise IOError(f"Unable to connect to the Mechanical instance at {self._channel_str}.")
 
     @property
     def _channel_str(self):
@@ -1086,7 +1086,7 @@ class Mechanical(object):
     def run_jscript(
         self, script_block: str, enable_logging=False, log_level="WARNING", timeout=2000
     ):
-        """Run a jscript block inside Mechanical.
+        """Run a Jscript block inside Mechanical.
 
         Parameters
         ----------
@@ -1103,7 +1103,7 @@ class Mechanical(object):
         Returns
         -------
         str
-            Result from script.
+            Result from the script.
         """
         self.verify_valid_connection()
         response = self.__call_run_jscript(script_block, enable_logging, log_level, timeout)
@@ -1159,7 +1159,7 @@ class Mechanical(object):
         Returns
         -------
         str
-            Script result.
+            Result from the script.
         """
         self.verify_valid_connection()
         response = self.__call_run_python_script(script_block, enable_logging, log_level, timeout)
@@ -1168,12 +1168,12 @@ class Mechanical(object):
     def run_jscript_from_file(
         self, file_path, enable_logging=False, log_level="WARNING", progress_interval=2000
     ):
-        """Run a jscript file inside Mechanical.
+        """Run a Jscript file inside Mechanical.
 
         Parameters
         ----------
         file_path : str
-            Path for the jscript file.
+            Path for the Jscript file.
         enable_logging: bool, optional
             Whether to enable logging. The default is ``False``.
         log_level: str
@@ -1185,7 +1185,7 @@ class Mechanical(object):
         Returns
         -------
         str
-            Script result.
+            Result from the script.
         """
         self.verify_valid_connection()
         self.log_debug(f"run_jscript_from_file started")
@@ -1213,7 +1213,7 @@ class Mechanical(object):
         Returns
         -------
         str
-            Script result.
+            Result from the script.
         """
         self.verify_valid_connection()
         self.log_debug(f"run_python_script_from_file started")
@@ -1290,7 +1290,7 @@ class Mechanical(object):
         chunk_size=DEFAULT_FILE_CHUNK_SIZE,
         progress_bar=True,
     ):
-        """Upload a file to the Mechanical gRPC instance.
+        """Upload a file to the Mechanical instance.
 
         Parameters
         ----------
@@ -1399,7 +1399,7 @@ class Mechanical(object):
 
     @property
     def project_directory(self):
-        """Project directory for the currently connected Mechanical instance."""
+        """Get the project directory for the currently connected Mechanical instance."""
         return self.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
 
     def list_files(self):
@@ -1492,7 +1492,7 @@ class Mechanical(object):
         progress_bar=None,
         recursive=False,
     ):  # pragma: no cover
-        """Download files from the working directory of the Mechanical gRPC instance.
+        """Download files from the working directory of the Mechanical instance.
 
         .. warning:: This feature is only available for Mechanical 2023 R1 or later.
 
@@ -1599,7 +1599,7 @@ class Mechanical(object):
         chunk_size=DEFAULT_CHUNK_SIZE,
         progress_bar=None,
     ):
-        """Download a file from the Mechanical gRPC instance.
+        """Download a file from the Mechanical instance.
 
         Parameters
         ----------
@@ -1696,7 +1696,7 @@ class Mechanical(object):
         return file_size
 
     def download_project(self, extensions=None, target_dir=None, progress_bar=False):
-        """Download all project files in the Mechanical working directory.
+        """Download all project files in the working directory of the Mechanical instance.
 
         Parameters
         ----------
@@ -1805,7 +1805,7 @@ class Mechanical(object):
         return data
 
     def __call_run_jscript(self, script_code: str, enable_logging, log_level, progress_interval):
-        """Run the jscript block on the server.
+        """Run a Jscript block on the server.
         
         Parameters
         ----------
@@ -1862,7 +1862,7 @@ class Mechanical(object):
         Returns
         -------
         str
-            Script result.
+            Result from the script.
        
         """
         log_level_server = self.convert_to_server_log_level(log_level)
@@ -2017,7 +2017,7 @@ def launch_grpc(
         Whether to launch Mechanical in batch mode. The default is ``True``.
         When ``False``, Mechanical is launched in UI mode.
     port : int, optional
-        Port to launch Mechanical gRPC instance on. The default is
+        Port to launch the Mechanical instance on. The default is
         ``MECHANICAL_DEFAULT_PORT``. The final port is the first
         port available after (or including) this port.
     ip : str, optional
@@ -2036,7 +2036,7 @@ def launch_grpc(
     Returns
     -------
     int
-        Port number that the Mechanical gRPC instance started on.
+        Port number that the Mechanical instance started on.
 
     Notes
     -----
