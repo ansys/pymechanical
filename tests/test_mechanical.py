@@ -126,46 +126,6 @@ def test_run_python_script_from_file_error(mechanical):
     assert exc_info.value.details() == "name 'get_myname' is not defined"
 
 
-# @pytest.mark.skip(reason="avoid long running")
-def test_attach_mesh_solve_use_api(mechanical):
-    current_working_directory = os.getcwd()
-    python_script = os.path.join(current_working_directory, "tests", "scripts", "api.py")
-    print("opening : ", python_script)
-
-    text_file = open(python_script, "r")
-    # read whole file to a string
-    data = text_file.read()
-    # close file
-    text_file.close()
-
-    file_path_part = os.path.join(current_working_directory, "tests", "parts", "hsec.x_t")
-
-    file_path_string = "file_path = r'" + file_path_part + "'" + "\n"
-
-    # let us append the scripts to run
-    func_to_call = """file_path_modified = file_path.replace('\\\\', '\\\\\\\\')
-attach_geometry(file_path_modified)
-generate_mesh()
-add_static_structural_analysis_bc_results()
-solve_model()
-return_total_deformation()
-"""
-
-    python_script = data + file_path_string + func_to_call
-
-    result = mechanical.run_python_script(python_script, enable_logging=True, log_level="DEBUG")
-
-    dict_result = json.loads(result)
-
-    min_value = float(dict_result["Minimum"].split(" ")[0])
-    max_value = float(dict_result["Maximum"].split(" ")[0])
-    avg_value = float(dict_result["Average"].split(" ")[0])
-
-    assert validate_real(min_value, 0, 0.1)
-    assert validate_real(max_value, 2.9068725331072863e-06, 0.1)
-    assert validate_real(avg_value, 1.1398642395560755e-06, 0.1)
-
-
 @pytest.mark.parametrize("file_name", [r"hsec.x_t"])
 def test_upload(mechanical, file_name):
     mechanical.run_python_script("ExtAPI.DataModel.Project.New()")
