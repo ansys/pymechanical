@@ -175,6 +175,12 @@ def test_upload_attach_mesh_solve_use_api(mechanical):
         file_name=file_path, file_location_destination=directory, chunk_size=1024 * 1024
     )
 
+    # this test could run under a container with 1 cpu
+    # let us disable distributed solve
+    result = mechanical.run_jscript("DS.Script.isDistributed()")
+    if result == "True":
+        result = mechanical.run_jscript("DS.Script.doToggleDistributed()")
+
     python_script = os.path.join(current_working_directory, "tests", "scripts", "api.py")
 
     text_file = open(python_script, "r")
@@ -224,7 +230,8 @@ def verify_download(mechanical, tmpdir, file_name, chunk_size):
     file_path = os.path.join(directory, file_name)
     local_directory = tmpdir.strpath
 
-    mechanical.download(files=file_path, target_dir=local_directory, chunk_size=1024 * 1024)
+    # test with different download chunk_size
+    mechanical.download(files=file_path, target_dir=local_directory, chunk_size=chunk_size)
 
     base_name = os.path.basename(file_path)
     local_path = os.path.join(local_directory, base_name)
