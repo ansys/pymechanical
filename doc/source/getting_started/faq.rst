@@ -12,7 +12,7 @@ and documentation errors, on the repository's `Issues
 <https://github.com/pyansys/PyMechanical/issues>`_ page.
 
 If you want to ask more open-ended questions or are seeking advice
-from experts in the community, you can post on the `Discussions
+from experts in the community, post on the `Discussions
 <https://github.com/pyansys/PyMechanical/discussions>`_ page.
 
 
@@ -40,8 +40,8 @@ The best approach depends on your workflow needs and how you would
 like to develop software.
 
 
-Why use PyMechanical other Ansys products like Ansys Workbench?
----------------------------------------------------------------
+Why use PyMechanical over other Ansys products like Ansys Workbench?
+--------------------------------------------------------------------
 
 There are always tasks where one product is better than another.
 Workbench is great tool to rapidly prototype, mesh, set
@@ -57,9 +57,9 @@ leverages these machine learning tools.
 
 How do you restart a script?
 ----------------------------
-If you have trouble terminating a simulation, you do not have to
-close Python, reopen it, and clear all previous data such as the mesh
-with:
+If you have trouble terminating a simulation, you do not have use the
+following code to close Python, reopen it, and clear all previous data
+such as the mesh.
 
 .. code:: python
 
@@ -67,7 +67,9 @@ with:
     sys.modules[__name__].__dict__.clear()
 
 
-Exiting Python should clear the solution within Python because 
+Exiting Python should clear the solution within Python. This is because 
 stopping the original process means that nothing should be in
-a new process. To clear all data from Mechanical, either use the
+a new process.
+
+To clear all data from Mechanical, either use the
 ``mechanical.clear()`` function or exit and restart Mechanical.

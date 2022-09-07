@@ -53,7 +53,7 @@ network footprints that are compact and efficient.
 
 Brief code
 ----------
-Here's a brief example of how PyMechanical works:
+Here is a brief code example showing how PyMechanical works:
 
 .. code:: python
 
@@ -74,10 +74,10 @@ Python class. For example, you can send some scripts:
     result = mechanical.run_python_script('10*5')
 
 Mechanical interactively returns the result of each command, storing
-in to the logging module. Or, you can immediately print the result::
-    
+in to the logging module. Or, you can immediately print the result with::   
 
-``print(mechanical.run_python_script('2+3')``
+    print(mechanical.run_python_script('2+3')
+
 
 Errors are caught immediately and Pythonically.
 

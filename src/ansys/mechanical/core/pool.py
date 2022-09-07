@@ -1,4 +1,4 @@
-"""This module is for threaded implementations of the mechanical interface."""
+"""This module is for threaded implementations of the Mechanical interface."""
 
 import os
 import time
@@ -23,7 +23,16 @@ if _HAS_TQDM:
 
 
 def available_ports(n_ports, starting_port=MECHANICAL_DEFAULT_PORT):
-    """Return a list the first ``n_ports`` ports starting from ``starting_port``."""
+    """Get a list of a given number of available ports starting from a specified port number.
+    
+    Parameters
+    ----------
+    n_ports : int
+        Number of available ports to return.
+    starting_port: int, option
+        Number of the port to start the search from. The default is
+        ``MECHANICAL_DEFAULT_PORT``.
+    """
     port = MECHANICAL_DEFAULT_PORT
     ports = []
     while port < 65536 and len(ports) < n_ports:
@@ -33,7 +42,7 @@ def available_ports(n_ports, starting_port=MECHANICAL_DEFAULT_PORT):
 
     if len(ports) < n_ports:
         raise RuntimeError(
-            f"There are not {n_ports} available ports between {starting_port} and 65536"
+            f"There are not {n_ports} available ports between {starting_port} and 65536."
         )
 
     return ports
@@ -43,54 +52,57 @@ class LocalMechanicalPool:
     """Create a pool of Mechanical instances.
 
     .. note::
-       Requires Mechanical 2023 R1 or later.
+       This class requires Mechanical 2023 R1 or later.
 
     Parameters
     ----------
     n_instance : int
-        Number of instances to create.
-
+        Number of instances to create in the pool.
     wait : bool, optional
-        Wait for pool to be initialized.  Otherwise, pool will start
-        in the background and all resources may not be available instantly.
-
+        Whether to wait for the pool to be initialized. The default is
+        ``True``. When ``False``, the pool starts in the background, in
+        which case all resources might not be immediately available.
     starting_port : int, optional
-        Starting port for the Mechanical instances.  Defaults to 10000.
-
+        Starting port for the Mechanical instances. The default is ``10000``.
     progress_bar : bool, optional
-        Show a progress bar when starting the pool.  Defaults to
-        ``True``.  Will not be shown when ``wait=False``.
-
+        Whether to display a progress bar when starting the pool. The default
+        is ``True``, but the progress bar is not shown when ``wait=False``.
     restart_failed : bool, optional
-        Restarts any failed instances in the pool.
-
+        Whether to restart any failed instances in the pool. The default is
+        ``True``.
     **kwargs : dict, optional
-        See :func:`ansys.mechanical.core.launch_mechanical` for a complete
-        listing of all additional keyword arguments. If exec_file is found, it will be used to
-        start instances. If PyPIM is configured, version is specified and
-        exec_file is not specified, instances are created using PyPIM.
+        Additional keyword arguments. For a list of all additional keyword
+        arguments, see the :func:`ansys.mechanical.core.launch_mechanical`
+        function. If the ``exec_file`` keyword argument is found, it is used to
+        start instances. Instances are created using PyPIM if the following
+        conditions are met:
+        
+        - PyPIM is configured.
+        - Version is specified/
+        - ``exec_file`` is not specified.
+
 
     Examples
     --------
-    Simply create a pool of 10 instances to run
+    Create a pool of 10 Mechanical instances.
 
     >>> from ansys.mechanical.core import LocalMechanicalPool
     >>> pool = LocalMechanicalPool(10)
     Creating Pool: 100%|########| 10/10 [00:01<00:00,  1.43it/s]
 
-    Create a pool while specifying the Mechanical executable in Windows.
+    Create a pool while specifying the Mechanical executable file on Windows.
 
     >>> exec_file = 'C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe'
     >>> pool = LocalMechanicalPool(10, exec_file=exec_file)
     Creating Pool: 100%|########| 10/10 [00:01<00:00,  1.43it/s]
 
-    Create a pool while specifying the Mechanical executable in Linux.
+    Create a pool while specifying the Mechanical executable file on Linux.
 
     >>> exec_file = '/ansys_inc/v231/aisol/.workbench'
     >>> pool = LocalMechanicalPool(10, exec_file=exec_file)
     Creating Pool: 100%|########| 10/10 [00:01<00:00,  1.43it/s]
 
-    Create a pool in the PyPIM environment
+    Create a pool in the PyPIM environment.
 
     >>> pool = LocalMechanicalPool(10, version="231")
     Creating Pool: 100%|########| 10/10 [00:01<00:00,  1.43it/s]
@@ -106,7 +118,34 @@ class LocalMechanicalPool:
         restart_failed=True,
         **kwargs,
     ):
-        """Initialize several instances of mechanical."""
+        """Initialize several Mechanical instances.
+        Parameters
+        ----------
+        n_instance : int
+            Number of Mechanical instances to initialize.
+        wait : bool, optional
+            Whether to wait for the instances to be initialized. The default is
+            ``True``. When ``False``, the isntances start in the background, in
+            which case all resources might not be immediately available.
+        port : int, optional
+            Port for the first Mechanical instance. The default is
+            ``MECHANICAL_DEFAULT_PORT``.
+        progress_bar : bool, optional
+            Whether to display a progress bar when starting the instances. The default
+            is ``True``, but the progress bar is not shown when ``wait=False``.
+        restart_failed : bool, optional
+            Whether to restart any failed instances. The default is ``True``.
+        **kwargs : dict, optional
+            Additional keyword arguments. For a list of all additional keyword
+            arguments, see the :func:`ansys.mechanical.core.launch_mechanical`
+            function. If the ``exec_file`` keyword argument is found, it is used to
+            start instances. Instances are created using PyPIM if the following
+            conditions are met:
+        
+            - PyPIM is configured.
+            - Version is specified/
+            - ``exec_file`` is not specified.       
+        """
         self._instances = []
         self._spawn_kwargs = kwargs
         self._remote = False
@@ -126,14 +165,14 @@ class LocalMechanicalPool:
                 exec_file = get_mechanical_path()
                 if exec_file is None:
                     raise FileNotFoundError(
-                        "Invalid exec_file path or cannot load cached "
-                        "Mechanical path.  Enter one manually using "
-                        "exec_file=<path to executable>"
+                        "Path to the Mechanical executable file is invalid or cache cannot be loaded. "
+                        "Enter a path manually by specifying a value for the "
+                        "'exec_file' parameter."
                     )
 
         if not self._remote:
             if _version_from_path(exec_file) < 231:
-                raise VersionError("LocalMechanicalPool requires Mechanical 2023R1 or later.")
+                raise VersionError("A local Mechanical pool requires Mechanical 2023 R1 or later.")
 
         ports = None
 
@@ -146,14 +185,14 @@ class LocalMechanicalPool:
 
         n_instances = int(n_instances)
         if n_instances < 2:
-            raise ValueError("Must request at least 2 instances to create a pool.")
+            raise ValueError("You must request at least two instances to create a pool.")
 
         pbar = None
         if wait and progress_bar:
             if not _HAS_TQDM:  # pragma: no cover
                 raise ModuleNotFoundError(
-                    f"To use the keyword argument 'progress_bar', you need to have installed "
-                    f"the 'tqdm' package. To avoid this message you can set 'progress_bar=False'."
+                    f"To use the keyword argument 'progress_bar', you must have installed "
+                    f"the 'tqdm' package. To avoid this message, you can set 'progress_bar=False'."
                 )
 
             pbar = tqdm(total=n_instances, desc="Creating Pool")
@@ -193,10 +232,10 @@ class LocalMechanicalPool:
 
     def _verify_unique_ports(self):
         if self._remote:
-            raise RuntimeError("PyPim is used. Ports information is not available.")
+            raise RuntimeError("PyPIM is used. Port information is not available.")
 
         if len(self._ports) != len(self):
-            raise RuntimeError("MechanicalPool has overlapping ports")
+            raise RuntimeError("Mechanical pool has overlapping ports.")
 
     def map(
         self,
@@ -290,8 +329,8 @@ class LocalMechanicalPool:
         if progress_bar:
             if not _HAS_TQDM:  # pragma: no cover
                 raise ModuleNotFoundError(
-                    f"To use the keyword argument 'progress_bar', you need to have installed "
-                    f"the 'tqdm' package. To avoid this message you can set 'progress_bar=False'."
+                    f"To use the keyword argument 'progress_bar', you must have installed "
+                    f"the 'tqdm' package. To avoid this message, you can set 'progress_bar=False'."
                 )
 
             pbar = tqdm(total=n, desc="Mechanical Running")
@@ -329,12 +368,12 @@ class LocalMechanicalPool:
                         break
 
                 if not complete[0]:
-                    LOG.error(f"Killed instance due to timeout of {timeout} seconds")
+                    LOG.error(f"Stopped instance due to a timeout of {timeout} seconds.")
                     obj.exit()
             else:
                 run_thread.join()
                 if not complete[0]:
-                    LOG.error(f"Killed instance due to run failed.")
+                    LOG.error(f"Stopped instance because running failed.")
                     try:
                         obj.exit()
                     except:
@@ -373,7 +412,7 @@ class LocalMechanicalPool:
                 try:
                     instance.exit()
                 except Exception as error:
-                    LOG.error(f"Failed to close instance : str{error}")
+                    LOG.error(f"Failed to close instance : str{error}.")
         else:
             # wait for all threads to complete
             if wait:
@@ -395,47 +434,40 @@ class LocalMechanicalPool:
         Parameters
         ----------
         files : list
-            List of input files to run.
-
+            List of input files.
         clear_at_start : bool, optional
-            Clear Mechanical at the start of execution.  By default this is
-            ``True``, and setting this to ``False`` may lead to
+            Whether to clear Mechanical when execution starts. The default is
+            ``True``. Setting this parameter to ``False`` might lead to
             instability.
-
         progress_bar : bool, optional
-            Show a progress bar when starting the pool.  Defaults to
-            ``True``.  Will not be shown when ``wait=False``
-
-        progress_bar : bool, optional
-            Show a progress bar when running the batch.  Defaults to
-            ``True``.
-
+            Whether to display a progress bar when running the batch of input
+            files. The default is ``True``, but the progress bar is not shown
+            when ``wait=False``.
         close_when_finished : bool, optional
-            Exit the Mechanical instances when the pool is finished.
-            Default ``False``.
-
+            Whether to close the Mechanical instances when running the batch
+            of input files is finished. The default is ``False``.
         timeout : float, optional
-            Maximum runtime in seconds for each iteration.  If
-            ``None``, no timeout.  If specified, each iteration will
-            be only allowed to run ``timeout`` seconds, and then
-            killed and treated as a failure.
-
+            Maximum runtime in seconds for each iteration. The default is
+            ``None``, in which case there is no timeout. If you specify a
+            value, each iteration is allowed to run only this number of
+            seconds. Once this value is exceded, the batch process is stopped
+            and treated as a failure.
         wait : bool, optional
-            Block execution until the batch is complete.  Default
-            ``True``.
+            Whether block execution must wait until the batch process is complete.
+            The default is ``True``.
 
         Returns
         -------
         list
-            List of text outputs from Mechanical for each batch run.  Not
-            necessarily in the order of the inputs. Failed runs will
-            not return an output.  Since the returns are not
-            necessarily in the same order as ``iterable``, you may
+            List of text outputs from Mechanical for each batch run. The outputs
+            are not necessarily listed in the order of the inputs. Failed runs do
+            not return an output. Because the return outputs are not
+            necessarily in the same order as ``iterable``, you might
             want to add some sort of tracker or note within the input files.
 
         Examples
         --------
-        Run 20 verification files on the pool
+        Run 20 verification files on the pool.
 
         >>> files = [f"test{index}.py" for index in range(1, 21)]
         >>> outputs = pool.run_batch(files)
@@ -462,12 +494,13 @@ class LocalMechanicalPool:
         )
 
     def next_available(self, return_index=False):
-        """Wait until an instance of mechanical is available and return that instance.
+        """Wait until a Mechanical instance is available and return this instance.
 
         Parameters
         ----------
         return_index : bool, optional
-            Return the index along with the instance.  Default ``False``.
+            Whether to return the index along with the instance. The default
+            is ``False``.
 
         Returns
         -------
@@ -475,8 +508,8 @@ class LocalMechanicalPool:
             Instance of Mechanical.
 
         int
-            Index within the pool of the instance of Mechanical.  By
-            default this is not returned.
+            Index within the pool of the Mechanical instance. By
+            default, this index is not returned.
 
         Examples
         --------
@@ -521,13 +554,14 @@ class LocalMechanicalPool:
         Parameters
         ----------
         block : bool, optional
-            When ``True``, wait until all processes are closed.
+            Whether to wait until all processes close before closing out
+            all instances in the pool. The default is ``False``.
 
         Examples
         --------
         >>> pool.exit()
         """
-        self._active = False  # kills any active instance restart
+        self._active = False  # Stops any active instance restart
 
         @threaded
         def threaded_exit(index, instance_local):
@@ -547,7 +581,7 @@ class LocalMechanicalPool:
             [thread.join() for thread in threads]
 
     def __len__(self):
-        """Return the number of instances inc the pool."""
+        """Get the number of instances in the pool."""
         count = 0
         for instance in self._instances:
             if instance:
@@ -556,7 +590,7 @@ class LocalMechanicalPool:
         return count
 
     def __getitem__(self, key):
-        """Return an instance by an index."""
+        """Get an instance by an index."""
         return self._instances[key]
 
     def __iter__(self):
@@ -567,7 +601,19 @@ class LocalMechanicalPool:
 
     @threaded_daemon
     def _spawn_mechanical(self, index, port=None, pbar=None, name=""):
-        """Spawn a mechanical instance at an index."""
+        """Spawn a Mechanical instance at an index.
+        
+        Parameters
+        ----------
+        index : int
+            Index to spawn the instance on.
+        port : int, optional
+            Port for the instance. The default is ``None``.
+        pbar :
+            The default is ``None``.
+        name : str, optional
+            Name for the instance. The default is ``""``.
+        """
         LOG.debug(name)
         self._instances[index] = launch_mechanical(port=port, **self._spawn_kwargs)
         # LOG.debug("Spawned instance %d. Name '%s'", index, name)
@@ -576,7 +622,18 @@ class LocalMechanicalPool:
 
     @threaded_daemon
     def _spawn_mechanical_remote(self, index, pbar=None, name=""):
-        """Spawn a mechanical instance at an index."""
+        """Spawn a Mechanical instance at an index.
+        
+        Parameters
+        ----------
+        index : int
+            Index to spawn the instance on.
+        pbar :
+            The default is ``None``.
+        name : str, optional
+            Name for the instance. The default is ``""``.
+        
+        """
         LOG.debug(name)
         self._instances[index] = launch_mechanical(**self._spawn_kwargs)
         # LOG.debug("Spawned instance %d. Name '%s'", index, name)
@@ -585,7 +642,15 @@ class LocalMechanicalPool:
 
     @threaded_daemon
     def _monitor_pool(self, refresh=1.0, name=""):
-        """Check if instances within a pool have exited (failed) and restarts them."""
+        """Check for instances within a pool that have exited (failed) and restart them.
+        
+        Parameters
+        ----------
+        refresh : float, optional
+            The default is ``1.0``.    
+        name : str, optional
+            Name for the instance. The default is ``""``.
+        """
         LOG.debug(name)
         while self._active:
             for index, instance in enumerate(self._instances):
@@ -595,15 +660,15 @@ class LocalMechanicalPool:
                     try:
                         if self._remote:
                             LOG.debug(
-                                f"restarting a mechanical remote instance for the index : {index}"
+                                f"Restarting a Mechanical remote instance for index : {index}."
                             )
                             self._spawn_mechanical_remote(index, name=f"Instance {index}").join()
                         else:
                             # use the next port after the current available port
                             port = max(self._ports) + 1
                             LOG.debug(
-                                f"restarting a mechanical instance for the index : "
-                                f"{index} port: {port}"
+                                f"Restarting a Mechanical instance for index : "
+                                f"{index} on port: {port}."
                             )
                             self._spawn_mechanical(
                                 index, port=port, name=f"Instance {index}"
@@ -614,9 +679,9 @@ class LocalMechanicalPool:
 
     @property
     def _ports(self):
-        """Return the list of ports used."""
+        """Get a list of the ports that are used."""
         return [inst._port for inst in self if inst is not None]
 
     def __str__(self):
-        """Return string representation of this object."""
-        return "Mechanical Pool with %d active instances" % len(self)
+        """Get the string representation of this object."""
+        return "Mechanical pool with %d active instances" % len(self)

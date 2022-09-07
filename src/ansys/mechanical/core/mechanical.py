@@ -1,4 +1,4 @@
-"""Connect to Mechanical grpc server and issues commands."""
+"""Connect to Mechanical gRPC server and issues commands."""
 import atexit
 from contextlib import closing
 import datetime
@@ -51,14 +51,14 @@ except ModuleNotFoundError:  # pragma: no cover
 # Default 256 MB message length
 MAX_MESSAGE_LENGTH = int(os.environ.get("PYMECHANICAL_MAX_MESSAGE_LENGTH", 256 * 1024**2))
 
-# chunk sizes for streaming and file streaming
+# Chunk sizes for streaming and file streaming
 DEFAULT_CHUNK_SIZE = 256 * 1024  # 256 kB
 DEFAULT_FILE_CHUNK_SIZE = 1024 * 1024  # 1MB
 
 
 def setup_logger(loglevel="INFO", log_file=True, mechanical_instance=None):
     """Initialize the logger for the given mechanical instance."""
-    # return existing log if this function has already been called
+    # Return existing log if this function has already been called
     if hasattr(setup_logger, "log"):
         return setup_logger.log
     else:
@@ -102,7 +102,7 @@ if not os.path.isdir(SETTINGS_DIR):
     except OSError:
         warnings.warn(
             "Unable to create settings directory.\n"
-            "Will be unable to cache Mechanical executable location"
+            "Will be unable to cache Mechanical executable location."
         )
 
 CONFIG_FILE = os.path.join(SETTINGS_DIR, "config.txt")
@@ -113,7 +113,7 @@ GALLERY_INSTANCE = [None]
 
 
 def _cleanup_gallery_instance():  # pragma: no cover
-    """Clean up any left over instances of Mechanical from building the gallery."""
+    """Clean up any leftover instances of Mechanical from building the gallery."""
     if GALLERY_INSTANCE[0] is not None:
         mechanical = Mechanical(
             ip=GALLERY_INSTANCE[0]["ip"],
@@ -126,45 +126,44 @@ atexit.register(_cleanup_gallery_instance)
 
 
 def _version_from_path(path):
-    """Extract ansys version from a path.
+    """Extract the Ansys version from a path.
 
     Generally, the version of Mechanical is contained in the path:
 
-    C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe
+    - On Windows, for example: ``C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe``
+    - On Linux, for example: ``/usr/ansys_inc/v231/aisol/.workbench``
 
-    /usr/ansys_inc/v231/aisol/.workbench
-
-    Note that if the Mechanical executable, you have to rely on the version
+    Note that in the Mechanical executable file, you must rely on the version
     in the path.
 
     Parameters
     ----------
     path : str
-        Path to the Mechanical executable
+        Path to the Mechanical executable file.
 
     Returns
     -------
     int
-        Integer version number (e.g. 231).
+        Integer version number (for example, 231).
 
     """
     # expect v<ver>/ansys
     # replace \\ with / to account for possible windows path
     matches = re.findall(r"v(\d\d\d)", path.replace("\\", "/"), re.IGNORECASE)
     if not matches:
-        raise RuntimeError(f"Unable to extract Ansys version from {path}")
+        raise RuntimeError(f"Unable to extract Ansys version from {path}.")
     return int(matches[-1])
 
 
 def port_in_use(port, host=LOCALHOST):
-    """Return True when a port is in use at the given host.
+    """Check whether a port is in use at the given host.
 
-    Must actually "bind" the address.  Just checking if we can create
-    a socket is insufficient as it's possible to run into permission
-    errors like:
+    You must actually *bind* the address. Just checking if you can create
+    a socket is insufficient because it is possible to run into permission
+    errors like::
 
-    - An attempt was made to access a socket in a way forbidden by its
-      access permissions.
+        An attempt was made to access a socket in a way forbidden by its
+        access permissions.
     """
     with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
         if sock.connect_ex((host, port)) == 0:
@@ -190,20 +189,21 @@ def check_ports(port_range, ip="localhost"):
 
 
 def close_all_local_instances(port_range=None):
-    """Close all Mechanical instances within a port_range.
+    """Close all Mechanical instances within a port range.
 
-    This function can be used when cleaning up from a failed pool or
+    You can use this method when cleaning up from a failed pool or
     batch run.
 
     Parameters
     ----------
     port_range : list, optional
-        Defaults to LOCAL_PORTS (managed by this package).
-        Pass a range to cleanup Mechanical using those ports .
+        List of a range of ports to use when cleaning up Mechanical. The
+        default is ``None``, in which case the ports managed by
+        PyMechanical are used.
 
     Examples
     --------
-    Close all instances stored in LOCAL_PORTS
+    Close all Mechancial instances connected on local ports.
 
     >>> import ansys.mechanical.core as pymechanical
     >>> pymechanical.close_all_local_instances()
@@ -213,10 +213,10 @@ def close_all_local_instances(port_range=None):
         port_range = pymechanical.LOCAL_PORTS
 
     @threaded
-    def close_mechanical(port, name="Closing mechanical thread."):
+    def close_mechanical(port, name="Closing Mechanical thread."):
         try:
             mechanical = Mechanical(port=port)
-            LOG.debug(f"Closing mechanical instance: {mechanical.get_name()} in a thread")
+            LOG.debug(f"Closing Mechanical instance: {mechanical.get_name()} in a thread.")
             mechanical.exit(force=True)
         except OSError:
             pass
@@ -228,23 +228,27 @@ def close_all_local_instances(port_range=None):
 
 
 def create_ip_file(ip, path):
-    """Create 'mylocal.ip' file required for ansys to change the IP of the gRPC server."""
+    """Create the ``mylocal.ip`` file that is required to change the IP address of the gRPC server."""
     file_name = os.path.join(path, "mylocal.ip")
     with open(file_name, "w") as f:
         f.write(ip)
 
 
 def _get_available_base_mechanical():
-    r"""Return a dictionary of available Mechanical versions with their base paths.
+    """Get a dictionary of available Mechanical versions on Windows with their base paths.
 
     Returns
     -------
-    Return all installed Mechanical paths in Windows
+        Paths for Mechanical versions installed on Windows.
 
+    Examples
+    --------
+    On Windows:
+    
     >>> _get_available_base_mechanical()
     {231: 'C:\\Program Files\\ANSYS Inc\\v231'}
 
-    Within Linux
+    On Linux:
 
     >>> _get_available_base_mechanical()
     {231: '/usr/ansys_inc/v231'}
@@ -284,27 +288,24 @@ def _get_available_base_mechanical():
 
 def find_mechanical():
     """
-    Search for ansys path within the standard install location.
-
-    Returns the path of the latest version.
-
+    Search for the Ansys path in the standard installation location.
+    
     Returns
     -------
     ansys_path : str
-        Full path to ANSYS executable.
-
+        Full path to the executable file for the latest Ansys version.
     version : float
-        Version float.  For example, 23.1 corresponds to 2023R1.
+        Version in the float format. For example, ``23.1`` for 2023 R1.
 
     Examples
     --------
-    Within Windows
+    On Windows:
 
     >>> from ansys.mechanical.core.mechanical import find_mechanical
     >>> find_mechanical()
     'C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe', 23.1
 
-    Within Linux
+    On Linux:
 
     >>> find_mechanical()
     (/usr/ansys_inc/v211/aisol/.workbench, 23.1)
@@ -322,7 +323,7 @@ def find_mechanical():
 
 
 def get_mechanical_path(allow_input=True):
-    """Acquire Mechanical Path from a cached file or user input."""
+    """Get the Mechanical path from a cached file or from user input."""
     exe_loc = None
     if os.path.isfile(CONFIG_FILE):
         with open(CONFIG_FILE) as f:
@@ -350,28 +351,28 @@ def check_valid_mechanical():
 
 
 def change_default_mechanical_path(exe_loc):
-    """Change your default ansys path.
+    """Change your default Ansys path.
 
     Parameters
     ----------
     exe_loc : str
-        Ansys executable path.  Must be a full path.
+        Full path for the Ansys executable file to use.
 
     Examples
     --------
-    Change default Ansys location on Linux
-
-    >>> from ansys.mechanical.core import mechanical
-    >>> mechanical.change_default_mechanical_path('/ansys_inc/v231/aisol/.workbench')
-    >>> mechanical.get_mechanical_path()
-    '/ansys_inc/v201/ansys/bin/ansys201'
-
-    Change default Ansys location on Windows
+    On Windows:
 
     >>> mechanical_pth = 'C:/Program Files/ANSYS Inc/v231/aisol/bin/win64/AnsysWBU.exe'
     >>> mechanical.change_default_mechanical_path(mechanical_pth)
     >>> mechanical.check_valid_mechanical()
     True
+
+    On Linux:
+
+    >>> from ansys.mechanical.core import mechanical
+    >>> mechanical.change_default_mechanical_path('/ansys_inc/v231/aisol/.workbench')
+    >>> mechanical.get_mechanical_path()
+    '/ansys_inc/v201/ansys/bin/ansys201'
 
     """
     if os.path.isfile(exe_loc):
@@ -382,30 +383,32 @@ def change_default_mechanical_path(exe_loc):
 
 
 def save_mechanical_path(exe_loc=None):  # pragma: no cover
-    """Find Mechanical path or query user.
-
-    If no ``exe_loc`` argument is supplied, this function attempt
-    to obtain the Mechanical executable from (and in order):
-    - The default ansys paths (i.e. 'C:/Program Files/Ansys Inc/vXXX/aiso/bin/AnsysWBU.exe')
-    - The configuration file
-    - User input
-
-    If ``exe_loc`` is supplied, this function does some checks.
-    If successful, it will write that ``exe_loc`` into the config file.
+    """Find the Mechanical path or query user.
 
     Parameters
     ----------
-    exe_loc : str, optional
-        Path of the Mechanical executable ('AnsysWBU.exe'), by default None
+    exe_loc : string, optional
+        Path for the Mechanical executable file (``AnsysWBU.exe``).
+        The default is ``None``, in which case an attempt is made to
+        obtain the path from the following sources in this order:
+        
+        - The default Ansys paths (for example,
+          ``C:/Program Files/Ansys Inc/vXXX/aiso/bin/AnsysWBU.exe``)
+        - The configuration file
+        - User input
+
+        If a path is supplied, this method performs some checks. If the
+        checks are aresuccessful, it writes this path to the configuration
+        file.
 
     Returns
     -------
     str
-        Path of the Mechanical executable.
+        Path for the Mechanical executable file.
 
     Notes
     -----
-    The configuration file location (``config.txt``) can be found in
+    The location of the configuration file (``config.txt``) can be found in
     ``appdirs.user_data_dir("ansys_mechanical_core")``. For example:
 
     .. code:: python
@@ -415,8 +418,8 @@ def save_mechanical_path(exe_loc=None):  # pragma: no cover
         >>> print(os.path.join(appdirs.user_data_dir("ansys_mechanical_core"), "config.txt"))
         C:/Users/[username]]/AppData/Local/ansys_mechanical_core/ansys_mechanical_core/config.txt
 
-    You can change the default ``exe_loc`` either by modifying the mentioned
-    ``config.txt`` file or by executing this function:
+    You can change the default for the ``exe_loc`` parameter either by modifying the
+    ``config.txt`` file or by running this code:
 
     .. code:: python
 
@@ -439,18 +442,18 @@ def save_mechanical_path(exe_loc=None):  # pragma: no cover
             return exe_loc  # pragma: no cover
 
     # otherwise, query user for the location
-    print("Cached Mechanical executable not found")
+    print("Cached Mechanical executable file is not found.")
     print(
-        "You are about to enter manually the path of the ANSYS Mechanical executable "
-        "(.workbench. This file is very likely to contained in path ending in "
+        "You are about to enter manually the path of the Mechanical executable file "
+        "(.workbench). This file is very likely contained in the path ending in "
         "'vXXX/aisol/.workbench', but it is not required.\n \nIf you experience problems "
-        "with the input path you can overwrite the configuration file by typing:\n"
+        "with the input path, you can overwrite the configuration file with this code:\n"
         ">>> from ansys.mechanical.core.mechanical import save_mechanical_path\n"
         ">>> save_mechanical_path('/new/path/to/executable/')\n"
     )
     need_path = True
     while need_path:  # pragma: no cover
-        exe_loc = input("Enter the location of an Mechanical executable (.workbench):")
+        exe_loc = input("Enter the location of an Mechanical executable file (.workbench):")
 
         if is_valid_executable_path(exe_loc):
             if not is_common_executable_path(exe_loc):
@@ -460,15 +463,15 @@ def save_mechanical_path(exe_loc=None):  # pragma: no cover
             need_path = False
         else:
             print(
-                "The supplied path is either: not a valid file path, or does not "
-                "match '.workbench' name."
+                "The supplied path is either invalid or does not "
+                "match the '.workbench' name."
             )
 
     return exe_loc
 
 
 def is_valid_executable_path(exe_loc):  # pragma: no cover
-    """Check whether the given exe_loc is valid."""
+    """Check whether the given location for the Mechanical executable file is valid."""
     if is_windows():
         return (
             os.path.isfile(exe_loc)
@@ -481,7 +484,7 @@ def is_valid_executable_path(exe_loc):  # pragma: no cover
 
 
 def is_common_executable_path(exe_loc):  # pragma: no cover
-    """Check whether the give exe_loc is valid."""
+    """Check whether the give location for the Mechanical executable fle is valid."""
     path = os.path.normpath(exe_loc)
     path = path.split(os.sep)
 
@@ -506,7 +509,7 @@ def is_common_executable_path(exe_loc):  # pragma: no cover
 
 
 def warn_uncommon_executable_path(exe_loc):  # pragma: no cover
-    """Display warning for the wrong exe_loc."""
+    """Display warning if the location is wrong for the Mechanical executable file."""
     if is_windows():
         warnings.warn(
             f"The supplied path ('{exe_loc}') does not match the usual Mechanical "
@@ -542,73 +545,71 @@ class Mechanical(object):
         keep_connection_alive=True,
         **kwargs,
     ):
-        """Initialize the member variable to based on the arguments.
+        """Initialize the member variable based on the arguments.
 
         Parameters
         ----------
         ip : str, optional
-            IP address to connect to the server.  Defaults to 'localhost'.
-
+            IP address to connect to the server.  The default is ``None``
+            in which case ``localhost`` is used.
         port : int, optional
-            Port to connect to the Mecahnical server.  Defaults to 10000.
-
-        timeout : float
-            Maximum allowable time to connect to the Mechanical server.
-
+            Port to connect to the Mecahnical server. The default is ``None``,
+            in which case ``10000`` is used.
+        timeout : float, optinal
+            Maximum allowable time for connecting to the Mechanical server.
+            The default is ``60.0``.
         loglevel : str, optional
-            Sets which messages are printed to the console.  Default
-            'INFO' prints out all ANSYS messages, 'WARNING` prints only
-            messages containing ANSYS warnings, and 'ERROR' prints only
-            error messages.
+            Level of messages to print to the console. The default is ``WARING``.
+            
+            - ``WARNING`` prints only Ansys warning messages.
+            - ``ERROR`` prints only Ansys error messages.
+            - ``INFO`` prints out all Ansysmessages.
 
         log_file : bool, optional
-            Copy the log to a file called `logs.log` located where the
-            python script is executed. Default ``True``.
-
+            Whether to copy the messages to a file named ``logs.log``, which is
+            located where the Python script is executed. The default is ``False``.
         log_mechanical : str, optional
-            Enables logging every script command to the local disk.  This
-            can be used to "record" all the commands that are sent to
-            Mechanical via PyMechanical so a script can be run within Mechanical without
-            PyMechanical. This string is the path of the output file (e.g.
-            ``log_mechanical='pymechanical_log.txt'``). By default this is disabled.
-
+            Path to the output file on the local disk for writing every script
+            command to. The default is ``None``. However, you might set
+            ``"log_mechanical='pymechanical_log.txt"`` to write all commands that are
+            sent to Mechanical via PyMechanical in this file so that you can use them
+            to run a script within Mechanical without PyMechanical.
         cleanup_on_exit : bool, optional
-            Exit Mechanical when Python exits or when this instance is garbage
-            collected.
-
+            Whether to exit Mechanical when Python exits. The default is ``False``,
+            in which case Mechanical is exited when the garbage for this Mechanical
+            instance is collected.
         channel : grpc.Channel, optional
-            gRPC channel to use for the connection. Can be used as an
-            alternative to the ``ip`` and ``port`` parameters.
-
+            gRPC channel to use for the connection. The default is ``None``.
+            You can use this parameter as an alternative to the ``ip`` and ``port``
+            parameters.
         remote_instance : ansys.platform.instancemanagement.Instance
-            The corresponding remote instance when Mechanical is launched through
-            PyPIM. This instance will be deleted when calling
-            :func:`mecahnical.exit <ansys.mechanical.core.Mechanical.exit>`.
-
+            Corresponding remote instance when Mechanical is launched through
+            PyPIM. The default is ``None``. If a remote instance is specified, this
+            instance is deleted when the :func:`mecahnical.exit <ansys.mechanical.core.Mechanical.exit>`
+            function is called.
         keep_connection_alive : bool, optional
-            Keeps the grpc connection alive by running a background thread and making dummy calls
-            for remote connections.
-            Default ``True``.
+            Whether to keeps the gRPC connection alive by running a background thread
+            and making dummy calls for remote connections. The default is ``True``.
 
         Examples
         --------
-        Connect to an instance of Mechanical already running on locally on the
-        default port 10000.
+        Connect to a Mechanical instance already running on locally on the
+        default port (``10000``).
 
         >>> from ansys.mechanical import core as pymechanical
         >>> mechanical = pymechanical.Mechanical()
 
-        Connect to an instance of Mechanical running on the LAN on a default port.
+        Connect to a Mechanical instance running on the LAN on a default port.
 
         >>> mechanical = pymechanical.Mechanical('192.168.1.101')
 
-        Connect to an instance of Mechanical running on the LAN on a non-default port.
+        Connect to a Mechanical instance running on the LAN on a non-default port.
 
         >>> mechanical = pymechanical.Mechanical('192.168.1.101', port=60001)
 
-        If you wish to customize the channel, you can also directly connect
-        directly to gRPC channels. For example, if you wanted to create an insecure
-        channel with a maximum message length of 8 MB.
+        If you want to customize the channel, you can connect directly to gRPC channels.
+        For example, if you want to create an insecure channel with a maximum message
+        length of 8 MB, you would run:
 
         >>> import grpc
         >>> channel_temp = grpc.insecure_channel(
@@ -625,7 +626,7 @@ class Mechanical(object):
 
         self._locked = False  # being used within MechanicalPool
 
-        # ip could be a machine name. Convert it to ip address
+        # ip could be a machine name. Convert it to an IP address.
         ip_temp = ip
         if channel is not None:
             if ip is not None or port is not None:
@@ -695,7 +696,7 @@ class Mechanical(object):
         self.log_info("Mechanical is ready to accept grpc calls")
 
     def __del__(self):  # pragma: no cover
-        """Clean up when complete."""
+        """Clean up on exit."""
         if self._cleanup_on_exit:
             try:
                 self.exit(force=True)
@@ -703,17 +704,17 @@ class Mechanical(object):
                 self.log_error(f"exit: {e}")
 
     def _set_log_level(self, level):
-        """Alias for set_log_level."""
+        """Set an alias for the log level."""
         self.set_log_level(level)
 
     @property
     def log(self):
-        """Return the log associated with the current Mechanical instance."""
+        """Log associated with the current Mechanical instance."""
         return self._log
 
     @property
     def _name(self):
-        """Instance unique identifier."""
+        """Name (unique identifier) of the Mechanical instance."""
         # if self._ip or self._port:
         #     return f"GRPC_{self._ip}:{self._port}"
         try:
@@ -728,12 +729,12 @@ class Mechanical(object):
         return f"GRPC_instance_{id(self)}"
 
     def get_name(self):
-        """Return the instance unique identifier."""
+        """Get the name of the Mechanical instance."""
         return self._name
 
     @property
     def busy(self):
-        """Return True when Mechanical gRPC server is executing a command."""
+        """Return True when the Mechanical gRPC server is executing a command."""
         return self._busy
 
     @property
@@ -752,9 +753,10 @@ class Mechanical(object):
         Parameters
         ----------
         n_attempts : int, optional
-            Number of connection attempts.
+            Number of connection attempts. The default is ``5``.
         timeout : float, optional
-            Total timeout.
+            Maximum allowable time in seconds for establishing a connection.
+            The default is ``60``.
 
         """
         # This prevents a single failed connection from blocking other attempts
@@ -782,13 +784,11 @@ class Mechanical(object):
             )
 
         if not connected:
-            raise IOError(f"Unable to connect to Mechanical gRPC instance at {self._channel_str}")
+            raise IOError(f"Unable to connect to Mechanical gRPC instance at {self._channel_str}.")
 
     @property
     def _channel_str(self):
-        """Return the target string.
-
-        Generally of the form of "ip:port", like "127.0.0.1:10000".
+        """Target string, which is generally in the form of ``ip:port``, such as ``127.0.0.1:10000``.
 
         """
         if self._channel is not None:
@@ -799,12 +799,16 @@ class Mechanical(object):
         return ""
 
     def _connect(self, timeout=12, enable_health_check=False):
-        """Establish a gRPC channel to a remote or local Mechanical instance.
+        """Connect a gRPC channel to a remote or local Mechanical instance.
 
         Parameters
         ----------
         timeout : float
-            Time in seconds to wait until the connection has been established
+            Maximum allowable time in seconds for establishing a connection. The
+            default is ``12``.
+        enable_health_check : bool, optional
+            Whether to enable a check to see if the connection is healthy.
+            The default is ``False``.
         """
         self._state = grpc.channel_ready_future(self._channel)
         self._stub = mechanical_pb2_grpc.MechanicalServiceStub(self._channel)
@@ -817,7 +821,7 @@ class Mechanical(object):
         if not self._state._matured:  # pragma: no cover
             return False
 
-        self.log_debug("Established connection to Mechanical gRPC")
+        self.log_debug("Established a connection to the Mechanical gRPC server.")
 
         self.wait_till_mechanical_is_ready(timeout)
 
@@ -842,7 +846,7 @@ class Mechanical(object):
         return True
 
     def _enable_health_check(self):
-        """Place the status of the health check in _health_response_queue."""
+        """Place the status of the health check in the health response queue."""
         # lazy imports here to speed up module load
         from grpc_health.v1 import health_pb2, health_pb2_grpc
 
@@ -850,14 +854,14 @@ class Mechanical(object):
             try:
                 for response in response_iterator:
                     response_queue.put(response)
-                # NOTE: we're doing absolutely nothing with this as
-                # this point since the server side health check
+                # NOTE: We're doing absolutely nothing with this as
+                # this point since the server-side health check
                 # doesn't change state.
             except Exception:
                 if self._exiting:
                     return
                 self._exited = True
-                raise MechanicalExitedError("Lost connection with Mechanical server") from None
+                raise MechanicalExitedError("Lost connection with the Mechanical gRPC server.") from None
 
         # enable health check
         from queue import Queue
@@ -876,7 +880,7 @@ class Mechanical(object):
 
         if status.status != health_pb2.HealthCheckResponse.SERVING:
             raise MechanicalRuntimeError(
-                "Unable to enable health check and/or connect to" " the Mechanical server"
+                "Unable to enable health check and/or connect to " " the Mechanical server"
             )
 
         self._health_response_queue = Queue()
@@ -890,7 +894,7 @@ class Mechanical(object):
         thread.start()
 
     def _threaded_heartbeat(self):
-        """To be called from a thread to verify Mechanical instance is alive."""
+        """To call from a thread to verify that a Mechanical instance is alive."""
         self._initialised.set()
         while True:
             if self._exited:
@@ -905,12 +909,12 @@ class Mechanical(object):
             #     continue
 
     def _create_channel(self, ip, port):
-        """Create an unsecured grpc channel."""
+        """Create an unsecured gRPC channel."""
         check_valid_ip(ip)
 
         # open the channel
         channel_str = f"{ip}:{port}"
-        self.log_debug(f"Opening insecure channel at {channel_str}")
+        self.log_debug(f"Opening insecure channel at {channel_str}.")
         return grpc.insecure_channel(
             channel_str,
             options=[
@@ -920,7 +924,7 @@ class Mechanical(object):
 
     @property
     def is_alive(self) -> bool:
-        """Return True when there is an active connect to the gRPC server."""
+        """Whether there is an active connection to the Mechanical gRPC server."""
         if self._exited:
             return False
 
@@ -935,16 +939,17 @@ class Mechanical(object):
 
     @staticmethod
     def set_log_level(loglevel):
-        """Set log level.
+        """Set the log level.
 
         Parameters
         ----------
         loglevel : str, int
-            Log level.  Must be one of: ``'DEBUG', 'INFO', 'WARNING', 'ERROR'``.
+            Level of logging. Options are ``"DEBUG"``, ``"INFO"``, ``"WARNING"``
+            and ``"ERROR"``.
 
         Examples
         --------
-        Set the log level to debug
+        Set the log level to the ``"DEBUG"`` level.
 
         # >>> mechanical.set_log_level('DEBUG')
         #
@@ -965,7 +970,7 @@ class Mechanical(object):
         setup_logger(loglevel=loglevel)
 
     def get_product_info(self):
-        """Get the product info by running the script in the grpc server."""
+        """Get product information by running a script on the Mechanical gRPC server."""
         try:
             self._disable_logging = True
             return self.run_jscript("scriptcode.getProductInfo()")
@@ -976,25 +981,26 @@ class Mechanical(object):
 
     @suppress_logging
     def __str__(self):
-        """Return the user-readable string form of the Mechanical instance."""
+        """Get the user-readable string form of the Mechanical instance."""
         try:
             if self._exited:
-                return "Mechanical exited"
+                return "Mechanical exited."
             return self.get_product_info()
         except grpc.RpcError:
-            return "Mechanical exited"
+            return "Mechanical exited."
 
     def launch(self, cleanup_on_exit=True):
-        """Launch the Mechanical in batch or UI mode.
+        """Launch Mechanical in batch or UI mode.
 
         Parameters
         ----------
         cleanup_on_exit : bool, optional
-            Exit Mechanical when Python exits or when this instance is garbage
-            collected. Default
+            Whether to exit Mechanical when Python exits. The default is ``True``.
+            When ``False``, Mechanical is exited when the garbage for this
+            Mechanical instance is collected.
         """
         if not self._local:
-            raise RuntimeError("Can only launch with a local instance of Mechanical")
+            raise RuntimeError("Can only launch with a local instance of Mechanical.")
 
         # let us respect the current cleanup behavior
         if self._cleanup_on_exit:
@@ -1017,30 +1023,30 @@ class Mechanical(object):
         self._channel = self._create_channel(self._ip, port)
         self._connect(port)
 
-        self.log_info("mechanical is ready to accept grpc calls")
+        self.log_info("Mechanical is ready to accept gRPC calls.")
 
     def wait_till_mechanical_is_ready(self, wait_time=-1):
-        """Wait till mechanical is ready.
+        """Wait until Mechanical is ready.
 
         Parameters
         ----------
         wait_time : float, optional
-            Maximum allowable time to connect to the Mechanical grpc server
+            Maximum allowable time in seconds for connecting to the Mechanical gRPC server.
         """
         time_1 = datetime.datetime.now()
 
         sleep_time = 0.5
         if wait_time == -1:
-            self.log_info("Waiting for mechanical to be ready...")
+            self.log_info("Waiting for Mechanical to be ready...")
         else:
-            self.log_info(f"Waiting for mechanical to be ready: max wait time: {wait_time}s")
+            self.log_info(f"Waiting for Mechanical to be ready. Maxium wait time: {wait_time}s")
 
         while not self.__isMechanicalReady():
             time_2 = datetime.datetime.now()
             time_interval = time_2 - time_1
             time_interval_seconds = int(time_interval.total_seconds())
 
-            self.log_debug(f"Mechanical is not ready. Waiting so far {time_interval_seconds}")
+            self.log_debug(f"Mechanical is not ready. You've been waiting for {time_interval_seconds}.")
             if self._timeout != -1:
                 if time_interval_seconds > wait_time:
                     self.log_debug(
@@ -1049,7 +1055,7 @@ class Mechanical(object):
                         f"before throwing the error."
                     )
                     raise RuntimeError(
-                        f"Couldn't connect to mechanical. " f"waited for {time_interval_seconds}s"
+                        f"Couldn't connect to Mechanical. " f"Waited for {time_interval_seconds}s."
                     )
 
             time.sleep(sleep_time)
@@ -1058,20 +1064,21 @@ class Mechanical(object):
         time_interval = time_2 - time_1
         time_interval_seconds = int(time_interval.total_seconds())
 
-        self.log_info(f"Mechanical is ready. took {time_interval_seconds} seconds to verify")
+        self.log_info(f"Mechanical is ready. It took {time_interval_seconds} seconds to verify.")
 
     def __isMechanicalReady(self):
-        """Return whether the Mechanical grpc server is ready or not.
+        """Whether the Mechanical gRPC server is ready.
 
         Returns
         -------
-            Return True if Mechanical is ready otherwise False
+        bool    
+            ``True`` if Mechanical is ready, ``False`` otherwise.
         """
         try:
             jscript_block = "DS.Script.isDistributed()"
             self.run_jscript(jscript_block)
         except grpc.RpcError as error:
-            self.log_debug(f"mechanical is not ready. error:{error}")
+            self.log_debug(f"Mechanical is not ready. Error:{error}.")
             return False
 
         return True
@@ -1079,26 +1086,24 @@ class Mechanical(object):
     def run_jscript(
         self, script_block: str, enable_logging=False, log_level="WARNING", timeout=2000
     ):
-        """Run jscript block inside Mechanical.
+        """Run a jscript block inside Mechanical.
 
         Parameters
         ----------
-        script_block :
-            script block (one or more lines) to run.
-
-        enable_logging: bool, default is False
-            Enable or Disable logging
-
+        script_block : str
+            Script block (one or more lines) to run.
+        enable_logging: bool, optional
+            Whether to enable logging. The default is ``False``.
         log_level: str
-            Log level.  Must be one of: ``'DEBUG', 'INFO', 'WARNING', 'ERROR'``.
-
-        timeout: int
-            Frequency at which to get the log messages from the server in ms. Default is 2000 ms
+            Level of logging. The default is ``WARNING``. Options are ``"DEBUG"``, ``"INFO"``,
+            ``"WARNING"``, and ``"ERROR"``.
+        timeout: int, optional
+            Frequency in milliseconds for getting log messages from the server. The default is ``2000``.
 
         Returns
         -------
         str
-            Return value in the string form.
+            Result from script.
         """
         self.verify_valid_connection()
         response = self.__call_run_jscript(script_block, enable_logging, log_level, timeout)
@@ -1106,16 +1111,17 @@ class Mechanical(object):
 
     @staticmethod
     def convert_to_server_log_level(log_level):
-        """Convert the log_level to server_log_level.
+        """Convert the log level to the server log level.
 
         Parameters
         ----------
         log_level : str
-            Log level.  Must be one of: ``'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'``.
+            Level of logging. Options are ``"DEBUG"``, ``"INFO"``, ``"WARNING"``,
+            ``"ERROR"``, and ``"CRITICAL"``.
 
         Returns
         -------
-            Return the converted log level for the server
+            Converted log level for the server.
         """
         if log_level == "DEBUG":
             return 1
@@ -1129,33 +1135,31 @@ class Mechanical(object):
             return 5
 
         raise ValueError(
-            f"not a valid log_level: {log_level}. Possible values are "
-            f"'DEBUG','INFO', 'WARNING', 'ERROR', 'CRITICAL'"
+            f"Log level {log_level} is invalid. Possible values are "
+            f"'DEBUG','INFO', 'WARNING', 'ERROR', and 'CRITICAL'."
         )
 
     def run_python_script(
         self, script_block: str, enable_logging=False, log_level="WARNING", timeout=2000
     ):
-        """Run python script block inside Mechanical.
+        """Run a Python script block inside Mechanical.
 
         Parameters
         ----------
-        script_block :
-            script block (one or more lines) to run.
-
-        enable_logging: bool, default is False
-            Enable or Disable logging
-
+        script_block : str
+            Script block (one or more lines) to run.
+        enable_logging: bool, optional
+            Whether to enable logging. The default is ``False``.
         log_level: str
-            Log level.  Must be one of: ``'DEBUG', 'INFO', 'WARNING', 'ERROR'``.
-
-        timeout: int
-            Frequency at which to get the log messages from the server in ms. Default is 2000 ms
+            Level of logging. The default is ``WARNING``. Options are ``"DEBUG"``, ``"INFO"``,
+            ``"WARNING"``, and ``"ERROR"``.
+        timeout: int, optional
+            Frequency in milliseconds for getting log messages from the server. The default is ``2000``.      
 
         Returns
         -------
         str
-            Return value in the string form.
+            Script result.
         """
         self.verify_valid_connection()
         response = self.__call_run_python_script(script_block, enable_logging, log_level, timeout)
@@ -1164,26 +1168,24 @@ class Mechanical(object):
     def run_jscript_from_file(
         self, file_path, enable_logging=False, log_level="WARNING", progress_interval=2000
     ):
-        """Run the jscript file inside Mechanical.
+        """Run a jscript file inside Mechanical.
 
         Parameters
         ----------
-        file_path :
-            This file contains jscript
-
-        enable_logging: bool, default is False
-            Enable or Disable logging
-
+        file_path : str
+            Path for the jscript file.
+        enable_logging: bool, optional
+            Whether to enable logging. The default is ``False``.
         log_level: str
-            Log level.  Must be one of: ``'DEBUG', 'INFO', 'WARNING', 'ERROR'``.
-
-        progress_interval: int
-            Frequency at which to get the log messages from the server in ms. Default is 2000 ms
+            Level of logging. The default is ``WARNING``. Options are ``"DEBUG"``, ``"INFO"``,
+            ``"WARNING"``, and ``"ERROR"``.
+        progress_interval: int, optional
+            Frequency in milliseconds for getting log messages from the server. The default is ``2000``.
 
         Returns
         -------
         str
-            Return value in the string form.
+            Script result.
         """
         self.verify_valid_connection()
         self.log_debug(f"run_jscript_from_file started")
@@ -1194,26 +1196,24 @@ class Mechanical(object):
     def run_python_script_from_file(
         self, file_path, enable_logging=False, log_level="WARNING", progress_interval=2000
     ):
-        """Run the python file inside Mechanical.
+        """Run a Python file inside Mechanical.
 
         Parameters
         ----------
         file_path :
-            This file contains python script
-
-        enable_logging: bool, default is False
-            Enable or Disable logging
-
+            Path for the Python file.
+        enable_logging: bool, optional
+            Whether to enable logging. The default is ``False``.
         log_level: str
-            Log level.  Must be one of: ``'DEBUG', 'INFO', 'WARNING', 'ERROR'``.
-
-        progress_interval: int
-            Frequency at which to get the log messages from the server in ms. Default is 2000 ms
+            Level of logging. The default is ``WARNING``. Options are ``"DEBUG"``, ``"INFO"``,
+            ``"WARNING"``, and ``"ERROR"``.
+        progress_interval: int, optional
+            Frequency in milliseconds for getting log messages from the server. The default is ``2000``.
 
         Returns
         -------
         str
-            Return value in the string form.
+            Script result.
         """
         self.verify_valid_connection()
         self.log_debug(f"run_python_script_from_file started")
@@ -1227,8 +1227,9 @@ class Mechanical(object):
         Parameters
         ----------
         force : bool, optional
-            Control the exit_behavior. False - asks for confirmation (only in UI mode).
-            Override any environment variables that may inhibit exiting Mechanical.
+            Whether to force Mechanical to exit. The default is ``False``, in which case
+            Mechanical in UI mode only asks for confirmation. This parameter overrides
+            any environment variables that may inhibit exiting Mechanical.
         """
         if not force:
             if not get_start_instance():
@@ -1237,7 +1238,7 @@ class Mechanical(object):
 
             # or building the gallery
             if pymechanical.BUILDING_GALLERY:
-                self._log.info("Ignoring exit due as BUILDING_GALLERY=True")
+                self._log.info("Ignoring exit due to BUILDING_GALLERY=True")
                 return
 
         if self._exited:
@@ -1247,15 +1248,15 @@ class Mechanical(object):
 
         self._exiting = True
 
-        self.log_debug("In shutdown")
+        self.log_debug("In shutdown.")
         request = mechanical_pb2.ShutdownRequest(force_exit=force)
-        self.log_debug("shutdown running")
+        self.log_debug("Shutdown is running.")
 
         self._busy = True
         try:
             self._stub.Shutdown(request)
         except grpc._channel._InactiveRpcError as error:
-            self.log_warning("Mechanical exit failed: {str(error}")
+            self.log_warning("Mechanical exit failed: {str(error}.")
         finally:
             self._busy = False
 
@@ -1263,23 +1264,23 @@ class Mechanical(object):
         self._stub = None
 
         if self._remote_instance is not None:
-            self.log_debug("pypim delete started")
+            self.log_debug("PyPIM delete has started.")
             try:
                 self._remote_instance.delete()
             except Exception as error:
-                self.log_warning("remote instance delete failed: {str(error}")
-            self.log_debug("pypim delete done")
+                self.log_warning("Remote instance delete failed: {str(error}.")
+            self.log_debug("PyPIM delete has finished.")
 
             self._remote_instance = None
             self._channel = None
         else:
-            self.log_debug("No pypim cleanup needed")
+            self.log_debug("No PyPIM cleanup is needed.")
 
         local_ports = pymechanical.LOCAL_PORTS
         if self._local and self._port in local_ports:
             local_ports.remove(self._port)
 
-        self.log_info("shutdown done")
+        self.log_info("Shutdown has finished.")
 
     @protect_grpc
     def upload(
@@ -1289,36 +1290,39 @@ class Mechanical(object):
         chunk_size=DEFAULT_FILE_CHUNK_SIZE,
         progress_bar=True,
     ):
-        """Upload a file to the grpc instance.
+        """Upload a file to the Mechanical gRPC instance.
 
+        Parameters
+        ----------
         file_name : str
-            Local file to upload. File name relative to current working directory or full path
-
+            Local file to upload. Only the file name is needed if the file
+            is relative to current working directory. Otherwise, the full path
+            is needed.
         file_location_destination : str, optional
-            File location to copy to on the server. Default location is project directory
-
+            File location to copy to on the Mechanical server. The default is
+            ``None``, in which the project directory is used.
         chunk_size : int, optional
-            Chunk size in bytes.  Defaults to 1MB.
-
-        progress_bar : bool, optional Display a progress bar using
-            ``tqdm`` when ``True``.  Helpful for showing upload
-            progress.
+            Chunk size in bytes. The default is `DEFAULT_CHUNK_SIZE``, in which case
+            1 MB is used.
+        progress_bar : bool, optional
+            Whether to display a progress bar using ``tqdm``. The defualt is ``True``.
+            Displaying a progress bar is helpful for showing upload progress.
 
         Returns
         -------
         str
-            Base name of the file uploaded.
+            Base name of the uploaded file.
 
         Examples
         --------
-        Upload "hsec.x_t" while disabling the progress bar
+        Uploada the "hsec.x_t" file while disabling the progress bar.
 
         >>> mechanical.upload('hsec.x_t', progress_bar=False)
         """
         self.verify_valid_connection()
 
         if not os.path.isfile(file_name):
-            raise FileNotFoundError(f"Unable to locate filename {file_name}")
+            raise FileNotFoundError(f"Unable to locate filename {file_name}.")
 
         self._log.debug(f"Uploading file '{file_name}' to the Mechanical instance.")
 
@@ -1334,22 +1338,34 @@ class Mechanical(object):
                 progress_bar=progress_bar,
             )
             response = self._stub.UploadFile(chunks_generator)
-            self.log_debug(f"upload_file response is {response.is_ok}")
+            self.log_debug(f"upload_file response is {response.is_ok}.")
         finally:
             self._busy = False
 
         if not response.is_ok:
-            raise IOError("File failed to upload")
+            raise IOError("File failed to upload.")
         return os.path.basename(file_name)
 
     def get_file_chunks(self, file_location, file_name, chunk_size, progress_bar):
-        """Construct the file upload request for the server."""
+        """Construct the file upload request for the server.
+        
+        Parameters
+        ----------
+        file_location_destination : str, optional
+            Directory where the file to upload to the server is located.
+        file_name : str
+            Name of the file to upload.
+        chunk_size : int
+            Chunk size in bytes.
+        progress_bar : bool
+            Whether to display a progress bar using ``tqdm``.       
+        """
         pbar = None
         if progress_bar:
             if not _HAS_TQDM:  # pragma: no cover
                 raise ModuleNotFoundError(
-                    f"To use the keyword argument 'progress_bar', you need to have "
-                    f"installed the 'tqdm' package.To avoid this message you can "
+                    f"To use the keyword argument 'progress_bar', you must have "
+                    f"installed the 'tqdm' package. To avoid this message, you can "
                     f"set 'progress_bar=False'."
                 )
 
@@ -1358,7 +1374,7 @@ class Mechanical(object):
             base_name = os.path.basename(file_name)
             pbar = tqdm(
                 total=n_bytes,
-                desc=f"Uploading {base_name} to {self._channel_str}:{file_location}",
+                desc=f"Uploading {base_name} to {self._channel_str}:{file_location}.",
                 unit="B",
                 unit_scale=True,
                 unit_divisor=1024,
@@ -1383,7 +1399,7 @@ class Mechanical(object):
 
     @property
     def project_directory(self):
-        """Return the project directory of the currently connected mechanical instance."""
+        """Project directory for the currently connected Mechanical instance."""
         return self.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
 
     def list_files(self):
@@ -1439,8 +1455,8 @@ class Mechanical(object):
                     # try filter on the list_files
                     if recursive:
                         self.log_warning(
-                            "The 'recursive' keyword argument does not work with "
-                            "remote instances. So it is ignored."
+                            "Because the 'recursive' keyword argument does not work with "
+                            "remote instances, it is ignored."
                         )
                     list_files = fnmatch.filter(self_files, files)
                     if not list_files:
@@ -1463,7 +1479,7 @@ class Mechanical(object):
         else:
             raise ValueError(
                 f"The `file` parameter type ({type(files)}) is not supported."
-                "Only strings, tuple of strings or list of strings are allowed."
+                "Only strings, tuple of strings, or list of strings are allowed."
             )
 
         return list_files
@@ -1476,47 +1492,40 @@ class Mechanical(object):
         progress_bar=None,
         recursive=False,
     ):  # pragma: no cover
-        """Download files from the gRPC instance workind directory.
+        """Download files from the working directory of the Mechanical gRPC instance.
 
-        .. warning:: This feature is only available for Mechanical 2023 R1 or newer.
+        .. warning:: This feature is only available for Mechanical 2023 R1 or later.
 
         Parameters
         ----------
-        files : str or List[str] or Tuple(str)
-            Name of the file on the server. File must be in the same
-            directory as the Mechanical instance. A list of string names or
-            tuples of string names can also be used.
-            List current files with :func:`Mechanical.directory
-            <ansys.mechanical.core.mechanical.list_files>`.
-
-            Alternatively, you can also specify **glob expressions** to
-            match file names. For example: `'file*'` to match every file whose
+        files : str, list[str], tuple(str)
+            One or more names of files on the server to download. The files must be
+            in the same directory as the Mechanical instance. You can use the
+            :func:`Mechanical.directory <ansys.mechanical.core.mechanical.list_files>`
+            function to list current files. Alternatively, you can specify *glob expressions* to
+            match file names. For example, you would use `'file*'` to match every file whose
             name starts with `'file'`.
-
         target_dir: str
-            Default directory to copy the downloaded file(s)
-
+            Default directory to copy the downloaded files to. The default is ``None``.
         chunk_size : int, optional
-            Chunk size in bytes.  Must be less than 4MB.  Defaults to 256 kB.
-
+            Chunk size in bytes. The default is ``"DEFAULT_CHUNK_SIZE"``, in which case
+            256 kB is used. The value must be less than 4 MB.
         progress_bar : bool, optional
-            Display a progress bar using
-            ``tqdm`` when ``True``.  Helpful for showing download
+            Whether to display a progress bar using  ``tqdm``. The default is ``None``, in
+            which case a progress bar is shown. A progres bar is helpful for showing download
             progress.
-
-        recursive : bool
-            Use recursion when using glob pattern.
+        recursive : bool, optional
+            Whether to use recursion when using a glob pattern search. The default is ``False``.
 
         Notes
         -----
-        There are some considerations to keep in mind when using this command:
+        There are some considerations to keep in mind when using this method:
 
         * The glob pattern search does not search recursively in remote instances.
-        * In a remote instance, it is not possible to list or download files in different
-          locations than the Mechanical working directory.
-        * If you are in local and provide a file path, downloading files
-          from a different folder is allowed.
-          However it is not a recommended approach.
+        * In a remote instance, it is not possible to list or download files in a
+          location other than the Mechanical working directory.
+        * If you are connected to a local instance and provide a file path, downloading files
+          from a different folder is allowed but is not recommended.
 
         Examples
         --------
@@ -1524,18 +1533,17 @@ class Mechanical(object):
 
         >>> mechanical.download('file.out')
 
-        Download all the files starting with `'file'`:
+        Download all files starting with ``file``:
 
         >>> mechanical.download('file*')
 
-        Download every single file in the Mechanical workind directory:
+        Download every file in the Mechanical working directory:
 
         >>> mechanical.download('*.*')
 
-        Alternatively, you can download all the files using
-        :func:`Mechanical.download_project
-        <ansys.mechanical.core.mechanical.Mechanical.download_project>`
-        (recommended):
+        Alternatively, the recommended method is to use the
+        :func:`Mechanical.download_project <ansys.mechanical.core.mechanical.Mechanical.download_project>`
+        to download all files:
 
         >>> mechanical.download_project()
 
@@ -1545,7 +1553,7 @@ class Mechanical(object):
         if chunk_size > 4 * 1024 * 1024:  # 4MB
             raise ValueError(
                 f"Chunk sizes bigger than 4 MB can generate unstable behaviour in PyMechanical. "
-                "Please decrease ``chunk_size`` value."
+                "Decrease the ``chunk_size`` value."
             )
 
         list_files = self._get_files(files, recursive=recursive)
@@ -1559,9 +1567,9 @@ class Mechanical(object):
         for each_file in list_files:
             try:
                 file_name = os.path.basename(each_file)  # Getting only the name of the file.
-                #  We try to avoid that when the full path is supplied, it will crash when trying
+                #  We try to avoid that when the full path is supplied. It crashes when trying
                 # to do `os.path.join(target_dir"os.getcwd()", file_name "full filename path"`
-                # This will produce the file structure to flat out, but it is find,
+                # This produces the file structure to flat out, but it is fine,
                 # because recursive does not work in remote.
                 self._busy = True
                 self._download(
@@ -1571,13 +1579,13 @@ class Mechanical(object):
                     progress_bar=progress_bar,
                 )
             except FileNotFoundError:
-                # So far the grpc interface returns size of the file equal
-                # zero, if the file does not exists or its size is zero,
-                # but they are two different things!
+                # So far the gRPC interface returns the size of the file equal
+                # zero, if the file does not exist, or if its size is zero,
+                # but they are two different things.
                 # In theory, since we are obtaining the files name from
-                # `mechanical.list_files()` they do exist, so
+                # `mechanical.list_files()`, they do exist, so
                 # if there is any error, it means their size is zero.
-                pass  # this is not the best.
+                pass  # This is not the best.
             finally:
                 self._busy = False
 
@@ -1591,29 +1599,29 @@ class Mechanical(object):
         chunk_size=DEFAULT_CHUNK_SIZE,
         progress_bar=None,
     ):
-        """Download a file from the gRPC instance.
+        """Download a file from the Mechanical gRPC instance.
 
         Parameters
         ----------
         target_name : str
-            Target file on the server.  File must be in the same
-            directory as the Mechanical instance.  List current files with
-            ``mechanical.list_files()``
-
+            Name of the target file on the server. The file must be in the same
+            directory as the Mechanical instance. You can use the
+            ``mechanical.list_files()`` function to list current files.    
         out_file_name : str, optional
-            Save the filename as a different name other than the
-            ``target_name``.
-
+            Name of the output file if the name is to differ from that for the target
+            file. The default is ``None``, in which case the name of the target file is
+            used.
         chunk_size : int, optional
-            Chunk size in bytes.  Must be less than 4MB.  Defaults to 256 kB.
-
-        progress_bar : bool, optional Display a progress bar using
-            ``tqdm`` when ``True``.  Helpful for showing download
+            Chunk size in bytes. The default is ``"DEFAULT_CHUNK_SIZE"``, in which case
+            256 kB is used. The value must be less than 4 MB.
+        progress_bar : bool, optional
+            Whether to display a progress bar using  ``tqdm``. The default is ``None``, in
+            which case a progress bar is shown. A progres bar is helpful for showing download
             progress.
 
         Examples
         --------
-        Download the remote result file "file.rst" as "my_result.rst"
+        Download the remote result file "file.rst" as "my_result.rst".
 
         >>> mechanical.download('file.rst', 'my_result.rst')
         """
@@ -1639,10 +1647,22 @@ class Mechanical(object):
     def save_chunks_to_file(self, responses, filename, progress_bar=False, target_name=""):
         """Save chunks to a local file.
 
+        Parameters
+        ----------
+        responses :
+        filename : str
+            Name of the local file to save chunks to.
+        progress_bar : bool, optional
+            Whether to display a progress bar using  ``tqdm``. The default is ``False``.
+        target_name : str, optional
+            Name of the target file on the server. The default is ``""``. The file
+            must be in the same directory as the Mechanical instance. You can use the
+            ``mechanical.list_files()`` function to list current files.    
+        
         Returns
         -------
         file_size : int
-            File size saved in bytes.  ``0`` means no file was written.
+            File size saved in bytes.  If ``0`` is returned, no file was written.
         """
         pbar = None
         if progress_bar:
@@ -1676,25 +1696,22 @@ class Mechanical(object):
         return file_size
 
     def download_project(self, extensions=None, target_dir=None, progress_bar=False):
-        """Download all the project files located in the Mechanical working directory.
+        """Download all project files in the Mechanical working directory.
 
         Parameters
         ----------
-        extensions : List[Str], Tuple[Str], optional
-            List of extensions to filter the files before downloading,
-            by default None.
-
-        target_dir : Str, optional
-            Path where the downloaded files will be located, by default None.
-
+        extensions : list[str], tuple[str], optional
+            List of extensions for filtering the files before downloading them. The
+            default is ``None``.
+        target_dir : str, optional
+            Path for downloading the files to. The default is ``None``.
         progress_bar : bool, optional
-            Display a progress bar using
-            ``tqdm`` when ``True``.  Helpful for showing download
-            progress. Default to ``False``.
+            Whether to display a progress bar using ``tqdm``. The default is ``False``.
+            Displaying a progress bar is helpful for showing download progress.
 
         Returns
         -------
-        List[Str]
+        List[str]
             List of downloaded files.
         """
         destination_directory = target_dir
@@ -1777,7 +1794,7 @@ class Mechanical(object):
 
     @staticmethod
     def __readfile(file_path):
-        """Return the contents of the file as a string."""
+        """Get the contents of the file as a string."""
         # open text file in read mode
         text_file = open(file_path, "r")
         # read whole file to a string
@@ -1788,7 +1805,20 @@ class Mechanical(object):
         return data
 
     def __call_run_jscript(self, script_code: str, enable_logging, log_level, progress_interval):
-        """Run the jscript block on the server."""
+        """Run the jscript block on the server.
+        
+        Parameters
+        ----------
+        script_code : str
+            Script block (one or more lines) to run.
+        enable_logging: bool
+            Whether to enable logging.
+        log_level: str
+            Level of logging. Options are ``"DEBUG"``, ``"INFO"``,
+            ``"WARNING"``, and ``"ERROR"``.
+        progress_interval: int
+            Frequency in milliseconds for getting log messages from the server.
+        """
         log_level_server = self.convert_to_server_log_level(log_level)
         request = mechanical_pb2.RunScriptRequest()
         request.script_code = script_code
@@ -1815,7 +1845,26 @@ class Mechanical(object):
     def __call_run_python_script(
         self, script_code: str, enable_logging, log_level, progress_interval
     ):
-        """Run the python script block on the server."""
+        """Run the Python script block on the server.
+        
+        Parameters
+        ----------
+        script_block : str
+            Script block (one or more lines) to run.
+        enable_logging: bool
+            Whether to enable logging
+        log_level: str
+            Level of logging. Options are ``"DEBUG"``, ``"INFO"``, ``"WARNING"``,
+            and ``"ERROR"``.
+        timeout: int, optional
+            Frequency in milliseconds for getting log messages from the server.      
+
+        Returns
+        -------
+        str
+            Script result.
+       
+        """
         log_level_server = self.convert_to_server_log_level(log_level)
         request = mechanical_pb2.RunScriptRequest()
         request.script_code = script_code
@@ -1842,14 +1891,15 @@ class Mechanical(object):
         return response
 
     def log_message(self, log_level, message):
-        """Log the message using the given log_level.
+        """Log the message using the given log level.
 
          Parameters
         ----------
         log_level: str
-            Log level.  Must be one of: ``'DEBUG', 'INFO', 'WARNING', 'ERROR'``.
+            Level of logging. Options are ``"DEBUG"``, ``"INFO"``, ``"WARNING"``,
+            and ``"ERROR"``.
         message : str
-            Message to be logged
+            Message to log.
         """
         if log_level == "DEBUG":
             self.log_debug(message)
@@ -1885,18 +1935,18 @@ class Mechanical(object):
         self._log.error(message)
 
     def verify_valid_connection(self):
-        """Verify whether we have any valid connection to Mechanical."""
+        """Verify whether the connection to Mechanical is valid."""
         if self._exited:
             raise MechanicalExitedError("Mechanical has already exited.")
 
         if self._stub is None:
             raise ValueError(
-                "Don't have a valid connection to mechanical. Use either launch or connect first."
+                "There is not a valid connection to Mechanical. Launch or connect to it first."
             )
 
     @property
     def exited(self):
-        """Verify whether Mechanical already exited or not."""
+        """Whether Mechanical already exited."""
         return self._exited
 
     def _log_mechanical_script(self, script_code):
@@ -1915,24 +1965,24 @@ class Mechanical(object):
 
 
 def get_start_instance(start_instance_default=True):
-    """Check if the environment variable ``PYMECHANICAL_START_INSTANCE`` exists and is valid.
+    """Check if the ``PYMECHANICAL_START_INSTANCE`` environment variable exists and is valid.
 
     Parameters
     ----------
-    start_instance_default : bool
+    start_instance_default : bool, optional
         Value to return when ``PYMECHANICAL_START_INSTANCE`` is unset.
 
     Returns
     -------
     bool
-        ``True`` when the ``PYMECHANICAL_START_INSTANCE`` environment variable is
-        true, ``False`` when PYMECHANICAL_START_INSTANCE is false. If unset,
-        returns ``start_instance_default``.
+        ``True`` when the ``PYMECHANICAL_START_INSTANCE`` environment variable exists
+        and is valid, ``False`` when this environment variable does not exist or is not valid.
+        If it is unset, ``start_instance_default`` is returned.
 
     Raises
     ------
     OSError
-        Raised when ``PYMECHANICAL_START_INSTANCE`` is not either true or false
+        Raised when ``PYMECHANICAL_START_INSTANCE`` is not either ``True`` or ``False``
         (case independent).
 
     """
@@ -1961,41 +2011,39 @@ def launch_grpc(
     Parameters
     ----------
     exec_file : str, optional
-        The location of the Mechanical executable.  Will use the cached
-        location when left at the default ``None``.
-
+        Path for the Mechanical executable file.  The default is ``None``, in which
+        case the cached location is used.
     batch : bool, optional
-        Launches mechanical in batch or UI mode. Default is True
-
-    port : int
-        Port to launch Mechanical gRPC on.  Final port will be the first
+        Whether to launch Mechanical in batch mode. The default is ``True``.
+        When ``False``, Mechanical is launched in UI mode.
+    port : int, optional
+        Port to launch Mechanical gRPC instance on. The default is
+        ``MECHANICAL_DEFAULT_PORT``. The final port is the first
         port available after (or including) this port.
-
     ip : str, optional
-        IP to use to connect to the launched instance. Default is 127.0.0.1
-
+        IP address to use to connect to the launched Mechanical instance.
+        The defualt is ``LOCALHOST``, in which case ``127.0.0.1`` is used.
     additional_switches : list, optional
-        List of additional arguments to pass. Default - None
-
+        List of additional arguments to pass. The default is ``None``.
     additional_envs : dictionary, optional
-        dictionary of additional environment variables to pass. Default - None
-
+        Dictionary of additional environment variables to pass. The default
+        is ``None``.
     verbose : bool, optional
-        Print all output when launching and running Mechanical.  Not
-        recommended unless debugging the Mechanical start.  Default
-        ``False``.
+        Whether to print all output when launching and running Mechanical. The
+        default is ``False``. Printing all output is not recommended unless
+        you are debugging the startup of Mechanical.
 
     Returns
     -------
     int
-        Returns the port number that the gRPC instance started on.
+        Port number that the Mechanical gRPC instance started on.
 
     Notes
     -----
-    If ``PYMECHANICAL_START_INSTANCE`` is set to FALSE, this ``launch_mechanical`` will
-    look for an existing instance of Mechanical at ``PYMECHANICAL_IP`` on port
-    ``PYMECHANICAL_PORT``, with defaults 127.0.0.1 and 10000 if unset. This is
-    typically used for automated documentation and testing.
+    If ``PYMECHANICAL_START_INSTANCE`` is set to FALSE, the ``launch_mechanical``
+    method looks for an existing instance of Mechanical at ``PYMECHANICAL_IP`` on port
+    ``PYMECHANICAL_PORT``, with default to ``127.0.0.1`` and ``10000`` if unset.
+    This is typically used for automated documentation and testing.
 
     Examples
     --------
@@ -2004,7 +2052,7 @@ def launch_grpc(
     >>> from ansys.mechanical.core import launch_mechanical
     >>> mechanical = launch_mechanical()
 
-    Run Mechanical with specified the location of the Mechanical binary.
+    Launch Mechanical using a specified executable file.
 
     >>> exec_file_path = 'C:/Program Files/ANSYS Inc/v231/aisol/bin/win64/AnsysWBU.exe'
     >>> mechanical = launch_mechanical(exec_file_path)
@@ -2012,7 +2060,7 @@ def launch_grpc(
     """
     # verify version
     if _version_from_path(exec_file) < 231:
-        raise VersionError("The Mechanical gRPC interface requires Mechanical 231 or later")
+        raise VersionError("The Mechanical gRPC interface requires Mechanical 2023 R1 or later.")
 
     # get the next available port
     local_ports = pymechanical.LOCAL_PORTS
@@ -2045,29 +2093,30 @@ def launch_grpc(
 
 
 def launch_remote_mechanical(version=None) -> (grpc.Channel, Instance):
-    """Start Mechanical remotely using the product instance management API.
+    """Start Mechanical remotely using the Product Instance Management (PIM) API.
 
-    When calling this method, you need to ensure that you are in an environment
-    where PyPIM is configured.This can be verified with
-    :func:`pypim.is_configured <ansys.platform.instancemanagement.is_configured>`.
+    When calling this method, you must ensure that you are in an environment
+    where PyPIM is configured. You can use the 
+    :func:`pypim.is_configured <ansys.platform.instancemanagement.is_configured>`
+    method to verify that PyPIM is configured.
 
     Parameters
     ----------
     version : str, optional
-        The Mechanical version to run, in the 3 digits format, such as "231".
-
-        If unspecified, the version will be chosen by the server.
+        Mechanical version to run in the three-digit format. For example, ``"231"`` to
+        run 2023 R1. The default is ``None``, in which case the server runs the latest
+        installed version.
 
     Returns
     -------
-        Return tuple containing channel, remote_instance
+        Tuple containing channel, remote_instance.
     """
     pim = pypim.connect()
     instance = pim.create_instance(product_name="mechanical", product_version=version)
 
-    LOG.info("pypim wait for ready started")
+    LOG.info("PyPIM wait for ready has started.")
     instance.wait_for_ready()
-    LOG.info("pypim wait for ready done")
+    LOG.info("PyPIM wait for ready has finsished.")
 
     channel = instance.build_grpc_channel(
         options=[
@@ -2101,118 +2150,111 @@ def launch_mechanical(
     Parameters
     ----------
     exec_file : str, optional
-        The location of the Mechanical executable.  Will use the cached
-        location when left at the default ``None``. If pypim is configured
-        and exce_file is None, it will launch using pypim using the ``version``.
-
+        Path for the Mechanical executable file. The default is ``None``,
+        in which case the cached location is used. If PyPIM is configured
+        and this parameter is set to ``None``, PyPIM launches Mechanical
+        using its ``version`` parameter.
     batch : bool, optional
-        Launches mechanical in batch or UI mode. Default is True
-
+        Whether to launches mechanical in batch mode. The default is ``True``.
+        When ``False``, Mechanical launches in UI mode.
     loglevel : str, optional
-        Sets which messages are printed to the console.  ``'INFO'``
-        prints out all ANSYS messages, ``'WARNING``` prints only
-        messages containing ANSYS warnings, and ``'ERROR'`` logs only
-        error messages.
+            Level of messages to print to the console. The default is ``WARNING``
+            Options are ``"WARNING"``, ``"ERROR"``, and ``"INFO"``.
+            
+            - ``WARNING`` prints only Ansys warning messages.
+            - ``ERROR`` prints only Ansys error messages.
+            - ``INFO`` prints out all Ansysmessages.
 
     log_file : bool, optional
-        Copy the log to a file called `logs.log` located where the
-        python script is executed. Default ``False``.
-
+        Whether to copy the messages to a file named ``logs.log``, which is
+        located where the Python script is executed. The default is ``False``.
     log_mechanical : str, optional
-        Enables logging every script command to the local disk.  This
-        can be used to "record" all the commands that are sent to
-        Mechanical via PyMechanical so a script can be run within Mechanical without
-        PyMechanical. This string is the path of the output file (e.g.
-        ``log_mechanical='pymechanical_log.txt'``). By default this is disabled.
-
+        Path to the output file on the local disk to write every script
+        command to. The default is ``None``. However, you might set
+        ``"log_mechanical='pymechanical_log.txt"`` to write all commands that are
+        sent to Mechanical via PyMechanical in this file. You can then use these
+        commands to run a script within Mechanical without PyMechanical.
     additional_switches : str, optional
-        Additional switches for Mechanical
-
+        Additional switches for Mechanical. The default is ``""``.
     additional_envs : dictionary, optional
-        dictionary of additional environment variables to pass. Default - None
-
+        Dictionary of additional environment variables to pass. The default
+        is ``None``.
     start_timeout : float, optional
-        Maximum allowable time to connect to the Mechanical server.
-
-    port : int
-        Port to launch Mechanical gRPC on.  Final port will be the first
-        port available after (or including) this port.  Defaults to
-        10000.  You can also override the default behavior of this
-        keyword argument with the environment variable
-        ``PYMECHANICAL_PORT=<VALID PORT>``
-
+        Maximum allowable time in seconds to connect to the Mechanical server.
+        The default is ``120``.
+    port : int, optional
+        Port to launch the Mechanical gRPC server on. The default is ``None``,
+        in which case ``10000`` is used. The fFinal port is the first
+        port available after (or including) this port. You can override the
+        default behavior of this parameter with the
+        ``PYMECHANICAL_PORT=<VALID PORT>`` environment variable.
     ip : str, optional
-        Used only when ``start_instance`` is ``False``. If provided,
-        it will force ``start_instance`` to be ``False``.
-        You can also provide a hostname as an alternative to an IP address.
-        Defaults to ``'127.0.0.1'``.
-
+        IP address to use only when ``start_instance`` is ``False``. The
+        default is ``None``, in which case ``"127.0.0.1"`` is used. If you
+        provide an IP address, ``start_instance`` is set to ``False``.
+        A hostname can be provided as an alternative to an IP address.
     start_instance : bool, optional
-        When False, connect to an existing Mechanical instance at ``ip``
-        and ``port``, which default to ``'127.0.0.1'`` at 10000.
-        Otherwise, launch a local instance of Mechanical.  You can also
-        override the default behavior of this keyword argument with
-        the environment variable ``PYMECHANICAL_START_INSTANCE=FALSE``.
-        Default ``None``
-
+        Whether to launch and connect to a new Mechanical instance. The default
+        is ``None``, in which case an attempt is made to connect to an existing
+        Mechanical instance at the given ``ip`` and ``port`` parameters, which have
+        defaults of ``"127.0.0.1"`` and ``10000`` respectively. When ``True``,
+        a local instance of Mechanical is launched. You can override the default
+        behavior of this parameter with the ``PYMECHANICAL_START_INSTANCE=FALSE``
+        environment variable.
     verbose_mechanical : bool, optional
-        Enable printing of all output when launching and running
-        Mechanical.  This should be used for debugging only as output can
-        be tracked within pymechanical.  Default ``False``.
-
+        Whether to enable printing of all output when launching and running
+        a Mechanical instance. The default is ``False``. This parameter should be
+        set to ``True`` only for debugging only as output can be tracked within
+        PyMechanical.  
     clear_on_connect : bool, optional
-        Used only when ``start_instance`` is ``False``.  Defaults to
-        ``False``, Pass True to give you a fresh environment when connecting to
-        Mechanical.
-
+        when ``start_instance`` is ``False``, whether to clear the environment
+        when connecting to Mechanical. The default is ``False``. When ``True``,
+       a fresh environment is provided when you connect to Mechanical.
     cleanup_on_exit : bool, optional
-        Exit Mechanical when python exits or the Mechanical Python instance is
-        garbage collected. Default ``True``
-
+        Whether to exit Mechanical when Python exits. The default is ``True``.
+        When ``False``, Mechanical is exited when the garbage for this Mechanical
+        instance is collected.
     version : str, optional
-        The Mechanical version to run, in the 3 digits format, such as "231".
-        If unspecified, the version will be chosen by the server.
-        If pypim is configured and exce_file is None, it will launch using
-        pypim using the ``version``
-
+        Mechanical version to run in the three-digit format. For example, ``"231"``
+        for 2023 R1. The default is ``None``, in which case the server runs the
+        latest installed version. If PyPIM is configured and ``exce_file=None``,
+        PyPIM launches Mechanical using its ``version`` parameter.
     keep_connection_alive : bool, optional
-        Keeps the grpc connection alive by running a background thread and making dummy calls
-        for remote connections.
-        Default ``True``.
+        Whether to keep the gRPC connection alive by running a background thread
+        and making dummy calls for remote connections. The default is ``True``.
 
     Returns
     -------
     ansys.mechanical.core.mechanical.Mechanical
-        An instance of Mechanical.
+        Instance of Mechanical.
 
     Notes
     -----
     If the environment is configured to use `PyPIM <https://pypim.docs.pyansys.com>`_
-    and ``start_instance`` is ``True``, then starting the instance will be delegated to PyPIM.
-    In this event, most of the options will be ignored and the server side configuration will
-    be used.
+    and ``start_instance=True``, then starting the instance is delegated to PyPIM.
+    In this case, most of the preceding parameters are ignored because the server-side
+    configuration is used.
 
     Examples
     --------
-    Launch Mechanical
+    Launch Mechanical.
 
     >>> from ansys.mechanical.core import launch_mechanical
     >>> mech = launch_mechanical()
 
-    Run Mechanical with specified the location of the binary.
+    Launch Mechanical using a specified executable file.
 
     >>> exec_file_path = 'C:/Program Files/ANSYS Inc/v231/aisol/bin/win64/AnsysWBU.exe'
     >>> mech = launch_mechanical(exec_file_path)
 
-    Connect to an existing instance of Mechanical at IP 192.168.1.30 and
-    port 50001.  This is only available using the latest ``'grpc'``
-    mode.
+    Connect to an existing Mechanical instance at IP address 192.168.1.30 on port
+    50001. This method is only available using the latest gRPC mode.
 
     >>> mech = launch_mechanical(start_instance=False, ip='192.168.1.30', port=50001)
 
     """
     # Start Mechanical with PyPIM if the environment is configured for it
-    # and the user did not pass a directive on how to launch it.
+    # and a directive on how to launch Mechanical was not passed.
     if pypim.is_configured() and exec_file is None:
         LOG.info("Starting Mechanical remotely. The startup configuration will be ignored.")
         channel, remote_instance = launch_remote_mechanical(version=version)
@@ -2249,8 +2291,8 @@ def launch_mechanical(
         # creates an instance of mapdl the first time if PYMAPDL start instance
         # is False.
         if pymechanical.BUILDING_GALLERY:  # pragma: no cover
-            # launch an instance of pymapdl if it does not already exist and
-            # we're allowed to start instances
+            # launch an instance of PyMAPDL if it does not already exist and
+            # starting instances is allowed
             if start_instance and GALLERY_INSTANCE[0] is None:
                 mechanical = launch_mechanical(
                     start_instance=True,
@@ -2305,15 +2347,16 @@ def launch_mechanical(
         exec_file = get_mechanical_path()
         if exec_file is None:
             raise FileNotFoundError(
-                "Invalid exec_file path or cannot load cached "
-                "mechanical path.  Enter one manually by specifying "
-                "exec_file="
+                "Path to the Mechanical executable file is invalid or cache cannot be loaded. "
+                "Enter a path manually by specifying a value for the "
+                "'exec_file' parameter."
             )
     else:  # verify ansys exists at this location
         if not os.path.isfile(exec_file):
             raise FileNotFoundError(
-                f'Invalid Mechanical executable at "{exec_file}"\n'
-                "Enter one manually using exec_file="
+                f'This path for the Mechanical executable is invalid: "{exec_file}"\n'
+                "Enter a path manually by specifying a value for the "
+                "'exec_file' parameter."
             )
 
     start_parm = {

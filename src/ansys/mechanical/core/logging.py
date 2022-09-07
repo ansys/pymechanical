@@ -195,7 +195,9 @@ class PyMechanicalCustomAdapter(logging.LoggerAdapter):
         filename : str, optional
             Name of the file where logs are recorded. The default is ``FILE_NAME``.
         level : str, optional
-            Level of logging, such as ``DUBUG``. The default is ``LOG_LEVEL``.
+            Level of logging. The default is ``None``, in which case the ``"DEBUG"``
+            level is used. Options are ``"DEBUG"``, ``"INFO"``, ``"WARNING"``,
+            and ``"ERROR"``.
         """
         self.logger = addfile_handler(
             self.logger, filename=filename, level=level, write_headers=True
@@ -208,7 +210,9 @@ class PyMechanicalCustomAdapter(logging.LoggerAdapter):
         Parameters
         ----------
         level : str, optional
-            Level of logging, such as ``DUBUG``. The default is ``LOG_LEVEL``.
+            Level of logging. The default is ``None``, in which case the ``"DEBUG"``
+            level is used. Options are ``"DEBUG"``, ``"INFO"``, ``"WARNING"``,
+            and ``"ERROR"``.
         """
         if self.std_out_handler:
             raise Exception("Stdout logger is already defined.")
@@ -222,7 +226,8 @@ class PyMechanicalCustomAdapter(logging.LoggerAdapter):
         Parameters
         ----------
         level : str, optional
-            Level of logging, such as ``DUBUG``. The default is ``LOG_LEVEL``.
+            Level of logging. The default is ``"DEBUG"``. Options are ``"DEBUG"``,
+            ``"INFO"``, ``"WARNING"``, and ``"ERROR"``.
         """
         self.logger.setLevel(level)
         for each_handler in self.logger.handlers:
@@ -306,20 +311,20 @@ class Logger:
     """Provides for adding handlers to the logger for each Mechanical session.
 
     This class allows you to add handlers to the logger to output to a file or
-    standard output.
+    the standard output.
 
     Parameters
     ----------
     level : int, optional
         Logging level for filtering the messages that are allowed in the logger.
-        The default is ``logging.DEBUG``.
+        The default is ``10``, in which case the ``DEBUG`` level is used.
     to_file : bool, optional
         Whether to write log messages to a file. The default is ``False``.
     to_stdout : bool, optional
         Whether to write log messages to the standard output. The default is
         ``True``.
     filename : str, optional
-        Name of the file to write log messages to. The default is ``FILE_NAME``.
+        Name of the file to write log messages to. The default is ``pymechanical.log``.
 
     Examples
     --------
@@ -352,6 +357,7 @@ class Logger:
         ----------
         level : int, optional
             Level of logging that is defined in the ``logging`` package. The default is 'DEBUG'.
+            Options are ``"DEBUG"``, ``"INFO"``, ``"WARNING"``, and ``"ERROR"``.
         to_file : bool, optional
             Whether to write log messages to a file. The default is  ``False``.
         to_stdout : bool, optional
@@ -394,7 +400,9 @@ class Logger:
             Name of the file to write log messages to. The default is
             ``'pymechanical.log'``.
         level : str, optional
-            Level of logging, such as ``DUBUG``. The default is ``LOG_LEVEL``.
+            Level of logging. The default is ``10``, in which case the ``"DEBUG"``
+            level is used. Options are ``"DEBUG"``, ``"INFO"``,
+            ``"WARNING"`` and ``"ERROR"``.
 
         Examples
         --------
@@ -483,7 +491,7 @@ class Logger:
         This child logger is more general than an instance logger, which is designed to
         track the state of a Mechanical instance.
 
-        If the logging level is in the arguments, a new logger with a reference
+        If the logging level is specified in the arguments, a new logger with a reference
         to the ``_global`` logger handlers is created instead of a child logger.
 
         Parameters
@@ -491,7 +499,9 @@ class Logger:
         suffix : str
             Name for the child logger.
         level : str, optional
-            Level of logging, such as ``DUBUG``. The default is ``LOG_LEVEL``.
+            Level of logging. The default is ``None``, in which case the ``"DEBUG"``
+            level is used. Options are ``"DEBUG"``, ``"INFO"``, ``"WARNING"``,
+            and ``"ERROR"``.
 
         Returns
         -------
@@ -517,10 +527,10 @@ class Logger:
         return instance_logger
 
     def add_instance_logger(self, name, mechanical_instance, level=None):
-        """Create a logger for a Mechanical instance.
+        """Add a logger for a Mechanical instance.
 
-        The Mechanical instance logger has an adapter that adds contextual information,
-        such as Mechanical instance name. This logger is returned, and you can use it to
+        The logger for a Mechanical instance has an adapter that adds contextual information,
+        such as the name of the Mechanical instance. This logger is returned, and you can use it to
         log events as a normal logger. It is also stored in the ``_instances`` field.
 
         Parameters
@@ -531,7 +541,9 @@ class Logger:
             Mechanical instance object. This object should contain the ``name``
             attribute.
         level : str, optional
-            Level of logging, such as ``DUBUG``. The default is ``LOG_LEVEL``.
+            Level of logging. The default is ``None``, in which case the ``"DEBUG"``
+            level is used. Options are ``"DEBUG"``, ``"INFO"``, ``"WARNING"``,
+            and ``"ERROR"``.
 
         Returns
         -------
@@ -570,8 +582,13 @@ class Logger:
 
     @staticmethod
     def add_handling_uncaught_exceptions(logger):
-        """Redirect the output of an exception to the logger."""
-
+        """Redirect the output of an exception to a logger.
+        
+        Parameters
+        ----------
+        logger : str
+            Name of the logger.
+        """
         def handle_exception(exc_type, exc_value, exc_traceback):
             if issubclass(exc_type, KeyboardInterrupt):
                 sys.__excepthook__(exc_type, exc_value, exc_traceback)
@@ -591,7 +608,8 @@ def addfile_handler(logger, filename=FILE_NAME, level=LOG_LEVEL, write_headers=F
     filename : str, optional
         Name of the output file. The default is ``FILE_NAME``.
     level : str, optional
-        Level of logging, such as ``DUBUG``. The default is ``LOG_LEVEL``.
+        Level of logging. The default is ``None``. Options are ``"DEBUG"``, ``"INFO"``,
+        ``"WARNING"`` and ``"ERROR"``.
     write_headers : bool, optional
         Whether to write headers to the file. The default is ``False``.
 
@@ -627,7 +645,8 @@ def add_stdout_handler(logger, level=LOG_LEVEL, write_headers=False):
     logger : logging.Logger or logging.Logger
         Logger to add the file handler to.
     level : str, optional
-        Level of logging, such as ``DUBUG``. The default is ``LOG_LEVEL``.
+        Level of logging. The default is ``None``. Options are ``"DEBUG"``, ``"INFO"``,
+        ``"WARNING"`` and ``"ERROR"``.
     write_headers : bool, optional
         Whether to write headers to the file. The default is ``False``.
 

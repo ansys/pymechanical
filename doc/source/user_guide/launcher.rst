@@ -18,13 +18,13 @@ of your Mechanical installation based on environmental variables. If it cannot f
 a Mechanical installation, PyMechanical asks you to supply the location of the
 Mechanical executable file.
 
-Here is the request with a sample path supplied for an installation on Linux:
+**On Linux**
 
 .. code::
 
     Enter location of Mechanical executable: /usr/ansys_inc/v231/aisol/.workbench
 
-Here is the request with a sample path supplied for an installation on Windows:
+**On Windows**
 
 .. code::
 
@@ -46,7 +46,7 @@ and :func:`find_mechanical() <ansys.mechanical.core.find_mechanical>` methods.
 Additionally, you can use the ``exec_file`` keyword argument to specify the location of the
 Mechanical executable file. 
 
-**On Linux*
+**On Linux**
 
 .. code:: python
 

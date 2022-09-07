@@ -3,10 +3,10 @@ Create a pool of Mechanical instances
 The :class:`MechanicalLocalPool <ansys.mechanical.core.MechanicalLocalPool>`
 class simplifies creating multiple local instances of the :class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>`
 class for batch processing. You can use the
-:class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>` for batch processing a
-set of input files or other batch-related processes.
+:class:`MechanicalLocalPool <ansys.mechanical.core.MechanicalLocalPool>`
+class for batch processing a set of input files or other batch-related processes.
 
-To create a pool:
+To create a pool with 10 instances:
 
 .. code:: python
 
@@ -14,7 +14,7 @@ To create a pool:
     >>> pool = LocalMechanicalPool(10, version="231")
     'Mechanical Pool with 10 active instances'
 
-When creating the pool, you can supply additional keyword arguments.
+When you are creating the pool, you can supply additional keyword arguments.
 For example, to restart failed instances, you can set ``restart_failed=True``:
 
 .. code:: python
@@ -38,7 +38,7 @@ the pool, you can disable this behavior by setting ``restart_failed=False``.
 Run a set of input files
 ~~~~~~~~~~~~~~~~~~~~~~~~
 You can use the pool to run a set of pre-generated input files using the
-:func:`run_batch <ansys.mechanical.core.MechanicalLocalPool.run_batch>` method.
+:func:`run_batch() <ansys.mechanical.core.MechanicalLocalPool.run_batch>` method.
 
 For example, you can run the first set of 20 verification files with:
 
@@ -53,8 +53,8 @@ For example, you can run the first set of 20 verification files with:
 Run a user-defined function
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 You can also use the pool to run a custom user-defined function on each
-instance of Mechanical over a set of inputs. While the previous example
-uses the :func:`run_batch <ansys.mechanical.core.MechanicalLocalPool.run_batch>`
+instance of Mechanical over a set of input files. While the previous example
+uses the :func:`run_batch() <ansys.mechanical.core.MechanicalLocalPool.run_batch>`
 method to run a set of inputs files, the following example uses a function
 to output the final routine rather than the text output from Mechanical.
 

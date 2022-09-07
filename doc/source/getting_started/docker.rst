@@ -10,7 +10,7 @@ PyMechanical.
 Running Mechanical in a containerized environment like Docker or `Apptainer <http://apptainer.org/>`_
 (formerly Singularity) is advantageous for several reasons, including:
 
-- Run in a consistent environment regardless of the host operating system.
+- Ability to run in a consistent environment regardless of the host operating system
 - Portability and ease of installation
 - Large-scale cluster deployment using Kubernetes
 - Genuine application isolation through containerization.
@@ -22,9 +22,9 @@ There is a Docker image hosted in the `PyMechanical GitHub
 <https://https://github.com/pyansys/pymechanical>`_ repository that you
 can download using your GitHub credentials.
 
-Assuming that you have Docker installed, you can get started by authorizing
-Docker to access this repository using a GitHub personal access token with
-``packages read`` permissions. For more information, see `Creating a personal access token
+Assuming that you have Docker installed, you can authorize Docker to access
+this repository using a GitHub personal access token with ``packages read``
+permissions. For more information, see `Creating a personal access token
 <https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token>`_.
 
 Save this token to a file with:
@@ -34,7 +34,7 @@ Save this token to a file with:
    echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX > GH_TOKEN.txt
 
 
-This allows you to send the token to Docker without leaving the token value
+This lets you send the token to Docker without leaving the token value
 in your history.
 
 Next, authorize Docker to access this repository with:
@@ -61,7 +61,7 @@ Launch Mechanical with:
     docker run -e ANSYSLMD_LICENSE_FILE=$LICENSE_SERVER -p ip:10000:10000 $IMAGE
 
 
-Note that port ``10000`` (local to the container) is mapped to
+Note that port ``10000``, which is local to the container, is mapped to
 port ``10000`` on the host. This makes it possible to use different
 port mappings to launch multiple instances of Mechanical.
 
@@ -75,16 +75,15 @@ As Mechanical starts, you can see status information:
 
 Connect to the Mechanical container
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-You can now connect to the Mechanical container from
-Python with:
+You can now connect to the Mechanical container with:
 
 .. code:: python
 
     >>> from ansys.mechanical.core import Mechanical
     >>> mechanical = Mechanical()
 
-If you mapped to any port other than ``50052``, specify this port when
-connecting to Mechanical with:
+If you mapped to any port other than ``50052``, you would specify this port when
+connecting to Mechanical:
 
 .. code:: python
 

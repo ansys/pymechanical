@@ -24,7 +24,7 @@ a reference:
 
 Launch Mechanical
 -----------------
-You can launch Mechanical locally or launch it remotely.
+You can launch Mechanical locally or remotely.
 
 Launch Mechanical locally
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -57,7 +57,7 @@ mode and then manually connect to it.
 **On Windows**
 
 Assume that Mechanical is installed at ``C:/Program Files/ANSYS Inc/vXXX``
-, where ``XXX`` is the three-digit format for the release version. For example,
+, where ``XXX`` is the three-digit format for the version. For example,
 the path for 2023 R1 is typically ``C:/Program Files/ANSYS Inc/v231``.
 
 Launch Mechanical remotely in a gRPC session with:
@@ -95,15 +95,15 @@ Mechanical, use the ``-grpc`` argument. For example, on Linux, launch Mechanical
     /usr/ansys_inc/v231/ansys/bin/ansys231 -grpc 10001
 
 
-Connect to a gRPC Mechanical session
+Connect to a Mechanical gRPC session
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can connect to a gRPC Mechanical session from the same host or from an external host.
+You can connect to a Mechanical gRPC session from the same host or from an external host.
 
 Assume that Mechanical is running locally at the default IP address (127.0.0.1) on the
 default port (10000).
 
-Connect to it with:
+You would connect to it with:
 
 .. code::
 
@@ -119,7 +119,7 @@ an IP address and port or hostname and port.
 
 Assume that Mechanical is running remotely at IP address ``192.168.0.1`` on port ``50052``.
 
-Connect to it with:
+You would connect to it with:
 
 .. code::
 
@@ -129,7 +129,7 @@ Connect to it with:
 
 Assume that Mechanical is running remotely at hostname ``"myremotemachine``on port ``1000``.
 
-Connect to it with:
+You would connect to it with:
 
 .. code:: python
 
@@ -140,15 +140,15 @@ Launching issues
 ----------------
 
 For any number of reasons, launching Mechanical can fail. Some approaches
-follow for debugging a launch failure.
+follow for debugging launch failures.
 
-Provide the location of the executable file
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Manually set the location of the executable file
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you have a non-standard local installation of Mechanical, PyMechanical might
-not be able to find your Mechanical installation. In this case, provide the
-location of your Mechanical installation as the first parameter to the
-``launch_mechanical()`` method.
+If you have a non-standard installation of Mechanical, PyMechanical might
+not be able to find your installation. In this case, you should manually
+set the location of your Mechanical executable file as the first parameter
+for the ``launch_mechanical()`` method.
 
 **On Windows**
 
@@ -170,8 +170,8 @@ location of your Mechanical installation as the first parameter to the
 
 If when using the ``launch_mechanical()`` method, Mechanical still
 fails to launch or hangs while launching, pass the ``verbose_mechanical=True``
-parameter. This prints the output of Mechanical within Python. You 
-can then use this output to debug why Mechanical isn't launching.
+parameter. This prints the output of Mechanical in the Python console.
+You can then use this output to debug why Mechanical isn't launching.
 
 .. Note::
     On Windows, output is limited because of the way Mechanical launches.
@@ -192,8 +192,8 @@ Open a command prompt and run this command:
     "C:/Program Files/ANSYS Inc/v231/aiso/bin/winx64/AnsysWBU.exe -DSApplet -AppModeMech -nosplash -notabctrl -grpc 10000"
 
 .. note::
-   PowerShell users can run the preceding command without the opening and closing quotation
-   marks.
+   PowerShell users can run the preceding command without including the opening and
+   closing quotation marks.
 
 
 **On Linux**
@@ -215,7 +215,7 @@ Licensing issues
 ----------------
 
 `PADT <https://www.padtinc.com/>`_ has an `Ansys <https://www.padtinc.com/simulation/ansys-simulation-products/>`_
-product section, and posts about licensing are common. For example, see
+product section. Posts about licensing are common. For example, see
 `Changes to Licensing at ANSYS 2023R1 <https://www.padtinc.com/blog/15271-2/>`_.
 
 If you are responsible for maintaining an Ansys license or have a personal installation
@@ -248,8 +248,8 @@ On CentOS 7, you can install required dependencies with:
 
 Ubuntu
 ~~~~~~
-Because Mechanical isn't officially supported on Ubuntu, it's a bit more
-difficult to install required dependencies. However, it's still possible.
+Because Mechanical isn't officially supported on Ubuntu, it is a bit more
+difficult to install required dependencies. However, it is still possible.
 
 On Ubuntu 20.04 with Ansys 2023 R1, you can install all required dependencies
 except for the outdated ``libxp6`` package with:
@@ -267,7 +267,8 @@ If you are using Ubuntu 16.04, you can install the ``libxp6`` package with:
 
 However, on Ubuntu 18.04 and later, you must manually download and install the ``libxp6``
 package. Because this package is dependent on another outdated package, ``multiarch-support``,
-you must remove it. Otherwise, the package configuration is broken.
+you must remove the ``multiarch-support`` package. Otherwise, the package configuration
+is broken.
 
 This code downloads and modifies the ``libxp6`` package to remove the ``multiarch-support``
 package dependency and then installs it with ``dpkg``:
