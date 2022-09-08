@@ -203,7 +203,7 @@ def close_all_local_instances(port_range=None):
 
     Examples
     --------
-    Close all Mechancial instances connected on local ports.
+    Close all Mechanical instances connected on local ports.
 
     >>> import ansys.mechanical.core as pymechanical
     >>> pymechanical.close_all_local_instances()
@@ -228,14 +228,14 @@ def close_all_local_instances(port_range=None):
 
 
 def create_ip_file(ip, path):
-    """Create the ``mylocal.ip`` file that is required to change the IP address of the gRPC server."""
+    """Create the ``mylocal.ip`` file needed to change the IP address of the gRPC server."""
     file_name = os.path.join(path, "mylocal.ip")
     with open(file_name, "w") as f:
         f.write(ip)
 
 
 def _get_available_base_mechanical():
-    """Get a dictionary of available Mechanical versions on Windows with their base paths.
+    r"""Get a dictionary of available Mechanical versions on Windows with their base paths.
 
     Returns
     -------
@@ -244,14 +244,14 @@ def _get_available_base_mechanical():
     Examples
     --------
     On Windows:
-    
+
     >>> _get_available_base_mechanical()
-    {231: 'C:\\Program Files\\ANSYS Inc\\v231'}
+    >>> {231: 'C:\\Program Files\\ANSYS Inc\\v231'}
 
     On Linux:
 
     >>> _get_available_base_mechanical()
-    {231: '/usr/ansys_inc/v231'}
+    >>> {231: '/usr/ansys_inc/v231'}
     """
     base_path = None
     if is_windows():
@@ -289,7 +289,7 @@ def _get_available_base_mechanical():
 def find_mechanical():
     """
     Search for the Ansys path in the standard installation location.
-    
+
     Returns
     -------
     ansys_path : str
@@ -391,7 +391,7 @@ def save_mechanical_path(exe_loc=None):  # pragma: no cover
         Path for the Mechanical executable file (``AnsysWBU.exe``).
         The default is ``None``, in which case an attempt is made to
         obtain the path from the following sources in this order:
-        
+
         - The default Ansys paths (for example,
           ``C:/Program Files/Ansys Inc/vXXX/aiso/bin/AnsysWBU.exe``)
         - The configuration file
@@ -462,10 +462,7 @@ def save_mechanical_path(exe_loc=None):  # pragma: no cover
                 f.write(exe_loc)
             need_path = False
         else:
-            print(
-                "The supplied path is either invalid or does not "
-                "match the '.workbench' name."
-            )
+            print("The supplied path is either invalid or does not " "match the '.workbench' name.")
 
     return exe_loc
 
@@ -484,7 +481,7 @@ def is_valid_executable_path(exe_loc):  # pragma: no cover
 
 
 def is_common_executable_path(exe_loc):  # pragma: no cover
-    """Check whether the give location for the Mechanical executable fle is valid."""
+    """Check whether the give location for the Mechanical executable file is valid."""
     path = os.path.normpath(exe_loc)
     path = path.split(os.sep)
 
@@ -555,12 +552,12 @@ class Mechanical(object):
         port : int, optional
             Port to connect to the Mecahnical server. The default is ``None``,
             in which case ``10000`` is used.
-        timeout : float, optinal
+        timeout : float, optional
             Maximum allowable time for connecting to the Mechanical server.
             The default is ``60.0``.
         loglevel : str, optional
             Level of messages to print to the console. The default is ``WARING``.
-            
+
             - ``WARNING`` prints only Ansys warning messages.
             - ``ERROR`` prints only Ansys error messages.
             - ``INFO`` prints out all Ansysmessages.
@@ -583,9 +580,10 @@ class Mechanical(object):
             You can use this parameter as an alternative to the ``ip`` and ``port``
             parameters.
         remote_instance : ansys.platform.instancemanagement.Instance
-            Corresponding remote instance when Mechanical is launched through
-            PyPIM. The default is ``None``. If a remote instance is specified, this
-            instance is deleted when the :func:`mecahnical.exit <ansys.mechanical.core.Mechanical.exit>`
+            Corresponding remote instance when Mechanical is launched
+            through PyPIM. The default is ``None``. If a remote instance
+            is specified, this instance is deleted when the
+            :func:`mecahnical.exit <ansys.mechanical.core.Mechanical.exit>`
             function is called.
         keep_connection_alive : bool, optional
             Whether to keeps the gRPC connection alive by running a background thread
@@ -784,13 +782,11 @@ class Mechanical(object):
             )
 
         if not connected:
-            raise IOError(f"Unable to connect to the Mechanical instance at {self._channel_str}.")
+            raise IOError(f"Unable to connect to Mechanical instance at {self._channel_str}.")
 
     @property
     def _channel_str(self):
-        """Target string, which is generally in the form of ``ip:port``, such as ``127.0.0.1:10000``.
-
-        """
+        """Target string, generally in the form of ``ip:port``, such as ``127.0.0.1:10000``."""
         if self._channel is not None:
             if self._remote_instance is not None:
                 return self._channel._channel._channel.target().decode()
@@ -861,7 +857,9 @@ class Mechanical(object):
                 if self._exiting:
                     return
                 self._exited = True
-                raise MechanicalExitedError("Lost connection with the Mechanical gRPC server.") from None
+                raise MechanicalExitedError(
+                    "Lost connection with the Mechanical gRPC server."
+                ) from None
 
         # enable health check
         from queue import Queue
@@ -1039,14 +1037,16 @@ class Mechanical(object):
         if wait_time == -1:
             self.log_info("Waiting for Mechanical to be ready...")
         else:
-            self.log_info(f"Waiting for Mechanical to be ready. Maxium wait time: {wait_time}s")
+            self.log_info(f"Waiting for Mechanical to be ready. Maximum wait time: {wait_time}s")
 
         while not self.__isMechanicalReady():
             time_2 = datetime.datetime.now()
             time_interval = time_2 - time_1
             time_interval_seconds = int(time_interval.total_seconds())
 
-            self.log_debug(f"Mechanical is not ready. You've been waiting for {time_interval_seconds}.")
+            self.log_debug(
+                f"Mechanical is not ready. You've been waiting for {time_interval_seconds}."
+            )
             if self._timeout != -1:
                 if time_interval_seconds > wait_time:
                     self.log_debug(
@@ -1071,7 +1071,7 @@ class Mechanical(object):
 
         Returns
         -------
-        bool    
+        bool
             ``True`` if Mechanical is ready, ``False`` otherwise.
         """
         try:
@@ -1095,10 +1095,11 @@ class Mechanical(object):
         enable_logging: bool, optional
             Whether to enable logging. The default is ``False``.
         log_level: str
-            Level of logging. The default is ``"WARNING"``. Options are ``"DEBUG"``, ``"INFO"``,
-            ``"WARNING"``, and ``"ERROR"``.
+            Level of logging. The default is ``"WARNING"``. Options are ``"DEBUG"``,
+            ``"INFO"``, ``"WARNING"``, and ``"ERROR"``.
         timeout: int, optional
-            Frequency in milliseconds for getting log messages from the server. The default is ``2000``.
+            Frequency in milliseconds for getting log messages from the server.
+            The default is ``2000``.
 
         Returns
         -------
@@ -1151,10 +1152,11 @@ class Mechanical(object):
         enable_logging: bool, optional
             Whether to enable logging. The default is ``False``.
         log_level: str
-            Level of logging. The default is ``"WARNING"``. Options are ``"DEBUG"``, ``"INFO"``,
-            ``"WARNING"``, and ``"ERROR"``.
+            Level of logging. The default is ``"WARNING"``. Options are ``"DEBUG"``,
+            ``"INFO"``, ``"WARNING"``, and ``"ERROR"``.
         timeout: int, optional
-            Frequency in milliseconds for getting log messages from the server. The default is ``2000``.      
+            Frequency in milliseconds for getting log messages from the server.
+            The default is ``2000``.
 
         Returns
         -------
@@ -1177,10 +1179,11 @@ class Mechanical(object):
         enable_logging: bool, optional
             Whether to enable logging. The default is ``False``.
         log_level: str
-            Level of logging. The default is ``"WARNING"``. Options are ``"DEBUG"``, ``"INFO"``,
-            ``"WARNING"``, and ``"ERROR"``.
+            Level of logging. The default is ``"WARNING"``. Options are ``"DEBUG"``,
+            ``"INFO"``, ``"WARNING"``, and ``"ERROR"``.
         progress_interval: int, optional
-            Frequency in milliseconds for getting log messages from the server. The default is ``2000``.
+            Frequency in milliseconds for getting log messages from the server.
+            The default is ``2000``.
 
         Returns
         -------
@@ -1205,10 +1208,11 @@ class Mechanical(object):
         enable_logging: bool, optional
             Whether to enable logging. The default is ``False``.
         log_level: str
-            Level of logging. The default is ``"WARNING"``. Options are ``"DEBUG"``, ``"INFO"``,
-            ``"WARNING"``, and ``"ERROR"``.
+            Level of logging. The default is ``"WARNING"``. Options are ``"DEBUG"``,
+            ``"INFO"``, ``"WARNING"``, and ``"ERROR"``.
         progress_interval: int, optional
-            Frequency in milliseconds for getting log messages from the server. The default is ``2000``.
+            Frequency in milliseconds for getting log messages from the server.
+            The default is ``2000``.
 
         Returns
         -------
@@ -1304,7 +1308,7 @@ class Mechanical(object):
         chunk_size : int, optional
             Chunk size in bytes. The default is ``1048576``.
         progress_bar : bool, optional
-            Whether to show a progress bar using ``tqdm``. The defualt is ``True``.
+            Whether to show a progress bar using ``tqdm``. The default is ``True``.
             A progress bar is helpful for viewing upload progress.
 
         Returns
@@ -1347,7 +1351,7 @@ class Mechanical(object):
 
     def get_file_chunks(self, file_location, file_name, chunk_size, progress_bar):
         """Construct the file upload request for the server.
-        
+
         Parameters
         ----------
         file_location_destination : str, optional
@@ -1357,7 +1361,7 @@ class Mechanical(object):
         chunk_size : int
             Chunk size in bytes.
         progress_bar : bool
-            Whether to show a progress bar using ``tqdm``.       
+            Whether to show a progress bar using ``tqdm``.
         """
         pbar = None
         if progress_bar:
@@ -1493,58 +1497,59 @@ class Mechanical(object):
     ):  # pragma: no cover
         """Download files from the working directory of the Mechanical instance.
 
-        .. warning::
-       This class is only available for Mechanical 2023 R1 and later.
+         .. warning::
+        This class is only available for Mechanical 2023 R1 and later.
 
-        Parameters
-        ----------
-        files : str, list[str], tuple(str)
-            One or more files on the Mechanical server to download. The files must be
-            in the same directory as the Mechanical instance. You can use the
-            :func:`Mechanical.directory <ansys.mechanical.core.mechanical.list_files>`
-            function to list current files. Alternatively, you can specify *glob expressions* to
-            match file names. For example, you could use ``file*`` to match every file whose
-            name starts with ``file``.
-        target_dir: str
-            Default directory to copy the downloaded files to. The default is ``None``.
-        chunk_size : int, optional
-            Chunk size in bytes. The default is ``262144``. The value must be less than 4 MB.
-        progress_bar : bool, optional
-            Whether to show a progress bar using  ``tqdm``. The default is ``None``, in
-            which case a progress bar is shown. A progress bar is helpful for viewing download
-            progress.
-        recursive : bool, optional
-            Whether to use recursion when using a glob pattern search. The default is ``False``.
+         Parameters
+         ----------
+         files : str, list[str], tuple(str)
+             One or more files on the Mechanical server to download. The files must be
+             in the same directory as the Mechanical instance. You can use the
+             :func:`Mechanical.directory <ansys.mechanical.core.mechanical.list_files>`
+             function to list current files. Alternatively, you can specify *glob expressions* to
+             match file names. For example, you could use ``file*`` to match every file whose
+             name starts with ``file``.
+         target_dir: str
+             Default directory to copy the downloaded files to. The default is ``None``.
+         chunk_size : int, optional
+             Chunk size in bytes. The default is ``262144``. The value must be less than 4 MB.
+         progress_bar : bool, optional
+             Whether to show a progress bar using  ``tqdm``. The default is ``None``, in
+             which case a progress bar is shown. A progress bar is helpful for viewing download
+             progress.
+         recursive : bool, optional
+             Whether to use recursion when using a glob pattern search. The default is ``False``.
 
-        Notes
-        -----
-        There are some considerations to keep in mind when using the ``download()`` method:
+         Notes
+         -----
+         There are some considerations to keep in mind when using the ``download()`` method:
 
-        * The glob pattern search does not search recursively in remote instances.
-        * In a remote instance, it is not possible to list or download files in a
-          location other than the Mechanical working directory.
-        * If you are connected to a local instance and provide a file path, downloading files
-          from a different folder is allowed but is not recommended.
+         * The glob pattern search does not search recursively in remote instances.
+         * In a remote instance, it is not possible to list or download files in a
+           location other than the Mechanical working directory.
+         * If you are connected to a local instance and provide a file path, downloading files
+           from a different folder is allowed but is not recommended.
 
-        Examples
-        --------
-        Download a single file.
+         Examples
+         --------
+         Download a single file.
 
-        >>> mechanical.download('file.out')
+         >>> mechanical.download('file.out')
 
-        Download all files starting with ``file``.
+         Download all files starting with ``file``.
 
-        >>> mechanical.download('file*')
+         >>> mechanical.download('file*')
 
-        Download every file in the Mechanical working directory.
+         Download every file in the Mechanical working directory.
 
-        >>> mechanical.download('*.*')
+         >>> mechanical.download('*.*')
 
-        Alternatively, the recommended method is to use the
-        :func:`Mechanical.download_project <ansys.mechanical.core.mechanical.Mechanical.download_project>`
-        method to download all files.
+         Alternatively, the recommended method is to use the
+         :func:`Mechanical.download_project
+         <ansys.mechanical.core.mechanical.Mechanical.download_project>`
+         method to download all files.
 
-        >>> mechanical.download_project()
+         >>> mechanical.download_project()
 
         """
         self.verify_valid_connection()
@@ -1605,7 +1610,7 @@ class Mechanical(object):
         target_name : str
             Name of the target file on the server. The file must be in the same
             directory as the Mechanical instance. You can use the
-            ``mechanical.list_files()`` function to list current files.    
+            ``mechanical.list_files()`` function to list current files.
         out_file_name : str, optional
             Name of the output file if the name is to differ from that for the target
             file. The default is ``None``, in which case the name of the target file is
@@ -1615,7 +1620,7 @@ class Mechanical(object):
             256 kB is used. The value must be less than 4 MB.
         progress_bar : bool, optional
             Whether to show a progress bar using  ``tqdm``. The default is ``None``, in
-            which case a progress bar is shown. A progres bar is helpful for showing download
+            which case a progress bar is shown. A progress bar is helpful for showing download
             progress.
 
         Examples
@@ -1656,8 +1661,8 @@ class Mechanical(object):
         target_name : str, optional
             Name of the target file on the server. The default is ``""``. The file
             must be in the same directory as the Mechanical instance. You can use the
-            ``mechanical.list_files()`` function to list current files.    
-        
+            ``mechanical.list_files()`` function to list current files.
+
         Returns
         -------
         file_size : int
@@ -1805,7 +1810,7 @@ class Mechanical(object):
 
     def __call_run_jscript(self, script_code: str, enable_logging, log_level, progress_interval):
         """Run a Jscript block on the server.
-        
+
         Parameters
         ----------
         script_code : str
@@ -1845,7 +1850,7 @@ class Mechanical(object):
         self, script_code: str, enable_logging, log_level, progress_interval
     ):
         """Run the Python script block on the server.
-        
+
         Parameters
         ----------
         script_block : str
@@ -1856,13 +1861,13 @@ class Mechanical(object):
             Level of logging. Options are ``"DEBUG"``, ``"INFO"``, ``"WARNING"``,
             and ``"ERROR"``.
         timeout: int, optional
-            Frequency in milliseconds for getting log messages from the server.      
+            Frequency in milliseconds for getting log messages from the server.
 
         Returns
         -------
         str
             Script result.
-       
+
         """
         log_level_server = self.convert_to_server_log_level(log_level)
         request = mechanical_pb2.RunScriptRequest()
@@ -2021,7 +2026,7 @@ def launch_grpc(
         port available after (or including) this port.
     ip : str, optional
         IP address to use to connect to the launched Mechanical instance.
-        The defualt is ``LOCALHOST``, in which case ``127.0.0.1`` is used.
+        The default is ``LOCALHOST``, in which case ``127.0.0.1`` is used.
     additional_switches : list, optional
         List of additional arguments to pass. The default is ``None``.
     additional_envs : dictionary, optional
@@ -2095,7 +2100,7 @@ def launch_remote_mechanical(version=None) -> (grpc.Channel, Instance):
     """Start Mechanical remotely using the Product Instance Management (PIM) API.
 
     When calling this method, you must ensure that you are in an environment
-    where PyPIM is configured. You can use the 
+    where PyPIM is configured. You can use the
     :func:`pypim.is_configured <ansys.platform.instancemanagement.is_configured>`
     method to verify that PyPIM is configured.
 
@@ -2115,7 +2120,7 @@ def launch_remote_mechanical(version=None) -> (grpc.Channel, Instance):
 
     LOG.info("PyPIM wait for ready has started.")
     instance.wait_for_ready()
-    LOG.info("PyPIM wait for ready has finsished.")
+    LOG.info("PyPIM wait for ready has finished.")
 
     channel = instance.build_grpc_channel(
         options=[
@@ -2159,7 +2164,7 @@ def launch_mechanical(
     loglevel : str, optional
             Level of messages to print to the console. The default is ``WARNING``
             Options are ``"WARNING"``, ``"ERROR"``, and ``"INFO"``.
-            
+
             - ``WARNING`` prints only Ansys warning messages.
             - ``ERROR`` prints only Ansys error messages.
             - ``INFO`` prints out all Ansysmessages.
@@ -2204,7 +2209,7 @@ def launch_mechanical(
         Whether to enable printing of all output when launching and running
         a Mechanical instance. The default is ``False``. This parameter should be
         set to ``True`` only for debugging only as output can be tracked within
-        PyMechanical.  
+        PyMechanical.
     clear_on_connect : bool, optional
         when ``start_instance`` is ``False``, whether to clear the environment
         when connecting to Mechanical. The default is ``False``. When ``True``,

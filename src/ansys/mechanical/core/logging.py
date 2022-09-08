@@ -154,8 +154,8 @@ class PyMechanicalCustomAdapter(logging.LoggerAdapter):
 
     The standard approach supplies extra input to the logger. If this approach
     was used, Mechanical instances would have to be inputted evey time a log
-    is created. 
-    
+    is created.
+
     Using an adapter means that the reference to the Mechanical instance must only
     be specified once.
     """
@@ -222,7 +222,7 @@ class PyMechanicalCustomAdapter(logging.LoggerAdapter):
 
     def setLevel(self, level="DEBUG"):
         """Change the log level of the object and the attached handlers.
-        
+
         Parameters
         ----------
         level : str, optional
@@ -267,7 +267,7 @@ class PyMechanicalPercentStyle(logging.PercentStyle):
 
 class PyMechanicalFormatter(logging.Formatter):
     """Provides for overwriting default format styles with custom format styles.
-    
+
     Parameters
     ----------
     fmt : optional
@@ -275,7 +275,7 @@ class PyMechanicalFormatter(logging.Formatter):
     datefmt : optional
         The default is ``None``.
     style : optional
-        The defautl is ``%``.
+        The default is ``%``.
     validate : bool, optional
         The default is ``None``.
     """
@@ -428,7 +428,7 @@ class Logger:
 
     def setLevel(self, level="DEBUG"):
         """Change the log level of the object and the attached handlers.
-        
+
         Parameters
         ----------
         level : str, optional
@@ -570,10 +570,10 @@ class Logger:
 
     def __getitem__(self, key):
         """Get the instance logger based on a key.
-        
+
         Parameters
         ----------
-            key : 
+            key :
         """
         if key in self._instances.keys():
             return self._instances[key]
@@ -583,12 +583,13 @@ class Logger:
     @staticmethod
     def add_handling_uncaught_exceptions(logger):
         """Redirect the output of an exception to a logger.
-        
+
         Parameters
         ----------
         logger : str
             Name of the logger.
         """
+
         def handle_exception(exc_type, exc_value, exc_traceback):
             if issubclass(exc_type, KeyboardInterrupt):
                 sys.__excepthook__(exc_type, exc_value, exc_traceback)

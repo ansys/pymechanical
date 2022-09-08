@@ -24,7 +24,7 @@ if _HAS_TQDM:
 
 def available_ports(n_ports, starting_port=MECHANICAL_DEFAULT_PORT):
     """Get a list of a given number of available ports starting from a specified port number.
-    
+
     Parameters
     ----------
     n_ports : int
@@ -76,7 +76,7 @@ class LocalMechanicalPool:
         function. If the ``exec_file`` keyword argument is found, it is used to
         start instances. PyPIM ia used to create instances if the following
         conditions are met:
-        
+
         - PyPIM is configured.
         - ``version`` is specified.
         - ``exec_file`` is not specified.
@@ -119,13 +119,14 @@ class LocalMechanicalPool:
         **kwargs,
     ):
         """Initialize several Mechanical instances.
+
         Parameters
         ----------
         n_instance : int
             Number of Mechanical instances to initialize.
         wait : bool, optional
             Whether to wait for the instances to be initialized. The default is
-            ``True``. When ``False``, the isntances start in the background, in
+            ``True``. When ``False``, the instances start in the background, in
             which case all resources might not be immediately available.
         port : int, optional
             Port for the first Mechanical instance. The default is
@@ -141,10 +142,10 @@ class LocalMechanicalPool:
             function. If the ``exec_file`` keyword argument is found, it is used to
             start instances. Instances are created using PyPIM if the following
             conditions are met:
-        
+
             - PyPIM is configured.
             - Version is specified/
-            - ``exec_file`` is not specified.       
+            - ``exec_file`` is not specified.
         """
         self._instances = []
         self._spawn_kwargs = kwargs
@@ -165,7 +166,7 @@ class LocalMechanicalPool:
                 exec_file = get_mechanical_path()
                 if exec_file is None:
                     raise FileNotFoundError(
-                        "Path to the Mechanical executable file is invalid or cache cannot be loaded. "
+                        "Path to Mechanical executable file is invalid or cache cannot be loaded. "
                         "Enter a path manually by specifying a value for the "
                         "'exec_file' parameter."
                     )
@@ -271,7 +272,7 @@ class LocalMechanicalPool:
             Maximum runtime in seconds for each iteration. The default is
             ``None``, in which case there is no timeout. If you specify a
             value, each iteration is allowed to run only this number of
-            seconds. Once this value is exceded, the batch process is
+            seconds. Once this value is exceeded, the batch process is
             stopped and treated as a failure.
         wait : bool, optional
             Whether block execution must wait until the batch process is
@@ -442,7 +443,7 @@ class LocalMechanicalPool:
             Maximum runtime in seconds for each iteration. The default is
             ``None``, in which case there is no timeout. If you specify a
             value, each iteration is allowed to run only this number of
-            seconds. Once this value is exceded, the batch process is stopped
+            seconds. Once this value is exceeded, the batch process is stopped
             and treated as a failure.
         wait : bool, optional
             Whether block execution must wait until the batch process is complete.
@@ -594,7 +595,7 @@ class LocalMechanicalPool:
     @threaded_daemon
     def _spawn_mechanical(self, index, port=None, pbar=None, name=""):
         """Spawn a Mechanical instance at an index.
-        
+
         Parameters
         ----------
         index : int
@@ -615,7 +616,7 @@ class LocalMechanicalPool:
     @threaded_daemon
     def _spawn_mechanical_remote(self, index, pbar=None, name=""):
         """Spawn a Mechanical instance at an index.
-        
+
         Parameters
         ----------
         index : int
@@ -624,7 +625,7 @@ class LocalMechanicalPool:
             The default is ``None``.
         name : str, optional
             Name for the instance. The default is ``""``.
-        
+
         """
         LOG.debug(name)
         self._instances[index] = launch_mechanical(**self._spawn_kwargs)
@@ -635,11 +636,11 @@ class LocalMechanicalPool:
     @threaded_daemon
     def _monitor_pool(self, refresh=1.0, name=""):
         """Check for instances within a pool that have exited (failed) and restart them.
-        
+
         Parameters
         ----------
         refresh : float, optional
-            The default is ``1.0``.    
+            The default is ``1.0``.
         name : str, optional
             Name for the instance. The default is ``""``.
         """

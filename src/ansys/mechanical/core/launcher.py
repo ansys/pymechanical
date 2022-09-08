@@ -46,7 +46,7 @@ class MechanicalLauncher:
         """Launch Mechanical with the gRPC server."""
         exe_path = self.__get_exe_path()
         if not os.path.exists(exe_path):
-            print(f"Startup file:{exe_path} does't exist.")
+            print(f"Startup file:{exe_path} doesn't exist.")
             raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), exe_path)
 
         env_variables = self.__get_env_variables()

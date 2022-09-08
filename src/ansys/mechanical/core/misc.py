@@ -23,7 +23,7 @@ def is_windows():
 
 def get_mechanical_bin(release_version):
     """Get the path for the Mechanical executable file based on the release version.
-    
+
     Parameters
     ----------
     release_version: str
@@ -83,12 +83,12 @@ def no_return(func):
 
 def check_valid_ip(ip):
     """Check if the IP address is valid.
-    
+
     Parameters
     ----------
     ip : str
         IP address to check.
-    
+
     """
     if ip.lower() != "localhost":
         ip = ip.replace('"', "").replace("'", "")
@@ -97,7 +97,7 @@ def check_valid_ip(ip):
 
 def check_valid_port(port, lower_bound=1000, high_bound=60000):
     """Check if the port is valid.
-    
+
     Parameters
     ---------
     port : int
@@ -140,7 +140,7 @@ def check_valid_start_instance(start_instance):
 
     if start_instance.lower() not in ["true", "false"]:
         raise ValueError(
-            f"The value for 'start_instance' should be equal to 'True' or 'False' (case insensitive)."
+            f"The value for 'start_instance' should be 'True' or 'False' (case insensitive)."
         )
 
     return start_instance.lower() == "true"
@@ -148,7 +148,7 @@ def check_valid_start_instance(start_instance):
 
 def is_float(input_string):
     """Check if a string can be converted to a float.
-    
+
     Parameters
     ----------
     input_string : str
@@ -157,7 +157,7 @@ def is_float(input_string):
     Returns
     -------
     bool
-        ``True`` when conversion is possible, ``False`` otherwise.    
+        ``True`` when conversion is possible, ``False`` otherwise.
     """
     try:
         float(input_string)
@@ -168,13 +168,13 @@ def is_float(input_string):
 
 def random_string(string_length=10, letters=string.ascii_lowercase):
     """Generate a random string of a fixed length.
-    
+
     Parameters
     ----------
-    string_length : int, optinal
+    string_length : int, optional
        Length of the random string. the default is ``10``.
     letters : str
-       
+
     """
     return "".join(random.choice(letters) for _ in range(string_length))
 
