@@ -375,8 +375,8 @@ This method does not show a notification:
 
 On Windows 10, you can use the `wsl-windows-toolbar-launcher <https://github.com/cascadium/wsl-windows-toolbar-launcher#firewall-rules/>`_
 package to launching Linux native applications directly from Windows
-with the standard Windows toolbar. Because the toolbar in Windows 11 is different, the README
-file for this package explains how to run the Microsoft `PowerToys <https://github.com/microsoft/PowerToys>`_
+with the standard Windows toolbar. Because the toolbar in Windows 11 differs, the README
+file for this package explains how to run Microsoft's `PowerToys <https://github.com/microsoft/PowerToys>`_
 package instead.
 
 Port forwarding on Windows 10

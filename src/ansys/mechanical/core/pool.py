@@ -51,34 +51,34 @@ def available_ports(n_ports, starting_port=MECHANICAL_DEFAULT_PORT):
 class LocalMechanicalPool:
     """Create a pool of Mechanical instances.
 
-    .. note::
-       This class requires Mechanical 2023 R1 or later.
+    .. warning::
+       This class is only available for Mechanical 2023 R1 and later.
 
     Parameters
     ----------
     n_instance : int
-        Number of instances to create in the pool.
+        Number of Mechanical instances to create in the pool.
     wait : bool, optional
         Whether to wait for the pool to be initialized. The default is
         ``True``. When ``False``, the pool starts in the background, in
         which case all resources might not be immediately available.
     starting_port : int, optional
-        Starting port for the Mechanical instances. The default is ``10000``.
+        Starting port for the instances. The default is ``10000``.
     progress_bar : bool, optional
-        Whether to display a progress bar when starting the pool. The default
+        Whether to show a progress bar when starting the pool. The default
         is ``True``, but the progress bar is not shown when ``wait=False``.
     restart_failed : bool, optional
         Whether to restart any failed instances in the pool. The default is
         ``True``.
     **kwargs : dict, optional
-        Additional keyword arguments. For a list of all additional keyword
+        Additional keyword arguments. For a list of all keyword
         arguments, see the :func:`ansys.mechanical.core.launch_mechanical`
         function. If the ``exec_file`` keyword argument is found, it is used to
-        start instances. Instances are created using PyPIM if the following
+        start instances. PyPIM ia used to create instances if the following
         conditions are met:
         
         - PyPIM is configured.
-        - Version is specified/
+        - ``version`` is specified.
         - ``exec_file`` is not specified.
 
 
@@ -90,19 +90,19 @@ class LocalMechanicalPool:
     >>> pool = LocalMechanicalPool(10)
     Creating Pool: 100%|########| 10/10 [00:01<00:00,  1.43it/s]
 
-    Create a pool while specifying the Mechanical executable file on Windows.
+    On Windows, create a pool while specifying the Mechanical executable file.
 
     >>> exec_file = 'C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe'
     >>> pool = LocalMechanicalPool(10, exec_file=exec_file)
     Creating Pool: 100%|########| 10/10 [00:01<00:00,  1.43it/s]
 
-    Create a pool while specifying the Mechanical executable file on Linux.
+    On Linux, create a pool while specifying the Mechanical executable file.
 
     >>> exec_file = '/ansys_inc/v231/aisol/.workbench'
     >>> pool = LocalMechanicalPool(10, exec_file=exec_file)
     Creating Pool: 100%|########| 10/10 [00:01<00:00,  1.43it/s]
 
-    Create a pool in the PyPIM environment.
+    In the PyPIM environment, create a pool.
 
     >>> pool = LocalMechanicalPool(10, version="231")
     Creating Pool: 100%|########| 10/10 [00:01<00:00,  1.43it/s]
@@ -247,58 +247,50 @@ class LocalMechanicalPool:
         timeout=None,
         wait=True,
     ):
-        """Run a function for each instance of mechanical within the pool.
+        """Run a user-defined function on each Mechanical instance in the pool.
 
         Parameters
         ----------
         func : function
-            User function with an instance of ``mechanical`` as the first
-            argument.  The remaining arguments should match the number
-            of items in each iterable (if any).
-
+            Function with ``mechanical`` as the first argument. The subsequent
+            arguments should match the number of items in each iterable (if any).
         iterable : list, tuple, optional
-            An iterable containing a set of arguments for ``func``.
-            If None, will run ``func`` once for each instance of
-            mechanical.
-
+            An iterable containing a set of arguments for the function.
+            The default is ``None``, in which case the function runs
+            once on each instance of Mechanical.
         clear_at_start : bool, optional
-            Clear Mechanical at the start of execution.  By default this is
-            ``True``, and setting this to ``False`` may lead to
-            instability.
-
+            Clear Mechanical at the start of execution. The default is
+            ``True``. Setting this to ``False`` might lead to instability.
         progress_bar : bool, optional
-            Show a progress bar when running the batch.  Defaults to
-            ``True``.
-
+            Whether to show a progress bar when running the batch. The default
+            is ``True``.
         close_when_finished : bool, optional
-            Exit the Mechanical instances when the pool is finished.
-            Default ``False``.
-
+            Whether to close the instances when the function finishes running
+            on all instances in the pool. The default is ``False``.
         timeout : float, optional
-            Maximum runtime in seconds for each iteration.  If
-            ``None``, no timeout.  If specified, each iteration will
-            be only allowed to run ``timeout`` seconds, and then
-            killed and treated as a failure.
-
+            Maximum runtime in seconds for each iteration. The default is
+            ``None``, in which case there is no timeout. If you specify a
+            value, each iteration is allowed to run only this number of
+            seconds. Once this value is exceded, the batch process is
+            stopped and treated as a failure.
         wait : bool, optional
-            Block execution until the batch is complete.  Default
-            ``True``.
+            Whether block execution must wait until the batch process is
+            complete. The default is ``True``.
 
         Returns
         -------
         list
-            A list containing the return values for ``func``.  Failed
-            runs will not return an output.  Since the returns are not
-            necessarily in the same order as ``iterable``, you may
-            want to add some sort of tracker to the return of your
-            user function``func``.
+            A list containing the return values for the function.
+            Failed runs do not return an output. Because return values
+            are not necessarily in the same order as the iterable,
+            you might want to add some sort of tracker to the return
+            of your function.
 
         Examples
         --------
         Run several input files while storing the final routine.  Note
-        how the user function to be mapped must use ``mechanical`` as the
-        first argument.  The function can have any number of
-        additional arguments.
+        how the function to map must use ``mechanical`` as the first argument.
+        The function can have any number of additional arguments.
 
         >>> from ansys.mechanical.core import LocalMechanicalPool
         >>> pool = LocalMechanicalPool(10)
@@ -429,7 +421,7 @@ class LocalMechanicalPool:
         timeout=None,
         wait=True,
     ):
-        """Run a batch of input files on the pool.
+        """Run a batch of input files on the Mechanical instances in the pool.
 
         Parameters
         ----------
@@ -440,11 +432,11 @@ class LocalMechanicalPool:
             ``True``. Setting this parameter to ``False`` might lead to
             instability.
         progress_bar : bool, optional
-            Whether to display a progress bar when running the batch of input
+            Whether to show a progress bar when running the batch of input
             files. The default is ``True``, but the progress bar is not shown
             when ``wait=False``.
         close_when_finished : bool, optional
-            Whether to close the Mechanical instances when running the batch
+            Whether to close the instances when running the batch
             of input files is finished. The default is ``False``.
         timeout : float, optional
             Maximum runtime in seconds for each iteration. The default is
@@ -508,8 +500,8 @@ class LocalMechanicalPool:
             Instance of Mechanical.
 
         int
-            Index within the pool of the Mechanical instance. By
-            default, this index is not returned.
+            Index within the pool of Mechanical instances. This index
+            is not returned by default.
 
         Examples
         --------
@@ -549,12 +541,12 @@ class LocalMechanicalPool:
         self.exit()
 
     def exit(self, block=False):
-        """Close out all instances in the pool.
+        """Exit all Mechanical instances in the pool.
 
         Parameters
         ----------
         block : bool, optional
-            Whether to wait until all processes close before closing out
+            Whether to wait until all processes close before exiting
             all instances in the pool. The default is ``False``.
 
         Examples

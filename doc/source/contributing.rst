@@ -3,10 +3,10 @@
 ==========
 Contribute
 ==========
-Overall guidance on contributing to a PyAnsys library appears in the
-`Contribute <https://dev.docs.pyansys.com/overview/contributing.html>`_ topic
+Overall guidance on contributing to a PyAnsys library appears in
+`Contribute <https://dev.docs.pyansys.com/overview/contributing.html>`_
 in the *PyAnsys Developer's Guide*. Ensure that you are thoroughly familiar
-with it, and all `Guidelines and Best Practices
+with this guide, paying particular attention to `Guidelines and Best Practices
 <https://dev.docs.pyansys.com/guidelines/index.html>`_, before attempting to
 contribute to PyMechanical.
  
@@ -14,8 +14,8 @@ The following contribution information is specific to PyMechanical.
 
 Clone the repository
 --------------------
-Run this code to clone and install the latest version of PyMechanical in
-development mode:
+To clone and install the latest version of PyMechanical in
+development mode, run:
 
 .. code::
 
@@ -29,10 +29,10 @@ Post issues
 -----------
 Use the `PyMechanical Issues <https://github.com/pyansys/pymechanical/issues>`_
 page to submit questions, report bugs, and request new features. When possible,
-you should use these templates:
+use these templates:
 
-* Bug report template
-* Feature request template
+* Bug report
+* Feature request
 
 If your issue does not fit into one of these template categories, create your own issue.
 
@@ -50,16 +50,8 @@ This version is automatically kept up to date via GitHub actions.
 Test PyMechanical
 -----------------
 If you do not have a licensed copy of Mechanical installed locally but
-still want to run PyMechanical unit tests, you must set up environment
+want to run PyMechanical unit tests, you must set up environment
 variables.
-
-**On Windows**
-
-.. code::
-
-    SET PYMECHANICAL_START_INSTANCE=False
-    SET PYMECHANICAL_PORT=<MECHANICAL Port> (default 10000)
-    SET PYMECHANICAL_IP=<MECHANICAL IP> (default 127.0.0.1)
 
 **On Linux**
 
@@ -70,6 +62,14 @@ variables.
     export PYMECHANICAL_IP=<MECHANICAL IP> (default 127.0.0.1)
 
 
+**On Windows**
+
+.. code::
+
+    SET PYMECHANICAL_START_INSTANCE=False
+    SET PYMECHANICAL_PORT=<MECHANICAL Port> (default 10000)
+    SET PYMECHANICAL_IP=<MECHANICAL IP> (default 127.0.0.1)
+
 The environment variables for your operating system tell PyMechanical 
 to attempt to connect to the existing Mechanical service by default
 when you use the ``launch_mechanical`` method.
@@ -77,9 +77,9 @@ when you use the ``launch_mechanical`` method.
 
 Code style
 ----------
-PyMechanical follows the PEP8 standard as outlined in the `PyAnsys Development Guide
-<https://dev.docs.pyansys.com>`_ and implements style checking using
-`pre-commit <https://pre-commit.com/>`_.
+As indicated in `Coding style <https://dev.docs.pyansys.com/coding-style/index.html>`_
+in the *PyAnsys Developer's Guide*, PyMechanical follows PEP8 guidelines. PyMechanical
+implements `pre-commit <https://pre-commit.com/>`_ for style checking.
 
 To ensure your code meets minimum code styling standards, run::
 

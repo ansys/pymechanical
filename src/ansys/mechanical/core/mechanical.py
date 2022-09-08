@@ -1095,7 +1095,7 @@ class Mechanical(object):
         enable_logging: bool, optional
             Whether to enable logging. The default is ``False``.
         log_level: str
-            Level of logging. The default is ``WARNING``. Options are ``"DEBUG"``, ``"INFO"``,
+            Level of logging. The default is ``"WARNING"``. Options are ``"DEBUG"``, ``"INFO"``,
             ``"WARNING"``, and ``"ERROR"``.
         timeout: int, optional
             Frequency in milliseconds for getting log messages from the server. The default is ``2000``.
@@ -1103,7 +1103,7 @@ class Mechanical(object):
         Returns
         -------
         str
-            Result from the script.
+            Script result.
         """
         self.verify_valid_connection()
         response = self.__call_run_jscript(script_block, enable_logging, log_level, timeout)
@@ -1151,7 +1151,7 @@ class Mechanical(object):
         enable_logging: bool, optional
             Whether to enable logging. The default is ``False``.
         log_level: str
-            Level of logging. The default is ``WARNING``. Options are ``"DEBUG"``, ``"INFO"``,
+            Level of logging. The default is ``"WARNING"``. Options are ``"DEBUG"``, ``"INFO"``,
             ``"WARNING"``, and ``"ERROR"``.
         timeout: int, optional
             Frequency in milliseconds for getting log messages from the server. The default is ``2000``.      
@@ -1159,7 +1159,7 @@ class Mechanical(object):
         Returns
         -------
         str
-            Result from the script.
+            Script result.
         """
         self.verify_valid_connection()
         response = self.__call_run_python_script(script_block, enable_logging, log_level, timeout)
@@ -1177,7 +1177,7 @@ class Mechanical(object):
         enable_logging: bool, optional
             Whether to enable logging. The default is ``False``.
         log_level: str
-            Level of logging. The default is ``WARNING``. Options are ``"DEBUG"``, ``"INFO"``,
+            Level of logging. The default is ``"WARNING"``. Options are ``"DEBUG"``, ``"INFO"``,
             ``"WARNING"``, and ``"ERROR"``.
         progress_interval: int, optional
             Frequency in milliseconds for getting log messages from the server. The default is ``2000``.
@@ -1185,7 +1185,7 @@ class Mechanical(object):
         Returns
         -------
         str
-            Result from the script.
+            Script result.
         """
         self.verify_valid_connection()
         self.log_debug(f"run_jscript_from_file started")
@@ -1205,7 +1205,7 @@ class Mechanical(object):
         enable_logging: bool, optional
             Whether to enable logging. The default is ``False``.
         log_level: str
-            Level of logging. The default is ``WARNING``. Options are ``"DEBUG"``, ``"INFO"``,
+            Level of logging. The default is ``"WARNING"``. Options are ``"DEBUG"``, ``"INFO"``,
             ``"WARNING"``, and ``"ERROR"``.
         progress_interval: int, optional
             Frequency in milliseconds for getting log messages from the server. The default is ``2000``.
@@ -1213,7 +1213,7 @@ class Mechanical(object):
         Returns
         -------
         str
-            Result from the script.
+            Script result.
         """
         self.verify_valid_connection()
         self.log_debug(f"run_python_script_from_file started")
@@ -1296,17 +1296,16 @@ class Mechanical(object):
         ----------
         file_name : str
             Local file to upload. Only the file name is needed if the file
-            is relative to current working directory. Otherwise, the full path
+            is relative to the current working directory. Otherwise, the full path
             is needed.
         file_location_destination : str, optional
-            File location to copy to on the Mechanical server. The default is
-            ``None``, in which the project directory is used.
+            File location on the Mechanical server to upload the file to. The default is
+            ``None``, in which case the project directory is used.
         chunk_size : int, optional
-            Chunk size in bytes. The default is `DEFAULT_CHUNK_SIZE``, in which case
-            1 MB is used.
+            Chunk size in bytes. The default is ``1048576``.
         progress_bar : bool, optional
-            Whether to display a progress bar using ``tqdm``. The defualt is ``True``.
-            Displaying a progress bar is helpful for showing upload progress.
+            Whether to show a progress bar using ``tqdm``. The defualt is ``True``.
+            A progress bar is helpful for viewing upload progress.
 
         Returns
         -------
@@ -1315,7 +1314,7 @@ class Mechanical(object):
 
         Examples
         --------
-        Uploada the "hsec.x_t" file while disabling the progress bar.
+        Upload the ``hsec.x_t`` file  with the progress bar not shown.
 
         >>> mechanical.upload('hsec.x_t', progress_bar=False)
         """
@@ -1358,7 +1357,7 @@ class Mechanical(object):
         chunk_size : int
             Chunk size in bytes.
         progress_bar : bool
-            Whether to display a progress bar using ``tqdm``.       
+            Whether to show a progress bar using ``tqdm``.       
         """
         pbar = None
         if progress_bar:
@@ -1494,32 +1493,32 @@ class Mechanical(object):
     ):  # pragma: no cover
         """Download files from the working directory of the Mechanical instance.
 
-        .. warning:: This feature is only available for Mechanical 2023 R1 or later.
+        .. warning::
+       This class is only available for Mechanical 2023 R1 and later.
 
         Parameters
         ----------
         files : str, list[str], tuple(str)
-            One or more names of files on the server to download. The files must be
+            One or more files on the Mechanical server to download. The files must be
             in the same directory as the Mechanical instance. You can use the
             :func:`Mechanical.directory <ansys.mechanical.core.mechanical.list_files>`
             function to list current files. Alternatively, you can specify *glob expressions* to
-            match file names. For example, you would use `'file*'` to match every file whose
-            name starts with `'file'`.
+            match file names. For example, you could use ``file*`` to match every file whose
+            name starts with ``file``.
         target_dir: str
             Default directory to copy the downloaded files to. The default is ``None``.
         chunk_size : int, optional
-            Chunk size in bytes. The default is ``"DEFAULT_CHUNK_SIZE"``, in which case
-            256 kB is used. The value must be less than 4 MB.
+            Chunk size in bytes. The default is ``262144``. The value must be less than 4 MB.
         progress_bar : bool, optional
-            Whether to display a progress bar using  ``tqdm``. The default is ``None``, in
-            which case a progress bar is shown. A progres bar is helpful for showing download
+            Whether to show a progress bar using  ``tqdm``. The default is ``None``, in
+            which case a progress bar is shown. A progress bar is helpful for viewing download
             progress.
         recursive : bool, optional
             Whether to use recursion when using a glob pattern search. The default is ``False``.
 
         Notes
         -----
-        There are some considerations to keep in mind when using this method:
+        There are some considerations to keep in mind when using the ``download()`` method:
 
         * The glob pattern search does not search recursively in remote instances.
         * In a remote instance, it is not possible to list or download files in a
@@ -1529,21 +1528,21 @@ class Mechanical(object):
 
         Examples
         --------
-        Download a single file:
+        Download a single file.
 
         >>> mechanical.download('file.out')
 
-        Download all files starting with ``file``:
+        Download all files starting with ``file``.
 
         >>> mechanical.download('file*')
 
-        Download every file in the Mechanical working directory:
+        Download every file in the Mechanical working directory.
 
         >>> mechanical.download('*.*')
 
         Alternatively, the recommended method is to use the
         :func:`Mechanical.download_project <ansys.mechanical.core.mechanical.Mechanical.download_project>`
-        to download all files:
+        method to download all files.
 
         >>> mechanical.download_project()
 
@@ -1615,7 +1614,7 @@ class Mechanical(object):
             Chunk size in bytes. The default is ``"DEFAULT_CHUNK_SIZE"``, in which case
             256 kB is used. The value must be less than 4 MB.
         progress_bar : bool, optional
-            Whether to display a progress bar using  ``tqdm``. The default is ``None``, in
+            Whether to show a progress bar using  ``tqdm``. The default is ``None``, in
             which case a progress bar is shown. A progres bar is helpful for showing download
             progress.
 
@@ -1653,7 +1652,7 @@ class Mechanical(object):
         filename : str
             Name of the local file to save chunks to.
         progress_bar : bool, optional
-            Whether to display a progress bar using  ``tqdm``. The default is ``False``.
+            Whether to show a progress bar using  ``tqdm``. The default is ``False``.
         target_name : str, optional
             Name of the target file on the server. The default is ``""``. The file
             must be in the same directory as the Mechanical instance. You can use the
@@ -1701,13 +1700,13 @@ class Mechanical(object):
         Parameters
         ----------
         extensions : list[str], tuple[str], optional
-            List of extensions for filtering the files before downloading them. The
+            List of extensions for filtering files before downloading them. The
             default is ``None``.
         target_dir : str, optional
             Path for downloading the files to. The default is ``None``.
         progress_bar : bool, optional
-            Whether to display a progress bar using ``tqdm``. The default is ``False``.
-            Displaying a progress bar is helpful for showing download progress.
+            Whether to show a progress bar using ``tqdm``. The default is ``False``.
+            A progress bar is helpful for viewing download progress.
 
         Returns
         -------
@@ -1862,7 +1861,7 @@ class Mechanical(object):
         Returns
         -------
         str
-            Result from the script.
+            Script result.
        
         """
         log_level_server = self.convert_to_server_log_level(log_level)
