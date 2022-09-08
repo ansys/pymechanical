@@ -39,8 +39,22 @@ class MechanicalLauncher:
         self.additional_args = additional_args
         self.additional_envs = additional_envs
         self.verbose = verbose
-        self.__ui_arg_list = ["-DSApplet", "-nosplash", "-notabctrl", "-AppModeMech"]
-        self.__batch_arg_list = ["-DSApplet", "-b", "-AppModeMech"]
+        self.__ui_arg_list = ["-DSApplet", "-nosplash", "-notabctrl"]
+        self.__batch_arg_list = ["-DSApplet", "-b"]
+
+        app_mode_mesh_exits = self._mode_exists("-AppModeMesh")
+        app_mode_rest_exits = self._mode_exists("-AppModeRest")
+
+        # if we don't have -AppModeMesh or -AppModeRest in the additional args
+        # then we want to start in -AppModeMech
+        if not (app_mode_mesh_exits or app_mode_rest_exits):
+            self.__ui_arg_list.append("-AppModeMech")
+            self.__batch_arg_list.append("-AppModeMech")
+
+    def _mode_exists(self, mode):
+        if mode.upper() in (mode_temp.upper() for mode_temp in self.additional_args):
+            return True
+        return False
 
     def launch(self):
         """Launch Mechanical with the gRPC server."""
