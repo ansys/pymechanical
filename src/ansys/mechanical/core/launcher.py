@@ -52,8 +52,10 @@ class MechanicalLauncher:
             self.__batch_arg_list.append("-AppModeMech")
 
     def _mode_exists(self, mode):
-        if mode.upper() in (mode_temp.upper() for mode_temp in self.additional_args):
-            return True
+        if self.additional_args is not None and isinstance(self.additional_args, list):
+            if mode.upper() in (mode_temp.upper() for mode_temp in self.additional_args):
+                return True
+
         return False
 
     def launch(self):
