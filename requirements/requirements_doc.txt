@@ -2,7 +2,7 @@ Sphinx==5.1.1
 ansys-sphinx-theme==0.5.1
 grpcio==1.43.0
 imageio-ffmpeg==0.4.7
-imageio==2.21.1
+imageio==2.21.3
 jupyter_sphinx==0.4.0
 jupyterlab>=3.2.8
 matplotlib==3.5.3
