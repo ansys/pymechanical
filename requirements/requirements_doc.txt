@@ -5,7 +5,7 @@ imageio-ffmpeg==0.4.7
 imageio==2.21.3
 jupyter_sphinx==0.4.0
 jupyterlab>=3.2.8
-matplotlib==3.5.3
+matplotlib==3.6.0
 numpydoc==1.4.0
 plotly==5.10.0
 pypandoc==1.8.1
