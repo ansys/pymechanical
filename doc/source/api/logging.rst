@@ -23,7 +23,7 @@ you can use any of the tools provided in this module to extend or modify
 these loggers.
 
 
-''Logger`` class
+``Logger`` class
 ----------------
 .. currentmodule:: ansys.mechanical.core.logging
 
