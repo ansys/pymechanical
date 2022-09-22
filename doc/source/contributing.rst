@@ -1,20 +1,21 @@
 .. _ref_contributing:
 
-============
-Contributing
-============
-Overall guidance on contributing to a PyAnsys library appears in the
-`Contributing <https://dev.docs.pyansys.com/overview/contributing.html>`_ topic
+==========
+Contribute
+==========
+Overall guidance on contributing to a PyAnsys library appears in
+`Contribute <https://dev.docs.pyansys.com/overview/contributing.html>`_
 in the *PyAnsys Developer's Guide*. Ensure that you are thoroughly familiar
-with it and all `Guidelines and Best Practices
-<https://dev.docs.pyansys.com/guidelines/index.html>`_ before attempting to
+with this guide, paying particular attention to `Guidelines and Best Practices
+<https://dev.docs.pyansys.com/guidelines/index.html>`_, before attempting to
 contribute to PyMechanical.
  
 The following contribution information is specific to PyMechanical.
 
-Cloning the PyMechanical Repository
------------------------------------
-Run this code to clone and install the latest version of PyMechanical in development mode:
+Clone the repository
+--------------------
+To clone and install the latest version of PyMechanical in
+development mode, run:
 
 .. code::
 
@@ -24,42 +25,35 @@ Run this code to clone and install the latest version of PyMechanical in develop
     pip install -e .
 
 
-Posting Issues
---------------
+Post issues
+-----------
 Use the `PyMechanical Issues <https://github.com/pyansys/pymechanical/issues>`_
-page to submit questions, report bugs, and request new features. When possible, we
-recommend that you use these issue templates:
+page to submit questions, report bugs, and request new features. When possible,
+use these templates:
 
-* Bug report template
-* Feature request template
+* Bug report
+* Feature request
 
-If your issue does not fit into one of these categories, create your own issue.
+If your issue does not fit into one of these template categories, create your own issue.
 
-To reach the project support team, email `pyansys.support@ansys.com <pyansys.support@ansys.com>`_.
+To reach the PyAnsys support team, email `pyansys.support@ansys.com <pyansys.support@ansys.com>`_.
 
-Viewing PyMechanical Documentation
-----------------------------------
+View documentation
+------------------
 Documentation for the latest stable release of PyMechanical is hosted at
 `PyMechanical Documentation <https://mechanical.docs.pyansys.com>`_.
 
 Documentation for the latest development version, which tracks the
-``main`` branch, is hosted at  `Development PyMechanical Documentation <https://dev.mechanical.docs.pyansys.com/>`_.
+``main`` branch, is hosted at `Development PyMechanical Documentation <https://dev.mechanical.docs.pyansys.com/>`_.
 This version is automatically kept up to date via GitHub actions.
 
-Testing Mechanical
-------------------
-If you do not have Mechanical installed locally but still want to run the
-unit testing, you must set up the following environment variables.
+Test PyMechanical
+-----------------
+If you do not have a licensed copy of Mechanical installed locally but
+want to run PyMechanical unit tests, you must set up environment
+variables.
 
-In Windows, use:
-
-.. code::
-
-    SET PYMECHANICAL_START_INSTANCE=False
-    SET PYMECHANICAL_PORT=<MECHANICAL Port> (default 10000)
-    SET PYMECHANICAL_IP=<MECHANICAL IP> (default 127.0.0.1)
-
-In Linux, use:
+**On Linux**
 
 .. code::
 
@@ -67,15 +61,25 @@ In Linux, use:
     export PYMECHANICAL_PORT=<MECHANICAL Port> (default 10000)
     export PYMECHANICAL_IP=<MECHANICAL IP> (default 127.0.0.1)
 
-This tells ``ansys.mechanical.core`` to attempt to connect to the existing
-Mechanical service by default when the ``launch_mechanical`` function is used.
+
+**On Windows**
+
+.. code::
+
+    SET PYMECHANICAL_START_INSTANCE=False
+    SET PYMECHANICAL_PORT=<MECHANICAL Port> (default 10000)
+    SET PYMECHANICAL_IP=<MECHANICAL IP> (default 127.0.0.1)
+
+The environment variables for your operating system tell PyMechanical 
+to attempt to connect to the existing Mechanical service by default
+when you use the ``launch_mechanical`` method.
 
 
-Code Style
+Code style
 ----------
-PyMechanical follows PEP8 standard as outlined in the `PyAnsys Development Guide
-<https://dev.docs.pyansys.com>`_ and implements style checking using
-`pre-commit <https://pre-commit.com/>`_.
+As indicated in `Coding style <https://dev.docs.pyansys.com/coding-style/index.html>`_
+in the *PyAnsys Developer's Guide*, PyMechanical follows PEP8 guidelines. PyMechanical
+implements `pre-commit <https://pre-commit.com/>`_ for style checking.
 
 To ensure your code meets minimum code styling standards, run::
 

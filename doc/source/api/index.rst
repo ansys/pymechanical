@@ -1,10 +1,9 @@
 .. _ref_index_api:
 
 =============
-API Reference
+API reference
 =============
-This section gives an overview of the API of several public PyMechanical
-classes, functions, and attributes.
+This section describes PyMechanical classes, functions, and attributes.
 
 .. toctree::
    :maxdepth: 2

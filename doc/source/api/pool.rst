@@ -1,6 +1,6 @@
 .. _ref_pool_api:
 
-Local Mechanical Pool
+Local Mechanical pool
 =====================
 
 .. currentmodule:: ansys.mechanical.core

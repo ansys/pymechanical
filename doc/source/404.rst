@@ -1,7 +1,7 @@
 :orphan:
 
-Oops!
-=====
+Oops
+====
 
 
 This is unexpected.

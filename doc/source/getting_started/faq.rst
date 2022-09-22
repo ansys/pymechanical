@@ -1,85 +1,75 @@
 .. _faq:
 
 **************************
-Frequently Asked Questions
+Frequently asked questions
 **************************
 
-A collection of frequently asked questions and their answers.
+How do you report issues?
+-------------------------
 
-How should I report issues?
----------------------------
+You can report issues with PyMechanical, such as bugs, feature requests,
+and documentation errors, on the repository's `Issues
+<https://github.com/pyansys/PyMechanical/issues>`_ page.
 
-Issues with pyansys such as bugs, feature requests, and documentation
-errors can be reported on the `GitHub page
-<https://github.com/pyansys/PyMechanical/issues>`_ as new issues.
-
-If you wish to ask more open-ended questions or wish to pick the
-brains of the community you can visit the `Discussions section
-<https://github.com/pyansys/PyMechanical/discussions>`_ of our GitHub
-repository.
+If you want to ask more open-ended questions or are seeking advice
+from experts in the community, post on the `Discussions
+<https://github.com/pyansys/PyMechanical/discussions>`_ page.
 
 
-What are the pros and cons of pyansys vs Ansys ACT?
----------------------------------------------------
+What are the pros and cons of PyMechanical versus Ansys ACT?
+------------------------------------------------------------
 
-It depends on your pipeline and software approach. Ansys Act is a
-workbench dependent approach where extensions are built from within
-the ACT App Builder and then run from within Ansys Mechanical.  If you
-intend to vary parameters, you'll then need to use Ansys optiSLang to
-vary those parameters and batch your solutions.
+Your scripting method depends on your pipeline and software approach.
+Ansys ACT is dependent on Ansys Workbench. You build extensions from within
+the ACT App Builder and then run them from within Ansys Mechanical. If you
+intend to vary parameters, you must use Ansys optiSLang and then
+batch your solutions.
 
-The main advantages that PyAnsys has over Ansys ACT are:
+PyMechanical's main advantages over ACT are:
 
-* Tight integration with python tools and open source modules
+* Tight integration with Python tools and open source modules
   alongside Ansys software.
-* Scripts are written in python. ACT uses .net and you can call
-  IronPython, and potentially other tools available within Ansys
-  Mechanical.
-* Being outside of Ansys Mechanical means that you can call our
-  application workflow without opening up the GUI for user
-  interaction.
-* It is compatible with modern Python (3), whereas ACT is only
-  compatible with IronPython (Python 2)
+* Scripts are written in Python. ACT uses .NET, and you can call
+  IronPython and potentially other tools available within Mechanical.
+* Being outside of Mechanical means that you can call your application
+  workflow without opening up the GUI for user interaction.
+* PyMechanical is compatible with modern Python (Python 3), whereas
+  ACT is only compatible with IronPython (Python 2).
 
-The best approach will depend on your workflow needs and how you'd
+The best approach depends on your workflow needs and how you would
 like to develop software.
 
 
-What are the main reasons to use this over other Ansys products like Workbench?
--------------------------------------------------------------------------------
-There will always be tasks where it's better to use one or the
-other. Workbench is great tool to rapidly prototype, mesh, set
-boundary conditions, and solve. It's where a ton of development has
-gone there are many features that make it easy to run
-analyses. However, it's limited by its IronPython scripting and you're
-unable call multiple products at either a granular or high level or
-use packages such as ``numpy``, ``scipy``, ``pytorch``,
-``tensorflow``, etc.  PyMechanical ties this in with Mechanical, that allows you
-to have a fully parametric workflow that leverages these machine
-learning tools.
+Why use PyMechanical over other Ansys products like Ansys Workbench?
+--------------------------------------------------------------------
+
+There are always tasks where one product is better than another.
+Workbench is great tool to rapidly prototype, mesh, set
+boundary conditions, and solve. A huge amount of Workbench development
+effort has yielded many features that make it easy to run analyses.
+However, Workbench is limited by its IronPython scripting. Additionally,
+you cannot call multiple products at either a granular or high-level or
+use Python packages such as ``numpy``, ``scipy``, ``pytorch``, and
+``tensorflow``. PyMechanical ties all of these features in with
+Mechanical, allowing you to have a fully parametric workflow that
+leverages these machine learning tools.
 
 
-
-Script Restart
---------------
-**Question**
-
-Sometimes I have difficulty to terminate the simulation. I
-have to close python and open it again.  I also need to clear all
-previous data such as the mesh.  Is there a better way?
-
-I am using:
+How do you restart a script?
+----------------------------
+If you have trouble terminating a simulation, you do not have use the
+following code to close Python, reopen it, and clear all previous data
+such as the mesh.
 
 .. code:: python
 
     import sys
     sys.modules[__name__].__dict__.clear()
 
-Is there a better way?
 
-**Solution**
+Exiting Python should clear the solution within Python. This is because 
+stopping the original process means that nothing should be in
+a new process.
 
-Exiting Python should clear the solution within Python should do it
-since if you kill the original process nothing should be in the new
-python process. As for clearing out Mechanical, it's just
-``mechanical.clear()`` or exiting and restarting Mechanical.
+To clear all data from Mechanical, either use the
+``mechanical.clear()`` function or exit and restart Mechanical.

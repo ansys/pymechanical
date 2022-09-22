@@ -1,35 +1,41 @@
 .. _using_standard_install:
 
-********************************************
-Using PyMechanical from the Standard Install
-********************************************
+***********************************************
+Using PyMechanical from a standard installation
+***********************************************
 
-The pyansys ``ansys-mechanical-core`` package requires either a local or
-remote instance of Mechanical to communicate with it.  This section covers
-launching and interfacing with Mechanical from a local instance by
-launching it from Python.
+The ``ansys-mechanical-core`` package requires either a local or
+remote instance of Mechanical to communicate with. This page describes
+how Mechanical is installed from the Ansys standard installer and
+describes how you launch and interface with Mechanical from Python.
 
-Installing Mechanical
----------------------
+Install Mechanical
+------------------
 
-Mechanical is installed by default from the standard installer.  When
-installing ANSYS, verify that the "Mechanical Products" option is
-checked under the "Structural Mechanics" option.  The standard
-installer options may change, but for reference see the following
-figure.
+Mechanical is installed by default from the Ansys standard installer. 
+When you run the standard installer, look under the **Structural Mechanics**
+heading to verify that the **Mechanical Products** checkbox is selected.
+Although options in the standard installer might change, this image provides
+a reference:
 
 .. figure:: ../images/unified_install_2023R1.jpg
     :width: 400pt
 
 
-Launching Mechanical
---------------------
+Launch Mechanical
+-----------------
+You can launch Mechanical locally or remotely.
 
-Launching Mechanical locally
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Launch Mechanical locally
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can use the ``launch_mechanical`` function to have Python startup Mechanical and
-automatically connect to it:
+When Mechanical is installed locally on your machine, you can use the
+``launch_mechanical`` method to launch and automatically connect to
+Mechanical. While this method provides the easiest and fastest
+way to launch Mechanical, it only works with a local Mechanical
+installation.
+
+Launch Mechanical locally with:
 
 .. code:: python
 
@@ -42,46 +48,62 @@ automatically connect to it:
     Software build date:Wednesday, August 10, 2022 4:28:15 PM
 
 
-This is the easiest and fastest way to get PyMechanical up and running. 
-But you need to have an ANSYS license server installed locally. 
+Launch Mechanical remotely
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Launching a gRPC Mechanical session
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-You can start Mechanical from the command line and then connect to it.
-To launch Mechanical on Windows (assuming a ``C:/Program Files/ANSYS Inc/v231`` installation) use:
+You can launch Mechanical remotely from the command line in gRPC
+mode and then manually connect to it.
+
+**On Windows**
+
+Assume that Mechanical is installed at ``C:/Program Files/ANSYS Inc/vXXX``
+, where ``XXX`` is the three-digit format for the version. For example,
+the path for 2023 R1 is typically ``C:/Program Files/ANSYS Inc/v231``.
+
+Launch Mechanical remotely in a gRPC session with:
 
 .. code::
 
     C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/.AnsysWBU.exe -DSApplet -AppModeMech -nosplash -notabctrl -grpc 10000
 
-Or on Linux (assuming a ``/usr/ansys_inc`` installation):
+**On Linux**
+
+Assume that Mechanical 2023 R1 is installed at ``/usr/ansys_inc``.
+
+Launch Mechanical remotely in a gRPC session with:
 
 .. code::
 
     /usr/ansys_inc/v231/aisol/.workbench -dsapplet -AppModeMech -nosplash -notabctrl -grpc 10000
 
-This starts up Mechanical in gRPC mode, and Mechanical should output:
+
+View server information
+~~~~~~~~~~~~~~~~~~~~~~~~
+As Mechanical starts in gRPC mode, you can see gRPC server information:
 
 .. code::
 
     Starting the grpc server at port 10000
     Started the grpc server at port 10000
 
-You can configure the port Mechanical starts on with the ``-grpc`` argument.  For
-example, you can startup the server to listen for connections at 
-port 10001 with:
+If you want to configure the port that Mechanical listens on, when you launch
+Mechanical, use the ``-grpc`` argument. For example, on Linux, launch Mechanical
+2023 R1 on port 10001 with:
 
 .. code::
 
-    /usr/ansys_inc/v211/ansys/bin/ansys211 -grpc 10001
+    /usr/ansys_inc/v231/ansys/bin/ansys231 -grpc 10001
 
 
-Connecting to a gRPC Mechanical session
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Connect to a Mechanical gRPC session
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A Mechanical gRPC server can be connected to either from the same host, or from an
-external host.  For example, you can connect to a Mechanical service
-running **locally** with:
+You can connect to a Mechanical gRPC session from the same host or from an external host.
+
+Assume that Mechanical is running locally at the default IP address (127.0.0.1) on the
+default port (10000).
+
+You would connect to it with:
 
 .. code::
 
@@ -89,42 +111,46 @@ running **locally** with:
     >>> mechanical = Mechanical()
 
 
-This assumes that your Mechanical service is running locally on the default ip 
-(127.0.0.1) and on the default port (10000).
+Assume that a remote instance of Mechanical has been started in gRPC mode. To connect to
+the computer on your local area network that is running Mechanical, you can use either
+an IP address and port or hostname and port.
 
-If you want to connect to a **remote** instance of Mechanical and you know the IP 
-address of that instance, you can connect to it.
-For example, if on your local network at IP ``192.168.0.1`` there is a
-computer running Mechanical on the port 50052, you can connect to it with
+**IP address and port**
+
+Assume that Mechanical is running remotely at IP address ``192.168.0.1`` on port ``50052``.
+
+You would connect to it with:
 
 .. code::
 
-    >>> mechanical = Mechanical('192.168.0.1', port=10000)
+    >>> mechanical = Mechanical('192.168.0.1', port=50052)
 
-Alternatively you can use a hostname:
+**Hostname and port**
+
+Assume that Mechanical is running remotely at hostname ``"myremotemachine``on port ``1000``.
+
+You would connect to it with:
 
 .. code:: python
 
     >>> mechanical = Mechanical('myremotemachine', port=10000)
 
-Please note that you must have started Mechanical in gRPC mode in the PC with
-the mentioned IP/hostname for this to work.
-If you have Mechanical installed on your local host, you
-can use ``launch_mechanical`` to both start and connect to Mechanical.
 
+Launching issues
+----------------
 
-Debugging Launching Mechanical
-------------------------------
-For any number of reasons, Python may fail to launch Mechanical.  Here's
-some approaches to debug the start:
+For any number of reasons, launching Mechanical can fail. Some approaches
+follow for debugging launch failures.
 
+Manually set the location of the executable file
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Manually Set the Executable Location
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-If you have a non-standard install, ``pymechanical`` may be unable find
-your installation.  If that's the case, provide the location of Mechanical
-as the first parameter to ``launch_mechanical``.  For example, on Windows,
-this will be:
+If you have a non-standard installation of Mechanical, PyMechanical might
+not be able to find your installation. In this case, you should manually
+set the location of your Mechanical executable file as the first parameter
+for the ``launch_mechanical()`` method.
+
+**On Windows**
 
 .. code:: python
 
@@ -132,7 +158,8 @@ this will be:
     >>> exec_loc = 'C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe'
     >>> mechanical = launch_mechanical(exec_loc)
 
-For Linux:
+
+**On Linux**
 
 .. code:: python
 
@@ -140,64 +167,79 @@ For Linux:
     >>> exec_loc = '/usr/ansys_inc/v231/aisol/.workbench'
     >>> mechanical = launch_mechanical(exec_loc)
 
-Should this fail to launch or hang while launching, pass
-``verbose_mechanical=True`` when using ``launch_mechanical``.  This will print
-the output of Mechanical within Python and can be used to debug why Mechanical
-isn't launching.  Output will be limited on Windows due to the way
-Mechanical launches on Windows.
 
+If when using the ``launch_mechanical()`` method, Mechanical still
+fails to launch or hangs while launching, pass the ``verbose_mechanical=True``
+parameter. This prints the output of Mechanical in the Python console.
+You can then use this output to debug why Mechanical isn't launching.
 
-Debug Launch Issues
-~~~~~~~~~~~~~~~~~~~
-In some cases, it may be necessary to debug why Mechanical isn't launching
-by running the launch command manually from the command line.  In
-Windows, open up a command prompt and run the following (version
-dependent) command:
+.. Note::
+    On Windows, output is limited because of the way Mechanical launches.
+
+Debug from the command line
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In some cases, debugging why Mechanical isn't launching might require
+running the launch command from the command line. The following
+Windows and Linux code examples assume that you are launching Mechanical
+2023 R1.
+
+**On Windows**
+
+Open a command prompt and run this command:
 
 .. code::
 
     "C:/Program Files/ANSYS Inc/v231/aiso/bin/winx64/AnsysWBU.exe -DSApplet -AppModeMech -nosplash -notabctrl -grpc 10000"
 
 .. note::
-   Powershell users can run the above without quotes.
+   PowerShell users can run the preceding command without including the opening and
+   closing quotation marks.
 
 
-For Linux:
+**On Linux**
 
 .. code::
 
     /usr/ansys_inc/v231/aisol/.workbench -DSApplet -AppModeMech -nosplash -notabctrl -grpc 10000
 
-If this command doesn't launch, you could have a variety of issues, including:
+
+If the preceding command for your operating system doesn't launch Mechanical, you might have
+a variety of issues, including:
 
   - License server setup
   - Running behind a VPN
   - Missing dependencies
 
 
-Licensing Issues
+Licensing issues
 ----------------
 
-PADT generally has a great blog regarding ANSYS issues, and licensing is always a common issue (for example `Changes to Licensing at ANSYS 2023R1 <https://www.padtinc.com/blog/15271-2/>`_).  Should you be responsible for maintaining Ansys licensing or have a personal install of Ansys, please check the online Ansys licensing documentation at `Installation and Licensing <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/prod_page.html?pn=Installation%20and%20Licensing&pid=InstallationAndLicensing&lang=en>`_.
+`PADT <https://www.padtinc.com/>`_ has an `Ansys <https://www.padtinc.com/simulation/ansys-simulation-products/>`_
+product section. Posts about licensing are common. For example, see
+`Changes to Licensing at ANSYS 2023R1 <https://www.padtinc.com/blog/15271-2/>`_.
 
-For an in-depth explanation, please see the :download:`ANSYS Licensing Guide <ANSYS_Inc._Licensing_Guide.pdf>`.
+If you are responsible for maintaining an Ansys license or have a personal installation
+of Ansys, you likely can access the **Installation and Licensing** section of the
+Ansys Help, where you can view or download the *Ansys, Inc. Licensing Guide* for
+comprehensive licensing information.
 
 
-VPN Issues
+VPN issues
 ----------
-Sometimes, Mechanical has issues starting when VPN software is running. Refer the Mechanical documentation for mere help.
+Sometimes, Mechanical has issues starting when VPN software is running. For more information,
+see the *Mechanical User's Guide* in the **Mechanical Application** section of the Ansys Help.
 
 
-Missing Dependencies on Linux
+Missing dependencies on Linux
 -----------------------------
-Some Linux installations may be missing required dependencies.  Should
-you get errors like ``libXp.so.6: cannot open shared object file: No
-such file or directory``, you may be missing some necessary
-dependencies.
+Some Linux installations might be missing required dependencies. For example, this error
+might be raised::
+
+    libXp.so.6: cannot open shared object file: No such file or directory
 
 CentOS
 ~~~~~~
-On CentOS 7, you can install these with:
+On CentOS 7, you can install required dependencies with:
 
 .. code::
 
@@ -206,24 +248,30 @@ On CentOS 7, you can install these with:
 
 Ubuntu
 ~~~~~~
-Since Mechanical isn't officially supported on Ubuntu, it's a bit more
-difficult to setup, but it's still possible.  On Ubuntu 20.04 with
-Ansys 2023R1, install the following:
+Because Mechanical isn't officially supported on Ubuntu, it is a bit more
+difficult to install required dependencies. However, it is still possible.
+
+On Ubuntu 20.04 with Ansys 2023 R1, you can install all required dependencies
+except for the outdated ``libxp6`` package with:
 
 .. code::
 
     sudo apt-get install libx11-6 libgl1 libxm4 libxt6 libxext6 libxi6 libx11-6 libsm6 libice6 libxxf86vm1 libglu1
 
-This takes care of everything except for ``libxp6``.  Should you be
-using Ubuntu 16.04, you can install that simply with ``sudo apt
-install libxp6``.  However, on Ubuntu 18.04+, you must manually
-download and install the package.
+If you are using Ubuntu 16.04, you can install the ``libxp6`` package with:
 
-Since ``libxpl6`` also pre-depends on ``multiarch-support``, which is
-also outdated, it must be removed, otherwise you'll have a broken
-package configuration.  The following step downloads and modifies the
-``libxp6`` package to remove the ``multiarch-support`` dependency, and
-then installs it via ``dpkg``.
+
+.. code::
+
+    sudo apt install libxp6
+
+However, on Ubuntu 18.04 and later, you must manually download and install the ``libxp6``
+package. Because this package is dependent on another outdated package, ``multiarch-support``,
+you must remove the ``multiarch-support`` package. Otherwise, the package configuration
+is broken.
+
+This code downloads and modifies the ``libxp6`` package to remove the ``multiarch-support``
+package dependency and then installs it with ``dpkg``:
 
 .. code::
 
@@ -235,3 +283,4 @@ then installs it via ``dpkg``.
     sudo bash -c "tar c postinst postrm md5sums control | gzip -c > control.tar.gz"
     sudo ar rcs libxp6_1.0.2-2_amd64_mod.deb debian-binary control.tar.gz data.tar.xz
     sudo dpkg -i ./libxp6_1.0.2-2_amd64_mod.deb
+

@@ -1,9 +1,9 @@
 .. _launcher_api:
 
-Helper Functions
+Helper functions
 ================
-These methods simplify launching Mechanical, converting existing scripts,
-or automating other tasks.
+These methods provide helper functions for launching Mechanical, converting
+existing scripts, and automating other tasks.
 
 .. currentmodule:: ansys.mechanical.core
 

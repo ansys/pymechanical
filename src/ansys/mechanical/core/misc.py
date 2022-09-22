@@ -9,11 +9,11 @@ from threading import Thread
 
 
 def is_windows():
-    """Find if the host machine is windows or not.
+    """Check if the host machine is on Windows.
 
     Returns
     -------
-    Returns True if the host machine is Windows otherwise False
+    ``True`` if the host machine is on Windows, ``False`` otherwise.
     """
     if os.name == "nt":
         return True
@@ -22,7 +22,14 @@ def is_windows():
 
 
 def get_mechanical_bin(release_version):
-    """Identify the Mechanical executable based on the release version (e.g. "231")."""
+    """Get the path for the Mechanical executable file based on the release version.
+
+    Parameters
+    ----------
+    release_version: str
+        Mechanical version using the three-digit format. For example, ``"231"`` for
+        2023 R1.
+    """
     if is_windows():  # pragma: no cover
         program_files = os.getenv("PROGRAMFILES", os.path.join("c:\\", "Program Files"))
         ans_root = os.getenv(
@@ -65,7 +72,7 @@ def threaded_daemon(func):
 
 
 def no_return(func):
-    """Decorate a function with this decorator to to return nothing from the wrapped function."""
+    """Decorate a function with this decorator to return nothing from the wrapped function."""
 
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -75,21 +82,38 @@ def no_return(func):
 
 
 def check_valid_ip(ip):
-    """Check for valid IP address."""
+    """Check if the IP address is valid.
+
+    Parameters
+    ----------
+    ip : str
+        IP address to check.
+
+    """
     if ip.lower() != "localhost":
         ip = ip.replace('"', "").replace("'", "")
         socket.inet_aton(ip)
 
 
 def check_valid_port(port, lower_bound=1000, high_bound=60000):
-    """Check for valid port."""
+    """Check if the port is valid.
+
+    Parameters
+    ---------
+    port : int
+        Port to check.
+    lower_bound : int, optional
+       Lowest possible value for the port. The default is ``1000``.
+    high_bound : int, optional
+       Highest possible value for the port. The default is ``60000``.
+    """
     if not isinstance(port, int):
-        raise ValueError("The 'port' parameter should be an integer.")
+        raise ValueError("The 'port' parameter must be an integer.")
 
     if lower_bound < port < high_bound:
         return
     else:
-        raise ValueError(f"'port' values should be between {lower_bound} and {high_bound}.")
+        raise ValueError(f"'port' values must be between {lower_bound} and {high_bound}.")
 
 
 def check_valid_start_instance(start_instance):
@@ -98,32 +122,43 @@ def check_valid_start_instance(start_instance):
 
     Parameters
     ----------
-    start_instance : str
+    start_instance : str, bool
         Value obtained from the corresponding environment variable.
 
     Returns
     -------
     bool
-        Returns ``True`` if ``start_instance`` is ``True`` or ``"True"``,
-        ``False`` if otherwise.
+        ``True`` if ``start_instance`` is ``True`` or ``"True"``,
+        ``False`` otherwise.
 
     """
     if not isinstance(start_instance, (str, bool)):
-        raise ValueError("The value 'start_instance' should be an string or a boolean.")
+        raise ValueError("The value for 'start_instance' should be an string or a boolean.")
 
     if isinstance(start_instance, bool):
         return start_instance
 
     if start_instance.lower() not in ["true", "false"]:
         raise ValueError(
-            f"The value 'start_instance' should be equal to 'True' or 'False' (case insensitive)."
+            f"The value for 'start_instance' should be 'True' or 'False' (case insensitive)."
         )
 
     return start_instance.lower() == "true"
 
 
 def is_float(input_string):
-    """Return true when a string can be converted to a float."""
+    """Check if a string can be converted to a float.
+
+    Parameters
+    ----------
+    input_string : str
+        String to check.
+
+    Returns
+    -------
+    bool
+        ``True`` when conversion is possible, ``False`` otherwise.
+    """
     try:
         float(input_string)
         return True
@@ -132,18 +167,25 @@ def is_float(input_string):
 
 
 def random_string(string_length=10, letters=string.ascii_lowercase):
-    """Generate a random string of fixed length."""
+    """Generate a random string of a fixed length.
+
+    Parameters
+    ----------
+    string_length : int, optional
+       Length of the random string. the default is ``10``.
+    letters : str
+
+    """
     return "".join(random.choice(letters) for _ in range(string_length))
 
 
 def _check_has_ansys():
-    """Safely wraps check_valid_ansys.
+    """Check if the local installation of Ansys is in a standard location.
 
     Returns
     -------
-    has_ansys : bool
-        True when this local installation has ANSYS installed in a
-        standard location.
+    bool
+        ``True`` if successful, ``False`` otherwise.
     """
     from ansys.mechanical.core.mechanical import check_valid_mechanical
 

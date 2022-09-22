@@ -3,7 +3,7 @@ Logging
 To make the logging of events consistent, PyMechanical has a specific
 logging architecture with global and local logging instances.
 
-For these two types of loggers, the default log message format is:
+For these two types of loggers, the default format for a log message is:
 
 .. code:: python
 
@@ -18,13 +18,13 @@ which might not be set yet when the log record is created (for
 example, during the initialization of the library).  If a Mechanical
 instance is not yet created, this field might be empty.
 
-Because both types of loggers are based in the Python module
-``logging``, you can use any of the tools provided in this module to
-extend or modify these loggers.
+Because both types of loggers are based in the Python ``logging`` module,
+you can use any of the tools provided in this module to extend or modify
+these loggers.
 
 
-Logging API
------------
+``Logger`` class
+----------------
 .. currentmodule:: ansys.mechanical.core.logging
 
 .. autosummary::

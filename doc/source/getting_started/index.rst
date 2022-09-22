@@ -1,13 +1,15 @@
 ===============
-Getting Started
+Getting started
 ===============
-To use PyMechanical, you need to have a local installation of Mechanical.  The
-version of Mechanical installed will dictate the interface and features
-available to you.
+To run PyMechanical, you must have a licensed copy of Ansys Mechanical
+installed locally. The version installed dictates the interface and
+features that are available to you.
 
-Visit `Ansys <https://www.ansys.com/>`_ for more information on
-getting a licensed copy of Mechanical.
+PyMechanical is compatible with Mechanical 2023 R1 and later on Windows
+and Linux. Later releases provide significantly better support and features.
 
+For more information, see the `Ansys Mechanical <https://www.ansys.com/products/structures/ansys-mechanical>`_ 
+page on the Ansys website.
 
 .. toctree::
    :hidden:
@@ -19,31 +21,36 @@ getting a licensed copy of Mechanical.
    faq
    wsl
 
-************
-Installation
-************
+Install the package
+-------------------
+The ``ansys.mechanical.core`` package supports Python 3.6 through
+Python 3.9 on Windows, Mac, and Linux.
 
-Python Module
-~~~~~~~~~~~~~
-The ``ansys.mechanical.core`` package currently supports Python 3.6 through
-Python 3.9 on Windows, Mac OS, and Linux.
+You should consider installing PyMechanical in a virtual environment.
+For more information, see Python's
+`venv -- Creation of virtual environments <https://docs.python.org/3/library/venv.html>`_.
 
-Install the latest release from `PyPi
+Install the latest package from `PyPi
 <https://pypi.org/project/ansys-mechanical-core/>`_ with:
 
 .. code::
 
    pip install ansys-mechanical-core
 
-Alternatively, install the latest from `PyMechanical GitHub
-<https://github.com/pyansys/pymechanical/issues>`_ via:
+
+Alternatively, install the latest package from `GitHub
+<https://github.com/pyansys/pymechanical/>`_ with:
 
 .. code::
 
    pip install git+https://github.com/pyansys/pymechanical.git
 
 
-For a local "development" version, install with:
+Installing a *development* version of PyMechanical allows you to make modifications
+locally and have these changes reflected in your setup once you restart the
+Python kernel.
+
+Install a local development version with:
 
 .. code::
 
@@ -51,51 +58,31 @@ For a local "development" version, install with:
    cd pymechanical
    pip install -e .
 
-This will allow you to install the pymechanical ``ansys-mechanical-core`` module
-and modify it locally and have the changes reflected in your setup
-after restarting the Python kernel.
 
+Install offline
+---------------
+If you want to install PyMechanical on a computer without access to the internet,
+you can download a wheelhouse archive that corresponds to your
+machine architecture from the `Releases page <https://github.com/pyansys/pymechanical/releases>`_.
 
-Offline Installation
-~~~~~~~~~~~~~~~~~~~~
-If you lack an internet connection on your install machine, the recommended way
-of installing PyMechanical is downloading the wheelhouse archive from the `Releases
-Page <https://github.com/pyansys/pymechanical/releases>`_ for your corresponding
-machine architecture.
-
-Each wheelhouse archive contains all the python wheels necessary to install
+Each wheelhouse archive contains all the Python wheels necessary to install
 PyMechanical from scratch on Windows and Linux for Python 3.7 and 3.9. You can install
-this on an isolated system with a fresh python or on a virtual environment.
+a wheelhouse archive on an isolated system with a fresh Python installation or on a
+virtual environment.
 
-For example, on Linux with Python 3.7, unzip it and install it with the following:
+For example, on Linux with Python 3.7, unzip the wheelhouse archive and install it with:
 
 .. code::
 
    unzip PyMechanical-v0.62.dev1-wheelhouse-Linux-3.7.zip wheelhouse
    pip install ansys-mechanical-core -f wheelhouse --no-index --upgrade --ignore-installed
 
-If you're on Windows with Python 3.9, unzip to a ``wheelhouse`` directory and
-install using the same command as above.
+If you are on Windows with Python 3.9, unzip the wheelhouse archive to a ``wheelhouse``
+directory and then install using the preceding code.
 
-Consider installing using a `virtual environment
-<https://docs.python.org/3/library/venv.html>`_.
-
-
-Ansys Software Requirements
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-For the latest features, you will need a copy of Mechanical 2023R1
-installed locally, but PyMechanical is compatible with Mechanical 2023R1 and newer
-on Windows and Linux.
-
-.. note::
-
-    The latest versions of Ansys provide significantly better support
-    and features.
-
-
-Verify Your Installation
-~~~~~~~~~~~~~~~~~~~~~~~~
-Check that you can start Mechanical from Python by running:
+Verify your installation
+------------------------
+Verify your installation by starting Mechanical from Python:
 
 .. code:: python
 
@@ -107,6 +94,6 @@ Check that you can start Mechanical from Python by running:
     Product Version:231
     Software build date:Wednesday, August 10, 2022 4:28:15 PM
 
-If you see a response from the server, congratulations!  You're ready
-to get started using Mechanical as a service.  For details regarding the
-PyMechanical interface, see :ref:`ref_mechanical_user_guide`.
+If you see a response from the server, you can begin using Mechanical
+as a service. For information on the PyMechanical interface, see
+:ref:`ref_mechanical_user_guide`.

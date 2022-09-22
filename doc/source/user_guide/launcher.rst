@@ -1,36 +1,38 @@
-Initial Setup and Launching Mechanical Locally
+Initial setup for launching Mechanical locally
 ----------------------------------------------
-To run, ``ansys.mechanical.core`` needs to know the location of the Mechanical
-binary.  Most of the time this can be automatically determined, but
-non-standard installs will need to provide the location of Mechanical.
-When running for the first time, ``ansys-mechanical-core`` will request the
-location of the Mechanical executable if it cannot automatically find it.
-You can test your installation of PyMechanical and set it up by running
-the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>`:
+To run, PyMechanical must know the location of your Mechanical installation.
+Most of the time, PyMechanical can determine this location automatically. However,
+if you have a non-standard installation, you must provide this location.
+
+To test and set up your installation of PyMechanical, run the
+:func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>`
+method:
 
 .. code:: python
 
     from ansys.mechanical.core import launch_mechanical
     mechanical = launch_mechanical()
 
-Python will automatically attempt to detect your Mechanical binary based on
-environmental variables.  If it is unable to find a copy of Mechanical, you
-will be prompted for the location of the Mechanical executable.  Here is a
-sample input for Linux:
+The first time that you run this method, PyMechanical attempts to detect the location
+of your Mechanical installation based on environmental variables. If it cannot find
+a Mechanical installation, PyMechanical asks you to supply the location of the
+Mechanical executable file.
+
+**On Linux**
 
 .. code::
 
     Enter location of Mechanical executable: /usr/ansys_inc/v231/aisol/.workbench
 
-and for Windows:
+**On Windows**
 
 .. code::
 
     Enter location of Mechanical executable: C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe
 
-The settings file is stored locally and you will not not need to enter
-the path again.  If you need to change the default ansys path
-(i.e. changing the default version of Mechanical), run the following:
+The settings file for Mechanical is stored locally. You do not need to enter
+the path again. If you must change the path, perhaps to change the default
+version of Mechanical, run the following:
 
 .. code:: python
 
@@ -38,11 +40,13 @@ the path again.  If you need to change the default ansys path
     new_path = 'C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe'
     pymechanical.change_default_mechanical_path(new_path)
 
-Also see :func:`change_default_ansys_path() <ansys.mechanical.core.change_default_mechanical_path>` and
-:func:`find_mechanical() <ansys.mechanical.core.find_mechanical>`.
+For more information, see the :func:`change_default_ansys_path() <ansys.mechanical.core.change_default_mechanical_path>`
+and :func:`find_mechanical() <ansys.mechanical.core.find_mechanical>` methods.
 
-Additionally, it is possible to specify the executable using the keyword argument ``exec_file``. 
-In Linux:
+Additionally, you can use the ``exec_file`` keyword argument to specify the location of the
+Mechanical executable file. 
+
+**On Linux**
 
 .. code:: python
 
@@ -51,7 +55,7 @@ In Linux:
     mechanical = launch_mechanical(exec_file='/usr/ansys_inc/v231/aisol/.workbench')
 
 
-And in Windows:
+**On Windows**
 
 .. code:: python
 
@@ -59,7 +63,8 @@ And in Windows:
 
     mechanical = launch_mechanical(exec_file='C:\\Program File\\ANSYS Inc\\v231\\aisol\\bin\\winx64\\AnsysWBU.exe')
 
-You could also specify a custom executable by adding the correspondent flag (``-custom``) to the additional switches keyword argument.
+To specify a custom executable, you can add the ``-custom`` flag to the ``additional _switches``
+keyword argument:
 
 .. code:: python
 
@@ -70,8 +75,7 @@ You could also specify a custom executable by adding the correspondent flag (``-
     mechanical = launch_mechanical(additional_switches=add_switch)
 
 
-
-API Reference
+API reference
 ~~~~~~~~~~~~~
-For more details for controlling how Mechanical launches locally, see the
-function description of :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>`.
+For more information on controlling how Mechanical launches locally, see the description
+of the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` method.
