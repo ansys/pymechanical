@@ -49,7 +49,7 @@ Alternatively, you can use this code:
 This alternative code ensures that all the handlers are set to the
 input log level.
 
-By default, this logger does not log to a file. If you want to do so,
+By default, this logger does not log to a file. If you want,
 you can add a file handler:
 
 .. code:: python
@@ -617,7 +617,7 @@ def addfile_handler(logger, filename=FILE_NAME, level=LOG_LEVEL, write_headers=F
     Returns
     -------
     logger
-        Logger or Logger object.
+        Logger object.
     """
     file_handler = logging.FileHandler(filename)
     file_handler.setLevel(level)
@@ -654,7 +654,7 @@ def add_stdout_handler(logger, level=LOG_LEVEL, write_headers=False):
     Returns
     -------
     logger
-        Logger or Logger object.
+        Logger object.
     """
     std_out_handler = logging.StreamHandler()
     std_out_handler.setLevel(level)

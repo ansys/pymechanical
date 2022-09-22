@@ -556,7 +556,7 @@ class Mechanical(object):
             Maximum allowable time for connecting to the Mechanical server.
             The default is ``60.0``.
         loglevel : str, optional
-            Level of messages to print to the console. The default is ``WARING``.
+            Level of messages to print to the console. The default is ``WARNING``.
 
             - ``WARNING`` prints only Ansys warning messages.
             - ``ERROR`` prints only Ansys error messages.
@@ -573,7 +573,7 @@ class Mechanical(object):
             to run a script within Mechanical without PyMechanical.
         cleanup_on_exit : bool, optional
             Whether to exit Mechanical when Python exits. The default is ``False``,
-            in which case Mechanical is exited when the garbage for this Mechanical
+            in which case Mechanical is not exited when the garbage for this Mechanical
             instance is collected.
         channel : grpc.Channel, optional
             gRPC channel to use for the connection. The default is ``None``.
@@ -586,7 +586,7 @@ class Mechanical(object):
             :func:`mecahnical.exit <ansys.mechanical.core.Mechanical.exit>`
             function is called.
         keep_connection_alive : bool, optional
-            Whether to keeps the gRPC connection alive by running a background thread
+            Whether to keep the gRPC connection alive by running a background thread
             and making dummy calls for remote connections. The default is ``True``.
 
         Examples
@@ -878,7 +878,7 @@ class Mechanical(object):
 
         if status.status != health_pb2.HealthCheckResponse.SERVING:
             raise MechanicalRuntimeError(
-                "Unable to enable health check and/or connect to " " the Mechanical server"
+                "Cannot enable health check and/or connect to the Mechanical server."
             )
 
         self._health_response_queue = Queue()
@@ -994,7 +994,7 @@ class Mechanical(object):
         ----------
         cleanup_on_exit : bool, optional
             Whether to exit Mechanical when Python exits. The default is ``True``.
-            When ``False``, Mechanical is exited when the garbage for this
+            When ``False``, Mechanical is not exited when the garbage for this
             Mechanical instance is collected.
         """
         if not self._local:
@@ -1254,7 +1254,7 @@ class Mechanical(object):
 
         self.log_debug("In shutdown.")
         request = mechanical_pb2.ShutdownRequest(force_exit=force)
-        self.log_debug("Shutdown is running.")
+        self.log_debug("Shutting down...")
 
         self._busy = True
         try:
@@ -2162,7 +2162,7 @@ def launch_mechanical(
         Whether to launches mechanical in batch mode. The default is ``True``.
         When ``False``, Mechanical launches in UI mode.
     loglevel : str, optional
-            Level of messages to print to the console. The default is ``WARNING``
+        Level of messages to print to the console. The default is ``WARNING``.
             Options are ``"WARNING"``, ``"ERROR"``, and ``"INFO"``.
 
             - ``WARNING`` prints only Ansys warning messages.
@@ -2188,7 +2188,7 @@ def launch_mechanical(
         The default is ``120``.
     port : int, optional
         Port to launch the Mechanical gRPC server on. The default is ``None``,
-        in which case ``10000`` is used. The fFinal port is the first
+        in which case ``10000`` is used. The final port is the first
         port available after (or including) this port. You can override the
         default behavior of this parameter with the
         ``PYMECHANICAL_PORT=<VALID PORT>`` environment variable.
@@ -2216,7 +2216,7 @@ def launch_mechanical(
        a fresh environment is provided when you connect to Mechanical.
     cleanup_on_exit : bool, optional
         Whether to exit Mechanical when Python exits. The default is ``True``.
-        When ``False``, Mechanical is exited when the garbage for this Mechanical
+        When ``False``, Mechanical is not exited when the garbage for this Mechanical
         instance is collected.
     version : str, optional
         Mechanical version to run in the three-digit format. For example, ``"231"``
