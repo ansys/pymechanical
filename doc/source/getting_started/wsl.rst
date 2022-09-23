@@ -209,7 +209,7 @@ Successive runs should restart the container. Or, delete the container and rerun
     docker stop mechanical
     docker container prune
 
-    docker run -e ANSYSLMD_LICENSE_FILE=1055@host.docker.internal --restart always --name mechanical -p 10001:50052 ghcr.io/pyansys/pymechanical/mechanical > log.txt
+    docker run -e ANSYSLMD_LICENSE_FILE=1055@host.docker.internal --restart always --name mechanical -p 10001:10000 ghcr.io/pyansys/pymechanical/mechanical > log.txt
 
 
 This creates a ``log.txt``file in your current directory location.

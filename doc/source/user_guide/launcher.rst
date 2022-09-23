@@ -40,7 +40,7 @@ version of Mechanical, run the following:
     new_path = 'C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe'
     pymechanical.change_default_mechanical_path(new_path)
 
-For more information, see the :func:`change_default_ansys_path() <ansys.mechanical.core.change_default_mechanical_path>`
+For more information, see the :func:`change_default_mechanical_path() <ansys.mechanical.core.change_default_mechanical_path>`
 and :func:`find_mechanical() <ansys.mechanical.core.find_mechanical>` methods.
 
 Additionally, you can use the ``exec_file`` keyword argument to specify the location of the
@@ -63,8 +63,7 @@ Mechanical executable file.
 
     mechanical = launch_mechanical(exec_file='C:\\Program File\\ANSYS Inc\\v231\\aisol\\bin\\winx64\\AnsysWBU.exe')
 
-To specify a custom executable, you can add the ``-custom`` flag to the ``additional _switches``
-keyword argument:
+You can use the ``additional_switches`` keyword argument to specify additional arguments.
 
 .. code:: python
 

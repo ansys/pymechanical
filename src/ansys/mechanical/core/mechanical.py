@@ -126,15 +126,12 @@ atexit.register(_cleanup_gallery_instance)
 
 
 def _version_from_path(path):
-    """Extract the Ansys version from a path.
+    """Extract the Mechanical version from a path.
 
     Generally, the version of Mechanical is contained in the path:
 
     - On Windows, for example: ``C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe``
     - On Linux, for example: ``/usr/ansys_inc/v231/aisol/.workbench``
-
-    Note that in the Mechanical executable file, you must rely on the version
-    in the path.
 
     Parameters
     ----------
@@ -151,7 +148,7 @@ def _version_from_path(path):
     # replace \\ with / to account for possible windows path
     matches = re.findall(r"v(\d\d\d)", path.replace("\\", "/"), re.IGNORECASE)
     if not matches:
-        raise RuntimeError(f"Unable to extract Ansys version from {path}.")
+        raise RuntimeError(f"Unable to extract Mechanical version from {path}.")
     return int(matches[-1])
 
 
@@ -235,7 +232,7 @@ def create_ip_file(ip, path):
 
 
 def _get_available_base_mechanical():
-    r"""Get a dictionary of available Mechanical versions on Windows with their base paths.
+    r"""Get a dictionary of available Mechanical versions with their base paths.
 
     Returns
     -------
@@ -288,12 +285,12 @@ def _get_available_base_mechanical():
 
 def find_mechanical():
     """
-    Search for the Ansys path in the standard installation location.
+    Search for the Mechanical path in the standard installation location.
 
     Returns
     -------
-    ansys_path : str
-        Full path to the executable file for the latest Ansys version.
+    mechanical_path : str
+        Full path to the executable file for the latest Mechanical version.
     version : float
         Version in the float format. For example, ``23.1`` for 2023 R1.
 
@@ -351,12 +348,12 @@ def check_valid_mechanical():
 
 
 def change_default_mechanical_path(exe_loc):
-    """Change your default Ansys path.
+    """Change your default Mechanical path.
 
     Parameters
     ----------
     exe_loc : str
-        Full path for the Ansys executable file to use.
+        Full path for the Mechanical executable file to use.
 
     Examples
     --------
@@ -372,7 +369,7 @@ def change_default_mechanical_path(exe_loc):
     >>> from ansys.mechanical.core import mechanical
     >>> mechanical.change_default_mechanical_path('/ansys_inc/v231/aisol/.workbench')
     >>> mechanical.get_mechanical_path()
-    '/ansys_inc/v201/ansys/bin/ansys201'
+    '/ansys_inc/v231/aisol/.workbench'
 
     """
     if os.path.isfile(exe_loc):
@@ -392,7 +389,7 @@ def save_mechanical_path(exe_loc=None):  # pragma: no cover
         The default is ``None``, in which case an attempt is made to
         obtain the path from the following sources in this order:
 
-        - The default Ansys paths (for example,
+        - The default Mechanical paths (for example,
           ``C:/Program Files/Ansys Inc/vXXX/aiso/bin/AnsysWBU.exe``)
         - The configuration file
         - User input
@@ -558,9 +555,10 @@ class Mechanical(object):
         loglevel : str, optional
             Level of messages to print to the console. The default is ``WARNING``.
 
-            - ``WARNING`` prints only Ansys warning messages.
-            - ``ERROR`` prints only Ansys error messages.
-            - ``INFO`` prints out all Ansysmessages.
+            - ``ERROR`` prints only error messages.
+            - ``WARNING`` prints warning and error messages.
+            - ``INFO`` prints info, warning and error messages.
+            - ``DEBUG`` prints debug, info, warning and error messages.
 
         log_file : bool, optional
             Whether to copy the messages to a file named ``logs.log``, which is
@@ -1497,59 +1495,56 @@ class Mechanical(object):
     ):  # pragma: no cover
         """Download files from the working directory of the Mechanical instance.
 
-         .. warning::
-        This class is only available for Mechanical 2023 R1 and later.
+        Parameters
+        ----------
+        files : str, list[str], tuple(str)
+            One or more files on the Mechanical server to download. The files must be
+            in the same directory as the Mechanical instance. You can use the
+            :func:`Mechanical.list_files <ansys.mechanical.core.mechanical.list_files>`
+            function to list current files. Alternatively, you can specify *glob expressions* to
+            match file names. For example, you could use ``file*`` to match every file whose
+            name starts with ``file``.
+        target_dir: str
+            Default directory to copy the downloaded files to. The default is ``None``.
+        chunk_size : int, optional
+            Chunk size in bytes. The default is ``262144``. The value must be less than 4 MB.
+        progress_bar : bool, optional
+            Whether to show a progress bar using  ``tqdm``. The default is ``None``, in
+            which case a progress bar is shown. A progress bar is helpful for viewing download
+            progress.
+        recursive : bool, optional
+            Whether to use recursion when using a glob pattern search. The default is ``False``.
 
-         Parameters
-         ----------
-         files : str, list[str], tuple(str)
-             One or more files on the Mechanical server to download. The files must be
-             in the same directory as the Mechanical instance. You can use the
-             :func:`Mechanical.directory <ansys.mechanical.core.mechanical.list_files>`
-             function to list current files. Alternatively, you can specify *glob expressions* to
-             match file names. For example, you could use ``file*`` to match every file whose
-             name starts with ``file``.
-         target_dir: str
-             Default directory to copy the downloaded files to. The default is ``None``.
-         chunk_size : int, optional
-             Chunk size in bytes. The default is ``262144``. The value must be less than 4 MB.
-         progress_bar : bool, optional
-             Whether to show a progress bar using  ``tqdm``. The default is ``None``, in
-             which case a progress bar is shown. A progress bar is helpful for viewing download
-             progress.
-         recursive : bool, optional
-             Whether to use recursion when using a glob pattern search. The default is ``False``.
+        Notes
+        -----
+        There are some considerations to keep in mind when using the ``download()`` method:
 
-         Notes
-         -----
-         There are some considerations to keep in mind when using the ``download()`` method:
+        * The glob pattern search does not search recursively in remote instances.
+        * In a remote instance, it is not possible to list or download files in a
+          location other than the Mechanical working directory.
+        * If you are connected to a local instance and provide a file path, downloading files
+          from a different folder is allowed but is not recommended.
 
-         * The glob pattern search does not search recursively in remote instances.
-         * In a remote instance, it is not possible to list or download files in a
-           location other than the Mechanical working directory.
-         * If you are connected to a local instance and provide a file path, downloading files
-           from a different folder is allowed but is not recommended.
+        Examples
+        --------
+        Download a single file.
 
-         Examples
-         --------
-         Download a single file.
+        >>> mechanical.download('file.out')
 
-         >>> mechanical.download('file.out')
+        Download all files starting with ``file``.
 
-         Download all files starting with ``file``.
+        >>> mechanical.download('file*')
 
-         >>> mechanical.download('file*')
+        Download every file in the Mechanical working directory.
 
-         Download every file in the Mechanical working directory.
+        >>> mechanical.download('*.*')
 
-         >>> mechanical.download('*.*')
+        Alternatively, the recommended method is to use the
+        :func:`Mechanical.download_project
+        <ansys.mechanical.core.mechanical.Mechanical.download_project>`
+        method to download all files.
 
-         Alternatively, the recommended method is to use the
-         :func:`Mechanical.download_project
-         <ansys.mechanical.core.mechanical.Mechanical.download_project>`
-         method to download all files.
-
-         >>> mechanical.download_project()
+        >>> mechanical.download_project()
 
         """
         self.verify_valid_connection()
@@ -2252,7 +2247,7 @@ def launch_mechanical(
     >>> mech = launch_mechanical(exec_file_path)
 
     Connect to an existing Mechanical instance at IP address 192.168.1.30 on port
-    50001. This method is only available using the latest gRPC mode.
+    50001.
 
     >>> mech = launch_mechanical(start_instance=False, ip='192.168.1.30', port=50001)
 
@@ -2292,10 +2287,10 @@ def launch_mechanical(
         )
 
         # special handling when building the gallery outside of CI. This
-        # creates an instance of mapdl the first time if PYMAPDL start instance
+        # creates an instance of Mechanical the first time if PYMECHANICAL_START_INSTANCE
         # is False.
         if pymechanical.BUILDING_GALLERY:  # pragma: no cover
-            # launch an instance of PyMAPDL if it does not already exist and
+            # launch an instance of PyMechanical if it does not already exist and
             # starting instances is allowed
             if start_instance and GALLERY_INSTANCE[0] is None:
                 mechanical = launch_mechanical(

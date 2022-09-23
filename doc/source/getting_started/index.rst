@@ -23,8 +23,8 @@ page on the Ansys website.
 
 Install the package
 -------------------
-The ``ansys.mechanical.core`` package supports Python 3.6 through
-Python 3.9 on Windows, Mac, and Linux.
+The ``ansys.mechanical.core`` package supports Python 3.7 through
+Python 3.10 on Windows, Mac, and Linux.
 
 You should consider installing PyMechanical in a virtual environment.
 For more information, see Python's
