@@ -1,9 +1,9 @@
 Create a pool of Mechanical instances
 =====================================
-The :class:`MechanicalLocalPool <ansys.mechanical.core.MechanicalLocalPool>`
+The :class:`LocalMechanicalPool <ansys.mechanical.core.pool.LocalMechanicalPool>`
 class simplifies creating multiple local instances of the :class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>`
 class for batch processing. You can use the
-:class:`MechanicalLocalPool <ansys.mechanical.core.MechanicalLocalPool>`
+:class:`LocalMechanicalPool <ansys.mechanical.core.pool.LocalMechanicalPool>`
 class for batch processing a set of input files or other batch-related processes.
 
 To create a pool with 10 instances:
@@ -38,7 +38,7 @@ the pool, you can disable this behavior by setting ``restart_failed=False``.
 Run a set of input files
 ~~~~~~~~~~~~~~~~~~~~~~~~
 You can use the pool to run a set of pre-generated input files using the
-:func:`run_batch() <ansys.mechanical.core.MechanicalLocalPool.run_batch>` method.
+:func:`run_batch() <ansys.mechanical.core.pool.LocalMechanicalPool.run_batch>` method.
 
 For example, you can run the first set of 20 verification files with:
 
@@ -52,11 +52,10 @@ For example, you can run the first set of 20 verification files with:
 
 Run a user-defined function
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-You can also use the pool to run a custom user-defined function on each
-instance of Mechanical over a set of input files. While the previous example
-uses the :func:`run_batch() <ansys.mechanical.core.MechanicalLocalPool.run_batch>`
-method to run a set of inputs files, the following example uses a function
-to output the final routine rather than the text output from Mechanical.
+While the previous example uses the :func:`run_batch() <ansys.mechanical.core.pool.LocalMechanicalPool.run_batch>`
+method to run a set of inputs files, you can also use the
+:func:`map() <ansys.mechanical.core.pool.LocalMechanicalPool.map>` method to run a custom user-defined function on
+each instance of Mechanical over a set of input files.
 
 .. code:: python
 

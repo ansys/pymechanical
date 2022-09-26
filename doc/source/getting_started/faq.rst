@@ -16,11 +16,11 @@ from experts in the community, post on the `Discussions
 <https://github.com/pyansys/PyMechanical/discussions>`_ page.
 
 
-What are the pros and cons of PyMechanical versus Ansys ACT?
-------------------------------------------------------------
+What are the pros and cons of PyMechanical versus Mechanical ACT?
+-----------------------------------------------------------------
 
 Your scripting method depends on your pipeline and software approach.
-Ansys ACT is dependent on Ansys Workbench. You build extensions from within
+Mechanical ACT is dependent on Ansys Workbench. You build extensions from within
 the ACT App Builder and then run them from within Ansys Mechanical. If you
 intend to vary parameters, you must use Ansys optiSLang and then
 batch your solutions.
@@ -72,4 +72,4 @@ stopping the original process means that nothing should be in
 a new process.
 
 To clear all data from Mechanical, either use the
-``mechanical.clear()`` function or exit and restart Mechanical.
+:func:`Mechanical.clear() <ansys.mechanical.core.Mechanical.clear>` method or exit and restart Mechanical.

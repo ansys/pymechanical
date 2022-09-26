@@ -66,7 +66,7 @@ you can download a wheelhouse archive that corresponds to your
 machine architecture from the `Releases page <https://github.com/pyansys/pymechanical/releases>`_.
 
 Each wheelhouse archive contains all the Python wheels necessary to install
-PyMechanical from scratch on Windows and Linux for Python 3.7 and 3.9. You can install
+PyMechanical from scratch on Windows and Linux for Python 3.7 through Python 3.10. You can install
 a wheelhouse archive on an isolated system with a fresh Python installation or on a
 virtual environment.
 
@@ -74,11 +74,11 @@ For example, on Linux with Python 3.7, unzip the wheelhouse archive and install 
 
 .. code::
 
-   unzip PyMechanical-v0.62.dev1-wheelhouse-Linux-3.7.zip wheelhouse
+   unzip ansys-mechanical-core-v0.5.dev0-wheelhouse-Linux-3.7 wheelhouse
    pip install ansys-mechanical-core -f wheelhouse --no-index --upgrade --ignore-installed
 
-If you are on Windows with Python 3.9, unzip the wheelhouse archive to a ``wheelhouse``
-directory and then install using the preceding code.
+If you are on Windows with Python 3.9, unzip the ``ansys-mechanical-core-v0.5.dev0-wheelhouse-Windows-3.9`` wheelhouse archive
+to a ``wheelhouse`` directory and then install using the preceding code.
 
 Verify your installation
 ------------------------

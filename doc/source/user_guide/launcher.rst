@@ -70,7 +70,7 @@ You can use the ``additional_switches`` keyword argument to specify additional a
     from ansys.mechanical.core import launch_mechanical
 
     custom_exec = '/usr/ansys_inc/v231/aisol/.workbench'
-    add_switch = f"-featureflags "mechanical.material.import;""
+    add_switch = f"-featureflags mechanical.material.import;"
     mechanical = launch_mechanical(additional_switches=add_switch)
 
 

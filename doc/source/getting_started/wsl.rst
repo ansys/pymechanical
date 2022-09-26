@@ -47,7 +47,7 @@ You can install this distribution using an unofficial WSL distribution from
 `<https://github.com/wsldl-pg/CentWSL/>`_ or
 `<https://github.com/mishamosher/CentOS-WSL/>`_ .
 
-Optionally, you can try Ubuntu, but it has not been tested yet in the context of WSL.
+Optionally, you can try Ubuntu in the context of WSL.
 
 
 Install Ansys products in WSL CentOS7
@@ -57,14 +57,6 @@ Prerequisites
 --------------
 If you are using CentOS 7, before installing Mechanical, you must install some
 required libraries:
-
-.. code:: bash
-
-   sudo yum install openssl openssh-clients mesa-libGL mesa-libGLU motif libgfortran
-
-
-If you are using Ubuntu, follow the instructions in `Running Mechanical: Ubuntu <https://mechanical.docs.pyansys.com/getting_started/running_mechanical.html#ubuntu/>`_.
-
 
 Install Ansys products
 -----------------------
@@ -240,7 +232,7 @@ you should specify the IP address and port using one of the following methods.
 
     from ansys.mechanical.core import Mechanical
 
-    mechanical = Mechanical(ip='127.0.0.1', port=50053)
+    mechanical = Mechanical(ip='127.0.0.1', port=10001)
 
 **Method 3**
 
@@ -250,7 +242,7 @@ the Mechanical instance is launched.
 .. code:: bash
 
     export PYMECHANICAL_START_INSTANCE=False
-    export pymechanical_port=50053
+    export pymechanical_port=10001
     export pymechanical_ip=127.0.0.1
 
 

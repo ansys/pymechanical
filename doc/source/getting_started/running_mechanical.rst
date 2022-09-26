@@ -30,10 +30,9 @@ Launch Mechanical locally
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When Mechanical is installed locally on your machine, you can use the
-``launch_mechanical`` method to launch and automatically connect to
-Mechanical. While this method provides the easiest and fastest
-way to launch Mechanical, it only works with a local Mechanical
-installation.
+:func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` method to launch and automatically connect to
+Mechanical. While this method provides the easiest and fastest way to launch Mechanical, it only works with a local
+Mechanical installation.
 
 Launch Mechanical locally with:
 
@@ -127,7 +126,7 @@ You would connect to it with:
 
 **Hostname and port**
 
-Assume that Mechanical is running remotely at hostname ``"myremotemachine``on port ``10000``.
+Assume that Mechanical is running remotely at hostname ``myremotemachine`` on port ``10000``.
 
 You would connect to it with:
 
@@ -148,7 +147,7 @@ Manually set the location of the executable file
 If you have a non-standard installation of Mechanical, PyMechanical might
 not be able to find your installation. In this case, you should manually
 set the location of your Mechanical executable file as the first parameter
-for the ``launch_mechanical()`` method.
+for the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` method.
 
 **On Windows**
 
@@ -168,7 +167,7 @@ for the ``launch_mechanical()`` method.
     >>> mechanical = launch_mechanical(exec_loc)
 
 
-If when using the ``launch_mechanical()`` method, Mechanical still
+If when using the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` method, Mechanical still
 fails to launch or hangs while launching, pass the ``verbose_mechanical=True``
 parameter. This prints the output of Mechanical in the Python console.
 You can then use this output to debug why Mechanical isn't launching.
@@ -215,8 +214,7 @@ Licensing issues
 ----------------
 
 `PADT <https://www.padtinc.com/>`_ has an `Ansys <https://www.padtinc.com/simulation/ansys-simulation-products/>`_
-product section. Posts about licensing are common. For example, see
-`Changes to Licensing at ANSYS 2023R1 <https://www.padtinc.com/blog/15271-2/>`_.
+product section. Posts about licensing are common.
 
 If you are responsible for maintaining an Ansys license or have a personal installation
 of Ansys, you likely can access the **Installation and Licensing** section of the
