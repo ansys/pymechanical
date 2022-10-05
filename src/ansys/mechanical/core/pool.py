@@ -51,9 +51,6 @@ def available_ports(n_ports, starting_port=MECHANICAL_DEFAULT_PORT):
 class LocalMechanicalPool:
     """Create a pool of Mechanical instances.
 
-    .. warning::
-       This class is only available for Mechanical 2023 R1 and later.
-
     Parameters
     ----------
     n_instance : int

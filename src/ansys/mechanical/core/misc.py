@@ -2,9 +2,7 @@
 
 from functools import wraps
 import os
-import random
 import socket
-import string
 from threading import Thread
 
 
@@ -133,7 +131,7 @@ def check_valid_start_instance(start_instance):
 
     """
     if not isinstance(start_instance, (str, bool)):
-        raise ValueError("The value for 'start_instance' should be an string or a boolean.")
+        raise ValueError("The value for 'start_instance' should be a string or a boolean.")
 
     if isinstance(start_instance, bool):
         return start_instance
@@ -163,33 +161,4 @@ def is_float(input_string):
         float(input_string)
         return True
     except ValueError:
-        return False
-
-
-def random_string(string_length=10, letters=string.ascii_lowercase):
-    """Generate a random string of a fixed length.
-
-    Parameters
-    ----------
-    string_length : int, optional
-       Length of the random string. the default is ``10``.
-    letters : str
-
-    """
-    return "".join(random.choice(letters) for _ in range(string_length))
-
-
-def _check_has_ansys():
-    """Check if the local installation of Ansys is in a standard location.
-
-    Returns
-    -------
-    bool
-        ``True`` if successful, ``False`` otherwise.
-    """
-    from ansys.mechanical.core.mechanical import check_valid_mechanical
-
-    try:
-        return check_valid_mechanical()
-    except:
         return False

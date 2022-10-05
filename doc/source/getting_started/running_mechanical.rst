@@ -30,10 +30,9 @@ Launch Mechanical locally
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When Mechanical is installed locally on your machine, you can use the
-``launch_mechanical`` method to launch and automatically connect to
-Mechanical. While this method provides the easiest and fastest
-way to launch Mechanical, it only works with a local Mechanical
-installation.
+:func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` method to launch and automatically connect to
+Mechanical. While this method provides the easiest and fastest way to launch Mechanical, it only works with a local
+Mechanical installation.
 
 Launch Mechanical locally with:
 
@@ -92,7 +91,7 @@ Mechanical, use the ``-grpc`` argument. For example, on Linux, launch Mechanical
 
 .. code::
 
-    /usr/ansys_inc/v231/ansys/bin/ansys231 -grpc 10001
+    C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/.AnsysWBU.exe -grpc 10001
 
 
 Connect to a Mechanical gRPC session
@@ -117,17 +116,17 @@ an IP address and port or hostname and port.
 
 **IP address and port**
 
-Assume that Mechanical is running remotely at IP address ``192.168.0.1`` on port ``50052``.
+Assume that Mechanical is running remotely at IP address ``192.168.0.1`` on port ``10000``.
 
 You would connect to it with:
 
 .. code::
 
-    >>> mechanical = Mechanical('192.168.0.1', port=50052)
+    >>> mechanical = Mechanical('192.168.0.1', port=10000)
 
 **Hostname and port**
 
-Assume that Mechanical is running remotely at hostname ``"myremotemachine``on port ``1000``.
+Assume that Mechanical is running remotely at hostname ``myremotemachine`` on port ``10000``.
 
 You would connect to it with:
 
@@ -148,7 +147,7 @@ Manually set the location of the executable file
 If you have a non-standard installation of Mechanical, PyMechanical might
 not be able to find your installation. In this case, you should manually
 set the location of your Mechanical executable file as the first parameter
-for the ``launch_mechanical()`` method.
+for the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` method.
 
 **On Windows**
 
@@ -168,7 +167,7 @@ for the ``launch_mechanical()`` method.
     >>> mechanical = launch_mechanical(exec_loc)
 
 
-If when using the ``launch_mechanical()`` method, Mechanical still
+If when using the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` method, Mechanical still
 fails to launch or hangs while launching, pass the ``verbose_mechanical=True``
 parameter. This prints the output of Mechanical in the Python console.
 You can then use this output to debug why Mechanical isn't launching.
@@ -215,8 +214,7 @@ Licensing issues
 ----------------
 
 `PADT <https://www.padtinc.com/>`_ has an `Ansys <https://www.padtinc.com/simulation/ansys-simulation-products/>`_
-product section. Posts about licensing are common. For example, see
-`Changes to Licensing at ANSYS 2023R1 <https://www.padtinc.com/blog/15271-2/>`_.
+product section. Posts about licensing are common.
 
 If you are responsible for maintaining an Ansys license or have a personal installation
 of Ansys, you likely can access the **Installation and Licensing** section of the
@@ -230,57 +228,4 @@ Sometimes, Mechanical has issues starting when VPN software is running. For more
 see the *Mechanical User's Guide* in the **Mechanical Application** section of the Ansys Help.
 
 
-Missing dependencies on Linux
------------------------------
-Some Linux installations might be missing required dependencies. For example, this error
-might be raised::
-
-    libXp.so.6: cannot open shared object file: No such file or directory
-
-CentOS
-~~~~~~
-On CentOS 7, you can install required dependencies with:
-
-.. code::
-
-    yum install openssl openssh-clients mesa-libGL mesa-libGLU motif libgfortran
-
-
-Ubuntu
-~~~~~~
-Because Mechanical isn't officially supported on Ubuntu, it is a bit more
-difficult to install required dependencies. However, it is still possible.
-
-On Ubuntu 20.04 with Ansys 2023 R1, you can install all required dependencies
-except for the outdated ``libxp6`` package with:
-
-.. code::
-
-    sudo apt-get install libx11-6 libgl1 libxm4 libxt6 libxext6 libxi6 libx11-6 libsm6 libice6 libxxf86vm1 libglu1
-
-If you are using Ubuntu 16.04, you can install the ``libxp6`` package with:
-
-
-.. code::
-
-    sudo apt install libxp6
-
-However, on Ubuntu 18.04 and later, you must manually download and install the ``libxp6``
-package. Because this package is dependent on another outdated package, ``multiarch-support``,
-you must remove the ``multiarch-support`` package. Otherwise, the package configuration
-is broken.
-
-This code downloads and modifies the ``libxp6`` package to remove the ``multiarch-support``
-package dependency and then installs it with ``dpkg``:
-
-.. code::
-
-    cd /tmp
-    wget http://ftp.br.debian.org/debian/pool/main/libx/libxp/libxp6_1.0.2-2_amd64.deb
-    ar x libxp6_1.0.2-2_amd64.deb
-    sudo tar xzf control.tar.gz
-    sudo sed '/Pre-Depends/d' control -i
-    sudo bash -c "tar c postinst postrm md5sums control | gzip -c > control.tar.gz"
-    sudo ar rcs libxp6_1.0.2-2_amd64_mod.deb debian-binary control.tar.gz data.tar.xz
-    sudo dpkg -i ./libxp6_1.0.2-2_amd64_mod.deb
 

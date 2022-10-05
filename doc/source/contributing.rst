@@ -4,10 +4,10 @@
 Contribute
 ==========
 Overall guidance on contributing to a PyAnsys library appears in
-`Contribute <https://dev.docs.pyansys.com/overview/contributing.html>`_
+`Contribute <https://dev.docs.pyansys.com/how-to/contributing.html>`_
 in the *PyAnsys Developer's Guide*. Ensure that you are thoroughly familiar
 with this guide, paying particular attention to `Guidelines and Best Practices
-<https://dev.docs.pyansys.com/guidelines/index.html>`_, before attempting to
+<https://dev.docs.pyansys.com/how-to/index.html>`_, before attempting to
 contribute to PyMechanical.
  
 The following contribution information is specific to PyMechanical.
