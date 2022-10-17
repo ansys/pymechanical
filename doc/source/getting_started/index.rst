@@ -74,10 +74,10 @@ For example, on Linux with Python 3.7, unzip the wheelhouse archive and install 
 
 .. code::
 
-   unzip ansys-mechanical-core-v0.6.dev0-wheelhouse-Linux-3.7 wheelhouse
+   unzip ansys-mechanical-core-v0.6.0-wheelhouse-Linux-3.7 wheelhouse
    pip install ansys-mechanical-core -f wheelhouse --no-index --upgrade --ignore-installed
 
-If you are on Windows with Python 3.9, unzip the ``ansys-mechanical-core-v0.6.dev0-wheelhouse-Windows-3.9`` wheelhouse archive
+If you are on Windows with Python 3.9, unzip the ``ansys-mechanical-core-v0.6.0-wheelhouse-Windows-3.9`` wheelhouse archive
 to a ``wheelhouse`` directory and then install using the preceding code.
 
 Verify your installation
