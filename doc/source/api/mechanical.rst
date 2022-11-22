@@ -12,9 +12,7 @@ Mechanical class-specific methods and attributes
 .. autosummary::
    :toctree: _autosummary
 
-   Mechanical.run_jscript
    Mechanical.run_python_script
-   Mechanical.run_jscript_from_file
    Mechanical.run_python_script_from_file
    Mechanical.exit
    Mechanical.project_directory

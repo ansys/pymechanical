@@ -15,50 +15,6 @@ def validate_real(value, expected, tol):
     return False
 
 
-def test_run_jscript_success(mechanical):
-    result = mechanical.run_jscript("2+3")
-    assert result == "5"
-
-
-# # the following test has been commented. on the developer machine,
-# # because of the just in time debugging
-# # we get a message box, commented for now
-# def test_run_jscript_error(mechanical):
-#     with pytest.raises(grpc.RpcError) as exc_info:
-#         result = mechanical.run_jscript("b=a+1")
-#     assert exc_info.value.details() == \
-#            'Line:\t0\nChar:\t0\nError:\t\'a\' is undefined\n' \
-#            'Code:\t800a1391\nSource:\tMicrosoft JScript runtime error\n'
-
-
-def test_run_jscript_from_file_success(mechanical):
-    current_working_directory = os.getcwd()
-    script_path = os.path.join(
-        current_working_directory, "tests", "scripts", "run_jscript_success.js"
-    )
-    print("running jscript : ", script_path)
-    result = mechanical.run_jscript_from_file(script_path)
-    assert result == "test"
-
-
-# # the following test has been commented. on the developer machine,
-# # because of the just in time debugging
-# # we get a message box, commented for now
-# def test_run_jscript_from_file_error(mechanical):
-#     with pytest.raises(grpc.RpcError) as exc_info:
-#         current_working_directory = os.getcwd()
-#         script_path = os.path.join(
-#             current_working_directory, "tests", "scripts", "run_jscript_error.js"
-#         )
-#
-#         print("running jscript : ", script_path)
-#         result = mechanical.run_jscript_from_file(script_path)
-#
-#     assert exc_info.value.details() == \
-#            "Line:\t12\nChar:\t0\nError:\t'a' is undefined\nCode:\t800a1391\n" \
-#            "Source:\tMicrosoft JScript runtime error\nScript:\tb = a + 1;"
-
-
 def test_run_python_script_success(mechanical):
     result = mechanical.run_python_script("2+3")
     assert result == "5"
@@ -177,9 +133,7 @@ def test_upload_attach_mesh_solve_use_api(mechanical):
 
     # this test could run under a container with 1 cpu
     # let us disable distributed solve
-    result = mechanical.run_jscript("DS.Script.isDistributed()")
-    if result == "True":
-        result = mechanical.run_jscript("DS.Script.doToggleDistributed()")
+    disable_distributed_solve(mechanical)
 
     python_script = os.path.join(current_working_directory, "tests", "scripts", "api.py")
 
@@ -214,6 +168,18 @@ return_total_deformation()
     assert validate_real(min_value, 0, 0.1)
     assert validate_real(max_value, 2.9068725331072863e-06, 0.1)
     assert validate_real(avg_value, 1.1398642395560755e-06, 0.1)
+
+
+def disable_distributed_solve(mechanical):
+    script = (
+        'ExtAPI.Application.ScriptByName("jscript").ExecuteCommand'
+        '("var isDistributed = DS.Script.isDistributed();returnFromScript(isDistributed);")'
+    )
+    result = mechanical.run_python_script(script)
+    if result == "True":
+        mechanical.run_python_script(
+            'ExtAPI.Application.ScriptByName("jscript").CallJScript("doToggleDistributed")'
+        )
 
 
 def verify_download(mechanical, tmpdir, file_name, chunk_size):
@@ -264,12 +230,6 @@ def test_download_file_different_chunk_size1(mechanical, tmpdir, chunk_size):
 #     mechanical1.exit()
 #
 #     error = "Mechanical has already exited."
-#
-#     with pytest.raises(MechanicalExitedError, match=error):
-#         mechanical1.run_jscript("2+5")
-#
-#     with pytest.raises(MechanicalExitedError, match=error):
-#         mechanical1.run_jscript_from_file("test.js")
 #
 #     with pytest.raises(MechanicalExitedError, match=error):
 #         mechanical1.run_python_script("2+5")
