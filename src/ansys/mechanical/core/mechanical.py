@@ -969,7 +969,11 @@ class Mechanical(object):
         """Get product information by running a script on the Mechanical gRPC server."""
         try:
             self._disable_logging = True
-            return self.run_jscript("scriptcode.getProductInfo()")
+            script = (
+                'ExtAPI.Application.ScriptByName("jscript").ExecuteCommand'
+                '("var productInfo = DS.Script.getProductInfo();returnFromScript(productInfo);")'
+            )
+            return self.run_python_script(script)
         except grpc.RpcError:
             raise
         finally:
@@ -1073,40 +1077,16 @@ class Mechanical(object):
             ``True`` if Mechanical is ready, ``False`` otherwise.
         """
         try:
-            jscript_block = "DS.Script.isDistributed()"
-            self.run_jscript(jscript_block)
+            script = (
+                'ExtAPI.Application.ScriptByName("jscript").ExecuteCommand'
+                '("var isDistributed = DS.Script.isDistributed();returnFromScript(isDistributed);")'
+            )
+            self.run_python_script(script)
         except grpc.RpcError as error:
             self.log_debug(f"Mechanical is not ready. Error:{error}.")
             return False
 
         return True
-
-    def run_jscript(
-        self, script_block: str, enable_logging=False, log_level="WARNING", timeout=2000
-    ):
-        """Run a Jscript block inside Mechanical.
-
-        Parameters
-        ----------
-        script_block : str
-            Script block (one or more lines) to run.
-        enable_logging: bool, optional
-            Whether to enable logging. The default is ``False``.
-        log_level: str
-            Level of logging. The default is ``"WARNING"``. Options are ``"DEBUG"``,
-            ``"INFO"``, ``"WARNING"``, and ``"ERROR"``.
-        timeout: int, optional
-            Frequency in milliseconds for getting log messages from the server.
-            The default is ``2000``.
-
-        Returns
-        -------
-        str
-            Script result.
-        """
-        self.verify_valid_connection()
-        response = self.__call_run_jscript(script_block, enable_logging, log_level, timeout)
-        return response.script_result
 
     @staticmethod
     def convert_to_server_log_level(log_level):
@@ -1164,35 +1144,6 @@ class Mechanical(object):
         self.verify_valid_connection()
         response = self.__call_run_python_script(script_block, enable_logging, log_level, timeout)
         return response.script_result
-
-    def run_jscript_from_file(
-        self, file_path, enable_logging=False, log_level="WARNING", progress_interval=2000
-    ):
-        """Run a Jscript file inside Mechanical.
-
-        Parameters
-        ----------
-        file_path : str
-            Path for the Jscript file.
-        enable_logging: bool, optional
-            Whether to enable logging. The default is ``False``.
-        log_level: str
-            Level of logging. The default is ``"WARNING"``. Options are ``"DEBUG"``,
-            ``"INFO"``, ``"WARNING"``, and ``"ERROR"``.
-        progress_interval: int, optional
-            Frequency in milliseconds for getting log messages from the server.
-            The default is ``2000``.
-
-        Returns
-        -------
-        str
-            Script result.
-        """
-        self.verify_valid_connection()
-        self.log_debug(f"run_jscript_from_file started")
-        script_code = Mechanical.__readfile(file_path)
-        self.log_debug(f"run_jscript_from_file done")
-        return self.run_jscript(script_code, enable_logging, log_level, progress_interval)
 
     def run_python_script_from_file(
         self, file_path, enable_logging=False, log_level="WARNING", progress_interval=2000
@@ -1803,44 +1754,6 @@ class Mechanical(object):
 
         return data
 
-    def __call_run_jscript(self, script_code: str, enable_logging, log_level, progress_interval):
-        """Run a Jscript block on the server.
-
-        Parameters
-        ----------
-        script_code : str
-            Script block (one or more lines) to run.
-        enable_logging: bool
-            Whether to enable logging.
-        log_level: str
-            Level of logging. Options are ``"DEBUG"``, ``"INFO"``,
-            ``"WARNING"``, and ``"ERROR"``.
-        progress_interval: int
-            Frequency in milliseconds for getting log messages from the server.
-        """
-        log_level_server = self.convert_to_server_log_level(log_level)
-        request = mechanical_pb2.RunScriptRequest()
-        request.script_code = script_code
-        request.enable_logging = enable_logging
-        request.logger_severity = log_level_server
-        request.progress_interval = progress_interval
-
-        response = None
-        self._busy = True
-
-        try:
-            for runscript_response in self._stub.RunJScript(request):
-                if runscript_response.log_info == "__done__":
-                    response = runscript_response
-                    break
-                else:
-                    if enable_logging:
-                        self.log_message(log_level, runscript_response.log_info)
-        finally:
-            self._busy = False
-
-        return response
-
     def __call_run_python_script(
         self, script_code: str, enable_logging, log_level, progress_interval
     ):
@@ -2250,7 +2163,6 @@ def launch_mechanical(
     50001.
 
     >>> mech = launch_mechanical(start_instance=False, ip='192.168.1.30', port=50001)
-
     """
     # Start Mechanical with PyPIM if the environment is configured for it
     # and a directive on how to launch Mechanical was not passed.
