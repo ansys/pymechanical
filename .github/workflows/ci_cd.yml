@@ -47,9 +47,60 @@ jobs:
     needs: [style]
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        os: [windows-latest, ubuntu-latest]
         python-version: ['3.7', '3.8', '3.9', '3.10']
       fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+          cache-dependency-path: 'requirements/*.txt'
+        
+      - name: Install packages for building
+        run: |
+          pip install -r requirements/requirements_build.txt
+          pip install .
+
+      - name: Smoke test
+        run: python -c "from ansys.mechanical.core import __version__; print(__version__)"
+
+      - name: Store version
+        run: |
+          echo "::set-output name=PYMECH_VERSION::$(python -c "from ansys.mechanical.core import __version__; print(__version__)")"
+        id: version
+
+      - name: Generate wheelhouse
+        run: |
+          pip wheel . -w wheelhouse
+
+      - name: Zip wheelhouse
+        uses: vimtor/action-zip@v1
+        with:
+          files: wheelhouse
+          dest: ${{ env.PACKAGE_NAME }}-v${{ steps.version.outputs.PYMECH_VERSION }}-wheelhouse-${{ runner.os }}-${{ matrix.python-version }}.zip
+
+      - name: Upload Wheelhouse
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.PACKAGE_NAME }}-v${{ steps.version.outputs.PYMECH_VERSION }}-wheelhouse-${{ runner.os }}-${{ matrix.python-version }}
+          path: '*.zip'
+          retention-days: 7
+
+
+  macos-build:
+    name: Build and Smoke tests (macOS)
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
+    runs-on: macos-latest
+    needs: [style]
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.7', '3.8', '3.9', '3.10']
 
     steps:
       - uses: actions/checkout@v3
@@ -214,7 +265,7 @@ jobs:
   release:
     name: Release project
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
-    needs: [package]
+    needs: [package, macos-build]
     runs-on: ubuntu-latest
     steps:
       - name: Set up Python
