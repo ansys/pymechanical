@@ -83,13 +83,11 @@ jobs:
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           cache: 'pip'
-          cache-dependency-path: 'requirements/*.txt'
+          cache-dependency-path: 'pyproject.toml'
         
       - name: Install packages for testing
         run: |
-          pip install -r requirements/requirements_build.txt
-          pip install -r requirements/requirements_tests.txt
-          pip install .
+          pip install .[tests]
 
       - name: Login in Github Container registry
         uses: docker/login-action@v2
@@ -142,9 +140,7 @@ jobs:
 
       - name: Install packages for documentation build
         run: |
-          pip install -r requirements/requirements_build.txt
-          pip install -r requirements/requirements_doc.txt
-          pip install .
+          pip install .[doc]
 
       - name: Build the documentation
         run: |
