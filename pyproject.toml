@@ -2,21 +2,17 @@
 requires = ["flit_core >=3.2,<4"]
 build-backend = "flit_core.buildapi"
 
-[project]
+[tool.flit.metadata]
 # Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
-name = "ansys-mechanical-core"
-version = "0.7.dev2"
-description = "A python wrapper for Ansys Mechanical"
-readme = "README.rst"
+module = "ansys.mechanical.core"
+dist-name = "ansys-mechanical-core"
+# version = "0.7.dev2"
+description-file = "README.rst"
 requires-python = ">=3.7,<4.0"
-license = {file = "LICENSE"}
-authors = [
-    {name = "ANSYS, Inc.", email = "pyansys.support@ansys.com"},
-]
-maintainers = [
-    {name = "PyAnsys developers", email = "pyansys.maintainers@ansys.com"},
-]
-
+author = "ANSYS, Inc."
+author-email = "pyansys.support@ansys.com"
+maintainer = "PyAnsys developers"
+maintainer-email = "pyansys.maintainers@ansys.com"
 classifiers = [
     "Development Status :: 4 - Beta",
     'Intended Audience :: Science/Research',
@@ -28,7 +24,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-dependencies = [
+requires = [
     "importlib-metadata>=4.0",
     "appdirs>=1.4.0",
     "grpcio>=1.30.0,<1.50",
@@ -37,10 +33,10 @@ dependencies = [
     "tqdm>=4.45.0",
 ]
 
-[tool.flit.module]
-name = "ansys.mechanical.core"
+[tool.flit.metadata.requires-extra]
+embedding=["pythonnet==2.5.2"]
 
-[project.urls]
+[tool.flit.metadata.urls]
 Source = "https://github.com/pyansys/pymechanical"
 
 [tool.black]
