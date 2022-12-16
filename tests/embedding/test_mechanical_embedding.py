@@ -1,9 +1,17 @@
 import os
+import pathlib
 import pytest
 
-from .conftest import *
+from ansys.mechanical.core import global_variables
 
-def test_qk_eng_wb2_005(printer):
+ROOT_FOLDER = pathlib.Path(__file__).parent
+
+def get_assets_folder():
+    return ROOT_FOLDER / "assets"
+
+@pytest.mark.embedding
+def test_qk_eng_wb2_005(printer, selection, embedded_app):
+    globals().update(global_variables(embedded_app))
     '''Buckling analysis.
     From Mechanical/QK_ENG_WB2/QK_ENG_WB2_005'''
     printer("Setting up test - adding linked static structural + buckling analysis system")
@@ -56,7 +64,7 @@ def test_qk_eng_wb2_005(printer):
         BUCK.Solution.Solve(True)
 
         printer("Clean and Solve")
-        APP.DataModel.Project.ClearGeneratedData()
+        embedded_app.DataModel.Project.ClearGeneratedData()
         MODEL.Solve(True)
         printer("Validate Results")
         TOT_DEF01_BUCK.Activate()
@@ -71,9 +79,11 @@ def test_qk_eng_wb2_005(printer):
         assert s6_mode6 == pytest.approx(43642, rel=1), "Sixth Load Multiplier result"
     innertest()
 
-def test_qk_eng_wb2_007(printer):
+@pytest.mark.embedding
+def test_qk_eng_wb2_007(printer, selection, embedded_app):
     '''Fatigue.
     From Mechanical/QK_ENG_WB2/QK_ENG_WB2_007'''
+    globals().update(global_variables(embedded_app))
     printer("Setting up test - adding two static structural systems")
     Model.AddStaticStructuralAnalysis()
     Model.AddStaticStructuralAnalysis()

@@ -2,17 +2,21 @@
 requires = ["flit_core >=3.2,<4"]
 build-backend = "flit_core.buildapi"
 
-[tool.flit.metadata]
+[project]
 # Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
-module = "ansys.mechanical.core"
-dist-name = "ansys-mechanical-core"
-# version = "0.7.dev2"
-description-file = "README.rst"
+name = "ansys-mechanical-core"
+version = "0.7.dev2"
+description = "A python wrapper for Ansys Mechanical"
+readme = "README.rst"
 requires-python = ">=3.7,<4.0"
-author = "ANSYS, Inc."
-author-email = "pyansys.support@ansys.com"
-maintainer = "PyAnsys developers"
-maintainer-email = "pyansys.maintainers@ansys.com"
+license = {file = "LICENSE"}
+authors = [
+    {name = "ANSYS, Inc.", email = "pyansys.support@ansys.com"},
+]
+maintainers = [
+    {name = "PyAnsys developers", email = "pyansys.maintainers@ansys.com"},
+]
+
 classifiers = [
     "Development Status :: 4 - Beta",
     'Intended Audience :: Science/Research',
@@ -24,7 +28,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-requires = [
+dependencies = [
     "importlib-metadata>=4.0",
     "appdirs>=1.4.0",
     "grpcio>=1.30.0,<1.50",
@@ -33,10 +37,16 @@ requires = [
     "tqdm>=4.45.0",
 ]
 
-[tool.flit.metadata.requires-extra]
-embedding=["pythonnet==2.5.2"]
+[tool.flit.module]
+name = "ansys.mechanical.core"
 
-[tool.flit.metadata.urls]
+[project.optional-dependencies]
+embedding = [
+    "pythonnet==2.5.2",
+    "pytest-print"
+]
+
+[project.urls]
 Source = "https://github.com/pyansys/pymechanical"
 
 [tool.black]
@@ -67,7 +77,11 @@ output = ".cov/coverage.xml"
 
 [tool.pytest.ini_options]
 minversion = "7.1"
-addopts = "-ra --cov=ansys.mechanical --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report term -vv"
+addopts = "-ra --cov=ansys.mechanical --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report term -vv --print --print-relative-time"
 testpaths = [
     "tests",
 ]
+markers = [
+    "embedding: tests that embed Mechanical in the python process"
+]
+xfail_strict = true
