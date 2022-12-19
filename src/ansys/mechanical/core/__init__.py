@@ -1,4 +1,6 @@
 """Initialize the package level imports."""
+import logging
+
 from ansys.mechanical.core.logging import Logger
 
 # Create logger for package level use
@@ -16,6 +18,13 @@ from ansys.mechanical.core.mechanical import (
 
 # import few classes / functions
 from ansys.mechanical.core.mechanical import Mechanical as Mechanical
+
+try:
+    from ansys.mechanical.core.embedding import App, global_variables
+
+    HAS_EMBEDDING = True
+except:
+    HAS_EMBEDDING = False
 
 # manage the package level ports
 LOCAL_PORTS = []
