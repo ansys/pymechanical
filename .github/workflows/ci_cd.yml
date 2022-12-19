@@ -15,6 +15,7 @@ env:
   DOCKER_IMAGE_VERSION: v23.1.0
   MAIN_PYTHON_VERSION: '3.10'
   PACKAGE_NAME: ansys-mechanical-core
+  PACKAGE_NAMESPACE: ansys.mechanical.core
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -31,71 +32,29 @@ jobs:
     name: Code style
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: PyAnsys code style checks
+        uses: pyansys/actions/code-style@v1
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
-          cache: 'pip'
-          cache-dependency-path: 'requirements/*.txt'
 
-      - name: Install pre-commit
-        run: pip install pre-commit
-
-      - name: Run pre-commit
-        run: pre-commit run --all-files --show-diff-on-failure
-
-  smoke_tests:
+  smoke-tests:
     name: Build and Smoke tests
     runs-on: ${{ matrix.os }}
     needs: [style]
     strategy:
-      matrix:
-        os: [windows-latest, ubuntu-latest]
-        python-version: ['3.7', '3.8', '3.9', '3.10']
       fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ['3.7', '3.8', '3.9', '3.10']
 
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+      - name: Build wheelhouse and perform smoke test
+        uses: pyansys/actions/build-wheelhouse@v1
         with:
+          library-name: ${{ env.PACKAGE_NAME }}
+          library-namespace: ${{ env.PACKAGE_NAMESPACE }}
+          operating-system: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
-          cache: 'pip'
-          cache-dependency-path: 'requirements/*.txt'
-        
-      - name: Install packages for building
-        run: |
-          pip install -r requirements/requirements_build.txt
-          pip install .
-
-      - name: Smoke test
-        run: python -c "from ansys.mechanical.core import __version__; print(__version__)"
-
-      - name: Store version
-        run: |
-          echo "::set-output name=PYMECH_VERSION::$(python -c "from ansys.mechanical.core import __version__; print(__version__)")"
-        id: version
-
-      - name: Generate wheelhouse
-        run: |
-          pip wheel . -w wheelhouse
-
-      - name: Zip wheelhouse
-        uses: vimtor/action-zip@v1
-        with:
-          files: wheelhouse
-          dest: ${{ env.PACKAGE_NAME }}-v${{ steps.version.outputs.PYMECH_VERSION }}-wheelhouse-${{ runner.os }}-${{ matrix.python-version }}.zip
-
-      - name: Upload Wheelhouse
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ env.PACKAGE_NAME }}-v${{ steps.version.outputs.PYMECH_VERSION }}-wheelhouse-${{ runner.os }}-${{ matrix.python-version }}
-          path: '*.zip'
-          retention-days: 7
-
 
   macos-build:
     name: Build and Smoke tests (macOS)
@@ -108,49 +67,18 @@ jobs:
         python-version: ['3.7', '3.8', '3.9', '3.10']
 
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+      - name: Build wheelhouse and perform smoke test
+        uses: pyansys/actions/build-wheelhouse@v1
         with:
+          library-name: ${{ env.PACKAGE_NAME }}
+          library-namespace: ${{ env.PACKAGE_NAMESPACE }}
+          operating-system: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
-          cache: 'pip'
-          cache-dependency-path: 'requirements/*.txt'
-        
-      - name: Install packages for building
-        run: |
-          pip install -r requirements/requirements_build.txt
-          pip install .
 
-      - name: Smoke test
-        run: python -c "from ansys.mechanical.core import __version__; print(__version__)"
-
-      - name: Store version
-        run: |
-          echo "::set-output name=PYMECH_VERSION::$(python -c "from ansys.mechanical.core import __version__; print(__version__)")"
-        id: version
-
-      - name: Generate wheelhouse
-        run: |
-          pip wheel . -w wheelhouse
-
-      - name: Zip wheelhouse
-        uses: vimtor/action-zip@v1
-        with:
-          files: wheelhouse
-          dest: ${{ env.PACKAGE_NAME }}-v${{ steps.version.outputs.PYMECH_VERSION }}-wheelhouse-${{ runner.os }}-${{ matrix.python-version }}.zip
-
-      - name: Upload Wheelhouse
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ env.PACKAGE_NAME }}-v${{ steps.version.outputs.PYMECH_VERSION }}-wheelhouse-${{ runner.os }}-${{ matrix.python-version }}
-          path: '*.zip'
-          retention-days: 7
-
-  build_tests:
+  build-tests:
     name: Testing and coverage
     runs-on: ubuntu-latest
-    needs: [smoke_tests]
+    needs: [smoke-tests]
 
     steps:
       - uses: actions/checkout@v3
@@ -160,13 +88,11 @@ jobs:
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           cache: 'pip'
-          cache-dependency-path: 'requirements/*.txt'
+          cache-dependency-path: 'pyproject.toml'
         
       - name: Install packages for testing
         run: |
-          pip install -r requirements/requirements_build.txt
-          pip install -r requirements/requirements_tests.txt
-          pip install .
+          pip install .[tests]
 
       - name: Login in Github Container registry
         uses: docker/login-action@v2
@@ -194,7 +120,7 @@ jobs:
       # - name: Upload coverage to Codecov
       #   uses: codecov/codecov-action@v3
 
-  build_docs:
+  build-docs:
     name: Documentation
     needs: [style]
     runs-on: ubuntu-latest
@@ -206,7 +132,7 @@ jobs:
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           cache: 'pip'
-          cache-dependency-path: 'requirements/*.txt'
+          cache-dependency-path: 'pyproject.toml'
 
       - name: Install OS packages
         run: |
@@ -219,9 +145,7 @@ jobs:
 
       - name: Install packages for documentation build
         run: |
-          pip install -r requirements/requirements_build.txt
-          pip install -r requirements/requirements_doc.txt
-          pip install .
+          pip install .[doc]
 
       - name: Build the documentation
         run: |
@@ -231,41 +155,20 @@ jobs:
       - name: Upload HTML documentation
         uses: actions/upload-artifact@v3
         with:
-          name: HTML-Documentation
+          name: documentation-html
           path: doc/build/html
           retention-days: 7
 
   package:
     name: Package library
-    needs: [build_tests, build_docs]
+    needs: [build-tests, build-docs]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Build library source and wheel artifacts
+        uses: pyansys/actions/build-library@v1
         with:
+          library-name: ${{ env.PACKAGE_NAME }}
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
-          cache: 'pip'
-          cache-dependency-path: 'requirements/*.txt'
-
-      - name: Install ansys-mechanical-core
-        run: |
-          pip install build
-          python -m build
-          pip install dist/*.whl
-
-      - name: Check package
-        run: |
-          pip install twine
-          twine check dist/*
-
-      - name: Upload wheel and binaries
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ env.PACKAGE_NAME }}-packages
-          path: dist/
-          retention-days: 7
 
   release:
     name: Release project
@@ -305,8 +208,8 @@ jobs:
       - name: Zip HTML Documentation
         uses: vimtor/action-zip@v1
         with:
-          files: HTML-Documentation
-          dest: pymechanical-Documentation-HTML.zip
+          files: documentation-html
+          dest: pymechanical-documentation-html.zip
 
       - name: Release
         uses: softprops/action-gh-release@v1
@@ -338,8 +241,8 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: HTML-Documentation
-          path: HTML-Documentation
+          name: documentation-html
+          path: documentation-html
 
       - name: Get Bot Application Token
         id: get_workflow_token
@@ -355,7 +258,7 @@ jobs:
           repository-name: pyansys/pymechanical-dev-docs
           token: ${{ steps.get_workflow_token.outputs.token }}
           branch: gh-pages
-          folder: HTML-Documentation
+          folder: documentation-html
           clean: true
           single-commit: true
 
@@ -366,6 +269,6 @@ jobs:
           repository-name: pyansys/pymechanical-docs
           token: ${{ steps.get_workflow_token.outputs.token }}
           branch: gh-pages
-          folder: HTML-Documentation
+          folder: documentation-html
           clean: true
           single-commit: true
