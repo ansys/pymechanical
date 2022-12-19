@@ -71,7 +71,6 @@ doc = [
 ]
 embedding = [
     "pythonnet==2.5.2",
-    "pytest-print"
 ]
 
 [tool.flit.module]
