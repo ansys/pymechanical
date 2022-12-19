@@ -1,5 +1,7 @@
-import clr
 import os
+
+import clr
+
 from . import initializer
 
 INITIALIZED = False

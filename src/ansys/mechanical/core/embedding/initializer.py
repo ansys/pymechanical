@@ -1,7 +1,8 @@
-import clr
 import os
 from pathlib import Path
 import sys
+
+import clr
 
 from .resolver import resolve
 

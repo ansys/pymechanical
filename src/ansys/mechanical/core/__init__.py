@@ -1,5 +1,6 @@
 """Initialize the package level imports."""
 import logging
+
 from ansys.mechanical.core.logging import Logger
 
 # Create logger for package level use

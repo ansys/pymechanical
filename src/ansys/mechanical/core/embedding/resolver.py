@@ -1,6 +1,7 @@
-import clr
 import os
+
 import System
+import clr
 
 
 def resolver222(installpath):

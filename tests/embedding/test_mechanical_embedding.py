@@ -1,5 +1,6 @@
 import os
 import pathlib
+
 import pytest
 
 from ansys.mechanical.core import global_variables

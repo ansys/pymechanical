@@ -1,5 +1,6 @@
-import clr
 from pathlib import Path
+
+import clr
 
 
 def _get_embedding():

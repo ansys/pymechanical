@@ -10,9 +10,10 @@ def global_variables(app):
     import clr
 
     clr.AddReference("System.Collections")
-    import Ansys
-    import System
     from Ansys.Core.Units import Quantity
+    import System
+
+    import Ansys
 
     vars["Quantity"] = Quantity
     vars["System"] = System
