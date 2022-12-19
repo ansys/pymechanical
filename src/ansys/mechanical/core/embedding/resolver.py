@@ -1,3 +1,10 @@
+"""This is the .NET assembly resolving for embedding Ansys Mechanical.
+
+Note that for some Mechanical Addons - additional resolving may be
+necessary. Starting in Version 23.1, this resolving is part of
+Ansys.Mechanical.Embedding.dll which is shipped with Ansys Mechanical.
+"""
+
 import os
 
 import System
@@ -5,7 +12,9 @@ import clr
 
 
 def resolver222(installpath):
-    def resolver(sender, args):
+    """Resolve function for version 22.2, the first version supported by Mechanical Embedding."""
+
+    def _resolver(sender, args):
         assembly_file_name = args.Name.split(",")[0]
         dll_name = f"{assembly_file_name}.dll"
 
@@ -51,8 +60,10 @@ def resolver222(installpath):
                 os.path.join(installpath, "Addins", "Units", "bin", "Win64", dll_name)
             )
 
-        # for debugging - we get a lot of names like Ansys.ACT.Math.__spec__ which probably come from pythonnet runtime.
-        # I only want to print ones that look like "DllName, Version=version, Culture=neutral, PublicKeyToken=null"
+        # for debugging - we get a lot of names like Ansys.ACT.Math.__spec__
+        # which probably come from pythonnet runtime.
+        # I only want to print ones that look like:
+        #  "DllName, Version=version, Culture=neutral, PublicKeyToken=null"
         if "Culture" in assembly_file_name:
             print(assembly_file_name)
 
@@ -60,10 +71,11 @@ def resolver222(installpath):
             os.path.join(installpath, "aisol", "bin", "winx64", dll_name)
         )
 
-    return resolver
+    return _resolver
 
 
 def resolve(version, installpath):
+    """Resolve function for all versions of Ansys Mechanical."""
     clr.AddReference("Ansys.Mechanical.Embedding")
     import Ansys
 

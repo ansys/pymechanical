@@ -1,15 +1,15 @@
+"""Initializer for Mechanical embedding. Sets up paths and resolvers."""
 import os
 from pathlib import Path
 import sys
 
-import clr
-
-from .resolver import resolve
+from ansys.mechanical.core.embedding.resolver import resolve
 
 INITIALIZED_VERSION = None
 
 
 def initialize(version):
+    """Initialize Mechanical embedding."""
     global INITIALIZED_VERSION
     if INITIALIZED_VERSION != None:
         assert INITIALIZED_VERSION == version
@@ -22,7 +22,5 @@ def initialize(version):
         return install_path
 
     _installpath = _initpath()
-    clr.AddReference("Ansys.Mechanical.Embedding")
-    import Ansys
 
     resolve(version, _installpath)

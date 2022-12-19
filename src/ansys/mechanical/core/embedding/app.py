@@ -1,3 +1,4 @@
+"""Main application class for embedded Mechanical."""
 import os
 
 import clr
@@ -29,7 +30,14 @@ def _get_default_version():
 
 
 class App:
+    """Mechanical embedding Application."""
+
     def __init__(self, db_file=None, **kwargs):
+        """Construct an instance of the mechanical Application.
+
+        db_file is an optional path to a mechanical database file (.mechdat or .mechdb)
+        you may set a version number with the `version` keyword argument.
+        """
         global INITIALIZED
         if INITIALIZED:
             raise Exception("Cannot initialize embedded mechanical more than once")
@@ -48,30 +56,39 @@ class App:
         INITIALIZED = True
 
     def __enter__(self):
+        """Enter the scope."""
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        """Exit the scope."""
         self._app.Dispose()
 
     def open(self, db_file):
+        """Open the db file."""
         self.DataModel.Project.Open(db_file)
 
     def save(self, path=None):
+        """Save the project."""
         self.DataModel.Project.Save(path)
 
     def save_as(self, path):
+        """Save the project as."""
         self.DataModel.Project.SaveAs(path)
 
     def new(self):
+        """Clear to a new application."""
         self.DataModel.Project.New()
 
     def close(self):
+        """Close the application."""
         self.ExtAPI.Application.Close()
 
     @property
     def DataModel(self):
+        """Return the DataModel."""
         return self._app.DataModel
 
     @property
     def ExtAPI(self):
+        """Return the ExtAPI object."""
         return self._app.ExtAPI

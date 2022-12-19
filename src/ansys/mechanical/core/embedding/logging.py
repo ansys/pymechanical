@@ -1,3 +1,4 @@
+"""Logging module, used to setup logging options for embedded mechanical."""
 from pathlib import Path
 
 import clr
@@ -10,11 +11,15 @@ def _get_embedding():
 
         return Ansys.Mechanical.Embedding
     except:
-        raise Exception("Cannot use logging until after mechanical embedding is intialized")
+        raise Exception("Cannot use logging until after mechanical embedding is initialized")
 
 
 class Logging:
+    """Logging class for embedded Mechanical."""
+
     class Level:
+        """Logging level for Mechanical."""
+
         TRACE = 0
         DEBUG = 1
         INFO = 2
@@ -24,7 +29,9 @@ class Logging:
 
     @classmethod
     def config(cls, **kwargs):
-        """Similar to logging.basicConfig.  Available options:
+        """Similar to logging.basicConfig.
+
+        Available options:
         filename -> str
         level -> Logging.Level values
         auto_flush -> bool
@@ -47,15 +54,15 @@ class Logging:
 
     @classmethod
     def log_message(cls, severity: Level, context: str, message: str) -> None:
-        """log the message to the configured logging mechanism"""
+        """Log the message to the configured logging mechanism."""
         _get_embedding().Logging.LogMessage(severity, context, message)
 
     @classmethod
     def can_log_message(cls, severity: Level) -> bool:
-        """returns whether a message with the given severity will be output into the log"""
+        """Return whether a message with the given severity will be output into the log."""
         return _get_embedding().Logging.CanLogMessage(severity)
 
     @classmethod
     def flush(cls) -> None:
-        """flushes the log manually"""
+        """Flushes the log manually."""
         return _get_embedding().Logging.Flush()

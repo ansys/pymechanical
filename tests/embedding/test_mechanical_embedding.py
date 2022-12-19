@@ -1,3 +1,4 @@
+"""Quick Mechanical embedding tests."""
 import os
 import pathlib
 
@@ -9,12 +10,17 @@ ROOT_FOLDER = pathlib.Path(__file__).parent
 
 
 def get_assets_folder():
+    """Return the test assets folder.
+
+    TODO - share this with the mechanical remote tests.
+    """
     return ROOT_FOLDER / "assets"
 
 
 @pytest.mark.embedding
 def test_qk_eng_wb2_005(printer, selection, embedded_app):
     """Buckling analysis.
+
     From Mechanical/QK_ENG_WB2/QK_ENG_WB2_005
     """
     globals().update(global_variables(embedded_app))
@@ -28,7 +34,7 @@ def test_qk_eng_wb2_005(printer, selection, embedded_app):
     geometry_import.Import(geometry_file)
     printer("Running test")
 
-    def innertest():
+    def _innertest():
         printer("Setup units")
         ExtAPI.Application.ActiveUnitSystem = (
             Ansys.ACT.Interfaces.Common.MechanicalUnitSystem.StandardBIN
@@ -89,12 +95,13 @@ def test_qk_eng_wb2_005(printer, selection, embedded_app):
         s6_mode6 = EQV_STRS_BUCK.TabularData["LoadMultiplier"].get_Item(5)
         assert s6_mode6 == pytest.approx(43642, rel=1), "Sixth Load Multiplier result"
 
-    innertest()
+    _innertest()
 
 
 @pytest.mark.embedding
 def test_qk_eng_wb2_007(printer, selection, embedded_app):
     """Fatigue.
+
     From Mechanical/QK_ENG_WB2/QK_ENG_WB2_007
     """
     globals().update(global_variables(embedded_app))
@@ -111,7 +118,7 @@ def test_qk_eng_wb2_007(printer, selection, embedded_app):
     script = 'DS.Tree.Projects.Item(1).LoadEngrDataLibraryFromFile("' + material_file + '");'
     ExtAPI.Application.ScriptByName("jscript").ExecuteCommand(script)
 
-    def innertest():
+    def _innertest():
         printer("Add material file")
         MODEL = Model
         MODEL.RefreshMaterials()
@@ -257,4 +264,4 @@ def test_qk_eng_wb2_007(printer, selection, embedded_app):
             0.0122, rel=0.08
         ), "Minimum Safety Factor For Fatigue Tool 2"
 
-    innertest()
+    _innertest()
