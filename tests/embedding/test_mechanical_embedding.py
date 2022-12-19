@@ -4,7 +4,11 @@ import pathlib
 
 import pytest
 
-from ansys.mechanical.core import global_variables
+try:
+    from ansys.mechanical.core import global_variables
+except:
+    # No embedding - this import breaks test collection
+    global_variables = {}
 
 ROOT_FOLDER = pathlib.Path(__file__).parent
 
