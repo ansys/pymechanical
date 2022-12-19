@@ -17,10 +17,9 @@ def global_variables(app: "ansys.mechanical.core.App") -> typing.Dict:
     import clr
 
     clr.AddReference("System.Collections")
+    import Ansys
     from Ansys.Core.Units import Quantity
     import System
-
-    import Ansys
 
     vars["Quantity"] = Quantity
     vars["System"] = System
