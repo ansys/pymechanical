@@ -40,6 +40,12 @@ dependencies = [
 [tool.flit.module]
 name = "ansys.mechanical.core"
 
+[project.optional-dependencies]
+embedding = [
+    "pythonnet==2.5.2",
+    "pytest-print"
+]
+
 [project.urls]
 Source = "https://github.com/pyansys/pymechanical"
 
@@ -71,7 +77,11 @@ output = ".cov/coverage.xml"
 
 [tool.pytest.ini_options]
 minversion = "7.1"
-addopts = "-ra --cov=ansys.mechanical --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report term -vv"
+addopts = "-ra --cov=ansys.mechanical --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report term -vv --print --print-relative-time"
 testpaths = [
     "tests",
 ]
+markers = [
+    "embedding: tests that embed Mechanical in the python process"
+]
+xfail_strict = true
