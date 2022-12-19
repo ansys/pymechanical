@@ -31,36 +31,48 @@ def pytest_collection_modifyitems(config, items):
     )
     [item.add_marker(skip_embedding) for item in items if "embedding" in item.keywords]
 
+
 @pytest.fixture()
 def selection(embedded_app):
     from ansys.mechanical.core import global_variables
+
     globals().update(global_variables(embedded_app))
+
     class Selection:
         def __init__(self):
             self._mgr = ExtAPI.SelectionManager
+
         def UpdateSelection(self, api, input, type):
             new_selection = self._mgr.CreateSelectionInfo(type)
             ids = System.Collections.Generic.List[System.Int32]()
             [ids.Add(item) for item in input]
             new_selection.Ids = ids
             self._mgr.NewSelection(new_selection)
+
     yield Selection()
+
 
 def ensure_embedding() -> None:
     from ansys.mechanical.core import HAS_EMBEDDING
+
     if not HAS_EMBEDDING:
         raise Exception("Cannot run embedded tests if Mechanical embedding is not installed")
 
+
 def start_embedding_app() -> datetime.timedelta:
     from ansys.mechanical.core import App
+
     global EMBEDDED_APP
     ensure_embedding()
     start = datetime.datetime.now()
     EMBEDDED_APP = App(version=232)
-    startup_time = (datetime.datetime.now()-start).total_seconds()
+    startup_time = (datetime.datetime.now() - start).total_seconds()
     return startup_time
 
+
 EMBEDDED_APP = None
+
+
 @pytest.fixture(scope="session")
 def embedded_app(request):
     global EMBEDDED_APP
@@ -69,6 +81,7 @@ def embedded_app(request):
     if terminal_reporter is not None:
         terminal_reporter.write_line(f"\t{startup_time}\tStarting Mechanical")
     yield EMBEDDED_APP
+
 
 @pytest.fixture(autouse=True)
 def mke_app_reset(request):
@@ -80,6 +93,7 @@ def mke_app_reset(request):
     if terminal_reporter is not None:
         terminal_reporter.write_line(f"starting test {request.function.__name__} - file new")
     EMBEDDED_APP.new()
+
 
 @pytest.fixture(scope="session")
 def mechanical():

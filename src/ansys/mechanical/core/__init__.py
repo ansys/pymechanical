@@ -20,6 +20,7 @@ from ansys.mechanical.core.mechanical import Mechanical as Mechanical
 
 try:
     from ansys.mechanical.core.embedding import App, global_variables
+
     HAS_EMBEDDING = True
 except:
     HAS_EMBEDDING = False
