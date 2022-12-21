@@ -30,7 +30,7 @@ def _get_default_version():
 
 
 def _is_pythonnet_3():
-    return 3 == int(clr.__version__.split('.')[0])
+    return 3 == int(clr.__version__.split(".")[0])
 
 
 class App:
