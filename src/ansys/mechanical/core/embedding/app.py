@@ -29,6 +29,10 @@ def _get_default_version():
     return max(vers.keys())
 
 
+def _is_pythonnet_3():
+    return 3 == int(clr.__version__.split('.')[0])
+
+
 class App:
     """Mechanical embedding Application."""
 
@@ -46,12 +50,12 @@ class App:
             version = _get_default_version()
         initializer.initialize(version)
         clr.AddReference("Ansys.Mechanical.Embedding")
-        if version >= 231:
-            clr.AddReference("Ansys.Mechanical.CPython")
         import Ansys
 
         self._app = Ansys.Mechanical.Embedding.Application(db_file)
-        if version >= 231:
+        if version >= 231 and not _is_pythonnet_3():
+            # TODO - support InitializeRuntime for pythonnet3 (or maybe it isn't needed anymore?)
+            clr.AddReference("Ansys.Mechanical.CPython")
             Ansys.Mechanical.CPython.CPythonEngine.InitializeRuntime()
         INITIALIZED = True
 
