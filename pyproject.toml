@@ -49,10 +49,10 @@ tests = [
 ]
 doc = [
     "Sphinx==6.0.0",
-    "ansys-sphinx-theme==0.7.2",
+    "ansys-sphinx-theme==0.8.0",
     "grpcio==1.43.0",
     "imageio-ffmpeg==0.4.7",
-    "imageio==2.22.4",
+    "imageio==2.23.0",
     "jupyter_sphinx==0.4.0",
     "jupyterlab>=3.2.8",
     "matplotlib==3.6.2",
