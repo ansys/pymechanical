@@ -29,7 +29,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "ansys-pythonnet==3.1.0rc0",
+    "ansys-pythonnet==3.1.0rc1",
     "importlib-metadata>=4.0",
     "appdirs>=1.4.0",
     "grpcio>=1.30.0,<=1.51.1",
