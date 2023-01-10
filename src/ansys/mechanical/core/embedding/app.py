@@ -1,9 +1,8 @@
 """Main application class for embedded Mechanical."""
 import os
 
-import clr
-
-from . import initializer
+from ansys.mechanical.core.embedding import initializer
+from ansys.mechanical.core.embedding import loader
 
 INITIALIZED = False
 
@@ -11,13 +10,16 @@ INITIALIZED = False
 def _get_available_versions():
     supported_versions = [222, 231, 232]
     if os.name == "nt":
+        supported_versions = [222, 231, 232]
         awp_roots = {ver: os.environ.get(f"AWP_ROOT{ver}", "") for ver in supported_versions}
         installed_versions = {
             ver: path for ver, path in awp_roots.items() if path and os.path.isdir(path)
         }
         return installed_versions
     else:
-        raise Exception("TODO - Support linux")
+        # TODO - this can't be hardcoded... see how pymapdl does this.
+        os.environ["AWP_ROOT232"] = "/data/mkoubaa/ansys_inc/v232"
+        return {232: os.environ["AWP_ROOT232"]}
 
 
 def _get_default_version():
@@ -27,10 +29,6 @@ def _get_default_version():
             "Appropriate version of Ansys Mechanical is not installed. Must be at least v222"
         )
     return max(vers.keys())
-
-
-def _is_pythonnet_3():
-    return 3 == int(clr.__version__.split(".")[0])
 
 
 class App:
@@ -49,11 +47,12 @@ class App:
         if version == None:
             version = _get_default_version()
         initializer.initialize(version)
+        import clr
         clr.AddReference("Ansys.Mechanical.Embedding")
         import Ansys
 
         self._app = Ansys.Mechanical.Embedding.Application(db_file)
-        if version >= 231 and not _is_pythonnet_3():
+        if version >= 231 and not loader.is_pythonnet_3():
             # TODO - support InitializeRuntime for pythonnet3 (or maybe it isn't needed anymore?)
             clr.AddReference("Ansys.Mechanical.CPython")
             Ansys.Mechanical.CPython.CPythonEngine.InitializeRuntime()
