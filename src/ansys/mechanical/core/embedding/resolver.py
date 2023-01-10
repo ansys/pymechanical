@@ -83,7 +83,7 @@ def resolve(version):
         if version == 231:
             resolve_handler = assembly_resolver.WindowsResolveEventHandler
         else:
-            resolve_handler = assembly_resolver.MechanicalResolveEventHandler
+            resolve_handler = assembly_resolver.WindowsResolveEventHandler
         System.AppDomain.CurrentDomain.AssemblyResolve += resolve_handler
     else:
         System.AppDomain.CurrentDomain.AssemblyResolve += resolver222()
