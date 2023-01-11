@@ -4,6 +4,7 @@ from pathlib import Path
 
 def _get_embedding():
     import clr
+
     try:
         clr.AddReference("Ansys.Mechanical.Embedding")
         import Ansys

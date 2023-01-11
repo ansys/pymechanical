@@ -3,8 +3,8 @@ import os
 from pathlib import Path
 import sys
 
-from ansys.mechanical.core.embedding.resolver import resolve
 from ansys.mechanical.core.embedding.loader import load_clr
+from ansys.mechanical.core.embedding.resolver import resolve
 
 INITIALIZED_VERSION = None
 

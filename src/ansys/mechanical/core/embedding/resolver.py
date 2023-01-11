@@ -11,6 +11,7 @@ import os
 def resolver222():
     """Resolve function for version 22.2, the first version supported by Mechanical Embedding."""
     installpath = os.environ[f"AWP_ROOT222"]
+
     def _resolver(sender, args):
         assembly_file_name = args.Name.split(",")[0]
         dll_name = f"{assembly_file_name}.dll"
@@ -73,8 +74,9 @@ def resolver222():
 
 def resolve(version):
     """Resolve function for all versions of Ansys Mechanical."""
-    import clr
-    import System
+    import clr # isort: skip
+    import System # isort: skip
+
     clr.AddReference("Ansys.Mechanical.Embedding")
     import Ansys
 
@@ -86,7 +88,7 @@ def resolve(version):
             try:
                 resolve_handler = assembly_resolver.MechanicalResolveEventHandler
             except:
-                #TODO - remove me, once people are on a newer build
+                # TODO - remove me, once people are on a newer build
                 resolve_handler = assembly_resolver.WindowsResolveEventHandler
         System.AppDomain.CurrentDomain.AssemblyResolve += resolve_handler
     else:
