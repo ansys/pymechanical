@@ -78,7 +78,7 @@ def resolve(version):
     import System  # isort: skip
 
     clr.AddReference("Ansys.Mechanical.Embedding")
-    import Ansys
+    import Ansys  # isort: skip
 
     if version > 222:
         assembly_resolver = Ansys.Mechanical.Embedding.AssemblyResolver
