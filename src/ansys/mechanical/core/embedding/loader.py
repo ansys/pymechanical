@@ -2,7 +2,7 @@
 import os
 
 
-def load_clr_mono(intall_loc):
+def load_clr_mono(install_loc):
     """Load the clr using mono that is shipped with the unified install."""
     import clr_loader
     from pythonnet import load
@@ -27,7 +27,7 @@ def load_clr(install_loc: str) -> None:
     """Load the clr, the outcome of this function is that `clr` is usable."""
     if os.name == "nt":
         return
-    load_clr_mono()
+    load_clr_mono(install_loc)
 
 
 def is_pythonnet_3() -> bool:
