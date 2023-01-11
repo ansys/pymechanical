@@ -18,7 +18,10 @@ def load_clr_mono(install_loc):
     # config_dir=config_dir)
     libmono = os.path.join(assembly_dir, "libmonosgen-2.0.so")
     mono = clr_loader.get_mono(
-        set_signal_chaining=True, libmono=libmono, assembly_dir=assembly_dir, config_dir=config_dir
+        set_signal_chaining=True,
+        libmono=libmono,
+        assembly_dir=assembly_dir.encode("utf-8"),
+        config_dir=config_dir.encode("utf-8"),
     )
     load(mono)
 
