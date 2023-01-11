@@ -74,8 +74,8 @@ def resolver222():
 
 def resolve(version):
     """Resolve function for all versions of Ansys Mechanical."""
-    import clr # isort: skip
-    import System # isort: skip
+    import clr  # isort: skip
+    import System  # isort: skip
 
     clr.AddReference("Ansys.Mechanical.Embedding")
     import Ansys

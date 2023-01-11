@@ -17,9 +17,11 @@ def __add_sys_path(version) -> str:
 
 
 def __disable_sec() -> None:
-    """SEC is part of RSM and is unstable with embedding.  I'm not going
-    to debug why that is since we are planning to support DCS/REP in the future
-    instead of RSM."""
+    """SEC is part of RSM and is unstable with embedding.
+
+    I'm not going to debug why that is since we are planning to support
+    DCS/REP in the future instead of RSM.
+    """
     os.environ["ANSYS_MECHANICAL_EMBEDDING_NO_SEC"] = "1"
 
 
