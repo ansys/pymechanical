@@ -1,8 +1,7 @@
 """Main application class for embedded Mechanical."""
 import os
 
-from ansys.mechanical.core.embedding import initializer
-from ansys.mechanical.core.embedding import loader
+from ansys.mechanical.core.embedding import initializer, loader
 
 INITIALIZED = False
 
@@ -48,6 +47,7 @@ class App:
             version = _get_default_version()
         initializer.initialize(version)
         import clr
+
         clr.AddReference("Ansys.Mechanical.Embedding")
         import Ansys
 
