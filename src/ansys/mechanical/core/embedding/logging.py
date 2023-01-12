@@ -1,10 +1,10 @@
 """Logging module, used to setup logging options for embedded mechanical."""
 from pathlib import Path
 
-import clr
-
 
 def _get_embedding():
+    import clr
+
     try:
         clr.AddReference("Ansys.Mechanical.Embedding")
         import Ansys

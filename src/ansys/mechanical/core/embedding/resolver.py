@@ -1,18 +1,16 @@
 """This is the .NET assembly resolving for embedding Ansys Mechanical.
 
 Note that for some Mechanical Addons - additional resolving may be
-necessary. Starting in Version 23.1, this resolving is part of
-Ansys.Mechanical.Embedding.dll which is shipped with Ansys Mechanical.
+necessary. This logic is shipped with Ansys Mechanical on windows starting
+in version 23.1 and on linux starting in version 23.2
 """
 
 import os
 
-import System
-import clr
 
-
-def resolver222(installpath):
+def resolver222():
     """Resolve function for version 22.2, the first version supported by Mechanical Embedding."""
+    installpath = os.environ[f"AWP_ROOT222"]
 
     def _resolver(sender, args):
         assembly_file_name = args.Name.split(",")[0]
@@ -74,14 +72,24 @@ def resolver222(installpath):
     return _resolver
 
 
-def resolve(version, installpath):
+def resolve(version):
     """Resolve function for all versions of Ansys Mechanical."""
+    import clr  # isort: skip
+    import System  # isort: skip
+
     clr.AddReference("Ansys.Mechanical.Embedding")
-    import Ansys
+    import Ansys  # isort: skip
 
     if version > 222:
-        System.AppDomain.CurrentDomain.AssemblyResolve += (
-            Ansys.Mechanical.Embedding.AssemblyResolver.WindowsResolveEventHandler
-        )
+        assembly_resolver = Ansys.Mechanical.Embedding.AssemblyResolver
+        if version == 231:
+            resolve_handler = assembly_resolver.WindowsResolveEventHandler
+        else:
+            try:
+                resolve_handler = assembly_resolver.MechanicalResolveEventHandler
+            except:
+                # TODO - remove me, once people are on a newer build
+                resolve_handler = assembly_resolver.WindowsResolveEventHandler
+        System.AppDomain.CurrentDomain.AssemblyResolve += resolve_handler
     else:
-        System.AppDomain.CurrentDomain.AssemblyResolve += resolver222(installpath)
+        System.AppDomain.CurrentDomain.AssemblyResolve += resolver222()
