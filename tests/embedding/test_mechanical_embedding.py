@@ -61,6 +61,9 @@ def test_qk_eng_wb2_005(printer, selection, embedded_app):
         printer("Insert Static Structural results and Solve")
         DIR_DEF01_STAT_STRUC = STAT_STRUC.Solution.AddDirectionalDeformation()
         STAT_STRUC.Solution.Solve(True)
+        assert (
+            STAT_STRUC.Solution.ObjectState == Ansys.Mechanical.DataModel.Enums.ObjectState.Solved
+        )
 
         printer("Setup Linear Buckling analysis")
         BUCK = MODEL.Analyses[1]
@@ -83,6 +86,7 @@ def test_qk_eng_wb2_005(printer, selection, embedded_app):
         EQV_STRS_BUCK = BUCK.Solution.AddEquivalentStress()
         EQV_STRS_BUCK.Mode = 6
         BUCK.Solution.Solve(True)
+        assert BUCK.Solution.ObjectState == Ansys.Mechanical.DataModel.Enums.ObjectState.Solved
 
         printer("Clean and Solve")
         embedded_app.DataModel.Project.ClearGeneratedData()

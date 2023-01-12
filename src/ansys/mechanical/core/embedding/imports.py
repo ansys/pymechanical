@@ -14,12 +14,13 @@ def global_variables(app: "ansys.mechanical.core.App") -> typing.Dict:
     vars["DataModel"] = app.DataModel
     vars["Model"] = app.DataModel.Project.Model
     vars["Tree"] = app.DataModel.Tree
-    import clr
+    import clr  # isort: skip
 
     clr.AddReference("System.Collections")
-    import Ansys
     from Ansys.Core.Units import Quantity
-    import System
+
+    import System  # isort: skip
+    import Ansys  # isort: skip
 
     vars["Quantity"] = Quantity
     vars["System"] = System
