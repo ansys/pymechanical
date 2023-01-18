@@ -44,9 +44,7 @@ def selection(embedded_app):
 
         def UpdateSelection(self, api, input, type):
             new_selection = self._mgr.CreateSelectionInfo(type)
-            ids = System.Collections.Generic.List[System.Int32]()
-            [ids.Add(item) for item in input]
-            new_selection.Ids = ids
+            new_selection.Ids = input
             self._mgr.NewSelection(new_selection)
 
     yield Selection()
