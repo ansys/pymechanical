@@ -1,7 +1,7 @@
 """Main application class for embedded Mechanical."""
 import os
 
-from ansys.mechanical.core.embedding import initializer, loader, runtime
+from ansys.mechanical.core.embedding import initializer, runtime
 
 INITIALIZED = False
 
@@ -50,6 +50,7 @@ class App:
 
         clr.AddReference("Ansys.Mechanical.Embedding")
         import Ansys
+
         self._app = Ansys.Mechanical.Embedding.Application(db_file)
         runtime.initialize(version)
         INITIALIZED = True
