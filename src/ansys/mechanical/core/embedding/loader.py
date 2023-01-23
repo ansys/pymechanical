@@ -22,6 +22,7 @@ def __get_clr_loader_version():
 
 def __get_mono(assembly_dir, config_dir):
     import clr_loader
+
     if __get_clr_loader_version() == "0.2.5":
         libmono = os.path.join(assembly_dir, "libmonosgen-2.0.so")
         mono = clr_loader.get_mono(
@@ -36,6 +37,7 @@ def __get_mono(assembly_dir, config_dir):
             set_signal_chaining=True, assembly_dir=assembly_dir, config_dir=config_dir
         )
     return mono
+
 
 def load_clr_mono(install_loc):
     """Load the clr using mono that is shipped with the unified install."""
