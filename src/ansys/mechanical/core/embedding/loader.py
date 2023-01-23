@@ -43,7 +43,6 @@ def load_clr_mono(install_loc):
     """Load the clr using mono that is shipped with the unified install."""
     from pythonnet import load
 
-    install_loc = os.environ["AWP_ROOT232"]
     mono_dir = os.path.join(install_loc, "Tools", "mono", "Linux64")
     assembly_dir = os.path.join(mono_dir, "lib")
     config_dir = os.path.join(mono_dir, "etc")
