@@ -1,7 +1,7 @@
 """Main application class for embedded Mechanical."""
 import os
 
-from ansys.mechanical.core.embedding import initializer, loader
+from ansys.mechanical.core.embedding import initializer, runtime
 
 INITIALIZED = False
 
@@ -52,10 +52,7 @@ class App:
         import Ansys
 
         self._app = Ansys.Mechanical.Embedding.Application(db_file)
-        if version >= 231 and not loader.is_pythonnet_3():
-            # TODO - support InitializeRuntime for pythonnet3 (or maybe it isn't needed anymore?)
-            clr.AddReference("Ansys.Mechanical.CPython")
-            Ansys.Mechanical.CPython.CPythonEngine.InitializeRuntime()
+        runtime.initialize(version)
         INITIALIZED = True
 
     def __enter__(self):
