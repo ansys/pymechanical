@@ -1,6 +1,23 @@
 """clr_loader for pymechanical embedding. This loads the CLR on both windows and linux."""
-from importlib.metadata import version
 import os
+
+try:
+    from importlib.metadata import version
+
+    HAS_IMPORTLIB = True
+except:
+    # TODO - only support importlib.metadata::version after dropping python3.7 support.
+    # pkg_resources is part of distutils and is considered obsolete.
+    import pkg_resources
+
+    HAS_IMPORTLIB = False
+
+
+def __get_clr_loader_version():
+    if HAS_IMPORTLIB:
+        return version("clr_loader")
+    else:
+        return pkg_resources.get_distribution("clr_loader").version
 
 
 def load_clr_mono(install_loc):
@@ -12,7 +29,7 @@ def load_clr_mono(install_loc):
     mono_dir = os.path.join(install_loc, "Tools", "mono", "Linux64")
     assembly_dir = os.path.join(mono_dir, "lib")
     config_dir = os.path.join(mono_dir, "etc")
-    if version("clr_loader") == "0.2.5":
+    if __get_clr_loader_version() == "0.2.5":
         libmono = os.path.join(assembly_dir, "libmonosgen-2.0.so")
         mono = clr_loader.get_mono(
             set_signal_chaining=True,
