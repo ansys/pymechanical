@@ -20,15 +20,8 @@ def __get_clr_loader_version():
         return pkg_resources.get_distribution("clr_loader").version
 
 
-def load_clr_mono(install_loc):
-    """Load the clr using mono that is shipped with the unified install."""
+def __get_mono(assembly_dir, config_dir):
     import clr_loader
-    from pythonnet import load
-
-    install_loc = os.environ["AWP_ROOT232"]
-    mono_dir = os.path.join(install_loc, "Tools", "mono", "Linux64")
-    assembly_dir = os.path.join(mono_dir, "lib")
-    config_dir = os.path.join(mono_dir, "etc")
     if __get_clr_loader_version() == "0.2.5":
         libmono = os.path.join(assembly_dir, "libmonosgen-2.0.so")
         mono = clr_loader.get_mono(
@@ -42,6 +35,17 @@ def load_clr_mono(install_loc):
         mono = clr_loader.get_mono(
             set_signal_chaining=True, assembly_dir=assembly_dir, config_dir=config_dir
         )
+    return mono
+
+def load_clr_mono(install_loc):
+    """Load the clr using mono that is shipped with the unified install."""
+    from pythonnet import load
+
+    install_loc = os.environ["AWP_ROOT232"]
+    mono_dir = os.path.join(install_loc, "Tools", "mono", "Linux64")
+    assembly_dir = os.path.join(mono_dir, "lib")
+    config_dir = os.path.join(mono_dir, "etc")
+    mono = __get_mono(assembly_dir, config_dir)
     load(mono)
 
 
