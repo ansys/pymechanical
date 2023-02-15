@@ -138,7 +138,6 @@ _sym_db.RegisterMessage(FileDownloadResponse)
 
 _MECHANICALSERVICE = DESCRIPTOR.services_by_name["MechanicalService"]
 if _descriptor._USE_C_DESCRIPTORS == False:
-
     DESCRIPTOR._options = None
     DESCRIPTOR._serialized_options = b"\252\002!Ansys.Api.Mechanical.Scripting.V1"
     _LOGGERSEVERITY._serialized_start = 705
