@@ -2,6 +2,7 @@
 import os
 
 from ansys.mechanical.core.embedding import initializer, runtime
+from ansys.mechanical.core.embedding.config import Configuration, configure
 
 INITIALIZED = False
 
@@ -30,6 +31,13 @@ def _get_default_version():
     return max(vers.keys())
 
 
+def _get_default_configuration():
+    configuration = Configuration()
+    if os.name != "nt":
+        configuration.no_act_addins = True
+    return configuration
+
+
 class App:
     """Mechanical embedding Application."""
 
@@ -51,6 +59,8 @@ class App:
         clr.AddReference("Ansys.Mechanical.Embedding")
         import Ansys
 
+        configuration = kwargs.get("config", _get_default_configuration())
+        configure(configuration)
         self._app = Ansys.Mechanical.Embedding.Application(db_file)
         runtime.initialize(version)
         INITIALIZED = True
