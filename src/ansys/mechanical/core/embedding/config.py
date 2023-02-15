@@ -2,7 +2,7 @@
 import os
 
 
-class Configuration():
+class Configuration:
     """Configuration class for Mechanical."""
 
     def __init__(self):
@@ -12,22 +12,22 @@ class Configuration():
 
     @property
     def no_act_addins(self) -> bool:
-        """Property to disable all ACT Addins"""
+        """Property to disable all ACT Addins."""
         return self._no_act_addins
 
     @no_act_addins.setter
     def no_act_addins(self, value: bool):
-        """Setter of property to disable all ACT Addins"""
+        """Setter of property to disable all ACT Addins."""
         self._no_act_addins = value
 
     @property
     def no_wb1_addins(self) -> bool:
-        """Property to disable all WB1 Addins"""
+        """Property to disable all WB1 Addins."""
         return self._no_wb1_addins
 
     @no_wb1_addins.setter
     def no_wb1_addins(self, value: bool):
-        """Setter of property to disable all WB1 Addins"""
+        """Setter of property to disable all WB1 Addins."""
         self._no_wb1_addins = value
 
 
@@ -38,6 +38,6 @@ def configure(configuration: Configuration):
 
     # TODO - support a configuration option for no wb1 addins
 
-    # TODO - support fine-grained configuration options, design an interface for WB1 to accept these
-    #        and have the ability to call that interface before loading WB. (perhaps WB.Initialize can take
-    #        some new parameters!)
+    # TODO - support fine-grained configuration options, design an interface for WB1
+    #        to accept these and have the ability to call that interface before
+    #        loading WB. (perhaps WB.Initialize can take some new parameters!)

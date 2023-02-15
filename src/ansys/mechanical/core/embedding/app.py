@@ -3,6 +3,7 @@ import os
 
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.config import Configuration, configure
+
 INITIALIZED = False
 
 
