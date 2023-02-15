@@ -153,7 +153,7 @@ class PyMechanicalCustomAdapter(logging.LoggerAdapter):
     """Keeps the reference to the name of the Mechanical instance dynamic.
 
     The standard approach supplies extra input to the logger. If this approach
-    was used, Mechanical instances would have to be inputted evey time a log
+    was used, Mechanical instances would have to be inputted every time a log
     is created.
 
     Using an adapter means that the reference to the Mechanical instance must only
