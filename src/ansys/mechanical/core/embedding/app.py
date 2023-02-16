@@ -120,4 +120,5 @@ class App:
 
     @property
     def version(self):
+        """Returns the version of the app."""
         return self._version

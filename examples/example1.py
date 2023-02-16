@@ -1,3 +1,5 @@
+"""Prestressed buckling example."""
+
 import pathlib
 
 import ansys.mechanical.core as mech
