@@ -1,10 +1,9 @@
 """Main application class for embedded Mechanical."""
+import atexit
 import os
 
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.config import Configuration, configure
-
-INITIALIZED = False
 
 
 def _get_available_versions():
@@ -37,6 +36,14 @@ def _get_default_configuration():
         configuration.no_act_addins = True
     return configuration
 
+INSTANCE = None
+
+def _dispose_embedded_app():
+    global INSTANCE
+    if INSTANCE != None:
+        INSTANCE._app.Dispose()
+
+atexit.register(_dispose_embedded_app)
 
 class App:
     """Mechanical embedding Application."""
@@ -47,9 +54,9 @@ class App:
         db_file is an optional path to a mechanical database file (.mechdat or .mechdb)
         you may set a version number with the `version` keyword argument.
         """
-        global INITIALIZED
-        if INITIALIZED:
-            raise Exception("Cannot initialize embedded mechanical more than once")
+        global INSTANCE
+        if INSTANCE != None:
+            raise Exception("Cannot have more than one embedded mechanical instance")
         version = kwargs.get("version")
         if version == None:
             version = _get_default_version()
@@ -63,7 +70,8 @@ class App:
         configure(configuration)
         self._app = Ansys.Mechanical.Embedding.Application(db_file)
         runtime.initialize(version)
-        INITIALIZED = True
+        self._disposed = False
+        INSTANCE = self
 
     def __enter__(self):
         """Enter the scope."""
@@ -71,7 +79,10 @@ class App:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Exit the scope."""
+        if self._disposed:
+            return
         self._app.Dispose()
+        self._disposed = True
 
     def open(self, db_file):
         """Open the db file."""
