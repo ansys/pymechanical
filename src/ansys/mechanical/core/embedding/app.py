@@ -1,10 +1,9 @@
 """Main application class for embedded Mechanical."""
+import atexit
 import os
 
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.config import Configuration, configure
-
-INITIALIZED = False
 
 
 def _get_available_versions():
@@ -38,6 +37,15 @@ def _get_default_configuration():
     return configuration
 
 
+INSTANCES = []
+
+
+def _dispose_embedded_app(instances):
+    if len(instances) > 0:
+        instance = instances[0]
+        instance._dispose()
+
+
 class App:
     """Mechanical embedding Application."""
 
@@ -47,13 +55,13 @@ class App:
         db_file is an optional path to a mechanical database file (.mechdat or .mechdb)
         you may set a version number with the `version` keyword argument.
         """
-        global INITIALIZED
-        if INITIALIZED:
-            raise Exception("Cannot initialize embedded mechanical more than once")
-        version = kwargs.get("version")
-        if version == None:
-            version = _get_default_version()
-        initializer.initialize(version)
+        global INSTANCES
+        if len(INSTANCES) > 0:
+            raise Exception("Cannot have more than one embedded mechanical instance")
+        self._version = kwargs.get("version")
+        if self._version == None:
+            self._version = _get_default_version()
+        initializer.initialize(self._version)
         import clr
 
         clr.AddReference("Ansys.Mechanical.Embedding")
@@ -62,8 +70,11 @@ class App:
         configuration = kwargs.get("config", _get_default_configuration())
         configure(configuration)
         self._app = Ansys.Mechanical.Embedding.Application(db_file)
-        runtime.initialize(version)
-        INITIALIZED = True
+        runtime.initialize(self._version)
+        self._disposed = False
+        if len(INSTANCES) == 0:
+            atexit.register(_dispose_embedded_app, INSTANCES)
+        INSTANCES.append(self)
 
     def __enter__(self):
         """Enter the scope."""
@@ -71,7 +82,13 @@ class App:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Exit the scope."""
+        self._dispose()
+
+    def _dispose(self):
+        if self._disposed:
+            return
         self._app.Dispose()
+        self._disposed = True
 
     def open(self, db_file):
         """Open the db file."""
@@ -102,3 +119,8 @@ class App:
     def ExtAPI(self):
         """Return the ExtAPI object."""
         return self._app.ExtAPI
+
+    @property
+    def version(self):
+        """Returns the version of the app."""
+        return self._version
