@@ -36,14 +36,18 @@ def _get_default_configuration():
         configuration.no_act_addins = True
     return configuration
 
+
 INSTANCE = None
+
 
 def _dispose_embedded_app():
     global INSTANCE
     if INSTANCE != None:
         INSTANCE._app.Dispose()
 
+
 atexit.register(_dispose_embedded_app)
+
 
 class App:
     """Mechanical embedding Application."""

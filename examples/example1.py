@@ -1,8 +1,6 @@
-
 import pathlib
 
 import ansys.mechanical.core as mech
-
 
 ASSETS_FOLDER = pathlib.Path(__file__).parent.parent / "tests" / "embedding" / "assets"
 
@@ -17,14 +15,16 @@ buckl = Model.AddEigenvalueBucklingAnalysis()
 Model.Analyses[1].InitialConditions[0].PreStressICEnvironment = Model.Analyses[0]
 geometry_import = Model.GeometryImportGroup.AddGeometryImport()
 geometry_import.Import(geometry_file)
-materials = DataModel.GetObjectsByType(Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Material)
-
-ExtAPI.Application.ActiveUnitSystem = (
-    Ansys.ACT.Interfaces.Common.MechanicalUnitSystem.StandardBIN
+materials = DataModel.GetObjectsByType(
+    Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Material
 )
+
+ExtAPI.Application.ActiveUnitSystem = Ansys.ACT.Interfaces.Common.MechanicalUnitSystem.StandardBIN
 Model.Geometry.ElementControl = Ansys.Mechanical.DataModel.Enums.ElementControl.Manual
 
-new_selection = ExtAPI.SelectionManager.CreateSelectionInfo(Ansys.ACT.Interfaces.Common.SelectionTypeEnum.GeometryEntities)
+new_selection = ExtAPI.SelectionManager.CreateSelectionInfo(
+    Ansys.ACT.Interfaces.Common.SelectionTypeEnum.GeometryEntities
+)
 new_selection.Ids = [26]
 ExtAPI.SelectionManager.NewSelection(new_selection)
 
