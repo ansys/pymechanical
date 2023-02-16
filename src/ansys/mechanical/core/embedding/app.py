@@ -57,10 +57,10 @@ class App:
         global INSTANCE
         if INSTANCE != None:
             raise Exception("Cannot have more than one embedded mechanical instance")
-        version = kwargs.get("version")
-        if version == None:
-            version = _get_default_version()
-        initializer.initialize(version)
+        self._version = kwargs.get("version")
+        if self._version == None:
+            self._version = _get_default_version()
+        initializer.initialize(self._version)
         import clr
 
         clr.AddReference("Ansys.Mechanical.Embedding")
@@ -69,7 +69,7 @@ class App:
         configuration = kwargs.get("config", _get_default_configuration())
         configure(configuration)
         self._app = Ansys.Mechanical.Embedding.Application(db_file)
-        runtime.initialize(version)
+        runtime.initialize(self._version)
         self._disposed = False
         INSTANCE = self
 
@@ -113,3 +113,7 @@ class App:
     def ExtAPI(self):
         """Return the ExtAPI object."""
         return self._app.ExtAPI
+
+    @property
+    def version(self):
+        return self._version
