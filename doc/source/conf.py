@@ -29,7 +29,7 @@ warnings.filterwarnings(
 
 
 def get_version_match(semver: str) -> str:
-    """Ad-hoc method from ansys-sphinx-theme"""
+    """Ad-hoc method from ansys-sphinx-theme."""
     if "dev" in semver:
         return "dev"
     major, minor, _ = semver.split(".")
