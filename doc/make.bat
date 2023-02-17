@@ -8,10 +8,11 @@ if "%SPHINXBUILD%" == "" (
 	set SPHINXBUILD=sphinx-build
 )
 set SOURCEDIR=source
-set BUILDDIR=build
+set BUILDDIR=_build
 
 if "%1" == "" goto help
 if "%1" == "clean" goto clean
+if "%1" == "pdf" goto pdf
 
 %SPHINXBUILD% >NUL 2>NUL
 if errorlevel 9009 (
@@ -33,6 +34,16 @@ goto end
 rmdir /s /q %BUILDDIR% > /NUL 2>&1
 for /d /r %SOURCEDIR% %%d in (_autosummary) do @if exist "%%d" rmdir /s /q "%%d"
 goto end
+
+:pdf
+%SPHINXBUILD% -M latex %SOURCEDIR% %BUILDDIR% %SPHINXOPTS% %O%
+cd "%BUILDDIR%\latex"
+for %%f in (*.tex) do (
+pdflatex "%%f" --interaction=nonstopmode)
+if NOT EXIST ansys-mechanical-core.pdf (
+	Echo "no pdf generated!"
+	exit /b 1)
+Echo "pdf generated!"
 
 :help
 %SPHINXBUILD% -M help %SOURCEDIR% %BUILDDIR% %SPHINXOPTS% %O%
