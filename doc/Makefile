@@ -5,7 +5,7 @@
 SPHINXOPTS    = -j auto
 SPHINXBUILD   = sphinx-build
 SOURCEDIR     = source
-BUILDDIR      = build
+BUILDDIR      = _build
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -35,24 +35,5 @@ clean-except-examples:
 # with our docs like GIFs being written as PNG.
 pdf:
 	@$(SPHINXBUILD) -M latex "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
-	python validate_png.py  # clean-up GIFs mislabeled as PNG
-	cd build/latex && latexmk -r latexmkrc -pdf *.tex -interaction=nonstopmode || true
-	(test -f build/latex/*.pdf && echo pdf exists) || exit 1
-
-# manually deploy to https://github.com/pyansys/pymechanical-docs
-# WARNING: Use with care as this overwrites history of gh-pages
-# deploy:
-# 	@echo "*** Warning ***"
-# 	@echo "You are about to deploy to 'PyMechanical docs'."
-# 	@echo "This overwrites the history of gh-pages."
-# 	@echo "Are you sure? [y/N] " && read ans && [ $${ans:-N} = y ]
-# 	@echo "Deploying..."
-# 	touch build/html/.nojekyll
-# 	echo "mechanical.docs.pyansys.com" >> build/html/CNAME
-# 	cd build/html && git init
-# 	cd build/html && git add .
-# 	cd build/html && git checkout -b gh-pages
-# 	cd build/html && git commit -am "manual build"
-# 	cd build/html && git remote add origin https://github.com/pyansys/pymechanical-docs
-# 	cd build/html && git push -u origin gh-pages --force
-# 	rm -rf build/html/.git
+	cd $(BUILDDIR)/latex && latexmk -r latexmkrc -pdf *.tex -interaction=nonstopmode || true
+	(test -f $(BUILDDIR)/latex/*.pdf && echo pdf exists) || exit 1
