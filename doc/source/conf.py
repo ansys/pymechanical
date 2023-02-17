@@ -7,25 +7,17 @@
 
 # -- Path setup --------------------------------------------------------------
 
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-#
 from datetime import datetime
-import sys
+import os
 import warnings
 
 from ansys_sphinx_theme import pyansys_logo_black
 from sphinx_gallery.sorting import FileNameSortKey
 
-from ansys.mechanical import core as pymechanical
-from ansys.mechanical.core import __version__
+import ansys.mechanical.core as pymechanical
 
 # necessary when building the sphinx gallery
 pymechanical.BUILDING_GALLERY = True
-
-sys.path.insert(0, "..")
-# import ansys.mechanical.core
 
 # suppress annoying matplotlib bug
 warnings.filterwarnings(
@@ -36,14 +28,21 @@ warnings.filterwarnings(
 )
 
 
+def get_version_match(semver: str) -> str:
+    """Ad-hoc method from ansys-sphinx-theme."""
+    if "dev" in semver:
+        return "dev"
+    major, minor, _ = semver.split(".")
+    return ".".join([major, minor])
+
+
 # -- Project information -----------------------------------------------------
 
 project = "ansys.mechanical.core"
 copyright = f"(c) {datetime.now().year} ANSYS, Inc. All rights reserved"
 author = "ANSYS Inc."
-
-# The short X.Y version
-release = version = __version__
+release = version = pymechanical.__version__
+cname = os.getenv("DOCUMENTATION_CNAME", default="nocname.com")
 
 
 # Add any Sphinx extension module names here, as strings. They can be
@@ -161,7 +160,7 @@ sphinx_gallery_conf = {
     "examples_dirs": ["../../examples/"],
     # path where to save gallery generated examples
     "gallery_dirs": ["examples/gallery_examples"],
-    # Patter to search for example files
+    # Pattern to search for example files
     "filename_pattern": r"\.py",
     # Remove the "Download all examples" button from the top level gallery
     "download_all_examples": False,
@@ -181,12 +180,32 @@ sphinx_gallery_conf = {
 html_short_title = html_title = "PyMechanical"
 html_theme = "ansys_sphinx_theme"
 html_logo = pyansys_logo_black
+html_context = {
+    "github_user": "pyansys",
+    "github_repo": "pymechanical",
+    "github_version": "main",
+    "doc_path": "doc/source",
+}
 html_theme_options = {
+    "switcher": {
+        "json_url": f"https://{cname}/release/versions.json",
+        "version_match": get_version_match(version),
+    },
+    "navbar_end": ["version-switcher", "theme-switcher", "navbar-icon-links"],
     "github_url": "https://github.com/pyansys/pymechanical",
     "show_prev_next": False,
     "show_breadcrumbs": True,
+    "collapse_navigation": True,
+    "use_edit_page_button": True,
     "additional_breadcrumbs": [
         ("PyAnsys", "https://docs.pyansys.com/"),
+    ],
+    "icon_links": [
+        {
+            "name": "Support",
+            "url": "https://github.com/pyansys/pymechanical/discussions",
+            "icon": "fa fa-comment fa-fw",
+        },
     ],
 }
 
@@ -205,7 +224,7 @@ latex_elements = {}
 latex_documents = [
     (
         master_doc,
-        f"pymechanical-Documentation-{__version__}.tex",
+        f"pymechanical-Documentation-{version}.tex",
         "ansys.mechanical.core Documentation",
         author,
         "manual",

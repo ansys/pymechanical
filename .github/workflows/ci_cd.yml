@@ -7,6 +7,7 @@ on:
       - "*"
     branches:
       - main
+      - release/*
 
 env:
   PYMECHANICAL_PORT: 10000  # default won't work on GitHub runners
@@ -15,6 +16,7 @@ env:
   DOCKER_IMAGE_VERSION: v23.1.0
   MAIN_PYTHON_VERSION: '3.10'
   PACKAGE_NAME: ansys-mechanical-core
+  DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -175,7 +177,7 @@ jobs:
       - name: Upload HTML documentation
         uses: actions/upload-artifact@v3
         with:
-          name: HTML-Documentation
+          name: documentation-html
           path: doc/build/html
           retention-days: 7
 
@@ -274,42 +276,13 @@ jobs:
 
   upload_docs_release:
     name: Upload documentation
-    if: (github.event_name == 'push' && contains(github.ref, 'refs/tags')) || (github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     needs: [package]
     steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/download-artifact@v3
+    steps:
+      - name: Deploy the stable documentation
+        uses: pyansys/actions/doc-deploy-stable@v3
         with:
-          name: HTML-Documentation
-          path: HTML-Documentation
-
-      - name: Get Bot Application Token
-        id: get_workflow_token
-        uses: peter-murray/workflow-application-token-action@v2
-        with:
-          application_id: ${{ secrets.BOT_APPLICATION_ID }}
-          application_private_key: ${{ secrets.BOT_APPLICATION_PRIVATE_KEY }}
-
-      - name: Deploy documentation to pymechanical-dev-docs repository
-        if: github.ref == 'refs/heads/main'
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
-        with:
-          repository-name: pyansys/pymechanical-dev-docs
-          token: ${{ steps.get_workflow_token.outputs.token }}
-          branch: gh-pages
-          folder: HTML-Documentation
-          clean: true
-          single-commit: true
-
-      - name: Deploy documentation to pymechanical-docs repository
-        if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
-        with:
-          repository-name: pyansys/pymechanical-docs
-          token: ${{ steps.get_workflow_token.outputs.token }}
-          branch: gh-pages
-          folder: HTML-Documentation
-          clean: true
-          single-commit: true
+          cname: ${{ env.DOCUMENTATION_CNAME }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
