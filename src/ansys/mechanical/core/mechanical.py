@@ -2072,9 +2072,9 @@ def launch_mechanical(
     loglevel : str, optional
         Level of messages to print to the console. The default is ``WARNING``.
         Options are ``"WARNING"``, ``"ERROR"``, and ``"INFO"``.
-            - ``WARNING`` prints only Ansys warning messages.
-            - ``ERROR`` prints only Ansys error messages.
-            - ``INFO`` prints out all Ansysmessages.
+        - ``WARNING`` prints only Ansys warning messages.
+        - ``ERROR`` prints only Ansys error messages.
+        - ``INFO`` prints out all Ansysmessages.
     log_file : bool, optional
         Whether to copy the messages to a file named ``logs.log``, which is
         located where the Python script is executed. The default is ``False``.
@@ -2119,7 +2119,7 @@ def launch_mechanical(
     clear_on_connect : bool, optional
         when ``start_instance`` is ``False``, whether to clear the environment
         when connecting to Mechanical. The default is ``False``. When ``True``,
-       a fresh environment is provided when you connect to Mechanical.
+        a fresh environment is provided when you connect to Mechanical.
     cleanup_on_exit : bool, optional
         Whether to exit Mechanical when Python exits. The default is ``True``.
         When ``False``, Mechanical is not exited when the garbage for this Mechanical
