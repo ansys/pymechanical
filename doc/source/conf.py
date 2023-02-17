@@ -35,6 +35,7 @@ def get_version_match(semver: str) -> str:
     major, minor, _ = semver.split(".")
     return ".".join([major, minor])
 
+
 # -- Project information -----------------------------------------------------
 
 project = "ansys.mechanical.core"
