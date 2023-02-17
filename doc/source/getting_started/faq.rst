@@ -22,7 +22,7 @@ What are the pros and cons of PyMechanical versus Mechanical ACT?
 Your scripting method depends on your pipeline and software approach.
 Mechanical ACT is dependent on Ansys Workbench. You build extensions from within
 the ACT App Builder and then run them from within Ansys Mechanical. If you
-intend to vary parameters, you must use Ansys optiSLang and then
+intend to vary parameters, you must use Ansys OptiSLang and then
 batch your solutions.
 
 PyMechanical's main advantages over ACT are:
