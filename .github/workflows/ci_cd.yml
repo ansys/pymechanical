@@ -117,6 +117,7 @@ jobs:
         uses: pyansys/actions/doc-build@v3
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          dependencies: "pandoc"
 
   package:
     name: Package library
