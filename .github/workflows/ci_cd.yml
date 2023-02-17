@@ -113,11 +113,14 @@ jobs:
     needs: [docs-style]
     runs-on: ubuntu-latest
     steps:
+      - name: "Install dependencies"
+        shell: bash
+        run: sudo apt-get install pandoc
+
       - name: Run Ansys documentation building action
         uses: pyansys/actions/doc-build@v3
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
-          dependencies: "pandoc"
 
   package:
     name: Package library
