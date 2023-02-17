@@ -2071,11 +2071,7 @@ def launch_mechanical(
         When ``False``, Mechanical launches in UI mode.
     loglevel : str, optional
         Level of messages to print to the console. The default is ``WARNING``.
-            Options are ``"WARNING"``, ``"ERROR"``, and ``"INFO"``.
-
-            - ``WARNING`` prints only Ansys warning messages.
-            - ``ERROR`` prints only Ansys error messages.
-            - ``INFO`` prints out all Ansysmessages.
+        Options are ``"WARNING"``, ``"ERROR"``, and ``"INFO"``.
     log_file : bool, optional
         Whether to copy the messages to a file named ``logs.log``, which is
         located where the Python script is executed. The default is ``False``.
