@@ -2072,13 +2072,16 @@ def launch_mechanical(
     loglevel : str, optional
         Level of messages to print to the console. The default is ``WARNING``.
         Options are ``"WARNING"``, ``"ERROR"``, and ``"INFO"``.
+            - ``WARNING`` prints only Ansys warning messages.
+            - ``ERROR`` prints only Ansys error messages.
+            - ``INFO`` prints out all Ansysmessages.
     log_file : bool, optional
         Whether to copy the messages to a file named ``logs.log``, which is
         located where the Python script is executed. The default is ``False``.
     log_mechanical : str, optional
         Path to the output file on the local disk to write every script
         command to. The default is ``None``. However, you might set
-        ``"log_mechanical='pymechanical_log.txt"`` to write all commands that are
+        ``"log_mechanical='pymechanical_log.txt'"`` to write all commands that are
         sent to Mechanical via PyMechanical in this file. You can then use these
         commands to run a script within Mechanical without PyMechanical.
     additional_switches : str, optional
