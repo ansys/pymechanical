@@ -132,12 +132,11 @@ To install PyMechanical in developer mode, perform these steps:
       # Install all requirements
       python -m pip install -e .[tests,doc]
 
-
 #. Finally, verify your development installation by running:
 
     .. code:: bash
 
-    tox
+        tox
 
 
 Install in offline mode
