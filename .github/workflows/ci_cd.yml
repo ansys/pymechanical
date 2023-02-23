@@ -106,7 +106,7 @@ jobs:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
   embedding-tests:
-    name: Testing and coverage
+    name: Embeding testing and coverage
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/pyansys/pymechanical/mechanical:v23.2.0
@@ -115,7 +115,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
+      - name: Install dependencies
+        run: |
+          apt install -y lsb_release
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -131,6 +133,8 @@ jobs:
         env:
           LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
           ANSYSCL232_DIR: /install/ansys_inc/v232/licensingclient
+          ANSYSLMD_LICENSE_FILE: 1055@${{ env.LICENSE_SERVER }}
+          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
         run: /install/ansys_inc/v232/aisol/.workbench_lite pytest -m embedding
 
       - name: Upload Coverage Results
