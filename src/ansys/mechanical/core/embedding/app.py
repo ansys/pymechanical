@@ -111,7 +111,7 @@ class App:
         self.ExtAPI.Application.Close()
 
     def execute_script(self, script: str):
-        """Executes the given script with the internal IronPython engine."""
+        """Execute the given script with the internal IronPython engine."""
         SCRIPT_SCOPE = "pymechanical-internal"
         if not hasattr(self, "script_engine"):
             import clr
