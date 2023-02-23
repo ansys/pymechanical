@@ -13,6 +13,8 @@ env:
   PYMECHANICAL_START_INSTANCE: FALSE
   DOCKER_PACKAGE: ghcr.io/pyansys/pymechanical/mechanical
   DOCKER_IMAGE_VERSION: v23.1.0
+  EMBEDDING_DOCKER_IMAGE_LINUX_VERSION: v23.2.0
+  EMBEDDING_DOCKER_IMAGE_WINDOWS_VERSION: v23.1.0
   MAIN_PYTHON_VERSION: '3.10'
   PACKAGE_NAME: ansys-mechanical-core
   PACKAGE_NAMESPACE: ansys.mechanical.core
@@ -40,7 +42,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ['3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.8', '3.9', '3.10', '3.11']
 
     steps:
       - name: Build wheelhouse and perform smoke test
@@ -59,7 +61,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.8', '3.9', '3.10', '3.11']
 
     steps:
       - name: Build wheelhouse and perform smoke test
@@ -112,8 +114,39 @@ jobs:
           path: .cov/html
           retention-days: 7
 
-      # - name: Upload coverage to Codecov
-      #   uses: codecov/codecov-action@v3
+  embedding-build-tests:
+    name: Testing and coverage
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ env.DOCKER_PACKAGE }}:${{ env.EMBEDDING_DOCKER_IMAGE_LINUX_VERSION }}
+      entrypoint: /bin/bash
+    needs: [smoke-tests]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          cache: 'pip'
+          cache-dependency-path: 'pyproject.toml'
+        
+      - name: Install packages for testing
+        run: |
+          pip install .[tests]
+
+      - name: Unit Testing and coverage 
+        env:
+          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
+        run: pytest -m embedding
+
+      - name: Upload Coverage Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: HTML-Coverage
+          path: .cov/html
+          retention-days: 7
 
   build-docs:
     name: Documentation
@@ -156,7 +189,7 @@ jobs:
 
   package:
     name: Package library
-    needs: [build-tests, build-docs]
+    needs: [build-tests, build-docs, embedding-build-tests]
     runs-on: ubuntu-latest
     steps:
       - name: Build library source and wheel artifacts
