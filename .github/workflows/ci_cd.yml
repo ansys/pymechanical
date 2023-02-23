@@ -119,7 +119,7 @@ jobs:
       - name: Install dependencies
         run: |
           apt install -y lsb-release
-          apt install python3-pip
+          apt install -y python3-pip
           pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
           pip3 install --upgrade pip flit
 
