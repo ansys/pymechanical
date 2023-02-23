@@ -8,10 +8,12 @@ Docker
 docker
 ethernet
 ethernet's
+generateHosts
 hostname
 Hostname
 Mechanical
 mechanical
+OptiSLang
 PyAnsys
 pyansys
 PyMechanical
