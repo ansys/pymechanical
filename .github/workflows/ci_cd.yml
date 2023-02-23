@@ -115,14 +115,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
       - name: Install dependencies
         run: |
           apt install -y lsb-release
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.MAIN_PYTHON_VERSION }}
-        
+          apt install python3-pip
+          pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
+          pip3 install --upgrade pip flit
+
       - name: Install packages for testing
         run: |
           pip install .[tests]
