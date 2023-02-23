@@ -14,8 +14,6 @@ env:
   PYMECHANICAL_START_INSTANCE: FALSE
   DOCKER_PACKAGE: ghcr.io/pyansys/pymechanical/mechanical
   DOCKER_IMAGE_VERSION: v23.1.0
-  EMBEDDING_DOCKER_IMAGE_LINUX_VERSION: v23.2.0
-  EMBEDDING_DOCKER_IMAGE_WINDOWS_VERSION: v23.1.0
   MAIN_PYTHON_VERSION: '3.10'
   PACKAGE_NAME: ansys-mechanical-core
   PACKAGE_NAMESPACE: ansys.mechanical.core
@@ -111,7 +109,7 @@ jobs:
     name: Testing and coverage
     runs-on: ubuntu-latest
     container:
-      image: ${{ env.DOCKER_PACKAGE }}:${{ env.EMBEDDING_DOCKER_IMAGE_LINUX_VERSION }}
+      image: ghcr.io/pyansys/pymechanical/mechanical:v23.2.0
       entrypoint: /bin/bash
     needs: [smoke-tests]
 
