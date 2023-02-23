@@ -25,85 +25,85 @@ concurrency:
 
 jobs:
 
-  # style:
-  #   name: Code style
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: PyAnsys code style checks
-  #       uses: pyansys/actions/code-style@v3
-  #       with:
-  #         python-version: ${{ env.MAIN_PYTHON_VERSION }}
+  style:
+    name: Code style
+    runs-on: ubuntu-latest
+    steps:
+      - name: PyAnsys code style checks
+        uses: pyansys/actions/code-style@v3
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
-  # docs-style:
-  #   name: Documentation Style Check
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: PyAnsys documentation style checks
-  #       uses: pyansys/actions/doc-style@v3
-  #       with:
-  #         token: ${{ secrets.GITHUB_TOKEN }}
+  docs-style:
+    name: Documentation Style Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: PyAnsys documentation style checks
+        uses: pyansys/actions/doc-style@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-  # smoke-tests:
-  #   name: Build and Smoke tests
-  #   runs-on: ${{ matrix.os }}
-  #   needs: [style]
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       os: [ubuntu-latest, windows-latest]
-  #       python-version: ['3.8', '3.9', '3.10', '3.11']
-  #   steps:
-  #     - name: Build wheelhouse and perform smoke test
-  #       uses: pyansys/actions/build-wheelhouse@v3
-  #       with:
-  #         library-name: ${{ env.PACKAGE_NAME }}
-  #         library-namespace: ${{ env.PACKAGE_NAMESPACE }}
-  #         operating-system: ${{ matrix.os }}
-  #         python-version: ${{ matrix.python-version }}
+  smoke-tests:
+    name: Build and Smoke tests
+    runs-on: ${{ matrix.os }}
+    needs: [style]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ['3.8', '3.9', '3.10', '3.11']
+    steps:
+      - name: Build wheelhouse and perform smoke test
+        uses: pyansys/actions/build-wheelhouse@v3
+        with:
+          library-name: ${{ env.PACKAGE_NAME }}
+          library-namespace: ${{ env.PACKAGE_NAMESPACE }}
+          operating-system: ${{ matrix.os }}
+          python-version: ${{ matrix.python-version }}
 
-  # macos-build:
-  #   name: Build and Smoke tests (macOS)
-  #   if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
-  #   runs-on: macos-latest
-  #   needs: []
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       python-version: ['3.8', '3.9', '3.10', '3.11']
-  #   steps:
-  #     - name: Build wheelhouse and perform smoke test
-  #       uses: pyansys/actions/build-wheelhouse@v3
-  #       with:
-  #         library-name: ${{ env.PACKAGE_NAME }}
-  #         library-namespace: ${{ env.PACKAGE_NAMESPACE }}
-  #         operating-system: ${{ runner.os }}
-  #         python-version: ${{ matrix.python-version }}
+  macos-build:
+    name: Build and Smoke tests (macOS)
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
+    runs-on: macos-latest
+    needs: [style]
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11']
+    steps:
+      - name: Build wheelhouse and perform smoke test
+        uses: pyansys/actions/build-wheelhouse@v3
+        with:
+          library-name: ${{ env.PACKAGE_NAME }}
+          library-namespace: ${{ env.PACKAGE_NAMESPACE }}
+          operating-system: ${{ runner.os }}
+          python-version: ${{ matrix.python-version }}
 
-  # tests:
-  #   name: Testing and coverage
-  #   runs-on: ubuntu-latest
-  #   needs: []
-  #   steps:
-  #     - name: Login in Github Container registry
-  #       uses: docker/login-action@v2
-  #       with:
-  #         registry: ghcr.io
-  #         username: ${{ github.actor }}
-  #         password: ${{ secrets.GITHUB_TOKEN }}
+  tests:
+    name: Testing and coverage
+    runs-on: ubuntu-latest
+    needs: [smoke-tests]
+    steps:
+      - name: Login in Github Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-  #     - name: Pull, launch, and validate Mechanical service
-  #       env:
-  #         LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
-  #         MECHANICAL_IMAGE: ${{ env.DOCKER_PACKAGE }}:${{ env.DOCKER_IMAGE_VERSION }}
-  #       run: |
-  #         docker pull ${{ env.MECHANICAL_IMAGE }}
-  #         docker run --restart always --name mechanical -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }} > log.txt &
-  #         grep -q 'WB Initialize Done' <(timeout 60 tail -f log.txt)
+      - name: Pull, launch, and validate Mechanical service
+        env:
+          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
+          MECHANICAL_IMAGE: ${{ env.DOCKER_PACKAGE }}:${{ env.DOCKER_IMAGE_VERSION }}
+        run: |
+          docker pull ${{ env.MECHANICAL_IMAGE }}
+          docker run --restart always --name mechanical -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }} > log.txt &
+          grep -q 'WB Initialize Done' <(timeout 60 tail -f log.txt)
 
-  #     - name: Testing
-  #       uses: pyansys/actions/tests-pytest@v3
-  #       with:
-  #         python-version: ${{ env.MAIN_PYTHON_VERSION }}
+      - name: Testing
+        uses: pyansys/actions/tests-pytest@v3
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
   embedding-tests:
     name: Embeding testing and coverage
@@ -111,7 +111,7 @@ jobs:
     container:
       image: ghcr.io/pyansys/pymechanical/mechanical:v23.2.0
       options: --entrypoint /bin/bash
-    needs: []
+    needs: [smoke-tests]
 
     steps:
       - uses: actions/checkout@v3
@@ -146,77 +146,77 @@ jobs:
           path: .cov/html
           retention-days: 7
 
-  # docs:
-  #   name: Documentation
-  #   needs: [docs-style]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: "Install dependencies"
-  #       shell: bash
-  #       run: sudo apt-get install pandoc
+  docs:
+    name: Documentation
+    needs: [docs-style]
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Install dependencies"
+        shell: bash
+        run: sudo apt-get install pandoc
 
-  #     - name: Run Ansys documentation building action
-  #       uses: pyansys/actions/doc-build@v3
-  #       with:
-  #         python-version: ${{ env.MAIN_PYTHON_VERSION }}
+      - name: Run Ansys documentation building action
+        uses: pyansys/actions/doc-build@v3
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
-  # package:
-  #   name: Package library
-  #   needs: [tests, embedding-tests, docs]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Build library source and wheel artifacts
-  #       uses: pyansys/actions/build-library@v3
-  #       with:
-  #         library-name: ${{ env.PACKAGE_NAME }}
-  #         python-version: ${{ env.MAIN_PYTHON_VERSION }}
+  package:
+    name: Package library
+    needs: [tests, embedding-tests, docs]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build library source and wheel artifacts
+        uses: pyansys/actions/build-library@v3
+        with:
+          library-name: ${{ env.PACKAGE_NAME }}
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
-  # release:
-  #   name: Release project
-  #   if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
-  #   needs: [package, macos-build]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Release to the private PyPI repository
-  #       uses: pyansys/actions/release-pypi-private@v3
-  #       with:
-  #         library-name: ${{ env.PACKAGE_NAME }}
-  #         twine-username: "__token__"
-  #         twine-token: ${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}
+  release:
+    name: Release project
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
+    needs: [package, macos-build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Release to the private PyPI repository
+        uses: pyansys/actions/release-pypi-private@v3
+        with:
+          library-name: ${{ env.PACKAGE_NAME }}
+          twine-username: "__token__"
+          twine-token: ${{ secrets.PYANSYS_PYPI_PRIVATE_PAT }}
 
-  #     - name: Release to the public PyPI repository
-  #       uses: pyansys/actions/release-pypi-public@v3
-  #       with:
-  #         library-name: ${{ env.PACKAGE_NAME }}
-  #         twine-username: "__token__"
-  #         twine-token: ${{ secrets.PYPI_TOKEN }}
+      - name: Release to the public PyPI repository
+        uses: pyansys/actions/release-pypi-public@v3
+        with:
+          library-name: ${{ env.PACKAGE_NAME }}
+          twine-username: "__token__"
+          twine-token: ${{ secrets.PYPI_TOKEN }}
 
-  #     - name: Release to GitHub
-  #       uses: pyansys/actions/release-github@v3
-  #       with:
-  #         library-name: ${{ env.PACKAGE_NAME }}
+      - name: Release to GitHub
+        uses: pyansys/actions/release-github@v3
+        with:
+          library-name: ${{ env.PACKAGE_NAME }}
 
-  # upload_dev_docs:
-  #   name: Upload dev documentation
-  #   if: github.ref == 'refs/heads/main'
-  #   runs-on: ubuntu-latest
-  #   needs: [package]
-  #   steps:
-  #     - name: Deploy the latest documentation
-  #       uses: pyansys/actions/doc-deploy-dev@v3
-  #       with:
-  #         cname: ${{ env.DOCUMENTATION_CNAME }}
-  #         token: ${{ secrets.GITHUB_TOKEN }}
+  upload_dev_docs:
+    name: Upload dev documentation
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: [package]
+    steps:
+      - name: Deploy the latest documentation
+        uses: pyansys/actions/doc-deploy-dev@v3
+        with:
+          cname: ${{ env.DOCUMENTATION_CNAME }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-  # upload_docs_release:
-  #   name: Upload release documentation
-  #   if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
-  #   runs-on: ubuntu-latest
-  #   needs: [release]
-  #   steps:
-  #     - name: Deploy the stable documentation
-  #       uses: pyansys/actions/doc-deploy-stable@v3
-  #       with:
-  #         cname: ${{ env.DOCUMENTATION_CNAME }}
-  #         token: ${{ secrets.GITHUB_TOKEN }}
-  #         python-version: ${{ env.MAIN_PYTHON_VERSION }}
+  upload_docs_release:
+    name: Upload release documentation
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
+    runs-on: ubuntu-latest
+    needs: [release]
+    steps:
+      - name: Deploy the stable documentation
+        uses: pyansys/actions/doc-deploy-stable@v3
+        with:
+          cname: ${{ env.DOCUMENTATION_CNAME }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
