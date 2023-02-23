@@ -110,7 +110,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/pyansys/pymechanical/mechanical:v23.2.0
-      entrypoint: /bin/bash
+      options: --entrypoint /bin/bash
     needs: [smoke-tests]
 
     steps:
