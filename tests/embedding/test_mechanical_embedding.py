@@ -89,7 +89,9 @@ def test_qk_eng_wb2_005(printer, selection, embedded_app):
         assert BUCK.Solution.ObjectState == Ansys.Mechanical.DataModel.Enums.ObjectState.Solved
 
         printer("Clean and Solve")
-        embedded_app.DataModel.Project.ClearGeneratedData()
+        embedded_app.execute_script("ExtAPI.DataModel.Project.Model.ClearGeneratedData()")
+        assert BUCK.Solution.ObjectState != Ansys.Mechanical.DataModel.Enums.ObjectState.Solved
+        # embedded_app.DataModel.Project.ClearGeneratedData()
         MODEL.Solve(True)
         printer("Validate Results")
         TOT_DEF01_BUCK.Activate()
