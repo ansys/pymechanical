@@ -136,10 +136,11 @@ jobs:
         run: |
           pip install .[tests]
 
-      - name: Unit Testing and coverage 
+      - name: Unit Testing and coverage
         env:
           LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
-        run: pytest -m embedding
+          ANSYSCL232_DIR: /install/ansys_inc/v232/licensingclient
+        run: /install/ansys_inc/v232/aisol/.workbench_lite pytest -m embedding
 
       - name: Upload Coverage Results
         uses: actions/upload-artifact@v3
