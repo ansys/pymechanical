@@ -115,10 +115,12 @@ class App:
         SCRIPT_SCOPE = "pymechanical-internal"
         if not hasattr(self, "script_engine"):
             import clr
+
             clr.AddReference("Ansys.Mechanical.Scripting")
             import Ansys
+
             engine_type = Ansys.Mechanical.Scripting.ScriptEngineType.IronPython
-            script_engine=Ansys.Mechanical.Scripting.EngineFactory.CreateEngine(engine_type)
+            script_engine = Ansys.Mechanical.Scripting.EngineFactory.CreateEngine(engine_type)
             empty_scope = False
             debug_mode = False
             script_engine.CreateScope(SCRIPT_SCOPE, empty_scope, debug_mode)
