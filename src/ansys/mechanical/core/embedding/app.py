@@ -110,6 +110,24 @@ class App:
         """Close the application."""
         self.ExtAPI.Application.Close()
 
+    def execute_script(self, script: str):
+        """Executes the given script with the internal IronPython engine."""
+        SCRIPT_SCOPE = "pymechanical-internal"
+        if not hasattr(self, "script_engine"):
+            import clr
+            clr.AddReference("Ansys.Mechanical.Scripting")
+            import Ansys
+            engine_type = Ansys.Mechanical.Scripting.ScriptEngineType.IronPython
+            script_engine=Ansys.Mechanical.Scripting.EngineFactory.CreateEngine(engine_type)
+            empty_scope = False
+            debug_mode = False
+            script_engine.CreateScope(SCRIPT_SCOPE, empty_scope, debug_mode)
+            self.script_engine = script_engine
+        light_mode = True
+        args = None
+        rets = None
+        return script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
+
     @property
     def DataModel(self):
         """Return the DataModel."""
