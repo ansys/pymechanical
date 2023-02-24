@@ -39,8 +39,6 @@ Mechanical within python's ecosystem. It includes the ability to:
 - Embed an instance of Mechanical directly as a python object.
 
 
-A Python wrapper for Ansys Mechanical
-
 Install the package
 -------------------
 
