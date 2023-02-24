@@ -31,7 +31,19 @@ PyMechanical
    :alt: Black
 
 
+<<<<<<< Updated upstream
 PyMechanical is a Python client library for interacting with Ansys Mechanical.
+=======
+Overview
+--------
+PyMechanical brings Ansys Mechanical to python. It enables your python programs to use
+Mechanical within python's ecosystem. It includes the ability to:
+- Connect to a remote Mechanical session
+- Embed an instance of Mechanical directly as a python object.
+
+
+A Python wrapper for Ansys Mechanical
+>>>>>>> Stashed changes
 
 Install the package
 -------------------
@@ -161,6 +173,61 @@ For example, on Linux with Python 3.7, unzip the wheelhouse archive and install 
 If you're on Windows with Python 3.9, unzip to a wheelhouse directory and install using the preceding command.
 
 Consider installing using a `virtual environment <https://docs.python.org/3/library/venv.html>`_.
+
+Dependencies
+------------
+
+You must have a licensed copy of Ansys Mechanical installed. When using an embedded instance,
+that installation must be runnable from the same computer as your python program. When using
+a remote session, a connection to that session must be reachable from your python program.
+
+
+Getting started
+---------------
+
+Configuring the Ansys Mechanical installation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+On Windows systems the environment variable ``AWP_ROOT<ver>`` is configured when Mechanical is
+installed, where ``<ver>`` is the Mechanical release number such as ``231`` for release 2023R1.
+PyMechanical automatically uses this environment variable( or variables if there are multiple
+installations of different versions) to locate the latest Mechanical installation. On Linux
+systems you must configure ``AWP_ROOT<ver>`` to point to the absolute path of an Ansys Mechanical
+installation.
+
+Starting a Remote Session
+~~~~~~~~~~~~~~~~~~~~~~~~~
+To start a remote session of Mechanical on your computer from Python, use the ``launch_mechanical``
+method. The methods returns an object representing the connection to that session:
+
+.. code:: python
+
+   import ansys.mechanical.core as pymechanical
+   mechanical = pymechanical.launch_mechanical()
+
+Running commands on the Remote Session
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Given a connection to a remote session, you can send an (IronPython) script. This uses the built-in
+scripting capabilities of the Ansys Mechanical Application. Refer to the Mechanical Scripting Guide
+in the Ansys Mechanical documentation for more information about the scripting APIs available. For
+example:
+
+.. code:: python
+
+    result = mechanical.run_python_script('2+3')
+    result = mechanical.run_python_script('ExtAPI.DataModel.Project.ProjectDirectory')
+
+Using an Embedded Instance of Mechanical as a Python object
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+PyMechanical also supports directly embedding an instance of Ansys Mechanical as a python object.
+In this mode, there is no externally running instance of the application. This feature is supported
+on windows for version 2023R1 and will be supported on linux for versions 2023R2 and later. For
+example:
+
+.. code:: python
+
+   import ansys.mechanical.core as pymechanical
+   app = pymechanical.App()
+   result = app.ExtAPI.DataModel.Project.ProjectDirectory
 
 Testing
 -------
