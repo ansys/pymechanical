@@ -31,9 +31,6 @@ PyMechanical
    :alt: Black
 
 
-<<<<<<< Updated upstream
-PyMechanical is a Python client library for interacting with Ansys Mechanical.
-=======
 Overview
 --------
 PyMechanical brings Ansys Mechanical to python. It enables your python programs to use
@@ -43,7 +40,6 @@ Mechanical within python's ecosystem. It includes the ability to:
 
 
 A Python wrapper for Ansys Mechanical
->>>>>>> Stashed changes
 
 Install the package
 -------------------
