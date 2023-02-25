@@ -2233,9 +2233,10 @@ def launch_mechanical(
                     cleanup_on_exit=False,
                     loglevel=loglevel,
                 )
-            if clear_on_connect:
+                # we are connecting for gallery generation,
+                # we need to clear Mechanical.
                 mechanical.clear()
-            return mechanical
+                return mechanical
 
     if not start_instance:
         mechanical = Mechanical(
