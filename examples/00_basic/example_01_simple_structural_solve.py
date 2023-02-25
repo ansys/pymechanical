@@ -5,36 +5,50 @@ Static Structural Analysis
 
 In this example, using the support files, you will insert a Static Structural analysis into a new
 Mechanical session and execute a sequence of python scripting commands that will define and
-solve the analysis. The result of the deformation result are reported back after the solution
+solve the analysis. The deformation results are reported back after the solution.
 
-- This example begins in the Mechanical application.
-- It requires you to download the following Ansys DesignModeler.
-- Mechanical_Static_Structural_Example_001_Geometry.agdb
 """
+
+###############################################################################
+# Example Setup
+# -------------
+# When you run this workflow, the required file will be downloaded.
+#
+# Perform required download.
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Download the geometry file.
+
+from ansys.mechanical.core import launch_mechanical
+from ansys.mechanical.core.examples import download_file
+
+geometry_path = download_file("example_01_geometry.agdb", "pymechanical", "00_basic")
+print(f"Downloaded the geometry file at : {geometry_path}")
 
 ###############################################################################
 # Launch Mechanical
 # ~~~~~~~~~~~~~~~~~
-# Launch a new Mechanical Session in batch.
+# Launch a new Mechanical Session in batch. 'cleanup_on_exit' set to False,
+# you need to call mechanical.exit to close Mechanical.
 
-from ansys.mechanical.core import launch_mechanical
-
-mechanical = launch_mechanical(batch=True)
+mechanical = launch_mechanical(batch=True, cleanup_on_exit=False)
 print(mechanical)
+
+###############################################################################
+# Initialize the variable needed for this workflow
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Set the part_file_path for later user.
+# Make this variable compatible on both windows and linux.
+part_file_path = geometry_path.replace("\\", "\\\\")
+output = mechanical.run_python_script(f"part_file_path='{part_file_path}'")
 
 ###################################################################################
 # Execute the Mechanical script
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Execute the Mechanical script to attach geometry, setup and solve the analysis
+# Run the script to attach geometry, setup and solve the analysis.
 
 output = mechanical.run_python_script(
     """
 import json
-part_file_path = r"C:\\temp\\pymechtest\\example_01_geometry.agdb"
-
-# in case you are using the same instance to test this workflow
-# let us start with a empty setup
-ExtAPI.DataModel.Project.New()
 
 geometry_import_group_11 = Model.GeometryImportGroup
 geometry_import_19 = geometry_import_group_11.AddGeometryImport()
@@ -143,6 +157,6 @@ print(output)
 ###########################################################
 # Close Mechanical
 # ~~~~~~~~~~~~~~~~
-# Close Mechanical
+# Close the Mechanical instance.
 
 mechanical.exit()

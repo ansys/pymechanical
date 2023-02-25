@@ -1,2 +1,2 @@
 """Initialize the package level imports."""
-from .downloads import download_file  # noqa: F401
+from .downloads import delete_downloads, download_file  # noqa: F401

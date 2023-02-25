@@ -1,6 +1,7 @@
 """Functions to download sample datasets from the PyAnsys data repository."""
 
 import os
+import shutil
 from typing import Optional
 from urllib.parse import urljoin
 import urllib.request
@@ -54,12 +55,12 @@ def download_file(
     ----------
     filename: str
         Name of the file to download
+    directory: tuple[str]
+        Path under the PyAnsys Github examples repo
     destination: Optional[str]
         Optional destination to download the directory to
     force: bool
         Flag to force download even if the file exists in cache
-    directory: tuple[str]
-        Path under the PyAnsys Github examples repo
 
     Returns
     -------
@@ -72,10 +73,9 @@ def download_file(
     Download a file from the server
 
     >>> from ansys.mechanical.core import examples
-    >>> filename = examples.download_file("example_01_geometry.agdb", "pymechanical", "00_basic")
+    >>> filename = examples.download_file('example_01_geometry.agdb', 'pymechanical', '00_basic')
     >>> filename
-    '/home/user/.local/share/ansys_fluent_core/examples/bracket.iges'
-
+    'C:/Users/user/AppData/Local/ansys_mechanical_core/ansys_mechanical_core/examples/example_01_geometry.agdb'
     """
     url = _get_filepath_on_default_server(filename, *directory)
     local_path = _retrieve_data(url, filename, dest=destination, force=force)
@@ -83,7 +83,23 @@ def download_file(
 
 
 def delete_downloads() -> bool:
-    """Delete all downloaded examples to free space or update the files."""
+    """Delete all downloaded examples to free space or update the files.
+
+    Returns
+    -------
+    bool
+        ``True`` if delete_downlaods succeeds, ``False`` otherwise.
+
+    Examples
+    --------
+    Delete all downloaded examples
+
+    >>> from ansys.mechanical.core import examples
+    >>> return_value = examples.delete_downloads()
+    >>> return_value
+    'True'
+
+    """
     shutil.rmtree(pymechanical.EXAMPLES_PATH)
     os.makedirs(pymechanical.EXAMPLES_PATH)
     return True

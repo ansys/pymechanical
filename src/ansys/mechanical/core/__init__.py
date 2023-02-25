@@ -1,5 +1,8 @@
 """Initialize the package level imports."""
 import logging
+import os
+
+import appdirs
 
 from ansys.mechanical.core.logging import Logger
 

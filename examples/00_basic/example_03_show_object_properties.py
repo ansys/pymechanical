@@ -6,34 +6,53 @@ Details View properties of an object
 In this example, using the support files, you will display the properties that you would see in the
 Details View of the object.
 
-- SimpleBoltNew.mechdat
 """
+
+###############################################################################
+# Example Setup
+# -------------
+# When you run this workflow, the required file will be downloaded.
+#
+# Perform required imports
+# ~~~~~~~~~~~~~~~~~~~~~~~~
+# Download the mechdat file.
+
+from ansys.mechanical.core import launch_mechanical
+from ansys.mechanical.core.examples import download_file
+
+mechdat_path = download_file("example_03_simple_bolt_new.mechdat", "pymechanical", "00_basic")
+print(f"Downloaded the mechdat file at : {mechdat_path}")
 
 ###############################################################################
 # Launch Mechanical
 # ~~~~~~~~~~~~~~~~~
-# Launch a new Mechanical Session in batch.
+# Launch a new Mechanical Session in batch. 'cleanup_on_exit' set to False,
+# you need to call mechanical.exit to close Mechanical.
 
-from ansys.mechanical.core import launch_mechanical
-
-mechanical = launch_mechanical(batch=True)
+mechanical = launch_mechanical(batch=True, cleanup_on_exit=False)
 print(mechanical)
+
+###############################################################################
+# Initialize the variable needed for this workflow
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Set the mechdat_path for later user.
+# Make this variable compatible on both windows and linux.
+
+mechdat_path_modified = mechdat_path.replace("\\", "\\\\")
+mechanical.run_python_script(f"mechdat_path='{mechdat_path_modified}'")
+result = mechanical.run_python_script(f"mechdat_path")
+print(result)
 
 ###################################################################################
 # Execute the Mechanical script
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Execute the Mechanical script to display the properties and their current values
+# Run the script to display the properties and their current values for the analysis object.
 
 output = mechanical.run_python_script(
     """
 import json
-mechdb_path = r"C:\\temp\\pymechtest\\example_03_simple_bolt_new.mechdat"
 
-# in case you are using the same instance to test this workflow
-# let us start with a empty setup
-ExtAPI.DataModel.Project.New()
-
-ExtAPI.DataModel.Project.Open(mechdb_path)
+ExtAPI.DataModel.Project.Open(mechdat_path)
 
 analysisSettings = Model.Analyses[0].AnalysisSettings
 props = {}
@@ -49,12 +68,13 @@ print(output)
 ###################################################################################
 # Don't save the project
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# exit without saving the project
+# Clear Mechanical data.
+
 mechanical.clear()
 
 ###########################################################
 # Close Mechanical
 # ~~~~~~~~~~~~~~~~
-# Close Mechanical
+# # Close the Mechanical instance.
 
 mechanical.exit()
