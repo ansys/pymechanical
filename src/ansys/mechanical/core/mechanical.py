@@ -1,5 +1,5 @@
 """Connect to Mechanical gRPC server and issues commands."""
-# import atexit
+import atexit
 from contextlib import closing
 import datetime
 import fnmatch
@@ -109,20 +109,20 @@ CONFIG_FILE = os.path.join(SETTINGS_DIR, "config.txt")
 LOCALHOST = "127.0.0.1"
 MECHANICAL_DEFAULT_PORT = 10000
 
-# GALLERY_INSTANCE = [None]
+GALLERY_INSTANCE = [None]
 
 
-# def _cleanup_gallery_instance():  # pragma: no cover
-#     """Clean up any leftover instances of Mechanical from building the gallery."""
-#     if GALLERY_INSTANCE[0] is not None:
-#         mechanical = Mechanical(
-#             ip=GALLERY_INSTANCE[0]["ip"],
-#             port=GALLERY_INSTANCE[0]["port"],
-#         )
-#         mechanical.exit(force=True)
-#
-#
-# atexit.register(_cleanup_gallery_instance)
+def _cleanup_gallery_instance():  # pragma: no cover
+    """Clean up any leftover instances of Mechanical from building the gallery."""
+    if GALLERY_INSTANCE[0] is not None:
+        mechanical = Mechanical(
+            ip=GALLERY_INSTANCE[0]["ip"],
+            port=GALLERY_INSTANCE[0]["port"],
+        )
+        mechanical.exit(force=True)
+
+
+atexit.register(_cleanup_gallery_instance)
 
 
 def _version_from_path(path):
@@ -2196,44 +2196,46 @@ def launch_mechanical(
             os.environ.get("PYMECHANICAL_START_INSTANCE", True)
         )
 
-        # # special handling when building the gallery outside of CI. This
-        # # creates an instance of Mechanical the first time if PYMECHANICAL_START_INSTANCE
-        # # is False.
-        # if pymechanical.BUILDING_GALLERY:  # pragma: no cover
-        #     # launch an instance of PyMechanical if it does not already exist and
-        #     # starting instances is allowed
-        #     if start_instance and GALLERY_INSTANCE[0] is None:
-        #         mechanical = launch_mechanical(
-        #             start_instance=True,
-        #             cleanup_on_exit=False,
-        #             loglevel=loglevel,
-        #         )
-        #         GALLERY_INSTANCE[0] = {"ip": mechanical._ip, "port": mechanical._port}
-        #         return mechanical
-        #
-        #         # otherwise, connect to the existing gallery instance if available
-        #     elif GALLERY_INSTANCE[0] is not None:
-        #         mechanical = Mechanical(
-        #             ip=GALLERY_INSTANCE[0]["ip"],
-        #             port=GALLERY_INSTANCE[0]["port"],
-        #             cleanup_on_exit=False,
-        #             loglevel=loglevel,
-        #         )
-        #         if clear_on_connect:
-        #             mechanical.clear()
-        #         return mechanical
-        #
-        #         # finally, if running on CI/CD, connect to the default instance
-        #     else:
-        #         mechanical = Mechanical(
-        #             ip=ip,
-        #             port=port,
-        #             cleanup_on_exit=False,
-        #             loglevel=loglevel,
-        #         )
-        #     if clear_on_connect:
-        #         mechanical.clear()
-        #     return mechanical
+        # special handling when building the gallery outside of CI. This
+        # creates an instance of Mechanical the first time if PYMECHANICAL_START_INSTANCE
+        # is False.
+        if pymechanical.BUILDING_GALLERY:  # pragma: no cover
+            # launch an instance of PyMechanical if it does not already exist and
+            # starting instances is allowed
+            if start_instance and GALLERY_INSTANCE[0] is None:
+                mechanical = launch_mechanical(
+                    start_instance=True,
+                    cleanup_on_exit=False,
+                    loglevel=loglevel,
+                )
+                GALLERY_INSTANCE[0] = {"ip": mechanical._ip, "port": mechanical._port}
+                return mechanical
+
+                # otherwise, connect to the existing gallery instance if available
+            elif GALLERY_INSTANCE[0] is not None:
+                mechanical = Mechanical(
+                    ip=GALLERY_INSTANCE[0]["ip"],
+                    port=GALLERY_INSTANCE[0]["port"],
+                    cleanup_on_exit=False,
+                    loglevel=loglevel,
+                )
+                # we are connecting to the existing gallery instance,
+                # we need to clear Mechanical.
+                mechanical.clear()
+
+                return mechanical
+
+                # finally, if running on CI/CD, connect to the default instance
+            else:
+                mechanical = Mechanical(
+                    ip=ip,
+                    port=port,
+                    cleanup_on_exit=False,
+                    loglevel=loglevel,
+                )
+            if clear_on_connect:
+                mechanical.clear()
+            return mechanical
 
     if not start_instance:
         mechanical = Mechanical(
