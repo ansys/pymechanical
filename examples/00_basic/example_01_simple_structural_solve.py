@@ -17,6 +17,7 @@ solve the analysis. The deformation results are reported back after the solution
 # Perform required download.
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Download the geometry file.
+import os
 
 from ansys.mechanical.core import launch_mechanical
 from ansys.mechanical.core.examples import download_file
@@ -37,9 +38,23 @@ print(mechanical)
 # Initialize the variable needed for this workflow
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Set the part_file_path for later user.
-# Make this variable compatible on both windows and linux.
-part_file_path = geometry_path.replace("\\", "\\\\")
-output = mechanical.run_python_script(f"part_file_path='{part_file_path}'")
+# Make this variable compatible for  windows/linux/container.
+
+project_directory = mechanical.project_directory
+print(f"project directory = {project_directory}")
+
+# upload the file to the project directory
+mechanical.upload(file_name=geometry_path, file_location_destination=project_directory)
+
+# build the path relative to project directory
+base_name = os.path.basename(geometry_path)
+combined_path = os.path.join(project_directory, base_name)
+part_file_path = combined_path.replace("\\", "\\\\")
+mechanical.run_python_script(f"part_file_path='{part_file_path}'")
+
+# verify the path
+result = mechanical.run_python_script("part_file_path")
+print(f"part_file_path on server: {result}")
 
 ###################################################################################
 # Execute the Mechanical script

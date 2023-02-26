@@ -17,6 +17,8 @@ Details View of the object.
 # ~~~~~~~~~~~~~~~~~~~~~~~~
 # Download the mechdat file.
 
+import os
+
 from ansys.mechanical.core import launch_mechanical
 from ansys.mechanical.core.examples import download_file
 
@@ -36,19 +38,30 @@ print(mechanical)
 # Initialize the variable needed for this workflow
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Set the mechdat_path for later user.
-# Make this variable compatible on both windows and linux.
+# Make this variable compatible for windows/linux/container.
 
-mechdat_path_modified = mechdat_path.replace("\\", "\\\\")
+project_directory = mechanical.project_directory
+print(f"project directory = {project_directory}")
+
+# upload the file to the project directory
+mechanical.upload(file_name=mechdat_path, file_location_destination=project_directory)
+
+# build the path relative to project directory
+base_name = os.path.basename(mechdat_path)
+combined_path = os.path.join(project_directory, base_name)
+mechdat_path_modified = combined_path.replace("\\", "\\\\")
 mechanical.run_python_script(f"mechdat_path='{mechdat_path_modified}'")
+
+# verify the path
 result = mechanical.run_python_script(f"mechdat_path")
-print(result)
+print(f"mechdat_path on the server: {result}")
 
 ###################################################################################
 # Execute the Mechanical script
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Run the script to display the properties and their current values for the analysis object.
 
-output = mechanical.run_python_script(
+result = mechanical.run_python_script(
     """
 import json
 
@@ -63,7 +76,7 @@ if hasattr(analysisSettings,'VisibleProperties') != False:
 json.dumps(props, indent=1)
 """
 )
-print(output)
+print(f"AnalysisSettings properties:\n{result}")
 
 ###################################################################################
 # Don't save the project

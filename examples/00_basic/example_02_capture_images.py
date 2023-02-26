@@ -17,7 +17,7 @@ the results into a folder on disk.
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Download the mechdat and the script files.
 
-import tempfile
+import os
 
 from ansys.mechanical.core import launch_mechanical
 from ansys.mechanical.core.examples import download_file
@@ -41,18 +41,30 @@ print(mechanical)
 # Initialize the variables needed for this workflow
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Set the mechdat_path and image_dir for later user.
-# Make these variables compatible on both windows and linux.
+# Make these variables compatible for windows/linux/container.
 
-mechdat_path_modified = mechdat_path.replace("\\", "\\\\")
+project_directory = mechanical.project_directory
+print(f"project directory = {project_directory}")
+
+# upload the file to the project directory
+mechanical.upload(file_name=mechdat_path, file_location_destination=project_directory)
+
+# build the path relative to project directory
+base_name = os.path.basename(mechdat_path)
+combined_path = os.path.join(project_directory, base_name)
+mechdat_path_modified = combined_path.replace("\\", "\\\\")
 mechanical.run_python_script(f"mechdat_path='{mechdat_path_modified}'")
-result = mechanical.run_python_script(f"mechdat_path")
-print(result)
 
-image_dir = tempfile.gettempdir()
-image_dir_modified = image_dir.replace("\\", "\\\\")
-mechanical.run_python_script(f"image_dir='{image_dir_modified}'")
+# verify the path
+result = mechanical.run_python_script(f"mechdat_path")
+print(f"mechdat_path on the server: {result}")
+
+image_directory_modified = project_directory.replace("\\", "\\\\")
+mechanical.run_python_script(f"image_dir='{image_directory_modified}'")
+
+# verify the path
 result = mechanical.run_python_script(f"image_dir")
-print(f"Images will be stored at: {result}")
+print(f"Images will be stored on the server at: {result}")
 
 ###################################################################################
 # Execute the Mechanical script
