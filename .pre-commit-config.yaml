@@ -36,8 +36,6 @@ repos:
           tests/scripts/log_message.py |
           src/ansys/mechanical/core/mechanical_pb2_grpc.py |
           examples/00_basic/example_01_simple_structural_solve.py |
-          examples/00_basic/example_02_capture_images.py |
-          examples/00_basic/example_03_show_object_properties.py |
-          examples/00_basic/example_04_design_points_run.py
+          examples/00_basic/example_03_show_object_properties.py
         )$
 
