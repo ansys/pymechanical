@@ -23,3 +23,8 @@ Windows
 windows
 WSL
 wsl
+CPython
+namespaces
+Globals
+linux
+APIs

@@ -45,8 +45,8 @@ Scripting in Mechanical
 
 The python scripting capability within Mechanical was born out of the same development
 that brought ACT to Mechanical. These APIs are the same as those used for PyMechanical,
-but can only be run from inside the product. By default, thuse use `IronPython` 2.7,
-but `CPython` 3.x based scripting is available with a feature flag in recent versions of
+but can only be run from inside the product. By default, these use IronPython 2.7,
+but CPython 3.x based scripting is available with a feature flag in recent versions of
 Mechanical. Mechanical offers an intuitive user interface for scripting, called the 
 "Mechanical Scripting View" with features like script recording, autocomplete, and  a
 snippet library. However - it is possible to use this feature in batch mode without the
@@ -66,7 +66,7 @@ What is the relationship with Ansys Workbench?
 
 Ansys Workbench is a no-code environment to set up Analysis systems that can be linked
 together. It is part of the Ansys family of Process Automation and Design Exploration
-software that now also includes Ansys `OptiSlang`. The most popular applications within
+software that now also includes Ansys OptiSLang. The most popular applications within
 this environment is Ansys Mechanical, and for many years, Ansys Workbench was the only
 environment from which to run Ansys Mechanical.
 

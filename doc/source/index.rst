@@ -42,7 +42,7 @@ PyMechanical contains two interfaces, a remote session and an embedded instance.
 Remote session
 ^^^^^^^^^^^^^^
 PyMechanical's Remote Session is based on `gRPC <https://grpc.io/>`_. The
-Mechanical application runs as a server, ready to respond to any client(s).
+Mechanical application runs as a server, ready to respond to any clients.
 
 PyMechanical provides a client to connect to a Mechanical server and make API
 calls onto that server.
@@ -54,7 +54,7 @@ Embedded instance
 ^^^^^^^^^^^^^^^^^
 PyMechanical's embedded instance is based on `pythonnet  <http://pythonnet.github.io/>.`
 Rather than starting a new process for Mechanical, a Mechanical object (which is
-implemented .NET) is directly loaded into python memory using `pythonnet`. From there, the
+implemented .NET) is directly loaded into python memory using pythonnet. From there, the
 entire application data model is available for use from Python code.
 
 For comprehensive information on this feature, see the
