@@ -90,17 +90,19 @@ On linux - there are some environment variables that need to be set in order for
 embedding of Mechanical in Python to work. A script which sets these variables is
 distributed with the application from 2023R2 and on. This script is located in:
 
-/path/to/ansys_inc/v232/aisol/.workbench_lite
+``/path/to/ansys_inc/v232/aisol/.workbench_lite``
 
 To use the script, prepend it to any invocation of python
-.. code:: bash
-   /path/to/ansys_inc/v232/aisol/.workbench_lite python
+
+.. code::
+
+    /path/to/ansys_inc/v232/aisol/.workbench_lite python
 
 
 Inside of python - the following commands are used to load an embedded instance:
 
 .. code:: python
-   >>> from ansys.mechanical.core import App
-   >>> app = App()
-   >>> print(app)
 
+    >>> from ansys.mechanical.core import App
+    >>> app = App()
+    >>> print(app)
