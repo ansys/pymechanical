@@ -1,5 +1,5 @@
-Initial setup for launching Mechanical locally
-----------------------------------------------
+Initial setup for launching a Mechanical session on the local machine
+---------------------------------------------------------------------
 To run, PyMechanical must know the location of your Mechanical installation.
 Most of the time, PyMechanical can determine this location automatically. However,
 if you have a non-standard installation, you must provide this location.
