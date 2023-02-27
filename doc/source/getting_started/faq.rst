@@ -26,9 +26,9 @@ consider these tools:
 * Scripting in Mechanical
 * PyMechanical
 
-All of these tools work best in interactive mode, but there is increasing support
-for batch mode. The first two can be used from the Workbench platform or from the
-standalone Mechanical application.
+Although all of these tools work best in interactive mode, there is increasing support
+for batch mode. You can use the first two tools from either Asys Workbench or from
+standalone Mechanical.
 
 ACT in Mechanical
 ^^^^^^^^^^^^^^^^^
