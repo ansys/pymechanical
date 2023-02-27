@@ -37,16 +37,16 @@ In the Ansys Mechanical product, ACT is a customization framework. When specific
 features are missing, users can add them using ACT. Of course, some of those
 missing features might be automations/scripts of existing features. But in many
 cases, these can be new capabilities, such as extensions to the data model of
-Mechanical, the ability to connect to "callbacks", and even integration of a
-new solver.
+Mechanical, the ability to connect to callbacks, and even integration of external
+solvers.
 
 Scripting in Mechanical
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 The python scripting capability within Mechanical was born out of the same development
 that brought ACT to Mechanical. These APIs are the same as those used for PyMechanical,
-but can only be run from inside the product. By default, thuse use IronPython 2.7,
-but CPython 3.x based scripting is available with a feature flag in recent versions of
+but can only be run from inside the product. By default, thuse use `IronPython` 2.7,
+but `CPython` 3.x based scripting is available with a feature flag in recent versions of
 Mechanical. Mechanical offers an intuitive user interface for scripting, called the 
 "Mechanical Scripting View" with features like script recording, autocomplete, and  a
 snippet library. However - it is possible to use this feature in batch mode without the
@@ -56,7 +56,7 @@ PyMechanical
 ^^^^^^^^^^^^
 
 PyMechanical allows you to write python scripts outside of mechanical, with tight
-integration with other open source modules and Ansys products "on your terms". This
+integration with other open source modules and Ansys products on your terms. This
 means that you can freely import any module and tool that is supported in your
 python environment. There is no dependency on opening the Mechanical User Interface.
 
@@ -66,13 +66,12 @@ What is the relationship with Ansys Workbench?
 
 Ansys Workbench is a no-code environment to set up Analysis systems that can be linked
 together. It is part of the Ansys family of Process Automation and Design Exploration
-software that now also includes Ansys OptiSlang. The most popular applications within
+software that now also includes Ansys `OptiSlang`. The most popular applications within
 this environment is Ansys Mechanical, and for many years, Ansys Workbench was the only
 environment from which to run Ansys Mechanical.
 
 Because it is a no-code environment, a lot of the complexity around managing the data
-transfer between applications and running parameteric studies has been hidden from
-the user.
+transfer between applications and running parametric studies has been hidden from the user.
 
 Using PyMechanical, and PyAnsys more broadly, for process automation and design Exploration
 gives you much more control over how it works, but by avoiding workbench you also miss

@@ -87,7 +87,7 @@ Verify your installation by loading a embedded instance of Mechanical in Python.
 
 ** On linux **
 On linux - there are some environment variables that need to be set in order for
-embedding of Mechanical in Python will work. A script which sets these variables is
+embedding of Mechanical in Python to work. A script which sets these variables is
 distributed with the application from 2023R2 and on. This script is located in:
 
 /path/to/ansys_inc/v232/aisol/.workbench_lite
@@ -95,7 +95,7 @@ distributed with the application from 2023R2 and on. This script is located in:
 To use the script, prepend it to any invocation of python
 .. code:: bash
    /path/to/ansys_inc/v232/aisol/.workbench_lite python
-   
+
 
 Inside of python - the following commands are used to load an embedded instance:
 
