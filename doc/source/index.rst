@@ -54,8 +54,8 @@ Embedded instance
 ^^^^^^^^^^^^^^^^^
 PyMechanical's embedded instance is based on `pythonnet  <http://pythonnet.github.io/>.`
 Rather than starting a new process for Mechanical, a Mechanical object (which is
-implemented .NET) is directly loaded into python memory using pythonnet. From there, the
-entire application data model is available for use from Python code.
+implemented in .NET) is directly loaded into python memory using ``pythonnet``. From
+there, the entire application data model is available for use from Python code.
 
 For comprehensive information on this feature, see the
 :ref:`ref_user_guide_embedding`.

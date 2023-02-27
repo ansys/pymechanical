@@ -6,7 +6,7 @@ PyMechanical attempts to maintain compatibility with legacy archives generated b
 versions of Mechanical. However, PyMechanical only supports recent releases of Mechanical
 directly.
 
-PyMechanical Remote Session
+PyMechanical remote session
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Mechanical 2023 R1 and later support the remote session interface, allowing
