@@ -21,13 +21,50 @@ a reference:
 .. figure:: ../images/unified_install_2023R1.jpg
     :width: 400pt
 
+Embedding a Mechanical application instance
+-------------------------------------------
 
-Launch Mechanical
------------------
-You can launch Mechanical locally or remotely.
+The instructions for embedding a Mechanical application instance are different on
+windows and linux. The Python code is the same in both cases, but on Linux some
+additional environment is needed.
 
-Launch Mechanical locally
-~~~~~~~~~~~~~~~~~~~~~~~~~
+Python code:
+~~~~~~~~~~~~
+.. code:: python
+
+    >>> from ansys.mechanical.core import App
+    >>> mechanical = App()
+    >>> print(mechanical)
+
+    Ansys Mechanical [Ansys Mechanical Enterprise]
+    Product Version:231
+    Software build date:Wednesday, August 10, 2022 4:28:15 PM
+
+Additional information for Linux:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Starting with 2023 R2, it is possible to embed an instance of Mechanical on Linux.
+However, because of differences in how Mechanical works on linux, you cannot simply
+run python as usual. On linux, certain environment variables need to set for the python
+process before it starts. These environment variables can be set using the `.workbench_lite`
+script that is shipped with the installation of Mechanical.
+
+Assume that Mechanical 2023 R2 is installed at ``/usr/ansys_inc``.
+Run python with the following command:
+
+.. code::
+
+    /usr/ansys_inc/v232/aisol/.workbench_lite python
+
+Launch remote Mechanical session
+--------------------------------
+You can use PyMechanical to launch a Mechanical session on the local machine. That is,
+the same machine that Python is running on. Alternatively, you can run Mechanical's
+command line directly on any machine to start it in server mode, and use it's address
+to manually connect to from Python.
+
+Launch Mechanical on the local machine using Python
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When Mechanical is installed locally on your machine, you can use the
 :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` method to launch and automatically connect to
@@ -47,11 +84,11 @@ Launch Mechanical locally with:
     Software build date:Wednesday, August 10, 2022 4:28:15 PM
 
 
-Launch Mechanical remotely
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Launch A Mechanical server from command line
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can launch Mechanical remotely from the command line in gRPC
-mode and then manually connect to it.
+You can launch Mechanical from the command line in server mode and then
+manually connect to it.
 
 **On Windows**
 
@@ -59,7 +96,7 @@ Assume that Mechanical is installed at ``C:/Program Files/ANSYS Inc/vXXX``
 , where ``XXX`` is the three-digit format for the version. For example,
 the path for 2023 R1 is typically ``C:/Program Files/ANSYS Inc/v231``.
 
-Launch Mechanical remotely in a gRPC session with:
+Launch Mechanical in server mode with:
 
 .. code::
 
@@ -69,7 +106,7 @@ Launch Mechanical remotely in a gRPC session with:
 
 Assume that Mechanical 2023 R1 is installed at ``/usr/ansys_inc``.
 
-Launch Mechanical remotely in a gRPC session with:
+Launch Mechanical in server mode with:
 
 .. code::
 
@@ -78,31 +115,29 @@ Launch Mechanical remotely in a gRPC session with:
 
 View server information
 ~~~~~~~~~~~~~~~~~~~~~~~~
-As Mechanical starts in gRPC mode, you can see gRPC server information:
+As Mechanical starts in server mode, you can see the server information:
 
 .. code::
 
     Starting the grpc server at port 10000
     Started the grpc server at port 10000
 
-If you want to configure the port that Mechanical listens on, when you launch
-Mechanical, use the ``-grpc`` argument. For example, on Linux, launch Mechanical
-2023 R1 on port 10001 with:
+If you want to configure the port that the Mechanical server listens on, when you launch
+Mechanical, use the ``-grpc`` argument. For example, on Linux, launch Mechanical 2023 R1
+on port 10001 with:
 
 .. code::
 
     C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/.AnsysWBU.exe -grpc 10001
 
 
-Connect to a Mechanical gRPC session
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Connect to a Mechanical session
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can connect to a Mechanical gRPC session from the same host or from an external host.
+You can connect to a Mechanical session from the same host or from an external host.
 
-Assume that Mechanical is running locally at the default IP address (127.0.0.1) on the
-default port (10000).
-
-You would connect to it with:
+Assuming that Mechanical is running locally at the default IP address (127.0.0.1) on the
+default port (10000), you would connect to it with:
 
 .. code::
 
@@ -110,7 +145,7 @@ You would connect to it with:
     >>> mechanical = Mechanical()
 
 
-Assume that a remote instance of Mechanical has been started in gRPC mode. To connect to
+Now assume that a remote instance of Mechanical has been started in server mode. To connect to
 the computer on your local area network that is running Mechanical, you can use either
 an IP address and port or hostname and port.
 
