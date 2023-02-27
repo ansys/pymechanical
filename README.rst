@@ -180,7 +180,7 @@ Getting started
 ---------------
 
 Configuring the Ansys Mechanical installation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 On Windows systems the environment variable ``AWP_ROOT<ver>`` is configured when Mechanical is
 installed, where ``<ver>`` is the Mechanical release number such as ``231`` for release 2023R1.
 PyMechanical automatically uses this environment variable( or variables if there are multiple
@@ -189,7 +189,7 @@ systems you must configure ``AWP_ROOT<ver>`` to point to the absolute path of an
 installation.
 
 Starting a Remote Session
-~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^
 To start a remote session of Mechanical on your computer from Python, use the ``launch_mechanical``
 method. The methods returns an object representing the connection to that session:
 
@@ -199,7 +199,7 @@ method. The methods returns an object representing the connection to that sessio
    mechanical = pymechanical.launch_mechanical()
 
 Running commands on the Remote Session
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Given a connection to a remote session, you can send an (IronPython) script. This uses the built-in
 scripting capabilities of the Ansys Mechanical Application. Refer to the Mechanical Scripting Guide
 in the Ansys Mechanical documentation for more information about the scripting APIs available. For
@@ -211,7 +211,7 @@ example:
     result = mechanical.run_python_script('ExtAPI.DataModel.Project.ProjectDirectory')
 
 Using an Embedded Instance of Mechanical as a Python object
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 PyMechanical also supports directly embedding an instance of Ansys Mechanical as a python object.
 In this mode, there is no externally running instance of the application. This feature is supported
 on windows for version 2023R1 and will be supported on linux for versions 2023R2 and later. For
