@@ -19,8 +19,8 @@ from experts in the community, post on the `Discussions
 How is PyMechanical positioned with respect to other related tools?
 -------------------------------------------------------------------
 
-Users who want automation and extension of the Mechanical application should
-consider the following tools:
+When you want to automate or extend Ansys Mechanical, you should
+consider these tools:
 
 * ACT in Mechanical
 * Scripting in Mechanical
