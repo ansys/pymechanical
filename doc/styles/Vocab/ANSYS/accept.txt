@@ -18,6 +18,7 @@ PyAnsys
 pyansys
 PyMechanical
 Pythonically
+pythonnet
 venv
 Windows
 windows
