@@ -24,7 +24,7 @@ page on the Ansys website.
 Install the package
 -------------------
 The ``ansys.mechanical.core`` package supports Python 3.7 through
-Python 3.10 on Windows, Mac, and Linux.
+Python 3.11 on Windows, Mac, and Linux.
 
 You should consider installing PyMechanical in a virtual environment.
 For more information, see Python's
@@ -36,27 +36,6 @@ Install the latest package from `PyPi
 .. code::
 
    pip install ansys-mechanical-core
-
-
-Alternatively, install the latest package from `GitHub
-<https://github.com/pyansys/pymechanical/>`_ with:
-
-.. code::
-
-   pip install git+https://github.com/pyansys/pymechanical.git
-
-
-Installing a *development* version of PyMechanical allows you to make modifications
-locally and have these changes reflected in your setup once you restart the
-Python kernel.
-
-Install a local development version with:
-
-.. code::
-
-   git clone https://github.com/pyansys/pymechanical.git
-   cd pymechanical
-   pip install -e .
 
 
 Install offline
