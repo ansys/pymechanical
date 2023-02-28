@@ -83,7 +83,7 @@ as a service. For information on the PyMechanical interface, see
 :ref:`ref_mechanical_user_guide`.
 
 Verify an embedded instance
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Verify your installation by loading an embedded instance of Mechanical in Python.
 
