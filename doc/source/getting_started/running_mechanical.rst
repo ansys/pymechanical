@@ -23,8 +23,8 @@ a reference:
 
 Launch remote Mechanical session
 --------------------------------
-You can use PyMechanical to launch a Mechanical session on the local machine on
-which Python is running. Alternatively, you can run Mechanical's command line
+You can use PyMechanical to launch a Mechanical session on the local machine
+Python is running on. Alternatively, you can run Mechanical's command line
 directly on any machine to start it in server mode and then use its address
 to manually connect to it from Python.
 
