@@ -72,7 +72,7 @@ Verify your installation by starting a remote session of Mechanical from Python:
 
     >>> from ansys.mechanical.core import launch_mechanical
     >>> mechanical = launch_mechanical()
-    >>> print(mechanical)
+    >>> mechanical
 
     Ansys Mechanical [Ansys Mechanical Enterprise]
     Product Version:231

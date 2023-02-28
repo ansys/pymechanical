@@ -672,7 +672,7 @@ class Mechanical(object):
         self._exiting = False
         self._exited = None
 
-        self.version = None
+        self._version = None
 
         if port is None:
             port = MECHANICAL_DEFAULT_PORT
@@ -707,6 +707,25 @@ class Mechanical(object):
     def log(self):
         """Log associated with the current Mechanical instance."""
         return self._log
+
+    @property
+    def version(self) -> str:
+        """Gets the mechanical version based on the instance."""
+        if self._version == None:
+            try:
+                self._disable_logging = True
+                script = (
+                    'clr.AddReference("Ans.Utilities")\n'
+                    'import Ansys\n'
+                    'Ansys.Utilities.ApplicationConfiguration.DefaultConfiguration.VersionInfo.VersionString'
+                )
+                self._version = self.run_python_script(script)
+            except grpc.RpcError:
+                raise
+            finally:
+                self._disable_logging = False
+                pass
+        return self._version
 
     @property
     def _name(self):
@@ -969,10 +988,16 @@ class Mechanical(object):
         """Get product information by running a script on the Mechanical gRPC server."""
         try:
             self._disable_logging = True
-            script = (
-                'clr.AddReference("Ansys.Mechanical.Application")'
-                'Ansys.Mechanical.Application.ProductInfo.ProductInfoAsString'
-            )
+            if int(self.version) >= 232:
+                script = (
+                    'clr.AddReference("Ansys.Mechanical.Application")\n'
+                    'Ansys.Mechanical.Application.ProductInfo.ProductInfoAsString'
+                )
+            else:
+                script = (
+                    'ExtAPI.Application.ScriptByName("jscript").ExecuteCommand'
+                    '("var productInfo = DS.Script.getProductInfo();returnFromScript(productInfo);")'
+                )
             return self.run_python_script(script)
         except grpc.RpcError:
             raise
@@ -980,14 +1005,14 @@ class Mechanical(object):
             self._disable_logging = False
 
     @suppress_logging
-    def __str__(self):
+    def __repr__(self):
         """Get the user-readable string form of the Mechanical instance."""
         try:
             if self._exited:
                 return "Mechanical exited."
             return self.get_product_info()
         except grpc.RpcError:
-            return "Mechanical exited."
+            return "Error getting product info."
 
     def launch(self, cleanup_on_exit=True):
         """Launch Mechanical in batch or UI mode.

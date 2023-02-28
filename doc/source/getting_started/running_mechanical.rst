@@ -42,7 +42,7 @@ Launch Mechanical locally with:
 
     >>> from ansys.mechanical.core import launch_mechanical
     >>> mechanical = launch_mechanical()
-    >>> print(mechanical)
+    >>> mechanical
 
     Ansys Mechanical [Ansys Mechanical Enterprise]
     Product Version:231
@@ -223,7 +223,7 @@ Python code:
 
     >>> from ansys.mechanical.core import App
     >>> mechanical = App()
-    >>> print(mechanical)
+    >>> mechanical
 
     Ansys Mechanical [Ansys Mechanical Enterprise]
     Product Version:231
