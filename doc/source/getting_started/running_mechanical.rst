@@ -21,41 +21,6 @@ a reference:
 .. figure:: ../images/unified_install_2023R1.jpg
     :width: 400pt
 
-Embed a Mechanical instance
----------------------------
-
-The instructions for embedding a Mechanical instance are different on
-Windows and Linux. While the Python code is the same in both cases, 
-Linux requires some additional environment variables needed.
-
-Python code:
-~~~~~~~~~~~~
-.. code:: python
-
-    >>> from ansys.mechanical.core import App
-    >>> mechanical = App()
-    >>> print(mechanical)
-
-    Ansys Mechanical [Ansys Mechanical Enterprise]
-    Product Version:231
-    Software build date:Wednesday, August 10, 2022 4:28:15 PM
-
-Additional information for Linux:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Starting with 2023 R2, it is possible to embed an instance of Mechanical on Linux.
-However, because of differences in how Mechanical works on Linux, you cannot simply
-run Python as usual. On Linux, certain environment variables must be set for the Python
-process before it starts. You can set up these environment variables using the ``.workbench_lite``
-script that is shipped with the Mechanical installation.
-
-Assume that Mechanical 2023 R2 is installed at ``/usr/ansys_inc``.
-Run Python with this command:
-
-.. code::
-
-    /usr/ansys_inc/v232/aisol/.workbench_lite python
-
 Launch remote Mechanical session
 --------------------------------
 You can use PyMechanical to launch a Mechanical session on the local machine on
@@ -243,6 +208,42 @@ a variety of issues, including:
   - License server setup
   - Running behind a VPN
   - Missing dependencies
+
+
+Embed a Mechanical instance
+---------------------------
+
+The instructions for embedding a Mechanical instance are different on
+Windows and Linux. While the Python code is the same in both cases,
+Linux requires some additional environment variables needed.
+
+Python code:
+~~~~~~~~~~~~
+.. code:: python
+
+    >>> from ansys.mechanical.core import App
+    >>> mechanical = App()
+    >>> print(mechanical)
+
+    Ansys Mechanical [Ansys Mechanical Enterprise]
+    Product Version:231
+    Software build date:Wednesday, August 10, 2022 4:28:15 PM
+
+Additional information for Linux:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Starting with 2023 R2, it is possible to embed an instance of Mechanical on Linux.
+However, because of differences in how Mechanical works on Linux, you cannot simply
+run Python as usual. On Linux, certain environment variables must be set for the Python
+process before it starts. You can set up these environment variables using the ``.workbench_lite``
+script that is shipped with the Mechanical installation.
+
+Assume that Mechanical 2023 R2 is installed at ``/usr/ansys_inc``.
+Run Python with this command:
+
+.. code::
+
+    /usr/ansys_inc/v232/aisol/.workbench_lite python
 
 
 Licensing issues
