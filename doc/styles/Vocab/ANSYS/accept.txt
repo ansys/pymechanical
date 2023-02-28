@@ -18,8 +18,15 @@ PyAnsys
 pyansys
 PyMechanical
 Pythonically
+pythonnet
 venv
 Windows
 windows
 WSL
 wsl
+CPython
+namespaces
+Globals
+linux
+Linux
+APIs

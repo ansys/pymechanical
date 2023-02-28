@@ -1119,7 +1119,7 @@ class Mechanical(object):
         )
 
     def run_python_script(
-        self, script_block: str, enable_logging=False, log_level="WARNING", timeout=2000
+        self, script_block: str, enable_logging=False, log_level="WARNING", progress_interval=2000
     ):
         """Run a Python script block inside Mechanical.
 
@@ -1132,7 +1132,7 @@ class Mechanical(object):
         log_level: str
             Level of logging. The default is ``"WARNING"``. Options are ``"DEBUG"``,
             ``"INFO"``, ``"WARNING"``, and ``"ERROR"``.
-        timeout: int, optional
+        progress_interval: int, optional
             Frequency in milliseconds for getting log messages from the server.
             The default is ``2000``.
 
@@ -1142,7 +1142,9 @@ class Mechanical(object):
             Script result.
         """
         self.verify_valid_connection()
-        response = self.__call_run_python_script(script_block, enable_logging, log_level, timeout)
+        response = self.__call_run_python_script(
+            script_block, enable_logging, log_level, progress_interval
+        )
         return response.script_result
 
     def run_python_script_from_file(
@@ -2219,8 +2221,10 @@ def launch_mechanical(
                     cleanup_on_exit=False,
                     loglevel=loglevel,
                 )
-                if clear_on_connect:
-                    mechanical.clear()
+                # we are connecting to the existing gallery instance,
+                # we need to clear Mechanical.
+                mechanical.clear()
+
                 return mechanical
 
                 # finally, if running on CI/CD, connect to the default instance
@@ -2231,9 +2235,10 @@ def launch_mechanical(
                     cleanup_on_exit=False,
                     loglevel=loglevel,
                 )
-            if clear_on_connect:
+                # we are connecting for gallery generation,
+                # we need to clear Mechanical.
                 mechanical.clear()
-            return mechanical
+                return mechanical
 
     if not start_instance:
         mechanical = Mechanical(
