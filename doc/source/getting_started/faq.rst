@@ -47,7 +47,7 @@ The Python scripting capability in Mechanical was born out of the same developme
 that brought ACT to Mechanical. This tool provides the same APIs as those used for
 PyMechanical but can only be run by Mechanical. While they use IronPython 2.7 by
 default, recent Mechanical versions provide a feature flag for scripting in CPython 3.x.
-Mechanical's intuitive user interface for scripting, the **Mechanical Scripting View**, 
+Mechanical's intuitive user interface for scripting, the **Mechanical Scripting View**,
 provides script recording, autocomplete, and a snippet library. However, it is possible
 to use this tool in batch mode without the user interface.
 
@@ -56,7 +56,7 @@ PyMechanical
 
 PyMechanical allows you to write Python scripts outside of Mechanical, with tight
 integration with other open source modules and Ansys products. With this tool, you
-bring your own Python environment which may contain other modules and tools. There is
+bring your own Python environment, which may contain other modules and tools. There is
 no dependency on opening the Mechanical user interface.
 
 
@@ -92,11 +92,11 @@ stopping the original process means that nothing should be in
 a new process.
 
 The way that you clear all data from Mechanical in PyMechanical depends on if the
-Mechanical is embedded or a remote session.
+Mechanical is a remote session or embedded.
 
-- If the instance is embedded, use the
-  :func:`app.new() <ansys.mechanical.core.embedding.Application.new>`
-  method.
 - If the instance is a remote session, use either the
   :func:`Mechanical.clear() <ansys.mechanical.core.Mechanical.clear>` 
   method or exit and restart Mechanical.
+- If the instance is embedded, use the
+  :func:`app.new() <ansys.mechanical.core.embedding.Application.new>`
+  method.
