@@ -109,7 +109,6 @@ def mechanical():
     else:
         mechanical = pymechanical.launch_mechanical()
 
-
     print(mechanical)
     yield mechanical
 
