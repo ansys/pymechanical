@@ -717,7 +717,7 @@ class Mechanical(object):
                 script = (
                     'clr.AddReference("Ans.Utilities")\n'
                     "import Ansys\n"
-                    "config = Ansys.Utilities.ApplicationConfiguration.DefaultConfiguration"
+                    "config = Ansys.Utilities.ApplicationConfiguration.DefaultConfiguration\n"
                     "config.VersionInfo.VersionString"
                 )
                 self._version = self.run_python_script(script)
