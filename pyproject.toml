@@ -33,7 +33,7 @@ dependencies = [
     "ansys-pythonnet==3.1.0rc1",
     "importlib-metadata>=4.0",
     "appdirs>=1.4.0",
-    "grpcio>=1.30.0,<=1.51.1",
+    "grpcio>=1.30.0",
     "protobuf>=3.12.2,<3.21.0",
     "ansys-platform-instancemanagement>=1.0.1",
     "tqdm>=4.45.0",
