@@ -1,7 +1,7 @@
-Create a pool of Mechanical instances
-=====================================
+Create a pool of Mechanical servers
+===================================
 The :class:`LocalMechanicalPool <ansys.mechanical.core.pool.LocalMechanicalPool>`
-class simplifies creating multiple local instances of the :class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>`
+class simplifies creating and connecting to multiple servers of the :class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>`
 class for batch processing. You can use the
 :class:`LocalMechanicalPool <ansys.mechanical.core.pool.LocalMechanicalPool>`
 class for batch processing a set of input files or other batch-related processes.

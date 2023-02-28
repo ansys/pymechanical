@@ -179,6 +179,11 @@ a remote session, a connection to that session must be reachable from your pytho
 Getting started
 ---------------
 
+PyMechanical uses the built-in scripting capabilities of Mechanical. Refer to the Scripting in
+Mechanical Guide in the Mechanical documentation at
+`ANSYS Help <https://ansyshelp.ansys.com/Views/Secured/corp/v231/en/act_script/act_script.html>`_.
+for more information about the scripting APIs available.
+
 Configuring the Ansys Mechanical installation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 On Windows systems the environment variable ``AWP_ROOT<ver>`` is configured when Mechanical is

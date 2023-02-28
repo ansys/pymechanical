@@ -16,44 +16,66 @@ from experts in the community, post on the `Discussions
 <https://github.com/pyansys/PyMechanical/discussions>`_ page.
 
 
-What are the pros and cons of PyMechanical versus Mechanical ACT?
------------------------------------------------------------------
+How is PyMechanical positioned with respect to other related tools?
+-------------------------------------------------------------------
 
-Your scripting method depends on your pipeline and software approach.
-Mechanical ACT is dependent on Ansys Workbench. You build extensions from within
-the ACT App Builder and then run them from within Ansys Mechanical. If you
-intend to vary parameters, you must use Ansys OptiSLang and then
-batch your solutions.
+When you want to automate or extend Ansys Mechanical, you should
+consider these tools:
 
-PyMechanical's main advantages over ACT are:
+* ACT in Mechanical
+* Scripting in Mechanical
+* PyMechanical
 
-* Tight integration with Python tools and open source modules
-  alongside Ansys software.
-* Scripts are written in Python. ACT uses .NET, and you can call
-  IronPython and potentially other tools available within Mechanical.
-* Being outside of Mechanical means that you can call your application
-  workflow without opening up the GUI for user interaction.
-* PyMechanical is compatible with modern Python (Python 3), whereas
-  ACT is only compatible with IronPython (Python 2).
+Although all of these tools work best in interactive mode, there is increasing support
+for batch mode. You can use the first two tools from either Ansys Workbench or from
+standalone Mechanical.
 
-The best approach depends on your workflow needs and how you would
-like to develop software.
+ACT in Mechanical
+^^^^^^^^^^^^^^^^^
+
+In the Ansys Mechanical product, ACT is a customization framework. When specific
+features are missing, users can add them using ACT. Of course, some of those
+missing features might be automations/scripts of existing features. But in many
+cases, these can be new capabilities, such as extensions to the data model of
+Mechanical, the ability to connect to callbacks, and even integration of external
+solvers.
+
+Scripting in Mechanical
+^^^^^^^^^^^^^^^^^^^^^^^
+
+The python scripting capability within Mechanical was born out of the same development
+that brought ACT to Mechanical. These APIs are the same as those used for PyMechanical,
+but can only be run from inside the product. By default, these use IronPython 2.7,
+but CPython 3.x based scripting is available with a feature flag in recent versions of
+Mechanical. Mechanical offers an intuitive user interface for scripting, called the 
+"Mechanical Scripting View" with features like script recording, autocomplete, and  a
+snippet library. However - it is possible to use this feature in batch mode without the
+User Interface.
+
+PyMechanical
+^^^^^^^^^^^^
+
+PyMechanical allows you to write python scripts outside of mechanical, with tight
+integration with other open source modules and Ansys products on your terms. This
+means that you can freely import any module and tool that is supported in your
+python environment. There is no dependency on opening the Mechanical User Interface.
 
 
-Why use PyMechanical over other Ansys products like Ansys Workbench?
---------------------------------------------------------------------
+What is the relationship with Ansys Workbench?
+----------------------------------------------
 
-There are always tasks where one product is better than another.
-Workbench is great tool to rapidly prototype, mesh, set
-boundary conditions, and solve. A huge amount of Workbench development
-effort has yielded many features that make it easy to run analyses.
-However, Workbench is limited by its IronPython scripting. Additionally,
-you cannot call multiple products at either a granular or high-level or
-use Python packages such as ``numpy``, ``scipy``, ``pytorch``, and
-``tensorflow``. PyMechanical ties all of these features in with
-Mechanical, allowing you to have a fully parametric workflow that
-leverages these machine learning tools.
+Ansys Workbench is a no-code environment to set up Analysis systems that can be linked
+together. It is part of the Ansys family of Process Automation and Design Exploration
+software that now also includes Ansys OptiSLang. The most popular applications within
+this environment is Ansys Mechanical, and for many years, Ansys Workbench was the only
+environment from which to run Ansys Mechanical.
 
+Because it is a no-code environment, a lot of the complexity around managing the data
+transfer between applications and running parametric studies has been hidden from the user.
+
+Using PyMechanical, and PyAnsys more broadly, for process automation and design Exploration
+gives you much more control over how it works, but by avoiding workbench you also miss
+out on what it handles under-the-hood.
 
 How do you restart a script?
 ----------------------------
@@ -71,5 +93,9 @@ Exiting Python should clear the solution within Python. This is because
 stopping the original process means that nothing should be in
 a new process.
 
-To clear all data from Mechanical, either use the
+To clear all data from Mechanical in PyMechanical, if it is an embedded instance use the
+:func:`app.new() <ansys.mechanical.core.embedding.Application.new>` method
+
+or if it is a remote session either use the
+
 :func:`Mechanical.clear() <ansys.mechanical.core.Mechanical.clear>` method or exit and restart Mechanical.
