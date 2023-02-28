@@ -1,12 +1,13 @@
 """Main application class for embedded Mechanical."""
 import atexit
 import os
+import typing
 
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.config import Configuration, configure
 
 
-def _get_available_versions():
+def _get_available_versions() -> typing.Dict[int, str]:
     supported_versions = [222, 231, 232]
     if os.name == "nt":
         supported_versions = [222, 231, 232]
@@ -21,7 +22,7 @@ def _get_available_versions():
         return {232: os.environ["AWP_ROOT232"]}
 
 
-def _get_default_version():
+def _get_default_version() -> int:
     vers = _get_available_versions()
     if not vers:
         raise Exception(
@@ -30,7 +31,7 @@ def _get_default_version():
     return max(vers.keys())
 
 
-def _get_default_configuration():
+def _get_default_configuration() -> Configuration:
     configuration = Configuration()
     if os.name != "nt":
         configuration.no_act_addins = True
@@ -75,6 +76,14 @@ class App:
         if len(INSTANCES) == 0:
             atexit.register(_dispose_embedded_app, INSTANCES)
         INSTANCES.append(self)
+
+    def __repr__(self):
+        if self._version < 232:
+            return "Ansys Mechanical"
+        import clr
+        clr.AddReference("Ansys.Mechanical.Application")
+        import Ansys
+        return Ansys.Mechanical.Application.ProductInfo.ProductInfoAsString
 
     def __enter__(self):
         """Enter the scope."""

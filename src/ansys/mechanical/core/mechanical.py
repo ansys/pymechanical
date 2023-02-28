@@ -970,8 +970,8 @@ class Mechanical(object):
         try:
             self._disable_logging = True
             script = (
-                'ExtAPI.Application.ScriptByName("jscript").ExecuteCommand'
-                '("var productInfo = DS.Script.getProductInfo();returnFromScript(productInfo);")'
+                'clr.AddReference("Ansys.Mechanical.Application")'
+                'Ansys.Mechanical.Application.ProductInfo.ProductInfoAsString'
             )
             return self.run_python_script(script)
         except grpc.RpcError:
