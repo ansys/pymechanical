@@ -90,7 +90,7 @@ Verify your installation by loading an embedded instance of Mechanical in Python
 .. note::**
    If you are running on Linux, you must set some environment variables for
    embedding of Mechanical in Python to work. A script that sets these variables is
-   distributed with Mechanical 2023 R2 and later. This script is located in here:
+   distributed with Mechanical 2023 R2 and later. For 2023 R2, this script is located in here:
    
    ``/path/to/ansys_inc/v232/aisol/.workbench_lite``
 
