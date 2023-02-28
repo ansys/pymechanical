@@ -91,8 +91,8 @@ Exiting Python should clear the solution within Python. This is because
 stopping the original process means that nothing should be in
 a new process.
 
-The way that you clear all data from Mechanical in PyMechanical depends on if the instance
-is embedded or in a remote session.
+The way that you clear all data from Mechanical in PyMechanical depends on if the
+Mechanical is embedded or a remote session.
 
 - If the instance is embedded, use the
   :func:`app.new() <ansys.mechanical.core.embedding.Application.new>`

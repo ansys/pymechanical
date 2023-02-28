@@ -62,7 +62,7 @@ to a ``wheelhouse`` directory and then install using the preceding code.
 Verify your installation
 ------------------------
 The way that you verify your installation depends on whether you want to run
-Mechanical in an embedded instance or a remote session.
+Mechanical using a remote session or an embedded instance.
 
 Verify a remote session
 ^^^^^^^^^^^^^^^^^^^^^^^
