@@ -239,7 +239,7 @@ process before it starts. You can set up these environment variables using the `
 script that is shipped with the Mechanical installation.
 
 Assume that Mechanical 2023 R2 is installed at ``/usr/ansys_inc``.
-Run Python with this command:
+You would run Python with this command:
 
 .. code::
 
