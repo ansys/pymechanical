@@ -18,5 +18,5 @@ the Mac operating system. For more information, see :ref:`Using Mechanical throu
 PyMechanical embedded instance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-On windows, an embedded instance can be used starting with version 2023 R1
-On linux, the first supported version is 2023 R2
+On Windows, you can use an embedded instance in 2023 R1 and later.
+On Linux, you can use an embedded instance in 2023 R2 and later.

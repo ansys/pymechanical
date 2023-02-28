@@ -21,47 +21,12 @@ a reference:
 .. figure:: ../images/unified_install_2023R1.jpg
     :width: 400pt
 
-Embedding a Mechanical application instance
--------------------------------------------
-
-The instructions for embedding a Mechanical application instance are different on
-windows and linux. The Python code is the same in both cases, but on Linux some
-additional environment is needed.
-
-Python code:
-~~~~~~~~~~~~
-.. code:: python
-
-    >>> from ansys.mechanical.core import App
-    >>> mechanical = App()
-    >>> print(mechanical)
-
-    Ansys Mechanical [Ansys Mechanical Enterprise]
-    Product Version:231
-    Software build date:Wednesday, August 10, 2022 4:28:15 PM
-
-Additional information for Linux:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Starting with 2023 R2, it is possible to embed an instance of Mechanical on Linux.
-However, because of differences in how Mechanical works on linux, you cannot simply
-run python as usual. On linux, certain environment variables need to set for the python
-process before it starts. These environment variables can be set using the `.workbench_lite`
-script that is shipped with the installation of Mechanical.
-
-Assume that Mechanical 2023 R2 is installed at ``/usr/ansys_inc``.
-Run python with the following command:
-
-.. code::
-
-    /usr/ansys_inc/v232/aisol/.workbench_lite python
-
 Launch remote Mechanical session
 --------------------------------
-You can use PyMechanical to launch a Mechanical session on the local machine. That is,
-the same machine that Python is running on. Alternatively, you can run Mechanical's
-command line directly on any machine to start it in server mode, and use it's address
-to manually connect to from Python.
+You can use PyMechanical to launch a Mechanical session on the local machine
+Python is running on. Alternatively, you can run Mechanical's command line
+directly on any machine to start it in server mode and then use its address
+to manually connect to it from Python.
 
 Launch Mechanical on the local machine using Python
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -84,7 +49,7 @@ Launch Mechanical locally with:
     Software build date:Wednesday, August 10, 2022 4:28:15 PM
 
 
-Launch A Mechanical server from command line
+Launch a Mechanical server from command line
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can launch Mechanical from the command line in server mode and then
@@ -96,7 +61,7 @@ Assume that Mechanical is installed at ``C:/Program Files/ANSYS Inc/vXXX``
 , where ``XXX`` is the three-digit format for the version. For example,
 the path for 2023 R1 is typically ``C:/Program Files/ANSYS Inc/v231``.
 
-Launch Mechanical in server mode with:
+Launch Mechanical in server mode with this code:
 
 .. code::
 
@@ -106,7 +71,7 @@ Launch Mechanical in server mode with:
 
 Assume that Mechanical 2023 R1 is installed at ``/usr/ansys_inc``.
 
-Launch Mechanical in server mode with:
+Launch Mechanical in server mode with this code:
 
 .. code::
 
@@ -137,7 +102,7 @@ Connect to a Mechanical session
 You can connect to a Mechanical session from the same host or from an external host.
 
 Assuming that Mechanical is running locally at the default IP address (127.0.0.1) on the
-default port (10000), you would connect to it with:
+default port (10000), you would use this code to connect to it:
 
 .. code::
 
@@ -147,7 +112,7 @@ default port (10000), you would connect to it with:
 
 Now assume that a remote instance of Mechanical has been started in server mode. To connect to
 the computer on your local area network that is running Mechanical, you can use either
-an IP address and port or hostname and port.
+an IP address and port or a hostname and port.
 
 **IP address and port**
 
@@ -243,6 +208,42 @@ a variety of issues, including:
   - License server setup
   - Running behind a VPN
   - Missing dependencies
+
+
+Embed a Mechanical instance
+---------------------------
+
+The instructions for embedding a Mechanical instance are different on
+Windows and Linux. While the Python code is the same in both cases,
+Linux requires some additional environment variables.
+
+Python code:
+~~~~~~~~~~~~
+.. code:: python
+
+    >>> from ansys.mechanical.core import App
+    >>> mechanical = App()
+    >>> print(mechanical)
+
+    Ansys Mechanical [Ansys Mechanical Enterprise]
+    Product Version:231
+    Software build date:Wednesday, August 10, 2022 4:28:15 PM
+
+Additional information for Linux:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Starting with 2023 R2, it is possible to embed an instance of Mechanical on Linux.
+However, because of differences in how Mechanical works on Linux, you cannot simply
+run Python as usual. On Linux, certain environment variables must be set for the Python
+process before it starts. You can set up these environment variables using the ``.workbench_lite``
+script that is shipped with the Mechanical installation.
+
+Assume that Mechanical 2023 R2 is installed at ``/usr/ansys_inc``.
+You would run Python with this command:
+
+.. code::
+
+    /usr/ansys_inc/v232/aisol/.workbench_lite python
 
 
 Licensing issues
