@@ -113,11 +113,11 @@ jobs:
         run: docker logs {{ env.DOCKER_MECH_CONTAINER_NAME }} > mechanical_tests_log.txt 2>&1
 
       - name: Upload container logs
-          uses: actions/upload-artifact@v3
-          with:
-            name: mechanical_tests_log
-            path: mechanical_tests_log.txt
-            retention-days: 7
+        uses: actions/upload-artifact@v3
+        with:
+          name: mechanical_tests_log
+          path: mechanical_tests_log.txt
+          retention-days: 7
 
   docs:
     name: Documentation
@@ -154,11 +154,11 @@ jobs:
           run: docker logs {{ env.DOCKER_MECH_CONTAINER_NAME }} > mechanical_documentation_log.txt 2>&1
 
       - name: Upload container logs
-          uses: actions/upload-artifact@v3
-          with:
-            name: mechanical_documentation_log
-            path: mechanical_documentation_log.txt
-            retention-days: 7
+        uses: actions/upload-artifact@v3
+        with:
+          name: mechanical_documentation_log
+          path: mechanical_documentation_log.txt
+          retention-days: 7
 
   package:
     name: Package library
