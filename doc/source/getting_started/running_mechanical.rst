@@ -215,7 +215,7 @@ Embed a Mechanical instance
 
 The instructions for embedding a Mechanical instance are different on
 Windows and Linux. While the Python code is the same in both cases,
-Linux requires some additional environment variables needed.
+Linux requires some additional environment variables.
 
 Python code:
 ~~~~~~~~~~~~
