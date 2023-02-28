@@ -108,7 +108,7 @@ jobs:
 
       # - name: Upload coverage to Codecov
       #   uses: codecov/codecov-action@v3
-      - name: Get Mechanial container logs
+      - name: Get Mechanical container logs
         if: always()
         run: docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > mechanical_tests_log.txt 2>&1
 
@@ -149,7 +149,7 @@ jobs:
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
-      - name: Get Mechanial container logs
+      - name: Get Mechanical container logs
         if: always()
         run: docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > mechanical_documentation_log.txt 2>&1
 
