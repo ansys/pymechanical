@@ -113,6 +113,22 @@ jobs:
     needs: [docs-style]
     runs-on: ubuntu-latest
     steps:
+      - name: Login in Github Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull, launch, and validate Mechanical service
+        env:
+          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
+          MECHANICAL_IMAGE: ${{ env.DOCKER_PACKAGE }}:${{ env.DOCKER_IMAGE_VERSION }}
+        run: |
+          docker pull ${{ env.MECHANICAL_IMAGE }}
+          docker run --restart always --name mechanical -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }} > log.txt &
+          grep -q 'WB Initialize Done' <(timeout 60 tail -f log.txt)
+
       - name: "Install dependencies"
         shell: bash
         run: sudo apt-get install pandoc

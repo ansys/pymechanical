@@ -5,7 +5,7 @@ build-backend = "flit_core.buildapi"
 [project]
 # Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
 name = "ansys-mechanical-core"
-version = "0.7.dev3"
+version = "0.7.dev5"
 description = "A python wrapper for Ansys Mechanical"
 readme = "README.rst"
 requires-python = ">=3.7,<4.0"
@@ -33,7 +33,7 @@ dependencies = [
     "ansys-pythonnet==3.1.0rc1",
     "importlib-metadata>=4.0",
     "appdirs>=1.4.0",
-    "grpcio>=1.30.0,<=1.51.1",
+    "grpcio>=1.30.0",
     "protobuf>=3.12.2,<3.21.0",
     "ansys-platform-instancemanagement>=1.0.1",
     "tqdm>=4.45.0",
@@ -51,9 +51,9 @@ tests = [
 doc = [
     "Sphinx==5.3.0",
     "ansys-sphinx-theme==0.8.2",
-    "grpcio==1.51.1",
+    "grpcio==1.51.3",
     "imageio-ffmpeg==0.4.8",
-    "imageio==2.25.1",
+    "imageio==2.26.0",
     "jupyter_sphinx==0.4.0",
     "jupyterlab>=3.2.8",
     "matplotlib==3.7.0",
@@ -62,7 +62,7 @@ doc = [
     "pypandoc==1.10",
     "pytest-sphinx==0.5.0",
     "pythreejs==2.4.2",
-    "pyvista==0.38.2",
+    "pyvista==0.38.3",
     "sphinx-autobuild==2021.3.14",
     "sphinx-autodoc-typehints==1.22",
     "sphinx-copybutton==0.5.1",
