@@ -65,9 +65,9 @@ What is the relationship with Ansys Workbench?
 
 Ansys Workbench is a no-code environment to set up analysis systems that can be linked
 together. It is part of the Ansys family of software tools for process automation and design
-exploration. This family now also includes Ansys OptiSLang, which may be a more natural fit
-for integration with PyMechanical. The most popular app within this environment is Mechanical,
-and for many years, Workbench was the only environment from which you could run Mechanical.
+exploration. This family also includes Ansys OptiSLang, which may be a more natural fit
+for integration with PyMechanical. The most popular app within the Workbench environment is
+Mechanical, and for many years, Workbench was the only environment you could run Mechanical from.
 
 Because Workbench is a no-code environment, a lot of the complexity around managing data
 transfer between Ansys apps and running parametric studies is hidden. PyMechanical, and
