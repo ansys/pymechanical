@@ -72,7 +72,7 @@ and for many years, Workbench was the only environment from which you could run 
 Because Workbench is a no-code environment, a lot of the complexity around managing data
 transfer between Ansys apps and running parametric studies is hidden. PyMechanical, and
 PyAnsys more broadly, give you much more control over your process automation and design
-exploration. However, eliminating Workbench means that you miss out on what it handledunder
+exploration. However, eliminating Workbench means that you miss out on what it handled under
 the hood.
 
 How do you restart a script?
@@ -92,7 +92,7 @@ stopping the original process means that nothing should be in
 a new process.
 
 The way that you clear all data from Mechanical in PyMechanical depends on if the instance
-is embedded or in a remote sesssion.
+is embedded or in a remote session.
 
 - If the instance is embedded, use the
   :func:`app.new() <ansys.mechanical.core.embedding.Application.new>`

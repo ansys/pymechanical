@@ -22,7 +22,7 @@ an instance of Mechanical in Python.
 Overview
 ========
 The :class:`Application <ansys.mechanical.core.embedding.Application>` class provides
-a Mechancal instance.
+a Mechanical instance.
 
 .. code:: python
 
