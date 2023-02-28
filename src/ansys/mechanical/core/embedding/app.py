@@ -78,11 +78,14 @@ class App:
         INSTANCES.append(self)
 
     def __repr__(self):
+        """Get the product info."""
         if self._version < 232:
             return "Ansys Mechanical"
         import clr
+
         clr.AddReference("Ansys.Mechanical.Application")
         import Ansys
+
         return Ansys.Mechanical.Application.ProductInfo.ProductInfoAsString
 
     def __enter__(self):
@@ -141,11 +144,14 @@ class App:
 
     def import_materials(self, material_file) -> None:
         """Import material from matml file."""
-        if 232 or later:
-            pass # don't use jscript
+        if self._version > 232:
+            materials = self.DataModel.Project.Model.Materials
+            materials.Import(material_file)
         else:
             material_file = material_file.replace("\\", "\\\\")
-            script = 'DS.Tree.Projects.Item(1).LoadEngrDataLibraryFromFile("' + material_file + '");'
+            script = (
+                'DS.Tree.Projects.Item(1).LoadEngrDataLibraryFromFile("' + material_file + '");'
+            )
             self.ExtAPI.Application.ScriptByName("jscript").ExecuteCommand(script)
 
     @property
