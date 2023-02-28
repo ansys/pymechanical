@@ -45,6 +45,6 @@ namespaces, and types, see :ref:`ref_embedding_user_guide_globals`.
 
 Additional configuration
 ------------------------
-By default, an instance of :class:`Application <ansys.mechanical.core.embedding.Application>`
+By default, an instance of the :class:`Application <ansys.mechanical.core.embedding.Application>` class
 is configured in the same way as the Mechanical application. To customize this, see
 :ref:`ref_embedding_user_guide_configuration`.
