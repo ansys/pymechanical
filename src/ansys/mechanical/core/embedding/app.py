@@ -128,7 +128,16 @@ class App:
         light_mode = True
         args = None
         rets = None
-        return script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
+        return self.script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
+
+    def import_materials(self, material_file) -> None:
+        """Import material from matml file."""
+        if 232 or later:
+            pass # don't use jscript
+        else:
+            material_file = material_file.replace("\\", "\\\\")
+            script = 'DS.Tree.Projects.Item(1).LoadEngrDataLibraryFromFile("' + material_file + '");'
+            self.ExtAPI.Application.ScriptByName("jscript").ExecuteCommand(script)
 
     @property
     def DataModel(self):
