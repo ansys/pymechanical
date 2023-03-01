@@ -1,5 +1,7 @@
 import json
 
+part_file_path = r"E:\ANSYSDev\TFS\2015\ansys_development\231\pymechanical\tests\parts\hsec.x_t"
+
 
 def attach_geometry(part_file_path):
     geometry_import_group = Model.GeometryImportGroup
@@ -38,8 +40,7 @@ def add_static_structural_analysis_bc_results():
     pressure.Magnitude.Output.SetDiscreteValue(0, Quantity(1000, "Pa"))
 
     # region Context Menu Action
-    solution = DataModel.GetObjectById(40)
-    total_deformation = solution.AddTotalDeformation()
+    total_deformation = analysis.Solution.AddTotalDeformation()
 
     return "success"
 
