@@ -37,7 +37,7 @@ a **Fixed Support** and a **Pressure** were added to the **Outline**.
 .. figure:: ../images/gmech_scripting_recording.gif
 
 Mechanical entities
-^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
 Mechanical has an extensive set of entities that represent all the functionality provided
 by Mechanical. At it's core, it contains:
 
