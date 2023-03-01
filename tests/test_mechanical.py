@@ -172,14 +172,10 @@ return_total_deformation()
 
 def disable_distributed_solve(mechanical):
     script = (
-        'ExtAPI.Application.ScriptByName("jscript").ExecuteCommand'
-        '("var isDistributed = DS.Script.isDistributed();returnFromScript(isDistributed);")'
+        'ExtAPI.Application.SolveConfigurations["My Computer"].'
+        "SolveProcessSettings.DistributeSolution = False"
     )
-    result = mechanical.run_python_script(script)
-    if result == "True":
-        mechanical.run_python_script(
-            'ExtAPI.Application.ScriptByName("jscript").CallJScript("doToggleDistributed")'
-        )
+    mechanical.run_python_script(script)
 
 
 def verify_download(mechanical, tmpdir, file_name, chunk_size):

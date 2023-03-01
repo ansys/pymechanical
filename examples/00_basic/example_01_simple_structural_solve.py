@@ -35,6 +35,16 @@ mechanical = launch_mechanical(batch=True, cleanup_on_exit=False)
 print(mechanical)
 
 ###############################################################################
+# Disable Distributed Solve
+# ~~~~~~~~~~~~~~~~~
+# Comment this if this is not the container scenario
+script = (
+    'ExtAPI.Application.SolveConfigurations["My Computer"].'
+    "SolveProcessSettings.DistributeSolution = False"
+)
+mechanical.run_python_script(script)
+
+###############################################################################
 # Initialize the variable needed for this workflow
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Set the part_file_path for later user.
