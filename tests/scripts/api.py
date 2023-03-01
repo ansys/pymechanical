@@ -1,7 +1,5 @@
 import json
 
-part_file_path = r"E:\ANSYSDev\TFS\2015\ansys_development\231\pymechanical\tests\parts\hsec.x_t"
-
 
 def attach_geometry(part_file_path):
     geometry_import_group = Model.GeometryImportGroup
