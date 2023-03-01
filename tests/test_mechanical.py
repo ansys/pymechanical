@@ -16,6 +16,7 @@ def validate_real(value, expected, tol):
 
 
 def test_run_python_script_success(mechanical):
+    print("test_run_python_script_success running")
     result = mechanical.run_python_script("2+3")
     assert result == "5"
 
@@ -120,6 +121,24 @@ def test_upload_with_different_chunk_size(mechanical, chunk_size):
     )
 
 
+def get_solve_out_path(mechanical):
+    solve_out_path = ""
+    for file_path in mechanical.list_files():
+        if file_path.find("solve.out") != -1:
+            solve_out_path = file_path
+            break
+
+    return solve_out_path
+
+
+def write_file_contents_to_console(path):
+    file = open(path, "rt")
+    for line in file:
+        print(line, end="")
+
+    file.close()
+
+
 # @pytest.mark.skip(reason="avoid long running")
 def test_upload_attach_mesh_solve_use_api(mechanical):
     current_working_directory = os.getcwd()
@@ -158,6 +177,17 @@ return_total_deformation()
     python_script = data + file_path_string + func_to_call
 
     result = mechanical.run_python_script(python_script)
+
+    solve_out_path = get_solve_out_path(mechanical)
+
+    current_working_directory = os.getcwd()
+    if solve_out_path != "":
+        print(f"downloading {solve_out_path} from server")
+        print(f"downloading to {current_working_directory}")
+        mechanical.download(solve_out_path, target_dir=current_working_directory)
+        solve_out_local_path = os.path.join(current_working_directory, "solve.out")
+
+        write_file_contents_to_console(solve_out_local_path)
 
     dict_result = json.loads(result)
 
