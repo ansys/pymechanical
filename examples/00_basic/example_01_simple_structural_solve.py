@@ -36,7 +36,7 @@ print(mechanical)
 
 ###############################################################################
 # Disable Distributed Solve
-# ~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Comment this if this is not the container scenario
 script = (
     'ExtAPI.Application.SolveConfigurations["My Computer"].'
