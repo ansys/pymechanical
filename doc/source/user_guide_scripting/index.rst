@@ -29,7 +29,7 @@ for complete information about these APIs.
 
 Recording
 ^^^^^^^^^
-Mechanical supports some level of recording, which will print APIs that actions in the User
+Mechanical supports some level of recording, which prints APIs that many actions in the User
 Interface run. Examples of these actions are assigning selections to scoping, changing values in
 the details view, and renaming an object in the **Outline**. For the animated example shown here,
 a **Fixed Support** and a **Pressure** were added to the **Outline**.
@@ -44,7 +44,7 @@ by Mechanical. At it's core, it contains:
 * CAD - Usually imported from a **CAD** application
 * Mesh - The discretized geometry that is appropriate for Mechanical's solvers
 * Materials - Engineering material models that come from **Engineering Data**
-* Objects - The entities in in the **Outline** that represent the model, analyses, solutions, and results
+* Objects - The entities in the **Outline** that represent the model, analyses, solutions, and results
 * Graphics - The 3D graphics engine that renders data from Mechanical visually and allows exporting images and animations
 * Solvers - The solver integrations that allow a Mechanical model to be used to run a specific solver
 * Post - The engine which computes useful engineering results from solver runs
@@ -69,7 +69,7 @@ commands are run, using the **Transaction** class. For example:
         for obj in Tree:
             obj.Name = obj.Name + " suffix"
 
-API Entry points
+API entry points
 ^^^^^^^^^^^^^^^^
 When running scripts inside of Mechanical, you can access the APIs via the following entry points:
 

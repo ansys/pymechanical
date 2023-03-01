@@ -38,8 +38,8 @@ application. Contributions to this open source library are welcome.
 Mechanical scripting
 --------------------
 You could already perform scripting of Mechanical with Python from inside
-Mechanical. pyMechanical leverages the same APIs but allow you to run your
-automations from outside Mechanical. More information about using these APIs
+Mechanical. PyMechanical leverages the same APIs but allow you to run your
+automation from outside Mechanical. More information about using these APIs
 is available in :ref:`ref_user_guide_scripting`.
 
 Background
