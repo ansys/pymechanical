@@ -34,7 +34,7 @@ Interface run. Examples of these actions are assigning selections to scoping, ch
 the details view, and renaming an object in the **Outline**. For the animated example shown here,
 a **Fixed Support** and a **Pressure** were added to the **Outline**.
 
-.. figure:: ../images/gmech_scripting_recording.jpg
+.. figure:: ../images/gmech_scripting_recording.gif
 
 Mechanical entities
 ^^^^^^^^^^^^^^^^^^
