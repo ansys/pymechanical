@@ -53,8 +53,7 @@ def attach_mesh_add_bc_results():
     # endregion
 
     # region Context Menu Action
-    solution_40 = DataModel.GetObjectById(40)
-    total_deformation_47 = solution_40.AddTotalDeformation()
+    total_deformation_47 = analysis_39.Solution.AddTotalDeformation()
 
     # endregion
 
