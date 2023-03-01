@@ -32,7 +32,7 @@ Recording
 Mechanical supports some level of recording, which will print APIs that actions in the User
 Interface run. Examples of these actions are assigning selections to scoping, changing values in
 the details view, and renaming an object in the **Outline**. For the animated example shown here,
-a **Fixed Support** and a **Pressure** were added tothe **Outline**.
+a **Fixed Support** and a **Pressure** were added to the **Outline**.
 
 .. figure:: ../images/gmech_scripting_recording.jpg
 
@@ -55,7 +55,7 @@ but also has representation in the **Outline**. The raw CAD data, which includes
 graphics, as well as all the data needed to define vertices, edges, faces, volumes, and parts is considered **GeoData**.
 You may interact with these bodies and parts in the **Outline**, assigning materials, thickness, and other data that does
 not come from CAD. This is considered **Geometry**. As a result, the API entry point for **GeoData** and **Geometry** are
-differnet. The same is true for **Mesh**, there is a representation in the **Outline** which contains the settings used to
+different. The same is true for **Mesh**, there is a representation in the **Outline** which contains the settings used to
 generate the mesh as well as statistics about the mesh, and then there is **MeshData** which is the actual nodes and
 elements in the mesh. These have distinct API entry points.
 
