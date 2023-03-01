@@ -14,6 +14,8 @@ import time
 import warnings
 import weakref
 
+import ansys.api.mechanical.v0.mechanical_pb2 as mechanical_pb2
+import ansys.api.mechanical.v0.mechanical_pb2_grpc as mechanical_pb2_grpc
 import ansys.platform.instancemanagement as pypim
 from ansys.platform.instancemanagement import Instance
 import appdirs
@@ -28,8 +30,6 @@ from ansys.mechanical.core.errors import (
     protect_grpc,
 )
 from ansys.mechanical.core.launcher import MechanicalLauncher
-import ansys.mechanical.core.mechanical_pb2 as mechanical_pb2
-import ansys.mechanical.core.mechanical_pb2_grpc as mechanical_pb2_grpc
 from ansys.mechanical.core.misc import (
     check_valid_ip,
     check_valid_port,
