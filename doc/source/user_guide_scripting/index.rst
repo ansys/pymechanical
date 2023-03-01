@@ -20,8 +20,8 @@ This section provides an overview of Mechanical scripting.
 Overview
 ========
 You could already perform scripting of Mechanical with Python from inside
-Mechanical. pyMechanical leverages the same APIs but allow you to run your
-automations from outside Mechanical.
+Mechanical. PyMechanical leverages the same APIs but allow you to run your
+automation from outside Mechanical.
 
 Refer to the **Scripting in Mechanical Guide** in the Mechanical documentation at
 `ANSYS Help <https://ansyshelp.ansys.com/Views/Secured/corp/v231/en/act_script/act_script.html>`_.
