@@ -59,7 +59,7 @@ different. The same is true for **Mesh**. There is a representation in the **Out
 generate the mesh as well as statistics about the mesh, and then there is **MeshData** which is the actual nodes and
 elements in the mesh. These have distinct API entry points.
 
-Executing a sequence of APIs can sometimes be slow, as Mechanical may perform background tasks each time any of its entities
+Executing a sequence of APIs can sometimes be slow because Mechanical may perform background tasks each time any of its entities
 are created, updated, or deleted. Mechanical scripting has a mechanism to defer many of these tasks until after a block of
 commands are run, using the **Transaction** class. For example:
 
