@@ -7,6 +7,7 @@ PyMechanical documentation |version|
 
 
    getting_started/index
+   user_guide_scripting/index
    user_guide_session/index
    user_guide_embedding/index
    api/index
@@ -34,6 +35,13 @@ studies or capture knowledge using interactive Jupyter notebooks. Tap
 the solver as the physics engine in your next Artificial Intelligence
 application. Contributions to this open source library are welcome.
 
+
+Mechanical scripting
+--------------------
+You could already perform scripting of Mechanical with Python from inside
+Mechanical. PyMechanical leverages the same APIs but allows you to run your
+automation from outside Mechanical. For more information on using these APIs,
+see :ref:`ref_user_guide_scripting`.
 
 Background
 ----------
