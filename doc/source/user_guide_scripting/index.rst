@@ -39,7 +39,7 @@ a **Fixed Support** and a **Pressure** were added to the **Outline**.
 Mechanical entities
 ^^^^^^^^^^^^^^^^^^^
 Mechanical has an extensive set of entities that represent all the functionality provided
-by Mechanical. At it's core, it contains:
+by Mechanical. At its core are these entities:
 
 * CAD - Usually imported from a **CAD** application
 * Mesh - The discretized geometry that is appropriate for Mechanical's solvers
