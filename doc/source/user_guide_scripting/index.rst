@@ -40,14 +40,14 @@ Mechanical entities
 Mechanical has an extensive set of entities that represent all the functionality provided
 by Mechanical. At its core are these entities:
 
-* CAD - Usually imported from a **CAD** application
-* Mesh - The discretized geometry that is appropriate for Mechanical's solvers
-* Materials - Engineering material models that come from **Engineering Data**
-* Objects - The entities in the **Outline** that represent the model, analyses, solutions, and results
-* Graphics - The 3D graphics engine that renders data from Mechanical visually and allows exporting images and animations
-* Solvers - The solver integrations that allow a Mechanical model to be used to run a specific solver
-* Post - The engine which computes useful engineering results from solver runs
-* Extensions - Mechanical can be extended by plugins or extensions that are defined externally from Mechanical
+* CAD: CAD entities usually imported from a CAD application
+* Mesh: The discretized geometry that is appropriate for Mechanical's solvers
+* Materials: Engineering material models that come from **Engineering Data**
+* Objects: The entities in the **Outline** that represent the model, analyses, solutions, and results
+* Graphics: The 3D graphics engine that renders data from Mechanical visually and can export images and animations
+* Solvers: The solver integrations that allow a Mechanical model to be used to run a specific solver
+* Post: The engine which computes useful engineering results from solver runs
+* Extensions: Plugins or extensions defined externally from Mechanical that extend Mechanical
 
 There is some overlap between these entities. For instance, the **CAD** data is represented visually in the 3D Graphics
 but also has representation in the **Outline**. The raw CAD data, which includes the tessellations used to render the
@@ -58,9 +58,9 @@ different. The same is true for **Mesh**. There is a representation in the **Out
 generate the mesh and statistics about the mesh. Then, there is **MeshData**, which is the actual nodes and
 elements in the mesh. These have distinct API entry points.
 
-Executing a sequence of APIs can sometimes be slow because Mechanical may perform background tasks each time any of its entities
-are created, updated, or deleted. Mechanical scripting has a **Transaction** class for deferring
-many of these tasks until after a block of commands are run. Here is an example:
+Executing a sequence of APIs can sometimes be slow because Mechanical may perform background tasks each time any of its
+entities are created, updated, or deleted. Mechanical scripting has a **Transaction** class for deferring many of these
+tasks until after a block of commands are run. Here is an example:
 
 .. code:: python
 
