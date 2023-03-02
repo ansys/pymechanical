@@ -84,4 +84,4 @@ from those entry points.
 
 Additional resources
 ^^^^^^^^^^^^^^^^^^^^
-The **ACT API Reference Guide** provides all available descriptions on objects, methods, and properties.
+The *ACT API Reference Guide* provides all available descriptions on objects, methods, and properties.
