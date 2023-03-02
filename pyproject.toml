@@ -30,6 +30,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
+    "ansys_api_mechanical==0.1.0",
     "ansys-pythonnet==3.1.0rc1",
     "importlib-metadata>=4.0",
     "appdirs>=1.4.0",
@@ -88,8 +89,6 @@ src_paths = ["doc", "src", "tests"]
 [tool.coverage.run]
 source = ["ansys.mechanical"]
 omit = [
-        "**/ansys/mechanical/core/mechanical_pb2.py",
-        "**/ansys/mechanical/core/mechanical_pb2_grpc.py"
        ]
 
 [tool.coverage.report]
