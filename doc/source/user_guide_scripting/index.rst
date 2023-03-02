@@ -55,7 +55,7 @@ but also has representation in the **Outline**. The raw CAD data, which includes
 graphics, as well as all the data needed to define vertices, edges, faces, volumes, and parts is considered **GeoData**.
 You may interact with these bodies and parts in the **Outline**, assigning materials, thickness, and other data that does
 not come from CAD. This is considered **Geometry**. As a result, the API entry point for **GeoData** and **Geometry** are
-different. The same is true for **Mesh**, there is a representation in the **Outline** which contains the settings used to
+different. The same is true for **Mesh**. There is a representation in the **Outline** that contains the settings used to
 generate the mesh as well as statistics about the mesh, and then there is **MeshData** which is the actual nodes and
 elements in the mesh. These have distinct API entry points.
 
