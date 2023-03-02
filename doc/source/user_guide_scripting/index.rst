@@ -23,15 +23,16 @@ You could already perform scripting of Mechanical with Python from inside
 Mechanical. PyMechanical leverages the same APIs but allows you to run your
 automation from outside Mechanical.
 
-For comprehensive information on these APIs, see the **Scripting in Mechanical Guide** in
+For comprehensive information on these APIs, see the *Scripting in Mechanical Guide* in
 the Mechanical documentation in the `Ansys Help <https://ansyshelp.ansys.com/Views/Secured/corp/v231/en/act_script/act_script.html>`_.
 
 Recording
 ^^^^^^^^^
-Mechanical supports some level of recording, which prints APIs that many actions in the User
-Interface run. Examples of these actions are assigning selections to scoping, changing values in
-the **Details**, and renaming an object in the **Outline**. For the animated example shown here,
-a **Fixed Support** and a **Pressure** were added to the **Outline**.
+Mechanical supports some level of recording. When you initiate an action from the UI, the UI
+determines what API to run, executes this API, and prints it in the **Mechanical Scripting
+View**. Examples of these actions are assigning selections to scoping, changing values in
+the details view, and renaming an object in the **Outline**. In the animated example shown here,
+a **Fixed Support** and a **Pressure** are added to the **Outline**.
 
 .. figure:: ../images/gmech_scripting_recording.gif
 
