@@ -120,6 +120,22 @@ def test_upload_with_different_chunk_size(mechanical, chunk_size):
     )
 
 
+def get_solve_out_path(mechanical):
+    solve_out_path = ""
+    for file_path in mechanical.list_files():
+        if file_path.find("solve.out") != -1:
+            solve_out_path = file_path
+            break
+
+    return solve_out_path
+
+
+def write_file_contents_to_console(path):
+    with open(path, "rt") as file:
+        for line in file:
+            print(line, end="")
+
+
 # @pytest.mark.skip(reason="avoid long running")
 def test_upload_attach_mesh_solve_use_api(mechanical):
     current_working_directory = os.getcwd()
@@ -159,6 +175,20 @@ return_total_deformation()
 
     result = mechanical.run_python_script(python_script)
 
+    # if the solve fails, solve.out contains enough information
+    solve_out_path = get_solve_out_path(mechanical)
+
+    if solve_out_path != "":
+        print(f"downloading {solve_out_path} from server")
+        print(f"downloading to {current_working_directory}")
+        mechanical.download(solve_out_path, target_dir=current_working_directory)
+        solve_out_local_path = os.path.join(current_working_directory, "solve.out")
+
+        write_file_contents_to_console(solve_out_local_path)
+
+        # done with solve.out - remove it
+        os.remove(solve_out_local_path)
+
     dict_result = json.loads(result)
 
     min_value = float(dict_result["Minimum"].split(" ")[0])
@@ -172,14 +202,18 @@ return_total_deformation()
 
 def disable_distributed_solve(mechanical):
     script = (
-        'ExtAPI.Application.ScriptByName("jscript").ExecuteCommand'
-        '("var isDistributed = DS.Script.isDistributed();returnFromScript(isDistributed);")'
+        'ExtAPI.Application.SolveConfigurations["My Computer"].'
+        "SolveProcessSettings.DistributeSolution = False"
     )
-    result = mechanical.run_python_script(script)
-    if result == "True":
-        mechanical.run_python_script(
-            'ExtAPI.Application.ScriptByName("jscript").CallJScript("doToggleDistributed")'
-        )
+    mechanical.run_python_script(script)
+
+
+def enable_distributed_solve(mechanical):
+    script = (
+        'ExtAPI.Application.SolveConfigurations["My Computer"].'
+        "SolveProcessSettings.DistributeSolution = True"
+    )
+    mechanical.run_python_script(script)
 
 
 def verify_download(mechanical, tmpdir, file_name, chunk_size):
