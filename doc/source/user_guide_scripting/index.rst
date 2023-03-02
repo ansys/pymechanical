@@ -20,12 +20,11 @@ This section provides an overview of Mechanical scripting.
 Overview
 ========
 You could already perform scripting of Mechanical with Python from inside
-Mechanical. PyMechanical leverages the same APIs but allow you to run your
+Mechanical. PyMechanical leverages the same APIs but allows you to run your
 automation from outside Mechanical.
 
-Refer to the **Scripting in Mechanical Guide** in the Mechanical documentation at
-`ANSYS Help <https://ansyshelp.ansys.com/Views/Secured/corp/v231/en/act_script/act_script.html>`_.
-for complete information about these APIs.
+For comprehensive information on these APIs, see the **Scripting in Mechanical Guide** in
+the Mechanical documentation in the `ANSYS Help <https://ansyshelp.ansys.com/Views/Secured/corp/v231/en/act_script/act_script.html>`_.
 
 Recording
 ^^^^^^^^^
@@ -39,7 +38,7 @@ a **Fixed Support** and a **Pressure** were added to the **Outline**.
 Mechanical entities
 ^^^^^^^^^^^^^^^^^^^
 Mechanical has an extensive set of entities that represent all the functionality provided
-by Mechanical. At it's core, it contains:
+by Mechanical. At its core are these entities:
 
 * CAD - Usually imported from a **CAD** application
 * Mesh - The discretized geometry that is appropriate for Mechanical's solvers
@@ -55,13 +54,13 @@ but also has representation in the **Outline**. The raw CAD data, which includes
 graphics, as well as all the data needed to define vertices, edges, faces, volumes, and parts is considered **GeoData**.
 You may interact with these bodies and parts in the **Outline**, assigning materials, thickness, and other data that does
 not come from CAD. This is considered **Geometry**. As a result, the API entry point for **GeoData** and **Geometry** are
-different. The same is true for **Mesh**, there is a representation in the **Outline** which contains the settings used to
-generate the mesh as well as statistics about the mesh, and then there is **MeshData** which is the actual nodes and
+different. The same is true for **Mesh**. There is a representation in the **Outline** that contains the settings used to
+generate the mesh and statistics about the mesh. Then, there is **MeshData**, which is the actual nodes and
 elements in the mesh. These have distinct API entry points.
 
-Executing a sequence of APIs can sometimes be slow, as Mechanical may perform background tasks each time any of its entities
-are created, updated, or deleted. Mechanical scripting has a mechanism to defer many of these tasks until after a block of
-commands are run, using the **Transaction** class. For example:
+Executing a sequence of APIs can sometimes be slow because Mechanical may perform background tasks each time any of its entities
+are created, updated, or deleted. Mechanical scripting has a **Transaction** class for deferring
+many of these tasks until after a block of commands are run. Here is an example:
 
 .. code:: python
 
@@ -79,9 +78,9 @@ When running scripts inside of Mechanical, you can access the APIs via the follo
 * Tree: The **Outline**
 * Graphics: The 3D graphics engine
 
-You also would have access to several types and namespaces that are included in the scripting scope, but are not available
+You also would have access to several types and namespaces that are included in the scripting scope but are not available
 from those entry points.
 
 Additional resources
 ^^^^^^^^^^^^^^^^^^^^
-The **ACT API Reference Guide** provides all available descriptions on objects, methods, and properties.
+The *ACT API Reference Guide* provides all available descriptions on objects, methods, and properties.
