@@ -79,7 +79,7 @@ When running scripts inside of Mechanical, you can access the APIs via the follo
 * Tree: The **Outline**
 * Graphics: The 3D graphics engine
 
-You also would have access to several types and namespaces that are included in the scripting scope, but are not available
+You also would have access to several types and namespaces that are included in the scripting scope but are not available
 from those entry points.
 
 Additional resources
