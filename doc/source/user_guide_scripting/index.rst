@@ -20,7 +20,7 @@ This section provides an overview of Mechanical scripting.
 Overview
 ========
 You could already perform scripting of Mechanical with Python from inside
-Mechanical. PyMechanical leverages the same APIs but allow you to run your
+Mechanical. PyMechanical leverages the same APIs but allows you to run your
 automation from outside Mechanical.
 
 Refer to the **Scripting in Mechanical Guide** in the Mechanical documentation at
