@@ -56,7 +56,7 @@ graphics, as well as all the data needed to define vertices, edges, faces, volum
 You may interact with these bodies and parts in the **Outline**, assigning materials, thickness, and other data that does
 not come from CAD. This is considered **Geometry**. As a result, the API entry point for **GeoData** and **Geometry** are
 different. The same is true for **Mesh**. There is a representation in the **Outline** that contains the settings used to
-generate the mesh as well as statistics about the mesh, and then there is **MeshData** which is the actual nodes and
+generate the mesh and statistics about the mesh. Then, there is **MeshData**, which is the actual nodes and
 elements in the mesh. These have distinct API entry points.
 
 Executing a sequence of APIs can sometimes be slow because Mechanical may perform background tasks each time any of its entities
