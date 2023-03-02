@@ -30,8 +30,8 @@ Recording
 ^^^^^^^^^
 Mechanical supports some level of recording, which prints APIs that many actions in the User
 Interface run. Examples of these actions are assigning selections to scoping, changing values in
-the details view, and renaming an object in the **Outline**. For the animated example shown here,
-a **Fixed Support** and a **Pressure** were added to the **Outline**.
+the details view, and renaming an object in the **Outline**. In the animated example shown here,
+a **Fixed Support** and a **Pressure** are added to the **Outline**.
 
 .. figure:: ../images/gmech_scripting_recording.gif
 
