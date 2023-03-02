@@ -24,13 +24,13 @@ Mechanical. PyMechanical leverages the same APIs but allows you to run your
 automation from outside Mechanical.
 
 For comprehensive information on these APIs, see the **Scripting in Mechanical Guide** in
-the Mechanical documentation in the `ANSYS Help <https://ansyshelp.ansys.com/Views/Secured/corp/v231/en/act_script/act_script.html>`_.
+the Mechanical documentation in the `Ansys Help <https://ansyshelp.ansys.com/Views/Secured/corp/v231/en/act_script/act_script.html>`_.
 
 Recording
 ^^^^^^^^^
 Mechanical supports some level of recording, which prints APIs that many actions in the User
 Interface run. Examples of these actions are assigning selections to scoping, changing values in
-the details view, and renaming an object in the **Outline**. For the animated example shown here,
+the **Details**, and renaming an object in the **Outline**. For the animated example shown here,
 a **Fixed Support** and a **Pressure** were added to the **Outline**.
 
 .. figure:: ../images/gmech_scripting_recording.gif
@@ -42,24 +42,24 @@ by Mechanical. At its core are these entities:
 
 * CAD: CAD entities usually imported from a CAD application
 * Mesh: The discretized geometry that is appropriate for Mechanical's solvers
-* Materials: Engineering material models that come from **Engineering Data**
+* Materials: Engineering material models that come from **Engineering Data**, which is a subsystem of Ansys Workbench.
 * Objects: The entities in the **Outline** that represent the model, analyses, solutions, and results
 * Graphics: The 3D graphics engine that renders data from Mechanical visually and can export images and animations
 * Solvers: The solver integrations that allow a Mechanical model to be used to run a specific solver
 * Post: The engine which computes useful engineering results from solver runs
 * Extensions: Plugins or extensions defined externally from Mechanical that extend Mechanical
 
-There is some overlap between these entities. For instance, the **CAD** data is represented visually in the 3D Graphics
+There is some overlap between these entities. For instance, the CAD data is represented visually in the 3D Graphics
 but also has representation in the **Outline**. The raw CAD data, which includes the tessellations used to render the
-graphics, as well as all the data needed to define vertices, edges, faces, volumes, and parts is considered **GeoData**.
+graphics and all the data needed to define vertices, edges, faces, volumes, and parts is collectively considered ``GeoData``.
 You may interact with these bodies and parts in the **Outline**, assigning materials, thickness, and other data that does
-not come from CAD. This is considered **Geometry**. As a result, the API entry point for **GeoData** and **Geometry** are
-different. The same is true for **Mesh**. There is a representation in the **Outline** that contains the settings used to
-generate the mesh and statistics about the mesh. Then, there is **MeshData**, which is the actual nodes and
+not come from CAD. This is considered ``Geometry``. As a result, the API entry point for ``GeoData`` and ``Geometry`` are
+different. The same is true for ``Mesh``. There is a representation in the **Outline** that contains the settings used to
+generate the mesh and statistics about the mesh. Then, there is ``MeshData``, which is the actual nodes and
 elements in the mesh. These have distinct API entry points.
 
 Executing a sequence of APIs can sometimes be slow because Mechanical may perform background tasks each time any of its
-entities are created, updated, or deleted. Mechanical scripting has a **Transaction** class for deferring many of these
+entities are created, updated, or deleted. Mechanical scripting has a ``Transaction`` class for deferring many of these
 tasks until after a block of commands are run. Here is an example:
 
 .. code:: python
@@ -72,11 +72,11 @@ API entry points
 ^^^^^^^^^^^^^^^^
 When running scripts inside of Mechanical, you can access the APIs via the following entry points:
 
-* ExtAPI: Entry point for all APIs
-* DataModel: Entry point to access CAD, Mesh, and objects from the **Outline**
-* Model: The **Model** object from the **Outline**
-* Tree: The **Outline**
-* Graphics: The 3D graphics engine
+* ``ExtAPI``: Entry point for all APIs
+* ``DataModel``: Entry point to access CAD, Mesh, and objects from the **Outline**
+* ``Model``: The Model object from the **Outline**
+* ``Tree``: The **Outline**
+* ``Graphics``: The 3D graphics engine
 
 You also would have access to several types and namespaces that are included in the scripting scope but are not available
 from those entry points.
