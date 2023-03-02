@@ -60,8 +60,8 @@ generate the mesh as well as statistics about the mesh, and then there is **Mesh
 elements in the mesh. These have distinct API entry points.
 
 Executing a sequence of APIs can sometimes be slow because Mechanical may perform background tasks each time any of its entities
-are created, updated, or deleted. Mechanical scripting has a mechanism to defer many of these tasks until after a block of
-commands are run, using the **Transaction** class. For example:
+are created, updated, or deleted. Mechanical scripting has a **Transaction** class for deferring
+many of these tasks until after a block of commands are run. Here is an example:
 
 .. code:: python
 
