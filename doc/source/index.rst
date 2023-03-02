@@ -10,7 +10,6 @@ PyMechanical documentation |version|
    user_guide_scripting/index
    user_guide_session/index
    user_guide_embedding/index
-   user_guide_scripting/index
    api/index
    examples/index
    contributing
