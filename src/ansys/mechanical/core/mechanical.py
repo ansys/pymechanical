@@ -2234,14 +2234,16 @@ def launch_mechanical(
         # special handling when building the gallery outside of CI. This
         # creates an instance of Mechanical the first time if PYMECHANICAL_START_INSTANCE
         # is False.
+        # when you launch, treat it as local.
+        # when you connect, treat it as remote. We cannot differentiate between
+        # local vs container scenarios. In the container scenarios, we could be connecting
+        # to a container using local ip and port
         if pymechanical.BUILDING_GALLERY:  # pragma: no cover
             # launch an instance of PyMechanical if it does not already exist and
             # starting instances is allowed
             if start_instance and GALLERY_INSTANCE[0] is None:
                 mechanical = launch_mechanical(
-                    start_instance=True,
-                    cleanup_on_exit=False,
-                    loglevel=loglevel,
+                    start_instance=True, cleanup_on_exit=False, loglevel=loglevel, local=True
                 )
                 GALLERY_INSTANCE[0] = {"ip": mechanical._ip, "port": mechanical._port}
                 return mechanical
@@ -2253,6 +2255,7 @@ def launch_mechanical(
                     port=GALLERY_INSTANCE[0]["port"],
                     cleanup_on_exit=False,
                     loglevel=loglevel,
+                    local=False,
                 )
                 # we are connecting to the existing gallery instance,
                 # we need to clear Mechanical.
@@ -2263,10 +2266,7 @@ def launch_mechanical(
                 # finally, if running on CI/CD, connect to the default instance
             else:
                 mechanical = Mechanical(
-                    ip=ip,
-                    port=port,
-                    cleanup_on_exit=False,
-                    loglevel=loglevel,
+                    ip=ip, port=port, cleanup_on_exit=False, loglevel=loglevel, local=False
                 )
                 # we are connecting for gallery generation,
                 # we need to clear Mechanical.
@@ -2283,6 +2283,7 @@ def launch_mechanical(
             timeout=start_timeout,
             cleanup_on_exit=cleanup_on_exit,
             keep_connection_alive=keep_connection_alive,
+            local=False,
         )
         if clear_on_connect:
             mechanical.clear()
@@ -2311,6 +2312,7 @@ def launch_mechanical(
         "batch": batch,
         "additional_switches": additional_switches,
         "additional_envs": additional_envs,
+        local: True,
     }
 
     try:
