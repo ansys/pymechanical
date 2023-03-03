@@ -504,7 +504,7 @@ class LocalMechanicalPool:
         Examples
         --------
         >>> mechanical = pool.next_available()
-        >>> print(mechanical)
+        >>> mechanical
         Ansys Mechanical [Ansys Mechanical Enterprise]
         Product Version:231
         Software build date:Wed Jul 13 14:29:54 2022

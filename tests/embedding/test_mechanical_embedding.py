@@ -124,9 +124,7 @@ def test_qk_eng_wb2_007(printer, selection, embedded_app):
     geometry_import.Import(geometry_file)
     material_file = os.path.join(get_assets_folder(), "eng200_material.xml")
     printer(f"Setting up test - import materials {material_file}")
-    material_file = material_file.replace("\\", "\\\\")
-    script = 'DS.Tree.Projects.Item(1).LoadEngrDataLibraryFromFile("' + material_file + '");'
-    ExtAPI.Application.ScriptByName("jscript").ExecuteCommand(script)
+    embedded_app.import_materials(material_file)
 
     def _innertest():
         printer("Add material file")
