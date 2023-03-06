@@ -188,6 +188,7 @@ html_theme_options = {
         "json_url": f"https://{cname}/release/versions.json",
         "version_match": get_version_match(version),
     },
+    "check_switcher": False,
     "navbar_end": ["version-switcher", "theme-switcher", "navbar-icon-links"],
     "github_url": "https://github.com/pyansys/pymechanical",
     "show_prev_next": False,
