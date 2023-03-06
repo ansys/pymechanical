@@ -7,7 +7,9 @@ PyMechanical documentation |version|
 
 
    getting_started/index
-   user_guide/index
+   user_guide_scripting/index
+   user_guide_session/index
+   user_guide_embedding/index
    api/index
    examples/index
    contributing
@@ -22,10 +24,9 @@ Python. Its primary package, ``ansys-mechanical-core``, provides
 scripting of Ansys Mechanical through Python.
 
 With PyMechanical, you can integrate the simulation capabilities
-of the Mechanical multi-physics solver directly into novel apps.
+of the Mechanical multiphysics solver directly into novel apps.
 The package presents a Python-friendly interface to drive the software
-that manages the submission of low-level Mechanical scripting commands,
-while exchanging data through high-performance gRPC interfaces.
+that facilitates use of Mechanical scripting commands.
 
 Accelerate the preparation of your simulations using PyMechanical. Combine the
 expressiveness of general-purpose Python code to control the flow in your
@@ -35,54 +36,37 @@ the solver as the physics engine in your next Artificial Intelligence
 application. Contributions to this open source library are welcome.
 
 
+Mechanical scripting
+--------------------
+You could already perform scripting of Mechanical with Python from inside
+Mechanical. PyMechanical leverages the same APIs but allows you to run your
+automation from outside Mechanical. For more information on using these APIs,
+see :ref:`ref_user_guide_scripting`.
+
 Background
 ----------
-PyMechanical is based on `gRPC <https://grpc.io/>`_, a modern, open
-source, high-performance Remote Procedure Call (RPC) framework. PyMechanical
-allows the Mechanical application to function as a server, ready to
-respond to connecting clients.
+PyMechanical contains two interfaces, a remote session and an embedded instance.
 
-gRPC establishes secure connections so that a client app can directly call
-methods on a potentially remote Mechanical instance as if it were a local
-object. The use of HTTP/2 makes it friendly to modern internet infrastructures.
-This, along with the use of binary transmission formats, favors higher
-performance. Using gRPC, PyMechanical can send Mechanical scripting API
-commands to an Mechanical instance running anywhere, while producing
-network footprints that are compact and efficient.
+Remote session
+^^^^^^^^^^^^^^
+PyMechanical's  remote session is based on `gRPC <https://grpc.io/>`_.
+Mechanical runs as a server, ready to respond to any clients.
 
+PyMechanical provides a client to connect to a Mechanical server and make API
+calls to that server.
 
-Brief code
-----------
-Here is a brief code example showing how PyMechanical works:
+For comprehensive information on this feature, see the
+:ref:`ref_user_guide_session`.
 
-.. code:: python
+Embedded instance
+^^^^^^^^^^^^^^^^^
+PyMechanical's embedded instance is based on `pythonnet <http://pythonnet.github.io/>_`.
+Rather than starting a new process for Mechanical, a Mechanical object (which is
+implemented in .NET) is directly loaded into Python memory using ``pythonnet``. From
+there, Mechanical's entire data model is available for use from Python code.
 
-    >>> from ansys.mechanical.core import launch_mechanical
-    >>> mechanical = launch_mechanical()
-    >>> print(mechanical)
-
-    Ansys Mechanical [Ansys Mechanical Enterprise]
-    Product Version:231
-    Software build date:Wednesday, August 10, 2022 4:28:15 PM
-
-Mechanical is now active and you can send commands to it as a genuine
-Python class. For example, you can send some scripts:
-
-.. code:: python
-
-    result = mechanical.run_python_script('2+3')
-    result = mechanical.run_python_script('10*5')
-
-Mechanical interactively returns the result of each command, storing
-in to the logging module. Or, you can immediately print the result with::   
-
-    print(mechanical.run_python_script('2+3')
-
-
-Errors are caught immediately and Pythonically.
-
-For comprehensive information on PyMechanical features, see the
-:ref:`ref_user_guide`.
+For comprehensive information on this feature, see
+:ref:`ref_user_guide_embedding`.
 
 
 Project index

@@ -93,7 +93,7 @@ Verify your connection with:
 
 .. code:: python
 
-    >>> print(mechanical)
+    >>> mechanical
 
     Ansys Mechanical [Ansys Mechanical Enterprise]
     Product Version:231

@@ -61,13 +61,18 @@ to a ``wheelhouse`` directory and then install using the preceding code.
 
 Verify your installation
 ------------------------
-Verify your installation by starting Mechanical from Python:
+The way that you verify your installation depends on whether you want to run
+Mechanical using a remote session or an embedded instance.
+
+Verify a remote session
+^^^^^^^^^^^^^^^^^^^^^^^
+Verify your installation by starting a remote session of Mechanical from Python:
 
 .. code:: python
 
     >>> from ansys.mechanical.core import launch_mechanical
     >>> mechanical = launch_mechanical()
-    >>> print(mechanical)
+    >>> mechanical
 
     Ansys Mechanical [Ansys Mechanical Enterprise]
     Product Version:231
@@ -76,3 +81,30 @@ Verify your installation by starting Mechanical from Python:
 If you see a response from the server, you can begin using Mechanical
 as a service. For information on the PyMechanical interface, see
 :ref:`ref_mechanical_user_guide`.
+
+Verify an embedded instance
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Verify your installation by loading an embedded instance of Mechanical in Python.
+
+.. note::**
+   If you are running on Linux, you must set some environment variables for
+   embedding of Mechanical in Python to work. A script that sets these variables is
+   distributed with Mechanical 2023 R2 and later. For 2023 R2, this script is located in here:
+   
+   ``/path/to/ansys_inc/v232/aisol/.workbench_lite``
+
+To use the script, prepend it to any invocation of Python:
+
+.. code::
+
+    /path/to/ansys_inc/v232/aisol/.workbench_lite python
+
+
+Inside of Python, use the following commands to load an embedded instance:
+
+.. code:: python
+
+    >>> from ansys.mechanical.core import App
+    >>> app = App()
+    >>> print(app)

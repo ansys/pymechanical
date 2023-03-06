@@ -14,6 +14,7 @@ env:
   PYMECHANICAL_START_INSTANCE: FALSE
   DOCKER_PACKAGE: ghcr.io/pyansys/pymechanical/mechanical
   DOCKER_IMAGE_VERSION: v23.1.0
+  DOCKER_MECH_CONTAINER_NAME: mechanical
   MAIN_PYTHON_VERSION: '3.10'
   PACKAGE_NAME: ansys-mechanical-core
   PACKAGE_NAMESPACE: ansys.mechanical.core
@@ -81,7 +82,7 @@ jobs:
 
   tests:
     name: Testing and coverage
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-8-cores
     needs: [smoke-tests]
     steps:
       - name: Login in Github Container registry
@@ -97,7 +98,7 @@ jobs:
           MECHANICAL_IMAGE: ${{ env.DOCKER_PACKAGE }}:${{ env.DOCKER_IMAGE_VERSION }}
         run: |
           docker pull ${{ env.MECHANICAL_IMAGE }}
-          docker run --restart always --name mechanical -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }} > log.txt &
+          docker run --restart always --name ${{ env.DOCKER_MECH_CONTAINER_NAME }} -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }} > log.txt &
           grep -q 'WB Initialize Done' <(timeout 60 tail -f log.txt)
 
       - name: Testing
@@ -107,11 +108,21 @@ jobs:
 
       # - name: Upload coverage to Codecov
       #   uses: codecov/codecov-action@v3
+      - name: Get Mechanical container logs
+        if: always()
+        run: docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > mechanical_tests_log.txt 2>&1
+
+      - name: Upload container logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: mechanical_tests_log
+          path: mechanical_tests_log.txt
+          retention-days: 7
 
   docs:
     name: Documentation
     needs: [docs-style]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-8-cores
     steps:
       - name: Login in Github Container registry
         uses: docker/login-action@v2
@@ -126,7 +137,7 @@ jobs:
           MECHANICAL_IMAGE: ${{ env.DOCKER_PACKAGE }}:${{ env.DOCKER_IMAGE_VERSION }}
         run: |
           docker pull ${{ env.MECHANICAL_IMAGE }}
-          docker run --restart always --name mechanical -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }} > log.txt &
+          docker run --restart always --name ${{ env.DOCKER_MECH_CONTAINER_NAME }} -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }} > log.txt &
           grep -q 'WB Initialize Done' <(timeout 60 tail -f log.txt)
 
       - name: "Install dependencies"
@@ -137,6 +148,17 @@ jobs:
         uses: pyansys/actions/doc-build@v4
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
+
+      - name: Get Mechanical container logs
+        if: always()
+        run: docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > mechanical_documentation_log.txt 2>&1
+
+      - name: Upload container logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: mechanical_documentation_log
+          path: mechanical_documentation_log.txt
+          retention-days: 7
 
   package:
     name: Package library

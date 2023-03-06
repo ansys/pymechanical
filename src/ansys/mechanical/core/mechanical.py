@@ -14,6 +14,8 @@ import time
 import warnings
 import weakref
 
+import ansys.api.mechanical.v0.mechanical_pb2 as mechanical_pb2
+import ansys.api.mechanical.v0.mechanical_pb2_grpc as mechanical_pb2_grpc
 import ansys.platform.instancemanagement as pypim
 from ansys.platform.instancemanagement import Instance
 import appdirs
@@ -28,8 +30,6 @@ from ansys.mechanical.core.errors import (
     protect_grpc,
 )
 from ansys.mechanical.core.launcher import MechanicalLauncher
-import ansys.mechanical.core.mechanical_pb2 as mechanical_pb2
-import ansys.mechanical.core.mechanical_pb2_grpc as mechanical_pb2_grpc
 from ansys.mechanical.core.misc import (
     check_valid_ip,
     check_valid_port,
@@ -668,11 +668,16 @@ class Mechanical(object):
         if "local" in kwargs:  # pragma: no cover  # allow this to be overridden
             self._local = kwargs["local"]
 
+        if self._local:
+            self.log_info(f"Mechanical connection is treated as local.")
+        else:
+            self.log_info(f"Mechanical connection is treated as remote.")
+
         self._health_response_queue = None
         self._exiting = False
         self._exited = None
 
-        self.version = None
+        self._version = None
 
         if port is None:
             port = MECHANICAL_DEFAULT_PORT
@@ -707,6 +712,26 @@ class Mechanical(object):
     def log(self):
         """Log associated with the current Mechanical instance."""
         return self._log
+
+    @property
+    def version(self) -> str:
+        """Gets the mechanical version based on the instance."""
+        if self._version == None:
+            try:
+                self._disable_logging = True
+                script = (
+                    'clr.AddReference("Ans.Utilities")\n'
+                    "import Ansys\n"
+                    "config = Ansys.Utilities.ApplicationConfiguration.DefaultConfiguration\n"
+                    "config.VersionInfo.VersionString"
+                )
+                self._version = self.run_python_script(script)
+            except grpc.RpcError:
+                raise
+            finally:
+                self._disable_logging = False
+                pass
+        return self._version
 
     @property
     def _name(self):
@@ -967,12 +992,25 @@ class Mechanical(object):
 
     def get_product_info(self):
         """Get product information by running a script on the Mechanical gRPC server."""
-        try:
-            self._disable_logging = True
-            script = (
+
+        def _get_jscript_product_info_command():
+            return (
                 'ExtAPI.Application.ScriptByName("jscript").ExecuteCommand'
                 '("var productInfo = DS.Script.getProductInfo();returnFromScript(productInfo);")'
             )
+
+        def _get_python_product_info_command():
+            return (
+                'clr.AddReference("Ansys.Mechanical.Application")\n'
+                "Ansys.Mechanical.Application.ProductInfo.ProductInfoAsString"
+            )
+
+        try:
+            self._disable_logging = True
+            if int(self.version) >= 232:
+                script = _get_python_product_info_command()
+            else:
+                script = _get_jscript_product_info_command()
             return self.run_python_script(script)
         except grpc.RpcError:
             raise
@@ -980,14 +1018,14 @@ class Mechanical(object):
             self._disable_logging = False
 
     @suppress_logging
-    def __str__(self):
+    def __repr__(self):
         """Get the user-readable string form of the Mechanical instance."""
         try:
             if self._exited:
                 return "Mechanical exited."
             return self.get_product_info()
         except grpc.RpcError:
-            return "Mechanical exited."
+            return "Error getting product info."
 
     def launch(self, cleanup_on_exit=True):
         """Launch Mechanical in batch or UI mode.
@@ -2201,6 +2239,10 @@ def launch_mechanical(
         # special handling when building the gallery outside of CI. This
         # creates an instance of Mechanical the first time if PYMECHANICAL_START_INSTANCE
         # is False.
+        # when you launch, treat it as local.
+        # when you connect, treat it as remote. We cannot differentiate between
+        # local vs container scenarios. In the container scenarios, we could be connecting
+        # to a container using local ip and port
         if pymechanical.BUILDING_GALLERY:  # pragma: no cover
             # launch an instance of PyMechanical if it does not already exist and
             # starting instances is allowed
@@ -2220,6 +2262,7 @@ def launch_mechanical(
                     port=GALLERY_INSTANCE[0]["port"],
                     cleanup_on_exit=False,
                     loglevel=loglevel,
+                    local=False,
                 )
                 # we are connecting to the existing gallery instance,
                 # we need to clear Mechanical.
@@ -2230,10 +2273,7 @@ def launch_mechanical(
                 # finally, if running on CI/CD, connect to the default instance
             else:
                 mechanical = Mechanical(
-                    ip=ip,
-                    port=port,
-                    cleanup_on_exit=False,
-                    loglevel=loglevel,
+                    ip=ip, port=port, cleanup_on_exit=False, loglevel=loglevel, local=False
                 )
                 # we are connecting for gallery generation,
                 # we need to clear Mechanical.
@@ -2250,6 +2290,7 @@ def launch_mechanical(
             timeout=start_timeout,
             cleanup_on_exit=cleanup_on_exit,
             keep_connection_alive=keep_connection_alive,
+            local=False,
         )
         if clear_on_connect:
             mechanical.clear()
@@ -2282,6 +2323,7 @@ def launch_mechanical(
 
     try:
         port = launch_grpc(port=port, verbose=verbose_mechanical, ip=ip, **start_parm)
+        start_parm["local"] = True
         mechanical = Mechanical(
             ip=ip,
             port=port,
