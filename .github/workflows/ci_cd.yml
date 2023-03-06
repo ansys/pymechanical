@@ -108,6 +108,7 @@ jobs:
 
       # - name: Upload coverage to Codecov
       #   uses: codecov/codecov-action@v3
+
       - name: Get Mechanical container logs
         if: always()
         run: docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > mechanical_tests_log.txt 2>&1
@@ -140,14 +141,11 @@ jobs:
           docker run --restart always --name ${{ env.DOCKER_MECH_CONTAINER_NAME }} -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }} > log.txt &
           grep -q 'WB Initialize Done' <(timeout 60 tail -f log.txt)
 
-      - name: "Install dependencies"
-        shell: bash
-        run: sudo apt-get install pandoc
-
       - name: Run Ansys documentation building action
         uses: pyansys/actions/doc-build@v4
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          dependencies: "pandoc"
 
       - name: Get Mechanical container logs
         if: always()
