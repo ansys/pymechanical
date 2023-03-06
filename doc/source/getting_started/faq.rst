@@ -43,39 +43,37 @@ solvers.
 Scripting in Mechanical
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-The python scripting capability within Mechanical was born out of the same development
-that brought ACT to Mechanical. These APIs are the same as those used for PyMechanical,
-but can only be run from inside the product. By default, these use IronPython 2.7,
-but CPython 3.x based scripting is available with a feature flag in recent versions of
-Mechanical. Mechanical offers an intuitive user interface for scripting, called the 
-"Mechanical Scripting View" with features like script recording, autocomplete, and  a
-snippet library. However - it is possible to use this feature in batch mode without the
-User Interface.
+The Python scripting capability in Mechanical was born out of the same development
+that brought ACT to Mechanical. This tool provides the same APIs as those used for
+PyMechanical but can only be run by Mechanical. While they use IronPython 2.7 by
+default, recent Mechanical versions provide a feature flag for scripting in CPython 3.x.
+Mechanical's intuitive user interface for scripting, the **Mechanical Scripting View**,
+provides script recording, autocomplete, and a snippet library. However, it is possible
+to use this tool in batch mode without the user interface.
 
 PyMechanical
 ^^^^^^^^^^^^
 
-PyMechanical allows you to write python scripts outside of mechanical, with tight
-integration with other open source modules and Ansys products on your terms. This
-means that you can freely import any module and tool that is supported in your
-python environment. There is no dependency on opening the Mechanical User Interface.
+PyMechanical allows you to write Python scripts outside of Mechanical, with tight
+integration with other open source modules and Ansys products. With this tool, you
+bring your own Python environment, which may contain other modules and tools. There is
+no dependency on opening the Mechanical user interface.
 
 
 What is the relationship with Ansys Workbench?
 ----------------------------------------------
 
-Ansys Workbench is a no-code environment to set up Analysis systems that can be linked
-together. It is part of the Ansys family of Process Automation and Design Exploration
-software that now also includes Ansys OptiSLang. The most popular applications within
-this environment is Ansys Mechanical, and for many years, Ansys Workbench was the only
-environment from which to run Ansys Mechanical.
+Ansys Workbench is a no-code environment to set up analysis systems that can be linked
+together. It is part of the Ansys family of software tools for process automation and design
+exploration. This family also includes Ansys OptiSLang, which may be a more natural fit
+for integration with PyMechanical. The most popular app within the Workbench environment is
+Mechanical, and for many years, Workbench was the only environment you could run Mechanical from.
 
-Because it is a no-code environment, a lot of the complexity around managing the data
-transfer between applications and running parametric studies has been hidden from the user.
-
-Using PyMechanical, and PyAnsys more broadly, for process automation and design Exploration
-gives you much more control over how it works, but by avoiding workbench you also miss
-out on what it handles under-the-hood.
+Because Workbench is a no-code environment, a lot of the complexity around managing data
+transfer between Ansys apps and running parametric studies is hidden. PyMechanical, and
+PyAnsys more broadly, give you much more control over your process automation and design
+exploration. However, eliminating Workbench means that you miss out on what it handled under
+the hood.
 
 How do you restart a script?
 ----------------------------
@@ -93,9 +91,12 @@ Exiting Python should clear the solution within Python. This is because
 stopping the original process means that nothing should be in
 a new process.
 
-To clear all data from Mechanical in PyMechanical, if it is an embedded instance use the
-:func:`app.new() <ansys.mechanical.core.embedding.Application.new>` method
+The way that you clear all data from Mechanical in PyMechanical depends on if the
+Mechanical is a remote session or embedded.
 
-or if it is a remote session either use the
-
-:func:`Mechanical.clear() <ansys.mechanical.core.Mechanical.clear>` method or exit and restart Mechanical.
+- If the instance is a remote session, use either the
+  :func:`Mechanical.clear() <ansys.mechanical.core.Mechanical.clear>` 
+  method or exit and restart Mechanical.
+- If the instance is embedded, use the
+  :func:`app.new() <ansys.mechanical.core.embedding.Application.new>`
+  method.

@@ -1,9 +1,9 @@
 .. _ref_user_guide_session:
 
-=========================
-Remote session user guide
-=========================
-This section  provides an overview of how you use PyMechanical as client
+====================
+Remote session guide
+====================
+This section  provides an overview of how you use PyMechanical as a client
 to a remote Mechanical session.
 
 

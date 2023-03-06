@@ -5,7 +5,7 @@ build-backend = "flit_core.buildapi"
 [project]
 # Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
 name = "ansys-mechanical-core"
-version = "0.7.dev5"
+version = "0.7.dev7"
 description = "A python wrapper for Ansys Mechanical"
 readme = "README.rst"
 requires-python = ">=3.7,<4.0"
@@ -30,6 +30,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
+    "ansys_api_mechanical==0.1.0",
     "ansys-pythonnet==3.1.0rc1",
     "importlib-metadata>=4.0",
     "appdirs>=1.4.0",
@@ -44,7 +45,7 @@ Source = "https://github.com/pyansys/pymechanical"
 
 [project.optional-dependencies]
 tests = [
-    "pytest==7.2.1",
+    "pytest==7.2.2",
     "pytest-cov==4.0.0",
     "pytest-print==0.3.1",
 ]
@@ -88,8 +89,6 @@ src_paths = ["doc", "src", "tests"]
 [tool.coverage.run]
 source = ["ansys.mechanical"]
 omit = [
-        "**/ansys/mechanical/core/mechanical_pb2.py",
-        "**/ansys/mechanical/core/mechanical_pb2_grpc.py"
        ]
 
 [tool.coverage.report]
@@ -103,7 +102,7 @@ output = ".cov/coverage.xml"
 
 [tool.pytest.ini_options]
 minversion = "7.1"
-addopts = "-ra --cov=ansys.mechanical --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report term -vv --print --print-relative-time"
+addopts = "-ra -s --cov=ansys.mechanical --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report term -vv --print --print-relative-time"
 testpaths = [
     "tests",
 ]

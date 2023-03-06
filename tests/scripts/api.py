@@ -38,8 +38,7 @@ def add_static_structural_analysis_bc_results():
     pressure.Magnitude.Output.SetDiscreteValue(0, Quantity(1000, "Pa"))
 
     # region Context Menu Action
-    solution = DataModel.GetObjectById(40)
-    total_deformation = solution.AddTotalDeformation()
+    total_deformation = analysis.Solution.AddTotalDeformation()
 
     return "success"
 

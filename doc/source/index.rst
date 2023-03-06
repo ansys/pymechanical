@@ -7,6 +7,7 @@ PyMechanical documentation |version|
 
 
    getting_started/index
+   user_guide_scripting/index
    user_guide_session/index
    user_guide_embedding/index
    api/index
@@ -23,7 +24,7 @@ Python. Its primary package, ``ansys-mechanical-core``, provides
 scripting of Ansys Mechanical through Python.
 
 With PyMechanical, you can integrate the simulation capabilities
-of the Mechanical multi-physics solver directly into novel apps.
+of the Mechanical multiphysics solver directly into novel apps.
 The package presents a Python-friendly interface to drive the software
 that facilitates use of Mechanical scripting commands.
 
@@ -35,17 +36,24 @@ the solver as the physics engine in your next Artificial Intelligence
 application. Contributions to this open source library are welcome.
 
 
+Mechanical scripting
+--------------------
+You could already perform scripting of Mechanical with Python from inside
+Mechanical. PyMechanical leverages the same APIs but allows you to run your
+automation from outside Mechanical. For more information on using these APIs,
+see :ref:`ref_user_guide_scripting`.
+
 Background
 ----------
 PyMechanical contains two interfaces, a remote session and an embedded instance.
 
 Remote session
 ^^^^^^^^^^^^^^
-PyMechanical's Remote Session is based on `gRPC <https://grpc.io/>`_. The
-Mechanical application runs as a server, ready to respond to any clients.
+PyMechanical's  remote session is based on `gRPC <https://grpc.io/>`_.
+Mechanical runs as a server, ready to respond to any clients.
 
 PyMechanical provides a client to connect to a Mechanical server and make API
-calls onto that server.
+calls to that server.
 
 For comprehensive information on this feature, see the
 :ref:`ref_user_guide_session`.
@@ -54,10 +62,10 @@ Embedded instance
 ^^^^^^^^^^^^^^^^^
 PyMechanical's embedded instance is based on `pythonnet <http://pythonnet.github.io/>_`.
 Rather than starting a new process for Mechanical, a Mechanical object (which is
-implemented in .NET) is directly loaded into python memory using ``pythonnet``. From
-there, the entire application data model is available for use from Python code.
+implemented in .NET) is directly loaded into Python memory using ``pythonnet``. From
+there, Mechanical's entire data model is available for use from Python code.
 
-For comprehensive information on this feature, see the
+For comprehensive information on this feature, see
 :ref:`ref_user_guide_embedding`.
 
 
