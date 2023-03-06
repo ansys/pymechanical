@@ -145,41 +145,12 @@ jobs:
     needs: [style]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Run Ansys documentation building action
+        uses: pyansys/actions/doc-build@v4
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
-          cache: 'pip'
-          cache-dependency-path: 'requirements/*.txt'
-
-      - name: Install OS packages
-        run: |
-          sudo apt-get update
-          sudo apt-get install pandoc -qy
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip flit tox
-
-      - name: Install packages for documentation build
-        run: |
-          pip install -r requirements/requirements_build.txt
-          pip install -r requirements/requirements_doc.txt
-          pip install .
-
-      - name: Build the documentation
-        run: |
-          make -C doc html
-          touch doc/build/html/.nojekyll
-
-      - name: Upload HTML documentation
-        uses: actions/upload-artifact@v3
-        with:
-          name: documentation-html
-          path: doc/build/html
-          retention-days: 7
+          use-python-cache: false
+          dependencies: "pandoc"
 
   package:
     name: Package library
@@ -280,7 +251,7 @@ jobs:
     needs: [package]
     steps:
       - name: Deploy the stable documentation
-        uses: pyansys/actions/doc-deploy-stable@v3
+        uses: pyansys/actions/doc-deploy-stable@v4
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
