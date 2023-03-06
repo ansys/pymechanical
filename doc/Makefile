@@ -5,7 +5,7 @@
 SPHINXOPTS    = -j auto
 SPHINXBUILD   = sphinx-build
 SOURCEDIR     = source
-BUILDDIR      = build
+BUILDDIR      = _build
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -35,8 +35,8 @@ clean-except-examples:
 # with our docs like GIFs being written as PNG.
 pdf:
 	@$(SPHINXBUILD) -M latex "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
-	cd build/latex && latexmk -r latexmkrc -pdf *.tex -interaction=nonstopmode || true
-	(test -f build/latex/*.pdf && echo pdf exists) || exit 1
+	cd $(BUILDDIR)/latex && latexmk -r latexmkrc -pdf *.tex -interaction=nonstopmode || true
+	(test -f $(BUILDDIR)/latex/*.pdf && echo pdf exists) || exit 1
 
 # manually deploy to https://github.com/pyansys/pymechanical-docs
 # WARNING: Use with care as this overwrites history of gh-pages
