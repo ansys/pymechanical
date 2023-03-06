@@ -81,7 +81,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
   tests:
-    name: Testing and coverage - Mechanical ${{ matrix.experimental }}
+    name: Testing and coverage - Mechanical ${{ matrix.mechanical-version }}
     runs-on: ubuntu-latest-8-cores
     needs: [smoke-tests]
     continue-on-error: ${{ matrix.experimental }}
