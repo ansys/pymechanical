@@ -35,7 +35,6 @@ clean-except-examples:
 # with our docs like GIFs being written as PNG.
 pdf:
 	@$(SPHINXBUILD) -M latex "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
-	python validate_png.py  # clean-up GIFs mislabeled as PNG
 	cd build/latex && latexmk -r latexmkrc -pdf *.tex -interaction=nonstopmode || true
 	(test -f build/latex/*.pdf && echo pdf exists) || exit 1
 
