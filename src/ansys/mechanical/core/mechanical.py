@@ -2250,7 +2250,9 @@ def launch_mechanical(
             # starting instances is allowed
             if start_instance and GALLERY_INSTANCE[0] is None:
                 mechanical = launch_mechanical(
-                    start_instance=True, cleanup_on_exit=False, loglevel=loglevel, local=True
+                    start_instance=True,
+                    cleanup_on_exit=False,
+                    loglevel=loglevel,
                 )
                 GALLERY_INSTANCE[0] = {"ip": mechanical._ip, "port": mechanical._port}
                 return mechanical
@@ -2319,11 +2321,11 @@ def launch_mechanical(
         "batch": batch,
         "additional_switches": additional_switches,
         "additional_envs": additional_envs,
-        local: True,
     }
 
     try:
         port = launch_grpc(port=port, verbose=verbose_mechanical, ip=ip, **start_parm)
+        start_parm["local"] = True
         mechanical = Mechanical(
             ip=ip,
             port=port,
