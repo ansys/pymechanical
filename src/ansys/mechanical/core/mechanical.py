@@ -669,10 +669,8 @@ class Mechanical(object):
             self._local = kwargs["local"]
 
         if self._local:
-            print(f"Mechanical connection is treated as local.")
             self.log_info(f"Mechanical connection is treated as local.")
         else:
-            print(f"Mechanical connection is treated as remote.")
             self.log_info(f"Mechanical connection is treated as remote.")
 
         self._health_response_queue = None
