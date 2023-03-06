@@ -136,20 +136,31 @@ def write_file_contents_to_console(path):
             print(line, end="")
 
 
-# @pytest.mark.skip(reason="avoid long running")
-def test_upload_attach_mesh_solve_use_api(mechanical):
+def disable_distributed_solve(mechanical):
+    script = (
+        'ExtAPI.Application.SolveConfigurations["My Computer"].'
+        "SolveProcessSettings.DistributeSolution = False"
+    )
+    mechanical.run_python_script(script)
+
+
+def enable_distributed_solve(mechanical):
+    script = (
+        'ExtAPI.Application.SolveConfigurations["My Computer"].'
+        "SolveProcessSettings.DistributeSolution = True"
+    )
+    mechanical.run_python_script(script)
+
+
+def solve_and_return_results(mechanical):
     current_working_directory = os.getcwd()
     file_path = os.path.join(current_working_directory, "tests", "parts", "hsec.x_t")
 
-    mechanical.run_python_script("ExtAPI.DataModel.Project.New()")
-    directory = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
+    mechanical.clear()
+    directory = mechanical.project_directory
     mechanical.upload(
         file_name=file_path, file_location_destination=directory, chunk_size=1024 * 1024
     )
-
-    # this test could run under a container with 1 cpu
-    # let us disable distributed solve
-    disable_distributed_solve(mechanical)
 
     python_script = os.path.join(current_working_directory, "tests", "scripts", "api.py")
 
@@ -170,7 +181,7 @@ generate_mesh()
 add_static_structural_analysis_bc_results()
 solve_model()
 return_total_deformation()
-"""
+    """
     python_script = data + file_path_string + func_to_call
 
     result = mechanical.run_python_script(python_script)
@@ -189,6 +200,24 @@ return_total_deformation()
         # done with solve.out - remove it
         os.remove(solve_out_local_path)
 
+    return result
+
+
+# @pytest.mark.skip(reason="avoid long running")
+def test_upload_attach_mesh_solve_use_api_non_distributed_solve(mechanical):
+    # default is distributed solve
+    # let's disable the distributed solve and then solve
+    # enable the distributed solve back
+
+    # this test could run under a container with 1 cpu
+    # let us disable distributed solve
+    disable_distributed_solve(mechanical)
+
+    result = solve_and_return_results(mechanical)
+
+    # revert back to distributed solve
+    enable_distributed_solve(mechanical)
+
     dict_result = json.loads(result)
 
     min_value = float(dict_result["Minimum"].split(" ")[0])
@@ -200,20 +229,20 @@ return_total_deformation()
     assert validate_real(avg_value, 1.1398642395560755e-06, 0.1)
 
 
-def disable_distributed_solve(mechanical):
-    script = (
-        'ExtAPI.Application.SolveConfigurations["My Computer"].'
-        "SolveProcessSettings.DistributeSolution = False"
-    )
-    mechanical.run_python_script(script)
+def test_upload_attach_mesh_solve_use_api_distributed_solve(mechanical):
+    # default is distributed solve
 
+    result = solve_and_return_results(mechanical)
 
-def enable_distributed_solve(mechanical):
-    script = (
-        'ExtAPI.Application.SolveConfigurations["My Computer"].'
-        "SolveProcessSettings.DistributeSolution = True"
-    )
-    mechanical.run_python_script(script)
+    dict_result = json.loads(result)
+
+    min_value = float(dict_result["Minimum"].split(" ")[0])
+    max_value = float(dict_result["Maximum"].split(" ")[0])
+    avg_value = float(dict_result["Average"].split(" ")[0])
+
+    assert validate_real(min_value, 0, 0.1)
+    assert validate_real(max_value, 2.9068725331072863e-06, 0.1)
+    assert validate_real(avg_value, 1.1398642395560755e-06, 0.1)
 
 
 def verify_download(mechanical, tmpdir, file_name, chunk_size):
