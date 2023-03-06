@@ -11,7 +11,7 @@ from datetime import datetime
 import os
 import warnings
 
-from ansys_sphinx_theme import pyansys_logo_black
+from ansys_sphinx_theme import pyansys_logo_black, get_version_match
 from sphinx_gallery.sorting import FileNameSortKey
 
 import ansys.mechanical.core as pymechanical
@@ -26,14 +26,6 @@ warnings.filterwarnings(
     message="Matplotlib is currently using agg, which is a non-GUI backend, "
     "so cannot show the figure.",
 )
-
-
-def get_version_match(semver: str) -> str:
-    """Ad-hoc method from ansys-sphinx-theme."""
-    if "dev" in semver:
-        return "dev"
-    major, minor, _ = semver.split(".")
-    return ".".join([major, minor])
 
 
 # -- Project information -----------------------------------------------------
