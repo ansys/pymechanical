@@ -137,7 +137,10 @@ def write_file_contents_to_console(path):
 
 
 # @pytest.mark.skip(reason="avoid long running")
-def test_upload_attach_mesh_solve_use_api(mechanical):
+def test_upload_attach_mesh_solve_use_api_non_distributed_solve(mechanical):
+    # default is distributed solve
+    # let's disable the distributed solve and then solve
+    # enable the distributed solve back
     current_working_directory = os.getcwd()
     file_path = os.path.join(current_working_directory, "tests", "parts", "hsec.x_t")
 
@@ -150,6 +153,69 @@ def test_upload_attach_mesh_solve_use_api(mechanical):
     # this test could run under a container with 1 cpu
     # let us disable distributed solve
     disable_distributed_solve(mechanical)
+
+    python_script = os.path.join(current_working_directory, "tests", "scripts", "api.py")
+
+    text_file = open(python_script, "r")
+    # read whole file to a string
+    data = text_file.read()
+    # close file
+    text_file.close()
+
+    file_path_string = "\n"
+
+    # let us append the scripts to run
+    func_to_call = """
+directory = ExtAPI.DataModel.Project.ProjectDirectory
+file_path_modified=os.path.join(directory,'hsec.x_t')
+attach_geometry(file_path_modified)
+generate_mesh()
+add_static_structural_analysis_bc_results()
+solve_model()
+return_total_deformation()
+"""
+    python_script = data + file_path_string + func_to_call
+
+    result = mechanical.run_python_script(python_script)
+
+    # if the solve fails, solve.out contains enough information
+    solve_out_path = get_solve_out_path(mechanical)
+
+    if solve_out_path != "":
+        print(f"downloading {solve_out_path} from server")
+        print(f"downloading to {current_working_directory}")
+        mechanical.download(solve_out_path, target_dir=current_working_directory)
+        solve_out_local_path = os.path.join(current_working_directory, "solve.out")
+
+        write_file_contents_to_console(solve_out_local_path)
+
+        # done with solve.out - remove it
+        os.remove(solve_out_local_path)
+
+    # revert back to distributed solve
+    enable_distributed_solve(mechanical)
+
+    dict_result = json.loads(result)
+
+    min_value = float(dict_result["Minimum"].split(" ")[0])
+    max_value = float(dict_result["Maximum"].split(" ")[0])
+    avg_value = float(dict_result["Average"].split(" ")[0])
+
+    assert validate_real(min_value, 0, 0.1)
+    assert validate_real(max_value, 2.9068725331072863e-06, 0.1)
+    assert validate_real(avg_value, 1.1398642395560755e-06, 0.1)
+
+
+def test_upload_attach_mesh_solve_use_api_distributed_solve(mechanical):
+    # default is distributed solve
+    current_working_directory = os.getcwd()
+    file_path = os.path.join(current_working_directory, "tests", "parts", "hsec.x_t")
+
+    mechanical.run_python_script("ExtAPI.DataModel.Project.New()")
+    directory = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
+    mechanical.upload(
+        file_name=file_path, file_location_destination=directory, chunk_size=1024 * 1024
+    )
 
     python_script = os.path.join(current_working_directory, "tests", "scripts", "api.py")
 
