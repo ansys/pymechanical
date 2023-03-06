@@ -151,6 +151,7 @@ jobs:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           use-python-cache: false
           dependencies: "pandoc"
+          sphinxopts: "-j auto"
 
   package:
     name: Package library
