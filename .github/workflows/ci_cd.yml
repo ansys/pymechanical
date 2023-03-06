@@ -88,12 +88,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        mechanical-version: ['v23.1.0', 'v23.2.0']
-        experimental: [false]
-        # The following versions would be allowed to fail
-        include:
-          - mechanical-version: 'v23.2.0'
-            experimental: true
+        mechanical-version: ['v23.1.0', 'v23.2.0'].
+        # The versions set to 'true' would be allowed to fail
+        experimental: [false, true]
     steps:
       - name: Login in Github Container registry
         uses: docker/login-action@v2
