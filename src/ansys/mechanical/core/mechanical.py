@@ -169,7 +169,6 @@ def port_in_use(port, host=LOCALHOST):
             return False
 
 
-
 def check_ports(port_range, ip="localhost"):
     """Check the state of ports in a port range."""
     ports = {}
