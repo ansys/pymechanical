@@ -224,7 +224,7 @@ you should specify the IP address and port using one of the following methods.
 
     from ansys.mechanical.core import launch_mechanical
 
-    mechanical = launch_mechanical(ip='127.0.0.1', port=10001, start_instance=False)
+    mechanical = launch_mechanical(ip="127.0.0.1", port=10001, start_instance=False)
 
 **Method 2**
 
@@ -232,7 +232,7 @@ you should specify the IP address and port using one of the following methods.
 
     from ansys.mechanical.core import Mechanical
 
-    mechanical = Mechanical(ip='127.0.0.1', port=10001)
+    mechanical = Mechanical(ip="127.0.0.1", port=10001)
 
 **Method 3**
 

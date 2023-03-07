@@ -408,7 +408,7 @@ def save_mechanical_path(exe_loc=None):  # pragma: no cover
     The location of the configuration file (``config.txt``) can be found in
     ``appdirs.user_data_dir("ansys_mechanical_core")``. For example:
 
-    .. code:: python
+    .. code:: pycon
 
         >>> import appdirs
         >>> import os
@@ -418,10 +418,10 @@ def save_mechanical_path(exe_loc=None):  # pragma: no cover
     You can change the default for the ``exe_loc`` parameter either by modifying the
     ``config.txt`` file or by running this code:
 
-    .. code:: python
+    .. code:: pycon
 
        >>> from ansys.mechanical.core.mechanical import save_mechanical_path
-       >>> save_mechanical_path('/new/path/to/executable')
+       >>> save_mechanical_path("/new/path/to/executable")
 
     """
     if exe_loc is None:
