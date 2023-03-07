@@ -8,7 +8,7 @@ other batch-related processes.
 
 To create a pool with 10 instances:
 
-.. code:: python
+.. code:: pycon
 
     >>> from ansys.mechanical.core import LocalMechanicalPool
     >>> pool = LocalMechanicalPool(10, version="231")
@@ -17,7 +17,7 @@ To create a pool with 10 instances:
 When you are creating the pool, you can supply additional keyword arguments.
 For example, to restart failed instances, you can set ``restart_failed=True``:
 
-.. code:: python
+.. code:: pycon
 
     >>> import os
     >>> my_path = os.getcmd()
@@ -26,7 +26,7 @@ For example, to restart failed instances, you can set ``restart_failed=True``:
 
 You can access each individual instance of Mechanical with:
 
-.. code:: python
+.. code:: pycon
 
     >>> pool[0]
     <ansys.mechanical.core.mechanical.Mechanical at 0x7fabf0230d90>
@@ -42,7 +42,7 @@ You can use the pool to run a set of pre-generated input files using the
 
 For example, you can run the first set of 20 verification files with:
 
-.. code:: python
+.. code:: pycon
 
      >>>>>> from ansys.mechanical.core import examples
      >>> files = [f"test{index}.py" for index in range(1, 21)]
@@ -57,16 +57,17 @@ method to run a set of inputs files, you can also use the
 :func:`map() <ansys.mechanical.core.pool.LocalMechanicalPool.map>` method to run a custom user-defined function on
 each instance of Mechanical over a set of input files.
 
-.. code:: python
+.. code:: pycon
 
     >>> completed_indices = []
     >>> def func(mechanical, input_file, index):
-            # input_file, index = args
-            mechanical.clear()
-            output = mechanical.run_python_script_from_file(input_file)
-            completed_indices.append(index)
-            return output
-    >>> inputs = [('test{index}.py', i) for i in range(1, 10)]
+    ...     # input_file, index = args
+    ...     mechanical.clear()
+    ...     output = mechanical.run_python_script_from_file(input_file)
+    ...     completed_indices.append(index)
+    ...     return output
+    ...
+    >>> inputs = [("test{index}.py", i) for i in range(1, 10)]
     >>> output = pool.map(func, inputs, progress_bar=True, wait=True)
     ['result1',
      'result2',

@@ -35,16 +35,16 @@ lower-level messages, you can use this code:
 
 .. code:: python
 
-   LOG.logger.setLevel('DEBUG')
-   LOG.file_handler.setLevel('DEBUG')  # If present.
-   LOG.stdout_handler.setLevel('DEBUG')  # If present.
+   LOG.logger.setLevel("DEBUG")
+   LOG.file_handler.setLevel("DEBUG")  # If present.
+   LOG.stdout_handler.setLevel("DEBUG")  # If present.
 
 
 Alternatively, you can use this code:
 
 .. code:: python
 
-   LOG.setLevel('DEBUG')
+   LOG.setLevel("DEBUG")
 
 This alternative code ensures that all the handlers are set to the
 input log level.
@@ -55,7 +55,8 @@ you can add a file handler:
 .. code:: python
 
    import os
-   file_path = os.path.join(os.getcwd(), 'pymechanical.log')
+
+   file_path = os.path.join(os.getcwd(), "pymechanical.log")
    LOG.log_to_file(file_path)
 
 The preceding code sets the logger to also be redirected to this file. If you
@@ -65,12 +66,12 @@ of the execution, you must edit the file ``__init__`` in the
 
 To log using this logger, call the desired method as a normal logger:
 
-.. code:: python
+.. code:: pycon
 
     >>> import logging
     >>> from ansys.mechanical.core.logging import Logger
     >>> LOG = Logger(level=logging.DEBUG, to_file=False, to_stdout=True)
-    >>> LOG.debug('This is LOG debug message.')
+    >>> LOG.debug("This is LOG debug message.")
 
     DEBUG -  -  <ipython-input-24-80df150fe31f> - <module> - This is the LOG debug message.
 
@@ -91,10 +92,11 @@ the log level using the :func:`logger.Logging.setLevel` method.
 
 You can use this logger like this:
 
-.. code:: python
+.. code:: pycon
+
     >>> from ansys.mechanical.core import launch_mechanical
     >>> mechanical = launch_mechanical()
-    >>> mechanical.log.info('This is a useful message')
+    >>> mechanical.log.info("This is a useful message")
 
     INFO - GRPC_127.0.0.1:50056 -  <ipython-input-19-f09bb2d8785c> - <module> -
     This is a useful message

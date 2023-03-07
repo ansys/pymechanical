@@ -84,6 +84,7 @@ such as the mesh.
 .. code:: python
 
     import sys
+
     sys.modules[__name__].__dict__.clear()
 
 
