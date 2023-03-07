@@ -168,13 +168,6 @@ def port_in_use(port, host=LOCALHOST):
         else:
             return False
 
-    # below implementation doesn't work
-    # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-    #     try:
-    #         sock.bind((host, port))
-    #         return False
-    #     except socket.error:
-    #         return True
 
 
 def check_ports(port_range, ip="localhost"):
