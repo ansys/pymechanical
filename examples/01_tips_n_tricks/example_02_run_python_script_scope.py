@@ -18,8 +18,8 @@ function scope between calls
 # Launch a new Mechanical Session in batch. 'cleanup_on_exit' set to False,
 # you need to call mechanical.exit to close Mechanical.
 
-import json
 from ansys.mechanical.core import launch_mechanical
+
 mechanical = launch_mechanical(batch=True, cleanup_on_exit=False)
 print(mechanical)
 
@@ -44,7 +44,7 @@ print(f"x = {output}")
 output = mechanical.run_python_script(
     """
 x = x * 2
-x    
+x
 """
 )
 print(f"x = {output}")
@@ -59,8 +59,8 @@ output = mechanical.run_python_script(
     """
 def multiply_by_10():
     return x*10
-    
-multiply_by_10()  
+
+multiply_by_10()
 """
 )
 print(f"output = {output}")
@@ -72,7 +72,7 @@ print(f"output = {output}")
 
 output = mechanical.run_python_script(
     """
-multiply_by_10() * 2   
+multiply_by_10() * 2
 """
 )
 print(f"output = {output}")

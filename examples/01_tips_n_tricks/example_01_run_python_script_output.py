@@ -19,7 +19,9 @@ json and csv formats.
 # you need to call mechanical.exit to close Mechanical.
 
 import json
+
 from ansys.mechanical.core import launch_mechanical
+
 mechanical = launch_mechanical(batch=True, cleanup_on_exit=False)
 print(mechanical)
 
@@ -32,7 +34,7 @@ output = mechanical.run_python_script(
     """
 def return_string():
     return "hello world"
-    
+
 return_string()
 """
 )
@@ -51,7 +53,7 @@ def return_json():
     json_text = json.dumps(dict)
     return json_text
 
-return_json()      
+return_json()
 """
 )
 print(f"json output={output}")
@@ -69,7 +71,7 @@ output = mechanical.run_python_script(
 def return_csv():
     return "1,2,3"
 
-return_csv()     
+return_csv()
 """
 )
 print(f"csv output={output}")
