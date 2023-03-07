@@ -6,7 +6,7 @@ class simplifies creating and connecting to multiple servers of the
 processing. You can use this class for batch processing a set of input files or
 other batch-related processes.
 
-To create a pool with 10 instances:
+This code shows how to create a pool with 10 instances:
 
 .. code:: python
 
@@ -14,7 +14,7 @@ To create a pool with 10 instances:
     >>> pool = LocalMechanicalPool(10, version="231")
     'Mechanical Pool with 10 active instances'
 
-When you are creating the pool, you can supply additional keyword arguments.
+When you are creating a pool, you can supply additional keyword arguments.
 For example, to restart failed instances, you can set ``restart_failed=True``:
 
 .. code:: python
@@ -24,7 +24,7 @@ For example, to restart failed instances, you can set ``restart_failed=True``:
     >>> pool = LocalMechanicalPool(10, version="231", restart_failed=True)
     Creating Pool: 100%|########| 10/10 [00:01<00:00,  1.43it/s]
 
-You can access each individual instance of Mechanical with:
+You can access each individual instance of Mechanical with code like this:
 
 .. code:: python
 
@@ -40,7 +40,7 @@ Run a set of input files
 You can use the pool to run a set of pre-generated input files using the
 :func:`run_batch() <ansys.mechanical.core.pool.LocalMechanicalPool.run_batch>` method.
 
-For example, you can run the first set of 20 verification files with:
+For example, this code runs the first set of 20 verification files:
 
 .. code:: python
 

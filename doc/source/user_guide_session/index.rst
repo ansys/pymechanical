@@ -1,8 +1,8 @@
 .. _ref_user_guide_session:
 
-====================
-Remote session guide
-====================
+===============
+Remote sessions
+===============
 This section  provides an overview of how you use PyMechanical as a client
 to a remote Mechanical session.
 
@@ -61,8 +61,8 @@ and an error is raised:
 
 Because the error is caught immediately, you can write your Mechanical scripts in
 Python, run them interactively, and then run them in batch without worrying if the
-script runs correctly. This would not be the case if you had instead outputted the
-script that you wrote to a script file.
+scripts run correctly. This would not be the case if you had instead outputted the
+scripts that you wrote to script files.
 
 The :class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>` class supports
 much more than sending text to Mechanical. It includes higher-level wrapping

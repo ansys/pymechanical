@@ -31,7 +31,7 @@ For more information, see Python's
 `venv -- Creation of virtual environments <https://docs.python.org/3/library/venv.html>`_.
 
 Install the latest package from `PyPi
-<https://pypi.org/project/ansys-mechanical-core/>`_ with:
+<https://pypi.org/project/ansys-mechanical-core/>`_ with this command:
 
 .. code::
 
@@ -42,14 +42,16 @@ Install offline
 ---------------
 If you want to install PyMechanical on a computer without access to the internet,
 you can download a wheelhouse archive that corresponds to your
-machine architecture from the `Releases page <https://github.com/pyansys/pymechanical/releases>`_.
+machine architecture from the `Releases page <https://github.com/pyansys/pymechanical/releases>`_ 
+of the PyMechanical repository.
 
 Each wheelhouse archive contains all the Python wheels necessary to install
 PyMechanical from scratch on Windows and Linux for Python 3.7 through Python 3.10. You can install
 a wheelhouse archive on an isolated system with a fresh Python installation or on a
 virtual environment.
 
-For example, on Linux with Python 3.7, unzip the wheelhouse archive and install it with:
+For example, on Linux with Python 3.7, unzip the wheelhouse archive and install it with
+this code:
 
 .. code::
 
@@ -57,7 +59,7 @@ For example, on Linux with Python 3.7, unzip the wheelhouse archive and install 
    pip install ansys-mechanical-core -f wheelhouse --no-index --upgrade --ignore-installed
 
 If you are on Windows with Python 3.9, unzip the ``ansys-mechanical-core-v0.7.dev0-wheelhouse-Windows-3.9`` wheelhouse archive
-to a ``wheelhouse`` directory and then install using the preceding code.
+to a ``wheelhouse`` directory and then install it using the preceding code.
 
 Verify your installation
 ------------------------
@@ -87,10 +89,11 @@ Verify an embedded instance
 
 Verify your installation by loading an embedded instance of Mechanical in Python.
 
-.. note::**
+.. note::
    If you are running on Linux, you must set some environment variables for
    embedding of Mechanical in Python to work. A script that sets these variables is
-   distributed with Mechanical 2023 R2 and later. For 2023 R2, this script is located in here:
+   distributed with Mechanical 2023 R2 and later. For 2023 R2, the script is located
+   here:
    
    ``/path/to/ansys_inc/v232/aisol/.workbench_lite``
 

@@ -3,17 +3,18 @@
 **************************
 Frequently asked questions
 **************************
+This section provides answers to frequently asked questions.
 
 How do you report issues?
 -------------------------
 
 You can report issues with PyMechanical, such as bugs, feature requests,
-and documentation errors, on the repository's `Issues
+and documentation errors, on the PyMechanical repository's `Issues
 <https://github.com/pyansys/PyMechanical/issues>`_ page.
 
 If you want to ask more open-ended questions or are seeking advice
-from experts in the community, post on the `Discussions
-<https://github.com/pyansys/PyMechanical/discussions>`_ page.
+from experts in the community, you can post on this repository's
+`Discussions <https://github.com/pyansys/PyMechanical/discussions>`_ page.
 
 
 How is PyMechanical positioned with respect to other related tools?
@@ -35,9 +36,9 @@ ACT in Mechanical
 
 In the Ansys Mechanical product, ACT is a customization framework. When specific
 features are missing, users can add them using ACT. Of course, some of those
-missing features might be automations/scripts of existing features. But in many
-cases, these can be new capabilities, such as extensions to the data model of
-Mechanical, the ability to connect to callbacks, and even integration of external
+missing features might be automations or scripts of existing features. But in many
+cases, they can be new capabilities, such as extensions to Mechanical's data model,
+the ability to connect to callbacks, and even integrations of external
 solvers.
 
 Scripting in Mechanical
@@ -49,7 +50,7 @@ PyMechanical but can only be run by Mechanical. While they use IronPython 2.7 by
 default, recent Mechanical versions provide a feature flag for scripting in CPython 3.x.
 Mechanical's intuitive user interface for scripting, the **Mechanical Scripting View**,
 provides script recording, autocomplete, and a snippet library. However, it is possible
-to use this tool in batch mode without the user interface.
+to use this tool in batch mode without the Mechanical user interface.
 
 PyMechanical
 ^^^^^^^^^^^^
@@ -70,16 +71,16 @@ for integration with PyMechanical. The most popular app within the Workbench env
 Mechanical, and for many years, Workbench was the only environment you could run Mechanical from.
 
 Because Workbench is a no-code environment, a lot of the complexity around managing data
-transfer between Ansys apps and running parametric studies is hidden. PyMechanical, and
-PyAnsys more broadly, give you much more control over your process automation and design
+transfer between Ansys apps and running parametric studies is hidden. PyMechanical and
+PyAnsys libraries more broadly give you much more control over your process automation and design
 exploration. However, eliminating Workbench means that you miss out on what it handled under
 the hood.
 
 How do you restart a script?
 ----------------------------
-If you have trouble terminating a simulation, you do not have use the
-following code to close Python, reopen it, and clear all previous data
-such as the mesh.
+If you have trouble terminating a simulation, you can use the
+this code to close Python, reopen it, and clear all previous data
+such as the mesh:
 
 .. code:: python
 
