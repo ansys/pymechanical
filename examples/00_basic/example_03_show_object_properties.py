@@ -1,7 +1,7 @@
 """.. _ref_example_03_show_object_properties:
 
-Display properties in an object's details view
-----------------------------------------------
+Display properties for an object
+---------------------------------
 
 Using supplied files, this example shows how to display the properties
 that you would see in an object's details view.
@@ -34,7 +34,7 @@ print(mechanical)
 ###############################################################################
 # Initialize the variable needed for this workflow
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Set the path for the MECHDATA file for later use.
+# Set the path for the ``mechdat_path`` variable for later use.
 # Make this variable compatible for Windows, Linux, and Docker containers.
 
 project_directory = mechanical.project_directory

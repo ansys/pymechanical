@@ -34,16 +34,16 @@ print(mechanical)
 ###############################################################################
 # Initialize variable for workflow
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Set the part file path on the server for later use.
+# Set the ``part_file_path`` variable on the server for later use.
 # Make this variable compatible for Windows, Linux, and Docker containers.
 
 project_directory = mechanical.project_directory
 print(f"project directory = {project_directory}")
 
-# Upload the file to the project directory
+# Upload the file to the project directory.
 mechanical.upload(file_name=geometry_path, file_location_destination=project_directory)
 
-# Build the path relative to project directory
+# Build the path relative to project directory.
 base_name = os.path.basename(geometry_path)
 combined_path = os.path.join(project_directory, base_name)
 part_file_path = combined_path.replace("\\", "\\\\")
