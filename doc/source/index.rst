@@ -28,7 +28,7 @@ of the Mechanical multiphysics solver directly into novel apps.
 The package presents a Python-friendly interface to drive the software
 that facilitates the use of Mechanical scripting commands.
 
-With PyMechanical, you can can accommplish such tasks as these:
+With PyMechanical, you can accomplish such tasks as these:
 
 - Accelerate the preparation of your simulations.
 - Combine the expressiveness of general-purpose Python code to control

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 .. _using_standard_install:
 
 ***********************************************
@@ -16,7 +15,7 @@ Install Mechanical
 Mechanical is installed by default from the Ansys standard installer. 
 When you run the standard installer, look under the **Structural Mechanics**
 heading to verify that the **Mechanical Products** checkbox is selected.
-Although options in the standard installer might change, the folloiwng image
+Although options in the standard installer might change, the following image
 provides a reference.
 
 .. figure:: ../images/unified_install_2023R1.jpg
@@ -264,7 +263,7 @@ VPN issues
 Sometimes, Mechanical has issues starting when VPN software is running. For more information,
 see the *Mechanical User's Guide* in the `Mechanical Application <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/prod_page.html?pn=Mechanical%20Application&pid=MechanicalApplication&lang=en>`_ section
 of the Ansys Help.
-=======
+
 .. _using_standard_install:
 
 ***********************************************
@@ -530,7 +529,3 @@ VPN issues
 ----------
 Sometimes, Mechanical has issues starting when VPN software is running. For more information,
 see the *Mechanical User's Guide* in the **Mechanical Application** section of the Ansys Help.
-
-
-
->>>>>>> 7aa3df88f57dcc255e304111a944600edf6a71d6

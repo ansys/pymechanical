@@ -249,7 +249,7 @@ the Mechanical instance is launched.
     export pymechanical_ip=127.0.0.1
 
 
-Additional Information
+Additional information
 ======================
 
 IP addresses
@@ -402,7 +402,7 @@ This command allows you to view all forwards:
 Delete port forwarding
 ----------------------
 
-This command allows you to deelete port forwarding:
+This command allows you to delete port forwarding:
 
 .. code:: pwsh
 
@@ -444,7 +444,7 @@ You can stop all processes with a given name with this command.
 Install ``xvfb`` in CentOS7
 ===========================
 
-If you want to replicate the CI/CD behavior, youn must install the ``xvfb`` pacakge
+If you want to replicate the CI/CD behavior, you must install the ``xvfb`` package
 as shown in the following command. For more information, see the ``.ci`` folder.
 
 .. code:: bash
