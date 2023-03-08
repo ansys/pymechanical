@@ -1,9 +1,9 @@
 """.. _ref_example_01_run_python_script_output:
 
-Outputtting to different formats
+Output to different formats
 --------------------------------
 
-This example calls the ``run_python_script`` file and gets the output in string,
+This example calls the ``run_python_script`` method and gets the output in string,
 JSON, and CSV formats.
 
 """
@@ -59,7 +59,7 @@ my_dict = json.loads(output)
 print(f"Parsed json: value1={my_dict['value1']}, value2={my_dict['value2']}")
 
 ###################################################################################
-# Output string as CSG
+# Output string as CSV
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Run the script to get the string output as CSV.
 
