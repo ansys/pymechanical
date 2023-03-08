@@ -43,8 +43,8 @@ Python class. For example, you can send a Python script:
 
 .. code:: python
 
-    result = mechanical.run_python_script('2+3')
-    result = mechanical.run_python_script('ExtAPI.DataModel.Project.ProjectDirectory')
+    result = mechanical.run_python_script("2+3")
+    result = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
 
 Mechanical interactively returns the result of each command that you send,
 storing the result to the logging module.
@@ -52,12 +52,11 @@ storing the result to the logging module.
 Errors are caught immediately. In the following code, an invalid command is sent,
 and an error is raised:
 
-.. code:: python
+.. code:: pycon
 
-    >>> mechanical.run_python_script('2****3')
-
-   grpc.RpcError:
-   "unexpected token '**'"
+    >>> mechanical.run_python_script("2****3")
+    grpc.RpcError:
+    "unexpected token '**'"
 
 Because the error is caught immediately, you can write your Mechanical scripts in
 Python, run them interactively, and then run them in batch without worrying if the

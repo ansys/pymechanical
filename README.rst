@@ -68,7 +68,7 @@ Then, install PyMechanical with this command:
 
     * Index URL: ``https://pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/``
 
-    If access to this package registry is needed, email `pyansys.support@ansys.com <mailto:pyansys.support@ansys.com>`_
+    If access to this package registry is needed, email `pyansys.core@ansys.com <mailto:pyansys.core@ansys.com>`_
     to request access. The PyAnsys team can provide you a read-only token to be inserted in ``${PRIVATE_PYPI_ACCESS_TOKEN}``.
     Once you have this token, run this command:
 
@@ -211,6 +211,7 @@ method. This methods returns an object representing the connection to the sessio
 .. code:: python
 
    import ansys.mechanical.core as pymechanical
+
    mechanical = pymechanical.launch_mechanical()
 
 Running commands on the remote session
@@ -237,6 +238,7 @@ and later. Here is an example:
 .. code:: python
 
    import ansys.mechanical.core as pymechanical
+
    app = pymechanical.App()
    result = app.ExtAPI.DataModel.Project.ProjectDirectory
 

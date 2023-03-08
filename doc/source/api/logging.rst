@@ -9,7 +9,7 @@ For these two types of loggers, the default format for a log message is:
 
     >>> from ansys.mechanical.core import launch_mechanical
     >>> mechanical = launch_mechanical()
-    >>> mechanical._log.info('This is an useful message')
+    >>> mechanical._log.info("This is an useful message")
       LEVEL - INSTANCE NAME - MODULE - FUNCTION - MESSAGE
       INFO - GRPC_127.0.0.1:10000 -  test - <module> - This is a useful message
 

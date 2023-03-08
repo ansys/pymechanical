@@ -11,6 +11,7 @@ method:
 .. code:: python
 
     from ansys.mechanical.core import launch_mechanical
+
     mechanical = launch_mechanical()
 
 The first time that you run this method, PyMechanical attempts to detect the location
@@ -37,7 +38,8 @@ version of Mechanical, run the following:
 .. code:: python
 
     from ansys.mechanical import core as pymechanical
-    new_path = 'C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe'
+
+    new_path = "C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe"
     pymechanical.change_default_mechanical_path(new_path)
 
 For more information, see the :func:`change_default_mechanical_path() <ansys.mechanical.core.change_default_mechanical_path>`
@@ -52,7 +54,7 @@ Mechanical executable file.
 
     from ansys.mechanical.core import launch_mechanical
 
-    mechanical = launch_mechanical(exec_file='/usr/ansys_inc/v231/aisol/.workbench')
+    mechanical = launch_mechanical(exec_file="/usr/ansys_inc/v231/aisol/.workbench")
 
 
 **On Windows**
@@ -61,7 +63,9 @@ Mechanical executable file.
 
     from ansys.mechanical.core import launch_mechanical
 
-    mechanical = launch_mechanical(exec_file='C:\\Program File\\ANSYS Inc\\v231\\aisol\\bin\\winx64\\AnsysWBU.exe')
+    mechanical = launch_mechanical(
+        exec_file="C:\\Program File\\ANSYS Inc\\v231\\aisol\\bin\\winx64\\AnsysWBU.exe"
+    )
 
 You can use the ``additional_switches`` keyword argument to specify additional arguments.
 
@@ -69,7 +73,7 @@ You can use the ``additional_switches`` keyword argument to specify additional a
 
     from ansys.mechanical.core import launch_mechanical
 
-    custom_exec = '/usr/ansys_inc/v231/aisol/.workbench'
+    custom_exec = "/usr/ansys_inc/v231/aisol/.workbench"
     add_switch = f"-featureflags mechanical.material.import;"
     mechanical = launch_mechanical(additional_switches=add_switch)
 

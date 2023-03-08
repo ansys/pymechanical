@@ -168,14 +168,6 @@ def port_in_use(port, host=LOCALHOST):
         else:
             return False
 
-    # below implementation doesn't work
-    # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-    #     try:
-    #         sock.bind((host, port))
-    #         return False
-    #     except socket.error:
-    #         return True
-
 
 def check_ports(port_range, ip="localhost"):
     """Check the state of ports in a port range."""
@@ -196,7 +188,7 @@ def close_all_local_instances(port_range=None):
     port_range : list, optional
         List of a range of ports to use when cleaning up Mechanical. The
         default is ``None``, in which case the ports managed by
-        PyMechanical are cleaned up.
+        PyMechanical are used.
 
     Examples
     --------
@@ -408,7 +400,7 @@ def save_mechanical_path(exe_loc=None):  # pragma: no cover
     The location of the configuration file (``config.txt``) can be found in
     ``appdirs.user_data_dir("ansys_mechanical_core")``. For example:
 
-    .. code:: python
+    .. code:: pycon
 
         >>> import appdirs
         >>> import os
@@ -418,10 +410,10 @@ def save_mechanical_path(exe_loc=None):  # pragma: no cover
     You can change the default for the ``exe_loc`` parameter either by modifying the
     ``config.txt`` file or by running this code:
 
-    .. code:: python
+    .. code:: pycon
 
        >>> from ansys.mechanical.core.mechanical import save_mechanical_path
-       >>> save_mechanical_path('/new/path/to/executable')
+       >>> save_mechanical_path("/new/path/to/executable")
 
     """
     if exe_loc is None:

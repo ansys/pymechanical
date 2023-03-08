@@ -27,6 +27,7 @@ a Mechanical instance.
 .. code:: python
 
     from ansys.mechanical.core import Application
+
     app = Application()
     ns = app.DataModel.Project.Model.AddNamedSelection()
 

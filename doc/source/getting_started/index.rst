@@ -70,7 +70,7 @@ Verify a remote session
 ^^^^^^^^^^^^^^^^^^^^^^^
 Verify your installation by starting a remote session of Mechanical from Python:
 
-.. code:: python
+.. code:: pycon
 
     >>> from ansys.mechanical.core import launch_mechanical
     >>> mechanical = launch_mechanical()
@@ -106,7 +106,7 @@ To use the script, prepend it to any invocation of Python:
 
 Inside of Python, use the following commands to load an embedded instance:
 
-.. code:: python
+.. code:: pycon
 
     >>> from ansys.mechanical.core import App
     >>> app = App()
