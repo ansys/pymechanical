@@ -1157,12 +1157,12 @@ class Mechanical(object):
         ----------
         script_block : str
             Script block (one or more lines) to run.
-        enable_logging : bool, optional
+        enable_logging: bool, optional
             Whether to enable logging. The default is ``False``.
-        log_level : str
+        log_level: str
             Level of logging. The default is ``"WARNING"``. Options are ``"DEBUG"``,
             ``"INFO"``, ``"WARNING"``, and ``"ERROR"``.
-        progress_interval : int, optional
+        progress_interval: int, optional
             Frequency in milliseconds for getting log messages from the server.
             The default is ``2000``.
 
@@ -1188,10 +1188,10 @@ class Mechanical(object):
             Path for the Python file.
         enable_logging: bool, optional
             Whether to enable logging. The default is ``False``.
-        log_level : str
+        log_level: str
             Level of logging. The default is ``"WARNING"``. Options are ``"DEBUG"``,
             ``"INFO"``, ``"WARNING"``, and ``"ERROR"``.
-        progress_interval : int, optional
+        progress_interval: int, optional
             Frequency in milliseconds for getting log messages from the server.
             The default is ``2000``.
 
