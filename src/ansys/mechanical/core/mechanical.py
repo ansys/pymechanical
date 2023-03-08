@@ -707,7 +707,7 @@ class Mechanical(object):
 
     @property
     def version(self) -> str:
-        """Gets the mechanical version based on the instance."""
+        """Get the Mechanical version based on the instance."""
         if self._version == None:
             try:
                 self._disable_logging = True
@@ -1213,7 +1213,7 @@ class Mechanical(object):
         ----------
         force : bool, optional
             Whether to force Mechanical to exit. The default is ``False``, in which case
-            Mechanical in UI mode only asks for confirmation. This parameter overrides
+            only Mechanical in UI mode asks for confirmation. This parameter overrides
             any environment variables that may inhibit exiting Mechanical.
         """
         if not force:
@@ -2099,14 +2099,17 @@ def launch_mechanical(
         and this parameter is set to ``None``, PyPIM launches Mechanical
         using its ``version`` parameter.
     batch : bool, optional
-        Whether to launches mechanical in batch mode. The default is ``True``.
+        Whether to launch Mechanical in batch mode. The default is ``True``.
         When ``False``, Mechanical launches in UI mode.
     loglevel : str, optional
-        Level of messages to print to the console. The default is ``WARNING``.
-        Options are ``"WARNING"``, ``"ERROR"``, and ``"INFO"``.
-        - ``WARNING`` prints only Ansys warning messages.
-        - ``ERROR`` prints only Ansys error messages.
-        - ``INFO`` prints out all Ansysmessages.
+        Level of messages to print to the console.
+        Options are:
+
+        - ``"WARNING"``: Prints only Ansys warning messages.
+        - ``"ERROR"``: Prints only Ansys error messages.
+        - ``"INFO"``: Prints out all Ansys messages.
+
+        The default is ``WARNING``.
     log_file : bool, optional
         Whether to copy the messages to a file named ``logs.log``, which is
         located where the Python script is executed. The default is ``False``.
@@ -2114,7 +2117,7 @@ def launch_mechanical(
         Path to the output file on the local disk to write every script
         command to. The default is ``None``. However, you might set
         ``"log_mechanical='pymechanical_log.txt'"`` to write all commands that are
-        sent to Mechanical via PyMechanical in this file. You can then use these
+        sent to Mechanical via PyMechanical to this file. You can then use these
         commands to run a script within Mechanical without PyMechanical.
     additional_switches : str, optional
         Additional switches for Mechanical. The default is ``""``.
@@ -2146,10 +2149,10 @@ def launch_mechanical(
     verbose_mechanical : bool, optional
         Whether to enable printing of all output when launching and running
         a Mechanical instance. The default is ``False``. This parameter should be
-        set to ``True`` only for debugging only as output can be tracked within
+        set to ``True`` for debugging only as output can be tracked within
         PyMechanical.
     clear_on_connect : bool, optional
-        when ``start_instance`` is ``False``, whether to clear the environment
+        When ``start_instance`` is ``False``, whether to clear the environment
         when connecting to Mechanical. The default is ``False``. When ``True``,
         a fresh environment is provided when you connect to Mechanical.
     cleanup_on_exit : bool, optional
