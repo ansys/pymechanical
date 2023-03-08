@@ -132,7 +132,7 @@ You would connect to it with this command:
 
 .. code:: pycon
 
-    >>> mechanical = Mechanical('myremotemachine', port=10000)
+    >>> mechanical = Mechanical("myremotemachine", port=10000)
 
 
 Launching issues
@@ -154,7 +154,7 @@ for the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` me
 .. code:: pycon
 
     >>> from ansys.mechanical.core import launch_mechanical
-    >>> exec_loc = 'C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe'
+    >>> exec_loc = "C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe"
     >>> mechanical = launch_mechanical(exec_loc)
 
 
@@ -163,7 +163,7 @@ for the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` me
 .. code:: pycon
 
     >>> from ansys.mechanical.core import launch_mechanical
-    >>> exec_loc = '/usr/ansys_inc/v231/aisol/.workbench'
+    >>> exec_loc = "/usr/ansys_inc/v231/aisol/.workbench"
     >>> mechanical = launch_mechanical(exec_loc)
 
 
