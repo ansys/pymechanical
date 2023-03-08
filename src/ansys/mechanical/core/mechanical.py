@@ -196,7 +196,7 @@ def close_all_local_instances(port_range=None):
     port_range : list, optional
         List of a range of ports to use when cleaning up Mechanical. The
         default is ``None``, in which case the ports managed by
-        PyMechanical are used.
+        PyMechanical are cleaned up.
 
     Examples
     --------
@@ -715,7 +715,7 @@ class Mechanical(object):
 
     @property
     def version(self) -> str:
-        """Gets the mechanical version based on the instance."""
+        """Get the Mechanical version based on the instance."""
         if self._version == None:
             try:
                 self._disable_logging = True
@@ -1165,12 +1165,12 @@ class Mechanical(object):
         ----------
         script_block : str
             Script block (one or more lines) to run.
-        enable_logging: bool, optional
+        enable_logging : bool, optional
             Whether to enable logging. The default is ``False``.
-        log_level: str
+        log_level : str
             Level of logging. The default is ``"WARNING"``. Options are ``"DEBUG"``,
             ``"INFO"``, ``"WARNING"``, and ``"ERROR"``.
-        progress_interval: int, optional
+        progress_interval : int, optional
             Frequency in milliseconds for getting log messages from the server.
             The default is ``2000``.
 
@@ -1196,10 +1196,10 @@ class Mechanical(object):
             Path for the Python file.
         enable_logging: bool, optional
             Whether to enable logging. The default is ``False``.
-        log_level: str
+        log_level : str
             Level of logging. The default is ``"WARNING"``. Options are ``"DEBUG"``,
             ``"INFO"``, ``"WARNING"``, and ``"ERROR"``.
-        progress_interval: int, optional
+        progress_interval : int, optional
             Frequency in milliseconds for getting log messages from the server.
             The default is ``2000``.
 
@@ -1221,7 +1221,7 @@ class Mechanical(object):
         ----------
         force : bool, optional
             Whether to force Mechanical to exit. The default is ``False``, in which case
-            Mechanical in UI mode only asks for confirmation. This parameter overrides
+            only Mechanical in UI mode asks for confirmation. This parameter overrides
             any environment variables that may inhibit exiting Mechanical.
         """
         if not force:

@@ -69,9 +69,9 @@ class LocalMechanicalPool:
         ``True``.
     **kwargs : dict, optional
         Additional keyword arguments. For a list of all keyword
-        arguments, see the :func:`ansys.mechanical.core.launch_mechanical`
+        arguments, use the :func:`ansys.mechanical.core.launch_mechanical`
         function. If the ``exec_file`` keyword argument is found, it is used to
-        start instances. PyPIM ia used to create instances if the following
+        start instances. PyPIM is used to create instances if the following
         conditions are met:
 
         - PyPIM is configured.
