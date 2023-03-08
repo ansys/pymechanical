@@ -78,11 +78,11 @@ the hood.
 
 How do you restart a script?
 ----------------------------
-If you have trouble terminating a simulation, you can use the
+If you have trouble terminating a simulation, you do not have to use
 this code to close Python, reopen it, and clear all previous data
 such as the mesh:
 
-.. code:: pycon
+.. code:: python
 
     import sys
 

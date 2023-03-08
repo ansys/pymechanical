@@ -223,7 +223,7 @@ you should specify the IP address and port using one of the following methods.
 
 **Method 1**
 
-.. code:: pycon
+.. code:: python
 
     from ansys.mechanical.core import launch_mechanical
 
@@ -231,7 +231,7 @@ you should specify the IP address and port using one of the following methods.
 
 **Method 2**
 
-.. code:: pycon
+.. code:: python
 
     from ansys.mechanical.core import Mechanical
 
@@ -326,7 +326,7 @@ The ``-lang`` argument specifies the language to use for the installation.
 
 File specifying the products to install
 ---------------------------------------
-You can specify an ```options``` file that lists the products that you want to
+You can specify an ``options`` file that lists the products that you want to
 install. When you do so, you must use the ``-productfile`` argument to specify the
 full path to this file.
 
