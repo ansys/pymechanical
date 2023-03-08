@@ -41,7 +41,7 @@ method to launch Mechanical from Python in gRPC mode:
 When Mechanical is active, you can send commands to it as a genuine
 Python class. For example, you can send a Python script:
 
-.. code:: pycon
+.. code:: python
 
     result = mechanical.run_python_script("2+3")
     result = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
