@@ -1,22 +1,19 @@
 """.. _ref_example_02_run_python_script_scope:
 
 Test variable and function scope
--------------------------------------
+--------------------------------
 
-In this example, we will call run_python_script and check the variable and
-function scope between calls
+This example calls the ``run_python_script`` file and checks the variable and
+function scope between calls.
 
 """
 
 ###############################################################################
-# Example Setup
-# -------------
-# This workflow doesn't use any sample files
-#
 # Launch Mechanical
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Launch a new Mechanical Session in batch. 'cleanup_on_exit' set to False,
-# you need to call mechanical.exit to close Mechanical.
+# ~~~~~~~~~~~~~~~~~
+# Launch a new Mechanical session in batch, setting ``cleanup_on_exit`` to
+# ``False``. To close this Mechanical session when finished, this example
+# must call  the ``mechanical.exit()`` method.
 
 from ansys.mechanical.core import launch_mechanical
 
@@ -25,8 +22,8 @@ print(mechanical)
 
 ###################################################################################
 # Set variable
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Run the script to set a value to a variable.
+# ~~~~~~~~~~~~
+# Run the script to assign a value to a variable.
 
 output = mechanical.run_python_script(
     """
@@ -38,8 +35,8 @@ print(f"x = {output}")
 
 ###################################################################################
 # Access the variable in the next call
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Run the script to change the variable value in the next call
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Run the script to change the variable value.
 
 output = mechanical.run_python_script(
     """
@@ -51,9 +48,9 @@ print(f"x = {output}")
 
 ###################################################################################
 # Define function
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~
 # Run the script to define a function and access the variable defined in the
-# previous call
+# previous call.
 
 output = mechanical.run_python_script(
     """
@@ -67,8 +64,8 @@ print(f"output = {output}")
 
 ###################################################################################
 # Access the function
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Run the script to access the function defined in the previous call
+# ~~~~~~~~~~~~~~~~~~~
+# Run the script to access the function defined in the previous call.
 
 output = mechanical.run_python_script(
     """
