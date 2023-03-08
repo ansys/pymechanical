@@ -64,7 +64,7 @@ Executing a sequence of APIs can sometimes be slow because Mechanical may perfor
 entities are created, updated, or deleted. Mechanical scripting has a ``Transaction`` class for deferring many of these
 tasks until after a block of commands are run. Here is an example:
 
-.. code:: pycon
+.. code:: python
 
     with Transaction():
         for obj in Tree:
@@ -86,4 +86,4 @@ from those entry points.
 Additional resources
 ^^^^^^^^^^^^^^^^^^^^
 The `ACT API Reference Guide <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/act_ref/act_ref.html>`_
-provides descriptions the objects, methods, and properties for all namespaces.
+provides descriptions of the objects, methods, and properties for all namespaces.
