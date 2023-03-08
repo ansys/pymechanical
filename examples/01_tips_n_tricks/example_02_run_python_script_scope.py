@@ -3,7 +3,7 @@
 Test variable and function scope
 --------------------------------
 
-This example calls the ``run_python_script`` file and checks the variable and
+This example calls the ``run_python_script`` method and checks the variable and
 function scope between calls.
 
 """
