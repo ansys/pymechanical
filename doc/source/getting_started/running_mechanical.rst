@@ -36,15 +36,19 @@ When Mechanical is installed locally on your machine, you can use the
 Mechanical. While this method provides the easiest and fastest way to launch Mechanical, it only works with a local
 Mechanical installation.
 
-Launch Mechanical locally with:
+Launch Mechanical locally with this code:
 
 .. code:: pycon
+
     >>> from ansys.mechanical.core import launch_mechanical
     >>> mechanical = launch_mechanical()
     >>> mechanical
+
     Ansys Mechanical [Ansys Mechanical Enterprise]
     Product Version:231
     Software build date:Wednesday, August 10, 2022 4:28:15 PM
+
+
 Launch a Mechanical server from command line
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -60,7 +64,9 @@ the path for 2023 R1 is typically ``C:/Program Files/ANSYS Inc/v231``.
 Launch Mechanical in server mode with this code:
 
 .. code::
+
     C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/.AnsysWBU.exe -DSApplet -AppModeMech -nosplash -notabctrl -grpc 10000
+
 **On Linux**
 
 Assume that Mechanical 2023 R1 is installed at ``/usr/ansys_inc``.
@@ -68,20 +74,28 @@ Assume that Mechanical 2023 R1 is installed at ``/usr/ansys_inc``.
 Launch Mechanical in server mode with this code:
 
 .. code::
+
     /usr/ansys_inc/v231/aisol/.workbench -dsapplet -AppModeMech -nosplash -notabctrl -grpc 10000
+
+
 View server information
 ~~~~~~~~~~~~~~~~~~~~~~~~
 As Mechanical starts in server mode, you can see the server information:
 
 .. code::
+
     Starting the grpc server at port 10000
     Started the grpc server at port 10000
+
 If you want to configure the port that the Mechanical server listens on, when you launch
 Mechanical, use the ``-grpc`` argument. For example, on Linux, launch Mechanical 2023 R1
 on port 10001 with:
 
 .. code::
+
     C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/.AnsysWBU.exe -grpc 10001
+
+
 Connect to a Mechanical session
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -91,8 +105,11 @@ Assuming that Mechanical is running locally at the default IP address (127.0.0.1
 default port (10000), you would use this code to connect to it:
 
 .. code::
+
     >>> from ansys.mechanical.core import Mechanical
     >>> mechanical = Mechanical()
+
+
 Now assume that a remote instance of Mechanical has been started in server mode. To connect to
 the computer on your local area network that is running Mechanical, you can use either
 an IP address and port or a hostname and port.
@@ -104,7 +121,9 @@ Assume that Mechanical is running remotely at IP address ``192.168.0.1`` on port
 You would connect to it with:
 
 .. code::
+
     >>> mechanical = Mechanical('192.168.0.1', port=10000)
+
 **Hostname and port**
 
 Assume that Mechanical is running remotely at hostname ``myremotemachine`` on port ``10000``.
@@ -112,7 +131,10 @@ Assume that Mechanical is running remotely at hostname ``myremotemachine`` on po
 You would connect to it with:
 
 .. code:: pycon
+
     >>> mechanical = Mechanical("myremotemachine", port=10000)
+
+
 Launching issues
 ----------------
 
@@ -130,15 +152,21 @@ for the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` me
 **On Windows**
 
 .. code:: pycon
+
     >>> from ansys.mechanical.core import launch_mechanical
     >>> exec_loc = "C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe"
     >>> mechanical = launch_mechanical(exec_loc)
+
+
 **On Linux**
 
 .. code:: pycon
+
     >>> from ansys.mechanical.core import launch_mechanical
     >>> exec_loc = "/usr/ansys_inc/v231/aisol/.workbench"
     >>> mechanical = launch_mechanical(exec_loc)
+
+
 If when using the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` method, Mechanical still
 fails to launch or hangs while launching, pass the ``verbose_mechanical=True``
 parameter. This prints the output of Mechanical in the Python console.
@@ -160,7 +188,9 @@ Windows and Linux code examples assume that you are launching Mechanical
 Open a command prompt and run this command:
 
 .. code::
+
     "C:/Program Files/ANSYS Inc/v231/aiso/bin/winx64/AnsysWBU.exe -DSApplet -AppModeMech -nosplash -notabctrl -grpc 10000"
+
 .. note::
    PowerShell users can run the preceding command without including the opening and
    closing quotation marks.
@@ -169,7 +199,10 @@ Open a command prompt and run this command:
 **On Linux**
 
 .. code::
+
     /usr/ansys_inc/v231/aisol/.workbench -DSApplet -AppModeMech -nosplash -notabctrl -grpc 10000
+
+
 If the preceding command for your operating system doesn't launch Mechanical, you might have
 a variety of issues, including:
 
@@ -188,12 +221,15 @@ Linux requires some additional environment variables.
 Python code:
 ~~~~~~~~~~~~
 .. code:: pycon
+
     >>> from ansys.mechanical.core import App
     >>> mechanical = App()
     >>> mechanical
+
     Ansys Mechanical [Ansys Mechanical Enterprise]
     Product Version:231
     Software build date:Wednesday, August 10, 2022 4:28:15 PM
+
 Additional information for Linux:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -207,7 +243,10 @@ Assume that Mechanical 2023 R2 is installed at ``/usr/ansys_inc``.
 You would run Python with this command:
 
 .. code::
+
     /usr/ansys_inc/v232/aisol/.workbench_lite python
+
+
 Licensing issues
 ----------------
 
@@ -215,7 +254,7 @@ Licensing issues
 product section. Posts about licensing are common.
 
 If you are responsible for maintaining an Ansys license or have a personal installation
-of Ansys, you likely can access the **Installation and Licensing** section of the
+of Ansys, you likely can access the **Licensing** section of the
 Ansys Help, where you can view or download the *Ansys, Inc. Licensing Guide* for
 comprehensive licensing information.
 
