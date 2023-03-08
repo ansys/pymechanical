@@ -36,6 +36,8 @@ repos:
           tests/scripts/log_message.py |
           examples/00_basic/example_01_simple_structural_solve.py |
           examples/00_basic/example_02_capture_images.py |
-          examples/00_basic/example_03_show_object_properties.py
+          examples/00_basic/example_03_show_object_properties.py |
+          examples/01_tips_n_tricks/example_01_run_python_script_output.py |
+          examples/01_tips_n_tricks/example_02_run_python_script_scope.py
         )$
 

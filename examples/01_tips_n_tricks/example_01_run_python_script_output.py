@@ -1,5 +1,4 @@
-"""
-.. _ref_example_01_run_python_script_output:
+""".. _ref_example_01_run_python_script_output:
 
 Outputtting to different formats
 --------------------------------
