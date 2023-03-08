@@ -45,7 +45,7 @@ Mechanical scripting
 You can already perform scripting of Mechanical with Python from inside
 Mechanical. PyMechanical leverages the same APIs as Mechanical but allows
 you to run your automation from outside Mechanical. For more information
-on using these APIs, see the :ref:`ref_user_guide_scripting`.
+on using these APIs, see :ref:`ref_user_guide_scripting`.
 
 Background
 ----------
@@ -59,7 +59,7 @@ Mechanical runs as a server, ready to respond to any clients.
 PyMechanical provides a client to connect to a Mechanical server and make API
 calls to this server.
 
-For comprehensive information on using a remote session, see the
+For comprehensive information on using a remote session, see
 :ref:`ref_user_guide_session`.
 
 Embedded instance
@@ -69,7 +69,7 @@ Rather than starting a new process for Mechanical, a Mechanical object (which is
 implemented in .NET) is directly loaded into Python memory using ``pythonnet``. From
 there, Mechanical's entire data model is available for use from Python code.
 
-For comprehensive information on using an embedded instance, see the
+For comprehensive information on using an embedded instance, see
 :ref:`ref_user_guide_embedding`.
 
 

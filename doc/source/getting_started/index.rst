@@ -8,7 +8,7 @@ features that are available to you.
 PyMechanical is compatible with Mechanical 2023 R1 and later on Windows
 and Linux. Later releases provide significantly better support and features.
 
-For more information, see the `Ansys Mechanical <https://www.ansys.com/products/structures/ansys-mechanical>`_ 
+For more information, see `Ansys Mechanical <https://www.ansys.com/products/structures/ansys-mechanical>`_
 page on the Ansys website.
 
 .. toctree::

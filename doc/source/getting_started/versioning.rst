@@ -12,7 +12,7 @@ PyMechanical remote session
 Mechanical 2023 R1 and later support the remote session interface, allowing
 for remote management of Mechanical. With the applicable license, you
 can install and use Mechanical with `Docker <https://www.docker.com/>`_,
-enabling you to run and solve even on platforms that are not officially unsupported, like
+enabling you to run and solve even on platforms that are not officially supported, like
 the Mac operating system. For more information, see :ref:`Using Mechanical through Docker <ref_docker>`.
 
 PyMechanical embedded instance

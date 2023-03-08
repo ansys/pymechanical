@@ -172,7 +172,7 @@ Mechanical still fails to launch or hangs while launching, pass the ``verbose_me
 parameter. This prints the output of Mechanical in the Python console.
 You can then use this output to debug why Mechanical isn't launching.
 
-.. Note::
+.. note::
     On Windows, output is limited because of the way Mechanical launches.
 
 Debug from the command line
