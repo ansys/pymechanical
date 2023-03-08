@@ -2108,7 +2108,7 @@ def launch_mechanical(
         - ``"WARNING"``: Prints only Ansys warning messages.
         - ``"ERROR"``: Prints only Ansys error messages.
         - ``"INFO"``: Prints out all Ansys messages.
-    
+
         The default is ``WARNING``.
     log_file : bool, optional
         Whether to copy the messages to a file named ``logs.log``, which is

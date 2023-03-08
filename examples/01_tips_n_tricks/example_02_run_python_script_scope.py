@@ -1,4 +1,5 @@
-""".. _ref_example_02_run_python_script_scope:
+"""
+.. _ref_example_02_run_python_script_scope:
 
 Test variable and function scope
 --------------------------------
