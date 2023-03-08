@@ -1,8 +1,8 @@
 .. _ref_user_guide_embedding:
 
-=======================
-Embedded instance guide
-=======================
+==================
+Embedded instances
+==================
 This section provides an overview of how you use PyMechanical to embed
 an instance of Mechanical in Python.
 
@@ -31,8 +31,8 @@ a Mechanical instance.
     app = Application()
     ns = app.DataModel.Project.Model.AddNamedSelection()
 
-The `Application` class has access to the global scripting entry points that are available
-from built-in Mechanical scripting. These are:
+The ``Application`` class has access to the global scripting entry points that are available
+from built-in Mechanical scripting:
 
 * ExtAPI: ``Application.ExtAPI``
 * DataModel: ``Application.DataModel``
@@ -40,12 +40,12 @@ from built-in Mechanical scripting. These are:
 * Tree: ``Application.DataModel.Tree``
 * Graphics: ``Application.ExtAPI.Graphics``
 
-Besides the scripting entry points, many other types and objects are available from
+Besides scripting entry points, many other types and objects are available from
 built-in Mechanical scripting. To learn how to import the scripting entry points,
 namespaces, and types, see :ref:`ref_embedding_user_guide_globals`.
 
 Additional configuration
 ------------------------
 By default, an instance of the :class:`Application <ansys.mechanical.core.embedding.Application>` class
-is configured in the same way as Mechanical. To customize this, see
+is configured in the same way as Mechanical. To customize an instance, see
 :ref:`ref_embedding_user_guide_configuration`.

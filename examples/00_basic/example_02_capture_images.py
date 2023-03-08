@@ -1,21 +1,18 @@
 """.. _ref_example_02_capture_images:
 
-Capture Images after Solve
--------------------------------
+Capture images after a solve
+----------------------------
 
-In this example, using the support files, resume a mechdat file and capture the images of all
-the results into a folder on disk.
+Using supplied files, this example shows how to resume a MECHDAT file
+and capture the images of all results in a folder on the disk.
 
 """
 
 ###############################################################################
-# Example Setup
-# -------------
-# When you run this workflow, the required files will be downloaded.
-#
-# Perform required downloads.
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Download the mechdat and the script files.
+# Download required files
+# ~~~~~~~~~~~~~~~~~~~~~~~
+# Download the required files. Print the file paths for the MECHDAT file and
+# script files.
 
 import os
 
@@ -26,79 +23,81 @@ from ansys.mechanical.core import launch_mechanical
 from ansys.mechanical.core.examples import download_file
 
 mechdat_path = download_file("example_03_simple_bolt_new.mechdat", "pymechanical", "00_basic")
-print(f"Downloaded the mechdat file at : {mechdat_path}")
+print(f"Downloaded the MECHDAT file to: {mechdat_path}")
 
 script_file_path = download_file("example_02_capture_images_helper.py", "pymechanical", "00_basic")
-print(f"Downloaded the script file at : {script_file_path}")
+print(f"Downloaded the script files to: {script_file_path}")
 
 ###############################################################################
 # Launch Mechanical
 # ~~~~~~~~~~~~~~~~~
-# Launch a new Mechanical Session in batch. 'cleanup_on_exit' set to False,
-# you need to call mechanical.exit to close Mechanical.
+# Launch a new Mechanical session in batch, setting ``cleanup_on_exit`` to
+# ``False``. To close this Mechanical session when finished, this example
+# must call  the ``mechanical.exit()`` method.
 
 mechanical = launch_mechanical(batch=True, cleanup_on_exit=False)
 print(mechanical)
 
 ###############################################################################
-# Initialize the variable needed for opening the mechdat
+# Initialize the variable needed for opening the MECHDAT file
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Set the mechdat_path for later user.
-# Make this variable compatible for windows/linux/container.
+# Set the ``mechdat_path`` variable for later use.
+# Make the variable compatible for Windows, Linux, and Docker containers.
 
 project_directory = mechanical.project_directory
 print(f"project directory = {project_directory}")
 
-# upload the file to the project directory
+# Upload the file to the project directory.
 mechanical.upload(file_name=mechdat_path, file_location_destination=project_directory)
 
-# build the path relative to project directory
+# Build the path relative to the project directory.
 base_name = os.path.basename(mechdat_path)
 combined_path = os.path.join(project_directory, base_name)
 mechdat_path_modified = combined_path.replace("\\", "\\\\")
 mechanical.run_python_script(f"mechdat_path='{mechdat_path_modified}'")
 
-# verify the path
+# Verify the path for the MECHDAT file.
 result = mechanical.run_python_script(f"mechdat_path")
-print(f"mechdat_path on the server: {result}")
+print(f"MECHDATA file is stored on the server at: {result}")
 
 ###################################################################################
-# Open the mechdat file
+# Open the MECHDAT file
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Run the script to open the mechadat file.
+# Run the script to open the MECHDAT file.
 
 mechanical.run_python_script("ExtAPI.DataModel.Project.Open(mechdat_path)")
 
 ###################################################################################
 # Initialize the variable needed for the image directory
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Set the image_dir for later user.
-# Make this variable compatible for windows/linux/container.
+# Set the ``image_dir`` for later use.
+# Make the variable compatible for Windows, Linux, and Docker containers.
 
-# opening the mechdat file changes the project directory
+# Open the MECHDAT file changes the project directory.
 project_directory = mechanical.project_directory
 print(f"project directory = {project_directory}")
 
 image_directory_modified = project_directory.replace("\\", "\\\\")
 mechanical.run_python_script(f"image_dir='{image_directory_modified}'")
 
-# verify the path
+# Verify the path for image directory.
 result = mechanical.run_python_script(f"image_dir")
-print(f"Images will be stored on the server at: {result}")
+print(f"Images are stored on the server at: {result}")
 
 ###################################################################################
 # Execute the Mechanical script
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Run the script file and create the images.
+# Run the Mechanical script file for creating the images.
 
 mechanical.run_python_script_from_file(script_file_path)
-
 
 ###############################################################################
 # Download the image and plot
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Download one image file from the server to the current working directory and plot
 # using matplotlib.
+
+
 def get_image_path(image_name):
     return image_directory_modified + image_name
 
@@ -124,9 +123,9 @@ if image_path_server != "":
     display_image(image_local_path)
 
 ###################################################################################
-# Don't save the project
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Clear Mechanical data.
+# Clear the data
+# ~~~~~~~~~~~~~~
+# Clear the data so it isn't saved to the project.
 
 mechanical.clear()
 

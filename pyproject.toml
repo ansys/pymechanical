@@ -11,10 +11,10 @@ readme = "README.rst"
 requires-python = ">=3.7,<4.0"
 license = {file = "LICENSE"}
 authors = [
-    {name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"},
+    {name = "ANSYS, Inc.", email = "pyansys.support@ansys.com"},
 ]
 maintainers = [
-    {name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"},
+    {name = "PyAnsys developers", email = "pyansys.maintainers@ansys.com"},
 ]
 
 classifiers = [
@@ -41,10 +41,7 @@ dependencies = [
 ]
 
 [project.urls]
-Documentation = "https://mechanical.docs.pyansys.com"
 Source = "https://github.com/pyansys/pymechanical"
-Homepage = "https://github.com/pyansys/pymechanical"
-Tracker = "https://github.com/pyansys/pymechanical/issues"
 
 [project.optional-dependencies]
 tests = [
@@ -60,10 +57,10 @@ doc = [
     "imageio==2.26.0",
     "jupyter_sphinx==0.4.0",
     "jupyterlab>=3.2.8",
-    "matplotlib==3.7.1",
+    "matplotlib==3.7.0",
     "numpydoc==1.5.0",
     "plotly==5.13.1",
-    "pypandoc==1.11",
+    "pypandoc==1.10",
     "pytest-sphinx==0.5.0",
     "pythreejs==2.4.2",
     "pyvista==0.38.3",

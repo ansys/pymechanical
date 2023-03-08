@@ -1,6 +1,7 @@
 ANSYS
 Ansys
 ansys
+automations
 Apptainer
 CentOS
 CentOS7

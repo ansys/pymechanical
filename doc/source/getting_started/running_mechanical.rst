@@ -12,7 +12,7 @@ describes how you launch and interface with Mechanical from Python.
 Install Mechanical
 ------------------
 
-Mechanical is installed by default from the Ansys standard installer. 
+Mechanical is installed by default from the Ansys standard installer.
 When you run the standard installer, look under the **Structural Mechanics**
 heading to verify that the **Mechanical Products** checkbox is selected.
 Although options in the standard installer might change, this image provides
@@ -36,7 +36,7 @@ When Mechanical is installed locally on your machine, you can use the
 Mechanical. While this method provides the easiest and fastest way to launch Mechanical, it only works with a local
 Mechanical installation.
 
-Launch Mechanical locally with:
+Launch Mechanical locally with this code:
 
 .. code:: pycon
 
@@ -254,7 +254,7 @@ Licensing issues
 product section. Posts about licensing are common.
 
 If you are responsible for maintaining an Ansys license or have a personal installation
-of Ansys, you likely can access the **Installation and Licensing** section of the
+of Ansys, you likely can access the **Licensing** section of the
 Ansys Help, where you can view or download the *Ansys, Inc. Licensing Guide* for
 comprehensive licensing information.
 
@@ -263,6 +263,3 @@ VPN issues
 ----------
 Sometimes, Mechanical has issues starting when VPN software is running. For more information,
 see the *Mechanical User's Guide* in the **Mechanical Application** section of the Ansys Help.
-
-
-

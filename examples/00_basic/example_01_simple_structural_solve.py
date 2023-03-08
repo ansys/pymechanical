@@ -1,65 +1,63 @@
 """.. _ref_example_01_simple_structural_solve:
 
-Static Structural Analysis
--------------------------------
+Static structural analysis
+--------------------------
 
-In this example, using the support files, you will insert a Static Structural analysis into a new
-Mechanical session and execute a sequence of python scripting commands that will define and
-solve the analysis. The deformation results are reported back after the solution.
+Using supplied files, this example shows how to insert a static structural
+analysis into a new Mechanical session and execute a sequence of Python scripting
+commands that define and solve the analysis. Deformation results are then reported.
 
 """
 
 ###############################################################################
-# Example Setup
-# -------------
-# When you run this workflow, the required file will be downloaded.
-#
-# Perform required download.
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Download the geometry file.
+# Download required files
+# ~~~~~~~~~~~~~~~~~~~~~~~
+# Download the required files. Print the file path for the geometry file.
 import os
 
 from ansys.mechanical.core import launch_mechanical
 from ansys.mechanical.core.examples import download_file
 
 geometry_path = download_file("example_01_geometry.agdb", "pymechanical", "00_basic")
-print(f"Downloaded the geometry file at : {geometry_path}")
+print(f"Downloaded the geometry file to: {geometry_path}")
 
 ###############################################################################
 # Launch Mechanical
 # ~~~~~~~~~~~~~~~~~
-# Launch a new Mechanical Session in batch. 'cleanup_on_exit' set to False,
-# you need to call mechanical.exit to close Mechanical.
+# Launch a new Mechanical session in batch, setting ``cleanup_on_exit`` to
+# ``False``. To close this Mechanical session when finished, this example
+# must call  the ``mechanical.exit()`` method.
 
 mechanical = launch_mechanical(batch=True, cleanup_on_exit=False)
 print(mechanical)
 
 ###############################################################################
-# Initialize the variable needed for this workflow
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Set the part_file_path for later user.
-# Make this variable compatible for  windows/linux/container.
+# Initialize variable for workflow
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Set the ``part_file_path`` variable on the server for later use.
+# Make this variable compatible for Windows, Linux, and Docker containers.
 
 project_directory = mechanical.project_directory
 print(f"project directory = {project_directory}")
 
-# upload the file to the project directory
+# Upload the file to the project directory.
 mechanical.upload(file_name=geometry_path, file_location_destination=project_directory)
 
-# build the path relative to project directory
+# Build the path relative to project directory.
 base_name = os.path.basename(geometry_path)
 combined_path = os.path.join(project_directory, base_name)
 part_file_path = combined_path.replace("\\", "\\\\")
 mechanical.run_python_script(f"part_file_path='{part_file_path}'")
 
-# verify the path
+# Verify the path
 result = mechanical.run_python_script("part_file_path")
 print(f"part_file_path on server: {result}")
 
 ###################################################################################
-# Execute the Mechanical script
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Run the script to attach geometry, setup and solve the analysis.
+# Execute the script
+# ~~~~~~~~~~~~~~~~~~
+# Run the Mechanical script to attach the geometry and set up and solve the
+# analysis.
 
 output = mechanical.run_python_script(
     """
@@ -171,10 +169,10 @@ print(output)
 
 
 ###############################################################################
-# Download solve.out and print its contents
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Download the solve.out from the server to the current working directory and print
-# the contents. Remove the solve.out.
+# Download output file from solve and print contents
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Download the ``solve.out`` file from the server to the current working
+# directory and print the contents. Remove the ``solve.out`` file.
 def get_solve_out_path(mechanical):
     solve_out_path = ""
     for file_path in mechanical.list_files():

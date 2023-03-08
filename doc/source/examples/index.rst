@@ -4,7 +4,7 @@
 Examples
 ========
 
-Here are a series of examples using Mechanical with ``ansys-mechanical-core`` library.
+Here is a series of examples using Mechanical with the ``ansys-mechanical-core`` library.
 
 .. === EXAMPLES Gallery ===
 

@@ -1,22 +1,19 @@
 """.. _ref_example_01_run_python_script_output:
 
-Different output formats
--------------------------------
+Output to different formats
+--------------------------------
 
-In this example, we will call run_python_script and get the output in string,
-json and csv formats.
+This example calls the ``run_python_script`` method and gets the output in string,
+JSON, and CSV formats.
 
 """
 
 ###############################################################################
-# Example Setup
-# -------------
-# This workflow doesn't use any sample files
-#
 # Launch Mechanical
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Launch a new Mechanical Session in batch. 'cleanup_on_exit' set to False,
-# you need to call mechanical.exit to close Mechanical.
+# ~~~~~~~~~~~~~~~~~
+# Launch a new Mechanical session in batch, setting ``cleanup_on_exit`` to
+# ``False``. To close this Mechanical session when finished, this example
+# must call  the ``mechanical.exit()`` method.
 
 import json
 
@@ -26,8 +23,8 @@ mechanical = launch_mechanical(batch=True, cleanup_on_exit=False)
 print(mechanical)
 
 ###################################################################################
-# Simple string output
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Output to a simple string
+# ~~~~~~~~~~~~~~~~~~~~~~~~~
 # Run the script to get a simple string output.
 
 output = mechanical.run_python_script(
@@ -41,9 +38,9 @@ return_string()
 print(f"string output={output}")
 
 ###################################################################################
-# String output as json
+# Output string output as JSON
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Run the script to get the string output as json.
+# Run the script to get the string output as JSON.
 
 output = mechanical.run_python_script(
     """
@@ -62,9 +59,9 @@ my_dict = json.loads(output)
 print(f"Parsed json: value1={my_dict['value1']}, value2={my_dict['value2']}")
 
 ###################################################################################
-# String output as csv
+# Output string as CSV
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Run the script to get the string output as csv.
+# Run the script to get the string output as CSV.
 
 output = mechanical.run_python_script(
     """

@@ -6,7 +6,7 @@ class simplifies creating and connecting to multiple servers of the
 processing. You can use this class for batch processing a set of input files or
 other batch-related processes.
 
-To create a pool with 10 instances:
+This code shows how to create a pool with 10 instances:
 
 .. code:: pycon
 
@@ -14,7 +14,7 @@ To create a pool with 10 instances:
     >>> pool = LocalMechanicalPool(10, version="231")
     'Mechanical Pool with 10 active instances'
 
-When you are creating the pool, you can supply additional keyword arguments.
+When you are creating a pool, you can supply additional keyword arguments.
 For example, to restart failed instances, you can set ``restart_failed=True``:
 
 .. code:: pycon

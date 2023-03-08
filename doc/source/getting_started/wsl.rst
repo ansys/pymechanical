@@ -19,7 +19,7 @@ Windows Server 2019. For more information, see:
 This page walks you through the installation of WSL on Windows and then
 shows how to use it together with Mechanical, PyMechanical, and Docker.
 
-.. warning::
+.. caution::
    These instructions have not been fully tested with a VPN connection. If you
    experience any problems connecting WSL to the internet, try to disconnect from the VPN.
 
@@ -34,7 +34,7 @@ Install WSL by following the instructions in Microsoft's `Install Linux on Windo
 
 .. _Install Linux on Windows with WSL: https://docs.microsoft.com/en-us/windows/wsl/install/
 
-There are two versions of WSL, WSL1 and WSL2. Because WSL2 provides many improvements
+There are two versions of WSL: WSL1 and WSL2. Because WSL2 provides many improvements
 over WSL1, you should upgrade to and use WSL2.
 
 
@@ -45,7 +45,7 @@ When working with PyAnsys libraries, you should use the CentOS7 WSL distribution
 
 You can install this distribution using an unofficial WSL distribution from
 `<https://github.com/wsldl-pg/CentWSL/>`_ or
-`<https://github.com/mishamosher/CentOS-WSL/>`_ .
+`<https://github.com/mishamosher/CentOS-WSL/>`_.
 
 Optionally, you can try Ubuntu in the context of WSL.
 
@@ -63,13 +63,13 @@ Install Ansys products
 
 To install ANSYS products in WSL:
 
-1. Download the Ansys Structures image for the `Current  Release
+1. Download the **Ansys Structures** image for the `Current  Release
    <https://download.ansys.com/Current%20Release>`_ from the Ansys Customer Portal.
    
    If you are  downloading the image on a Windows machine, you should later copy the image to
    WSL.
 
-2. Extract the compressed source code file (tar.gz) with:
+2. Extract the compressed source code file (tar.gz) with this command:
 
    .. code:: bash
 
@@ -93,11 +93,13 @@ To install ANSYS products in WSL:
    - ``-<product_flag>`` : Specifies the one or more products to install.
      If you omit this argument, all products are installed. A list of valid
      values for the ``product_flags`` argument is available in Chapter 6 of The
-     *ANSYS Inc. Installation Guide*. In the preceding example for Mechanical, you
+     *Ansys, Inc. Licensing Guide*, which you can access from the
+     `Licensing <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/prod_page.html?pn=Licensing&pid=Licensing&lang=en>`_`
+     section of the Ansys Help. In the preceding example for Mechanical, you
      only need to specify the ``-mechapdl`` flag.
 
-After installing Mechanical directly in ``/ansys_inc`` or in ``/usr/ansys_inc``,
-create a symbolic link with:
+After installing Mechanical directly in ``/ansys_inc`` or ``/usr/ansys_inc``,
+create a symbolic link with this command:
 
 .. code:: bash
 
@@ -105,7 +107,7 @@ create a symbolic link with:
 
 By default, PyMechanical expects the Mechanical executable to be in
 ``/usr/ansys_inc``. Whether you install it there or not, you should
-use a symbolic link to link that directory to your Ansys installation
+use a symbolic link to associate that directory with your Ansys installation
 directory (``/*/ansys_inc``).
 
 
@@ -117,14 +119,14 @@ Open ports
 
 **Theory:** You should open the ports ``1055`` and ``2325`` for license server
 communication in the **Windows Control Panel**. For the steps to set advanced
-Windows firewall options, see `How to open port in Windows 10 Firewall?
+Windows firewall options, see Microsoft's `How to open port in Windows 10 Firewall?
 <https://answers.microsoft.com/en-us/windows/forum/all/how-to-open-port-in-windows-10-firewall/f38f67c8-23e8-459d-9552-c1b94cca579a/>`_
 
 **Reality:** This works if you want to run a Docker image using a WSL Linux image
-to host that Docker image. The Docker image successfully communicates with the Windows
+to host this Docker image. The Docker image successfully communicates with the Windows
 License Server using these ports if you use the ``'-p'`` flag when running the
-Docker image with these ports open.  See `Running Mechanical on a local Docker
-image`_.
+Docker image with these ports open. For more information, see
+`Running Mechanical on a local Docker image`_.
 
 If you want to run Mechanical in the CentOS7 image and use the Windows License
 Server, opening the ports might not work properly because the Windows firewall
@@ -188,13 +190,14 @@ Running Mechanical on a local Docker image
 
 To run a Docker image, you must follow all steps in `Running PyMechanical on WSL`_.
 
-Additionally, run a Docker image of PyMechanical with:
+Additionally, run a Docker image of PyMechanical with this command:
 
 .. code:: pwsh
 
     docker run -e ANSYSLMD_LICENSE_FILE=1055@host.docker.internal --restart always --name mechanical -p 10000:10000 ghcr.io/pyansys/pymechanical/mechanical > log.txt
 
-Successive runs should restart the container. Or, delete the container and rerun it with:
+Successive runs should restart the container. Or, delete the container and rerun it with
+this code:
 
 .. code:: pwsh
 
@@ -204,12 +207,12 @@ Successive runs should restart the container. Or, delete the container and rerun
     docker run -e ANSYSLMD_LICENSE_FILE=1055@host.docker.internal --restart always --name mechanical -p 10001:10000 ghcr.io/pyansys/pymechanical/mechanical > log.txt
 
 
-This creates a ``log.txt`` file in your current directory location.
+Running a Docker image creates a ``log.txt`` file in your current directory location.
 
 
 .. note:: Ensure that your port ``10001`` is open in your firewall.
 
-You should use a script (batch ``'.bat'`` or PowerShell ``'.ps'``) file
+You should use a script (batch ``'.bat'`` or PowerShell ``'.ps'`` file)
 to run the preceding commands all at once.
 
 Notice that the WSL internal gRPC port (``10000``) is being mapped to a
@@ -236,7 +239,7 @@ you should specify the IP address and port using one of the following methods.
 
 **Method 3**
 
-You can use specify the IP address and port using environment variables that are read when
+This method specifies the IP address and port using environment variables that are read when
 the Mechanical instance is launched.
 
 .. code:: bash
@@ -246,8 +249,8 @@ the Mechanical instance is launched.
     export pymechanical_ip=127.0.0.1
 
 
-Notes
-=====
+Additional information
+======================
 
 IP addresses
 ============
@@ -280,8 +283,8 @@ and then inspect the last few lines.
     cat ./INSTALL
 
 
-``-licserverinfo``
-------------------
+License server information for the client
+-----------------------------------------
 
 The ``-licserverinfo`` argument specifies information that the client for the license server uses.
 This argument is valid only in conjunction with a silent installation (INSTALL).
@@ -315,15 +318,15 @@ Here is an example:
    ./INSTALL -silent -install_dir /ansys_inc/ -mechapdl -licserverinfo 2325:1055:abc,def,xyz
 
 
-``-lang``
----------
+Language for the installation
+-----------------------------
 
-The ``-lang`` argument specifies the language to use for the installation of the product.
+The ``-lang`` argument specifies the language to use for the installation.
 
 
-``-productfile``
-----------------
-You can specify an ```options``` file that lists the products that you want to
+File specifying the products to install
+---------------------------------------
+You can specify an ``options`` file that lists the products that you want to
 install. When you do so, you must use the ``-productfile`` argument to specify the
 full path to this file.
 
@@ -366,7 +369,7 @@ This method does not show a notification:
 
 
 On Windows 10, you can use the `wsl-windows-toolbar-launcher <https://github.com/cascadium/wsl-windows-toolbar-launcher#firewall-rules/>`_
-package to launching Linux native applications directly from Windows
+package to launch Linux native applications directly from Windows
 with the standard Windows toolbar. Because the toolbar in Windows 11 differs, the README
 file for this package explains how to run Microsoft's `PowerToys <https://github.com/microsoft/PowerToys>`_
 package instead.
@@ -374,9 +377,12 @@ package instead.
 Port forwarding on Windows 10
 =============================
 
+You can use Windows PowerShell commands for port forwarding on Windows 10.
 
 Link ports between WSL and Windows
 ----------------------------------
+
+This command links ports between WSL and Windows:
 
 .. code:: pwsh
 
@@ -385,7 +391,8 @@ Link ports between WSL and Windows
 
 View all forwards
 -----------------
-You can use this PowerShell command to view all forwards:
+
+This command allows you to view all forwards:
 
 .. code:: pwsh
 
@@ -395,6 +402,8 @@ You can use this PowerShell command to view all forwards:
 Delete port forwarding
 ----------------------
 
+This command allows you to delete port forwarding:
+
 .. code:: pwsh
 
     netsh interface portproxy delete v4tov4 listenport=1055 listenaddres=0.0.0.0 protocol=tcp
@@ -402,6 +411,8 @@ Delete port forwarding
 
 Reset Windows network adapters
 ==============================
+
+You can reset Windows network adapters with this code:
 
 .. code:: pwsh
 
@@ -414,12 +425,16 @@ Reset Windows network adapters
 Restart the WSL service
 =======================
 
+You can restart the WSL service with this command:
+
 .. code:: pwsh
 
     Get-Service LxssManager | Restart-Service
 
 Stop all processes with a given name
 ====================================
+
+You can stop all processes with a given name with this command.
 
 .. code:: pwsh
 
@@ -429,8 +444,8 @@ Stop all processes with a given name
 Install ``xvfb`` in CentOS7
 ===========================
 
-If you want to replicate the CI/CD behavior, ``xvfb`` must be installed. For more
-information, see the ``.ci`` folder.
+If you want to replicate the CI/CD behavior, you must install the ``xvfb`` package
+as shown in the following command. For more information, see the ``.ci`` folder.
 
 .. code:: bash
 
