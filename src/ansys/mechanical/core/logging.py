@@ -19,13 +19,13 @@ There is a global logger named ``pymechanical_global``, which is created at
 ``ansys.mechanical.core.__init__``.  If you want to use this global logger,
 you must call it at the top of your module:
 
-.. code:: pycon
+.. code:: python
 
    from ansys.mechanical.core import LOG
 
 You can rename this logger to avoid conflicts with other loggers (if any):
 
-.. code:: pycon
+.. code:: python
 
    from ansys.mechanical.core import LOG as logger
 
@@ -33,7 +33,7 @@ You can rename this logger to avoid conflicts with other loggers (if any):
 The default logging level of ``LOG`` is ``ERROR``. To change this and output
 lower-level messages, you can use this code:
 
-.. code:: pycon
+.. code:: python
 
    LOG.logger.setLevel("DEBUG")
    LOG.file_handler.setLevel("DEBUG")  # If present.
@@ -42,7 +42,7 @@ lower-level messages, you can use this code:
 
 Alternatively, you can use this code:
 
-.. code:: pycon
+.. code:: python
 
    LOG.setLevel("DEBUG")
 
@@ -52,7 +52,7 @@ input log level.
 By default, this logger does not log to a file. If you want,
 you can add a file handler:
 
-.. code:: pycon
+.. code:: python
 
    import os
 
