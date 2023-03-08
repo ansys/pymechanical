@@ -5,6 +5,12 @@ repos:
   hooks:
   - id: black
 
+- repo: https://github.com/adamchainz/blacken-docs
+  rev: 1.13.0
+  hooks:
+  - id: blacken-docs
+    additional_dependencies: [black==23.1.0]
+
 - repo: https://github.com/pycqa/isort
   rev: 5.12.0
   hooks:
@@ -40,4 +46,3 @@ repos:
           examples/01_tips_n_tricks/example_01_run_python_script_output.py |
           examples/01_tips_n_tricks/example_02_run_python_script_scope.py
         )$
-
