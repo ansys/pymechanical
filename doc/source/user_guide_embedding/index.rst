@@ -24,7 +24,7 @@ Overview
 The :class:`Application <ansys.mechanical.core.embedding.Application>` class provides
 a Mechanical instance.
 
-.. code:: python
+.. code:: pycon
 
     from ansys.mechanical.core import Application
 

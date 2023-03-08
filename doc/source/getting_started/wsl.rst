@@ -223,7 +223,7 @@ you should specify the IP address and port using one of the following methods.
 
 **Method 1**
 
-.. code:: python
+.. code:: pycon
 
     from ansys.mechanical.core import launch_mechanical
 
@@ -231,7 +231,7 @@ you should specify the IP address and port using one of the following methods.
 
 **Method 2**
 
-.. code:: python
+.. code:: pycon
 
     from ansys.mechanical.core import Mechanical
 

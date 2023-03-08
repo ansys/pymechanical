@@ -32,9 +32,9 @@ mechanical = launch_mechanical(batch=True, cleanup_on_exit=False)
 print(mechanical)
 
 ###############################################################################
-# Initialize the variable needed for the workflow
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Set the part file path on the server for later user.
+# Initialize variable for workflow
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Set the part file path on the server for later use.
 # Make this variable compatible for Windows, Linux, and Docker containers.
 
 project_directory = mechanical.project_directory

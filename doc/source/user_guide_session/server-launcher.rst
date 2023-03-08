@@ -8,7 +8,7 @@ To test and set up your installation of PyMechanical, run the
 :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>`
 method:
 
-.. code:: python
+.. code:: pycon
 
     from ansys.mechanical.core import launch_mechanical
 
@@ -35,7 +35,7 @@ The settings file for Mechanical is stored locally. You do not need to enter
 the path again. If you must change the path, perhaps to change the default
 version of Mechanical, run the following:
 
-.. code:: python
+.. code:: pycon
 
     from ansys.mechanical import core as pymechanical
 
@@ -50,7 +50,7 @@ Mechanical executable file.
 
 **On Linux**
 
-.. code:: python
+.. code:: pycon
 
     from ansys.mechanical.core import launch_mechanical
 
@@ -59,7 +59,7 @@ Mechanical executable file.
 
 **On Windows**
 
-.. code:: python
+.. code:: pycon
 
     from ansys.mechanical.core import launch_mechanical
 
@@ -69,7 +69,7 @@ Mechanical executable file.
 
 You can use the ``additional_switches`` keyword argument to specify additional arguments.
 
-.. code:: python
+.. code:: pycon
 
     from ansys.mechanical.core import launch_mechanical
 

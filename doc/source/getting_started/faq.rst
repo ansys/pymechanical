@@ -82,7 +82,7 @@ If you have trouble terminating a simulation, you can use the
 this code to close Python, reopen it, and clear all previous data
 such as the mesh:
 
-.. code:: python
+.. code:: pycon
 
     import sys
 

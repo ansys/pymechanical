@@ -39,7 +39,7 @@ Mechanical installation.
 
 Launch Mechanical locally with this code:
 
-.. code:: python
+.. code:: pycon
 
     >>> from ansys.mechanical.core import launch_mechanical
     >>> mechanical = launch_mechanical()
@@ -131,7 +131,7 @@ Assume that Mechanical is running remotely at hostname ``myremotemachine`` on po
 
 You would connect to it with this command:
 
-.. code:: python
+.. code:: pycon
 
     >>> mechanical = Mechanical('myremotemachine', port=10000)
 
@@ -152,7 +152,7 @@ for the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` me
 
 **On Windows**
 
-.. code:: python
+.. code:: pycon
 
     >>> from ansys.mechanical.core import launch_mechanical
     >>> exec_loc = 'C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe'
@@ -161,7 +161,7 @@ for the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` me
 
 **On Linux**
 
-.. code:: python
+.. code:: pycon
 
     >>> from ansys.mechanical.core import launch_mechanical
     >>> exec_loc = '/usr/ansys_inc/v231/aisol/.workbench'
@@ -220,7 +220,7 @@ systems, Linux requires some additional information.
 
 Python code
 ~~~~~~~~~~~
-.. code:: python
+.. code:: pycon
 
     >>> from ansys.mechanical.core import App
     >>> mechanical = App()

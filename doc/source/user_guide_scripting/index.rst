@@ -64,7 +64,7 @@ Executing a sequence of APIs can sometimes be slow because Mechanical may perfor
 entities are created, updated, or deleted. Mechanical scripting has a ``Transaction`` class for deferring many of these
 tasks until after a block of commands are run. Here is an example:
 
-.. code:: python
+.. code:: pycon
 
     with Transaction():
         for obj in Tree:
