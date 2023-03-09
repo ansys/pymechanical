@@ -164,10 +164,10 @@ jobs:
           ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
           ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
           NUM_CORES: 1
-        # TODO - mechanical embedding crashes on shutdown, see https://github.com/pyansys/pymechanical/issues/85
-        # so we have to bypass the return code from pytest in order for the CI/CD not to fail. Need to figure out
-        # a way to fail the CI/CD if any of the tests fail
-        run: /install/ansys_inc/v232/aisol/.workbench_lite pytest -m embedding || true
+        run: |
+          /install/ansys_inc/v232/aisol/.workbench_lite pytest -m embedding > pytest_output.txt 2>&1 || true
+          cat pytest_output.txt
+          [[ grep -q "FAILED" pytest_output.txt ]] || { echo >&2 "Pytest execution failed"; exit 1; }
 
   docs:
     name: Documentation
