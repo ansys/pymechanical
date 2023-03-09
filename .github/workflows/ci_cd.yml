@@ -154,8 +154,8 @@ jobs:
         run: |
           apt update
           apt install -y lsb-release
+          add-apt-repository ppa:deadsnakes/ppa
           apt install -y python${{matrix.python-version}}
-          apt install -y python3-pip
           pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
           pip3 install --upgrade pip flit
 
