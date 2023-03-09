@@ -14,6 +14,8 @@ import time
 import warnings
 import weakref
 
+import ansys.api.mechanical.v0.mechanical_pb2 as mechanical_pb2
+import ansys.api.mechanical.v0.mechanical_pb2_grpc as mechanical_pb2_grpc
 import ansys.platform.instancemanagement as pypim
 from ansys.platform.instancemanagement import Instance
 import appdirs
@@ -28,8 +30,6 @@ from ansys.mechanical.core.errors import (
     protect_grpc,
 )
 from ansys.mechanical.core.launcher import MechanicalLauncher
-import ansys.mechanical.core.mechanical_pb2 as mechanical_pb2
-import ansys.mechanical.core.mechanical_pb2_grpc as mechanical_pb2_grpc
 from ansys.mechanical.core.misc import (
     check_valid_ip,
     check_valid_port,
@@ -167,14 +167,6 @@ def port_in_use(port, host=LOCALHOST):
             return True
         else:
             return False
-
-    # below implementation doesn't work
-    # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-    #     try:
-    #         sock.bind((host, port))
-    #         return False
-    #     except socket.error:
-    #         return True
 
 
 def check_ports(port_range, ip="localhost"):
@@ -408,7 +400,7 @@ def save_mechanical_path(exe_loc=None):  # pragma: no cover
     The location of the configuration file (``config.txt``) can be found in
     ``appdirs.user_data_dir("ansys_mechanical_core")``. For example:
 
-    .. code:: python
+    .. code:: pycon
 
         >>> import appdirs
         >>> import os
@@ -418,10 +410,10 @@ def save_mechanical_path(exe_loc=None):  # pragma: no cover
     You can change the default for the ``exe_loc`` parameter either by modifying the
     ``config.txt`` file or by running this code:
 
-    .. code:: python
+    .. code:: pycon
 
        >>> from ansys.mechanical.core.mechanical import save_mechanical_path
-       >>> save_mechanical_path('/new/path/to/executable')
+       >>> save_mechanical_path("/new/path/to/executable")
 
     """
     if exe_loc is None:
@@ -668,11 +660,16 @@ class Mechanical(object):
         if "local" in kwargs:  # pragma: no cover  # allow this to be overridden
             self._local = kwargs["local"]
 
+        if self._local:
+            self.log_info(f"Mechanical connection is treated as local.")
+        else:
+            self.log_info(f"Mechanical connection is treated as remote.")
+
         self._health_response_queue = None
         self._exiting = False
         self._exited = None
 
-        self.version = None
+        self._version = None
 
         if port is None:
             port = MECHANICAL_DEFAULT_PORT
@@ -707,6 +704,26 @@ class Mechanical(object):
     def log(self):
         """Log associated with the current Mechanical instance."""
         return self._log
+
+    @property
+    def version(self) -> str:
+        """Get the Mechanical version based on the instance."""
+        if self._version == None:
+            try:
+                self._disable_logging = True
+                script = (
+                    'clr.AddReference("Ans.Utilities")\n'
+                    "import Ansys\n"
+                    "config = Ansys.Utilities.ApplicationConfiguration.DefaultConfiguration\n"
+                    "config.VersionInfo.VersionString"
+                )
+                self._version = self.run_python_script(script)
+            except grpc.RpcError:
+                raise
+            finally:
+                self._disable_logging = False
+                pass
+        return self._version
 
     @property
     def _name(self):
@@ -967,12 +984,25 @@ class Mechanical(object):
 
     def get_product_info(self):
         """Get product information by running a script on the Mechanical gRPC server."""
-        try:
-            self._disable_logging = True
-            script = (
+
+        def _get_jscript_product_info_command():
+            return (
                 'ExtAPI.Application.ScriptByName("jscript").ExecuteCommand'
                 '("var productInfo = DS.Script.getProductInfo();returnFromScript(productInfo);")'
             )
+
+        def _get_python_product_info_command():
+            return (
+                'clr.AddReference("Ansys.Mechanical.Application")\n'
+                "Ansys.Mechanical.Application.ProductInfo.ProductInfoAsString"
+            )
+
+        try:
+            self._disable_logging = True
+            if int(self.version) >= 232:
+                script = _get_python_product_info_command()
+            else:
+                script = _get_jscript_product_info_command()
             return self.run_python_script(script)
         except grpc.RpcError:
             raise
@@ -980,14 +1010,14 @@ class Mechanical(object):
             self._disable_logging = False
 
     @suppress_logging
-    def __str__(self):
+    def __repr__(self):
         """Get the user-readable string form of the Mechanical instance."""
         try:
             if self._exited:
                 return "Mechanical exited."
             return self.get_product_info()
         except grpc.RpcError:
-            return "Mechanical exited."
+            return "Error getting product info."
 
     def launch(self, cleanup_on_exit=True):
         """Launch Mechanical in batch or UI mode.
@@ -1119,7 +1149,7 @@ class Mechanical(object):
         )
 
     def run_python_script(
-        self, script_block: str, enable_logging=False, log_level="WARNING", timeout=2000
+        self, script_block: str, enable_logging=False, log_level="WARNING", progress_interval=2000
     ):
         """Run a Python script block inside Mechanical.
 
@@ -1132,7 +1162,7 @@ class Mechanical(object):
         log_level: str
             Level of logging. The default is ``"WARNING"``. Options are ``"DEBUG"``,
             ``"INFO"``, ``"WARNING"``, and ``"ERROR"``.
-        timeout: int, optional
+        progress_interval: int, optional
             Frequency in milliseconds for getting log messages from the server.
             The default is ``2000``.
 
@@ -1142,7 +1172,9 @@ class Mechanical(object):
             Script result.
         """
         self.verify_valid_connection()
-        response = self.__call_run_python_script(script_block, enable_logging, log_level, timeout)
+        response = self.__call_run_python_script(
+            script_block, enable_logging, log_level, progress_interval
+        )
         return response.script_result
 
     def run_python_script_from_file(
@@ -1181,7 +1213,7 @@ class Mechanical(object):
         ----------
         force : bool, optional
             Whether to force Mechanical to exit. The default is ``False``, in which case
-            Mechanical in UI mode only asks for confirmation. This parameter overrides
+            only Mechanical in UI mode asks for confirmation. This parameter overrides
             any environment variables that may inhibit exiting Mechanical.
         """
         if not force:
@@ -2067,14 +2099,17 @@ def launch_mechanical(
         and this parameter is set to ``None``, PyPIM launches Mechanical
         using its ``version`` parameter.
     batch : bool, optional
-        Whether to launches mechanical in batch mode. The default is ``True``.
+        Whether to launch Mechanical in batch mode. The default is ``True``.
         When ``False``, Mechanical launches in UI mode.
     loglevel : str, optional
-        Level of messages to print to the console. The default is ``WARNING``.
-        Options are ``"WARNING"``, ``"ERROR"``, and ``"INFO"``.
-        - ``WARNING`` prints only Ansys warning messages.
-        - ``ERROR`` prints only Ansys error messages.
-        - ``INFO`` prints out all Ansysmessages.
+        Level of messages to print to the console.
+        Options are:
+
+        - ``"WARNING"``: Prints only Ansys warning messages.
+        - ``"ERROR"``: Prints only Ansys error messages.
+        - ``"INFO"``: Prints out all Ansys messages.
+
+        The default is ``WARNING``.
     log_file : bool, optional
         Whether to copy the messages to a file named ``logs.log``, which is
         located where the Python script is executed. The default is ``False``.
@@ -2082,7 +2117,7 @@ def launch_mechanical(
         Path to the output file on the local disk to write every script
         command to. The default is ``None``. However, you might set
         ``"log_mechanical='pymechanical_log.txt'"`` to write all commands that are
-        sent to Mechanical via PyMechanical in this file. You can then use these
+        sent to Mechanical via PyMechanical to this file. You can then use these
         commands to run a script within Mechanical without PyMechanical.
     additional_switches : str, optional
         Additional switches for Mechanical. The default is ``""``.
@@ -2114,10 +2149,10 @@ def launch_mechanical(
     verbose_mechanical : bool, optional
         Whether to enable printing of all output when launching and running
         a Mechanical instance. The default is ``False``. This parameter should be
-        set to ``True`` only for debugging only as output can be tracked within
+        set to ``True`` for debugging only as output can be tracked within
         PyMechanical.
     clear_on_connect : bool, optional
-        when ``start_instance`` is ``False``, whether to clear the environment
+        When ``start_instance`` is ``False``, whether to clear the environment
         when connecting to Mechanical. The default is ``False``. When ``True``,
         a fresh environment is provided when you connect to Mechanical.
     cleanup_on_exit : bool, optional
@@ -2199,6 +2234,10 @@ def launch_mechanical(
         # special handling when building the gallery outside of CI. This
         # creates an instance of Mechanical the first time if PYMECHANICAL_START_INSTANCE
         # is False.
+        # when you launch, treat it as local.
+        # when you connect, treat it as remote. We cannot differentiate between
+        # local vs container scenarios. In the container scenarios, we could be connecting
+        # to a container using local ip and port
         if pymechanical.BUILDING_GALLERY:  # pragma: no cover
             # launch an instance of PyMechanical if it does not already exist and
             # starting instances is allowed
@@ -2218,22 +2257,23 @@ def launch_mechanical(
                     port=GALLERY_INSTANCE[0]["port"],
                     cleanup_on_exit=False,
                     loglevel=loglevel,
+                    local=False,
                 )
-                if clear_on_connect:
-                    mechanical.clear()
+                # we are connecting to the existing gallery instance,
+                # we need to clear Mechanical.
+                mechanical.clear()
+
                 return mechanical
 
                 # finally, if running on CI/CD, connect to the default instance
             else:
                 mechanical = Mechanical(
-                    ip=ip,
-                    port=port,
-                    cleanup_on_exit=False,
-                    loglevel=loglevel,
+                    ip=ip, port=port, cleanup_on_exit=False, loglevel=loglevel, local=False
                 )
-            if clear_on_connect:
+                # we are connecting for gallery generation,
+                # we need to clear Mechanical.
                 mechanical.clear()
-            return mechanical
+                return mechanical
 
     if not start_instance:
         mechanical = Mechanical(
@@ -2245,6 +2285,7 @@ def launch_mechanical(
             timeout=start_timeout,
             cleanup_on_exit=cleanup_on_exit,
             keep_connection_alive=keep_connection_alive,
+            local=False,
         )
         if clear_on_connect:
             mechanical.clear()
@@ -2277,6 +2318,7 @@ def launch_mechanical(
 
     try:
         port = launch_grpc(port=port, verbose=verbose_mechanical, ip=ip, **start_parm)
+        start_parm["local"] = True
         mechanical = Mechanical(
             ip=ip,
             port=port,

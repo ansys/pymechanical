@@ -1,9 +1,10 @@
-.. _ref_user_guide:
+.. _ref_user_guide_session:
 
-==========
-User guide
-==========
-This section  provides an overview of how you use PyMechanical.
+===============
+Remote sessions
+===============
+This section  provides an overview of how you use PyMechanical as a client
+to a remote Mechanical session.
 
 
 ..
@@ -14,14 +15,13 @@ This section  provides an overview of how you use PyMechanical.
    :maxdepth: 1
    :hidden:
 
-   launcher
+   server-launcher
    mechanical
    pool
-   
 
 
-PyMechanical overview
-======================
+Overview
+========
 The :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` method
 creates an instance of the :class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>`
 class in the background and sends commands to it as a service. Because errors and warnings
@@ -43,8 +43,8 @@ Python class. For example, you can send a Python script:
 
 .. code:: python
 
-    result = mechanical.run_python_script('2+3')
-    result = mechanical.run_python_script('ExtAPI.DataModel.Project.ProjectDirectory')
+    result = mechanical.run_python_script("2+3")
+    result = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
 
 Mechanical interactively returns the result of each command that you send,
 storing the result to the logging module.
@@ -52,17 +52,16 @@ storing the result to the logging module.
 Errors are caught immediately. In the following code, an invalid command is sent,
 and an error is raised:
 
-.. code:: python
+.. code:: pycon
 
-    >>> mechanical.run_python_script('2****3')
-
-   grpc.RpcError:
-   "unexpected token '**'"
+    >>> mechanical.run_python_script("2****3")
+    grpc.RpcError:
+    "unexpected token '**'"
 
 Because the error is caught immediately, you can write your Mechanical scripts in
 Python, run them interactively, and then run them in batch without worrying if the
-script runs correctly. This would not be the case if you had instead outputted the
-script that you wrote to a script file.
+scripts run correctly. This would not be the case if you had instead outputted the
+scripts that you wrote to script files.
 
 The :class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>` class supports
 much more than sending text to Mechanical. It includes higher-level wrapping

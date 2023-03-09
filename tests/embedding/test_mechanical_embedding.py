@@ -89,7 +89,9 @@ def test_qk_eng_wb2_005(printer, selection, embedded_app):
         assert BUCK.Solution.ObjectState == Ansys.Mechanical.DataModel.Enums.ObjectState.Solved
 
         printer("Clean and Solve")
-        embedded_app.DataModel.Project.ClearGeneratedData()
+        embedded_app.execute_script("ExtAPI.DataModel.Project.Model.ClearGeneratedData()")
+        assert BUCK.Solution.ObjectState != Ansys.Mechanical.DataModel.Enums.ObjectState.Solved
+        # embedded_app.DataModel.Project.ClearGeneratedData()
         MODEL.Solve(True)
         printer("Validate Results")
         TOT_DEF01_BUCK.Activate()
@@ -122,9 +124,7 @@ def test_qk_eng_wb2_007(printer, selection, embedded_app):
     geometry_import.Import(geometry_file)
     material_file = os.path.join(get_assets_folder(), "eng200_material.xml")
     printer(f"Setting up test - import materials {material_file}")
-    material_file = material_file.replace("\\", "\\\\")
-    script = 'DS.Tree.Projects.Item(1).LoadEngrDataLibraryFromFile("' + material_file + '");'
-    ExtAPI.Application.ScriptByName("jscript").ExecuteCommand(script)
+    embedded_app.import_materials(material_file)
 
     def _innertest():
         printer("Add material file")

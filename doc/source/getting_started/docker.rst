@@ -13,7 +13,7 @@ Running Mechanical in a containerized environment like Docker or `Apptainer <htt
 - Ability to run in a consistent environment regardless of the host operating system
 - Portability and ease of installation
 - Large-scale cluster deployment using Kubernetes
-- Genuine application isolation through containerization.
+- Genuine application isolation through containerization
 
 
 Install the Mechanical image
@@ -24,20 +24,21 @@ can download using your GitHub credentials.
 
 Assuming that you have Docker installed, you can authorize Docker to access
 this repository using a GitHub personal access token with ``packages read``
-permissions. For more information, see `Creating a personal access token
-<https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token>`_.
+permission. For more information, see `Creating a personal access token
+<https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token>`_
+in the *GitHub Docs*.
 
-Save this token to a file with:
+Save this token to a file with a command like this:
 
 .. code::
 
    echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX > GH_TOKEN.txt
 
 
-This lets you send the token to Docker without leaving the token value
+This command lets you send the token to Docker without leaving the token value
 in your history.
 
-Next, authorize Docker to access this repository with:
+Next, authorize Docker to access this repository with this code:
 
 .. code::
 
@@ -50,7 +51,7 @@ directly from the command line. Because this image does not contain a license
 server, you must enter in the IP address of your license server in the
 ``LICENSE_SERVER`` environment variable.
 
-Launch Mechanical with:
+Launch Mechanical with this code:
 
 .. code::
 
@@ -67,7 +68,7 @@ port mappings to launch multiple instances of Mechanical.
 
 As Mechanical starts, you can see status information:
 
-.. code::
+.. code:: pycon
 
     Starting the grpc server at port 10000
     Started the grpc server at port 10000
@@ -75,25 +76,25 @@ As Mechanical starts, you can see status information:
 
 Connect to the Mechanical container
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-You can now connect to the Mechanical container with:
+You can now connect to the Mechanical container with this code:
 
-.. code:: python
+.. code:: pycon
 
     >>> from ansys.mechanical.core import Mechanical
     >>> mechanical = Mechanical()
 
-If you mapped to any port other than ``10000``, you would specify this port when
+If you mapped to any port other than ``10000``, you would specify the port when
 connecting to Mechanical:
 
-.. code:: python
+.. code:: pycon
 
-    >>> mechanical = Mechanical(port=<my-port>)
+    >>> mechanical = Mechanical(port=f"{my_port}")
 
-Verify your connection with:
+Verify your connection with this code:
 
-.. code:: python
+.. code:: pycon
 
-    >>> print(mechanical)
+    >>> mechanical
 
     Ansys Mechanical [Ansys Mechanical Enterprise]
     Product Version:231
@@ -109,5 +110,6 @@ to the Docker command. For example, this code shows how you pass feature flags:
     IMAGE=ghcr.io/pyansys/pymechanical/mechanical:$VERSION
     docker run -e ANSYSLMD_LICENSE_FILE=$LICENSE_SERVER -p 10000:10000 $IMAGE -featureflags mechanical.material.import;
 
-For additional command line arguments, see the *Scripting in Mechanical Guide* in the
-`ANSYS Help <https://ansyshelp.ansys.com>`_.
+For additional command line arguments, see the `Scripting in Mechanical Guide
+<https://ansyshelp.ansys.com/Views/Secured/corp/v231/en/act_script/act_script.html>`_ in the
+Ansys Help.

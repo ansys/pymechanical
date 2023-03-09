@@ -1,6 +1,7 @@
 ANSYS
 Ansys
 ansys
+automations
 Apptainer
 CentOS
 CentOS7
@@ -18,8 +19,17 @@ PyAnsys
 pyansys
 PyMechanical
 Pythonically
+pythonnet
 venv
 Windows
 windows
 WSL
 wsl
+CPython
+namespaces
+Globals
+linux
+Linux
+APIs
+multiphysics
+discretized

@@ -22,3 +22,4 @@ Mechanical class-specific methods and attributes
    Mechanical.download_project
    Mechanical.clear
    Mechanical.log_message
+   Mechanical.version

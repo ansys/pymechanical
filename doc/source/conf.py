@@ -11,7 +11,7 @@ from datetime import datetime
 import os
 import warnings
 
-from ansys_sphinx_theme import pyansys_logo_black
+from ansys_sphinx_theme import get_version_match, pyansys_logo_black
 from sphinx_gallery.sorting import FileNameSortKey
 
 import ansys.mechanical.core as pymechanical
@@ -26,14 +26,6 @@ warnings.filterwarnings(
     message="Matplotlib is currently using agg, which is a non-GUI backend, "
     "so cannot show the figure.",
 )
-
-
-def get_version_match(semver: str) -> str:
-    """Ad-hoc method from ansys-sphinx-theme."""
-    if "dev" in semver:
-        return "dev"
-    major, minor, _ = semver.split(".")
-    return ".".join([major, minor])
 
 
 # -- Project information -----------------------------------------------------
@@ -114,9 +106,6 @@ notfound_urls_prefix = "/../"
 # static path
 html_static_path = ["_static"]
 
-# Add any paths that contain templates here, relative to this directory.
-templates_path = ["_templates"]
-
 # The suffix(es) of source filenames.
 source_suffix = ".rst"
 
@@ -188,9 +177,10 @@ html_context = {
 }
 html_theme_options = {
     "switcher": {
-        "json_url": f"https://{cname}/release/versions.json",
+        "json_url": f"https://{cname}/versions.json",
         "version_match": get_version_match(version),
     },
+    "check_switcher": False,
     "navbar_end": ["version-switcher", "theme-switcher", "navbar-icon-links"],
     "github_url": "https://github.com/pyansys/pymechanical",
     "show_prev_next": False,

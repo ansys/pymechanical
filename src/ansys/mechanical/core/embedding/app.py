@@ -1,12 +1,13 @@
 """Main application class for embedded Mechanical."""
 import atexit
 import os
+import typing
 
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.config import Configuration, configure
 
 
-def _get_available_versions():
+def _get_available_versions() -> typing.Dict[int, str]:
     supported_versions = [222, 231, 232]
     if os.name == "nt":
         supported_versions = [222, 231, 232]
@@ -21,7 +22,7 @@ def _get_available_versions():
         return {232: os.environ["AWP_ROOT232"]}
 
 
-def _get_default_version():
+def _get_default_version() -> int:
     vers = _get_available_versions()
     if not vers:
         raise Exception(
@@ -30,7 +31,7 @@ def _get_default_version():
     return max(vers.keys())
 
 
-def _get_default_configuration():
+def _get_default_configuration() -> Configuration:
     configuration = Configuration()
     if os.name != "nt":
         configuration.no_act_addins = True
@@ -76,6 +77,17 @@ class App:
             atexit.register(_dispose_embedded_app, INSTANCES)
         INSTANCES.append(self)
 
+    def __repr__(self):
+        """Get the product info."""
+        if self._version < 232:
+            return "Ansys Mechanical"
+        import clr
+
+        clr.AddReference("Ansys.Mechanical.Application")
+        import Ansys
+
+        return Ansys.Mechanical.Application.ProductInfo.ProductInfoAsString
+
     def __enter__(self):
         """Enter the scope."""
         return self
@@ -109,6 +121,38 @@ class App:
     def close(self):
         """Close the application."""
         self.ExtAPI.Application.Close()
+
+    def execute_script(self, script: str):
+        """Execute the given script with the internal IronPython engine."""
+        SCRIPT_SCOPE = "pymechanical-internal"
+        if not hasattr(self, "script_engine"):
+            import clr
+
+            clr.AddReference("Ansys.Mechanical.Scripting")
+            import Ansys
+
+            engine_type = Ansys.Mechanical.Scripting.ScriptEngineType.IronPython
+            script_engine = Ansys.Mechanical.Scripting.EngineFactory.CreateEngine(engine_type)
+            empty_scope = False
+            debug_mode = False
+            script_engine.CreateScope(SCRIPT_SCOPE, empty_scope, debug_mode)
+            self.script_engine = script_engine
+        light_mode = True
+        args = None
+        rets = None
+        return self.script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
+
+    def import_materials(self, material_file) -> None:
+        """Import material from matml file."""
+        if self._version > 232:
+            materials = self.DataModel.Project.Model.Materials
+            materials.Import(material_file)
+        else:
+            material_file = material_file.replace("\\", "\\\\")
+            script = (
+                'DS.Tree.Projects.Item(1).LoadEngrDataLibraryFromFile("' + material_file + '");'
+            )
+            self.ExtAPI.Application.ScriptByName("jscript").ExecuteCommand(script)
 
     @property
     def DataModel(self):

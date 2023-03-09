@@ -5,16 +5,16 @@ build-backend = "flit_core.buildapi"
 [project]
 # Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
 name = "ansys-mechanical-core"
-version = "0.7.dev3"
+version = "0.7.dev7"
 description = "A python wrapper for Ansys Mechanical"
 readme = "README.rst"
 requires-python = ">=3.7,<4.0"
 license = {file = "LICENSE"}
 authors = [
-    {name = "ANSYS, Inc.", email = "pyansys.support@ansys.com"},
+    {name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"},
 ]
 maintainers = [
-    {name = "PyAnsys developers", email = "pyansys.maintainers@ansys.com"},
+    {name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"},
 ]
 
 classifiers = [
@@ -30,39 +30,43 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
+    "ansys_api_mechanical==0.1.0",
     "ansys-pythonnet==3.1.0rc1",
     "importlib-metadata>=4.0",
     "appdirs>=1.4.0",
-    "grpcio>=1.30.0,<=1.51.1",
+    "grpcio>=1.30.0",
     "protobuf>=3.12.2,<3.21.0",
     "ansys-platform-instancemanagement>=1.0.1",
     "tqdm>=4.45.0",
 ]
 
 [project.urls]
+Documentation = "https://mechanical.docs.pyansys.com"
 Source = "https://github.com/pyansys/pymechanical"
+Homepage = "https://github.com/pyansys/pymechanical"
+Tracker = "https://github.com/pyansys/pymechanical/issues"
 
 [project.optional-dependencies]
 tests = [
-    "pytest==7.2.1",
+    "pytest==7.2.2",
     "pytest-cov==4.0.0",
     "pytest-print==0.3.1",
 ]
 doc = [
     "Sphinx==5.3.0",
-    "ansys-sphinx-theme==0.8.2",
-    "grpcio==1.51.1",
+    "ansys-sphinx-theme==0.9.5",
+    "grpcio==1.51.3",
     "imageio-ffmpeg==0.4.8",
-    "imageio==2.25.1",
+    "imageio==2.26.0",
     "jupyter_sphinx==0.4.0",
     "jupyterlab>=3.2.8",
-    "matplotlib==3.7.0",
+    "matplotlib==3.7.1",
     "numpydoc==1.5.0",
-    "plotly==5.13.0",
-    "pypandoc==1.10",
+    "plotly==5.13.1",
+    "pypandoc==1.11",
     "pytest-sphinx==0.5.0",
     "pythreejs==2.4.2",
-    "pyvista==0.38.2",
+    "pyvista==0.38.3",
     "sphinx-autobuild==2021.3.14",
     "sphinx-autodoc-typehints==1.22",
     "sphinx-copybutton==0.5.1",
@@ -87,10 +91,6 @@ src_paths = ["doc", "src", "tests"]
 
 [tool.coverage.run]
 source = ["ansys.mechanical"]
-omit = [
-        "**/ansys/mechanical/core/mechanical_pb2.py",
-        "**/ansys/mechanical/core/mechanical_pb2_grpc.py"
-       ]
 
 [tool.coverage.report]
 show_missing = true
@@ -103,7 +103,7 @@ output = ".cov/coverage.xml"
 
 [tool.pytest.ini_options]
 minversion = "7.1"
-addopts = "-ra --cov=ansys.mechanical --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report term -vv --print --print-relative-time"
+addopts = "-ra -s --cov=ansys.mechanical --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report term -vv --print --print-relative-time"
 testpaths = [
     "tests",
 ]
