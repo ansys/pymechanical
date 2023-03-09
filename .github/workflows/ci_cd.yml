@@ -145,7 +145,7 @@ jobs:
     container:
       image: ghcr.io/pyansys/pymechanical/mechanical:v23.2.0
       options: --entrypoint /bin/bash
-    needs: [tests]
+    needs: [smoke-tests]
 
     steps:
       - uses: actions/checkout@v3
@@ -161,11 +161,6 @@ jobs:
       - name: Install packages for testing
         run: |
           pip install .[tests]
-
-      - uses: actions/download-artifact@v3
-        with:
-          name: coverage-tests
-          path: .cov
 
       - name: Unit Testing and coverage
         env:
@@ -190,7 +185,7 @@ jobs:
       - name: Upload coverage results
         uses: actions/upload-artifact@v3
         with:
-          name: coverage-tests-with-embedding
+          name: coverage-tests-embedding
           path: .cov
           retention-days: 7
 
