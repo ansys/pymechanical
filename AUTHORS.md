@@ -7,7 +7,7 @@
 ## Contributors
 
 * [Alexander Kaszynski](https://github.com/akaszynski)
-* [Kathy Pippert](https://github.com/RobPasMue)
+* [Kathy Pippert](https://github.com/PipKat)
 * [Maxime Rey](https://github.com/MaxJPRey)
 * [Mohamed Koubaa](https://github.com/koubaa)
 * [Roberto Pastor](https://github.com/RobPasMue)
