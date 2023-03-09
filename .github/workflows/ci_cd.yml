@@ -111,11 +111,29 @@ jobs:
           docker run --restart always --name ${{ env.DOCKER_MECH_CONTAINER_NAME }} -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }} > log.txt &
           grep -q 'WB Initialize Done' <(timeout 60 tail -f log.txt)
 
-<<<<<<< HEAD
       - name: Testing
         uses: pyansys/actions/tests-pytest@v4
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
+
+      - name: Upload Coverage Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: HTML-Coverage
+          path: .cov/html
+          retention-days: 7
+
+      - name: Get Mechanical container logs
+        if: always()
+        run: docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > mechanical_tests_log-${{ matrix.mechanical-version }}.txt 2>&1
+
+      - name: Upload container logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: mechanical_tests_log-${{ matrix.mechanical-version }}
+          path: mechanical_tests_log-${{ matrix.mechanical-version }}.txt
+          retention-days: 7
+
 
   embedding-tests:
     name: Embeding testing and coverage
@@ -151,24 +169,6 @@ jobs:
         # a way to fail the CI/CD if any of the tests fail
         run: /install/ansys_inc/v232/aisol/.workbench_lite pytest -m embedding || true
 
-      - name: Upload Coverage Results
-        uses: actions/upload-artifact@v3
-        with:
-          name: HTML-Coverage
-          path: .cov/html
-          retention-days: 7
-
-      - name: Get Mechanical container logs
-        if: always()
-        run: docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > mechanical_tests_log-${{ matrix.mechanical-version }}.txt 2>&1
-
-      - name: Upload container logs
-        uses: actions/upload-artifact@v3
-        with:
-          name: mechanical_tests_log-${{ matrix.mechanical-version }}
-          path: mechanical_tests_log-${{ matrix.mechanical-version }}.txt
-          retention-days: 7
-
   docs:
     name: Documentation
     needs: [docs-style]
@@ -190,8 +190,6 @@ jobs:
           docker run --restart always --name ${{ env.DOCKER_MECH_CONTAINER_NAME }} -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }} > log.txt &
           grep -q 'WB Initialize Done' <(timeout 60 tail -f log.txt)
 
-=======
->>>>>>> main
       - name: Run Ansys documentation building action
         uses: pyansys/actions/doc-build@v4
         with:
