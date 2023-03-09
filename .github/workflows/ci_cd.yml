@@ -175,10 +175,11 @@ jobs:
           #
           $(grep "FAILURES" pytest_output.txt)
           if [ $? -eq 0 ]; then
-            echo "Pytest execution failed"; exit 1;
-          else
-            echo "Pytest execution succeeded"; exit 0;
+            echo "Pytest execution failed"
+            exit 1
           fi
+          echo "Pytest execution succeeded"
+          exit 0
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v3
