@@ -174,9 +174,11 @@ jobs:
           #
           # Check if failure occurred
           #
-          grep -q " FAILURES " pytest_output.txt; status=$?
-          if (( status == 0 )); then
+          $(grep -q " FAILURES " pytest_output.txt)
+          if [ $? -eq 0 ]; then
             echo "Pytest execution failed"; exit 1;
+          else
+            echo "Pytest execution succeeded"; exit 0;
           fi
 
       - name: Upload coverage results
