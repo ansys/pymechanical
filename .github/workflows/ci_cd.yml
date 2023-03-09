@@ -154,6 +154,10 @@ jobs:
       image: ghcr.io/pyansys/pymechanical/mechanical:v23.2.0
       options: --entrypoint /bin/bash
     needs: [smoke-tests]
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
 
     steps:
       - uses: actions/checkout@v3
@@ -162,6 +166,7 @@ jobs:
         run: |
           apt update
           apt install -y lsb-release
+          apt install -y python${{matrix.python-version}}
           apt install -y python3-pip
           pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
           pip3 install --upgrade pip flit
@@ -183,7 +188,7 @@ jobs:
           #
           # Check if failure occurred
           #
-          grep "FAILURES" pytest_output.txt
+          $(grep "FAILURES" pytest_output.txt)
           if [ $? -eq 0 ]; then
             echo "Pytest execution failed"; exit 1;
           else
@@ -192,6 +197,7 @@ jobs:
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v3
+        if: ${{ env.MAIN_PYTHON_VERSION }} == ${{ matrix.python-version }}
         with:
           name: coverage-tests-embedding
           path: .cov
@@ -199,7 +205,7 @@ jobs:
 
       - name: Upload coverage results (as .coverage)
         uses: actions/upload-artifact@v3
-        if: ${{ matrix.mechanical-version }} == ${{ env.DOCKER_IMAGE_VERSION }}
+        if: ${{ env.MAIN_PYTHON_VERSION }} == ${{ matrix.python-version }}
         with:
           name: coverage-file-tests-embedding
           path: .coverage
