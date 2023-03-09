@@ -172,14 +172,15 @@ jobs:
           #
           # Check if failure occurred
           #
-          grep "FAILURES" pytest_output.txt
-          echo "I passed the grep command with code $?"
-          if [ $? -eq 0 ]; then
+          output=$(grep -c "FAILURES" pytest_output.txt)
+          echo "I passed the grep command with code $output"
+          if [ $output -eq 0 ]; then
+            echo "Pytest execution succeeded"
+            exit 0
+          else
             echo "Pytest execution failed"
             exit 1
           fi
-          echo "Pytest execution succeeded"
-          exit 0
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v3
