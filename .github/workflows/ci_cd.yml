@@ -116,11 +116,14 @@ jobs:
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
-      - name: Upload Coverage Results
+      # - name: Upload coverage to Codecov
+      #   uses: codecov/codecov-action@v3
+
+      - name: Upload coverage results
         uses: actions/upload-artifact@v3
         with:
-          name: HTML-Coverage
-          path: .cov/html
+          name: coverage-tests
+          path: .cov
           retention-days: 7
 
       - name: Get Mechanical container logs
@@ -168,6 +171,13 @@ jobs:
           /install/ansys_inc/v232/aisol/.workbench_lite pytest -m embedding > pytest_output.txt 2>&1 || true
           cat pytest_output.txt
           [[ grep -q "FAILED" pytest_output.txt ]] || { echo >&2 "Pytest execution failed"; exit 1; }
+
+      - name: Upload coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-tests-embedding
+          path: .cov
+          retention-days: 7
 
   docs:
     name: Documentation
