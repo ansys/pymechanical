@@ -21,6 +21,7 @@ def get_assets_folder():
     return ROOT_FOLDER / "assets"
 
 
+@pytest.mark.embedding
 def test_cause_failure():
     assert 3 == 4
 
