@@ -127,6 +127,14 @@ jobs:
           path: .cov
           retention-days: 7
 
+      - name: Upload coverage results (as .coverage)
+        uses: actions/upload-artifact@v3
+        if: ${{ matrix.mechanical-version }} == ${{ env.DOCKER_IMAGE_VERSION }}
+        with:
+          name: coverage-file-tests
+          path: .coverage
+          retention-days: 7
+
       - name: Get Mechanical container logs
         if: always()
         run: docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > mechanical_tests_log-${{ matrix.mechanical-version }}.txt 2>&1
@@ -187,6 +195,14 @@ jobs:
         with:
           name: coverage-tests-embedding
           path: .cov
+          retention-days: 7
+
+      - name: Upload coverage results (as .coverage)
+        uses: actions/upload-artifact@v3
+        if: ${{ matrix.mechanical-version }} == ${{ env.DOCKER_IMAGE_VERSION }}
+        with:
+          name: coverage-file-tests-embedding
+          path: .coverage
           retention-days: 7
 
   docs:
