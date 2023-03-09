@@ -161,6 +161,7 @@ jobs:
 
       - name: Install packages for testing
         run: |
+          python -v
           python -m pip install .[tests]
 
       - name: Unit Testing and coverage
