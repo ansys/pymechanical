@@ -171,7 +171,13 @@ jobs:
         run: |
           /install/ansys_inc/v232/aisol/.workbench_lite pytest -m embedding > pytest_output.txt 2>&1 || true
           cat pytest_output.txt
-          # [[ grep -q "FAILED" pytest_output.txt ]] || { echo "Pytest execution failed"; exit 1; }
+          #
+          # Check if failure occurred
+          #
+          grep -q " FAILURES " pytest_output.txt; status=$?
+          if (( status == 0 )); then
+            echo "Pytest execution failed"; exit 1;
+          fi
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v3
