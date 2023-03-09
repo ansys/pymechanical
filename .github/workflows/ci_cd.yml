@@ -173,6 +173,7 @@ jobs:
           # Check if failure occurred
           #
           grep "FAILURES" pytest_output.txt
+          echo "I passed the grep command with code $?"
           if [ $? -eq 0 ]; then
             echo "Pytest execution failed"
             exit 1
