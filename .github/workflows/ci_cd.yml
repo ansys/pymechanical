@@ -153,7 +153,7 @@ jobs:
       - name: Install dependencies
         run: |
           apt update
-          apt install -y lsb-release
+          apt install -y lsb-release software-properties-common
           add-apt-repository ppa:deadsnakes/ppa
           apt install -y python${{matrix.python-version}}
           pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
@@ -161,7 +161,7 @@ jobs:
 
       - name: Install packages for testing
         run: |
-          pip install .[tests]
+          python${{matrix.python-version}} -m pip install .[tests]
 
       - name: Unit Testing and coverage
         env:
@@ -171,7 +171,7 @@ jobs:
           ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
           NUM_CORES: 1
         run: |
-          /install/ansys_inc/v232/aisol/.workbench_lite pytest -m embedding > pytest_output.txt || true
+          /install/ansys_inc/v232/aisol/.workbench_lite python${{matrix.python-version}} -m pytest -m embedding > pytest_output.txt || true
           cat pytest_output.txt
           #
           # Check if failure occurred
