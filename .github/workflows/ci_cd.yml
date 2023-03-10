@@ -282,6 +282,11 @@ jobs:
           relative_files = True
           source = "ansys.mechanical"
 
+          [paths]
+          source =
+              /opt/hostedtoolcache/*/ansys/mechanical
+              /usr/local/lib/*/ansys/mechanical
+
           EOF
       
       - name: Run coverage merge and show results
