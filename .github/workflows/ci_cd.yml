@@ -264,7 +264,7 @@ jobs:
           path: cov-dir/normal
       
       - name: Display structure of downloaded files
-        run: ls -R
+        run: ls -Ra
       
   package:
     name: Package library
