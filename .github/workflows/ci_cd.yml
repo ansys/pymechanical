@@ -240,6 +240,9 @@ jobs:
     needs: [tests, embedding-tests]
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -268,13 +271,12 @@ jobs:
 
       - name: Move files to common location
         run: |
-          mv cov-dir/embedding/.coverage cov-dir/.coverage.Embedding
-          mv cov-dir/normal/.coverage cov-dir/.coverage.Normal
-          rm -rf cov-dir/embedding cov-dir/normal
+          mv cov-dir/embedding/.coverage .coverage.Embedding
+          mv cov-dir/normal/.coverage .coverage.Normal
+          rm -rf cov-dir
       
       - name: Generate .coveragerc file
         run: |
-          cd cov-dir
           cat > .coveragerc << 'EOF'
 
           # .coveragerc to control coverage.py
@@ -283,6 +285,7 @@ jobs:
 
           [paths]
           source =
+              ./src/ansys/mechanical
               /opt/hostedtoolcache/*/ansys/mechanical
               /usr/local/lib/*/ansys/mechanical
 
@@ -290,7 +293,6 @@ jobs:
       
       - name: Run coverage merge and show results
         run: |
-          cd cov-dir
           coverage combine --debug=pathmap --rcfile=.coveragerc
           coverage report
 
