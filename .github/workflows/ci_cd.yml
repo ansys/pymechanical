@@ -172,7 +172,7 @@ jobs:
           #
           # Check if failure occurred
           #
-          output=$(grep -c "FAILURES" pytest_output.txt || echo 0)
+          output=$(grep -c "FAILURES" pytest_output.txt || true)
           echo "I passed the grep command with code $output"
           if [ $output -eq 0 ]; then
             echo "Pytest execution succeeded"
