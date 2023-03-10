@@ -22,11 +22,6 @@ def get_assets_folder():
 
 
 @pytest.mark.embedding
-def test_cause_error():
-    assert 3 == 4
-
-
-@pytest.mark.embedding
 def test_qk_eng_wb2_005(printer, selection, embedded_app):
     """Buckling analysis.
 
