@@ -272,10 +272,22 @@ jobs:
           mv cov-dir/normal/.coverage cov-dir/.coverage.Normal
           rm -rf cov-dir/embedding cov-dir/normal
       
+      - name: Generate .coveragerc file
+        run: |
+          cd cov-dir
+          cat > .coveragerc << 'EOF'
+
+          # .coveragerc to control coverage.py
+          [run]
+          relative_files = True
+          source = "ansys.mechanical"
+
+          EOF
+      
       - name: Run coverage merge and show results
         run: |
           cd cov-dir
-          coverage combine --keep --debug=pathmap
+          coverage combine --debug=pathmap --rcfile=.coveragerc
           coverage report
 
   package:
