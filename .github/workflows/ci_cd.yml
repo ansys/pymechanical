@@ -286,8 +286,8 @@ jobs:
 
           [paths]
           source =
-              /opt/hostedtoolcache/*/ansys/mechanical
-              /usr/local/lib/*/ansys/mechanical
+              /opt/hostedtoolcache/**/ansys/mechanical
+              /usr/local/lib/**/ansys/mechanical
 
           EOF
       
