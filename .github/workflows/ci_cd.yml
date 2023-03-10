@@ -280,7 +280,6 @@ jobs:
           # .coveragerc to control coverage.py
           [run]
           relative_files = True
-          source = "ansys.mechanical"
 
           [paths]
           source =
