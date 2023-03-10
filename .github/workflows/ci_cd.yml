@@ -274,6 +274,7 @@ jobs:
       
       - name: Run coverage merge and show results
         run: |
+          cd cov-dir
           coverage combine
           coverage report
 
