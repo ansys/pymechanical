@@ -108,7 +108,7 @@ jobs:
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v3
-        if: ${{ matrix.mechanical-version }} == ${{ env.DOCKER_IMAGE_VERSION }}
+        if: matrix.mechanical-version == env.DOCKER_IMAGE_VERSION
         with:
           name: coverage-tests
           path: .cov
@@ -116,7 +116,7 @@ jobs:
 
       - name: Upload coverage results (as .coverage)
         uses: actions/upload-artifact@v3
-        if: ${{ matrix.mechanical-version }} == ${{ env.DOCKER_IMAGE_VERSION }}
+        if: matrix.mechanical-version == env.DOCKER_IMAGE_VERSION
         with:
           name: coverage-file-tests
           path: .coverage
@@ -183,7 +183,7 @@ jobs:
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v3
-        if: ${{ env.MAIN_PYTHON_VERSION }} == ${{ matrix.python-version }}
+        if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
           name: coverage-tests-embedding
           path: .cov
@@ -191,7 +191,7 @@ jobs:
 
       - name: Upload coverage results (as .coverage)
         uses: actions/upload-artifact@v3
-        if: ${{ env.MAIN_PYTHON_VERSION }} == ${{ matrix.python-version }}
+        if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
           name: coverage-file-tests-embedding
           path: .coverage
