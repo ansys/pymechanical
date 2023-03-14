@@ -6,8 +6,8 @@ PyMechanical attempts to maintain compatibility with legacy archives generated b
 versions of Mechanical. However, PyMechanical only supports recent releases of Mechanical
 directly.
 
-PyMechanical remote session
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+PyMechanical remote sessions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Mechanical 2023 R1 and later support the remote session interface, allowing
 for remote management of Mechanical. With the applicable license, you
@@ -15,8 +15,8 @@ can install and use Mechanical with `Docker <https://www.docker.com/>`_,
 enabling you to run and solve even on platforms that are not officially supported, like
 the Mac operating system. For more information, see :ref:`Using Mechanical through Docker <ref_docker>`.
 
-PyMechanical embedded instance
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+PyMechanical embedded instances
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 On Windows, you can use an embedded instance in 2023 R1 and later.
 On Linux, you can use an embedded instance in 2023 R2 and later.

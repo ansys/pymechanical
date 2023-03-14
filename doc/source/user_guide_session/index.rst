@@ -26,7 +26,7 @@ The :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` method
 creates an instance of the :class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>`
 class in the background and sends commands to it as a service. Because errors and warnings
 are processed Pythonically, you can develop a script in real time without worrying about
-whether the script functions correctly when deployed in batch mode.
+whether the script runs correctly when deployed in batch mode.
 
 Here is how you use the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>`
 method to launch Mechanical from Python in gRPC mode:
@@ -47,7 +47,7 @@ Python class. For example, you can send a Python script:
     result = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
 
 Mechanical interactively returns the result of each command that you send,
-storing the result to the logging module.
+saving the result to the logging module.
 
 Errors are caught immediately. In the following code, an invalid command is sent,
 and an error is raised:
@@ -66,5 +66,5 @@ scripts that you wrote to script files.
 The :class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>` class supports
 much more than sending text to Mechanical. It includes higher-level wrapping
 that provides for better scripting and interaction with Mechanical. For information
-on various advanced methods for interacting with Mechanical, see :ref:`ref_examples`.
+on advanced methods for interacting with Mechanical, see :ref:`ref_examples`.
 
