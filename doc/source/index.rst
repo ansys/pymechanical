@@ -67,14 +67,13 @@ For information on using a remote session, see
 Embedded instance
 ^^^^^^^^^^^^^^^^^
 .. vale off
-PyMechanical's embedded instance is based on `Python.NET <http://pythonnet.github.io/>_`.
+PyMechanical's embedded instance is based on `Python.NET <http://pythonnet.github.io/>`_.
 Rather than starting a new process for Mechanical, a Mechanical object (which is
 implemented in .NET) is directly loaded into Python memory using Python.NET. From
 there, Mechanical's entire data model is available for use from Python code.
 .. vale on
 
-For information on using an embedded instance, see
-:ref:`ref_user_guide_embedding`.
+For information on using an embedded instance, see :ref:`ref_user_guide_embedding`.
 
 
 Project index
