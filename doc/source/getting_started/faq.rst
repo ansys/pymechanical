@@ -36,7 +36,7 @@ ACT in Mechanical
 
 In Mechanical, ACT is a customization framework. When specific features are missing,
 you can add them using ACT. Of course, some of those missing features might be
-automations or scripts of existing features. But, in manycases, they can be new
+automations or scripts of existing features. But, in many cases, they can be new
 capabilities, such as extensions to Mechanical's data model, the ability to connect
 to callbacks, and even integrations of external solvers.
 
