@@ -347,8 +347,6 @@ hostname in the same WSL ``/etc/hosts`` file. This is an IP address that is
 randomly allocated, which is an issue when you define the license server. However,
 updating the ``.bashrc`` file as mentioned earlier resolves this issue.
 
-
-
 Disable the firewall on the WSL ethernet
 ========================================
 
