@@ -57,6 +57,11 @@ Prerequisites
 If you are using CentOS 7, before installing Mechanical, you must install some
 required libraries:
 
+.. code:: bash
+   
+   sudo yum install openssl openssh-clients mesa-libGL mesa-libGLU motif libgfortran
+
+
 Install Ansys products
 -----------------------
 
