@@ -39,9 +39,7 @@ Install WSL by following the instructions in Microsoft's `Install Linux on Windo
 Install the CentOS7 WSL distribution
 ====================================
 
-When working with PyAnsys libraries, you should use the CentOS7 WSL distribution.
-
-You can install this distribution using an unofficial WSL distribution from the
+You can install the CentOS7 WSL using an unofficial distribution from the
 `<https://github.com/wsldl-pg/CentWSL/>`_ package or the
 `<https://github.com/mishamosher/CentOS-WSL/>`_ package.
 
