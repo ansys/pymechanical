@@ -195,7 +195,7 @@ environment variable with the IP address:
 Run Mechanical on a local Docker image
 **************************************
 
-To run a Docker image, you must follow all steps in `Running PyMechanical on WSL`_.
+To run a Docker image, you must follow all steps in `Run PyMechanical on WSL`_.
 
 Additionally, run a Docker image of PyMechanical with this command:
 
@@ -262,7 +262,7 @@ Additional information
 IP addresses
 ============
 
-The IP address ``127.0.0.1`` specified in `Running Mechanical on a local Docker image`_ is
+The IP address ``127.0.0.1`` specified in `Run Mechanical on a local Docker image`_ is
 the IP address of WSL CentOS from the WSL perspective, whereas the IP address for the Windows
 host is typically ``127.0.1.1``.
 
