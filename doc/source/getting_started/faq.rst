@@ -92,11 +92,11 @@ stopping the original process means that nothing should be in present in
 a new process.
 
 The way that you clear all data from Mechanical in PyMechanical depends on if
-Mechanical is running in a remote session or an embedded instance.
+Mechanical is a remote session or embedded.
 
-- If Mechanical is running in a remote session, use either the
+- If Mechanical is a remote session, use either the
   :func:`Mechanical.clear() <ansys.mechanical.core.Mechanical.clear>` 
   method or exit and restart Mechanical.
-- If Mechanical is running in an embedded instance, use the
+- If Mechanical is embedded, use the
   :func:`app.new() <ansys.mechanical.core.embedding.Application.new>`
   method.
