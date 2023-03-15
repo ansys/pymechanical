@@ -15,7 +15,7 @@ method:
     mechanical = launch_mechanical()
 
 The first time that you run this method, PyMechanical attempts to detect the location
-of your Mechanical installation based on environmental variables. If it cannot find
+of your Mechanical installation based on environment variables. If it cannot find
 a Mechanical installation, PyMechanical asks you to supply the location of the
 Mechanical executable file.
 
@@ -80,5 +80,5 @@ You can use the ``additional_switches`` keyword argument to specify additional a
 
 API reference
 ~~~~~~~~~~~~~
-For more information on controlling how Mechanical launches locally, see the description
-of the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` method.
+For more information on controlling how Mechanical launches locally, see the
+:func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` method.

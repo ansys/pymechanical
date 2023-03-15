@@ -12,7 +12,7 @@ Running Mechanical in a containerized environment like Docker or `Apptainer <htt
 
 - Ability to run in a consistent environment regardless of the host operating system
 - Portability and ease of installation
-- Large-scale cluster deployment using Kubernetes
+- Large-scale cluster deployment using `Kubernetes <https://kubernetes.io/>`_
 - Genuine application isolation through containerization
 
 
@@ -24,9 +24,8 @@ can download using your GitHub credentials.
 
 Assuming that you have Docker installed, you can authorize Docker to access
 this repository using a GitHub personal access token with ``packages read``
-permission. For more information, see `Creating a personal access token
-<https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token>`_
-in the *GitHub Docs*.
+permission. For more information, see GitHub's `Creating a personal access token
+<https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token>`_.
 
 Save this token to a file with a command like this:
 
@@ -38,7 +37,7 @@ Save this token to a file with a command like this:
 This command lets you send the token to Docker without leaving the token value
 in your history.
 
-Next, authorize Docker to access this repository with this code:
+Next, authorize Docker to access the repository with this code:
 
 .. code::
 

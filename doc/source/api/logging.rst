@@ -3,7 +3,7 @@ Logging
 To make the logging of events consistent, PyMechanical has a specific
 logging architecture with global and local logging instances.
 
-For these two types of loggers, the default format for a log message is:
+For these two types of loggers, here is the default format for a log message:
 
 .. code:: pycon
 

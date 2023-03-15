@@ -8,7 +8,7 @@ features that are available to you.
 PyMechanical is compatible with Mechanical 2023 R1 and later on Windows
 and Linux. Later releases provide significantly better support and features.
 
-For more information, see `Ansys Mechanical <https://www.ansys.com/products/structures/ansys-mechanical>`_
+For more information, see the `Ansys Mechanical <https://www.ansys.com/products/structures/ansys-mechanical>`_
 page on the Ansys website.
 
 .. toctree::
@@ -24,7 +24,7 @@ page on the Ansys website.
 Install the package
 -------------------
 The ``ansys.mechanical.core`` package supports Python 3.7 through
-Python 3.11 on Windows, Mac, and Linux.
+Python 3.11 on Windows, Linux, and Mac.
 
 You should consider installing PyMechanical in a virtual environment.
 For more information, see Python's
@@ -58,8 +58,9 @@ this code:
    unzip ansys-mechanical-core-v0.7.dev0-wheelhouse-Linux-3.7 wheelhouse
    pip install ansys-mechanical-core -f wheelhouse --no-index --upgrade --ignore-installed
 
-If you are on Windows with Python 3.9, unzip the ``ansys-mechanical-core-v0.7.dev0-wheelhouse-Windows-3.9`` wheelhouse archive
-to a ``wheelhouse`` directory and then install it using the preceding code.
+If you are on Windows with Python 3.9, unzip the ``ansys-mechanical-core-v0.7.dev0-wheelhouse-Windows-3.9``
+wheelhouse archive to a ``wheelhouse`` directory and then install it using ``pip`` like
+in the preceding example.
 
 Verify your installation
 ------------------------

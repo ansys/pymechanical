@@ -24,7 +24,7 @@ For example, to restart failed instances, you can set ``restart_failed=True``:
     >>> pool = LocalMechanicalPool(10, version="231", restart_failed=True)
     Creating Pool: 100%|########| 10/10 [00:01<00:00,  1.43it/s]
 
-You can access each individual instance of Mechanical with:
+You can access each individual instance of Mechanical with this code:
 
 .. code:: pycon
 
@@ -40,7 +40,7 @@ Run a set of input files
 You can use the pool to run a set of pre-generated input files using the
 :func:`run_batch() <ansys.mechanical.core.pool.LocalMechanicalPool.run_batch>` method.
 
-For example, you can run the first set of 20 verification files with:
+For example, you can run the first set of 20 verification files with this code:
 
 .. code:: pycon
 

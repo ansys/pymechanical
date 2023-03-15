@@ -260,8 +260,9 @@ class LocalMechanicalPool:
             Clear Mechanical at the start of execution. The default is
             ``True``. Setting this to ``False`` might lead to instability.
         progress_bar : bool, optional
-            Whether to show a progress bar when running the batch. The default
-            is ``True``.
+            Whether to show a progress bar when running the batch of input
+            files. The default is ``True``, but the progress bar is not shown
+            when ``wait=False``.
         close_when_finished : bool, optional
             Whether to close the instances when the function finishes running
             on all instances in the pool. The default is ``False``.
