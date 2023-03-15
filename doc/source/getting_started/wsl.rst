@@ -24,8 +24,8 @@ shows how to use it together with Mechanical, PyMechanical, and
    experience any problems connecting WSL to the internet, try to disconnect from the VPN.
 
 
-Running PyMechanical on WSL
-***************************
+Run PyMechanical on WSL
+***********************
 There are two versions of WSL: WSL1 and WSL2. Because WSL2 provides many improvements
 over WSL1, you should upgrade to and use WSL2.
 
@@ -37,7 +37,7 @@ Install WSL by following the instructions in Microsoft's `Install Linux on Windo
 .. _Install Linux on Windows with WSL: https://docs.microsoft.com/en-us/windows/wsl/install/
 
 Install the CentOS7 WSL distribution
-=====================================
+====================================
 
 When working with PyAnsys libraries, you should use the CentOS7 WSL distribution.
 
@@ -45,7 +45,7 @@ You can install this distribution using an unofficial WSL distribution from the
 `<https://github.com/wsldl-pg/CentWSL/>`_ package or the
 `<https://github.com/mishamosher/CentOS-WSL/>`_ package.
 
-Optionally, you can try Ubuntu in the context of WSL.
+Optionally, you can try Ubuntu, but it has not been tested yet in the context of WSL.
 
 
 Install Ansys products in WSL CentOS7
@@ -103,8 +103,7 @@ To install Ansys products in WSL, perform these steps:
      <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/installation/win_silent.html>`_
      of the *Windows Installation Guide*.
 
-     . In the preceding example
-     for Mechanical, you only need to specify the ``-mechapdl`` flag.
+     In the preceding example for Mechanical, you only need to specify the ``-mechapdl`` flag.
 
 After installing Mechanical directly in ``/ansys_inc`` or ``/usr/ansys_inc``,
 you create a symbolic link with this command:
@@ -134,7 +133,7 @@ Windows firewall options, see Microsoft's `How to open port in Windows 10 Firewa
 to host this Docker image. The Docker image successfully communicates with the Windows
 license server using these ports if you use the ``'-p'`` flag when running the
 Docker image with these ports open. For more information, see
-`Running Mechanical on a local Docker image`_.
+`Run Mechanical on a local Docker image`_.
 
 If you want to run Mechanical in the CentOS7 image and use the Windows license
 server, opening the ports might not work properly because the Windows firewall
@@ -193,8 +192,8 @@ environment variable with the IP address:
     export ANSYSLMD_LICENSE_FILE=1055@$winhostIP
 
 
-Running Mechanical on a local Docker image
-******************************************
+Run Mechanical on a local Docker image
+**************************************
 
 To run a Docker image, you must follow all steps in `Running PyMechanical on WSL`_.
 
@@ -436,6 +435,7 @@ You can restart the WSL service with this command:
 .. code:: pwsh
 
     Get-Service LxssManager | Restart-Service
+
 
 Stop all processes with a given name
 ====================================
