@@ -10,6 +10,6 @@ This section describes PyMechanical classes, functions, and attributes.
    :hidden:
 
    helper
+   pool
    logging
    mechanical
-   pool
