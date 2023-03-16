@@ -11,7 +11,8 @@ existing scripts, and automating other tasks.
    :toctree: _autosummary
 
 
-   launch_mechanical
    change_default_mechanical_path
-   find_mechanical
    close_all_local_instances
+   find_mechanical
+   launch_mechanical
+

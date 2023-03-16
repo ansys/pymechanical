@@ -12,14 +12,15 @@ Mechanical class-specific methods and attributes
 .. autosummary::
    :toctree: _autosummary
 
-   Mechanical.run_python_script
-   Mechanical.run_python_script_from_file
-   Mechanical.exit
-   Mechanical.project_directory
-   Mechanical.list_files
-   Mechanical.upload
+   Mechanical.clear
    Mechanical.download
    Mechanical.download_project
-   Mechanical.clear
+   Mechanical.exit
+   Mechanical.list_files
    Mechanical.log_message
+   Mechanical.project_directory
+   Mechanical.run_python_script
+   Mechanical.run_python_script_from_file
+   Mechanical.upload
    Mechanical.version
+
