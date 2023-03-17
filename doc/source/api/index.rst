@@ -18,7 +18,7 @@ This section describes how to work with a local pool of Mechanical instances.
 ========
 Logging
 ========
-This section describes about using the Logger to log messages.
+This section describes how to use the logger to log messages.
 
 ===========
 Mechanical
