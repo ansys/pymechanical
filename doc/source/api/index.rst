@@ -13,7 +13,7 @@ This section describes helper functions for launching and closing Mechanical ins
 ======================
 Local Mechanical pool
 ======================
-This section describes about working with the pool of Mechanical instances.
+This section describes how to work with a local pool of Mechanical instances.
 
 ========
 Logging
