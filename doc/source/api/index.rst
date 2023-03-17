@@ -23,8 +23,9 @@ This section describes how to use the logger to log messages.
 ===========
 Mechanical
 ===========
-This section describes about the methods available in the
-:class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>` class to work with a Mechanical gRPC server.
+This section describes the methods in the
+:class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>` class for working
+with a Mechanical gRPC server.
 
 
 .. toctree::
