@@ -8,7 +8,7 @@ This section describes PyMechanical classes, functions, and attributes.
 =================
 Helper functions
 =================
-This section describes about the helper functions to launch and close Mechanical instances.
+This section describes helper functions for launching and closing Mechanical instances.
 
 ======================
 Local Mechanical pool
