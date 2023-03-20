@@ -26,10 +26,9 @@ a Mechanical instance:
 
 .. code:: python
 
-    from ansys.mechanical.core import Application
-
-    app = Application()
-    ns = app.DataModel.Project.Model.AddNamedSelection()
+   from ansys.mechanical.core import App
+   app = App()
+   ns = app.DataModel.Project.Model.AddNamedSelection()
 
 The :class:`Application <ansys.mechanical.core.embedding.Application>` class has access
 to the global scripting entry points that are available from built-in Mechanical scripting:

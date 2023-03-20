@@ -67,7 +67,7 @@ port mappings to launch multiple instances of Mechanical.
 
 As Mechanical starts, you can see status information:
 
-.. code:: pycon
+.. code::
 
     Starting the grpc server at port 10000
     Started the grpc server at port 10000
@@ -77,7 +77,7 @@ Connect to the Mechanical container
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 You can now connect to the Mechanical container with this code:
 
-.. code:: pycon
+.. code:: python
 
     >>> from ansys.mechanical.core import Mechanical
     >>> mechanical = Mechanical()
@@ -85,13 +85,13 @@ You can now connect to the Mechanical container with this code:
 If you mapped to any port other than ``10000``, you would specify the port when
 connecting to Mechanical:
 
-.. code:: pycon
+.. code:: python
 
     >>> mechanical = Mechanical(port=f"{my_port}")
 
 Verify your connection with this code:
 
-.. code:: pycon
+.. code:: python
 
     >>> mechanical
 

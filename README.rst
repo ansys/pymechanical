@@ -208,10 +208,9 @@ Starting a remote session
 To start a remote session of Mechanical on your computer from Python, use the ``launch_mechanical()``
 method. This methods returns an object representing the connection to the session:
 
-.. code:: pycon
+.. code:: python
 
    import ansys.mechanical.core as pymechanical
-
    mechanical = pymechanical.launch_mechanical()
 
 Running commands on the remote session
@@ -219,7 +218,7 @@ Running commands on the remote session
 Given a connection to a remote session, you can send an IronPython script. This uses the built-in
 scripting capabilities of Mechanical. Here is an example:
 
-.. code:: pycon
+.. code:: python
 
     result = mechanical.run_python_script('2+3')
     result = mechanical.run_python_script('ExtAPI.DataModel.Project.ProjectDirectory')
@@ -232,7 +231,7 @@ In this mode, there is no externally running instance of Mechanical. This featur
 on Windows for version 2023 R1 and later, and it will be supported on Linux for version 2023 R2
 and later. Here is an example:
 
-.. code:: pycon
+.. code:: python
 
    import ansys.mechanical.core as pymechanical
 
