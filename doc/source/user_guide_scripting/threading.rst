@@ -25,8 +25,8 @@ a single process, there can be multiple threads running, and these threads can b
 executing in a single core or multiple cores.
 
 In a traditional computer instruction set architecture, memory is a store of data that
-stores the program itself and data used by the program. CPUs will contain a small amount
-of memory that can be used to run a program, but often times an external memory store,
+stores the program itself and data used by the program. CPUs contain a small amount of
+memory that can be used to run a program, but often times an external memory store,
 typically using RAM, is used by the program. Often times, when running a program, the
 CPU needs to fetch data from RAM, or store data back into RAM.
 

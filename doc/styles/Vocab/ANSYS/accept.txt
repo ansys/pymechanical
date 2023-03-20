@@ -38,3 +38,6 @@ CPUs
 enum
 config
 pessimizations
+mutexes
+Addin
+Addins
