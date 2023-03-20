@@ -80,6 +80,7 @@ You can now connect to the Mechanical container with this code:
 .. code:: python
 
     from ansys.mechanical.core import Mechanical
+
     mechanical = Mechanical()
 
 If you mapped to any port other than ``10000``, you would specify the port when
@@ -94,7 +95,6 @@ Verify your connection with this code:
 .. code:: pycon
 
     >>> mechanical
-
     Ansys Mechanical [Ansys Mechanical Enterprise]
     Product Version:231
     Software build date:Wednesday, August 10, 2022 4:28:15 PM

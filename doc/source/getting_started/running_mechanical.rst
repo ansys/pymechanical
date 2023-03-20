@@ -107,6 +107,7 @@ default port (``10000``), you would use this code to connect to it with this cod
 .. code:: python
 
     from ansys.mechanical.core import Mechanical
+
     mechanical = Mechanical()
 
 
@@ -122,7 +123,7 @@ You would connect to it with this code:
 
 .. code:: python
 
-    mechanical = Mechanical('192.168.0.1', port=10000)
+    mechanical = Mechanical("192.168.0.1", port=10000)
 
 **Hostname and port**
 
@@ -154,6 +155,7 @@ for the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` me
 .. code:: python
 
     from ansys.mechanical.core import launch_mechanical
+
     exec_loc = "C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe"
     mechanical = launch_mechanical(exec_loc)
 
@@ -163,6 +165,7 @@ for the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` me
 .. code:: python
 
     from ansys.mechanical.core import launch_mechanical
+
     exec_loc = "/usr/ansys_inc/v231/aisol/.workbench"
     mechanical = launch_mechanical(exec_loc)
 
@@ -225,7 +228,6 @@ Python code
     >>> from ansys.mechanical.core import App
     >>> mechanical = App()
     >>> mechanical
-
     Ansys Mechanical [Ansys Mechanical Enterprise]
     Product Version:231
     Software build date:Wednesday, August 10, 2022 4:28:15 PM
