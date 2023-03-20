@@ -18,4 +18,4 @@ For example, to load an instance of Mechanical without any ACT Addins:
 
    config = Configuration()
    config.no_act_addins = True
-   app = Application(config=config)
+   app = App(config=config)
