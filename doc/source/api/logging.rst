@@ -5,7 +5,7 @@ logging architecture with global and local logging instances.
 
 For these two types of loggers, here is the default format for a log message:
 
-.. code:: python
+.. code:: pycon
 
     >>> from ansys.mechanical.core import launch_mechanical
     >>> mechanical = launch_mechanical()

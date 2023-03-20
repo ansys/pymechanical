@@ -79,19 +79,19 @@ You can now connect to the Mechanical container with this code:
 
 .. code:: python
 
-    >>> from ansys.mechanical.core import Mechanical
-    >>> mechanical = Mechanical()
+    from ansys.mechanical.core import Mechanical
+    mechanical = Mechanical()
 
 If you mapped to any port other than ``10000``, you would specify the port when
 connecting to Mechanical:
 
 .. code:: python
 
-    >>> mechanical = Mechanical(port=f"{my_port}")
+    mechanical = Mechanical(port=f"{my_port}")
 
 Verify your connection with this code:
 
-.. code:: python
+.. code:: pycon
 
     >>> mechanical
 

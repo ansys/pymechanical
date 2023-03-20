@@ -71,7 +71,7 @@ Verify a remote session
 ^^^^^^^^^^^^^^^^^^^^^^^
 Verify your installation by starting a remote session of Mechanical from Python:
 
-.. code:: python
+.. code:: pycon
 
     >>> from ansys.mechanical.core import launch_mechanical
     >>> mechanical = launch_mechanical()
@@ -107,8 +107,11 @@ To use the script, prepend it to any invocation of Python:
 
 Inside of Python, use the following commands to load an embedded instance:
 
-.. code:: python
+.. code:: pycon
 
-    >>> from ansys.mechanical.core import App
-    >>> app = App()
-    >>> print(app)
+   >>> from ansys.mechanical.core import App
+   >>> app = App()
+   >>> print(app)
+   Ansys Mechanical [Ansys Mechanical Enterprise]
+   Product Version:231
+   Software build date:Wednesday, August 10, 2022 4:28:15 PM

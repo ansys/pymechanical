@@ -38,7 +38,7 @@ Mechanical installation.
 
 Launch Mechanical locally with this code:
 
-.. code:: python
+.. code:: pycon
 
     >>> from ansys.mechanical.core import launch_mechanical
     >>> mechanical = launch_mechanical()
@@ -104,10 +104,10 @@ You can connect to a Mechanical session from the same host or from an external h
 Assuming that Mechanical is running locally at the default IP address (``127.0.0.1``) on the
 default port (``10000``), you would use this code to connect to it with this code:
 
-.. code::
+.. code:: python
 
-    >>> from ansys.mechanical.core import Mechanical
-    >>> mechanical = Mechanical()
+    from ansys.mechanical.core import Mechanical
+    mechanical = Mechanical()
 
 
 Now assume that a remote instance of Mechanical has been started in server mode. To connect to
@@ -120,9 +120,9 @@ Assume that Mechanical is running remotely at IP address ``192.168.0.1`` on port
 
 You would connect to it with this code:
 
-.. code::
+.. code:: python
 
-    >>> mechanical = Mechanical('192.168.0.1', port=10000)
+    mechanical = Mechanical('192.168.0.1', port=10000)
 
 **Hostname and port**
 
@@ -132,7 +132,7 @@ You would connect to it with this code:
 
 .. code:: python
 
-    >>> mechanical = Mechanical("myremotemachine", port=10000)
+    mechanical = Mechanical("myremotemachine", port=10000)
 
 
 Launching issues
@@ -153,18 +153,18 @@ for the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` me
 
 .. code:: python
 
-    >>> from ansys.mechanical.core import launch_mechanical
-    >>> exec_loc = "C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe"
-    >>> mechanical = launch_mechanical(exec_loc)
+    from ansys.mechanical.core import launch_mechanical
+    exec_loc = "C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe"
+    mechanical = launch_mechanical(exec_loc)
 
 
 **On Linux**
 
 .. code:: python
 
-    >>> from ansys.mechanical.core import launch_mechanical
-    >>> exec_loc = "/usr/ansys_inc/v231/aisol/.workbench"
-    >>> mechanical = launch_mechanical(exec_loc)
+    from ansys.mechanical.core import launch_mechanical
+    exec_loc = "/usr/ansys_inc/v231/aisol/.workbench"
+    mechanical = launch_mechanical(exec_loc)
 
 
 If, when using the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>`
