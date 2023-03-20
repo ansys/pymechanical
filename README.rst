@@ -211,6 +211,7 @@ method. This methods returns an object representing the connection to the sessio
 .. code:: python
 
    import ansys.mechanical.core as pymechanical
+
    mechanical = pymechanical.launch_mechanical()
 
 Running commands on the remote session
@@ -220,8 +221,8 @@ scripting capabilities of Mechanical. Here is an example:
 
 .. code:: python
 
-    result = mechanical.run_python_script('2+3')
-    result = mechanical.run_python_script('ExtAPI.DataModel.Project.ProjectDirectory')
+    result = mechanical.run_python_script("2+3")
+    result = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
 
 
 Using an embedded instance of Mechanical as a Python object

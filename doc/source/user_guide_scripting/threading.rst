@@ -19,7 +19,7 @@ instance co-routines.
 
 A thread is a CPU virtualization of a CPU core. Traditionally, a computer can have
 multiple CPUs, each executing multiple programs concurrently. Using clever scheduling,
-a CPU can simulate more cores than it actually has. A thread is an abstration around
+a CPU can simulate more cores than it actually has. A thread is an abstraction around
 either a CPU core executing a program or a virtual CPU core executing a program. Within
 a single process, there can be multiple threads running, and these threads can be
 executing in a single core or multiple cores.
@@ -62,7 +62,7 @@ Race condition
 
 This sort of situation is called a **race condition**, where concurrent programs are incorrectly
 accessing or mutating the same memory in such a way that leads to surprising consequences. They may
-seem rare, however remember that when a CPU situtation has a probability of one in a million, it is
+seem rare, however remember that when a CPU situation has a probability of one in a million, it is
 likely to occur hundreds of times per second. If it has a much smaller probability than that, it can
 occur once every few days, or once every few weeks. In the Therac-25 radiation machine, a race
 condition actually led to three deaths and more debilitating injuries.
@@ -90,11 +90,11 @@ Mechanical's threading model
 ============================
 
 Mechanical is a large scale application, and there are in fact multiple concurrent threads running at
-any one time. However, it exhibits **thread affinity**, where a single thread is priveleged above all
+any one time. However, it exhibits **thread affinity**, where a single thread is privileged above all
 others with respect to data access and mutation. If the UI is running, that thread is typically
 called the UI thread, and in batch mode, it is typically called the main thread. Some of the data
 structures used by mechanical's code are thread-compatible, and some of the APIs use task posting.
-However, in the general case, **using any Mechanical API on a non-priveleged thread carries a risk
+However, in the general case, **using any Mechanical API on a non-privileged thread carries a risk
 of race conditions**. It is difficult to quantify the risk or to distinguish exactly which operations
 are most likely to be vulnerable to them, due to the large scale of the Mechanical application's code.
 

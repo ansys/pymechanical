@@ -4,7 +4,7 @@
 Configuration
 *************
 
-There are some configuration options that are respected when loading an ambedded instance
+There are some configuration options that are respected when loading an embedded instance
 of Mechanical into python. Currently - the only such option is whether to load ACT Addins.
 The class :class:`Configuration <ansys.mechanical.core.embedding.Configuration>` can be
 used to set up that configuration. This configuration can be supplied to the constructor
@@ -15,7 +15,7 @@ For example, to load an instance of Mechanical without any ACT Addins:
 .. code:: python
    from ansys.mechanical.core import App
    from ansys.mechanical.core.embedding import Configuration
+
    config = Configuration()
    config.no_act_addins = True
-   app = Application(config = config)
-   ns = app.DataModel.Project.Model.AddNamedSelection()
+   app = Application(config=config)
