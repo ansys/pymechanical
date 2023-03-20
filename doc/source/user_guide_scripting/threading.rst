@@ -74,11 +74,9 @@ There are a number of strategies that software engineers use in order to benefit
 performance of concurrent programs without suffering from race conditions:
 
 * Data copies: Algorithms operate on private copies of data, rather than shared memory
-* Thread-compatible data structures: Data structures that are designed to allow for concurrent
-  read-only access of data but not concurrent writes to data
+* Thread-compatible data structures: Data structures that are designed to allow for concurrent read-only access of data but not concurrent writes to data
 * Thread-safe data structures: Data structures that allow both concurrent reads and writes
-* Task posting: All calls to a set of functions will implicitly schedule the function to run on
-  a dedicated thread, so that two calls to any of these functions will actually run concurrently.
+* Task posting: All calls to a set of functions implicitly schedule the function to run on a dedicated thread, so that two calls to any of these functions actually run concurrently.
 
 Adopting any of these strategies comes with a tradeoff. Namely, these typically ask the CPU to do
 additional work in form of memory walls, mutexes, and other low-level CPU intrinsic functions, or
