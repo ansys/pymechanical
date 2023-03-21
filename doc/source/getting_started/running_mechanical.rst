@@ -21,12 +21,12 @@ a reference:
 .. figure:: ../images/unified_install_2023R1.jpg
     :width: 400pt
 
-Launch remote Mechanical session
---------------------------------
+Launch a remote Mechanical session
+----------------------------------
 You can use PyMechanical to launch a Mechanical session on the local machine
 Python is running on. Alternatively, you can run Mechanical's command line
-directly on any machine to start it in server mode and then use its address
-to manually connect to it from Python.
+directly on any machine to start Mechanical in server mode and then use its
+IP address to manually connect to it from Python.
 
 Launch Mechanical on the local machine using Python
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -49,8 +49,8 @@ Launch Mechanical locally with this code:
     Software build date:Wednesday, August 10, 2022 4:28:15 PM
 
 
-Launch a Mechanical server from command line
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Launch a Mechanical server from the command line
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can launch Mechanical from the command line in server mode and then
 manually connect to it.
@@ -89,7 +89,7 @@ As Mechanical starts in server mode, you can see the server information:
 
 If you want to configure the port that the Mechanical server listens on, when you launch
 Mechanical, use the ``-grpc`` argument. For example, on Linux, launch Mechanical 2023 R1
-on port 10001 with:
+on port ``10001`` with:
 
 .. code::
 
@@ -101,8 +101,8 @@ Connect to a Mechanical session
 
 You can connect to a Mechanical session from the same host or from an external host.
 
-Assuming that Mechanical is running locally at the default IP address (127.0.0.1) on the
-default port (10000), you would use this code to connect to it:
+Assuming that Mechanical is running locally at the default IP address (``127.0.0.1``) on the
+default port (``10000``), you would use this code to connect to it with this code:
 
 .. code::
 
@@ -118,7 +118,7 @@ an IP address and port or a hostname and port.
 
 Assume that Mechanical is running remotely at IP address ``192.168.0.1`` on port ``10000``.
 
-You would connect to it with:
+You would connect to it with this code:
 
 .. code::
 
@@ -128,7 +128,7 @@ You would connect to it with:
 
 Assume that Mechanical is running remotely at hostname ``myremotemachine`` on port ``10000``.
 
-You would connect to it with:
+You would connect to it with this code:
 
 .. code:: pycon
 
@@ -167,9 +167,9 @@ for the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` me
     >>> mechanical = launch_mechanical(exec_loc)
 
 
-If when using the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` method, Mechanical still
-fails to launch or hangs while launching, pass the ``verbose_mechanical=True``
-parameter. This prints the output of Mechanical in the Python console.
+If, when using the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>`
+method, Mechanical still fails to launch or hangs while launching, pass the
+``verbose_mechanical=True`` parameter. This prints the output of Mechanical in the Python console.
 You can then use this output to debug why Mechanical isn't launching.
 
 .. Note::
@@ -218,8 +218,8 @@ The instructions for embedding a Mechanical instance are different on
 Windows and Linux. While the Python code is the same in both cases,
 Linux requires some additional environment variables.
 
-Python code:
-~~~~~~~~~~~~
+Python code
+~~~~~~~~~~~
 .. code:: pycon
 
     >>> from ansys.mechanical.core import App
@@ -230,8 +230,8 @@ Python code:
     Product Version:231
     Software build date:Wednesday, August 10, 2022 4:28:15 PM
 
-Additional information for Linux:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Additional information for Linux
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Starting with 2023 R2, it is possible to embed an instance of Mechanical on Linux.
 However, because of differences in how Mechanical works on Linux, you cannot simply
@@ -254,12 +254,14 @@ Licensing issues
 product section. Posts about licensing are common.
 
 If you are responsible for maintaining an Ansys license or have a personal installation
-of Ansys, you likely can access the **Licensing** section of the
-Ansys Help, where you can view or download the *Ansys, Inc. Licensing Guide* for
+of Ansys, you likely can access the
+`Licensing <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/prod_page.html?pn=Licensing&pid=Licensing&lang=en>`_
+section of the Ansys Help, where you can view or download the *Ansys, Inc. Licensing Guide* for
 comprehensive licensing information.
 
 
 VPN issues
 ----------
 Sometimes, Mechanical has issues starting when VPN software is running. For more information,
-see the *Mechanical User's Guide* in the **Mechanical Application** section of the Ansys Help.
+access the `Mechanical Users Guide <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/wb_sim/ds_Home.html>`_
+in the Ansys Help.

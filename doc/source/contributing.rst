@@ -4,18 +4,16 @@
 Contribute
 ==========
 Overall guidance on contributing to a PyAnsys library appears in
-`Contribute <https://dev.docs.pyansys.com/how-to/contributing.html>`_
+`Contributing <https://dev.docs.pyansys.com/how-to/contributing.html>`_
 in the *PyAnsys Developer's Guide*. Ensure that you are thoroughly familiar
-with this guide, paying particular attention to `Guidelines and Best Practices
-<https://dev.docs.pyansys.com/how-to/index.html>`_, before attempting to
-contribute to PyMechanical.
+with this guide before attempting to contribute to PyMechanical.
  
 The following contribution information is specific to PyMechanical.
 
 Clone the repository
 --------------------
 To clone and install the latest version of PyMechanical in
-development mode, run:
+development mode, run this code:
 
 .. code::
 
@@ -44,7 +42,7 @@ Documentation for the latest stable release of PyMechanical is hosted at
 `PyMechanical Documentation <https://mechanical.docs.pyansys.com>`_.
 
 Documentation for the latest development version, which tracks the
-``main`` branch, is hosted at `Development PyMechanical Documentation <https://dev.mechanical.docs.pyansys.com/>`_.
+``main`` branch, is hosted at `Development PyMechanical Documentation <https://mechanical.docs.pyansys.com/version/dev/index.html>`_.
 This version is automatically kept up to date via GitHub actions.
 
 Test PyMechanical
@@ -72,7 +70,8 @@ variables.
 
 The environment variables for your operating system tell PyMechanical 
 to attempt to connect to the existing Mechanical service by default
-when you use the ``launch_mechanical`` method.
+when you use the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>`
+method.
 
 
 Code style
@@ -81,16 +80,16 @@ As indicated in `Coding style <https://dev.docs.pyansys.com/coding-style/index.h
 in the *PyAnsys Developer's Guide*, PyMechanical follows PEP8 guidelines. PyMechanical
 implements `pre-commit <https://pre-commit.com/>`_ for style checking.
 
-To ensure your code meets minimum code styling standards, run::
+To ensure your code meets minimum code styling standards, run these commands::
 
   pip install pre-commit
   pre-commit run --all-files
 
-You can also install this as a pre-commit hook by running::
+You can also install this as a pre-commit hook by running this command::
 
   pre-commit install
 
-This way, it's not possible for you to push code that fails the style checks. For example::
+This way, it's not possible for you to push code that fails the style checks::
 
   $ pre-commit install
   $ git commit -am "added my cool feature"

@@ -2,8 +2,7 @@
 
 Helper functions
 ================
-These methods provide helper functions for launching Mechanical, converting
-existing scripts, and automating other tasks.
+These methods provide helper functions for launching Mechanical, closing Mechanical instances, and automating other tasks.
 
 .. currentmodule:: ansys.mechanical.core
 
@@ -11,7 +10,8 @@ existing scripts, and automating other tasks.
    :toctree: _autosummary
 
 
-   launch_mechanical
    change_default_mechanical_path
-   find_mechanical
    close_all_local_instances
+   find_mechanical
+   launch_mechanical
+

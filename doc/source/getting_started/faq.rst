@@ -17,8 +17,8 @@ from experts in the community, you can post on this repository's
 `Discussions <https://github.com/pyansys/PyMechanical/discussions>`_ page.
 
 
-How is PyMechanical positioned with respect to other related tools?
--------------------------------------------------------------------
+How is PyMechanical positioned with respect to other related Ansys tools?
+-------------------------------------------------------------------------
 
 When you want to automate or extend Ansys Mechanical, you should
 consider these tools:
@@ -34,12 +34,11 @@ standalone Mechanical.
 ACT in Mechanical
 ^^^^^^^^^^^^^^^^^
 
-In the Ansys Mechanical product, ACT is a customization framework. When specific
-features are missing, users can add them using ACT. Of course, some of those
-missing features might be automations or scripts of existing features. But in many
-cases, they can be new capabilities, such as extensions to Mechanical's data model,
-the ability to connect to callbacks, and even integrations of external
-solvers.
+In Mechanical, ACT is a customization framework. When specific features are missing,
+you can add them using ACT. Of course, some of those missing features might be
+automations or scripts of existing features. But, in many cases, they can be new
+capabilities, such as extensions to Mechanical's data model, the ability to connect
+to callbacks, and even integrations of external solvers.
 
 Scripting in Mechanical
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -66,7 +65,7 @@ What is the relationship with Ansys Workbench?
 
 Ansys Workbench is a no-code environment to set up analysis systems that can be linked
 together. It is part of the Ansys family of software tools for process automation and design
-exploration. This family also includes Ansys OptiSLang, which may be a more natural fit
+exploration. This family includes Ansys OptiSLang, which may be a more natural fit
 for integration with PyMechanical. The most popular app within the Workbench environment is
 Mechanical, and for many years, Workbench was the only environment you could run Mechanical from.
 
@@ -78,9 +77,8 @@ the hood.
 
 How do you restart a script?
 ----------------------------
-If you have trouble terminating a simulation, you do not have to use
-this code to close Python, reopen it, and clear all previous data
-such as the mesh:
+If you have trouble terminating a simulation, you do not have to close Python, reopen it, and
+clear all previous data such as the mesh using this code:
 
 .. code:: python
 
@@ -89,16 +87,16 @@ such as the mesh:
     sys.modules[__name__].__dict__.clear()
 
 
-Exiting Python should clear the solution within Python. This is because 
-stopping the original process means that nothing should be in
+Simply exiting Python should clear the solution within Python. This is because 
+stopping the original process means that nothing should be in present in
 a new process.
 
-The way that you clear all data from Mechanical in PyMechanical depends on if the
+The way that you clear all data from Mechanical in PyMechanical depends on if
 Mechanical is a remote session or embedded.
 
-- If the instance is a remote session, use either the
+- If Mechanical is a remote session, use either the
   :func:`Mechanical.clear() <ansys.mechanical.core.Mechanical.clear>` 
   method or exit and restart Mechanical.
-- If the instance is embedded, use the
+- If Mechanical is embedded, use the
   :func:`app.new() <ansys.mechanical.core.embedding.Application.new>`
   method.

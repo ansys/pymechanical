@@ -511,7 +511,7 @@ def warn_uncommon_executable_path(exe_loc):  # pragma: no cover
 
 
 class Mechanical(object):
-    """Connects to a GRPC Mechanical server and allows commands to be passed."""
+    """Connects to a gRPC Mechanical server and allows commands to be passed."""
 
     # Required by `_name` method to be defined before __init__ be
     _ip = None
@@ -624,7 +624,7 @@ class Mechanical(object):
         elif ip is None:
             ip_temp = "127.0.0.1"
         else:
-            ip_temp = socket.gethostbyname(ip)  # Converting ip or hostname to ip
+            ip_temp = socket.gethostbyname(ip)  # Converting ip or host name to ip
 
         self._ip = ip_temp
         self._port = port
@@ -1523,8 +1523,7 @@ class Mechanical(object):
         >>> mechanical.download('*.*')
 
         Alternatively, the recommended method is to use the
-        :func:`Mechanical.download_project
-        <ansys.mechanical.core.mechanical.Mechanical.download_project>`
+        :func:`download_project() <ansys.mechanical.core.mechanical.Mechanical.download_project>`
         method to download all files.
 
         >>> mechanical.download_project()
@@ -2107,7 +2106,7 @@ def launch_mechanical(
 
         - ``"WARNING"``: Prints only Ansys warning messages.
         - ``"ERROR"``: Prints only Ansys error messages.
-        - ``"INFO"``: Prints out all Ansys messages.
+        - ``"INFO"``: Prints all Ansys messages.
 
         The default is ``WARNING``.
     log_file : bool, optional
@@ -2137,7 +2136,7 @@ def launch_mechanical(
         IP address to use only when ``start_instance`` is ``False``. The
         default is ``None``, in which case ``"127.0.0.1"`` is used. If you
         provide an IP address, ``start_instance`` is set to ``False``.
-        A hostname can be provided as an alternative to an IP address.
+        A host name can be provided as an alternative to an IP address.
     start_instance : bool, optional
         Whether to launch and connect to a new Mechanical instance. The default
         is ``None``, in which case an attempt is made to connect to an existing
@@ -2192,8 +2191,8 @@ def launch_mechanical(
     >>> exec_file_path = 'C:/Program Files/ANSYS Inc/v231/aisol/bin/win64/AnsysWBU.exe'
     >>> mech = launch_mechanical(exec_file_path)
 
-    Connect to an existing Mechanical instance at IP address 192.168.1.30 on port
-    50001.
+    Connect to an existing Mechanical instance at IP address ``192.168.1.30`` on port
+    ``50001``.
 
     >>> mech = launch_mechanical(start_instance=False, ip='192.168.1.30', port=50001)
     """
@@ -2217,7 +2216,7 @@ def launch_mechanical(
         ip = os.environ.get("PYMECHANICAL_IP", LOCALHOST)
     else:  # pragma: no cover
         start_instance = False
-        ip = socket.gethostbyname(ip)  # Converting ip or hostname to ip
+        ip = socket.gethostbyname(ip)  # Converting ip or host name to ip
 
     check_valid_ip(ip)  # double check
 
