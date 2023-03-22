@@ -37,7 +37,8 @@ When there are multiple programs or threads running on a CPU, things can get tri
 Consider a (contrived) example with a simple program that increments an integer:
 
 .. code::
-   i++
+
+    i++
 
 If ``i`` is a 32-bit integer, it is represented in binary. For example, the number 11
 is ``00000000 00000000 00000000 00001011``, and the number 12 is ``00000000 00000000 00000000 00001100``.

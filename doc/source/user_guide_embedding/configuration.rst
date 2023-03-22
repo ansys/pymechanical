@@ -13,9 +13,10 @@ of the class :class:`Configuration <ansys.mechanical.core.embedding.Application>
 For example, to load an instance of Mechanical without any ACT Addins:
 
 .. code:: python
-   from ansys.mechanical.core import App
-   from ansys.mechanical.core.embedding import Configuration
 
-   config = Configuration()
-   config.no_act_addins = True
-   app = App(config=config)
+    from ansys.mechanical.core import App
+    from ansys.mechanical.core.embedding import Configuration
+
+    config = Configuration()
+    config.no_act_addins = True
+    app = App(config=config)
