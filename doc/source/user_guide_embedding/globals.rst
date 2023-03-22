@@ -11,10 +11,10 @@ by default usable from Python. Some of these are API entry points, like those di
 scripting APIs. Examples of those are the ``Quantity`` class or the ``DataModelObjectCategory``
 enum.
 
-Embedding Mechanical into python is as simple as constructing an application object. This can
-not automatically change the global variables available to the python scope which constructed
-it. As a utility, a function which adds the API entry points is available. To use it, run the
-following:
+Embedding Mechanical into Python is as simple as constructing an application object. This can
+not automatically change the global variables available to the Python scope that constructed
+it. As a utility, a function that adds the API entry points is available. To use it, run the
+following code:
 
 .. code:: python
 
