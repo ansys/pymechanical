@@ -109,6 +109,9 @@ Inside of Python, use the following commands to load an embedded instance:
 
 .. code:: pycon
 
-    >>> from ansys.mechanical.core import App
-    >>> app = App()
-    >>> print(app)
+   >>> from ansys.mechanical.core import App
+   >>> app = App()
+   >>> print(app)
+   Ansys Mechanical [Ansys Mechanical Enterprise]
+   Product Version:231
+   Software build date:Wednesday, August 10, 2022 4:28:15 PM
