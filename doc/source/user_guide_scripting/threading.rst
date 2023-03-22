@@ -90,14 +90,15 @@ problems for the typical user.
 Mechanical's threading model
 ============================
 
-Mechanical is a large scale application, and there are in fact multiple concurrent threads running at
-any one time. However, it exhibits **thread affinity**, where a single thread is privileged above all
-others with respect to data access and mutation. If the UI is running, that thread is typically
-called the UI thread, and in batch mode, it is typically called the main thread. Some of the data
-structures used by mechanical's code are thread-compatible, and some of the APIs use task posting.
-However, in the general case, **using any Mechanical API on a non-privileged thread carries a risk
-of race conditions**. It is difficult to quantify the risk or to distinguish exactly which operations
-are most likely to be vulnerable to them, due to the large scale of the Mechanical application's code.
+Mechanical is a large-scale application with multiple concurrent threads running at
+any one time. However, it exhibits *thread affinity*, where a single thread is privileged above
+all others with respect to data access and mutation. If the user interface (UI) is running,
+this thread is typically called the UI thread, and in batch mode, it is typically called the
+main thread. Some of the data structures used by Mechanical's code are thread-compatible.
+Some of the APIs use task posting. However, in the general case, **using any Mechanical
+API on a non-privileged thread carries a risk of race conditions**. It is difficult to quantify
+the risk or to distinguish which operations are most likely to be vulnerable to them due to
+the large scale of the Mechanical application's code.
 
 As such, Mechanical APIs **MUST** only be run on the UI thread or main thread, in interactive and batch
 mode respectively. For PyMechanical, this means the following:
