@@ -82,7 +82,7 @@ performance of concurrent programs without suffering from race conditions:
 
 Adopting any of these strategies comes with a tradeoff. Namely, these strategies typically
 ask the CPU to do additional work in form of memory walls, mutexes, and other low-level
-CPU-intrinsic functions. Or, they ask the the program to do additional work in scheduling
+CPU-intrinsic functions. Or, they require the program to do additional work in scheduling
 tasks. Usually, these are performance pessimizations for the 99% of cases where
 concurrency is not needed. As such, adopting these strategies causes performance
 problems for the typical user.
