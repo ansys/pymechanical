@@ -42,18 +42,20 @@ class MechanicalLauncher:
         self.__ui_arg_list = ["-DSApplet", "-nosplash", "-notabctrl"]
         self.__batch_arg_list = ["-DSApplet", "-b"]
 
-        app_mode_mesh_exits = self._mode_exists("-AppModeMesh")
-        app_mode_rest_exits = self._mode_exists("-AppModeRest")
+        app_mode_mech_exits = MechanicalLauncher._mode_exists(additional_args, "-AppModeMech")
+        app_mode_mesh_exits = MechanicalLauncher._mode_exists(additional_args, "-AppModeMesh")
+        app_mode_rest_exits = MechanicalLauncher._mode_exists(additional_args, "-AppModeRest")
 
-        # if we don't have -AppModeMesh or -AppModeRest in the additional args
-        # then we want to start in -AppModeMech
-        if not (app_mode_mesh_exits or app_mode_rest_exits):
+        # if we don't have -AppModeMesh or -AppModeRest or -AppModeMech in the additional args
+        # then we want to start with -AppModeMech
+        if not (app_mode_mesh_exits or app_mode_rest_exits or app_mode_mech_exits):
             self.__ui_arg_list.append("-AppModeMech")
             self.__batch_arg_list.append("-AppModeMech")
 
-    def _mode_exists(self, mode):
-        if self.additional_args is not None and isinstance(self.additional_args, list):
-            if mode.upper() in (mode_temp.upper() for mode_temp in self.additional_args):
+    @staticmethod
+    def _mode_exists(additional_args, mode):
+        if additional_args is not None and isinstance(additional_args, list):
+            if mode.upper() in (mode_temp.upper() for mode_temp in additional_args):
                 return True
 
         return False
@@ -61,9 +63,7 @@ class MechanicalLauncher:
     def launch(self):
         """Launch Mechanical with the gRPC server."""
         exe_path = self.__get_exe_path()
-        if not os.path.exists(exe_path):
-            print(f"Startup file:{exe_path} doesn't exist.")
-            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), exe_path)
+        MechanicalLauncher.verify_path_exists(exe_path)
 
         env_variables = self.__get_env_variables()
         args_list = self.__get_commandline_args()
@@ -80,6 +80,19 @@ class MechanicalLauncher:
 
         process = subprocess.Popen(args_list, shell=shell_value, env=env_variables)
         LOG.info(f"Started the process:{process} using {args_list}.")
+
+    @staticmethod
+    def verify_path_exists(exe_path):
+        """Throw an exception if the given exe_path does not exist.
+
+        Parameters
+        ----------
+        exe_path : str
+            Path to verify.
+        """
+        if not os.path.exists(exe_path):
+            LOG.info(f"Startup file:{exe_path} doesn't exist.")
+            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), exe_path)
 
     def __get_env_variables(self):
         """Get the dictionary of environment variables used while launching Mechanical.
@@ -113,7 +126,7 @@ class MechanicalLauncher:
 
         if self.batch:
             args_list.extend(self.__batch_arg_list)
-        else:
+        else:  # pragma: no cover
             args_list.extend(self.__ui_arg_list)
 
         args_list.append("-grpc")
