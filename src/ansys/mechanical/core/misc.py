@@ -13,7 +13,7 @@ def is_windows():
     -------
     ``True`` if the host machine is on Windows, ``False`` otherwise.
     """
-    if os.name == "nt":
+    if os.name == "nt":  # pragma: no cover
         return True
 
     return False
@@ -65,16 +65,6 @@ def threaded_daemon(func):
         thread.daemon = True
         thread.start()
         return thread
-
-    return wrapper
-
-
-def no_return(func):
-    """Decorate a function with this decorator to return nothing from the wrapped function."""
-
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        func(*args, **kwargs)
 
     return wrapper
 
