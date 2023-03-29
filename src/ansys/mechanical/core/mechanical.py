@@ -254,7 +254,7 @@ def _get_available_base_mechanical():
     """
     base_path = None
     if is_windows():
-        supported_versions = [231]
+        supported_versions = [232, 231]
         awp_roots = {ver: os.environ.get(f"AWP_ROOT{ver}", "") for ver in supported_versions}
         installed_versions = {
             ver: path for ver, path in awp_roots.items() if path and os.path.isdir(path)
@@ -264,7 +264,7 @@ def _get_available_base_mechanical():
         else:
             base_path = os.path.join(os.environ["PROGRAMFILES"], "ANSYS Inc")
     else:
-        for path in ["/usr/ansys_inc", "/ansys_inc"]:
+        for path in ["/usr/ansys_inc", "/ansys_inc", "/install/ansys_inc"]:
             if os.path.isdir(path):
                 base_path = path
 

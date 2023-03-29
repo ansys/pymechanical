@@ -114,6 +114,7 @@ def mke_app_reset(request):
 
 
 def launch_mechanical_instance(cleanup_on_exit=False):
+    print("launching mechanical instance")
     return pymechanical.launch_mechanical(
         verbose_mechanical=True,
         cleanup_on_exit=cleanup_on_exit,
@@ -122,6 +123,7 @@ def launch_mechanical_instance(cleanup_on_exit=False):
 
 
 def connect_to_mechanical_instance(port=None, clear_on_connect=False):
+    print("connecting to a existing mechanical instance")
     hostname = platform.uname().node  # your machine name
 
     # ip needs to be passed or start instance takes precedence
