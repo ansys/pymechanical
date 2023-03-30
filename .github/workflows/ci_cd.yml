@@ -364,8 +364,18 @@ jobs:
       
       - name: Run coverage merge and show results
         run: |
-          coverage combine --debug=pathmap --rcfile=.coveragerc
+          coverage combine --keep --debug=pathmap --rcfile=.coveragerc
           coverage report
+          coverage report html -d .coverage-combined/html
+          coverage report xml -o .coverage-combined/xml
+
+      - name: Upload combined coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: combined-coverage-results
+          path: .coverage-combined
+          retention-days: 7
+
 
   package:
     name: Package library
