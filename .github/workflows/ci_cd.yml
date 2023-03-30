@@ -366,8 +366,8 @@ jobs:
         run: |
           coverage combine --keep --debug=pathmap --rcfile=.coveragerc
           coverage report
-          coverage report html -d .coverage-combined/html
-          coverage report xml -o .coverage-combined/xml
+          coverage html -d .coverage-combined/html
+          coverage xml -o .coverage-combined/xml
 
       - name: Upload combined coverage results
         uses: actions/upload-artifact@v3
