@@ -25,7 +25,7 @@ def initialize(version: int) -> None:
     """
     if loader.is_pythonnet_3():
         __initialize_runtime_pythonnet_3()
-    else:
+    else:  # pragma: no cover
         # pythonnet 2.5 is supported with some codecs
         # and some additions to the system path that are shipped with Mechanical in 2023 R1
         # these additions to the system path may not be desirable for pymechanical embedding

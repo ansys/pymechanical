@@ -9,7 +9,7 @@ from ansys.mechanical.core.embedding.config import Configuration, configure
 
 def _get_available_versions() -> typing.Dict[int, str]:
     supported_versions = [222, 231, 232]
-    if os.name == "nt":
+    if os.name == "nt":  # pragma: no cover
         supported_versions = [222, 231, 232]
         awp_roots = {ver: os.environ.get(f"AWP_ROOT{ver}", "") for ver in supported_versions}
         installed_versions = {
@@ -17,8 +17,7 @@ def _get_available_versions() -> typing.Dict[int, str]:
         }
         return installed_versions
     else:
-        # TODO - this can't be hardcoded... see how pymapdl does this.
-        os.environ["AWP_ROOT232"] = "/data/mkoubaa/ansys_inc/v232"
+        # TODO - this assumes the env var is set.
         return {232: os.environ["AWP_ROOT232"]}
 
 
