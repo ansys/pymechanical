@@ -135,7 +135,7 @@ jobs:
 
 
   embedding-tests:
-    name: Embeding testing and coverage
+    name: Embedding testing and coverage
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/pyansys/pymechanical/mechanical:v23.2.0
@@ -197,6 +197,68 @@ jobs:
           path: .coverage
           retention-days: 7
 
+  launch-tests:
+    name: Launch testing and coverage
+    runs-on: ubuntu-latest-8-cores
+    container:
+      image: ghcr.io/pyansys/pymechanical/mechanical:v23.2.0
+      options: --entrypoint /bin/bash
+    needs: [ smoke-tests ]
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ '3.7', '3.8', '3.9', '3.10', '3.11' ]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          apt update
+          apt install -y lsb-release
+          apt install -y python3-pip
+          pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
+          pip3 install --upgrade pip flit
+      - name: Install packages for testing
+        run: |
+          pip install .[tests]
+
+      - name: Unit Testing and coverage
+        env:
+          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
+          ANSYSCL232_DIR: /install/ansys_inc/v232/licensingclient
+          ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
+          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
+        run: |
+          pytest -m remote_session_launch > pytest_output.txt || true
+          cat pytest_output.txt
+          #
+          # Check if failure occurred
+          #
+          output=$(grep -c "FAILURES" pytest_output.txt || true)
+          if [ $output -eq 0 ]; then
+            echo "Pytest execution succeeded"
+            exit 0
+          else
+            echo "Pytest execution failed"
+            exit 1
+          fi
+
+      - name: Upload coverage results
+        uses: actions/upload-artifact@v3
+        if: env.MAIN_PYTHON_VERSION == matrix.python-version
+        with:
+          name: coverage-tests-remote-session-launch
+          path: .cov
+          retention-days: 7
+
+      - name: Upload coverage results (as .coverage)
+        uses: actions/upload-artifact@v3
+        if: env.MAIN_PYTHON_VERSION == matrix.python-version
+        with:
+          name: coverage-file-tests-remote-session-launch
+          path: .coverage
+          retention-days: 7
+
   docs:
     name: Documentation
     needs: [docs-style]
@@ -237,7 +299,7 @@ jobs:
 
   coverage:
     name: Merging coverage
-    needs: [tests, embedding-tests]
+    needs: [tests, embedding-tests, launch-tests]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -264,6 +326,11 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
+          name: coverage-file-tests-remote-session-launch
+          path: cov-dir/launch
+
+      - uses: actions/download-artifact@v3
+        with:
           name: coverage-file-tests
           path: cov-dir/normal
 
@@ -273,6 +340,7 @@ jobs:
       - name: Move files to common location
         run: |
           mv cov-dir/embedding/.coverage .coverage.Embedding
+          mv cov-dir/launch/.coverage .coverage.Launch
           mv cov-dir/normal/.coverage .coverage.Normal
           rm -rf cov-dir
       
