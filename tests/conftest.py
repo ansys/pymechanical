@@ -85,6 +85,11 @@ def start_embedding_app() -> datetime.timedelta:
     start = datetime.datetime.now()
     EMBEDDED_APP = App(version=232)
     startup_time = (datetime.datetime.now() - start).total_seconds()
+    num_cores = os.environ.get("NUM_CORES", None)
+    if num_cores != None:
+        num_cores = int(num_cores)
+        config = EMBEDDED_APP.ExtAPI.Application.SolveConfigurations["My Computer"]
+        config.SolveProcessSettings.MaxNumberOfCores = 2
     return startup_time
 
 

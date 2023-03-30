@@ -90,6 +90,7 @@ default_section = "THIRDPARTY"
 src_paths = ["doc", "src", "tests"]
 
 [tool.coverage.run]
+relative_files = true
 source = ["ansys.mechanical"]
 
 [tool.coverage.report]
