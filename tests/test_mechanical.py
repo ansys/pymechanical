@@ -264,6 +264,7 @@ def verify_project_download(mechanical, tmpdir):
 
 
 @pytest.mark.remote_session_connect
+# @pytest.mark.wip
 # @pytest.mark.skip(reason="avoid long running")
 def test_upload_attach_mesh_solve_use_api_non_distributed_solve(mechanical, tmpdir):
     # default is distributed solve
@@ -368,8 +369,10 @@ def test_launch_result_mode(mechanical_result):
 
 @pytest.mark.remote_session_launch
 def test_close_all_Local_instances(tmpdir):
+    list_ports = []
     mechanical = conftest.launch_mechanical_instance(cleanup_on_exit=False)
     print(mechanical.name)
+    list_ports.append(mechanical._port)
 
     # connect to the launched instance
     mechanical2 = conftest.connect_to_mechanical_instance(mechanical._port, clear_on_connect=True)
@@ -380,9 +383,11 @@ def test_close_all_Local_instances(tmpdir):
     # use the settings and launch another Mechanical instance
     mechanical.launch(cleanup_on_exit=False)
     print(mechanical.name)
+    list_ports.append(mechanical._port)
 
-    pymechanical.close_all_local_instances(use_thread=False)
-    assert 0 == len(pymechanical.LOCAL_PORTS)
+    pymechanical.close_all_local_instances(list_ports, use_thread=False)
+    for value in list_ports:
+        assert value not in pymechanical.LOCAL_PORTS
 
 
 @pytest.mark.remote_session_launch
