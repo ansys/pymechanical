@@ -12,7 +12,7 @@ Running Mechanical in a containerized environment like Docker or `Apptainer <htt
 
 - Ability to run in a consistent environment regardless of the host operating system
 - Portability and ease of installation
-- Large-scale cluster deployment using Kubernetes
+- Large-scale cluster deployment using `Kubernetes <https://kubernetes.io/>`_
 - Genuine application isolation through containerization
 
 
@@ -24,9 +24,8 @@ can download using your GitHub credentials.
 
 Assuming that you have Docker installed, you can authorize Docker to access
 this repository using a GitHub personal access token with ``packages read``
-permission. For more information, see `Creating a personal access token
-<https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token>`_
-in the *GitHub Docs*.
+permission. For more information, see GitHub's `Creating a personal access token
+<https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token>`_.
 
 Save this token to a file with a command like this:
 
@@ -38,7 +37,7 @@ Save this token to a file with a command like this:
 This command lets you send the token to Docker without leaving the token value
 in your history.
 
-Next, authorize Docker to access this repository with this code:
+Next, authorize Docker to access the repository with this code:
 
 .. code::
 
@@ -68,7 +67,7 @@ port mappings to launch multiple instances of Mechanical.
 
 As Mechanical starts, you can see status information:
 
-.. code:: pycon
+.. code::
 
     Starting the grpc server at port 10000
     Started the grpc server at port 10000
@@ -78,24 +77,24 @@ Connect to the Mechanical container
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 You can now connect to the Mechanical container with this code:
 
-.. code:: pycon
+.. code:: python
 
-    >>> from ansys.mechanical.core import Mechanical
-    >>> mechanical = Mechanical()
+    from ansys.mechanical.core import Mechanical
+
+    mechanical = Mechanical()
 
 If you mapped to any port other than ``10000``, you would specify the port when
 connecting to Mechanical:
 
-.. code:: pycon
+.. code:: python
 
-    >>> mechanical = Mechanical(port=f"{my_port}")
+    mechanical = Mechanical(port=f"{my_port}")
 
 Verify your connection with this code:
 
 .. code:: pycon
 
     >>> mechanical
-
     Ansys Mechanical [Ansys Mechanical Enterprise]
     Product Version:231
     Software build date:Wednesday, August 10, 2022 4:28:15 PM

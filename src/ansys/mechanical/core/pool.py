@@ -33,7 +33,7 @@ def available_ports(n_ports, starting_port=MECHANICAL_DEFAULT_PORT):
         Number of the port to start the search from. The default is
         ``MECHANICAL_DEFAULT_PORT``.
     """
-    port = MECHANICAL_DEFAULT_PORT
+    port = starting_port
     ports = []
     while port < 65536 and len(ports) < n_ports:
         if not port_in_use(port):
@@ -152,23 +152,23 @@ class LocalMechanicalPool:
         exec_file = None
         if "exec_file" in kwargs:
             exec_file = kwargs["exec_file"]
-        else:  # get default executable
-            if pypim.is_configured():
+        else:
+            if pypim.is_configured():  # pragma: no cover
                 if "version" in kwargs:
                     version = kwargs["version"]
                     self._remote = True
                 else:
                     raise "Pypim is configured. But version is not passed."
-            else:
+            else:  # get default executable
                 exec_file = get_mechanical_path()
-                if exec_file is None:
+                if exec_file is None:  # pragma: no cover
                     raise FileNotFoundError(
                         "Path to Mechanical executable file is invalid or cache cannot be loaded. "
                         "Enter a path manually by specifying a value for the "
                         "'exec_file' parameter."
                     )
 
-        if not self._remote:
+        if not self._remote:  # pragma: no cover
             if _version_from_path(exec_file) < 231:
                 raise VersionError("A local Mechanical pool requires Mechanical 2023 R1 or later.")
 
@@ -198,7 +198,7 @@ class LocalMechanicalPool:
         # initialize a list of dummy instances
         self._instances = [None for _ in range(n_instances)]
 
-        if self._remote:
+        if self._remote:  # pragma: no cover
             threads = [
                 self._spawn_mechanical_remote(i, pbar, name=f"Instance {i}")
                 for i in range(n_instances)
@@ -213,7 +213,7 @@ class LocalMechanicalPool:
             [thread.join() for thread in threads]
 
             # check if all clients connected have connected
-            if len(self) != n_instances:
+            if len(self) != n_instances:  # pragma: no cover
                 n_connected = len(self)
                 warnings.warn(
                     f"Only {n_connected} clients connected out of {n_instances} requested"
@@ -229,10 +229,10 @@ class LocalMechanicalPool:
             self._verify_unique_ports()
 
     def _verify_unique_ports(self):
-        if self._remote:
+        if self._remote:  # pragma: no cover
             raise RuntimeError("PyPIM is used. Port information is not available.")
 
-        if len(self._ports) != len(self):
+        if len(self.ports) != len(self):  # pragma: no cover
             raise RuntimeError("Mechanical pool has overlapping ports.")
 
     def map(
@@ -260,8 +260,9 @@ class LocalMechanicalPool:
             Clear Mechanical at the start of execution. The default is
             ``True``. Setting this to ``False`` might lead to instability.
         progress_bar : bool, optional
-            Whether to show a progress bar when running the batch. The default
-            is ``True``.
+            Whether to show a progress bar when running the batch of input
+            files. The default is ``True``, but the progress bar is not shown
+            when ``wait=False``.
         close_when_finished : bool, optional
             Whether to close the instances when the function finishes running
             on all instances in the pool. The default is ``False``.
@@ -303,7 +304,7 @@ class LocalMechanicalPool:
         [('first', '5'), ('second', '7')]
         """
         # check if any instances are available
-        if not len(self):
+        if not len(self):  # pragma: no cover
             # instances could still be spawning...
             if not all(v is None for v in self._instances):
                 raise RuntimeError("No Mechanical instances available.")
@@ -311,9 +312,9 @@ class LocalMechanicalPool:
         results = []
 
         if iterable is not None:
-            n = len(iterable)
+            jobs_count = len(iterable)
         else:
-            n = len(self)
+            jobs_count = len(self)
 
         pbar = None
         if progress_bar:
@@ -323,7 +324,7 @@ class LocalMechanicalPool:
                     f"the 'tqdm' package. To avoid this message, you can set 'progress_bar=False'."
                 )
 
-            pbar = tqdm(total=n, desc="Mechanical Running")
+            pbar = tqdm(total=jobs_count, desc="Mechanical Running")
 
         @threaded_daemon
         def func_wrapper(obj, func, clear_at_start, timeout, args=None, name=""):
@@ -350,7 +351,7 @@ class LocalMechanicalPool:
 
             run_thread = run(name_local=name)
 
-            if timeout:
+            if timeout:  # pragma: no cover
                 time_start = time.time()
                 while not complete[0]:
                     time.sleep(0.01)
@@ -362,7 +363,7 @@ class LocalMechanicalPool:
                     obj.exit()
             else:
                 run_thread.join()
-                if not complete[0]:
+                if not complete[0]:  # pragma: no cover
                     LOG.error(f"Stopped instance because running failed.")
                     try:
                         obj.exit()
@@ -392,7 +393,7 @@ class LocalMechanicalPool:
                         func_wrapper(instance, func, clear_at_start, timeout, name=f"Map_Thread")
                     )
 
-        if close_when_finished:
+        if close_when_finished:  # pragma: no cover
             # start closing any instances that are not in execution
             while not all(v is None for v in self._instances):
                 # grab the next available instance of mechanical and close it
@@ -401,7 +402,7 @@ class LocalMechanicalPool:
 
                 try:
                     instance.exit()
-                except Exception as error:
+                except Exception as error:  # pragma: no cover
                     LOG.error(f"Failed to close instance : str{error}.")
         else:
             # wait for all threads to complete
@@ -512,7 +513,8 @@ class LocalMechanicalPool:
         # loop until the next instance is available
         while True:
             for i, instance in enumerate(self._instances):
-                if not instance:  # if encounter placeholder
+                # if encounter placeholder
+                if not instance:  # pragma: no cover
                     continue
 
                 if not instance.locked and not instance._exited:
@@ -522,7 +524,7 @@ class LocalMechanicalPool:
                         # double check that this instance is alive:
                         try:
                             instance._make_dummy_call()
-                        except:
+                        except:  # pragma: no cover
                             instance.exit()
                             continue
 
@@ -536,6 +538,7 @@ class LocalMechanicalPool:
 
     def __del__(self):
         """Clean up when complete."""
+        print("pool:Automatic clean up.")
         self.exit()
 
     def exit(self, block=False):
@@ -558,7 +561,7 @@ class LocalMechanicalPool:
             if instance_local:
                 try:
                     instance_local.exit()
-                except:
+                except:  # pragma: no cover
                     pass
                 self._instances[index] = None
                 LOG.debug(f"Exited instance: {str(instance_local)}")
@@ -611,7 +614,7 @@ class LocalMechanicalPool:
             pbar.update(1)
 
     @threaded_daemon
-    def _spawn_mechanical_remote(self, index, pbar=None, name=""):
+    def _spawn_mechanical_remote(self, index, pbar=None, name=""):  # pragma: no cover
         """Spawn a Mechanical instance at an index.
 
         Parameters
@@ -644,9 +647,10 @@ class LocalMechanicalPool:
         LOG.debug(name)
         while self._active:
             for index, instance in enumerate(self._instances):
-                if not instance:  # encountered placeholder
+                # encountered placeholder
+                if not instance:  # pragma: no cover
                     continue
-                if instance._exited:
+                if instance._exited:  # pragma: no cover
                     try:
                         if self._remote:
                             LOG.debug(
@@ -655,7 +659,7 @@ class LocalMechanicalPool:
                             self._spawn_mechanical_remote(index, name=f"Instance {index}").join()
                         else:
                             # use the next port after the current available port
-                            port = max(self._ports) + 1
+                            port = max(self.ports) + 1
                             LOG.debug(
                                 f"Restarting a Mechanical instance for index : "
                                 f"{index} on port: {port}."
@@ -668,7 +672,7 @@ class LocalMechanicalPool:
             time.sleep(refresh)
 
     @property
-    def _ports(self):
+    def ports(self):
         """Get a list of the ports that are used."""
         return [inst._port for inst in self if inst is not None]
 

@@ -1,10 +1,9 @@
-  .. _ref_guide_wsl:
-
+.. _ref_guide_wsl:
 
 PyAnsys libraries in the Windows Subsystem for Linux and Docker
 ###############################################################
 
-This page shows how you use a PyAnsys library, more specifically PyMechanical,
+This page explains how you use a PyAnsys library, more specifically PyMechanical,
 in the Windows Subsystem for Linux (WSL). WSL is a compatibility layer for
 running Linux binary executables natively on Windows 10, Windows 11, and
 Windows Server 2019. For more information, see:
@@ -17,15 +16,18 @@ Windows Server 2019. For more information, see:
 .. _What is the Windows Subsystem for Linux?: https://docs.microsoft.com/en-us/windows/wsl/about
 
 This page walks you through the installation of WSL on Windows and then
-shows how to use it together with Mechanical, PyMechanical, and Docker.
+shows how to use it together with Mechanical, PyMechanical, and
+`Docker <https://www.docker.com/>`_.
 
 .. caution::
    These instructions have not been fully tested with a VPN connection. If you
    experience any problems connecting WSL to the internet, try to disconnect from the VPN.
 
 
-Running PyMechanical on WSL
-***************************
+Run PyMechanical on WSL
+***********************
+There are two versions of WSL: WSL1 and WSL2. Because WSL2 provides many improvements
+over WSL1, you should upgrade to and use WSL2.
 
 Install WSL
 ============
@@ -34,20 +36,14 @@ Install WSL by following the instructions in Microsoft's `Install Linux on Windo
 
 .. _Install Linux on Windows with WSL: https://docs.microsoft.com/en-us/windows/wsl/install/
 
-There are two versions of WSL: WSL1 and WSL2. Because WSL2 provides many improvements
-over WSL1, you should upgrade to and use WSL2.
-
-
 Install the CentOS7 WSL distribution
-=====================================
+====================================
 
-When working with PyAnsys libraries, you should use the CentOS7 WSL distribution.
+You can install the CentOS7 WSL using an unofficial distribution from the
+`<https://github.com/wsldl-pg/CentWSL/>`_ package or the
+`<https://github.com/mishamosher/CentOS-WSL/>`_ package.
 
-You can install this distribution using an unofficial WSL distribution from
-`<https://github.com/wsldl-pg/CentWSL/>`_ or
-`<https://github.com/mishamosher/CentOS-WSL/>`_.
-
-Optionally, you can try Ubuntu in the context of WSL.
+Optionally, you can try Ubuntu, but it has not been tested yet in the context of WSL.
 
 
 Install Ansys products in WSL CentOS7
@@ -55,21 +51,27 @@ Install Ansys products in WSL CentOS7
 
 Prerequisites
 --------------
+
 If you are using CentOS 7, before installing Mechanical, you must install some
 required libraries:
+
+.. code:: bash
+   
+   sudo yum install openssl openssh-clients mesa-libGL mesa-libGLU motif libgfortran
+
 
 Install Ansys products
 -----------------------
 
-To install ANSYS products in WSL:
+To install Ansys products in WSL, perform these steps:
 
-1. Download the **Ansys Structures** image for the `Current  Release
+1. Download the **Ansys Structures** image for the `current Ansys release
    <https://download.ansys.com/Current%20Release>`_ from the Ansys Customer Portal.
    
    If you are  downloading the image on a Windows machine, you should later copy the image to
    WSL.
 
-2. Extract the compressed source code file (tar.gz) with this command:
+2. Extract the compressed source code file (``tar.gz``) with this command:
 
    .. code:: bash
 
@@ -91,15 +93,18 @@ To install ANSYS products in WSL:
      omit the ``-install_dir`` argument. The default location is ``/ansys_inc``
      if the symbolic link is set. Otherwise, it defaults to ``/usr/ansys_inc``.
    - ``-<product_flag>`` : Specifies the one or more products to install.
-     If you omit this argument, all products are installed. A list of valid
-     values for the ``product_flags`` argument is available in Chapter 6 of The
-     *Ansys, Inc. Licensing Guide*, which you can access from the
-     `Licensing <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/prod_page.html?pn=Licensing&pid=Licensing&lang=en>`_`
-     section of the Ansys Help. In the preceding example for Mechanical, you
-     only need to specify the ``-mechapdl`` flag.
+     If you omit this argument, all products are installed. The *Ansys, Inc.
+     Installation Guides* in the Ansys Help provides a list of valid
+     values for the ``product_flags`` argument in `Chapter 6
+     <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/installation/unix_silent.html>`_
+     of the *Linux Installation Guide* and `Chapter 7
+     <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/installation/win_silent.html>`_
+     of the *Windows Installation Guide*.
+
+     In the preceding example for Mechanical, you only need to specify the ``-mechapdl`` flag.
 
 After installing Mechanical directly in ``/ansys_inc`` or ``/usr/ansys_inc``,
-create a symbolic link with this command:
+you create a symbolic link with this command:
 
 .. code:: bash
 
@@ -114,8 +119,8 @@ directory (``/*/ansys_inc``).
 Post-installation setup
 =======================
 
-Open ports
-----------
+Open ports for license server communication
+-------------------------------------------
 
 **Theory:** You should open the ports ``1055`` and ``2325`` for license server
 communication in the **Windows Control Panel**. For the steps to set advanced
@@ -124,12 +129,12 @@ Windows firewall options, see Microsoft's `How to open port in Windows 10 Firewa
 
 **Reality:** This works if you want to run a Docker image using a WSL Linux image
 to host this Docker image. The Docker image successfully communicates with the Windows
-License Server using these ports if you use the ``'-p'`` flag when running the
+license server using these ports if you use the ``'-p'`` flag when running the
 Docker image with these ports open. For more information, see
-`Running Mechanical on a local Docker image`_.
+`Run Mechanical on a local Docker image`_.
 
-If you want to run Mechanical in the CentOS7 image and use the Windows License
-Server, opening the ports might not work properly because the Windows firewall
+If you want to run Mechanical in the CentOS7 image and use the Windows license
+server, opening the ports might not work properly because the Windows firewall
 seems to block all traffic coming from WSL.  For security purposes, you should
 still try to open ports ``1055`` and ``2325`` in the Windows firewall and check if your
 Mechanical installation can communicate with the Windows hosts. If you are having
@@ -185,10 +190,10 @@ environment variable with the IP address:
     export ANSYSLMD_LICENSE_FILE=1055@$winhostIP
 
 
-Running Mechanical on a local Docker image
-******************************************
+Run Mechanical on a local Docker image
+**************************************
 
-To run a Docker image, you must follow all steps in `Running PyMechanical on WSL`_.
+To run a Docker image, you must follow all steps in `Run PyMechanical on WSL`_.
 
 Additionally, run a Docker image of PyMechanical with this command:
 
@@ -212,7 +217,7 @@ Running a Docker image creates a ``log.txt`` file in your current directory loca
 
 .. note:: Ensure that your port ``10001`` is open in your firewall.
 
-You should use a script (batch ``'.bat'`` or PowerShell ``'.ps'`` file)
+You should use a script file (batch ``.bat`` or PowerShell ``.ps``)
 to run the preceding commands all at once.
 
 Notice that the WSL internal gRPC port (``10000``) is being mapped to a
@@ -255,7 +260,7 @@ Additional information
 IP addresses
 ============
 
-The IP address ``127.0.0.1`` specified in `Running Mechanical on a local Docker image`_ is
+The IP address ``127.0.0.1`` specified in `Run Mechanical on a local Docker image`_ is
 the IP address of WSL CentOS from the WSL perspective, whereas the IP address for the Windows
 host is typically ``127.0.1.1``.
 
@@ -321,14 +326,14 @@ Here is an example:
 Language for the installation
 -----------------------------
 
-The ``-lang`` argument specifies the language to use for the installation.
+The ``-lang`` argument specifies the language that the installation uses.
 
 
 File specifying the products to install
 ---------------------------------------
 You can specify an ``options`` file that lists the products that you want to
 install. When you do so, you must use the ``-productfile`` argument to specify the
-full path to this file.
+full path to the ``options`` file.
 
 
 IP addresses in WSL and the Windows host
@@ -343,8 +348,6 @@ connect to the Windows host. However, it is possible to use the ``host.docker.in
 hostname in the same WSL ``/etc/hosts`` file. This is an IP address that is
 randomly allocated, which is an issue when you define the license server. However,
 updating the ``.bashrc`` file as mentioned earlier resolves this issue.
-
-
 
 Disable the firewall on the WSL ethernet
 ========================================
@@ -369,8 +372,8 @@ This method does not show a notification:
 
 
 On Windows 10, you can use the `wsl-windows-toolbar-launcher <https://github.com/cascadium/wsl-windows-toolbar-launcher#firewall-rules/>`_
-package to launch Linux native applications directly from Windows
-with the standard Windows toolbar. Because the toolbar in Windows 11 differs, the README
+package to launch Linux native apps directly from Windows with the standard
+Windows toolbar. Because the toolbar in Windows 11 differs, the README
 file for this package explains how to run Microsoft's `PowerToys <https://github.com/microsoft/PowerToys>`_
 package instead.
 
@@ -430,6 +433,7 @@ You can restart the WSL service with this command:
 .. code:: pwsh
 
     Get-Service LxssManager | Restart-Service
+
 
 Stop all processes with a given name
 ====================================

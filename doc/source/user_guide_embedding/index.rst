@@ -22,17 +22,17 @@ an instance of Mechanical in Python.
 Overview
 ========
 The :class:`Application <ansys.mechanical.core.embedding.Application>` class provides
-a Mechanical instance.
+a Mechanical instance:
 
 .. code:: python
 
-    from ansys.mechanical.core import Application
+   from ansys.mechanical.core import App
 
-    app = Application()
-    ns = app.DataModel.Project.Model.AddNamedSelection()
+   app = App()
+   ns = app.DataModel.Project.Model.AddNamedSelection()
 
-The ``Application`` class has access to the global scripting entry points that are available
-from built-in Mechanical scripting:
+The :class:`Application <ansys.mechanical.core.embedding.Application>` class has access
+to the global scripting entry points that are available from built-in Mechanical scripting:
 
 * ExtAPI: ``Application.ExtAPI``
 * DataModel: ``Application.DataModel``
@@ -41,7 +41,7 @@ from built-in Mechanical scripting:
 * Graphics: ``Application.ExtAPI.Graphics``
 
 Besides scripting entry points, many other types and objects are available from
-built-in Mechanical scripting. To learn how to import the scripting entry points,
+built-in Mechanical scripting. To learn how to import scripting entry points,
 namespaces, and types, see :ref:`ref_embedding_user_guide_globals`.
 
 Additional configuration

@@ -29,8 +29,8 @@ Ansys Help.
 
 Recording
 ^^^^^^^^^
-Mechanical supports some level of recording. When you initiate an action from the UI, the UI
-determines what API to run, executes this API, and prints it in the **Mechanical Scripting
+Mechanical supports some level of recording. When you initiate an action from the user
+interface (UI), the UI determines what API to run, executes this API, and prints it in the **Mechanical Scripting
 View**. Examples of these actions are assigning selections to scoping, changing values in
 the details view, and renaming an object in the **Outline**. In the following animated example,
 a **Fixed Support** and a **Pressure** are added to the **Outline**.
@@ -40,9 +40,9 @@ a **Fixed Support** and a **Pressure** are added to the **Outline**.
 Mechanical entities
 ^^^^^^^^^^^^^^^^^^^
 Mechanical has an extensive set of entities that represent all the functionality provided
-by Mechanical. These entities are at Mechanical's core:
+by Mechanical. Here are descriptions of the entities at Mechanical's core:
 
-* CAD: CAD entities usually imported from a CAD application
+* CAD: CAD entities, which are usually imported from a CAD application
 * Mesh: The discretized geometry that is appropriate for Mechanical's solvers
 * Materials: Engineering material models that come from **Engineering Data**, which is a subsystem of Ansys Workbench
 * Objects: The entities in the **Outline** that represent the model, analyses, solutions, and results
@@ -55,9 +55,11 @@ There is some overlap between these entities. For instance, the CAD data is repr
 engine but also has representation in the **Outline**. The raw CAD data, which includes the tessellations used to render the
 graphics and all the data needed to define vertices, edges, faces, volumes, and parts is collectively considered ``GeoData``.
 You may interact with these bodies and parts in the **Outline**, assigning materials, thickness, and other data that does
-not come from CAD entities. This is considered ``Geometry``. As a result, the API entry points for ``GeoData`` and ``Geometry`` are
-different. The same is true for ``Mesh``. There is a representation in the **Outline** that contains the settings used to
-generate the mesh and statistics about the mesh. Then, there is ``MeshData``, which is the actual nodes and
+not come from CAD entities. This is considered ``Geometry``. As a result, the API entry points for ``GeoData`` and ``Geometry``
+are different.
+
+The same is true for ``Mesh``. There is a representation in the **Outline** that contains the settings
+used to generate the mesh and statistics about the mesh. Then, there is ``MeshData``, which is the actual nodes and
 elements in the mesh. These have distinct API entry points.
 
 Executing a sequence of APIs can sometimes be slow because Mechanical may perform background tasks each time any of its

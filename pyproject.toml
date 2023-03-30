@@ -57,7 +57,7 @@ doc = [
     "ansys-sphinx-theme==0.9.5",
     "grpcio==1.51.3",
     "imageio-ffmpeg==0.4.8",
-    "imageio==2.26.0",
+    "imageio==2.27.0",
     "jupyter_sphinx==0.4.0",
     "jupyterlab>=3.2.8",
     "matplotlib==3.7.1",
@@ -66,11 +66,11 @@ doc = [
     "pypandoc==1.11",
     "pytest-sphinx==0.5.0",
     "pythreejs==2.4.2",
-    "pyvista==0.38.3",
+    "pyvista==0.38.5",
     "sphinx-autobuild==2021.3.14",
     "sphinx-autodoc-typehints==1.22",
     "sphinx-copybutton==0.5.1",
-    "sphinx-gallery==0.11.1",
+    "sphinx-gallery==0.12.2",
     "sphinx-notfound-page==0.8.3",
     "sphinxcontrib-websupport==1.2.4",
     "sphinxemoji==0.2.0",
@@ -104,11 +104,21 @@ output = ".cov/coverage.xml"
 
 [tool.pytest.ini_options]
 minversion = "7.1"
-addopts = "-ra -s --cov=ansys.mechanical --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report term -vv --print --print-relative-time"
+addopts = """-ra -s -m remote_session_connect --durations=0 --cov=ansys.mechanical --cov-report html:.cov/html \
+ --cov-report xml:.cov/xml --cov-report term -vv --print --print-relative-time"""
+# addopts = """-ra -s -m remote_session_launch --durations=0 --cov=ansys.mechanical --cov-report html:.cov/html \
+# --cov-report xml:.cov/xml --cov-report term -vv --print --print-relative-time"""
+# addopts = """-ra -s -m 'remote_session_launch or remote_session_connect' --durations=0 --cov=ansys.mechanical \
+# --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report term -vv --print --print-relative-time"""
+# addopts = """-ra -s -m 'remote_session_launch or remote_session_connect or embedding' --durations=0
+# --cov=ansys.mechanical --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report \
+# term -vv --print --print-relative-time"""
 testpaths = [
     "tests",
 ]
 markers = [
-    "embedding: tests that embed Mechanical in the python process"
+    "embedding: tests that embed Mechanical in the python process",
+    "remote_session_launch: tests that launch Mechanical and work with gRPC server inside it",
+    "remote_session_connect: tests that connect to Mechanical and work with gRPC server inside it",
 ]
 xfail_strict = true

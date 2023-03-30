@@ -55,7 +55,7 @@ version of `pip`_ installed by running this command:
 
    python -m pip install -U pip
 
-Then, install PyMechanical with this command:
+Then, install PyMechanical by running this command:
 
 .. code:: bash
 
@@ -69,7 +69,7 @@ Then, install PyMechanical with this command:
     * Index URL: ``https://pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/``
 
     If access to this package registry is needed, email `pyansys.core@ansys.com <mailto:pyansys.core@ansys.com>`_
-    to request access. The PyAnsys team can provide you a read-only token to be inserted in ``${PRIVATE_PYPI_ACCESS_TOKEN}``.
+    to request access. The PyAnsys team can give you a read-only token to insert in ``${PRIVATE_PYPI_ACCESS_TOKEN}``.
     Once you have this token, run this command:
 
     .. code:: bash
@@ -176,13 +176,13 @@ Linux with Python 3.7:
 If you're on Windows with Python 3.9, unzip the wheelhouse archive to a wheelhouse
 directory and then install PyMechanical using the preceding command.
 
-Consider installing using a `virtual environment <https://docs.python.org/3/library/venv.html>`_.
+Consider installing into a `virtual environment <https://docs.python.org/3/library/venv.html>`_.
 
 Dependencies
 ------------
 
 You must have a licensed copy of Ansys Mechanical installed. When using an embedded instance,
-that installation must be runnable from the same computer as your python program. When using
+that installation must be runnable from the same computer as your Python program. When using
 a remote session, a connection to that session must be reachable from your Python program.
 
 
@@ -196,19 +196,19 @@ Ansys Help.
 
 Configuring the Mechanical installation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-On Windows systems, the environment variable ``AWP_ROOT<ver>`` is configured when Mechanical is
+On a Windows system, the environment variable ``AWP_ROOT<ver>`` is configured when Mechanical is
 installed, where ``<ver>`` is the Mechanical release number, such as ``231`` for release 2023 R1.
 PyMechanical automatically uses this environment variable (or variables if there are multiple
-installations of different versions) to locate the latest Mechanical installation. On Linux
-systems, you must configure the ``AWP_ROOT<ver>`` environment variable to point to the
+installations of different versions) to locate the latest Mechanical installation. On a Linux
+system, you must configure the ``AWP_ROOT<ver>`` environment variable to point to the
 absolute path of a Mechanical installation.
 
 Starting a remote session
 ^^^^^^^^^^^^^^^^^^^^^^^^^
-To start a remote session of Mechanical on your computer from Python, use the ``launch_mechanical``
+To start a remote session of Mechanical on your computer from Python, use the ``launch_mechanical()``
 method. This methods returns an object representing the connection to the session:
 
-.. code:: pycon
+.. code:: python
 
    import ansys.mechanical.core as pymechanical
 
@@ -219,23 +219,20 @@ Running commands on the remote session
 Given a connection to a remote session, you can send an IronPython script. This uses the built-in
 scripting capabilities of Mechanical. Here is an example:
 
-.. code:: pycon
+.. code:: python
 
-    result = mechanical.run_python_script('2+3')
-    result = mechanical.run_python_script('ExtAPI.DataModel.Project.ProjectDirectory')
+    result = mechanical.run_python_script("2+3")
+    result = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
 
-For more information on the scripting APIs available, see the `Scripting in Mechanical Guide
-<https://ansyshelp.ansys.com/Views/Secured/corp/v231/en/act_script/act_script.html>`_ in the
-Ansys Help. 
 
 Using an embedded instance of Mechanical as a Python object
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 PyMechanical also supports directly embedding an instance of Mechanical as a Python object.
-In this mode, there is no externally running instance of the Mechanical. This feature is supported
-on Windows for version 2023 R1 and later, and it will be supported on Linux for versions 2023 R2
+In this mode, there is no externally running instance of Mechanical. This feature is supported
+on Windows for version 2023 R1 and later, and it will be supported on Linux for version 2023 R2
 and later. Here is an example:
 
-.. code:: pycon
+.. code:: python
 
    import ansys.mechanical.core as pymechanical
 
@@ -252,7 +249,7 @@ development.
 Using ``tox``
 ^^^^^^^^^^^^^
 
-While Makefile has rules, `tox`_ has environments. In fact, ``tox`` creates its
+While Makefile has rules, ``tox`` has environments. In fact, ``tox`` creates its
 own virtual environment so that anything being tested is isolated from the project
 to guarantee the project's integrity.
 
@@ -261,23 +258,23 @@ The following environment commands are provided:
 - **tox -e style**: Checks for coding style quality.
 - **tox -e py**: Checks for unit tests.
 - **tox -e py-coverage**: Checks for unit testing and code coverage.
-- **tox -e doc**: Checks for documentation building process.
+- **tox -e doc**: Checks for documentation-building process.
 
 
 Raw testing
 ^^^^^^^^^^^
 
-If required, from the command line, you can call style commands, including
+If required, from the command line, you can call style commands like
 `black`_, `isort`_, and `flake8`_. You can also call unit testing commands like `pytest`_.
 However, running these commands do not guarantee that your project is being tested
-in an isolated environment, which is the reason why tools like `tox`_ exist.
+in an isolated environment, which is the reason why tools like ``tox`` exist.
 
 
 Using ``pre-commit``
 ^^^^^^^^^^^^^^^^^^^^
 
 The style checks implemented for PyMechanical take advantage of `pre-commit`_.
-Developers are not forced but encouraged to install this tool by running this
+Developers are not forced but are encouraged to install this tool by running this
 command:
 
 .. code:: bash
@@ -289,7 +286,7 @@ Documentation
 -------------
 
 For building documentation, you can run the usual rules provided in the
-`Sphinx`_ Makefile. Here is an example:
+`Sphinx`_ ``make`` file. Here is an example:
 
 .. code:: bash
 
@@ -313,7 +310,7 @@ However, the recommended way of checking documentation integrity is to use
 Distributing
 ------------
 
-If you would like to create either source or wheel file, start by installing
+If you would like to create either source or wheel files, start by installing
 the building requirements and then executing the build module:
 
 .. code:: bash

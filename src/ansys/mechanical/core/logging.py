@@ -186,7 +186,7 @@ class PyMechanicalCustomAdapter(logging.LoggerAdapter):
         # These are the extra parameters to send to the log.
         kwargs["extra"][
             "instance_name"
-        ] = self.extra.get_name()  # Here self.extra is the argument to pass to the log records.
+        ] = self.extra.name  # Here self.extra is the argument to pass to the log records.
         return msg, kwargs
 
     def log_to_file(self, filename=FILE_NAME, level=LOG_LEVEL):
@@ -231,6 +231,8 @@ class PyMechanicalCustomAdapter(logging.LoggerAdapter):
             Level of logging. The default is ``"DEBUG"``. Options are ``"DEBUG"``,
             ``"INFO"``, ``"WARNING"``, and ``"ERROR"``.
         """
+        if isinstance(level, str):
+            level = string_to_loglevel[level.upper()]
         self.logger.setLevel(level)
         for each_handler in self.logger.handlers:
             each_handler.setLevel(level)
@@ -291,7 +293,7 @@ class PyMechanicalFormatter(logging.Formatter):
         defaults=None,
     ):
         """Initialize the PyMechanical formatter."""
-        if sys.version_info[1] < 8:
+        if sys.version_info[1] < 8:  # pragma: no cover
             super().__init__(fmt, datefmt, style)
         else:
             # 3.8: The validate parameter was added
@@ -436,10 +438,12 @@ class Logger:
         level : str, optional
             Level of logging, such as ``DUBUG``. The default is ``LOG_LEVEL``.
         """
+        if isinstance(level, str):
+            level = string_to_loglevel[level.upper()]
         self.logger.setLevel(level)
         for each_handler in self.logger.handlers:
             each_handler.setLevel(level)
-        self._level = level
+        self.level = level
 
     def _make_child_logger(self, suffix, level):
         """Create a child logger.
@@ -580,7 +584,10 @@ class Logger:
         if key in self._instances.keys():
             return self._instances[key]
         else:
-            raise KeyError(f"There is no instances with name {key}.")
+            raise KeyError(
+                f"There is no instances with name {key}. "
+                f"Available keys are {self._instances.keys()}"
+            )
 
     @staticmethod
     def add_handling_uncaught_exceptions(logger):
