@@ -23,7 +23,7 @@ def _get_available_versions() -> typing.Dict[int, str]:
 
 def _get_default_version() -> int:
     vers = _get_available_versions()
-    if not vers:
+    if not vers:  # pragma: no cover
         raise Exception(
             "Appropriate version of Ansys Mechanical is not installed. Must be at least v222"
         )
@@ -40,7 +40,7 @@ def _get_default_configuration() -> Configuration:
 INSTANCES = []
 
 
-def _dispose_embedded_app(instances):
+def _dispose_embedded_app(instances):  # pragma: nocover
     if len(instances) > 0:
         instance = instances[0]
         instance._dispose()
@@ -87,11 +87,11 @@ class App:
 
         return Ansys.Mechanical.Application.ProductInfo.ProductInfoAsString
 
-    def __enter__(self):
+    def __enter__(self):  # pragma: no cover
         """Enter the scope."""
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type, exc_val, exc_tb):  # pragma: no cover
         """Exit the scope."""
         self._dispose()
 
@@ -117,10 +117,6 @@ class App:
         """Clear to a new application."""
         self.DataModel.Project.New()
 
-    def close(self):
-        """Close the application."""
-        self.ExtAPI.Application.Close()
-
     def execute_script(self, script: str):
         """Execute the given script with the internal IronPython engine."""
         SCRIPT_SCOPE = "pymechanical-internal"
@@ -143,7 +139,7 @@ class App:
 
     def import_materials(self, material_file) -> None:
         """Import material from matml file."""
-        if self._version > 232:
+        if self._version >= 232:
             materials = self.DataModel.Project.Model.Materials
             materials.Import(material_file)
         else:
