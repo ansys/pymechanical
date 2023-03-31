@@ -5,6 +5,7 @@ import tempfile
 
 import pytest
 
+
 @pytest.mark.embedding
 def test_app_repr(embedded_app):
     """Test repr of the Application class."""
@@ -13,10 +14,11 @@ def test_app_repr(embedded_app):
     assert app_repr_lines[1].startswith("Product Version")
     assert app_repr_lines[2].startswith("Software build date:")
 
+
 @pytest.mark.embedding
 def test_app_save_open(embedded_app):
     """Test save and open of the Application class."""
-    import clr
+    import clr # noqa: F401
     import System
 
     # save without a save_as throws an exception
@@ -42,6 +44,7 @@ def test_app_save_open(embedded_app):
         # clean up the project files
         shutil.rmtree(project_files)
         os.remove(project_file)
+
 
 @pytest.mark.embedding
 def test_app_version(embedded_app):
