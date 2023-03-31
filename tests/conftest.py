@@ -104,6 +104,7 @@ def embedded_app(request):
     if terminal_reporter is not None:
         terminal_reporter.write_line(f"\t{startup_time}\tStarting Mechanical")
     yield EMBEDDED_APP
+    EMBEDDED_APP._dispose()
 
 
 @pytest.fixture(autouse=True)
