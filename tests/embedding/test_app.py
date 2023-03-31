@@ -18,8 +18,8 @@ def test_app_repr(embedded_app):
 @pytest.mark.embedding
 def test_app_save_open(embedded_app):
     """Test save and open of the Application class."""
-    import clr # noqa: F401
     import System
+    import clr  # noqa: F401
 
     # save without a save_as throws an exception
     with pytest.raises(System.Exception):
