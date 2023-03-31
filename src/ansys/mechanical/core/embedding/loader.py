@@ -52,7 +52,7 @@ def load_clr_mono(install_loc):
 
 def load_clr(install_loc: str) -> None:
     """Load the clr, the outcome of this function is that `clr` is usable."""
-    if os.name == "nt":
+    if os.name == "nt":  # pragma: no cover
         return
     load_clr_mono(install_loc)
 

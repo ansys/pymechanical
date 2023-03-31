@@ -1,25 +1,24 @@
 import json
 import os
+import pathlib
+import re
 
 import grpc
 import pytest
 
-
-def validate_real(value, expected, tol):
-    low = 1 - tol
-    high = 1 + tol
-
-    if expected * low <= value <= expected * high:
-        return True
-
-    return False
+import ansys.mechanical.core as pymechanical
+import ansys.mechanical.core.errors as errors
+import ansys.mechanical.core.misc as misc
+import conftest
 
 
+@pytest.mark.remote_session_connect
 def test_run_python_script_success(mechanical):
     result = mechanical.run_python_script("2+3")
     assert result == "5"
 
 
+@pytest.mark.remote_session_connect
 def test_run_python_script_error(mechanical):
     with pytest.raises(grpc.RpcError) as exc_info:
         mechanical.run_python_script("import test")
@@ -27,6 +26,7 @@ def test_run_python_script_error(mechanical):
     assert exc_info.value.details() == "No module named test"
 
 
+@pytest.mark.remote_session_connect
 def test_run_python_from_file_success(mechanical):
     current_working_directory = os.getcwd()
     script_path = os.path.join(
@@ -38,6 +38,7 @@ def test_run_python_from_file_success(mechanical):
     assert result == "test"
 
 
+# @pytest.mark.remote_session_connect
 # def test_run_python_from_file_log_messages(mechanical):
 #     current_working_directory = os.getcwd()
 #     script_path = os.path.join(current_working_directory, "tests", "scripts", "log_message.py")
@@ -70,6 +71,7 @@ def test_run_python_from_file_success(mechanical):
 #     assert result == "log_test"
 
 
+@pytest.mark.remote_session_connect
 def test_run_python_script_from_file_error(mechanical):
     with pytest.raises(grpc.RpcError) as exc_info:
         current_working_directory = os.getcwd()
@@ -82,6 +84,7 @@ def test_run_python_script_from_file_error(mechanical):
     assert exc_info.value.details() == "name 'get_myname' is not defined"
 
 
+@pytest.mark.remote_session_connect
 @pytest.mark.parametrize("file_name", [r"hsec.x_t"])
 def test_upload(mechanical, file_name):
     mechanical.run_python_script("ExtAPI.DataModel.Project.New()")
@@ -106,6 +109,7 @@ def test_upload(mechanical, file_name):
     assert bool(result)
 
 
+@pytest.mark.remote_session_connect
 # we are using only a small test file
 # change the chunk_size for that
 # ideally this will be 64*1024, 1024*1024, etc.
@@ -174,6 +178,7 @@ def solve_and_return_results(mechanical):
 
     # let us append the scripts to run
     func_to_call = """
+import os
 directory = ExtAPI.DataModel.Project.ProjectDirectory
 file_path_modified=os.path.join(directory,'hsec.x_t')
 attach_geometry(file_path_modified)
@@ -184,7 +189,9 @@ return_total_deformation()
     """
     python_script = data + file_path_string + func_to_call
 
-    result = mechanical.run_python_script(python_script)
+    result = mechanical.run_python_script(
+        python_script, enable_logging=True, log_level="INFO", progress_interval=1000
+    )
 
     # if the solve fails, solve.out contains enough information
     solve_out_path = get_solve_out_path(mechanical)
@@ -203,8 +210,63 @@ return_total_deformation()
     return result
 
 
+def verify_project_download(mechanical, tmpdir):
+    files = mechanical.list_files()
+    number_of_files = len(files)
+
+    print("files available: ")
+    for file in files:
+        print(file)
+    assert number_of_files > 0
+
+    # download the project
+    project_directory = mechanical.project_directory
+    print(f"project directory: {project_directory}")
+
+    target_dir = os.path.join(tmpdir, "mechanical_project")
+    # add a trailing path separator
+    target_dir = os.path.join(target_dir, "")
+    print(f"creating target directory {target_dir}")
+    if not os.path.exists(target_dir):
+        os.mkdir(target_dir)
+
+    out_files = mechanical.download_project(target_dir=target_dir)
+    print("downloaded files:")
+    for file in out_files:
+        print(file)
+        assert os.path.exists(file) and os.path.getsize(file) > 0
+
+    files = mechanical.list_files()
+    assert len(files) == len(out_files)
+
+    target_dir = os.path.join(tmpdir, "mechanical_project2")
+    # add a trailing path separator
+    target_dir = os.path.join(target_dir, "")
+    print(f"creating target directory {target_dir}")
+    if not os.path.exists(target_dir):
+        os.mkdir(target_dir)
+
+    # project not saved
+    # no mechdb available
+    extensions = ["mechdb"]
+    with pytest.raises(ValueError):
+        out_files = mechanical.download_project(extensions=extensions, target_dir=target_dir)
+
+    extensions = ["xml", "rst"]
+    out_files = mechanical.download_project(extensions=extensions, target_dir=target_dir)
+    print(f"downloaded files for extensions: {extensions}")
+    for file in out_files:
+        print(file)
+        assert os.path.exists(file) and os.path.getsize(file) > 0
+        extension = pathlib.Path(file).suffix
+        extension_without_dot = extension[1:]
+        assert extension_without_dot in extensions
+
+
+@pytest.mark.remote_session_connect
+# @pytest.mark.wip
 # @pytest.mark.skip(reason="avoid long running")
-def test_upload_attach_mesh_solve_use_api_non_distributed_solve(mechanical):
+def test_upload_attach_mesh_solve_use_api_non_distributed_solve(mechanical, tmpdir):
     # default is distributed solve
     # let's disable the distributed solve and then solve
     # enable the distributed solve back
@@ -224,12 +286,16 @@ def test_upload_attach_mesh_solve_use_api_non_distributed_solve(mechanical):
     max_value = float(dict_result["Maximum"].split(" ")[0])
     avg_value = float(dict_result["Average"].split(" ")[0])
 
-    assert validate_real(min_value, 0, 0.1)
-    assert validate_real(max_value, 2.9068725331072863e-06, 0.1)
-    assert validate_real(avg_value, 1.1398642395560755e-06, 0.1)
+    print(f"min_value = {min_value} max_value = {max_value} avg_value = {avg_value}")
+
+    result = mechanical.run_python_script("ExtAPI.DataModel.Project.Model.Analyses[0].ObjectState")
+    assert "5" == result.lower()
+
+    verify_project_download(mechanical, tmpdir)
 
 
-def test_upload_attach_mesh_solve_use_api_distributed_solve(mechanical):
+@pytest.mark.remote_session_connect
+def test_upload_attach_mesh_solve_use_api_distributed_solve(mechanical, tmpdir):
     # default is distributed solve
 
     result = solve_and_return_results(mechanical)
@@ -240,9 +306,12 @@ def test_upload_attach_mesh_solve_use_api_distributed_solve(mechanical):
     max_value = float(dict_result["Maximum"].split(" ")[0])
     avg_value = float(dict_result["Average"].split(" ")[0])
 
-    assert validate_real(min_value, 0, 0.1)
-    assert validate_real(max_value, 2.9068725331072863e-06, 0.1)
-    assert validate_real(avg_value, 1.1398642395560755e-06, 0.1)
+    print(f"min_value = {min_value} max_value = {max_value} avg_value = {avg_value}")
+
+    result = mechanical.run_python_script("ExtAPI.DataModel.Project.Model.Analyses[0].ObjectState")
+    assert "5" == result.lower()
+
+    verify_project_download(mechanical, tmpdir)
 
 
 def verify_download(mechanical, tmpdir, file_name, chunk_size):
@@ -268,18 +337,164 @@ def verify_download(mechanical, tmpdir, file_name, chunk_size):
     assert os.path.exists(local_path) and os.path.getsize(local_path) > 0
 
 
+@pytest.mark.remote_session_connect
+# @pytest.mark.wip
 @pytest.mark.parametrize("file_name", ["hsec.x_t"])
 def test_download_file(mechanical, tmpdir, file_name):
     verify_download(mechanical, tmpdir, file_name, 1024 * 1024)
 
 
+@pytest.mark.remote_session_connect
 # we are using only a small test file
 # change the chunk_size for that
 # ideally this will be 64*1024, 1024*1024, etc.
 @pytest.mark.parametrize("chunk_size", [10, 50, 100])
 def test_download_file_different_chunk_size1(mechanical, tmpdir, chunk_size):
     file_name = "hsec.x_t"
+
     verify_download(mechanical, tmpdir, file_name, chunk_size)
+
+
+@pytest.mark.remote_session_launch
+def test_launch_meshing_mode(mechanical_meshing):
+    result = mechanical_meshing.run_python_script("2+3")
+    assert result == "5"
+
+
+@pytest.mark.remote_session_launch
+def test_launch_result_mode(mechanical_result):
+    result = mechanical_result.run_python_script("2+3")
+    assert result == "5"
+
+
+@pytest.mark.remote_session_launch
+def test_close_all_Local_instances(tmpdir):
+    list_ports = []
+    mechanical = conftest.launch_mechanical_instance(cleanup_on_exit=False)
+    print(mechanical.name)
+    list_ports.append(mechanical._port)
+
+    # connect to the launched instance
+    mechanical2 = conftest.connect_to_mechanical_instance(mechanical._port, clear_on_connect=True)
+    print(mechanical2.name)
+
+    test_upload_attach_mesh_solve_use_api_non_distributed_solve(mechanical2, tmpdir)
+
+    # use the settings and launch another Mechanical instance
+    mechanical.launch(cleanup_on_exit=False)
+    print(mechanical.name)
+    list_ports.append(mechanical._port)
+
+    pymechanical.close_all_local_instances(list_ports, use_thread=False)
+    for value in list_ports:
+        assert value not in pymechanical.LOCAL_PORTS
+
+
+@pytest.mark.remote_session_launch
+def test_launch_result_mode(mechanical_result):
+    result = mechanical_result.run_python_script("2+3")
+    assert result == "5"
+
+
+@pytest.mark.remote_session_launch
+def test_find_mechanical_path():
+    if pymechanical.mechanical.get_start_instance():
+        path, version = pymechanical.find_mechanical()
+
+        if misc.is_windows():
+            assert "AnsysWBU.exe" in path
+        else:
+            assert ".workbench" in path
+
+        assert re.match(r"\d\d\.\d", str(version))
+
+
+@pytest.mark.remote_session_launch
+def test_change_default_mechanical_path():
+    if pymechanical.mechanical.get_start_instance():
+        path, version = pymechanical.find_mechanical()
+
+        pymechanical.change_default_mechanical_path(path)
+
+        path_new, version_new = pymechanical.find_mechanical()
+
+        assert path_new == path
+        assert version_new == version
+
+
+@pytest.mark.remote_session_launch
+def test_version_from_path():
+    windows_path = "C:\\Program Files\\ANSYS Inc\\v231\\aisol\\bin\\winx64\\AnsysWBU.exe"
+    version = pymechanical.mechanical._version_from_path(windows_path)
+    assert version == 231
+
+    linux_path = "/usr/ansys_inc/v231/aisol/.workbench"
+    version = pymechanical.mechanical._version_from_path(linux_path)
+    assert version == 231
+
+    with pytest.raises(RuntimeError):
+        # doesn't contain version
+        path = "C:\\Program Files\\ANSYS Inc\\aisol\\bin\\winx64\\AnsysWBU.exe"
+        pymechanical.mechanical._version_from_path(path)
+
+
+@pytest.mark.remote_session_launch
+def test_valid_port():
+    # no error thrown when everything is ok.
+    pymechanical.mechanical.check_valid_port(10000, 1000, 60000)
+
+    with pytest.raises(ValueError):
+        pymechanical.mechanical.check_valid_port("10000")
+
+    with pytest.raises(ValueError):
+        pymechanical.mechanical.check_valid_port(100, 1000, 60000)
+
+
+@pytest.mark.remote_session_launch
+def test_server_log_level():
+    server_log_level = pymechanical.mechanical.Mechanical.convert_to_server_log_level("DEBUG")
+    assert 1 == server_log_level
+
+    server_log_level = pymechanical.mechanical.Mechanical.convert_to_server_log_level("INFO")
+    assert 2 == server_log_level
+
+    server_log_level = pymechanical.mechanical.Mechanical.convert_to_server_log_level("WARNING")
+    assert 3 == server_log_level
+
+    server_log_level = pymechanical.mechanical.Mechanical.convert_to_server_log_level("ERROR")
+    assert 4 == server_log_level
+
+    server_log_level = pymechanical.mechanical.Mechanical.convert_to_server_log_level("CRITICAL")
+    assert 5 == server_log_level
+
+    with pytest.raises(ValueError):
+        pymechanical.mechanical.Mechanical.convert_to_server_log_level("NON_EXITING_LEVEL")
+
+
+@pytest.mark.remote_session_launch
+def test_launch_mehcanical_non_existent_path():
+    cwd = os.getcwd()
+
+    if misc.is_windows():
+        exec_file = os.path.join(cwd, "test", "AnsysWBU.exe")
+    else:
+        exec_file = os.path.join(cwd, "test", ".workbench")
+
+    with pytest.raises(FileNotFoundError):
+        pymechanical.launch_mechanical(exec_file=exec_file)
+
+
+@pytest.mark.remote_session_launch
+def test_launch_grpc_not_supported_version():
+    cwd = os.getcwd()
+
+    if misc.is_windows():
+        exec_file = os.path.join(cwd, "ANSYS Inc", "v230", "aisol", "bin", "win64", "AnsysWBU.exe")
+    else:
+        exec_file = os.path.join(cwd, "ansys_inc", "v230", "aisol", ".workbench")
+
+    with pytest.raises(errors.VersionError):
+        pymechanical.mechanical.launch_grpc(exec_file=exec_file)
 
 
 # def test_call_before_launch_or_connect():

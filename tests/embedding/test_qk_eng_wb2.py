@@ -1,4 +1,4 @@
-"""Quick Mechanical embedding tests."""
+"""Migration from QK_ENG_WB2 tests"""
 import os
 import pathlib
 
@@ -6,6 +6,7 @@ import pytest
 
 try:
     from ansys.mechanical.core import global_variables
+    from ansys.mechanical.core.embedding import shims
 except:
     # No embedding - this import breaks test collection
     global_variables = {}
@@ -124,7 +125,7 @@ def test_qk_eng_wb2_007(printer, selection, embedded_app):
     geometry_import.Import(geometry_file)
     material_file = os.path.join(get_assets_folder(), "eng200_material.xml")
     printer(f"Setting up test - import materials {material_file}")
-    embedded_app.import_materials(material_file)
+    shims.import_materials(embedded_app, material_file)
 
     def _innertest():
         printer("Add material file")

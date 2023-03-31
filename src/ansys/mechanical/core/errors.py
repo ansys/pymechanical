@@ -74,7 +74,7 @@ def protect_grpc(func):
         # Capture gRPC exceptions
         try:
             out = func(*args, **kwargs)
-        except (_InactiveRpcError, _MultiThreadedRendezvous) as error:
+        except (_InactiveRpcError, _MultiThreadedRendezvous) as error:  # pragma: no cover
             # Can't use isinstance here due to circular imports
             try:
                 class_name = args[0].__class__.__name__

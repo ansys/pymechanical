@@ -16,3 +16,9 @@ except ModuleNotFoundError:  # pragma: no cover
 # Read from the pyproject.toml
 # major, minor, patch
 __version__ = importlib_metadata.version("ansys-mechanical-core")
+
+# In descending order
+SUPPORTED_MECHANICAL_VERSIONS = {
+    232: "2023R2",
+    231: "2023R1",
+}

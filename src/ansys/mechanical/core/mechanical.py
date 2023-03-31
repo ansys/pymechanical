@@ -99,7 +99,7 @@ LOG.info(f"ansys_mechanical_core settings directory: {SETTINGS_DIR}")
 if not os.path.isdir(SETTINGS_DIR):
     try:
         os.makedirs(SETTINGS_DIR)
-    except OSError:
+    except OSError:  # pragma: no cover
         warnings.warn(
             "Unable to create settings directory.\n"
             "Will be unable to cache Mechanical executable location."
@@ -177,7 +177,7 @@ def check_ports(port_range, ip="localhost"):
     return ports
 
 
-def close_all_local_instances(port_range=None):
+def close_all_local_instances(port_range=None, use_thread=True):
     """Close all Mechanical instances within a port range.
 
     You can use this method when cleaning up from a failed pool or
@@ -189,6 +189,10 @@ def close_all_local_instances(port_range=None):
         List of a range of ports to use when cleaning up Mechanical. The
         default is ``None``, in which case the ports managed by
         PyMechanical are used.
+
+    use_thread : bool, optional
+        Whether to use threads to close the Mechanical instances.
+        The default is ``True``. So this call will return immediately.
 
     Examples
     --------
@@ -202,24 +206,30 @@ def close_all_local_instances(port_range=None):
         port_range = pymechanical.LOCAL_PORTS
 
     @threaded
-    def close_mechanical(port, name="Closing Mechanical thread."):
+    def close_mechanical_threaded(port, name="Closing Mechanical instance in a thread"):
+        close_mechanical(port, name)
+
+    def close_mechanical(port, name="Closing Mechanical instance"):
         try:
             mechanical = Mechanical(port=port)
-            LOG.debug(f"Closing Mechanical instance: {mechanical.get_name()} in a thread.")
+            LOG.debug(f"{name}: {mechanical.name}.")
             mechanical.exit(force=True)
-        except OSError:
+        except OSError:  # pragma: no cover
             pass
 
     ports = check_ports(port_range)
     for port_temp, state in ports.items():
         if state:
-            close_mechanical(port_temp)
+            if use_thread:
+                close_mechanical_threaded(port_temp)
+            else:
+                close_mechanical(port_temp)
 
 
 def create_ip_file(ip, path):
     """Create the ``mylocal.ip`` file needed to change the IP address of the gRPC server."""
     file_name = os.path.join(path, "mylocal.ip")
-    with open(file_name, "w") as f:
+    with open(file_name, "w", encoding="utf-8") as f:
         f.write(ip)
 
 
@@ -244,7 +254,7 @@ def _get_available_base_mechanical():
     """
     base_path = None
     if is_windows():
-        supported_versions = [231]
+        supported_versions = [232, 231]
         awp_roots = {ver: os.environ.get(f"AWP_ROOT{ver}", "") for ver in supported_versions}
         installed_versions = {
             ver: path for ver, path in awp_roots.items() if path and os.path.isdir(path)
@@ -254,7 +264,7 @@ def _get_available_base_mechanical():
         else:
             base_path = os.path.join(os.environ["PROGRAMFILES"], "ANSYS Inc")
     else:
-        for path in ["/usr/ansys_inc", "/ansys_inc"]:
+        for path in ["/usr/ansys_inc", "/ansys_inc", "/install/ansys_inc"]:
             if os.path.isdir(path):
                 base_path = path
 
@@ -297,7 +307,7 @@ def find_mechanical():
     On Linux:
 
     >>> find_mechanical()
-    (/usr/ansys_inc/v211/aisol/.workbench, 23.1)
+    (/usr/ansys_inc/v231/aisol/.workbench, 23.1)
     """
     versions = _get_available_base_mechanical()
     if not versions:
@@ -315,7 +325,7 @@ def get_mechanical_path(allow_input=True):
     """Get the Mechanical path from a cached file or from user input."""
     exe_loc = None
     if os.path.isfile(CONFIG_FILE):
-        with open(CONFIG_FILE) as f:
+        with open(CONFIG_FILE, "r", encoding="utf-8") as f:
             exe_loc = f.read()
         # verify
         if not os.path.isfile(exe_loc) and allow_input:
@@ -365,7 +375,7 @@ def change_default_mechanical_path(exe_loc):
 
     """
     if os.path.isfile(exe_loc):
-        with open(CONFIG_FILE, "w") as f:
+        with open(CONFIG_FILE, "w", encoding="utf-8") as f:
             f.write(exe_loc)
     else:
         raise FileNotFoundError("File %s is invalid or does not exist" % exe_loc)
@@ -447,7 +457,7 @@ def save_mechanical_path(exe_loc=None):  # pragma: no cover
         if is_valid_executable_path(exe_loc):
             if not is_common_executable_path(exe_loc):
                 warn_uncommon_executable_path(exe_loc)
-            with open(CONFIG_FILE, "w") as f:
+            with open(CONFIG_FILE, "w", encoding="utf-8") as f:
                 f.write(exe_loc)
             need_path = False
         else:
@@ -508,6 +518,16 @@ def warn_uncommon_executable_path(exe_loc):  # pragma: no cover
             f"executable path style ('directory/vXXX/aisol/.workbench'). "
             "You might have problems at later use."
         )
+
+
+client_to_server_loglevel = {
+    "DEBUG": 1,
+    "INFO": 2,
+    "WARN": 3,
+    "WARNING": 3,
+    "ERROR": 4,
+    "CRITICAL": 5,
+}
 
 
 class Mechanical(object):
@@ -631,39 +651,12 @@ class Mechanical(object):
 
         self._start_parm = kwargs
 
-        self._logLevel = loglevel
-        self._log_file = log_file
-        self._log_mechanical = log_mechanical
-
-        self._log = LOG.add_instance_logger(self._name, self, level=loglevel)  # instance logger
-        # adding a file handler to the logger
-        if log_file:
-            if not isinstance(log_file, str):
-                log_file = "instance.log"
-            self._log.log_to_file(filename=log_file, level=loglevel)
-
-        self._log_file_mechanical = log_mechanical
-        if log_mechanical:
-            if not isinstance(log_mechanical, str):
-                self._log_file_mechanical = "pymechanical_log.txt"
-            else:
-                self._log_file_mechanical = log_mechanical
-
-        # temporarily disable logging
-        # useful when we run some dummy calls
-        self._disable_logging = False
-
         self._cleanup_on_exit = cleanup_on_exit
         self._busy = False  # used to check if running a command on the server
 
         self._local = ip_temp in ["127.0.0.1", "127.0.1.1", "localhost"]
         if "local" in kwargs:  # pragma: no cover  # allow this to be overridden
             self._local = kwargs["local"]
-
-        if self._local:
-            self.log_info(f"Mechanical connection is treated as local.")
-        else:
-            self.log_info(f"Mechanical connection is treated as remote.")
 
         self._health_response_queue = None
         self._exiting = False
@@ -683,6 +676,33 @@ class Mechanical(object):
         else:
             self._channel = channel
 
+        self._logLevel = loglevel
+        self._log_file = log_file
+        self._log_mechanical = log_mechanical
+
+        self._log = LOG.add_instance_logger(self.name, self, level=loglevel)  # instance logger
+        # adding a file handler to the logger
+        if log_file:
+            if not isinstance(log_file, str):
+                log_file = "instance.log"
+            self._log.log_to_file(filename=log_file, level=loglevel)
+
+        self._log_file_mechanical = log_mechanical
+        if log_mechanical:
+            if not isinstance(log_mechanical, str):
+                self._log_file_mechanical = "pymechanical_log.txt"
+            else:
+                self._log_file_mechanical = log_mechanical
+
+        # temporarily disable logging
+        # useful when we run some dummy calls
+        self._disable_logging = False
+
+        if self._local:
+            self.log_info(f"Mechanical connection is treated as local.")
+        else:
+            self.log_info(f"Mechanical connection is treated as remote.")
+
         # connect and validate to the channel
         self._multi_connect(timeout=timeout)
 
@@ -696,9 +716,9 @@ class Mechanical(object):
             except grpc.RpcError as e:
                 self.log_error(f"exit: {e}")
 
-    def _set_log_level(self, level):
-        """Set an alias for the log level."""
-        self.set_log_level(level)
+    # def _set_log_level(self, level):
+    #     """Set an alias for the log level."""
+    #     self.set_log_level(level)
 
     @property
     def log(self):
@@ -718,7 +738,7 @@ class Mechanical(object):
                     "config.VersionInfo.VersionString"
                 )
                 self._version = self.run_python_script(script)
-            except grpc.RpcError:
+            except grpc.RpcError:  # pragma: no cover
                 raise
             finally:
                 self._disable_logging = False
@@ -726,24 +746,18 @@ class Mechanical(object):
         return self._version
 
     @property
-    def _name(self):
+    def name(self):
         """Name (unique identifier) of the Mechanical instance."""
-        # if self._ip or self._port:
-        #     return f"GRPC_{self._ip}:{self._port}"
         try:
             if self._channel is not None:
-                if self._remote_instance is not None:
+                if self._remote_instance is not None:  # pragma: no cover
                     return f"GRPC_{self._channel._channel._channel.target().decode()}"
                 else:
                     return f"GRPC_{self._channel._channel.target().decode()}"
-        except Exception:
+        except Exception:  # pragma: no cover
             pass
 
-        return f"GRPC_instance_{id(self)}"
-
-    def get_name(self):
-        """Get the name of the Mechanical instance."""
-        return self._name
+        return f"GRPC_instance_{id(self)}"  # pragma: no cover
 
     @property
     def busy(self):
@@ -790,13 +804,13 @@ class Mechanical(object):
                 break
 
             i += 1
-        else:
+        else:  # pragma: no cover
             self.log_debug(
                 f"Reached either maximum amount of connection attempts "
                 f"({n_attempts}) or timeout ({timeout} s)."
             )
 
-        if not connected:
+        if not connected:  # pragma: no cover
             raise IOError(f"Unable to connect to Mechanical instance at {self._channel_str}.")
 
     @property
@@ -804,10 +818,10 @@ class Mechanical(object):
         """Target string, generally in the form of ``ip:port``, such as ``127.0.0.1:10000``."""
         if self._channel is not None:
             if self._remote_instance is not None:
-                return self._channel._channel._channel.target().decode()
+                return self._channel._channel._channel.target().decode()  # pragma: no cover
             else:
                 return self._channel._channel.target().decode()
-        return ""
+        return ""  # pragma: no cover
 
     def _connect(self, timeout=12, enable_health_check=False):
         """Connect a gRPC channel to a remote or local Mechanical instance.
@@ -838,7 +852,7 @@ class Mechanical(object):
 
         # keeps Mechanical session alive
         self._timer = None
-        if not self._local and self._keep_connection_alive:
+        if not self._local and self._keep_connection_alive:  # pragma: no cover
             self._initialised = threading.Event()
             self._t_trigger = time.time()
             self._t_delay = 30
@@ -849,14 +863,14 @@ class Mechanical(object):
             self._timer.start()
 
         # enable health check
-        if enable_health_check:
+        if enable_health_check:  # pragma: no cover
             self._enable_health_check()
 
         self.__server_version = None
 
         return True
 
-    def _enable_health_check(self):
+    def _enable_health_check(self):  # pragma: no cover
         """Place the status of the health check in the health response queue."""
         # lazy imports here to speed up module load
         from grpc_health.v1 import health_pb2, health_pb2_grpc
@@ -906,7 +920,7 @@ class Mechanical(object):
         )
         thread.start()
 
-    def _threaded_heartbeat(self):
+    def _threaded_heartbeat(self):  # pragma: no cover
         """To call from a thread to verify that a Mechanical instance is alive."""
         self._initialised.set()
         while True:
@@ -927,7 +941,7 @@ class Mechanical(object):
 
         # open the channel
         channel_str = f"{ip}:{port}"
-        self.log_debug(f"Opening insecure channel at {channel_str}.")
+        LOG.debug(f"Opening insecure channel at {channel_str}.")
         return grpc.insecure_channel(
             channel_str,
             options=[
@@ -941,10 +955,10 @@ class Mechanical(object):
         if self._exited:
             return False
 
-        if self._busy:
+        if self._busy:  # pragma: no cover
             return True
 
-        try:
+        try:  # pragma: no cover
             self._make_dummy_call()
             return True
         except grpc.RpcError:
@@ -1066,7 +1080,7 @@ class Mechanical(object):
         time_1 = datetime.datetime.now()
 
         sleep_time = 0.5
-        if wait_time == -1:
+        if wait_time == -1:  # pragma: no cover
             self.log_info("Waiting for Mechanical to be ready...")
         else:
             self.log_info(f"Waiting for Mechanical to be ready. Maximum wait time: {wait_time}s")
@@ -1107,10 +1121,7 @@ class Mechanical(object):
             ``True`` if Mechanical is ready, ``False`` otherwise.
         """
         try:
-            script = (
-                'ExtAPI.Application.ScriptByName("jscript").ExecuteCommand'
-                '("var isDistributed = DS.Script.isDistributed();returnFromScript(isDistributed);")'
-            )
+            script = "ExtAPI.DataModel.Project.ProductVersion"
             self.run_python_script(script)
         except grpc.RpcError as error:
             self.log_debug(f"Mechanical is not ready. Error:{error}.")
@@ -1132,16 +1143,10 @@ class Mechanical(object):
         -------
             Converted log level for the server.
         """
-        if log_level == "DEBUG":
-            return 1
-        elif log_level == "INFO":
-            return 2
-        elif log_level == "WARNING":
-            return 3
-        elif log_level == "ERROR":
-            return 4
-        elif log_level == "CRITICAL":
-            return 5
+        value = client_to_server_loglevel.get(log_level)
+
+        if value is not None:
+            return value
 
         raise ValueError(
             f"Log level {log_level} is invalid. Possible values are "
@@ -1248,7 +1253,7 @@ class Mechanical(object):
         self._exited = True
         self._stub = None
 
-        if self._remote_instance is not None:
+        if self._remote_instance is not None:  # pragma: no cover
             self.log_debug("PyPIM delete has started.")
             try:
                 self._remote_instance.delete()
@@ -1326,7 +1331,7 @@ class Mechanical(object):
         finally:
             self._busy = False
 
-        if not response.is_ok:
+        if not response.is_ok:  # pragma: no cover
             raise IOError("File failed to upload.")
         return os.path.basename(file_name)
 
@@ -1404,7 +1409,7 @@ class Mechanical(object):
         )
 
         files_out = result.splitlines()
-        if not files_out:
+        if not files_out:  # pragma: no cover
             self.log_warning("No files listed")
         return files_out
 
@@ -1545,6 +1550,8 @@ class Mechanical(object):
         else:
             target_dir = os.getcwd()
 
+        out_files = []
+
         for each_file in list_files:
             try:
                 file_name = os.path.basename(each_file)  # Getting only the name of the file.
@@ -1553,12 +1560,13 @@ class Mechanical(object):
                 # This produces the file structure to flat out, but it is fine,
                 # because recursive does not work in remote.
                 self._busy = True
-                self._download(
+                out_file_path = self._download(
                     each_file,
                     out_file_name=os.path.join(target_dir, file_name),
                     chunk_size=chunk_size,
                     progress_bar=progress_bar,
                 )
+                out_files.append(out_file_path)
             except FileNotFoundError:
                 # So far the gRPC interface returns the size of the file equal
                 # zero, if the file does not exist, or if its size is zero,
@@ -1570,13 +1578,13 @@ class Mechanical(object):
             finally:
                 self._busy = False
 
-        return list_files
+        return out_files
 
     @protect_grpc
     def _download(
         self,
         target_name,
-        out_file_name=None,
+        out_file_name,
         chunk_size=DEFAULT_CHUNK_SIZE,
         progress_bar=None,
     ):
@@ -1588,10 +1596,9 @@ class Mechanical(object):
             Name of the target file on the server. The file must be in the same
             directory as the Mechanical instance. You can use the
             ``mechanical.list_files()`` function to list current files.
-        out_file_name : str, optional
+        out_file_name : str
             Name of the output file if the name is to differ from that for the target
-            file. The default is ``None``, in which case the name of the target file is
-            used.
+            file.
         chunk_size : int, optional
             Chunk size in bytes. The default is ``"DEFAULT_CHUNK_SIZE"``, in which case
             256 kB is used. The value must be less than 4 MB.
@@ -1611,9 +1618,6 @@ class Mechanical(object):
         if not progress_bar and _HAS_TQDM:
             progress_bar = True
 
-        if out_file_name is None:
-            out_file_name = target_name
-
         request = mechanical_pb2.FileDownloadRequest(file_path=target_name, chunk_size=chunk_size)
 
         responses = self._stub.DownloadFile(request)
@@ -1622,8 +1626,12 @@ class Mechanical(object):
             responses, out_file_name, progress_bar=progress_bar, target_name=target_name
         )
 
-        if not file_size:
-            raise FileNotFoundError(f'File "{target_name}" is empty or does not exist')
+        if not file_size:  # pragma: no cover
+            raise FileNotFoundError(f'File "{out_file_name}" is empty or does not exist')
+
+        self.log_info(f"{out_file_name} with size {file_size} has been written.")
+
+        return out_file_name
 
     def save_chunks_to_file(self, responses, filename, progress_bar=False, target_name=""):
         """Save chunks to a local file.
@@ -1662,7 +1670,7 @@ class Mechanical(object):
                 if pbar is None:
                     pbar = tqdm(
                         total=response.file_size,
-                        desc=f"Downloading to {target_name} from {self._channel_str}",
+                        desc=f"Downloading {self._channel_str}:{target_name} to {filename}",
                         unit="B",
                         unit_scale=True,
                         unit_divisor=1024,
@@ -1695,7 +1703,7 @@ class Mechanical(object):
         List[str]
             List of downloaded files.
         """
-        destination_directory = target_dir
+        destination_directory = target_dir.rstrip("\\/")
 
         # let us create the directory, if it doesn't exist
         if destination_directory:
@@ -1768,7 +1776,7 @@ class Mechanical(object):
         try:
             self._disable_logging = True
             self.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
-        except grpc.RpcError:
+        except grpc.RpcError:  # pragma: no cover
             raise
         finally:
             self._disable_logging = False
@@ -1777,7 +1785,7 @@ class Mechanical(object):
     def __readfile(file_path):
         """Get the contents of the file as a string."""
         # open text file in read mode
-        text_file = open(file_path, "r")
+        text_file = open(file_path, "r", encoding="utf-8")
         # read whole file to a string
         data = text_file.read()
         # close file
@@ -1882,7 +1890,7 @@ class Mechanical(object):
         if self._exited:
             raise MechanicalExitedError("Mechanical has already exited.")
 
-        if self._stub is None:
+        if self._stub is None:  # pragma: no cover
             raise ValueError(
                 "There is not a valid connection to Mechanical. Launch or connect to it first."
             )
@@ -1898,12 +1906,12 @@ class Mechanical(object):
 
         if self._log_file_mechanical:
             try:
-                with open(self._log_file_mechanical, "a") as file:
+                with open(self._log_file_mechanical, "a", encoding="utf-8") as file:
                     file.write(script_code)
                     file.write("\n")
-            except IOError as e:
+            except IOError as e:  # pragma: no cover
                 self.log_warning(f"I/O error({e.errno}): {e.strerror}")
-            except Exception as e:  # handle other exceptions such as attribute errors
+            except Exception as e:  # pragma: no cover
                 self.log_warning("Unexpected error:" + str(e))
 
 
@@ -1930,7 +1938,10 @@ def get_start_instance(start_instance_default=True):
 
     """
     if "PYMECHANICAL_START_INSTANCE" in os.environ:
-        if os.environ["PYMECHANICAL_START_INSTANCE"].lower() not in ["true", "false"]:
+        if os.environ["PYMECHANICAL_START_INSTANCE"].lower() not in [
+            "true",
+            "false",
+        ]:  # pragma: no cover
             val = os.environ["PYMECHANICAL_START_INSTANCE"]
             raise OSError(
                 f'Invalid value "{val}" for PYMECHANICAL_START_INSTANCE\n'
@@ -1944,7 +1955,6 @@ def launch_grpc(
     exec_file="",
     batch=True,
     port=MECHANICAL_DEFAULT_PORT,
-    ip=LOCALHOST,
     additional_switches=None,
     additional_envs=None,
     verbose=False,
@@ -1963,9 +1973,6 @@ def launch_grpc(
         Port to launch the Mechanical instance on. The default is
         ``MECHANICAL_DEFAULT_PORT``. The final port is the first
         port available after (or including) this port.
-    ip : str, optional
-        IP address to use to connect to the launched Mechanical instance.
-        The default is ``LOCALHOST``, in which case ``127.0.0.1`` is used.
     additional_switches : list, optional
         List of additional arguments to pass. The default is ``None``.
     additional_envs : dictionary, optional
@@ -2017,16 +2024,6 @@ def launch_grpc(
         port += 1
     local_ports.append(port)
 
-    # setting ip for the grpc server
-    if ip != LOCALHOST:  # Default local ip is 127.0.0.1
-        create_ip_file(ip, os.getcwd())
-
-    # exec_file = "",
-    # port = MECHANICAL_DEFAULT_PORT,
-    # ip = LOCALHOST,
-    # additional_switches = "",
-    # verbose = False,
-
     mechanical_launcher = MechanicalLauncher(
         batch, port, exec_file, additional_switches, additional_envs, verbose
     )
@@ -2035,7 +2032,7 @@ def launch_grpc(
     return port
 
 
-def launch_remote_mechanical(version=None) -> (grpc.Channel, Instance):
+def launch_remote_mechanical(version=None) -> (grpc.Channel, Instance):  # pragma: no cover
     """Start Mechanical remotely using the Product Instance Management (PIM) API.
 
     When calling this method, you must ensure that you are in an environment
@@ -2076,7 +2073,7 @@ def launch_mechanical(
     loglevel="ERROR",
     log_file=False,
     log_mechanical=None,
-    additional_switches="",
+    additional_switches=None,
     additional_envs=None,
     start_timeout=120,
     port=None,
@@ -2118,8 +2115,8 @@ def launch_mechanical(
         ``"log_mechanical='pymechanical_log.txt'"`` to write all commands that are
         sent to Mechanical via PyMechanical to this file. You can then use these
         commands to run a script within Mechanical without PyMechanical.
-    additional_switches : str, optional
-        Additional switches for Mechanical. The default is ``""``.
+    additional_switches : list, optional
+        Additional switches for Mechanical. The default is ``None``.
     additional_envs : dictionary, optional
         Dictionary of additional environment variables to pass. The default
         is ``None``.
@@ -2198,7 +2195,7 @@ def launch_mechanical(
     """
     # Start Mechanical with PyPIM if the environment is configured for it
     # and a directive on how to launch Mechanical was not passed.
-    if pypim.is_configured() and exec_file is None:
+    if pypim.is_configured() and exec_file is None:  # pragma: no cover
         LOG.info("Starting Mechanical remotely. The startup configuration will be ignored.")
         channel, remote_instance = launch_remote_mechanical(version=version)
         return Mechanical(
@@ -2289,12 +2286,16 @@ def launch_mechanical(
         if clear_on_connect:
             mechanical.clear()
 
+        # setting ip for the grpc server
+        if ip != LOCALHOST:  # Default local ip is 127.0.0.1
+            create_ip_file(ip, os.getcwd())
+
         return mechanical
 
     # verify executable
     if exec_file is None:
         exec_file = get_mechanical_path()
-        if exec_file is None:
+        if exec_file is None:  # pragma: no cover
             raise FileNotFoundError(
                 "Path to the Mechanical executable file is invalid or cache cannot be loaded. "
                 "Enter a path manually by specifying a value for the "
@@ -2316,7 +2317,7 @@ def launch_mechanical(
     }
 
     try:
-        port = launch_grpc(port=port, verbose=verbose_mechanical, ip=ip, **start_parm)
+        port = launch_grpc(port=port, verbose=verbose_mechanical, **start_parm)
         start_parm["local"] = True
         mechanical = Mechanical(
             ip=ip,
@@ -2329,7 +2330,7 @@ def launch_mechanical(
             keep_connection_alive=keep_connection_alive,
             **start_parm,
         )
-    except Exception as exception:
+    except Exception as exception:  # pragma: no cover
         # pass
         raise exception
 
