@@ -5,7 +5,7 @@ try:
     from importlib.metadata import version
 
     HAS_IMPORTLIB = True
-except:
+except:  # pragma: no cover
     # TODO - only support importlib.metadata::version after dropping python3.7 support.
     # pkg_resources is part of distutils and is considered obsolete.
     import pkg_resources
@@ -16,7 +16,7 @@ except:
 def __get_clr_loader_version():
     if HAS_IMPORTLIB:
         return version("clr_loader")
-    else:
+    else:  # pragma: no cover
         return pkg_resources.get_distribution("clr_loader").version
 
 
