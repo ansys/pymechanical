@@ -31,10 +31,10 @@ Requirements
 Procedure
 =========
 
-Download Ansys Mechanical installation files
+Download Mechanical installation files
 --------------------------------------------
 
-Download the latest Ansys Mechanical version from the Ansys Customer Portal 
+Download the latest Mechanical version from the Ansys Customer Portal
 (`Current Release <ansys_current_release_>`_).
 You need to have a valid Ansys account with access to
 the products to download.
@@ -43,10 +43,10 @@ If you do not Ansys account information, contact your
 IT manager.
 
 
-Install Ansys Mechanical product
+Install Mechanical product
 --------------------------------
 
-To install Ansys Mechanical product on an Ubuntu machine you can follow 
+To install Mechanical product on an Ubuntu machine you can follow
 :ref:`install_mechanical` if you are using the graphical user interface
 or :ref:`installing_ansys_in_wsl` for the command line interface.
 The later approach can be reused with small changes in a
