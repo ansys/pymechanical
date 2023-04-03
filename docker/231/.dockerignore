@@ -55,7 +55,7 @@ ansys_inc/v231/commonfiles/CAD/Hoops
 ansys_inc/v231/commonfiles/CAD/Spatial
 
 # needed for mapdl
-# havig + in the pattern produces the following error
+# having + in the pattern produces the following error
 # error from sender: failed to match excludepatterns: syntax error in pattern
 # let us not ignore this folder in the mechanical images
 # ansys_inc/v231/commonfiles/AAS
