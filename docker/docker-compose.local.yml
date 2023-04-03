@@ -14,8 +14,8 @@ version: '3.3'
 # USAGE
 # =====
 #
-# 1. You need to have the 'base' docker-compose file in the same directory as this file, and fulfill
-# its requirements (license server env var).
+# 1. You need to have the 'base' docker-compose file in the same directory as this file and fulfill
+# its requirements (license server environment variable).
 #
 # 2. Once you have done this, you can start the service by running:
 #
@@ -24,7 +24,7 @@ version: '3.3'
 # NOTES
 # =====
 #
-# - If you need to run a license server, please have a look at 'docker-compose.license_server.yml'
+# - If you need to run a license server, look at the 'docker-compose.license_server.yml'
 # file. In that case, the command to launch everything is:
 # 
 #      docker-compose -f docker-compose.yml -f docker-compose.license-server.yml -f docker-compose.local.yml up
