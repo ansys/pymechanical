@@ -78,7 +78,7 @@ class App:
 
     def __repr__(self):
         """Get the product info."""
-        if self._version < 232:
+        if self._version < 232:  # pragma: no cover
             return "Ansys Mechanical"
         import clr
 
@@ -136,18 +136,6 @@ class App:
         args = None
         rets = None
         return self.script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
-
-    def import_materials(self, material_file) -> None:
-        """Import material from matml file."""
-        if self._version >= 232:
-            materials = self.DataModel.Project.Model.Materials
-            materials.Import(material_file)
-        else:
-            material_file = material_file.replace("\\", "\\\\")
-            script = (
-                'DS.Tree.Projects.Item(1).LoadEngrDataLibraryFromFile("' + material_file + '");'
-            )
-            self.ExtAPI.Application.ScriptByName("jscript").ExecuteCommand(script)
 
     @property
     def DataModel(self):
