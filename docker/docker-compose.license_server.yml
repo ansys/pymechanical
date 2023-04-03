@@ -6,7 +6,7 @@ version: '3.3'
 # This docker-compose file extends the 'base' docker-compose file by adding a license server.
 # The usage of the license server is discouraged.
 #
-# In this docker-compose file, the service is faking to be this hostname, by faking the hostname and MAC address.
+# In this docker-compose file, the service pretends to be this hostname by faking the hostname and MAC address.
 # It then mounts the local 'licenses' directory into the container so that the container can use the license file.
 #
 #
