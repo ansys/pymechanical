@@ -102,7 +102,7 @@ ansys_inc/v232/commonfiles/tools
 /srv/ansys/sss/ANSYSDev/232/docker2/Cloud_Packages/v232/linx64/pyansys/containerPackages
 ansys_inc/v232/dcs
 
-# not available on linx
+# not available on linux
 # ansys_inc/v232/DistortionCompensation
 
 # trace mapping workflows need Electronics
@@ -385,9 +385,7 @@ ansys_inc/v232/tp/IntelMKL/2020.0.166
 !ansys_inc/v232/tp/IntelMKL/2020.0.166/linx64/lib/intel64/libmkl_vml_avx512.so
 !ansys_inc/v232/tp/IntelMKL/2020.0.166/linx64/lib/intel64/libmkl_vml_avx512_mic.so
 
-# TODO: we need to enable 5.15.10 later
 ansys_inc/v232/tp/qt
-#ansys_inc/v232/tp/qt/5.15.10 
 !ansys_inc/v232/tp/qt/5.9.6
 
 # mesh dependency
