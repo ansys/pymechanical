@@ -99,7 +99,7 @@ ansys_inc/v231/commonfiles/tools
 
 ansys_inc/v231/dcs
 
-# not available on linx
+# not available on linux
 # ansys_inc/v231/DistortionCompensation
 
 # trace mapping workflows need Electronics
