@@ -35,7 +35,7 @@ Download Mechanical installation files
 --------------------------------------------
 
 Download the latest Mechanical version from the Ansys Customer Portal
-(`Current Release <ansys_current_release_>`_).
+(`Current Release <https://download.ansys.com/Current%20Release>`_).
 You need to have a valid Ansys account with access to
 the products to download.
 
@@ -47,9 +47,10 @@ Install Mechanical product
 --------------------------------
 
 To install Mechanical product on an Ubuntu machine you can follow
-:ref:`install_mechanical` if you are using the graphical user interface
-or :ref:`installing_ansys_in_wsl` for the command line interface.
-The later approach can be reused with small changes in a
+`Install Mechanical <https://mechanical.docs.pyansys.com/version/stable/getting_started/running_mechanical.html#install-mechanical>`_
+if you are using the graphical user interface
+or `Install Ansys products in WSL <https://mechanical.docs.pyansys.com/version/stable/getting_started/wsl.html#install-ansys-products>`_
+for the command line interface. The later approach can be reused with small changes in a
 continuous integration workflow.
 
 To reduce the size of the final image, you might want to
@@ -83,7 +84,7 @@ which you should modify to adapt it to your needs.
     export ANS_VERSION=${ANS_MAJOR_VERSION}${ANS_MINOR_VERSION}
 
     export TAG=mechanical:${ANS_MAJOR_VERSION}.${ANS_MINOR_VERSION}
-    # example: if Mechanical v231 is install under
+    # example: if Mechanical v231 is installed under
     # /install/ansys_inc/v231
     # use /install for path_to_mechanical_installation
     export MECHANICAL_INSTALL_LOCATION=/path_to_mechanical_installation/
@@ -121,7 +122,7 @@ Summary
 
 
 * **Step 1:** Download the latest Mechanical version from the Ansys Customer Portal 
-  (`Current Release <ansys_current_release_>`_).
+  (`Current Release <https://download.ansys.com/Current%20Release>`_).
 
 * **Step 2:** Install Mechanical in a known folder. You can reuse your local
   installation if it is updated and the machine is running the same Ubuntu
