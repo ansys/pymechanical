@@ -264,7 +264,7 @@ jobs:
   docs:
     name: Documentation
     needs: [docs-style]
-    runs-on: ubuntu-latest-8-cores
+    runs-on: public-ubuntu-latest-8-cores
     steps:
       - name: Login in Github Container registry
         uses: docker/login-action@v2
