@@ -124,7 +124,10 @@ jobs:
 
       - name: Get Mechanical container logs
         if: always()
-        run: docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > mechanical_tests_log-${{ matrix.mechanical-version }}.txt 2>&1
+        run: |
+          docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > mechanical_tests_log-${{ matrix.mechanical-version }}.txt 2>&1
+          echo CONTAINER LOGS OUTPUT
+          cat mechanical_tests_log-${{ matrix.mechanical-version }}.txt
 
       - name: Upload container logs
         uses: actions/upload-artifact@v3
