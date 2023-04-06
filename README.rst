@@ -61,20 +61,6 @@ Then, install PyMechanical by running this command:
 
    python -m pip install ansys-mechanical-core
 
-.. caution::
-
-    PyMechanical is currently hosted in a private PyPI repository. You must provide the index
-    URL to the private PyPI repository:
-
-    * Index URL: ``https://pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/``
-
-    If access to this package registry is needed, email `pyansys.core@ansys.com <mailto:pyansys.core@ansys.com>`_
-    to request access. The PyAnsys team can give you a read-only token to insert in ``${PRIVATE_PYPI_ACCESS_TOKEN}``.
-    Once you have this token, run this command:
-
-    .. code:: bash
-
-        pip install ansys-mechanical-core --index-url=https://${PRIVATE_PYPI_ACCESS_TOKEN}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/
 
 Install in developer mode
 ^^^^^^^^^^^^^^^^^^^^^^^^^
