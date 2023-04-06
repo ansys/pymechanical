@@ -48,6 +48,7 @@ Install PyMechanical using `pip` with::
 
 For more details, see `PyMechanical - Install the package <https://mechanical.docs.pyansys.com/version/stable/getting_started/index.html>`_
 
+
 Dependencies
 ------------
 
