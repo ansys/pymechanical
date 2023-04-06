@@ -83,36 +83,35 @@ To install PyMechanical in developer mode, perform these steps:
 
 Test PyMechanical
 -----------------
-PyMechanical uses `pytest`_ and `tox`_ for unit testing.
+PyMechanical uses `PyTest`_ and `tox`_ for unit testing.
 
 Using ``tox``
 ^^^^^^^^^^^^^
-This project takes advantage of `tox`_. This tool automates common
-development tasks (similar to Makefile), but it is oriented towards Python
-development.
+This project takes advantage of `tox`_. This tool automates common development
+tasks (similar to ``Makefile``), but it is oriented towards Python development.
 
-While Makefile has rules, ``tox`` has environments. In fact, ``tox`` creates its
-own virtual environment so that anything being tested is isolated from the project
-to guarantee the project's integrity.
+While ``Makefile`` has rules, ``tox`` has environments. In fact, ``tox``
+creates its own virtual environment so that anything being tested is isolated
+from the project to guarantee the project's integrity.
 
 The following environment commands are provided:
 
-- **tox -e style**: Checks for coding style quality.
-- **tox -e py**: Checks for unit tests.
-- **tox -e py-coverage**: Checks for unit testing and code coverage.
-- **tox -e doc**: Checks for documentation-building process.
+- ``tox -e style``: Checks for coding style quality.
+- ``tox -e py``: Checks for unit tests.
+- ``tox -e py-coverage``: Checks for unit testing and code coverage.
+- ``tox -e doc``: Checks for documentation-building process.
 
 
-Raw testing using PyTest
-^^^^^^^^^^^^^^^^^^^^^^^^
+Without ``tox``
+^^^^^^^^^^^^^^^
 
 If required, from the command line, you can call style commands like
-`black`_, `isort`_, and `flake8`_. You can also call unit testing commands like `pytest`_.
+`black`_, `isort`_, and `flake8`_. You can also call unit testing commands like `PyTest`_.
 However, running these commands do not guarantee that your project is being tested
 in an isolated environment, which is the reason why tools like ``tox`` exist.
 
 
-Remote Testing
+Remote testing
 ^^^^^^^^^^^^^^
 If you do not have a licensed copy of Mechanical installed locally but want to
 run PyMechanical unit tests on a remote instance, you must set up environment
@@ -228,5 +227,5 @@ This way, it's not possible for you to push code that fails the style checks::
   codespell................................................................Passed
 
 .. LINKS AND REFERENCES
-.. _pytest: https://docs.pytest.org/en/stable/
+.. _PyTest: https://docs.pytest.org/en/stable/
 .. _tox: https://tox.wiki/
