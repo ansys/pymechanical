@@ -69,7 +69,7 @@ jobs:
 
   tests:
     name: Testing and coverage - Mechanical ${{ matrix.mechanical-version }}
-    runs-on: ubuntu-latest-8-cores
+    runs-on: public-ubuntu-latest-8-cores
     needs: [smoke-tests]
     continue-on-error: ${{ matrix.experimental }}
     strategy:
@@ -199,7 +199,7 @@ jobs:
 
   launch-tests:
     name: Launch testing and coverage
-    runs-on: ubuntu-latest-8-cores
+    runs-on: public-ubuntu-latest-8-cores
     container:
       image: ghcr.io/pyansys/pymechanical/mechanical:v23.2.0
       options: --entrypoint /bin/bash
