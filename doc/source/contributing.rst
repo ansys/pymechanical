@@ -38,19 +38,32 @@ To install PyMechanical in developer mode, perform these steps:
 
 #. Create a clean Python virtual environment and activate it:
 
-   .. code:: bash
+.. tab-set::
 
-      # Create a virtual environment
-      python -m venv .venv
+    .. tab-item:: Windows
 
-      # Activate it in a POSIX system
-      source .venv/bin/activate
+        .. tab-set::
 
-      # Activate it in Windows CMD environment
-      .venv\Scripts\activate.bat
+            .. tab-item:: CMD
 
-      # Activate it in Windows Powershell
-      .venv\Scripts\Activate.ps1
+                .. code-block:: text
+
+                    python -m venv .venv
+                    .venv\Scripts\activate.bat
+
+            .. tab-item:: PowerShell
+
+                .. code-block:: text
+
+                    python -m venv .venv
+                    .venv\Scripts\Activate.ps1
+
+    .. tab-item:: Linux/UNIX
+
+        .. code-block:: text
+            python -m venv .venv
+            source .venv/bin/activate
+  
 
 #. Ensure that you have the latest required build system tools:
 
@@ -151,7 +164,7 @@ For building documentation, you can run the usual rules provided in the
     #  build and view the doc from the POSIX system
     make -C doc/ html && your_browser_name doc/html/index.html
 
-    # build and view the doc from CMD / PowerShell environment
+    # build and view the doc from a Windows environment
     .\doc\make.bat clean
     .\doc\make.bat html
     start .\doc\_build\html\index.html
