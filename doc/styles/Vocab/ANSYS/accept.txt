@@ -41,3 +41,4 @@ pessimizations
 mutexes
 Addin
 Addins
+isort
