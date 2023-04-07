@@ -239,6 +239,12 @@ This way, it's not possible for you to push code that fails the style checks::
   flake8...................................................................Passed
   codespell................................................................Passed
 
+
 .. LINKS AND REFERENCES
+.. _PyAnsys Developer's Guide: https://dev.docs.pyansys.com/
 .. _PyTest: https://docs.pytest.org/en/stable/
+.. _Sphinx: https://www.sphinx-doc.org/en/master/
+.. _black: https://github.com/psf/black
+.. _flake8: https://flake8.pycqa.org/en/latest/
+.. _isort: https://github.com/PyCQA/isort
 .. _tox: https://tox.wiki/
