@@ -61,6 +61,7 @@ To install PyMechanical in developer mode, perform these steps:
     .. tab-item:: Linux/UNIX
 
         .. code-block:: text
+
             python -m venv .venv
             source .venv/bin/activate
   
