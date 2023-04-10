@@ -42,149 +42,20 @@ Mechanical within Python's ecosystem. It includes the ability to:
 
 Install the package
 -------------------
+Install PyMechanical using `pip` with::
 
-PyMechanical has three installation modes: user, developer, and offline.
+   pip install ansys-mechanical-core
 
-Install in user mode
-^^^^^^^^^^^^^^^^^^^^
+For more details, see `PyMechanical - Install the package <https://mechanical.docs.pyansys.com/version/stable/getting_started/index.html>`_
 
-Before installing PyMechanical in user mode, ensure that you have the latest
-version of `pip`_ installed by running this command:
-
-.. code:: bash
-
-   python -m pip install -U pip
-
-Then, install PyMechanical by running this command:
-
-.. code:: bash
-
-   python -m pip install ansys-mechanical-core
-
-.. caution::
-
-    PyMechanical is currently hosted in a private PyPI repository. You must provide the index
-    URL to the private PyPI repository:
-
-    * Index URL: ``https://pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/``
-
-    If access to this package registry is needed, email `pyansys.core@ansys.com <mailto:pyansys.core@ansys.com>`_
-    to request access. The PyAnsys team can give you a read-only token to insert in ``${PRIVATE_PYPI_ACCESS_TOKEN}``.
-    Once you have this token, run this command:
-
-    .. code:: bash
-
-        pip install ansys-mechanical-core --index-url=https://${PRIVATE_PYPI_ACCESS_TOKEN}@pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/
-
-Install in developer mode
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Installing PyMechanical in developer mode allows
-you to modify the source and enhance it.
-
-.. note::
-
-    Before contributing to the project, ensure that you are thoroughly familiar
-    with the `PyAnsys Developer's Guide`_.
-
-To install PyMechanical in developer mode, perform these steps:
-
-#. Clone the ``pymechanical`` repository:
-
-   .. code:: bash
-
-      git clone https://github.com/pyansys/pymechanical
-
-#. Access the ``pymechanical`` directory where the repository has been cloned:
-
-   .. code:: bash
-
-      cd pymechanical
-
-#. Create a clean Python virtual environment and activate it:
-
-   .. code:: bash
-
-      # Create a virtual environment
-      python -m venv .venv
-
-      # Activate it in a POSIX system
-      source .venv/bin/activate
-
-      # Activate it in Windows CMD environment
-      .venv\Scripts\activate.bat
-
-      # Activate it in Windows Powershell
-      .venv\Scripts\Activate.ps1
-
-#. Ensure that you have the latest required build system tools:
-
-   .. code:: bash
-
-      python -m pip install -U pip tox flit twine
-
-#. Install the project in editable mode:
-
-   .. code:: bash
-
-      # Install the minimum requirements
-      python -m pip install -e .
-
-      # Install the minimum + tests requirements
-      python -m pip install -e .[tests]
-
-      # Install the minimum + doc requirements
-      python -m pip install -e .[doc]
-
-      # Install all requirements
-      python -m pip install -e .[tests,doc]
-
-#. Verify your development installation:
-
-    .. code:: bash
-
-        tox
-
-
-Install in offline mode
-^^^^^^^^^^^^^^^^^^^^^^^
-
-If you lack an internet connection on your installation machine (or
-you do not have access to the private Ansys PyPI packages repository),
-you should install PyMechanical by downloading the wheelhouse
-archive from the `Releases Page <https://github.com/pyansys/pymechanical/releases>`_
-for your corresponding machine architecture.
-
-Each wheelhouse archive contains all the Python wheels necessary to install
-PyMechanical from scratch on Windows, Linux, and MacOS from Python 3.7 to 3.11.
-You can install a wheelhouse archive on an isolated system with a fresh Python
-installation or on a virtual environment.
-
-**On Linux**
-
-This code shows how to unzip the wheelhouse archive and install PyMechanical on
-Linux with Python 3.7:
-
-.. code:: bash
-
-    unzip ansys-mechanical-core-v0.7.dev3-wheelhouse-Linux-3.7.zip wheelhouse
-    pip install ansys-mechanical-core -f wheelhouse --no-index --upgrade --ignore-installed
-
-
-**On Windows**
-
-If you're on Windows with Python 3.9, unzip the wheelhouse archive to a wheelhouse
-directory and then install PyMechanical using the preceding command.
-
-Consider installing into a `virtual environment <https://docs.python.org/3/library/venv.html>`_.
 
 Dependencies
 ------------
 
-You must have a licensed copy of Ansys Mechanical installed. When using an embedded instance,
-that installation must be runnable from the same computer as your Python program. When using
-a remote session, a connection to that session must be reachable from your Python program.
-
+You must have a licensed copy of `Ansys Mechanical <https://www.ansys.com/products/structures/ansys-mechanical>`_
+installed. When using an embedded instance, that installation must be runnable from the 
+same computer as your Python program. When using a remote session, a connection to that
+session must be reachable from your Python program.
 
 Getting started
 ---------------
@@ -239,86 +110,10 @@ and later. Here is an example:
    app = pymechanical.App()
    result = app.ExtAPI.DataModel.Project.ProjectDirectory
 
-Testing
--------
-
-This project takes advantage of `tox`_. This tool automates common
-development tasks (similar to Makefile), but it is oriented towards Python
-development.
-
-Using ``tox``
-^^^^^^^^^^^^^
-
-While Makefile has rules, ``tox`` has environments. In fact, ``tox`` creates its
-own virtual environment so that anything being tested is isolated from the project
-to guarantee the project's integrity.
-
-The following environment commands are provided:
-
-- **tox -e style**: Checks for coding style quality.
-- **tox -e py**: Checks for unit tests.
-- **tox -e py-coverage**: Checks for unit testing and code coverage.
-- **tox -e doc**: Checks for documentation-building process.
-
-
-Raw testing
-^^^^^^^^^^^
-
-If required, from the command line, you can call style commands like
-`black`_, `isort`_, and `flake8`_. You can also call unit testing commands like `pytest`_.
-However, running these commands do not guarantee that your project is being tested
-in an isolated environment, which is the reason why tools like ``tox`` exist.
-
-
-Using ``pre-commit``
-^^^^^^^^^^^^^^^^^^^^
-
-The style checks implemented for PyMechanical take advantage of `pre-commit`_.
-Developers are not forced but are encouraged to install this tool by running this
-command:
-
-.. code:: bash
-
-    python -m pip install pre-commit && pre-commit install
-
-
-Documentation
--------------
-
-For building documentation, you can run the usual rules provided in the
-`Sphinx`_ ``make`` file. Here is an example:
-
-.. code:: bash
-
-    #  build and view the doc from the POSIX system
-    make -C doc/ html && your_browser_name doc/html/index.html
-
-    # build and view the doc from CMD / PowerShell environment
-    .\doc\make.bat clean
-    .\doc\make.bat html
-    start .\doc\_build\html\index.html
-
-
-However, the recommended way of checking documentation integrity is to use
-``tox``:
-
-.. code:: bash
-
-    tox -e doc && your_browser_name .tox/doc_out/index.html
-
-
-Distributing
-------------
-
-If you would like to create either source or wheel files, start by installing
-the building requirements and then executing the build module:
-
-.. code:: bash
-
-    python -m pip install -U pip
-    python -m flit build
-    python -m twine check dist/*
-
+Testing and Development
+-----------------------
+If you would like to test or contribute to the development of PyMechanical, please visit
+`PyMechanical - Contributing <https://mechanical.docs.pyansys.com/version/stable/contributing.html>`_.
 
 .. LINKS AND REFERENCES
 .. _black: https://github.com/psf/black
