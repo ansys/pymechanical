@@ -36,7 +36,6 @@ repos:
           tests/conftest.py |
           tests/test_mechanical.py |
           tests/scripts/api.py |
-          tests/scripts/mech_workflow.py |
           tests/scripts/run_python_error.py |
           tests/scripts/run_python_success.py |
           tests/scripts/log_message.py |
