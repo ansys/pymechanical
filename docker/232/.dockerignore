@@ -142,9 +142,13 @@ ansys_inc/v232/ansys
 !ansys_inc/v232/ansys/bin/ansupf
 !ansys_inc/v232/ansys/bin/ansupf232
 
-#mpi is needed for mechanical usage
+# mpi is needed for mechanical usage
 !ansys_inc/v232/ansys/bin/mpitest
 !ansys_inc/v232/ansys/bin/mpitest232
+
+# amd files are needed
+# !ansys_inc/v232/ansys/lib/linx64/gpu
+!ansys_inc/v232/ansys/lib/linx64/blas
 
 #include only what's needed for mapdl - using reduce_mapdl.py
 !ansys_inc/v232/aisol/lib/linx64/libgcc_s.so.1
@@ -170,7 +174,8 @@ ansys_inc/v232/ansys
 !ansys_inc/v232/ansys/gui/en-us/UIDL/UIFUNC1.GRN
 !ansys_inc/v232/ansys/gui/en-us/UIDL/UIFUNC2.GRN
 !ansys_inc/v232/ansys/gui/en-us/UIDL/UIMENU.GRN
-!ansys_inc/v232/ansys/lib/linx64/blas/intel/libansBLAS.so
+# we don't ignore the ansys_inc/v232/ansys/lib/linx64/blas
+# !ansys_inc/v232/ansys/lib/linx64/blas/intel/libansBLAS.so
 !ansys_inc/v232/ansys/lib/linx64/libansexb.so
 !ansys_inc/v232/ansys/lib/linx64/libansgil.so
 !ansys_inc/v232/ansys/lib/linx64/libansGPU.so
