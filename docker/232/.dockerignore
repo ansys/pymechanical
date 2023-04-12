@@ -99,7 +99,6 @@ ansys_inc/v232/commonfiles/Tcl
 ansys_inc/v232/commonfiles/CFX
 ansys_inc/v232/commonfiles/Textures
 ansys_inc/v232/commonfiles/tools
-/srv/ansys/sss/ANSYSDev/232/docker2/Cloud_Packages/v232/linx64/pyansys/containerPackages
 ansys_inc/v232/dcs
 
 # not available on linux
