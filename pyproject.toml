@@ -48,13 +48,13 @@ Tracker = "https://github.com/pyansys/pymechanical/issues"
 
 [project.optional-dependencies]
 tests = [
-    "pytest==7.2.2",
+    "pytest==7.3.0",
     "pytest-cov==4.0.0",
     "pytest-print==0.3.1",
 ]
 doc = [
     "Sphinx==5.3.0",
-    "ansys-sphinx-theme==0.9.6",
+    "ansys-sphinx-theme==0.9.7",
     "grpcio==1.53.0",
     "imageio-ffmpeg==0.4.8",
     "imageio==2.27.0",
@@ -62,7 +62,7 @@ doc = [
     "jupyterlab>=3.2.8",
     "matplotlib==3.7.1",
     "numpydoc==1.5.0",
-    "plotly==5.14.0",
+    "plotly==5.14.1",
     "pypandoc==1.11",
     "pytest-sphinx==0.5.0",
     "pythreejs==2.4.2",

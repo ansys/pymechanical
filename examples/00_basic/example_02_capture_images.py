@@ -81,8 +81,8 @@ image_directory_modified = project_directory.replace("\\", "\\\\")
 mechanical.run_python_script(f"image_dir='{image_directory_modified}'")
 
 # Verify the path for image directory.
-result = mechanical.run_python_script(f"image_dir")
-print(f"Images are stored on the server at: {result}")
+result_image_dir_server = mechanical.run_python_script(f"image_dir")
+print(f"Images are stored on the server at: {result_image_dir_server}")
 
 ###################################################################################
 # Execute the Mechanical script
@@ -99,7 +99,7 @@ mechanical.run_python_script_from_file(script_file_path)
 
 
 def get_image_path(image_name):
-    return image_directory_modified + image_name
+    return result_image_dir_server + image_name
 
 
 def display_image(path):
