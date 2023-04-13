@@ -23,4 +23,4 @@ following code:
    app = App()
    # The following line extracts the global API entry points and merges them into your global
    # Python global variables.
-   globals.update(global_variables(app))
+   globals().update(global_variables(app))

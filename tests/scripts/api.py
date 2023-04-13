@@ -43,45 +43,8 @@ def add_static_structural_analysis_bc_results():
     return "success"
 
 
-def open_mechdb2(file_path):
-    # print("opening " + file_path)
-    ExtAPI.DataModel.Project.Open(file_path)
-    # print"opened " + file_path )
-
-
-def save_mechdb2(file_path):
-    # print("opening " + file_path)
-    ExtAPI.DataModel.Project.Subject = file_path
-    ExtAPI.DataModel.Project.Save(file_path)
-    # print"opened " + file_path )
-
-
-def new_project2():
-    ExtAPI.DataModel.Project.New()
-
-
 def get_ProjectDirectory():
     return ExtAPI.DataModel.Project.ProjectDirectory
-
-
-def open_mechdb(file_path):
-    file_path_modified = file_path.replace("\\", "\\\\")
-    # we are working with iron python 2.7 on mechanical side
-    # use python 2.7 style formatting
-    script = "%s" % file_path_modified
-    script = 'DS.Script.doStandaloneFileOpen("%s");' % script
-    print(script)
-    ExtAPI.Application.ScriptByName("jscript").ExecuteCommand(script)
-
-
-def save_mechdb(file_path):
-    file_path_modified = file_path.replace("\\", "\\\\")
-    # we are working with iron python 2.7 on mechanical side
-    # use python 2.7 style formatting
-    script = "%s" % file_path_modified
-    script = 'DS.Script.doStandaloneFileSaveAs("%s");' % script
-    print(script)
-    ExtAPI.Application.ScriptByName("jscript").ExecuteCommand(script)
 
 
 def change_mesh_element_size(value):

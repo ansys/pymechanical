@@ -193,7 +193,7 @@ return_total_deformation()
         python_script, enable_logging=True, log_level="INFO", progress_interval=1000
     )
 
-    # if the solve fails, solve.out contains enough information
+    # if solve fails, solve.out contains enough information
     solve_out_path = get_solve_out_path(mechanical)
 
     if solve_out_path != "":
@@ -246,11 +246,11 @@ def verify_project_download(mechanical, tmpdir):
     if not os.path.exists(target_dir):
         os.mkdir(target_dir)
 
-    # project not saved
-    # no mechdb available
+    # project not saved.
+    # no mechdb available.
     extensions = ["mechdb"]
     with pytest.raises(ValueError):
-        out_files = mechanical.download_project(extensions=extensions, target_dir=target_dir)
+        mechanical.download_project(extensions=extensions, target_dir=target_dir)
 
     extensions = ["xml", "rst"]
     out_files = mechanical.download_project(extensions=extensions, target_dir=target_dir)
@@ -472,7 +472,7 @@ def test_server_log_level():
 
 
 @pytest.mark.remote_session_launch
-def test_launch_mehcanical_non_existent_path():
+def test_launch_mechanical_non_existent_path():
     cwd = os.getcwd()
 
     if misc.is_windows():
