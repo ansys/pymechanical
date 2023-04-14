@@ -203,7 +203,7 @@ use these templates:
 
 If your issue does not fit into one of these template categories, create your own issue.
 
-To reach the PyAnsys core team, email `pyansys.core@ansys.com <pyansys.core@ansys.com>`_.
+To reach the project support team, email `pyansys.core@ansys.com <pyansys.core@ansys.com>`_.
 
 
 View documentation
