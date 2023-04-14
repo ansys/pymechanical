@@ -211,10 +211,10 @@ View documentation
 Documentation for the latest stable release of PyMechanical is hosted at
 `PyMechanical Documentation <https://mechanical.docs.pyansys.com>`_.
 
-Documentation for the latest development version, which tracks the
-``main`` branch, is hosted at `Development PyMechanical Documentation <https://mechanical.docs.pyansys.com/version/dev/index.html>`_.
-This version is automatically kept up to date via GitHub actions.
-
+In the upper right corner of the documentation's title bar, there is an option
+for switching from viewing the documentation for the latest stable release
+to viewing the documentation for the development version or previously
+released versions.
 
 Code style
 ----------
