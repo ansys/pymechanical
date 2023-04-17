@@ -65,7 +65,7 @@ Launch Mechanical in server mode with this code:
 
 .. code::
 
-    C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/.AnsysWBU.exe -DSApplet -AppModeMech -nosplash -notabctrl -grpc 10000
+    C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe -DSApplet -AppModeMech -nosplash -notabctrl -grpc 10000
 
 **On Linux**
 
@@ -93,7 +93,7 @@ on port ``10001`` with:
 
 .. code::
 
-    C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/.AnsysWBU.exe -grpc 10001
+    C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe -grpc 10001
 
 
 Connect to a Mechanical session
@@ -192,7 +192,7 @@ Open a command prompt and run this command:
 
 .. code::
 
-    "C:/Program Files/ANSYS Inc/v231/aiso/bin/winx64/AnsysWBU.exe -DSApplet -AppModeMech -nosplash -notabctrl -grpc 10000"
+    "C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe -DSApplet -AppModeMech -nosplash -notabctrl -grpc 10000"
 
 .. note::
    PowerShell users can run the preceding command without including the opening and
