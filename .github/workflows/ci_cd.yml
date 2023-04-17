@@ -289,6 +289,9 @@ jobs:
           docker run --restart always --name ${{ env.DOCKER_MECH_CONTAINER_NAME }} -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }} > log.txt &
           grep -q 'WB Initialize Done' <(timeout 60 tail -f log.txt)
 
+      - name: Update apt-get (temp fix)
+        run: sudo apt-get update
+
       - name: Run Ansys documentation building action
         uses: pyansys/actions/doc-build@v4
         with:
