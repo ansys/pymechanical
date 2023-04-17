@@ -4,7 +4,7 @@ ARG VERSION
 
 # LABELS
 LABEL description="Mechanical on Ubuntu"
-LABEL email="pyansys.support@ansys.com"
+LABEL email="pyansys.core@ansys.com"
 
 # OCI LABELS
 LABEL org.opencontainers.image.documentation="https://mechanical.docs.pyansys.com"
