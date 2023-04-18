@@ -69,7 +69,7 @@ doc = [
     "pyvista==0.38.5",
     "sphinx-autobuild==2021.3.14",
     "sphinx-autodoc-typehints==1.23.0",
-    "sphinx-copybutton==0.5.1",
+    "sphinx-copybutton==0.5.2",
     "sphinx_design==0.3.0",
     "sphinx-gallery==0.13.0",
     "sphinx-notfound-page==0.8.3",
