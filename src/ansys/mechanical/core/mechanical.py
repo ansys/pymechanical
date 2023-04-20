@@ -1844,7 +1844,7 @@ class Mechanical(object):
             ):
                 if enable_logging:
                     self.log_debug(f"Ignoring the conversion error.{error_info}")
-                response = ""
+                response.script_result = ""
             else:
                 raise error
         finally:
