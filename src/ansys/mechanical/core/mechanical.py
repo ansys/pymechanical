@@ -1834,6 +1834,19 @@ class Mechanical(object):
                 else:
                     if enable_logging:
                         self.log_message(log_level, runscript_response.log_info)
+        except grpc.RpcError as error:
+            error_info = error.details()
+            error_info_lower = error_info.lower()
+            # For the given script, return value cannot be converted to string.
+            if (
+                "the expected result" in error_info_lower
+                and "cannot be return via this API." in error_info
+            ):
+                if enable_logging:
+                    self.log_debug(f"Ignoring the conversion error.{error_info}")
+                response = ""
+            else:
+                raise error
         finally:
             self._busy = False
 
