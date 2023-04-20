@@ -1177,10 +1177,10 @@ class Mechanical(object):
             Script result.
         """
         self.verify_valid_connection()
-        response = self.__call_run_python_script(
+        result_as_string = self.__call_run_python_script(
             script_block, enable_logging, log_level, progress_interval
         )
-        return response.script_result
+        return result_as_string
 
     def run_python_script_from_file(
         self, file_path, enable_logging=False, log_level="WARNING", progress_interval=2000
@@ -1823,13 +1823,13 @@ class Mechanical(object):
         request.logger_severity = log_level_server
         request.progress_interval = progress_interval
 
-        response = None
+        result = ""
         self._busy = True
 
         try:
             for runscript_response in self._stub.RunPythonScript(request):
                 if runscript_response.log_info == "__done__":
-                    response = runscript_response
+                    result = runscript_response.script_result
                     break
                 else:
                     if enable_logging:
@@ -1844,7 +1844,7 @@ class Mechanical(object):
             ):
                 if enable_logging:
                     self.log_debug(f"Ignoring the conversion error.{error_info}")
-                response.script_result = ""
+                result = ""
             else:
                 raise error
         finally:
@@ -1852,7 +1852,7 @@ class Mechanical(object):
 
         self._log_mechanical_script(script_code)
 
-        return response
+        return result
 
     def log_message(self, log_level, message):
         """Log the message using the given log level.
