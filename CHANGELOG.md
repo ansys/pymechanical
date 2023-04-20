@@ -9,9 +9,10 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Added
 
+-   changelog (#222)
+
 ### Changed
 
--   FIX: not necessary anymore to update apt-get (#220)
 -   Bump sphinx-design from 0.3.0 to 0.4.1 (#219)
 -   Bump sphinx-copybutton from 0.5.1 to 0.5.2 (#218)
 -   Bump sphinx-gallery from 0.12.2 to 0.13.0 (#217)
@@ -22,6 +23,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Fixed
 
+-   FIX: not necessary anymore to update apt-get (#220)
 -   Include amd folder for mapdl solver in the docker image. (#200)
 -   Remove jscript references from tests/ folder (#205)
 -   Fixes the windows executable path for standalone mechanical (#214)
