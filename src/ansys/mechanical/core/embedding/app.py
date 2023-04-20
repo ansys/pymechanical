@@ -56,6 +56,14 @@ class App:
         you may set a version number with the `version` keyword argument.
         """
         global INSTANCES
+        from ansys.mechanical.core import BUILDING_GALLERY
+
+        if BUILDING_GALLERY:
+            if len(INSTANCES) != 0:
+                self._app = INSTANCES[0]
+                self._version = self._app.version
+                self._disposed = True
+                return
         if len(INSTANCES) > 0:
             raise Exception("Cannot have more than one embedded mechanical instance")
         self._version = kwargs.get("version")
