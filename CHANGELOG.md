@@ -27,7 +27,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 -   Include amd folder for mapdl solver in the docker image. (#200)
 -   Remove jscript references from tests/ folder (#205)
 -   Fixes the windows executable path for standalone mechanical (#214)
--   FIX: run_python_script* return empty string for objects that cannot be returned as string (#223)
+-   FIX: run_python_script* return empty string for objects that cannot be returned as string (#224)
 
 ## [0.7.3](https://github.com/pyansys/pymechanical/releases/tag/v0.7.3) - April 20 2023
 
