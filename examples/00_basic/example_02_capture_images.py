@@ -117,8 +117,11 @@ image_path_server = get_image_path(image_name)
 if image_path_server != "":
     current_working_directory = os.getcwd()
 
-    mechanical.download(image_path_server, target_dir=current_working_directory)
-    image_local_path = os.path.join(current_working_directory, image_name)
+    local_file_path_list = mechanical.download(
+        image_path_server, target_dir=current_working_directory
+    )
+    image_local_path = local_file_path_list[0]
+    print(f"Local image path : {image_local_path}")
 
     display_image(image_local_path)
 

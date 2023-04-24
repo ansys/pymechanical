@@ -19,6 +19,12 @@ def test_run_python_script_success(mechanical):
 
 
 @pytest.mark.remote_session_connect
+def test_run_python_script_success_return_empty(mechanical):
+    result = mechanical.run_python_script("ExtAPI.DataModel.Project")
+    assert result == ""
+
+
+@pytest.mark.remote_session_connect
 def test_run_python_script_error(mechanical):
     with pytest.raises(grpc.RpcError) as exc_info:
         mechanical.run_python_script("import test")
@@ -199,8 +205,11 @@ return_total_deformation()
     if solve_out_path != "":
         print(f"downloading {solve_out_path} from server")
         print(f"downloading to {current_working_directory}")
-        mechanical.download(solve_out_path, target_dir=current_working_directory)
-        solve_out_local_path = os.path.join(current_working_directory, "solve.out")
+        solve_out_local_path_list = mechanical.download(
+            solve_out_path, target_dir=current_working_directory
+        )
+        solve_out_local_path = solve_out_local_path_list[0]
+        print(solve_out_local_path)
 
         write_file_contents_to_console(solve_out_local_path)
 
@@ -329,12 +338,13 @@ def verify_download(mechanical, tmpdir, file_name, chunk_size):
     local_directory = tmpdir.strpath
 
     # test with different download chunk_size
-    mechanical.download(files=file_path, target_dir=local_directory, chunk_size=chunk_size)
-
-    base_name = os.path.basename(file_path)
-    local_path = os.path.join(local_directory, base_name)
-
-    assert os.path.exists(local_path) and os.path.getsize(local_path) > 0
+    local_path_list = mechanical.download(
+        files=file_path, target_dir=local_directory, chunk_size=chunk_size
+    )
+    print("downloaded files:")
+    for local_path in local_path_list:
+        print(f" downloaded file: {local_path}")
+        assert os.path.exists(local_path) and os.path.getsize(local_path) > 0
 
 
 @pytest.mark.remote_session_connect
