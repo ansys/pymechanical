@@ -1,10 +1,10 @@
 """.. _ref_example_01_run_python_script_output:
 
-Output to different formats
---------------------------------
+Output to different formats and handle an error
+-----------------------------------------------
 
 This example calls the ``run_python_script`` method and gets the output in string,
-JSON, and CSV formats.
+JSON, and CSV formats. It also handles an error scenario.
 
 """
 
@@ -16,6 +16,8 @@ JSON, and CSV formats.
 # must call  the ``mechanical.exit()`` method.
 
 import json
+
+import grpc
 
 from ansys.mechanical.core import launch_mechanical
 
@@ -74,6 +76,15 @@ return_csv()
 print(f"csv output={output}")
 csv_values = output.split(sep=",")
 print(f"Parsed csv: {';'.join(csv_values)}")
+
+###################################################################################
+# Handle an error scenario
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Run the script and handle the error.
+try:
+    output = mechanical.run_python_script("hello_world()")
+except grpc.RpcError as error:
+    print(f"Error: {error.details()}")
 
 ###########################################################
 # Close Mechanical
