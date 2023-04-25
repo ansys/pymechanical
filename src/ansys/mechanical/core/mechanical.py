@@ -727,7 +727,16 @@ class Mechanical(object):
 
     @property
     def version(self) -> str:
-        """Get the Mechanical version based on the instance."""
+        """Get the Mechanical version based on the instance.
+
+        Examples
+        --------
+        Get the version of the connected Mechanical instance.
+
+        >>> mechanical.version
+        '231'
+
+        """
         if self._version == None:
             try:
                 self._disable_logging = True
@@ -1158,6 +1167,9 @@ class Mechanical(object):
     ):
         """Run a Python script block inside Mechanical.
 
+        It returns the string value of the last executed statement. If the value cannot be
+        returned as a string, it will return an empty string.
+
         Parameters
         ----------
         script_block : str
@@ -1175,17 +1187,72 @@ class Mechanical(object):
         -------
         str
             Script result.
+
+        Examples
+        --------
+        Return a value from a simple calculation.
+
+        >>> mechanical.run_python_script('2+3')
+        '5'
+
+        Return a string value from Project object.
+
+        >>> mechanical.run_python_script('ExtAPI.DataModel.Project.ProductVersion')
+        '2023 R1'
+
+        Return an empty string, when you try to return the Project object.
+
+        >>> mechanical.run_python_script('ExtAPI.DataModel.Project')
+        ''
+
+        Return an empty string for assignments.
+
+        >>> mechanical.run_python_script('version = ExtAPI.DataModel.Project.ProductVersion')
+        ''
+
+        Return value from the last executed statement from a variable.
+
+        >>> script='''
+            addition = 2 + 3
+            multiplication = 3 * 4
+            multiplication
+            '''
+        >>> mechanical.run_python_script(script)
+        '12'
+
+        Return value from last executed statement from a function call.
+
+        >>> script='''
+            import math
+            math.pow(2,3)
+            '''
+        >>> mechanical.run_python_script(script)
+        '8'
+
+        Handle an error scenario.
+
+        >>> script = 'hello_world()'
+        >>> import grpc
+        >>> try:
+                mechanical.run_python_script(script)
+            except grpc.RpcError as error:
+                print(error.details())
+        name 'hello_world' is not defined
+
         """
         self.verify_valid_connection()
-        response = self.__call_run_python_script(
+        result_as_string = self.__call_run_python_script(
             script_block, enable_logging, log_level, progress_interval
         )
-        return response.script_result
+        return result_as_string
 
     def run_python_script_from_file(
         self, file_path, enable_logging=False, log_level="WARNING", progress_interval=2000
     ):
-        """Run a Python file inside Mechanical.
+        """Run the contents a python file inside Mechanical.
+
+        It returns the string value of the last executed statement. If the value cannot be
+        returned as a string, it will return an empty string.
 
         Parameters
         ----------
@@ -1204,6 +1271,29 @@ class Mechanical(object):
         -------
         str
             Script result.
+
+        Examples
+        --------
+        Return a value from a simple calculation.
+
+        Contents of **simple.py** file
+
+        2+3
+
+        >>> mechanical.run_python_script('simple.py')
+        '5'
+
+        Return a value from a simple function call.
+
+        Contents of  **test.py** file
+
+        import math
+
+        math.pow(2,3)
+
+        >>> mechanical.run_python_script('test.py')
+        '8'
+
         """
         self.verify_valid_connection()
         self.log_debug(f"run_python_script_from_file started")
@@ -1220,6 +1310,13 @@ class Mechanical(object):
             Whether to force Mechanical to exit. The default is ``False``, in which case
             only Mechanical in UI mode asks for confirmation. This parameter overrides
             any environment variables that may inhibit exiting Mechanical.
+
+        Examples
+        --------
+        Exit Mechanical.
+
+        >>> mechanical.Exit(force=True)
+
         """
         if not force:
             if not get_start_instance():
@@ -1388,7 +1485,16 @@ class Mechanical(object):
 
     @property
     def project_directory(self):
-        """Get the project directory for the currently connected Mechanical instance."""
+        """Get the project directory for the currently connected Mechanical instance.
+
+        Examples
+        --------
+        Get the project directory of the connected Mechanical instance.
+
+        >>> mechanical.project_directory
+        '/tmp/ANSYS.username.1/AnsysMech3F97/Project_Mech_Files/'
+
+        """
         return self.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
 
     def list_files(self):
@@ -1401,6 +1507,8 @@ class Mechanical(object):
 
         Examples
         --------
+        List the files in the working directory.
+
         >>> files = mechanical.list_files()
         >>> for file in files: print(file)
         """
@@ -1483,6 +1591,9 @@ class Mechanical(object):
     ):  # pragma: no cover
         """Download files from the working directory of the Mechanical instance.
 
+         It downloads them from the working directory to the target directory. It returns the list
+         of local file paths for the downloaded files.
+
         Parameters
         ----------
         files : str, list[str], tuple(str)
@@ -1493,7 +1604,8 @@ class Mechanical(object):
             match file names. For example, you could use ``file*`` to match every file whose
             name starts with ``file``.
         target_dir: str
-            Default directory to copy the downloaded files to. The default is ``None``.
+            Default directory to copy the downloaded files to. The default is ``None`` and
+            current working directory will be used as target directory.
         chunk_size : int, optional
             Chunk size in bytes. The default is ``262144``. The value must be less than 4 MB.
         progress_bar : bool, optional
@@ -1502,6 +1614,11 @@ class Mechanical(object):
             progress.
         recursive : bool, optional
             Whether to use recursion when using a glob pattern search. The default is ``False``.
+
+        Returns
+        -------
+        List[str]
+            List of local file paths.
 
         Notes
         -----
@@ -1517,21 +1634,21 @@ class Mechanical(object):
         --------
         Download a single file.
 
-        >>> mechanical.download('file.out')
+        >>> local_file_path_list = mechanical.download('file.out')
 
         Download all files starting with ``file``.
 
-        >>> mechanical.download('file*')
+        >>> local_file_path_list = mechanical.download('file*')
 
         Download every file in the Mechanical working directory.
 
-        >>> mechanical.download('*.*')
+        >>> local_file_path_list = mechanical.download('*.*')
 
         Alternatively, the recommended method is to use the
         :func:`download_project() <ansys.mechanical.core.mechanical.Mechanical.download_project>`
         method to download all files.
 
-        >>> mechanical.download_project()
+        >>> local_file_path_list = mechanical.download_project()
 
         """
         self.verify_valid_connection()
@@ -1687,6 +1804,9 @@ class Mechanical(object):
     def download_project(self, extensions=None, target_dir=None, progress_bar=False):
         """Download all project files in the working directory of the Mechanical instance.
 
+        It downloads them from the working directory to the target directory. It returns the list
+        of local file paths for the downloaded files.
+
         Parameters
         ----------
         extensions : list[str], tuple[str], optional
@@ -1701,7 +1821,14 @@ class Mechanical(object):
         Returns
         -------
         List[str]
-            List of downloaded files.
+            List of local file paths.
+
+        Examples
+        --------
+        Download all the files in the project.
+
+        >>> local_file_path_list = mechanical.download_project()
+
         """
         destination_directory = target_dir.rstrip("\\/")
 
@@ -1769,7 +1896,15 @@ class Mechanical(object):
         return list_of_files
 
     def clear(self):
-        """Clear the database."""
+        """Clear the database.
+
+        Examples
+        --------
+        Clear the database.
+
+        >>> mechanical.clear()
+
+        """
         self.run_python_script("ExtAPI.DataModel.Project.New()")
 
     def _make_dummy_call(self):
@@ -1823,23 +1958,36 @@ class Mechanical(object):
         request.logger_severity = log_level_server
         request.progress_interval = progress_interval
 
-        response = None
+        result = ""
         self._busy = True
 
         try:
             for runscript_response in self._stub.RunPythonScript(request):
                 if runscript_response.log_info == "__done__":
-                    response = runscript_response
+                    result = runscript_response.script_result
                     break
                 else:
                     if enable_logging:
                         self.log_message(log_level, runscript_response.log_info)
+        except grpc.RpcError as error:
+            error_info = error.details()
+            error_info_lower = error_info.lower()
+            # For the given script, return value cannot be converted to string.
+            if (
+                "the expected result" in error_info_lower
+                and "cannot be return via this API." in error_info
+            ):
+                if enable_logging:
+                    self.log_debug(f"Ignoring the conversion error.{error_info}")
+                result = ""
+            else:
+                raise
         finally:
             self._busy = False
 
         self._log_mechanical_script(script_code)
 
-        return response
+        return result
 
     def log_message(self, log_level, message):
         """Log the message using the given log level.
@@ -1851,6 +1999,17 @@ class Mechanical(object):
             and ``"ERROR"``.
         message : str
             Message to log.
+
+        Examples
+        --------
+        Log a debug message.
+
+        >>> mechanical.log_message('DEBUG', 'debug message')
+
+        Log an info message.
+
+        >>> mechanical.log_message('INFO', 'info message')
+
         """
         if log_level == "DEBUG":
             self.log_debug(message)

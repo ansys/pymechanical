@@ -673,7 +673,16 @@ class LocalMechanicalPool:
 
     @property
     def ports(self):
-        """Get a list of the ports that are used."""
+        """Get a list of the ports that are used.
+
+        Examples
+        --------
+        Get the list of ports used by the pool of Mechanical instances.
+
+        >>> pool.ports
+        [10001, 10002]
+
+        """
         return [inst._port for inst in self if inst is not None]
 
     def __str__(self):
