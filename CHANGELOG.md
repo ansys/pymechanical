@@ -10,6 +10,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Added
 
 -   changelog (#222)
+-   add link to embedding examples (#228)
 
 ### Changed
 
