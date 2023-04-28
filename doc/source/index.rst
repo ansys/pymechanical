@@ -18,7 +18,7 @@ PyMechanical documentation |version|
 
 Introduction
 ------------
-PyMechanical is part of the larger `PyAnsys <https://docs.pyansys.com>`_
+PyMechanical is part of the larger `PyAnsys <pyansys_>`_
 effort to facilitate the use of Ansys technologies directly from
 Python. Its primary package, ``ansys-mechanical-core``, provides
 scripting of Ansys Mechanical through Python.
