@@ -1,0 +1,8 @@
+.. #Pyansys
+.. _pyansys: https://docs.pyansys.com/dev/
+.. _pyansys_support: pyansys.support@ansys.com
+
+.. # PyMechanical Examples related
+.. _pymachanical_embedding_ex_doc: https://https://embedding.examples.mechanical.docs.pyansys.com/
+.. _pymachanical_embedding_ex_repo: https://https://github.com/pyansys/pymechanical-embedding-examples
+.. _pymachanical_embedding_ex_basic: https://embedding.examples.mechanical.docs.pyansys.com/basic_examples/index.html
