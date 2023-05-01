@@ -18,7 +18,7 @@ import ansys.api.mechanical.v0.mechanical_pb2 as mechanical_pb2
 import ansys.api.mechanical.v0.mechanical_pb2_grpc as mechanical_pb2_grpc
 import ansys.platform.instancemanagement as pypim
 from ansys.platform.instancemanagement import Instance
-import appdirs
+import ansys.tools.path as atp
 import grpc
 
 import ansys.mechanical.core as pymechanical
@@ -92,20 +92,7 @@ def suppress_logging(func):
 
     return wrapper
 
-
-SETTINGS_DIR = appdirs.user_data_dir("ansys_mechanical_core")
-LOG.info(f"ansys_mechanical_core settings directory: {SETTINGS_DIR}")
-
-if not os.path.isdir(SETTINGS_DIR):
-    try:
-        os.makedirs(SETTINGS_DIR)
-    except OSError:  # pragma: no cover
-        warnings.warn(
-            "Unable to create settings directory.\n"
-            "Will be unable to cache Mechanical executable location."
-        )
-
-CONFIG_FILE = os.path.join(SETTINGS_DIR, "config.txt")
+CONFIG_FILE = atp.CONFIG_FILE
 LOCALHOST = "127.0.0.1"
 MECHANICAL_DEFAULT_PORT = 10000
 
@@ -233,94 +220,6 @@ def create_ip_file(ip, path):
         f.write(ip)
 
 
-def _get_available_base_mechanical():
-    r"""Get a dictionary of available Mechanical versions with their base paths.
-
-    Returns
-    -------
-        Paths for Mechanical versions installed on Windows.
-
-    Examples
-    --------
-    On Windows:
-
-    >>> _get_available_base_mechanical()
-    >>> {231: 'C:\\Program Files\\ANSYS Inc\\v231'}
-
-    On Linux:
-
-    >>> _get_available_base_mechanical()
-    >>> {231: '/usr/ansys_inc/v231'}
-    """
-    base_path = None
-    if is_windows():
-        supported_versions = [232, 231]
-        awp_roots = {ver: os.environ.get(f"AWP_ROOT{ver}", "") for ver in supported_versions}
-        installed_versions = {
-            ver: path for ver, path in awp_roots.items() if path and os.path.isdir(path)
-        }
-        if installed_versions:
-            return installed_versions
-        else:
-            base_path = os.path.join(os.environ["PROGRAMFILES"], "ANSYS Inc")
-    else:
-        for path in ["/usr/ansys_inc", "/ansys_inc", "/install/ansys_inc"]:
-            if os.path.isdir(path):
-                base_path = path
-
-    if base_path is None:
-        return {}
-
-    paths = glob.glob(os.path.join(base_path, "v*"))
-
-    if not paths:
-        return {}
-
-    ansys_paths = {}
-    for path in paths:
-        ver_str = path[-3:]
-        if is_float(ver_str):
-            ansys_paths[int(ver_str)] = path
-
-    return ansys_paths
-
-
-def find_mechanical():
-    """
-    Search for the Mechanical path in the standard installation location.
-
-    Returns
-    -------
-    mechanical_path : str
-        Full path to the executable file for the latest Mechanical version.
-    version : float
-        Version in the float format. For example, ``23.1`` for 2023 R1.
-
-    Examples
-    --------
-    On Windows:
-
-    >>> from ansys.mechanical.core.mechanical import find_mechanical
-    >>> find_mechanical()
-    'C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe', 23.1
-
-    On Linux:
-
-    >>> find_mechanical()
-    (/usr/ansys_inc/v231/aisol/.workbench, 23.1)
-    """
-    versions = _get_available_base_mechanical()
-    if not versions:
-        return "", ""
-    version = max(versions.keys())
-    ans_path = versions[version]
-    if is_windows():
-        mechanical_bin = os.path.join(ans_path, "aisol", "bin", "winx64", f"AnsysWBU.exe")
-    else:
-        mechanical_bin = os.path.join(ans_path, "aisol", ".workbench")
-    return mechanical_bin, version / 10
-
-
 def get_mechanical_path(allow_input=True):
     """Get the Mechanical path from a cached file or from user input."""
     exe_loc = None
@@ -333,7 +232,7 @@ def get_mechanical_path(allow_input=True):
     elif allow_input:  # create configuration file
         exe_loc = save_mechanical_path()
     if exe_loc is None:
-        exe_loc = find_mechanical()[0]
+        exe_loc = atp.find_mechanical()[0]
         if not exe_loc:
             exe_loc = None
 
@@ -408,14 +307,14 @@ def save_mechanical_path(exe_loc=None):  # pragma: no cover
     Notes
     -----
     The location of the configuration file (``config.txt``) can be found in
-    ``appdirs.user_data_dir("ansys_mechanical_core")``. For example:
+    ``appdirs.user_data_dir("ansys_tools_path")``. For example:
 
     .. code:: pycon
 
         >>> import appdirs
         >>> import os
-        >>> print(os.path.join(appdirs.user_data_dir("ansys_mechanical_core"), "config.txt"))
-        C:/Users/[username]]/AppData/Local/ansys_mechanical_core/ansys_mechanical_core/config.txt
+        >>> print(os.path.join(appdirs.user_data_dir("ansys_tools_path"), "config.txt"))
+        C:/Users/[username]]/AppData/Local/ansys_tools_path/ansys_tools_path/config.txt
 
     You can change the default for the ``exe_loc`` parameter either by modifying the
     ``config.txt`` file or by running this code:
@@ -427,7 +326,7 @@ def save_mechanical_path(exe_loc=None):  # pragma: no cover
 
     """
     if exe_loc is None:
-        exe_loc, _ = find_mechanical()
+        exe_loc, _ = atp.find_mechanical()
 
     if is_valid_executable_path(exe_loc):  # pragma: not cover
         if not is_common_executable_path(exe_loc):
