@@ -7,7 +7,6 @@ from functools import wraps
 import glob
 import os
 import pathlib
-import re
 import socket
 import threading
 import time
@@ -89,6 +88,7 @@ def suppress_logging(func):
 
     return wrapper
 
+
 LOCALHOST = "127.0.0.1"
 MECHANICAL_DEFAULT_PORT = 10000
 
@@ -106,33 +106,6 @@ def _cleanup_gallery_instance():  # pragma: no cover
 
 
 atexit.register(_cleanup_gallery_instance)
-
-
-def _version_from_path(path):
-    """Extract the Mechanical version from a path.
-
-    Generally, the version of Mechanical is contained in the path:
-
-    - On Windows, for example: ``C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe``
-    - On Linux, for example: ``/usr/ansys_inc/v231/aisol/.workbench``
-
-    Parameters
-    ----------
-    path : str
-        Path to the Mechanical executable file.
-
-    Returns
-    -------
-    int
-        Integer version number (for example, 231).
-
-    """
-    # expect v<ver>/ansys
-    # replace \\ with / to account for possible windows path
-    matches = re.findall(r"v(\d\d\d)", path.replace("\\", "/"), re.IGNORECASE)
-    if not matches:
-        raise RuntimeError(f"Unable to extract Mechanical version from {path}.")
-    return int(matches[-1])
 
 
 def port_in_use(port, host=LOCALHOST):
@@ -217,22 +190,34 @@ def create_ip_file(ip, path):
 
 
 def get_mechanical_path(allow_input=True):
-    """Deprecated - use ansys.tools.path.get_mechanical_path"""
+    """Get path.
+
+    Deprecated - use `ansys.tools.path.get_mechanical_path` instead
+    """
     return atp.get_mechanical_path(allow_input)
 
 
 def check_valid_mechanical():
-    """Check if a valid version of Mechanical is installed and preconfigured."""
+    """Check valid.
+
+    Deprecated - use `ansys.tools.path.check_valid_mechanical` instead
+    """
     return atp.check_valid_mechanical()
 
 
 def change_default_mechanical_path(exe_loc):
-    """Deprecated - use ansys.tools.path.change_default_mechanical_path"""
+    """Change default path.
+
+    Deprecated - use `ansys.tools.path.change_default_mechanical_path` instead.
+    """
     return atp.change_default_mechanical_path(exe_loc)
 
 
 def save_mechanical_path(exe_loc=None):  # pragma: no cover
-    """Deprecated - use ansys.tools.path.save_mechanical_path"""
+    """Save path.
+
+    Deprecated - use `ansys.tools.path.save_mechanical_path` instead.
+    """
     return atp.save_mechanical_path(exe_loc)
 
 
