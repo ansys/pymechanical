@@ -10,6 +10,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Added
 
 -   changelog (#222)
+-   add link to embedding examples (#228)
 -   Add `close()` method to `Ansys.Mechanical.Embedding.Application`. See (#229)
 
 ### Changed
