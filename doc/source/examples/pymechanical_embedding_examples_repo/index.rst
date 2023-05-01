@@ -3,7 +3,7 @@
 PyMechanical embedding examples repository
 ==========================================
 
-Embedding examples are hosted in the `PyMechanical embedding examples repository <pymechanical_embedding_ex_repo_>`_.
+Embedding examples are hosted in the `PyMechanical Embedding Examples repository <pymechanical_embedding_ex_repo_>`_.
 
 The documentation for these examples can be found in the
 `PyMechanical Embedding Examples documentation <pymechanical_embedding_ex_doc_>`_.
