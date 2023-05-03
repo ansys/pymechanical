@@ -31,7 +31,6 @@ classifiers = [
 dependencies = [
     "ansys_api_mechanical==0.1.0",
     "ansys-pythonnet==3.1.0rc1",
-    "ansys-tools-path==0.1.2",
     "importlib-metadata>=4.0",
     "appdirs>=1.4.0",
     "grpcio>=1.30.0",
