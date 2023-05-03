@@ -61,6 +61,7 @@ class App:
         if BUILDING_GALLERY:
             if len(INSTANCES) != 0:
                 self._app = INSTANCES[0]
+                self._app.new()
                 self._version = self._app.version
                 self._disposed = True
                 return
@@ -124,6 +125,10 @@ class App:
     def new(self):
         """Clear to a new application."""
         self.DataModel.Project.New()
+
+    def close(self):
+        """Close the application."""
+        self.ExtAPI.Application.Close()
 
     def execute_script(self, script: str):
         """Execute the given script with the internal IronPython engine."""

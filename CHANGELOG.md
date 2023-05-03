@@ -10,6 +10,8 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Added
 
 -   changelog (#222)
+-   add link to embedding examples (#228)
+-   Add `close()` method to `Ansys.Mechanical.Embedding.Application`. See (#229)
 
 ### Changed
 
@@ -29,6 +31,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 -   Remove jscript references from tests/ folder (#205)
 -   Fixes the windows executable path for standalone mechanical (#214)
 -   FIX: run_python_script* return empty string for objects that cannot be returned as string (#224)
+-   call `new()` in the BUILDING_GALLERY constructor of `Ansys.Mechanical.Embedding.Application`. See (#229)
 
 ## [0.7.3](https://github.com/pyansys/pymechanical/releases/tag/v0.7.3) - April 20 2023
 
