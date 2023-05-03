@@ -198,11 +198,25 @@ def get_mechanical_path(allow_input=True):
 
 
 def check_valid_mechanical():
-    """Check valid.
+    """Change to see if the default Mechanical path is valid
 
-    Deprecated - use `ansys.tools.path.check_valid_mechanical` instead
+    Example (windows)
+    -----------------
+
+    >>> from ansys.mechanical.core import mechanical
+    >>> from ansys.tools.path import change_default_mechanical_path
+    >>> mechanical_path = 'C:/Program Files/ANSYS Inc/v231/aisol/bin/win64/AnsysWBU.exe'
+    >>> change_default_mechanical_path(mechanical_pth)
+    >>> mechanical.check_valid_mechanical()
+    True
+
+
     """
-    return atp.check_valid_mechanical()
+    mechanical_path = atp.get_mechanical_path(False)
+    if mechanical_path == None:
+        return False
+    mechanical_version = atp.version_from_path(mechanical_path)
+    return not (mechanical_version < 231 and os.name != "posix")
 
 
 def change_default_mechanical_path(exe_loc):
