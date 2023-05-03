@@ -20,7 +20,7 @@ Here is a series of examples using Mechanical with the ``ansys-mechanical-core``
     :hidden:
     :maxdepth: 3
     
-    Embedding <https://https://embedding.examples.mechanical.docs.pyansys.com/index.html>
+    Embedding <https://embedding.examples.mechanical.docs.pyansys.com/index.html>
 
 
 .. include:: pymechanical_embedding_examples_repo/index.rst

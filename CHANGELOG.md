@@ -22,6 +22,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 -   cleanup docker ignore file (#206)
 -   Update contributing.rst (#213)
 -   Bump pytest from 7.3.0 to 7.3.1 (#216)
+-   Remove python 3.7 (#230)
 
 ### Fixed
 
