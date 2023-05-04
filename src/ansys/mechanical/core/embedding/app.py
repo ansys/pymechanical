@@ -78,6 +78,7 @@ class App:
             self._version = _get_default_version()
         initializer.initialize(self._version)
 
+        # Check if 'pythonnet' is installed... and if so, throw warning
         pkgs = freeze.freeze()
         for pkg in pkgs:
             indx = pkg.index("=")
