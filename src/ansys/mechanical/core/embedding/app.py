@@ -6,7 +6,7 @@ import warnings
 
 try:
     from pip._internal.operations import freeze
-except ImportError: # pip < 10.0
+except ImportError:  # pip < 10.0
     from pip.operations import freeze
 
 from ansys.mechanical.core.embedding import initializer, runtime
@@ -84,10 +84,10 @@ class App:
             indx = pkg.index("=")
             if pkg[:indx] == "pythonnet":
                 warnings.warn(
-                    "The pythonnet package was found in your environment"
+                    "The pythonnet package was found in your environment "
                     "which interferes with the ansys-pythonnet package. "
                     "Some APIs may not work due to pythonnet being installed.",
-                    stacklevel=3,
+                    stacklevel=2,
                 )
                 break
 
