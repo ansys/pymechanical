@@ -4,7 +4,10 @@ import os
 import typing
 import warnings
 
-from pip._internal.operations import freeze
+try:
+    from pip._internal.operations import freeze
+except ImportError: # pip < 10.0
+    from pip.operations import freeze
 
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.config import Configuration, configure
