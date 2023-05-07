@@ -12,6 +12,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 -   changelog (#222)
 -   add link to embedding examples (#228)
 -   Add `close()` method to `Ansys.Mechanical.Embedding.Application`. See (#229)
+-   Add check if pythonnet exists in the user environment (#235)
 
 ### Changed
 
