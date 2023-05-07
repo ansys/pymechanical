@@ -2,6 +2,9 @@ import json
 import os
 import pathlib
 import re
+import shutil
+import subprocess
+import sys
 
 import grpc
 import pytest
@@ -508,6 +511,89 @@ def test_launch_grpc_not_supported_version():
 
     with pytest.raises(errors.VersionError):
         pymechanical.mechanical.launch_grpc(exec_file=exec_file)
+
+
+@pytest.mark.remote_session_connect
+def test_warning_message_pythonnet():
+    """Test pythonnet warning of the remote session in virtual env."""
+    venv_name = "pythonnetvenv"
+    create_venv = "python -m venv ." + venv_name
+    base = os.getcwd()
+
+    if "win" in sys.platform:
+        exe_dir = "Scripts"
+    else:
+        exe_dir = "bin"
+
+    venv_bin = os.path.join(base, "." + venv_name, exe_dir)
+
+    # Set up path to use the virtual environment
+    original_path = os.environ["PATH"]
+    os.environ["PATH"] = venv_bin + os.pathsep + os.environ.get("PATH", "")
+
+    # Create virtual environment
+    subprocess.run(create_venv.split())
+
+    # Install tests
+    print("Installing tests")
+    install_tests = subprocess.Popen([os.path.join(venv_bin, "pip"), "install", "-e", ".[tests]"])
+    install_tests.wait()
+
+    # Install pythonnet
+    print("Installing pythonnet")
+    install_pythonnet = subprocess.Popen([os.path.join(venv_bin, "pip"), "install", "pythonnet"])
+    install_pythonnet.wait()
+
+    # Run remote session in virtual env with pythonnet installed
+    print("Running the remote session in a virtual environment")
+    remote_py = os.path.join(base, "tests", "scripts", "run_remote_session.py")
+    check_warning = subprocess.Popen(
+        [os.path.join(venv_bin, "python"), remote_py], stderr=subprocess.PIPE
+    )
+    check_warning.wait()
+    stderr_output = check_warning.stderr.read().decode()
+
+    """If UserWarning & pythonnet are in the stderr output,
+    set warning to 0. Otherwise, set warning to 1"""
+    if "UserWarning" and "pythonnet" in stderr_output:
+        warning = 0
+    else:
+        warning = 1
+
+    # Assert the warning message did not appear for the remote session
+    assert 1 == warning
+
+    # Remove virtual environment
+    venv_dir = os.path.join(base, "." + venv_name)
+    shutil.rmtree(venv_dir)
+
+    # Set PATH back to what it was originally
+    os.environ["PATH"] = original_path
+
+
+@pytest.mark.remote_session_connect
+def test_warning_message_default():
+    """Test pythonnet warning of the remote session in default env."""
+    base = os.getcwd()
+
+    # Run remote session 
+    print("Running the remote session")
+    remote_py = os.path.join(base, "tests", "scripts", "run_remote_session.py")
+    check_warning = subprocess.Popen(
+        [os.path.join(sys.executable, "python"), remote_py], stderr=subprocess.PIPE
+    )
+    check_warning.wait()
+    stderr_output = check_warning.stderr.read().decode()
+
+    """If UserWarning & pythonnet are in the stderr output,
+    set warning to 0. Otherwise, set warning to 1"""
+    if "UserWarning" and "pythonnet" in stderr_output:
+        warning = 0
+    else:
+        warning = 1
+
+    # Assert the warning message did not appear for the remote session
+    assert 1 == warning
 
 
 # def test_call_before_launch_or_connect():
