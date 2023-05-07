@@ -576,7 +576,7 @@ def test_warning_message_default():
     """Test pythonnet warning of the remote session in default env."""
     base = os.getcwd()
 
-    # Run remote session 
+    # Run remote session
     print("Running the remote session")
     remote_py = os.path.join(base, "tests", "scripts", "run_remote_session.py")
     check_warning = subprocess.Popen(

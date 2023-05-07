@@ -1,7 +1,7 @@
 """Miscellaneous embedding tests"""
 import os
 import shutil
-import subprocess 
+import subprocess
 import sys
 import tempfile
 
