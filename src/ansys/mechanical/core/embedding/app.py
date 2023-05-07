@@ -2,12 +2,6 @@
 import atexit
 import os
 import typing
-import warnings
-
-try:
-    from pip._internal.operations import freeze
-except ImportError:  # pip < 10.0
-    from pip.operations import freeze
 
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.config import Configuration, configure
@@ -77,19 +71,6 @@ class App:
         if self._version == None:
             self._version = _get_default_version()
         initializer.initialize(self._version)
-
-        # Check if 'pythonnet' is installed... and if so, throw warning
-        pkgs = freeze.freeze()
-        for pkg in pkgs:
-            indx = pkg.index("=")
-            if pkg[:indx] == "pythonnet":
-                warnings.warn(
-                    "The pythonnet package was found in your environment "
-                    "which interferes with the ansys-pythonnet package. "
-                    "Some APIs may not work due to pythonnet being installed.",
-                    stacklevel=2,
-                )
-                break
 
         import clr
 
