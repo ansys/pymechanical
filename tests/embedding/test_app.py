@@ -57,7 +57,7 @@ def test_app_version(embedded_app):
 
 
 @pytest.mark.embedding
-def test_warning_message(embedded_app):
+def test_warning_message():
     """Test pythonnet warning of the embedded instance."""
     venv_name = "pythonnetvenv"
     create_venv = "python -m venv ." + venv_name
@@ -71,20 +71,24 @@ def test_warning_message(embedded_app):
     venv_bin = os.path.join(base, "." + venv_name, exe_dir)
 
     # Set up path to use the virtual environment
+    original_path = os.environ["PATH"]
     os.environ["PATH"] = venv_bin + os.pathsep + os.environ.get("PATH", "")
 
     # Create virtual environment
     subprocess.run(create_venv.split())
 
     # Install tests
+    print("Installing tests")
     install_tests = subprocess.Popen([os.path.join(venv_bin, "pip"), "install", "-e", ".[tests]"])
     install_tests.wait()
 
     # Install pythonnet
+    print("Installing pythonnet")
     install_pythonnet = subprocess.Popen([os.path.join(venv_bin, "pip"), "install", "pythonnet"])
     install_pythonnet.wait()
 
     # Run embedded instance in virtual env with pythonnet installed
+    print("Running the embedded instance in a virtual environment")
     embedded_py = os.path.join(base, "tests", "scripts", "run_embedded_app.py")
     check_warning = subprocess.Popen(
         [os.path.join(venv_bin, "python"), embedded_py], stderr=subprocess.PIPE
@@ -93,15 +97,18 @@ def test_warning_message(embedded_app):
     stderr_output = check_warning.stderr.read().decode()
 
     """If UserWarning & pythonnet are in the stderr output,
-    set warning to 1 if the warning message displays.
-    Otherwise, set warning to 0"""
+    set warning to 1. Otherwise, set warning to 0"""
     if "UserWarning" and "pythonnet" in stderr_output:
         warning = 1
     else:
         warning = 0
 
+    # Assert warning message appears for embedded app
     assert 1 == warning
 
     # Remove virtual environment
     venv_dir = os.path.join(base, "." + venv_name)
     shutil.rmtree(venv_dir)
+
+    # Set PATH back to what it was originally
+    os.environ["PATH"] = original_path
