@@ -60,7 +60,6 @@ def test_app_version(embedded_app):
 def test_warning_message():
     """Test pythonnet warning of the embedded instance."""
     venv_name = "pythonnetvenv"
-    create_venv = "python -m venv ." + venv_name
     base = os.getcwd()
 
     if "win" in sys.platform:
@@ -75,7 +74,14 @@ def test_warning_message():
     os.environ["PATH"] = venv_bin + os.pathsep + os.environ.get("PATH", "")
 
     # Create virtual environment
-    subprocess.run(create_venv.split())
+    subprocess.run([sys.executable, "-m", "venv", "." + venv_name])
+
+    # Upgrade pip
+    print("Upgrading pip")
+    upgrade_pip = subprocess.Popen(
+        [os.path.join(venv_bin, "python"), "-m", "pip", "install", "-U", "pip"]
+    )
+    upgrade_pip.wait()
 
     # Install tests
     print("Installing tests")

@@ -513,11 +513,10 @@ def test_launch_grpc_not_supported_version():
         pymechanical.mechanical.launch_grpc(exec_file=exec_file)
 
 
-@pytest.mark.remote_session_connect
+@pytest.mark.remote_session_launch
 def test_warning_message_pythonnet():
     """Test pythonnet warning of the remote session in virtual env."""
     venv_name = "pythonnetvenv"
-    create_venv = "python -m venv ." + venv_name
     base = os.getcwd()
 
     if "win" in sys.platform:
@@ -532,7 +531,14 @@ def test_warning_message_pythonnet():
     os.environ["PATH"] = venv_bin + os.pathsep + os.environ.get("PATH", "")
 
     # Create virtual environment
-    subprocess.run(create_venv.split())
+    subprocess.run([sys.executable, "-m", "venv", "." + venv_name])
+
+    # Upgrade pip
+    print("Upgrading pip")
+    upgrade_pip = subprocess.Popen(
+        [os.path.join(venv_bin, "python"), "-m", "pip", "install", "-U", "pip"]
+    )
+    upgrade_pip.wait()
 
     # Install tests
     print("Installing tests")
@@ -571,7 +577,7 @@ def test_warning_message_pythonnet():
     os.environ["PATH"] = original_path
 
 
-@pytest.mark.remote_session_connect
+@pytest.mark.remote_session_launch
 def test_warning_message_default():
     """Test pythonnet warning of the remote session in default env."""
     base = os.getcwd()
@@ -579,9 +585,7 @@ def test_warning_message_default():
     # Run remote session
     print("Running the remote session")
     remote_py = os.path.join(base, "tests", "scripts", "run_remote_session.py")
-    check_warning = subprocess.Popen(
-        [os.path.join(sys.executable, "python"), remote_py], stderr=subprocess.PIPE
-    )
+    check_warning = subprocess.Popen([sys.executable, remote_py], stderr=subprocess.PIPE)
     check_warning.wait()
     stderr_output = check_warning.stderr.read().decode()
 

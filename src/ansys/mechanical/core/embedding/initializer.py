@@ -1,13 +1,9 @@
 """Initializer for Mechanical embedding. Sets up paths and resolvers."""
+from importlib.metadata import distribution
 import os
 from pathlib import Path
 import sys
 import warnings
-
-try:
-    from pip._internal.operations import freeze
-except ImportError:  # pip < 10.0
-    from pip.operations import freeze
 
 from ansys.mechanical.core.embedding.loader import load_clr
 from ansys.mechanical.core.embedding.resolver import resolve
@@ -45,17 +41,16 @@ def initialize(version):
     __add_sys_path(version)
 
     # Check if 'pythonnet' is installed... and if so, throw warning
-    pkgs = freeze.freeze()
-    for pkg in pkgs:
-        indx = pkg.index("=")
-        if pkg[:indx] == "pythonnet":
-            warnings.warn(
-                "The pythonnet package was found in your environment "
-                "which interferes with the ansys-pythonnet package. "
-                "Some APIs may not work due to pythonnet being installed.",
-                stacklevel=2,
-            )
-            break
+    try:
+        distribution("pythonnet")
+        warnings.warn(
+            "The pythonnet package was found in your environment "
+            "which interferes with the ansys-pythonnet package. "
+            "Some APIs may not work due to pythonnet being installed.",
+            stacklevel=2,
+        )
+    except ModuleNotFoundError:
+        print("pythonnet was not found")
 
     # load the CLR with mono that is shipped with the unified ansys installer
     load_clr(os.environ[f"AWP_ROOT{version}"])
