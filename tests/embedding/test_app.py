@@ -1,6 +1,8 @@
 """Miscellaneous embedding tests"""
 import os
 import shutil
+import subprocess
+import sys
 import tempfile
 
 import pytest
@@ -52,3 +54,60 @@ def test_app_version(embedded_app):
     version = embedded_app.version
     assert type(version) is int
     assert version >= 231
+
+
+@pytest.mark.embedding
+def test_warning_message():
+    """Test pythonnet warning of the embedded instance."""
+    venv_name = "pythonnetvenv"
+    base = os.getcwd()
+
+    if "win" in sys.platform:
+        exe_dir = "Scripts"
+    else:
+        exe_dir = "bin"
+
+    venv_bin = os.path.join(base, "." + venv_name, exe_dir)
+
+    # Set up path to use the virtual environment
+    original_path = os.environ["PATH"]
+    os.environ["PATH"] = venv_bin + os.pathsep + os.environ.get("PATH", "")
+
+    # Create virtual environment
+    subprocess.run([sys.executable, "-m", "venv", "." + venv_name])
+
+    # Upgrade pip
+    upgrade_pip = subprocess.Popen(
+        [os.path.join(venv_bin, "python"), "-m", "pip", "install", "-U", "pip"]
+    )
+    upgrade_pip.wait()
+
+    # Install tests
+    install_tests = subprocess.Popen([os.path.join(venv_bin, "pip"), "install", "-e", ".[tests]"])
+    install_tests.wait()
+
+    # Install pythonnet
+    install_pythonnet = subprocess.Popen([os.path.join(venv_bin, "pip"), "install", "pythonnet"])
+    install_pythonnet.wait()
+
+    # Run embedded instance in virtual env with pythonnet installed
+    embedded_py = os.path.join(base, "tests", "scripts", "run_embedded_app.py")
+    check_warning = subprocess.Popen(
+        [os.path.join(venv_bin, "python"), embedded_py], stderr=subprocess.PIPE
+    )
+    check_warning.wait()
+    stderr_output = check_warning.stderr.read().decode()
+
+    # If UserWarning & pythonnet are in the stderr output, set warning to True.
+    # Otherwise, set warning to False
+    warning = True if "UserWarning" and "pythonnet" in stderr_output else False
+
+    # Assert warning message appears for embedded app
+    assert warning
+
+    # Remove virtual environment
+    venv_dir = os.path.join(base, "." + venv_name)
+    shutil.rmtree(venv_dir)
+
+    # Set PATH back to what it was originally
+    os.environ["PATH"] = original_path
