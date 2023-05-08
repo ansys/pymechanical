@@ -71,7 +71,6 @@ class App:
         if self._version == None:
             self._version = _get_default_version()
         initializer.initialize(self._version)
-
         import clr
 
         clr.AddReference("Ansys.Mechanical.Embedding")
