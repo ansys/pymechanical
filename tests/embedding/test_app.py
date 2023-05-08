@@ -104,10 +104,7 @@ def test_warning_message():
 
     """If UserWarning & pythonnet are in the stderr output,
     set warning to 1. Otherwise, set warning to 0"""
-    if "UserWarning" and "pythonnet" in stderr_output:
-        warning = 1
-    else:
-        warning = 0
+    warning = True if "UserWarning" and "pythonnet" in stderr_output else False
 
     # Assert warning message appears for embedded app
     assert 1 == warning
