@@ -2,10 +2,11 @@
 import logging
 import os
 
+from ansys.tools.path import find_mechanical
 import appdirs
 
 from ansys.mechanical.core.logging import Logger
-from ansys.tools.path import find_mechanical
+
 # Create logger for package level use
 LOG = Logger(level=logging.ERROR, to_file=False, to_stdout=True)
 LOG.debug("Loaded logging module as LOG")

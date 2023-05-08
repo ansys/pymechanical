@@ -6,13 +6,13 @@ import shutil
 import subprocess
 import sys
 
+import ansys.tools.path
 import grpc
 import pytest
 
 import ansys.mechanical.core as pymechanical
 import ansys.mechanical.core.errors as errors
 import ansys.mechanical.core.misc as misc
-import ansys.tools.path
 import conftest
 
 
@@ -442,17 +442,17 @@ def test_change_default_mechanical_path():
 @pytest.mark.remote_session_launch
 def test_version_from_path():
     windows_path = "C:\\Program Files\\ANSYS Inc\\v231\\aisol\\bin\\winx64\\AnsysWBU.exe"
-    version = pymechanical.mechanical._version_from_path(windows_path)
+    version = ansys.tools.path.version_from_path(windows_path)
     assert version == 231
 
     linux_path = "/usr/ansys_inc/v231/aisol/.workbench"
-    version = pymechanical.mechanical._version_from_path(linux_path)
+    version = ansys.tools.path.version_from_path(linux_path)
     assert version == 231
 
     with pytest.raises(RuntimeError):
         # doesn't contain version
         path = "C:\\Program Files\\ANSYS Inc\\aisol\\bin\\winx64\\AnsysWBU.exe"
-        pymechanical.mechanical._version_from_path(path)
+        ansys.tools.path.version_from_path(path)
 
 
 @pytest.mark.remote_session_launch

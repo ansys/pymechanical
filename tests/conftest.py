@@ -2,6 +2,7 @@ import datetime
 import os
 import platform
 
+import ansys.tools.path
 import pytest
 
 import ansys.mechanical.core as pymechanical
@@ -9,7 +10,6 @@ from ansys.mechanical.core import LocalMechanicalPool
 from ansys.mechanical.core._version import SUPPORTED_MECHANICAL_VERSIONS
 from ansys.mechanical.core.errors import MechanicalExitedError
 from ansys.mechanical.core.misc import get_mechanical_bin
-import ansys.tools.path
 
 # to run tests with multiple markers
 # pytest -q --collect-only -m "remote_session_launch"
