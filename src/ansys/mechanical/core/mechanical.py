@@ -198,7 +198,7 @@ def get_mechanical_path(allow_input=True):
 
 
 def check_valid_mechanical():
-    """Change to see if the default Mechanical path is valid
+    """Change to see if the default Mechanical path is valid.
 
     Example (windows)
     -----------------
