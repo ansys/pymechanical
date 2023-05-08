@@ -534,24 +534,20 @@ def test_warning_message_pythonnet():
     subprocess.run([sys.executable, "-m", "venv", "." + venv_name])
 
     # Upgrade pip
-    print("Upgrading pip")
     upgrade_pip = subprocess.Popen(
         [os.path.join(venv_bin, "python"), "-m", "pip", "install", "-U", "pip"]
     )
     upgrade_pip.wait()
 
     # Install tests
-    print("Installing tests")
     install_tests = subprocess.Popen([os.path.join(venv_bin, "pip"), "install", "-e", ".[tests]"])
     install_tests.wait()
 
     # Install pythonnet
-    print("Installing pythonnet")
     install_pythonnet = subprocess.Popen([os.path.join(venv_bin, "pip"), "install", "pythonnet"])
     install_pythonnet.wait()
 
     # Run remote session in virtual env with pythonnet installed
-    print("Running the remote session in a virtual environment")
     remote_py = os.path.join(base, "tests", "scripts", "run_remote_session.py")
     check_warning = subprocess.Popen(
         [os.path.join(venv_bin, "python"), remote_py], stderr=subprocess.PIPE
@@ -559,8 +555,8 @@ def test_warning_message_pythonnet():
     check_warning.wait()
     stderr_output = check_warning.stderr.read().decode()
 
-   # If UserWarning & pythonnet are in the stderr output, set warning to True.
-   # Otherwise, set warning to False
+    # If UserWarning & pythonnet are in the stderr output, set warning to True.
+    # Otherwise, set warning to False
     warning = True if "UserWarning" and "pythonnet" in stderr_output else False
 
     # Assert the warning message did not appear for the remote session
@@ -580,14 +576,13 @@ def test_warning_message_default():
     base = os.getcwd()
 
     # Run remote session
-    print("Running the remote session")
     remote_py = os.path.join(base, "tests", "scripts", "run_remote_session.py")
     check_warning = subprocess.Popen([sys.executable, remote_py], stderr=subprocess.PIPE)
     check_warning.wait()
     stderr_output = check_warning.stderr.read().decode()
 
-   # If UserWarning & pythonnet are in the stderr output, set warning to True.
-   # Otherwise, set warning to False
+    # If UserWarning & pythonnet are in the stderr output, set warning to True.
+    # Otherwise, set warning to False
     warning = True if "UserWarning" and "pythonnet" in stderr_output else False
 
     # Assert the warning message did not appear for the remote session

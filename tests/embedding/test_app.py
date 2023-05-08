@@ -77,24 +77,20 @@ def test_warning_message():
     subprocess.run([sys.executable, "-m", "venv", "." + venv_name])
 
     # Upgrade pip
-    print("Upgrading pip")
     upgrade_pip = subprocess.Popen(
         [os.path.join(venv_bin, "python"), "-m", "pip", "install", "-U", "pip"]
     )
     upgrade_pip.wait()
 
     # Install tests
-    print("Installing tests")
     install_tests = subprocess.Popen([os.path.join(venv_bin, "pip"), "install", "-e", ".[tests]"])
     install_tests.wait()
 
     # Install pythonnet
-    print("Installing pythonnet")
     install_pythonnet = subprocess.Popen([os.path.join(venv_bin, "pip"), "install", "pythonnet"])
     install_pythonnet.wait()
 
     # Run embedded instance in virtual env with pythonnet installed
-    print("Running the embedded instance in a virtual environment")
     embedded_py = os.path.join(base, "tests", "scripts", "run_embedded_app.py")
     check_warning = subprocess.Popen(
         [os.path.join(venv_bin, "python"), embedded_py], stderr=subprocess.PIPE
