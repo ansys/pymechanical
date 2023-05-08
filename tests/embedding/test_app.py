@@ -102,8 +102,8 @@ def test_warning_message():
     check_warning.wait()
     stderr_output = check_warning.stderr.read().decode()
 
-    """If UserWarning & pythonnet are in the stderr output,
-    set warning to 1. Otherwise, set warning to 0"""
+    # If UserWarning & pythonnet are in the stderr output, set warning to True.
+    # Otherwise, set warning to False
     warning = True if "UserWarning" and "pythonnet" in stderr_output else False
 
     # Assert warning message appears for embedded app
