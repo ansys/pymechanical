@@ -107,7 +107,7 @@ def test_warning_message():
     warning = True if "UserWarning" and "pythonnet" in stderr_output else False
 
     # Assert warning message appears for embedded app
-    assert 1 == warning
+    assert warning
 
     # Remove virtual environment
     venv_dir = os.path.join(base, "." + venv_name)
