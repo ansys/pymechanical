@@ -591,13 +591,10 @@ def test_warning_message_default():
 
     """If UserWarning & pythonnet are in the stderr output,
     set warning to 0. Otherwise, set warning to 1"""
-    if "UserWarning" and "pythonnet" in stderr_output:
-        warning = 0
-    else:
-        warning = 1
+    warning = True if "UserWarning" and "pythonnet" in stderr_output else False
 
     # Assert the warning message did not appear for the remote session
-    assert 1 == warning
+    assert not warning
 
 
 # def test_call_before_launch_or_connect():
