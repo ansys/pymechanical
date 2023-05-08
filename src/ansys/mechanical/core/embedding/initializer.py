@@ -1,7 +1,9 @@
 """Initializer for Mechanical embedding. Sets up paths and resolvers."""
+from importlib.metadata import distribution
 import os
 from pathlib import Path
 import sys
+import warnings
 
 from ansys.mechanical.core.embedding.loader import load_clr
 from ansys.mechanical.core.embedding.resolver import resolve
@@ -37,6 +39,18 @@ def initialize(version):
 
     # need to add system path in order to import the assembly with the resolver
     __add_sys_path(version)
+
+    # Check if 'pythonnet' is installed... and if so, throw warning
+    try:
+        distribution("pythonnet")
+        warnings.warn(
+            "The pythonnet package was found in your environment "
+            "which interferes with the ansys-pythonnet package. "
+            "Some APIs may not work due to pythonnet being installed.",
+            stacklevel=2,
+        )
+    except ModuleNotFoundError:
+        pass
 
     # load the CLR with mono that is shipped with the unified ansys installer
     load_clr(os.environ[f"AWP_ROOT{version}"])

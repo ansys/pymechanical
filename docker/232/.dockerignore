@@ -25,22 +25,28 @@ ansys_inc/v232/aisol/BladeModeler
 ansys_inc/v232/aisol/FEModeler
 
 ansys_inc/v232/aisol/dll/linx64/libans.blademodeler.ndfutilitiescom.so
-ansys_inc/v232/aisol/dll/linx64/libans.blademodeler.dmaddincom.so
-ansys_inc/v232/aisol/dll/linx64/ans.blademodeler.dmaddincom.rsb
+# needed for topo and smart tests
+# ansys_inc/v232/aisol/dll/linx64/libans.blademodeler.dmaddincom.so
+# ansys_inc/v232/aisol/dll/linx64/ans.blademodeler.dmaddincom.rsb
 ansys_inc/v232/aisol/dll/linx64/libans.blademodeler.bg41objectscom.so
 ansys_inc/v232/aisol/dll/linx64/ans.blademodeler.bg41objectscom.rsb
 ansys_inc/v232/aisol/dll/linx64/libans.blademodeler.tgproxycom.so
 ansys_inc/v232/aisol/dll/linx64/ans.blademodeler.tgproxycom.rsb
 ansys_inc/v232/aisol/dll/linx64/libans.blademodeler.objectscom.so
 ansys_inc/v232/aisol/dll/linx64/ans.blademodeler.objectscom.rsb
-ansys_inc/v232/aisol/dll/linx64/libans.addins.parameshcom.so
-ansys_inc/v232/aisol/dll/linx64/ans.addins.parameshcom.rsb
+
+# needed for topo and smart tests
+# ansys_inc/v232/aisol/dll/linx64/libans.addins.parameshcom.so
+# ansys_inc/v232/aisol/dll/linx64/ans.addins.parameshcom.rsb
 ansys_inc/v232/aisol/dll/linx64/libans.addins.parameshkernelcom.so
 ansys_inc/v232/aisol/dll/linx64/ans.addins.parameshkernelcom.rsb
 ansys_inc/v232/aisol/dll/linx64/libans.addins.parameshobjectscom.so
 ansys_inc/v232/aisol/dll/linx64/ans.addins.parameshobjectscom.rsb
-ansys_inc/v232/aisol/dll/linx64/libans.addins.parameshutilitiescom.so
-ansys_inc/v232/aisol/dll/linx64/ans.addins.parameshutilitiescom.rsb
+
+# needed for topo and smart tests
+# ansys_inc/v232/aisol/dll/linx64/libans.addins.parameshutilitiescom.so
+# ansys_inc/v232/aisol/dll/linx64/ans.addins.parameshutilitiescom.rsb
+
 # Ans.Common.ManagedEntry loading depends on this
 # ansys_inc/v232/aisol/bin/linx64/Ans.AQWA.RemoteItf.dll
 # ansys_inc/v232/aisol/bin/linx64/Ans.AQWA.RemoteLib.dll
@@ -97,9 +103,21 @@ ansys_inc/v232/commonfiles/Tcl
 !ansys_inc/v232/commonfiles/Tcl/lib/linx64/libz.so
 
 ansys_inc/v232/commonfiles/CFX
+# needed for topo and smart tests
+!ansys_inc/v232/commonfiles/CFX/lib/linux-amd64/libans.cue.di.so
+!ansys_inc/v232/commonfiles/CFX/lib/linux-amd64/libgfortran.so.5
+!ansys_inc/v232/commonfiles/CFX/lib/linux-amd64/libquadmath.so.0
+!ansys_inc/v232/commonfiles/CFX/tools/fluentio/linx64/lib/libfluentio.so
+!ansys_inc/v232/commonfiles/CFX/tools/perl-5.34.1-dynamic/lib/5.34.1/x86_64-linux/CORE/libperl.so
+!ansys_inc/v232/commonfiles/CFX/tools/poco-1.7.8/linx64/lib/libPocoFoundation.so
+!ansys_inc/v232/commonfiles/CFX/tools/poco-1.7.8/linx64/lib/libPocoFoundation.so.48
+
 ansys_inc/v232/commonfiles/Textures
 ansys_inc/v232/commonfiles/tools
+
 ansys_inc/v232/dcs
+# needed for topo and smart tests
+!ansys_inc/v232/dcs/nginx/auth_web/assets/favicon.ico
 
 # not available on linux
 # ansys_inc/v232/DistortionCompensation
@@ -166,6 +184,11 @@ ansys_inc/v232/ansys
 !ansys_inc/v232/ansys/bin/ansysdis
 !ansys_inc/v232/ansys/bin/ansysdis232
 !ansys_inc/v232/ansys/bin/linx64/ansys.e
+
+# needed for topo and smart tests
+!ansys_inc/v232/ansys/bin/linx64/AnsMechSolverMesh_f.e
+!ansys_inc/v232/ansys/bin/linx64/RunQMorph_f.e
+
 !ansys_inc/v232/ansys/bin/mapdl
 !ansys_inc/v232/ansys/docu/dynprompt232.ans
 !ansys_inc/v232/ansys/gui/en-us/UIDL/MECHTOOL.AUI
@@ -175,6 +198,27 @@ ansys_inc/v232/ansys
 !ansys_inc/v232/ansys/gui/en-us/UIDL/UIMENU.GRN
 # we don't ignore the ansys_inc/v232/ansys/lib/linx64/blas
 # !ansys_inc/v232/ansys/lib/linx64/blas/intel/libansBLAS.so
+
+# needed for topo and smart tests
+!ansys_inc/v232/ansys/lib/analytics/model_031323/sparse_A_min_max.txt
+!ansys_inc/v232/ansys/lib/analytics/model_031323/sparse_A_param_a.txt
+!ansys_inc/v232/ansys/lib/analytics/model_031323/sparse_A_param_b.txt
+!ansys_inc/v232/ansys/lib/analytics/model_031323/sparse_memory_keras2cpp_model_0.model
+!ansys_inc/v232/ansys/lib/analytics/model_031323/sparse_memory_keras2cpp_model_1.model
+!ansys_inc/v232/ansys/lib/analytics/model_031323/sparse_memory_keras2cpp_model_2.model
+!ansys_inc/v232/ansys/lib/analytics/model_031323/sparse_memory_keras2cpp_model_3.model
+!ansys_inc/v232/ansys/lib/analytics/model_031323/sparse_memory_keras2cpp_model_4.model
+!ansys_inc/v232/ansys/lib/analytics/model_031323/sparse_memory_mean_0.txt
+!ansys_inc/v232/ansys/lib/analytics/model_031323/sparse_memory_mean_1.txt
+!ansys_inc/v232/ansys/lib/analytics/model_031323/sparse_memory_mean_2.txt
+!ansys_inc/v232/ansys/lib/analytics/model_031323/sparse_memory_mean_3.txt
+!ansys_inc/v232/ansys/lib/analytics/model_031323/sparse_memory_mean_4.txt
+!ansys_inc/v232/ansys/lib/analytics/model_031323/sparse_memory_scale_0.txt
+!ansys_inc/v232/ansys/lib/analytics/model_031323/sparse_memory_scale_1.txt
+!ansys_inc/v232/ansys/lib/analytics/model_031323/sparse_memory_scale_2.txt
+!ansys_inc/v232/ansys/lib/analytics/model_031323/sparse_memory_scale_3.txt
+!ansys_inc/v232/ansys/lib/analytics/model_031323/sparse_memory_scale_4.txt
+
 !ansys_inc/v232/ansys/lib/linx64/libansexb.so
 !ansys_inc/v232/ansys/lib/linx64/libansgil.so
 !ansys_inc/v232/ansys/lib/linx64/libansGPU.so
@@ -223,6 +267,10 @@ ansys_inc/v232/ansys
 !ansys_inc/v232/ansys/syslib/AnsGil/libgmp.so
 !ansys_inc/v232/ansys/syslib/AnsGil/libgmp.so.10
 !ansys_inc/v232/ansys/syslib/AnsGil/libgmp.so.10.3.2
+
+# needed for topo and smart tests
+!ansys_inc/v232/ansys/syslib/AnsMechSolverMesh/libComponentSystem.so
+
 # in the latest build the following are referred from 
 # ansys_inc/v232/aisol/lib/linx64
 # having + in the pattern produces the following error
@@ -364,6 +412,11 @@ ansys_inc/v232/tp/hdf5/1_12_2
 ansys_inc/v232/tp/IntelCompiler/2019.3.199
 !ansys_inc/v232/tp/IntelCompiler/2019.3.199/linx64/lib/intel64/libcilkrts.so
 !ansys_inc/v232/tp/IntelCompiler/2019.3.199/linx64/lib/intel64/libcilkrts.so.5
+
+# needed for topo and smart tests
+!ansys_inc/v232/tp/IntelCompiler/2019.3.199/linx64/lib/intel64/libifcore.so
+!ansys_inc/v232/tp/IntelCompiler/2019.3.199/linx64/lib/intel64/libifcore.so.5
+
 !ansys_inc/v232/tp/IntelCompiler/2019.3.199/linx64/lib/intel64/libifcoremt.so
 !ansys_inc/v232/tp/IntelCompiler/2019.3.199/linx64/lib/intel64/libifcoremt.so.5
 !ansys_inc/v232/tp/IntelCompiler/2019.3.199/linx64/lib/intel64/libifport.so
@@ -386,6 +439,10 @@ ansys_inc/v232/tp/IntelMKL/2020.0.166
 !ansys_inc/v232/tp/IntelMKL/2020.0.166/linx64/lib/intel64/libmkl_intel_lp64.so
 !ansys_inc/v232/tp/IntelMKL/2020.0.166/linx64/lib/intel64/libmkl_intel_thread.so
 !ansys_inc/v232/tp/IntelMKL/2020.0.166/linx64/lib/intel64/libmkl_scalapack_lp64.so
+
+# needed for topo and smart tests
+!ansys_inc/v232/tp/IntelMKL/2020.0.166/linx64/lib/intel64/libmkl_sequential.so
+
 !ansys_inc/v232/tp/IntelMKL/2020.0.166/linx64/lib/intel64/libmkl_vml_avx512.so
 !ansys_inc/v232/tp/IntelMKL/2020.0.166/linx64/lib/intel64/libmkl_vml_avx512_mic.so
 
