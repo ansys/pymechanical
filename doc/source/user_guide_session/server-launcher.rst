@@ -43,7 +43,7 @@ version of Mechanical, run the following:
     pymechanical.change_default_mechanical_path(new_path)
 
 For more information, see the :func:`change_default_mechanical_path() <ansys.mechanical.core.change_default_mechanical_path>`
-and :func:`find_mechanical() <ansys.mechanical.core.find_mechanical>` methods.
+and :func:`find_mechanical() <ansys.tools.path.find_mechanical>` methods.
 
 Additionally, you can use the ``exec_file`` keyword argument to specify the location of the
 Mechanical executable file. 

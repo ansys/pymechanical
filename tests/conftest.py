@@ -9,6 +9,7 @@ from ansys.mechanical.core import LocalMechanicalPool
 from ansys.mechanical.core._version import SUPPORTED_MECHANICAL_VERSIONS
 from ansys.mechanical.core.errors import MechanicalExitedError
 from ansys.mechanical.core.misc import get_mechanical_bin
+import ansys.tools.path
 
 # to run tests with multiple markers
 # pytest -q --collect-only -m "remote_session_launch"
@@ -202,7 +203,7 @@ def mechanical_pool():
     if not pymechanical.mechanical.get_start_instance():
         return None
 
-    path, version = pymechanical.find_mechanical()
+    path, version = ansys.tools.path.find_mechanical()
 
     exec_file = path
     instances_count = 2

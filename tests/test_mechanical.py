@@ -12,6 +12,7 @@ import pytest
 import ansys.mechanical.core as pymechanical
 import ansys.mechanical.core.errors as errors
 import ansys.mechanical.core.misc as misc
+import ansys.tools.path
 import conftest
 
 
@@ -415,7 +416,7 @@ def test_launch_result_mode(mechanical_result):
 @pytest.mark.remote_session_launch
 def test_find_mechanical_path():
     if pymechanical.mechanical.get_start_instance():
-        path, version = pymechanical.find_mechanical()
+        path, version = ansys.tools.path.find_mechanical()
 
         if misc.is_windows():
             assert "AnsysWBU.exe" in path
@@ -428,11 +429,11 @@ def test_find_mechanical_path():
 @pytest.mark.remote_session_launch
 def test_change_default_mechanical_path():
     if pymechanical.mechanical.get_start_instance():
-        path, version = pymechanical.find_mechanical()
+        path, version = ansys.tools.path.find_mechanical()
 
         pymechanical.change_default_mechanical_path(path)
 
-        path_new, version_new = pymechanical.find_mechanical()
+        path_new, version_new = ansys.tools.path.find_mechanical()
 
         assert path_new == path
         assert version_new == version
