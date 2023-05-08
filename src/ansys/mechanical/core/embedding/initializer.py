@@ -50,7 +50,7 @@ def initialize(version):
             stacklevel=2,
         )
     except ModuleNotFoundError:
-        print("pythonnet was not found")
+        pass
 
     # load the CLR with mono that is shipped with the unified ansys installer
     load_clr(os.environ[f"AWP_ROOT{version}"])
