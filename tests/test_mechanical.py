@@ -586,8 +586,8 @@ def test_warning_message_default():
     check_warning.wait()
     stderr_output = check_warning.stderr.read().decode()
 
-    """If UserWarning & pythonnet are in the stderr output,
-    set warning to 0. Otherwise, set warning to 1"""
+   # If UserWarning & pythonnet are in the stderr output, set warning to True.
+   # Otherwise, set warning to False
     warning = True if "UserWarning" and "pythonnet" in stderr_output else False
 
     # Assert the warning message did not appear for the remote session
