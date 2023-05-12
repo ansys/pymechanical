@@ -233,13 +233,13 @@ def get_mechanical_path(allow_input=True):
     return exe_loc
 
     """
-    import os
+    # import os
 
-    import ansys.tools.path.path as path2
+    # import ansys.tools.path.path as path2
 
-    exe_loc = path2._read_executable_path_from_config_file("mechanical")
-    print(exe_loc)
-    print(os.path.isfile(exe_loc))
+    # exe_loc = path2._read_executable_path_from_config_file("mechanical")
+    # print(exe_loc)
+    # print(os.path.isfile(exe_loc))
 
     return atp.get_mechanical_path(allow_input)
 
@@ -1989,6 +1989,7 @@ def launch_remote_mechanical(version=None) -> (grpc.Channel, Instance):  # pragm
 
 
 def launch_mechanical(
+    allow_input=True,
     exec_file=None,
     batch=True,
     loglevel="ERROR",
@@ -2010,6 +2011,9 @@ def launch_mechanical(
 
     Parameters
     ----------
+    allow_input: bool, optional
+        Whether to allow user input when discovering the path to the Mechanical
+        executable file.
     exec_file : str, optional
         Path for the Mechanical executable file. The default is ``None``,
         in which case the cached location is used. If PyPIM is configured
@@ -2215,7 +2219,7 @@ def launch_mechanical(
 
     # verify executable
     if exec_file is None:
-        exec_file = get_mechanical_path()
+        exec_file = get_mechanical_path(allow_input)
         if exec_file is None:  # pragma: no cover
             raise FileNotFoundError(
                 "Path to the Mechanical executable file is invalid or cache cannot be loaded. "

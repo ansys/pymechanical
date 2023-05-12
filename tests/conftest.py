@@ -123,6 +123,7 @@ def mke_app_reset(request):
 def launch_mechanical_instance(cleanup_on_exit=False):
     print("launching mechanical instance")
     return pymechanical.launch_mechanical(
+        allow_input=False,
         verbose_mechanical=True,
         cleanup_on_exit=cleanup_on_exit,
         log_mechanical="pymechanical_log.txt",
