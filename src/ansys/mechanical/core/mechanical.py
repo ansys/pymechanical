@@ -240,9 +240,64 @@ def get_mechanical_path(allow_input=True):
     ans_path, version = path2._get_unified_install_base_for_version(version, path2.SUPPORTED_ANSYS_VERSIONS)
     print(ans_path)
     print(version)
+
+    def _find_mechanical_old():
+        def _get_available_base_mechanical():
+            def is_float(input_string):
+                """Returns true when a string can be converted to a float"""
+                try:
+                    float(input_string)
+                    return True
+                except ValueError:
+                    return False
+            base_path = None
+            if os.name == "nt":
+                supported_versions = [232, 231]
+                awp_roots = {ver: os.environ.get(f"AWP_ROOT{ver}", "") for ver in supported_versions}
+                installed_versions = {
+                    ver: path for ver, path in awp_roots.items() if path and os.path.isdir(path)
+                }
+                if installed_versions:
+                    return installed_versions
+                else:
+                    base_path = os.path.join(os.environ["PROGRAMFILES"], "ANSYS Inc")
+            else:
+                for path in ["/usr/ansys_inc", "/ansys_inc", "/install/ansys_inc"]:
+                    if os.path.isdir(path):
+                        base_path = path
+
+            if base_path is None:
+                return {}
+
+            paths = glob.glob(os.path.join(base_path, "v*"))
+
+            if not paths:
+                return {}
+
+            ansys_paths = {}
+            for path in paths:
+                ver_str = path[-3:]
+                if is_float(ver_str):
+                    ansys_paths[int(ver_str)] = path
+
+            return ansys_paths
+        versions = _get_available_base_mechanical()
+        if not versions:
+            return ""
+        version = max(versions.keys())
+        ans_path = versions[version]
+        if os.name == "nt":
+            mechanical_bin = os.path.join(ans_path, "aisol", "bin", "winx64", f"AnsysWBU.exe")
+        else:
+            mechanical_bin = os.path.join(ans_path, "aisol", ".workbench")
+        return mechanical_bin
+
     # exe_loc = path2._read_executable_path_from_config_file("mechanical")
     # print(exe_loc)
     # print(os.path.isfile(exe_loc))
+
+    old = _find_mechanical_old()
+    print(old)
 
     return atp.get_mechanical_path(allow_input)
 
