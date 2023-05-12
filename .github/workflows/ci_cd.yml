@@ -70,7 +70,7 @@ jobs:
   tests:
     name: Testing and coverage - Mechanical ${{ matrix.mechanical-version }}
     runs-on: public-ubuntu-latest-8-cores
-    needs: [smoke-tests]
+    needs: []
     continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
