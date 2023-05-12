@@ -237,7 +237,7 @@ def get_mechanical_path(allow_input=True):
 
     import ansys.tools.path.path as path2
 
-    ans_path, version = path2._get_unified_install_base_for_version(version, path2.SUPPORTED_ANSYS_VERSIONS)
+    ans_path, version = path2._get_unified_install_base_for_version(None, path2.SUPPORTED_ANSYS_VERSIONS)
     print(ans_path)
     print(version)
 
