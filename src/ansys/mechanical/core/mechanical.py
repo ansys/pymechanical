@@ -237,6 +237,8 @@ def get_mechanical_path(allow_input=True):
 
     import ansys.tools.path.path as path2
 
+    path2.LINUX_DEFAULT_DIRS = [["/", "usr", "ansys_inc"], ["/", "ansys_inc"], ["/", "install", "ansys_inc"]]
+    path2.LINUX_DEFAULT_DIRS = [os.path.join(*each) for each in path2.LINUX_DEFAULT_DIRS]
     ans_path, version = path2._get_unified_install_base_for_version(None, path2.SUPPORTED_ANSYS_VERSIONS)
     print(ans_path)
     print(version)
