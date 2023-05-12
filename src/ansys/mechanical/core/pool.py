@@ -169,7 +169,7 @@ class LocalMechanicalPool:
                     )
 
         if not self._remote:  # pragma: no cover
-            if version_from_path(exec_file) < 231:
+            if version_from_path("mechanical", exec_file) < 231:
                 raise VersionError("A local Mechanical pool requires Mechanical 2023 R1 or later.")
 
         ports = None

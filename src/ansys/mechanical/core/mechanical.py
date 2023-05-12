@@ -215,7 +215,7 @@ def check_valid_mechanical():
     mechanical_path = atp.get_mechanical_path(False)
     if mechanical_path == None:
         return False
-    mechanical_version = atp.version_from_path(mechanical_path)
+    mechanical_version = atp.version_from_path("mechanical", mechanical_path)
     return not (mechanical_version < 231 and os.name != "posix")
 
 
