@@ -235,8 +235,11 @@ def get_mechanical_path(allow_input=True):
     """
     # import os
 
-    # import ansys.tools.path.path as path2
+    import ansys.tools.path.path as path2
 
+    ans_path, version = path2._get_unified_install_base_for_version(version, path2.SUPPORTED_ANSYS_VERSIONS)
+    print(ans_path)
+    print(version)
     # exe_loc = path2._read_executable_path_from_config_file("mechanical")
     # print(exe_loc)
     # print(os.path.isfile(exe_loc))
