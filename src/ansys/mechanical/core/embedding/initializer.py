@@ -28,12 +28,14 @@ def __disable_sec() -> None:
     """
     os.environ["ANSYS_MECHANICAL_EMBEDDING_NO_SEC"] = "1"
 
+
 SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS = {
-        241: "2024R1",
-        232: "2023R2",
-        231: "2023R1",
-        222: "2022R2",
+    241: "2024R1",
+    232: "2023R2",
+    231: "2023R1",
+    222: "2022R2",
 }
+
 
 def _get_linux_version() -> int:
     supported_versions = [232, 241]
@@ -44,20 +46,23 @@ def _get_linux_version() -> int:
     assert len(installed_versions) == 1, "multiple AWP_ROOT environment variables found!"
     return installed_versions[0]
 
+
 def _get_default_version() -> int:
     if os.name == "nt":
-        _, version = atp.find_mechanical(supported_versions=SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS)
+        _, version = atp.find_mechanical(
+            supported_versions=SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS
+        )
         return version
 
     # On linux, embedding is only possible by setting environment variables before starting python.
     # The version will then be fixed  to a specific version, based on those env vars.
-    # The documented way to set those variables is to run python using the .workbench_lite script, which
-    # is distributed with the unified installer.
-    # That script doesn't quite set an env var to the version number, like 232, however it does set the
-    # env var AWP_ROOT{version} to some path. So here, we can search for which of those env vars are set
-    # assuming that the user did not set any others.
-    # To overcome this, if multiple are set, the user should set the version number in the constructor of
-    # the app, like app(version=232)
+    # The documented way to set those variables is to run python using the .workbench_lite script,
+    # which is distributed with the unified installer.
+    # That script doesn't quite set an env var to the version number, like 232, however it does set
+    # the env var AWP_ROOT{version} to some path. So here, we can search for which of those env
+    # vars are set assuming that the user did not set any others.
+    # To overcome this, if multiple are set, the user should set the version number in the
+    # constructor of the app, like app(version=232)
     return _get_linux_version()
 
 

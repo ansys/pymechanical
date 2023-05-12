@@ -5,6 +5,7 @@ import os
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.config import Configuration, configure
 
+
 def _get_default_configuration() -> Configuration:
     configuration = Configuration()
     if os.name != "nt":
@@ -13,6 +14,7 @@ def _get_default_configuration() -> Configuration:
 
 
 INSTANCES = []
+
 
 def _dispose_embedded_app(instances):  # pragma: nocover
     if len(instances) > 0:

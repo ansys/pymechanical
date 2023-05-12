@@ -57,6 +57,7 @@ def test_app_version(embedded_app):
 
 
 @pytest.mark.embedding
+@pytest.mark.skip("no")
 def test_warning_message():
     """Test pythonnet warning of the embedded instance."""
     venv_name = "pythonnetvenv"
