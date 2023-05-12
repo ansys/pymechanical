@@ -193,7 +193,54 @@ def get_mechanical_path(allow_input=True):
     """Get path.
 
     Deprecated - use `ansys.tools.path.get_mechanical_path` instead
+
+    old:
+    -----------------------
+    exe_loc = None
+    if os.path.isfile(CONFIG_FILE):
+        with open(CONFIG_FILE, "r", encoding="utf-8") as f:
+            exe_loc = f.read()
+        # verify
+        if not os.path.isfile(exe_loc) and allow_input:
+            exe_loc = save_mechanical_path()
+    elif allow_input:  # create configuration file
+        exe_loc = save_mechanical_path()
+    if exe_loc is None:
+        exe_loc = find_mechanical()[0]
+        if not exe_loc:
+            exe_loc = None
+
+    return exe_loc
+
+    ------------------------
+    new:
+    product="mechanical"
+    version=None
+    exe_loc = None
+    if not version:
+        exe_loc = _read_executable_path_from_config_file(product)
+        if exe_loc != None:  # verify
+            if not os.path.isfile(exe_loc) and allow_input:
+                exe_loc = _save_path(product)
+        elif allow_input:  # create configuration file
+            exe_loc = _save_path(product)
+
+    if exe_loc is None:
+        exe_loc = _find_installation(product, version=version)[0]
+        if not exe_loc:
+            exe_loc = None
+
+    return exe_loc
+
     """
+    import os
+
+    import ansys.tools.path.path as path2
+
+    exe_loc = path2._read_executable_path_from_config_file("mechanical")
+    print(exe_loc)
+    print(os.path.isfile(exe_loc))
+
     return atp.get_mechanical_path(allow_input)
 
 
