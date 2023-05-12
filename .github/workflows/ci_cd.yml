@@ -66,7 +66,7 @@ jobs:
           library-namespace: ${{ env.PACKAGE_NAMESPACE }}
           operating-system: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
-          use-python-cache: false
+          # use-python-cache: false
 
   tests:
     name: Testing and coverage - Mechanical ${{ matrix.mechanical-version }}
