@@ -515,7 +515,6 @@ def test_launch_grpc_not_supported_version():
 
 
 @pytest.mark.remote_session_launch
-@pytest.mark.skip("no")
 def test_warning_message_pythonnet():
     """Test pythonnet warning of the remote session in virtual env."""
     venv_name = "pythonnetvenv"
@@ -573,7 +572,6 @@ def test_warning_message_pythonnet():
 
 
 @pytest.mark.remote_session_launch
-@pytest.mark.skip("no")
 def test_warning_message_default():
     """Test pythonnet warning of the remote session in default env."""
     base = os.getcwd()
