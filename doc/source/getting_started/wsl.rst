@@ -199,7 +199,7 @@ Additionally, run a Docker image of PyMechanical with this command:
 
 .. code:: pwsh
 
-    docker run -e ANSYSLMD_LICENSE_FILE=1055@host.docker.internal --restart always --name mechanical -p 10000:10000 ghcr.io/pyansys/pymechanical/mechanical > log.txt
+    docker run -e ANSYSLMD_LICENSE_FILE=1055@host.docker.internal --restart always --name mechanical -p 10000:10000 ghcr.io/ansys/pymechanical/mechanical > log.txt
 
 Successive runs should restart the container. Or, delete the container and rerun it with
 this code:
@@ -209,7 +209,7 @@ this code:
     docker stop mechanical
     docker container prune
 
-    docker run -e ANSYSLMD_LICENSE_FILE=1055@host.docker.internal --restart always --name mechanical -p 10001:10000 ghcr.io/pyansys/pymechanical/mechanical > log.txt
+    docker run -e ANSYSLMD_LICENSE_FILE=1055@host.docker.internal --restart always --name mechanical -p 10001:10000 ghcr.io/ansys/pymechanical/mechanical > log.txt
 
 
 Running a Docker image creates a ``log.txt`` file in your current directory location.

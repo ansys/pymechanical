@@ -190,7 +190,7 @@ html_theme_options = {
     },
     "check_switcher": False,
     "navbar_end": ["version-switcher", "theme-switcher", "navbar-icon-links"],
-    "github_url": "https://github.com/pyansys/pymechanical",
+    "github_url": "https://github.com/ansys/pymechanical",
     "show_prev_next": False,
     "show_breadcrumbs": True,
     "collapse_navigation": True,
@@ -201,7 +201,7 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "Support",
-            "url": "https://github.com/pyansys/pymechanical/discussions",
+            "url": "https://github.com/ansys/pymechanical/discussions",
             "icon": "fa fa-comment fa-fw",
         },
     ],

@@ -12,7 +12,7 @@ on:
 env:
   PYMECHANICAL_PORT: 10000  # default won't work on GitHub runners
   PYMECHANICAL_START_INSTANCE: FALSE
-  DOCKER_PACKAGE: ghcr.io/pyansys/pymechanical/mechanical
+  DOCKER_PACKAGE: ghcr.io/ansys/pymechanical/mechanical
   DOCKER_IMAGE_VERSION: v23.1.0
   DOCKER_MECH_CONTAINER_NAME: mechanical
   MAIN_PYTHON_VERSION: '3.10'
@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: PyAnsys code style checks
-        uses: pyansys/actions/code-style@v4
+        uses: ansys/actions/code-style@v4
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: PyAnsys documentation style checks
-        uses: pyansys/actions/doc-style@v4
+        uses: ansys/actions/doc-style@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -60,7 +60,7 @@ jobs:
             os: macos-latest
     steps:
       - name: Build wheelhouse and perform smoke test
-        uses: pyansys/actions/build-wheelhouse@v4
+        uses: ansys/actions/build-wheelhouse@v4
         with:
           library-name: ${{ env.PACKAGE_NAME }}
           library-namespace: ${{ env.PACKAGE_NAMESPACE }}
@@ -100,7 +100,7 @@ jobs:
           grep -q 'WB Initialize Done' <(timeout 60 tail -f log.txt)
 
       - name: Testing
-        uses: pyansys/actions/tests-pytest@v4
+        uses: ansys/actions/tests-pytest@v4
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
@@ -144,7 +144,7 @@ jobs:
     name: Embedding testing and coverage
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/pyansys/pymechanical/mechanical:v23.2.0
+      image: ghcr.io/ansys/pymechanical/mechanical:v23.2.0
       options: --entrypoint /bin/bash
     needs: [smoke-tests]
     strategy:
@@ -208,7 +208,7 @@ jobs:
     name: Launch testing and coverage
     runs-on: public-ubuntu-latest-8-cores
     container:
-      image: ghcr.io/pyansys/pymechanical/mechanical:v23.2.0
+      image: ghcr.io/ansys/pymechanical/mechanical:v23.2.0
       options: --entrypoint /bin/bash
     needs: [ smoke-tests ]
     strategy:
@@ -293,7 +293,7 @@ jobs:
           grep -q 'WB Initialize Done' <(timeout 60 tail -f log.txt)
 
       - name: Run Ansys documentation building action
-        uses: pyansys/actions/doc-build@v4
+        uses: ansys/actions/doc-build@v4
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           dependencies: "pandoc"
@@ -393,7 +393,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build library source and wheel artifacts
-        uses: pyansys/actions/build-library@v4
+        uses: ansys/actions/build-library@v4
         with:
           library-name: ${{ env.PACKAGE_NAME }}
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
@@ -405,14 +405,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Release to the public PyPI repository
-        uses: pyansys/actions/release-pypi-public@v4
+        uses: ansys/actions/release-pypi-public@v4
         with:
           library-name: ${{ env.PACKAGE_NAME }}
           twine-username: "__token__"
           twine-token: ${{ secrets.PYPI_TOKEN }}
 
       - name: Release to GitHub
-        uses: pyansys/actions/release-github@v4
+        uses: ansys/actions/release-github@v4
         with:
           library-name: ${{ env.PACKAGE_NAME }}
 
@@ -423,7 +423,7 @@ jobs:
     needs: [package]
     steps:
       - name: Deploy the latest documentation
-        uses: pyansys/actions/doc-deploy-dev@v4
+        uses: ansys/actions/doc-deploy-dev@v4
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -435,7 +435,7 @@ jobs:
     needs: [release]
     steps:
       - name: Deploy the stable documentation
-        uses: pyansys/actions/doc-deploy-stable@v4
+        uses: ansys/actions/doc-deploy-stable@v4
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
           token: ${{ secrets.GITHUB_TOKEN }}

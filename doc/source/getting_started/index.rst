@@ -42,7 +42,7 @@ Install offline
 ---------------
 If you want to install PyMechanical on a computer without access to the internet,
 you can download a wheelhouse archive that corresponds to your
-machine architecture from the `Releases page <https://github.com/pyansys/pymechanical/releases>`_ 
+machine architecture from the `Releases page <https://github.com/ansys/pymechanical/releases>`_ 
 of the PyMechanical repository.
 
 Each wheelhouse archive contains all the Python wheels necessary to install

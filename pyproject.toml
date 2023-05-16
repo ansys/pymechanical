@@ -42,9 +42,9 @@ dependencies = [
 
 [project.urls]
 Documentation = "https://mechanical.docs.pyansys.com"
-Source = "https://github.com/pyansys/pymechanical"
-Homepage = "https://github.com/pyansys/pymechanical"
-Tracker = "https://github.com/pyansys/pymechanical/issues"
+Source = "https://github.com/ansys/pymechanical"
+Homepage = "https://github.com/ansys/pymechanical"
+Tracker = "https://github.com/ansys/pymechanical/issues"
 
 [project.optional-dependencies]
 tests = [
@@ -53,9 +53,9 @@ tests = [
     "pytest-print==0.3.1",
 ]
 doc = [
-    "Sphinx==6.2.0", # BLOCKED BY sphinx-design - Cannot upgrade to Sphinx 7 for now
-    "ansys-sphinx-theme==0.9.8",
-    "grpcio==1.54.0",
+    "Sphinx==6.2.1", # BLOCKED BY sphinx-design - Cannot upgrade to Sphinx 7 for now
+    "ansys-sphinx-theme==0.9.9",
+    "grpcio==1.54.2",
     "imageio-ffmpeg==0.4.8",
     "imageio==2.28.1",
     "jupyter_sphinx==0.4.0",

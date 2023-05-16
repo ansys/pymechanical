@@ -28,6 +28,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Fixed
 
+-   FIX: GitHub organization rename to Ansys
 -   FIX: not necessary anymore to update apt-get (#220)
 -   Include amd folder for mapdl solver in the docker image. (#200)
 -   Remove jscript references from tests/ folder (#205)
@@ -35,13 +36,13 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 -   FIX: run_python_script* return empty string for objects that cannot be returned as string (#224)
 -   call `new()` in the BUILDING_GALLERY constructor of `Ansys.Mechanical.Embedding.Application`. See (#229)
 
-## [0.7.3](https://github.com/pyansys/pymechanical/releases/tag/v0.7.3) - April 20 2023
+## [0.7.3](https://github.com/ansys/pymechanical/releases/tag/v0.7.3) - April 20 2023
 
 ### Changed
 
 -   Reuse instance of embedded application when building example gallery (#221)
 
-## [0.7.2](https://github.com/pyansys/pymechanical/releases/tag/v0.7.2) - April 13 2023
+## [0.7.2](https://github.com/ansys/pymechanical/releases/tag/v0.7.2) - April 13 2023
 
 ### Changed
 
@@ -56,6 +57,6 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 -   Remove references to unsupported legacy jscript APIs (#205)
 -   Clean up docker image (#206, #200)
 
-## [0.7.1](https://github.com/pyansys/pymechanical/releases/tag/v0.7.1) - April 10 2023
+## [0.7.1](https://github.com/ansys/pymechanical/releases/tag/v0.7.1) - April 10 2023
 
 First public release of PyMechanical

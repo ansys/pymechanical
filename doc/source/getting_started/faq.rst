@@ -10,11 +10,11 @@ How do you report issues?
 
 You can report issues with PyMechanical, such as bugs, feature requests,
 and documentation errors, on the PyMechanical repository's `Issues
-<https://github.com/pyansys/PyMechanical/issues>`_ page.
+<https://github.com/ansys/PyMechanical/issues>`_ page.
 
 If you want to ask more open-ended questions or are seeking advice
 from experts in the community, you can post on this repository's
-`Discussions <https://github.com/pyansys/PyMechanical/discussions>`_ page.
+`Discussions <https://github.com/ansys/PyMechanical/discussions>`_ page.
 
 
 How is PyMechanical positioned with respect to other related Ansys tools?
