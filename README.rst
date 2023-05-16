@@ -14,12 +14,12 @@ PyMechanical
    :target: https://pypi.org/project/ansys-mechanical-core
    :alt: PyPI
 
-.. |codecov| image:: https://codecov.io/gh/pyansys/pymechanical/branch/main/graph/badge.svg
-   :target: https://codecov.io/gh/pyansys/ansys-mechanical-core
+.. |codecov| image:: https://codecov.io/gh/ansys/pymechanical/branch/main/graph/badge.svg
+   :target: https://codecov.io/gh/ansys/ansys-mechanical-core
    :alt: Codecov
 
-.. |GH-CI| image:: https://github.com/pyansys/pymechanical/actions/workflows/ci_cd.yml/badge.svg
-   :target: https://github.com/pyansys/pymechanical/actions/workflows/ci_cd.yml
+.. |GH-CI| image:: https://github.com/ansys/pymechanical/actions/workflows/ci_cd.yml/badge.svg
+   :target: https://github.com/ansys/pymechanical/actions/workflows/ci_cd.yml
    :alt: GH-CI
 
 .. |MIT| image:: https://img.shields.io/badge/License-MIT-yellow.svg

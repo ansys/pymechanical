@@ -28,7 +28,7 @@ To install PyMechanical in developer mode, perform these steps:
 
    .. code:: bash
 
-      git clone https://github.com/pyansys/pymechanical
+      git clone https://github.com/ansys/pymechanical
 
 #. Access the ``pymechanical`` directory where the repository has been cloned:
 
@@ -194,7 +194,7 @@ the building requirements and then executing the build module:
 
 Post issues
 -----------
-Use the `PyMechanical Issues <https://github.com/pyansys/pymechanical/issues>`_
+Use the `PyMechanical Issues <https://github.com/ansys/pymechanical/issues>`_
 page to submit questions, report bugs, and request new features. When possible,
 use these templates:
 

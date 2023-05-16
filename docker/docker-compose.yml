@@ -52,7 +52,7 @@ services:
       - ANSYSLMD_LICENSE_FILE=${ANSYSLMD_LICENSE_FILE}
     ports:
       - '10000:10000'
-    image: 'ghcr.io/pyansys/pymechanical/mechanical:v23.1.0'
+    image: 'ghcr.io/ansys/pymechanical/mechanical:v23.1.0'
     user: "0:0"
     # entrypoint: "/bin/bash tini -- xvfb-run ./.workbench -dsapplet -AppModeMech -b -grpc 10000"
   

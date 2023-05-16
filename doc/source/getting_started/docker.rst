@@ -19,7 +19,7 @@ Running Mechanical in a containerized environment like Docker or `Apptainer <htt
 Install the Mechanical image
 -----------------------------
 There is a Docker image hosted in the `PyMechanical GitHub
-<https://github.com/pyansys/pymechanical/pkgs/container/pymechanical%2Fmechanical>`_ repository that you
+<https://github.com/ansys/pymechanical/pkgs/container/pymechanical%2Fmechanical>`_ repository that you
 can download using your GitHub credentials.
 
 Assuming that you have Docker installed, you can authorize Docker to access
@@ -57,7 +57,7 @@ Launch Mechanical with this code:
     LICENSE_SERVER=1055@XXX.XXX.XXX.XXX
     VERSION=v23.1.0
 
-    IMAGE=ghcr.io/pyansys/pymechanical/mechanical:$VERSION
+    IMAGE=ghcr.io/ansys/pymechanical/mechanical:$VERSION
     docker run -e ANSYSLMD_LICENSE_FILE=$LICENSE_SERVER -p ip:10000:10000 $IMAGE
 
 
@@ -106,7 +106,7 @@ to the Docker command. For example, this code shows how you pass feature flags:
 
 .. code::
 
-    IMAGE=ghcr.io/pyansys/pymechanical/mechanical:$VERSION
+    IMAGE=ghcr.io/ansys/pymechanical/mechanical:$VERSION
     docker run -e ANSYSLMD_LICENSE_FILE=$LICENSE_SERVER -p 10000:10000 $IMAGE -featureflags mechanical.material.import;
 
 For additional command line arguments, see the `Scripting in Mechanical Guide
