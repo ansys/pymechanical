@@ -24,8 +24,8 @@ Requirements
 
 * These files are provided:
   
-  * `Dockerfile <https://github.com/pyansys/pymechanical/tree/main/docker/231/Dockerfile>`_
-  * `.dockerignore <https://github.com/pyansys/pymechanical/tree/main/docker/231/.dockerignore>`_
+  * `Dockerfile <https://github.com/ansys/pymechanical/tree/main/docker/231/Dockerfile>`_
+  * `.dockerignore <https://github.com/ansys/pymechanical/tree/main/docker/231/.dockerignore>`_
 
 
 Procedure
@@ -111,10 +111,10 @@ Take note of the these paths:
 * ``path_to_mechanical_installation`` is the path to where you have locally installed Mechanical.
 
 Not all installation files are copied. In fact, the files ignored during the copying
-are described in the `.dockerignore file <https://github.com/pyansys/pymechanical/tree/main/docker/231/.dockerignore>`_.
+are described in the `.dockerignore file <https://github.com/ansys/pymechanical/tree/main/docker/231/.dockerignore>`_.
 
 The Docker container configuration needed to build the container is described in the
-`Dockerfile <https://github.com/pyansys/pymechanical/tree/main/docker/231/Dockerfile>`_.
+`Dockerfile <https://github.com/ansys/pymechanical/tree/main/docker/231/Dockerfile>`_.
 
 
 Summary

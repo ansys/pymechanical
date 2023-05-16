@@ -41,9 +41,9 @@ dependencies = [
 
 [project.urls]
 Documentation = "https://mechanical.docs.pyansys.com"
-Source = "https://github.com/pyansys/pymechanical"
-Homepage = "https://github.com/pyansys/pymechanical"
-Tracker = "https://github.com/pyansys/pymechanical/issues"
+Source = "https://github.com/ansys/pymechanical"
+Homepage = "https://github.com/ansys/pymechanical"
+Tracker = "https://github.com/ansys/pymechanical/issues"
 
 [project.optional-dependencies]
 tests = [
