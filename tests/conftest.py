@@ -168,7 +168,7 @@ def test_env():
     subprocess.run([sys.executable, "-m", "venv", venv_dir], env=env_copy)
     print(f"created virtual environment in {venv_dir}")
 
-     # Upgrade pip
+    # Upgrade pip
     cmdline = [test_env_object.python, "-m", "pip", "install", "-U", "pip"]
     subprocess.check_call(cmdline, env=test_env_object.env)
 
