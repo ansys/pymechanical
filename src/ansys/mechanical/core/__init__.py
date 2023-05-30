@@ -5,6 +5,15 @@ import os
 from ansys.tools.path import find_mechanical
 import appdirs
 
+# Setup data directory
+USER_DATA_PATH = appdirs.user_data_dir(appname="ansys_mechanical_core", appauthor="Ansys")
+if not os.path.exists(USER_DATA_PATH):
+    os.makedirs(USER_DATA_PATH)
+
+EXAMPLES_PATH = os.path.join(USER_DATA_PATH, "examples")
+if not os.path.exists(EXAMPLES_PATH):
+    os.makedirs(EXAMPLES_PATH)
+
 from ansys.mechanical.core.logging import Logger
 
 # Create logger for package level use
@@ -35,16 +44,3 @@ LOCAL_PORTS = []
 from ansys.mechanical.core.pool import LocalMechanicalPool
 
 BUILDING_GALLERY = False
-
-# Setup data directory
-try:
-    USER_DATA_PATH = appdirs.user_data_dir("ansys_mechanical_core")
-    if not os.path.exists(USER_DATA_PATH):
-        os.makedirs(USER_DATA_PATH)
-
-    EXAMPLES_PATH = os.path.join(USER_DATA_PATH, "examples")
-    if not os.path.exists(EXAMPLES_PATH):
-        os.makedirs(EXAMPLES_PATH)
-
-except Exception:
-    pass

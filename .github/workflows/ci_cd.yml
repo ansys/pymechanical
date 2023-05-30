@@ -12,8 +12,8 @@ on:
 env:
   PYMECHANICAL_PORT: 10000  # default won't work on GitHub runners
   PYMECHANICAL_START_INSTANCE: FALSE
-  DOCKER_PACKAGE: ghcr.io/ansys/pymechanical/mechanical
-  DOCKER_IMAGE_VERSION: v23.1.0
+  DOCKER_PACKAGE: ghcr.io/ansys/mechanical
+  DOCKER_IMAGE_VERSION: 23.1.0
   DOCKER_MECH_CONTAINER_NAME: mechanical
   MAIN_PYTHON_VERSION: '3.10'
   PACKAGE_NAME: ansys-mechanical-core
@@ -76,11 +76,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        mechanical-version: ['v23.1.0']
+        mechanical-version: ['23.1.0']
         experimental: [false]
         # The following versions would be allowed to fail
         include:
-          - mechanical-version: 'v23.2.0'
+          - mechanical-version: '23.2.0'
             experimental: true
     steps:
       - name: Login in Github Container registry
@@ -144,7 +144,7 @@ jobs:
     name: Embedding testing and coverage
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/ansys/pymechanical/mechanical:v23.2.0
+      image: ghcr.io/ansys/mechanical:23.2.0
       options: --entrypoint /bin/bash
     needs: [smoke-tests]
     strategy:
@@ -208,7 +208,7 @@ jobs:
     name: Launch testing and coverage
     runs-on: public-ubuntu-latest-8-cores
     container:
-      image: ghcr.io/ansys/pymechanical/mechanical:v23.2.0
+      image: ghcr.io/ansys/mechanical:23.2.0
       options: --entrypoint /bin/bash
     needs: [ smoke-tests ]
     strategy:
