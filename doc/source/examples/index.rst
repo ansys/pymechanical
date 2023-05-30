@@ -14,6 +14,18 @@ Here is a series of examples using Mechanical with the ``ansys-mechanical-core``
 .. include:: gallery_examples/index.rst
    :start-line: 2
 
+.. === REMOTE SESSIONS EXAMPLES ===
+
+.. toctree::
+    :hidden:
+    :maxdepth: 3
+
+    Remote Sessions <https://examples.mechanical.docs.pyansys.com/index.html>
+
+
+.. include:: pymechanical_examples_repo/index.rst
+   :start-line: 2
+
 .. === EMBEDDING EXAMPLES ===
 
 .. toctree::

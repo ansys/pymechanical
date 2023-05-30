@@ -18,7 +18,6 @@ import ansys.api.mechanical.v0.mechanical_pb2 as mechanical_pb2
 import ansys.api.mechanical.v0.mechanical_pb2_grpc as mechanical_pb2_grpc
 import ansys.platform.instancemanagement as pypim
 from ansys.platform.instancemanagement import Instance
-import appdirs
 import grpc
 
 import ansys.mechanical.core as pymechanical
@@ -93,7 +92,7 @@ def suppress_logging(func):
     return wrapper
 
 
-SETTINGS_DIR = appdirs.user_data_dir("ansys_mechanical_core")
+SETTINGS_DIR = pymechanical.USER_DATA_PATH
 LOG.info(f"ansys_mechanical_core settings directory: {SETTINGS_DIR}")
 
 if not os.path.isdir(SETTINGS_DIR):

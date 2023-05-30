@@ -33,7 +33,7 @@ version: '3.3'
 
 services:
   license_server:
-    image: 'ghcr.io/pyansys/ansyslm:latest'
+    image: 'ghcr.io/ansys/ansyslm:latest'
     ports:
       - '1055:1055'
       - '2325:2325'
