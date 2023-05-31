@@ -52,7 +52,7 @@ def pytest_collection_modifyitems(config, items):
     if keywordexpr or markexpr:
         return  # command line has a -k or -m, let pytest handle it
 
-    # skip embedding tests unless the mark is specifiedskip_python_env
+    # skip embedding tests unless the mark is specified
     skip_embedding = pytest.mark.skip(
         reason="embedding not selected for pytest run (`pytest -m embedding`).  Skip by default"
     )
@@ -166,7 +166,7 @@ def test_env():
 
     # Create virtual environment
     subprocess.run([sys.executable, "-m", "venv", venv_dir], env=env_copy)
-    print(f"created virtual environment in {venv_dir}")
+    # print(f"created virtual environment in {venv_dir}")
 
     # Upgrade pip
     cmdline = [test_env_object.python, "-m", "pip", "install", "-U", "pip"]
@@ -174,9 +174,9 @@ def test_env():
 
     yield test_env_object
 
-    print(f"\ndeleting virtual environment in {venv_dir}")
+    # print(f"\ndeleting virtual environment in {venv_dir}")
     shutil.rmtree(venv_dir)
-    print(f"deleted virtual environment in {venv_dir}\n")
+    # print(f"deleted virtual environment in {venv_dir}\n")
 
 
 def launch_mechanical_instance(cleanup_on_exit=False):
