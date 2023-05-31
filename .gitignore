@@ -198,3 +198,6 @@ doc/source/examples/gallery_examples/*/*.pickle
 doc/source/examples/gallery_examples/**/*.png
 
 
+# pymechanical-specific
+mylocal.ip
+pymechanical_log.txt
