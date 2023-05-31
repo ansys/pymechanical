@@ -52,7 +52,8 @@ def _get_default_version() -> int:
         _, version = atp.find_mechanical(
             supported_versions=SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS
         )
-        return version
+        # version is of the form 23.2
+        return int(str(version).replace(".", ""))
 
     # On linux, embedding is only possible by setting environment variables before starting python.
     # The version will then be fixed  to a specific version, based on those env vars.
