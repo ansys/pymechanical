@@ -1,6 +1,10 @@
 import datetime
 import os
+import pathlib
 import platform
+import shutil
+import subprocess
+import sys
 
 import pytest
 
@@ -19,6 +23,7 @@ from ansys.mechanical.core.misc import get_mechanical_bin
 # pytest -q --collect-only -m "remote_session_launch and not remote_session_connect"
 # pytest -q --collect-only -m "not remote_session_launch and remote_session_connect"
 # pytest -m "remote_session_launch or remote_session_connect or embedding"
+# pytest -m "embedding and not python_env"
 
 # Check if Mechanical is installed
 # NOTE: checks in this order to get the newest installed version
@@ -46,10 +51,18 @@ def pytest_collection_modifyitems(config, items):
     markexpr = config.option.markexpr
     if keywordexpr or markexpr:
         return  # command line has a -k or -m, let pytest handle it
+
+    # skip embedding tests unless the mark is specified
     skip_embedding = pytest.mark.skip(
         reason="embedding not selected for pytest run (`pytest -m embedding`).  Skip by default"
     )
     [item.add_marker(skip_embedding) for item in items if "embedding" in item.keywords]
+
+    # TODO - skip python_env tests unless the mark is specified. (The below doesn't work!)
+    # skip_python_env = pytest.mark.skip(
+    #     reason="python_env not selected for pytest run (`pytest -m python_env`).  Skip by default"
+    # )
+    # [item.add_marker(skip_python_env) for item in items if "python_env" in item.keywords]
 
 
 @pytest.fixture()
@@ -117,6 +130,53 @@ def mke_app_reset(request):
     if terminal_reporter is not None:
         terminal_reporter.write_line(f"starting test {request.function.__name__} - file new")
     EMBEDDED_APP.new()
+
+
+@pytest.fixture()
+def test_env():
+    """Create a virtual environment scoped to the test"""
+    venv_name = "test_env"
+
+    base = pathlib.Path(__file__).parent
+
+    if "win" in sys.platform:
+        exe_dir = "Scripts"
+        exe_name = "python.exe"
+    else:
+        exe_dir = "bin"
+        exe_name = "python"
+
+    venv_dir = os.path.join(base, "." + venv_name)
+    venv_bin = os.path.join(venv_dir, exe_dir)
+
+    # Set up path to use the virtual environment
+    env_copy = os.environ.copy()
+    env_copy["PATH"] = venv_bin + os.pathsep + os.environ.get("PATH", "")
+
+    # object describing the python environment
+    class TestEnv:
+        # environment variable needed to run inside the environment
+        env = env_copy
+        # python executable inside the environment
+        python = os.path.join(venv_bin, exe_name)
+        # for convenience - the root directory of the pymechanical git repo
+        pymechanical_root = base.parent
+
+    test_env_object = TestEnv()
+
+    # Create virtual environment
+    subprocess.run([sys.executable, "-m", "venv", venv_dir], env=env_copy)
+    # print(f"created virtual environment in {venv_dir}")
+
+    # Upgrade pip
+    cmdline = [test_env_object.python, "-m", "pip", "install", "-U", "pip"]
+    subprocess.check_call(cmdline, env=test_env_object.env)
+
+    yield test_env_object
+
+    # print(f"\ndeleting virtual environment in {venv_dir}")
+    shutil.rmtree(venv_dir)
+    # print(f"deleted virtual environment in {venv_dir}\n")
 
 
 def launch_mechanical_instance(cleanup_on_exit=False):
