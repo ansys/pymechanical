@@ -2,7 +2,6 @@
 import os
 import shutil
 import subprocess
-import sys
 import tempfile
 
 import pytest
@@ -57,57 +56,35 @@ def test_app_version(embedded_app):
 
 
 @pytest.mark.embedding
-def test_warning_message():
-    """Test pythonnet warning of the embedded instance."""
-    venv_name = "pythonnetvenv"
-    base = os.getcwd()
+@pytest.mark.python_env
+def test_warning_message(test_env):
+    """Test pythonnet warning of the embedded instance, using a test-scoped python environment."""
 
-    if "win" in sys.platform:
-        exe_dir = "Scripts"
-    else:
-        exe_dir = "bin"
-
-    venv_bin = os.path.join(base, "." + venv_name, exe_dir)
-
-    # Set up path to use the virtual environment
-    original_path = os.environ["PATH"]
-    os.environ["PATH"] = venv_bin + os.pathsep + os.environ.get("PATH", "")
-
-    # Create virtual environment
-    subprocess.run([sys.executable, "-m", "venv", "." + venv_name])
-
-    # Upgrade pip
-    upgrade_pip = subprocess.Popen(
-        [os.path.join(venv_bin, "python"), "-m", "pip", "install", "-U", "pip"]
+    # Install pymechanical
+    subprocess.check_call(
+        [test_env.python, "-m", "pip", "install", "-e", "."],
+        cwd=test_env.pymechanical_root,
+        env=test_env.env,
     )
-    upgrade_pip.wait()
-
-    # Install tests
-    install_tests = subprocess.Popen([os.path.join(venv_bin, "pip"), "install", "-e", ".[tests]"])
-    install_tests.wait()
 
     # Install pythonnet
-    install_pythonnet = subprocess.Popen([os.path.join(venv_bin, "pip"), "install", "pythonnet"])
-    install_pythonnet.wait()
+    subprocess.check_call([test_env.python, "-m", "pip", "install", "pythonnet"], env=test_env.env)
 
     # Run embedded instance in virtual env with pythonnet installed
-    embedded_py = os.path.join(base, "tests", "scripts", "run_embedded_app.py")
+    embedded_py = os.path.join(
+        test_env.pymechanical_root, "tests", "scripts", "run_embedded_app.py"
+    )
     check_warning = subprocess.Popen(
-        [os.path.join(venv_bin, "python"), embedded_py], stderr=subprocess.PIPE
+        [test_env.python, embedded_py],
+        stderr=subprocess.PIPE,
+        env=test_env.env,
     )
     check_warning.wait()
-    stderr_output = check_warning.stderr.read().decode()
+    stderr = check_warning.stderr.read().decode()
 
     # If UserWarning & pythonnet are in the stderr output, set warning to True.
     # Otherwise, set warning to False
-    warning = True if "UserWarning" and "pythonnet" in stderr_output else False
+    warning = True if "UserWarning" and "pythonnet" in stderr else False
 
     # Assert warning message appears for embedded app
-    assert warning
-
-    # Remove virtual environment
-    venv_dir = os.path.join(base, "." + venv_name)
-    shutil.rmtree(venv_dir)
-
-    # Set PATH back to what it was originally
-    os.environ["PATH"] = original_path
+    assert warning, "UserWarning should appear in the output of the script"
