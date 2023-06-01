@@ -5,13 +5,13 @@ import time
 import warnings
 
 import ansys.platform.instancemanagement as pypim
+from ansys.tools.path import version_from_path
 
 from ansys.mechanical.core.errors import VersionError
 from ansys.mechanical.core.mechanical import (
     _HAS_TQDM,
     LOG,
     MECHANICAL_DEFAULT_PORT,
-    _version_from_path,
     get_mechanical_path,
     launch_mechanical,
     port_in_use,
@@ -169,7 +169,7 @@ class LocalMechanicalPool:
                     )
 
         if not self._remote:  # pragma: no cover
-            if _version_from_path(exec_file) < 231:
+            if version_from_path("mechanical", exec_file) < 231:
                 raise VersionError("A local Mechanical pool requires Mechanical 2023 R1 or later.")
 
         ports = None

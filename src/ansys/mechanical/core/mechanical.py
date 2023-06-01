@@ -7,17 +7,16 @@ from functools import wraps
 import glob
 import os
 import pathlib
-import re
 import socket
 import threading
 import time
-import warnings
 import weakref
 
 import ansys.api.mechanical.v0.mechanical_pb2 as mechanical_pb2
 import ansys.api.mechanical.v0.mechanical_pb2_grpc as mechanical_pb2_grpc
 import ansys.platform.instancemanagement as pypim
 from ansys.platform.instancemanagement import Instance
+import ansys.tools.path as atp
 import grpc
 
 import ansys.mechanical.core as pymechanical
@@ -33,8 +32,6 @@ from ansys.mechanical.core.misc import (
     check_valid_ip,
     check_valid_port,
     check_valid_start_instance,
-    is_float,
-    is_windows,
     threaded,
 )
 
@@ -92,19 +89,6 @@ def suppress_logging(func):
     return wrapper
 
 
-SETTINGS_DIR = pymechanical.USER_DATA_PATH
-LOG.info(f"ansys_mechanical_core settings directory: {SETTINGS_DIR}")
-
-if not os.path.isdir(SETTINGS_DIR):
-    try:
-        os.makedirs(SETTINGS_DIR)
-    except OSError:  # pragma: no cover
-        warnings.warn(
-            "Unable to create settings directory.\n"
-            "Will be unable to cache Mechanical executable location."
-        )
-
-CONFIG_FILE = os.path.join(SETTINGS_DIR, "config.txt")
 LOCALHOST = "127.0.0.1"
 MECHANICAL_DEFAULT_PORT = 10000
 
@@ -122,33 +106,6 @@ def _cleanup_gallery_instance():  # pragma: no cover
 
 
 atexit.register(_cleanup_gallery_instance)
-
-
-def _version_from_path(path):
-    """Extract the Mechanical version from a path.
-
-    Generally, the version of Mechanical is contained in the path:
-
-    - On Windows, for example: ``C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe``
-    - On Linux, for example: ``/usr/ansys_inc/v231/aisol/.workbench``
-
-    Parameters
-    ----------
-    path : str
-        Path to the Mechanical executable file.
-
-    Returns
-    -------
-    int
-        Integer version number (for example, 231).
-
-    """
-    # expect v<ver>/ansys
-    # replace \\ with / to account for possible windows path
-    matches = re.findall(r"v(\d\d\d)", path.replace("\\", "/"), re.IGNORECASE)
-    if not matches:
-        raise RuntimeError(f"Unable to extract Mechanical version from {path}.")
-    return int(matches[-1])
 
 
 def port_in_use(port, host=LOCALHOST):
@@ -232,291 +189,50 @@ def create_ip_file(ip, path):
         f.write(ip)
 
 
-def _get_available_base_mechanical():
-    r"""Get a dictionary of available Mechanical versions with their base paths.
-
-    Returns
-    -------
-        Paths for Mechanical versions installed on Windows.
-
-    Examples
-    --------
-    On Windows:
-
-    >>> _get_available_base_mechanical()
-    >>> {231: 'C:\\Program Files\\ANSYS Inc\\v231'}
-
-    On Linux:
-
-    >>> _get_available_base_mechanical()
-    >>> {231: '/usr/ansys_inc/v231'}
-    """
-    base_path = None
-    if is_windows():
-        supported_versions = [232, 231]
-        awp_roots = {ver: os.environ.get(f"AWP_ROOT{ver}", "") for ver in supported_versions}
-        installed_versions = {
-            ver: path for ver, path in awp_roots.items() if path and os.path.isdir(path)
-        }
-        if installed_versions:
-            return installed_versions
-        else:
-            base_path = os.path.join(os.environ["PROGRAMFILES"], "ANSYS Inc")
-    else:
-        for path in ["/usr/ansys_inc", "/ansys_inc", "/install/ansys_inc"]:
-            if os.path.isdir(path):
-                base_path = path
-
-    if base_path is None:
-        return {}
-
-    paths = glob.glob(os.path.join(base_path, "v*"))
-
-    if not paths:
-        return {}
-
-    ansys_paths = {}
-    for path in paths:
-        ver_str = path[-3:]
-        if is_float(ver_str):
-            ansys_paths[int(ver_str)] = path
-
-    return ansys_paths
-
-
-def find_mechanical():
-    """
-    Search for the Mechanical path in the standard installation location.
-
-    Returns
-    -------
-    mechanical_path : str
-        Full path to the executable file for the latest Mechanical version.
-    version : float
-        Version in the float format. For example, ``23.1`` for 2023 R1.
-
-    Examples
-    --------
-    On Windows:
-
-    >>> from ansys.mechanical.core.mechanical import find_mechanical
-    >>> find_mechanical()
-    'C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe', 23.1
-
-    On Linux:
-
-    >>> find_mechanical()
-    (/usr/ansys_inc/v231/aisol/.workbench, 23.1)
-    """
-    versions = _get_available_base_mechanical()
-    if not versions:
-        return "", ""
-    version = max(versions.keys())
-    ans_path = versions[version]
-    if is_windows():
-        mechanical_bin = os.path.join(ans_path, "aisol", "bin", "winx64", f"AnsysWBU.exe")
-    else:
-        mechanical_bin = os.path.join(ans_path, "aisol", ".workbench")
-    return mechanical_bin, version / 10
-
-
 def get_mechanical_path(allow_input=True):
-    """Get the Mechanical path from a cached file or from user input."""
-    exe_loc = None
-    if os.path.isfile(CONFIG_FILE):
-        with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-            exe_loc = f.read()
-        # verify
-        if not os.path.isfile(exe_loc) and allow_input:
-            exe_loc = save_mechanical_path()
-    elif allow_input:  # create configuration file
-        exe_loc = save_mechanical_path()
-    if exe_loc is None:
-        exe_loc = find_mechanical()[0]
-        if not exe_loc:
-            exe_loc = None
+    """Get path.
 
-    return exe_loc
+    Deprecated - use `ansys.tools.path.get_mechanical_path` instead
+    """
+    return atp.get_mechanical_path(allow_input)
 
 
 def check_valid_mechanical():
-    """Check if a valid version of Mechanical is installed and preconfigured."""
-    mechanical_bin = get_mechanical_path(allow_input=False)
-    if mechanical_bin is not None:
-        version = _version_from_path(mechanical_bin)
-        return not (version < 231 and os.name != "posix")
-    return False
+    """Change to see if the default Mechanical path is valid.
 
+    Example (windows)
+    -----------------
 
-def change_default_mechanical_path(exe_loc):
-    """Change your default Mechanical path.
-
-    Parameters
-    ----------
-    exe_loc : str
-        Full path for the Mechanical executable file to use.
-
-    Examples
-    --------
-    On Windows:
-
-    >>> mechanical_pth = 'C:/Program Files/ANSYS Inc/v231/aisol/bin/win64/AnsysWBU.exe'
-    >>> mechanical.change_default_mechanical_path(mechanical_pth)
+    >>> from ansys.mechanical.core import mechanical
+    >>> from ansys.tools.path import change_default_mechanical_path
+    >>> mechanical_path = 'C:/Program Files/ANSYS Inc/v231/aisol/bin/win64/AnsysWBU.exe'
+    >>> change_default_mechanical_path(mechanical_pth)
     >>> mechanical.check_valid_mechanical()
     True
 
-    On Linux:
-
-    >>> from ansys.mechanical.core import mechanical
-    >>> mechanical.change_default_mechanical_path('/ansys_inc/v231/aisol/.workbench')
-    >>> mechanical.get_mechanical_path()
-    '/ansys_inc/v231/aisol/.workbench'
 
     """
-    if os.path.isfile(exe_loc):
-        with open(CONFIG_FILE, "w", encoding="utf-8") as f:
-            f.write(exe_loc)
-    else:
-        raise FileNotFoundError("File %s is invalid or does not exist" % exe_loc)
+    mechanical_path = atp.get_mechanical_path(False)
+    if mechanical_path == None:
+        return False
+    mechanical_version = atp.version_from_path("mechanical", mechanical_path)
+    return not (mechanical_version < 231 and os.name != "posix")
+
+
+def change_default_mechanical_path(exe_loc):
+    """Change default path.
+
+    Deprecated - use `ansys.tools.path.change_default_mechanical_path` instead.
+    """
+    return atp.change_default_mechanical_path(exe_loc)
 
 
 def save_mechanical_path(exe_loc=None):  # pragma: no cover
-    """Find the Mechanical path or query user.
+    """Save path.
 
-    Parameters
-    ----------
-    exe_loc : string, optional
-        Path for the Mechanical executable file (``AnsysWBU.exe``).
-        The default is ``None``, in which case an attempt is made to
-        obtain the path from the following sources in this order:
-
-        - The default Mechanical paths (for example,
-          ``C:/Program Files/Ansys Inc/vXXX/aiso/bin/AnsysWBU.exe``)
-        - The configuration file
-        - User input
-
-        If a path is supplied, this method performs some checks. If the
-        checks are aresuccessful, it writes this path to the configuration
-        file.
-
-    Returns
-    -------
-    str
-        Path for the Mechanical executable file.
-
-    Notes
-    -----
-    The location of the configuration file (``config.txt``) can be found in
-    ``appdirs.user_data_dir("ansys_mechanical_core")``. For example:
-
-    .. code:: pycon
-
-        >>> import appdirs
-        >>> import os
-        >>> print(os.path.join(appdirs.user_data_dir("ansys_mechanical_core"), "config.txt"))
-        C:/Users/[username]]/AppData/Local/ansys_mechanical_core/ansys_mechanical_core/config.txt
-
-    You can change the default for the ``exe_loc`` parameter either by modifying the
-    ``config.txt`` file or by running this code:
-
-    .. code:: pycon
-
-       >>> from ansys.mechanical.core.mechanical import save_mechanical_path
-       >>> save_mechanical_path("/new/path/to/executable")
-
+    Deprecated - use `ansys.tools.path.save_mechanical_path` instead.
     """
-    if exe_loc is None:
-        exe_loc, _ = find_mechanical()
-
-    if is_valid_executable_path(exe_loc):  # pragma: not cover
-        if not is_common_executable_path(exe_loc):
-            warn_uncommon_executable_path(exe_loc)
-
-        change_default_mechanical_path(exe_loc)
-        return exe_loc
-
-    if exe_loc is not None:
-        if is_valid_executable_path(exe_loc):
-            return exe_loc  # pragma: no cover
-
-    # otherwise, query user for the location
-    print("Cached Mechanical executable file is not found.")
-    print(
-        "You are about to enter manually the path of the Mechanical executable file "
-        "(.workbench). This file is very likely contained in the path ending in "
-        "'vXXX/aisol/.workbench', but it is not required.\n \nIf you experience problems "
-        "with the input path, you can overwrite the configuration file with this code:\n"
-        ">>> from ansys.mechanical.core.mechanical import save_mechanical_path\n"
-        ">>> save_mechanical_path('/new/path/to/executable/')\n"
-    )
-    need_path = True
-    while need_path:  # pragma: no cover
-        exe_loc = input("Enter the location of an Mechanical executable file (.workbench):")
-
-        if is_valid_executable_path(exe_loc):
-            if not is_common_executable_path(exe_loc):
-                warn_uncommon_executable_path(exe_loc)
-            with open(CONFIG_FILE, "w", encoding="utf-8") as f:
-                f.write(exe_loc)
-            need_path = False
-        else:
-            print("The supplied path is either invalid or does not " "match the '.workbench' name.")
-
-    return exe_loc
-
-
-def is_valid_executable_path(exe_loc):  # pragma: no cover
-    """Check whether the given location for the Mechanical executable file is valid."""
-    if is_windows():
-        return (
-            os.path.isfile(exe_loc)
-            and re.search("AnsysWBU.exe", os.path.basename(os.path.normpath(exe_loc))) is not None
-        )
-    return (
-        os.path.isfile(exe_loc)
-        and re.search(".workbench", os.path.basename(os.path.normpath(exe_loc))) is not None
-    )
-
-
-def is_common_executable_path(exe_loc):  # pragma: no cover
-    """Check whether the give location for the Mechanical executable file is valid."""
-    path = os.path.normpath(exe_loc)
-    path = path.split(os.sep)
-
-    is_valid_path = is_valid_executable_path(exe_loc)
-
-    if is_windows():
-        return (
-            is_valid_path
-            and re.search(r"v\d\d\d", exe_loc)
-            and "aisol" in path
-            and "bin" in path
-            and "winx64" in path
-            and "AnsysWBU.exe" in path
-        )
-
-    return (
-        is_valid_path
-        and re.search(r"v\d\d\d", exe_loc)
-        and "aisol" in path
-        and ".workbench" in path
-    )
-
-
-def warn_uncommon_executable_path(exe_loc):  # pragma: no cover
-    """Display warning if the location is wrong for the Mechanical executable file."""
-    if is_windows():
-        warnings.warn(
-            f"The supplied path ('{exe_loc}') does not match the usual Mechanical "
-            f"executable path style ('directory/vXXX/aisol/bin/winx64/AnsysWBU.exe'). "
-            "You might have problems at later use."
-        )
-    else:
-        warnings.warn(
-            f"The supplied path ('{exe_loc}') does not match the usual Mechanical "
-            f"executable path style ('directory/vXXX/aisol/.workbench'). "
-            "You might have problems at later use."
-        )
+    return atp.save_mechanical_path(exe_loc)
 
 
 client_to_server_loglevel = {
@@ -2167,7 +1883,7 @@ def launch_grpc(
 
     """
     # verify version
-    if _version_from_path(exec_file) < 231:
+    if atp.version_from_path("mechanical", exec_file) < 231:
         raise VersionError("The Mechanical gRPC interface requires Mechanical 2023 R1 or later.")
 
     # get the next available port
@@ -2226,6 +1942,7 @@ def launch_remote_mechanical(version=None) -> (grpc.Channel, Instance):  # pragm
 
 
 def launch_mechanical(
+    allow_input=True,
     exec_file=None,
     batch=True,
     loglevel="ERROR",
@@ -2247,6 +1964,9 @@ def launch_mechanical(
 
     Parameters
     ----------
+    allow_input: bool, optional
+        Whether to allow user input when discovering the path to the Mechanical
+        executable file.
     exec_file : str, optional
         Path for the Mechanical executable file. The default is ``None``,
         in which case the cached location is used. If PyPIM is configured
@@ -2452,7 +2172,7 @@ def launch_mechanical(
 
     # verify executable
     if exec_file is None:
-        exec_file = get_mechanical_path()
+        exec_file = get_mechanical_path(allow_input)
         if exec_file is None:  # pragma: no cover
             raise FileNotFoundError(
                 "Path to the Mechanical executable file is invalid or cache cannot be loaded. "

@@ -36,3 +36,4 @@ with a Mechanical gRPC server.
    pool
    logging
    mechanical
+   path

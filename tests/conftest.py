@@ -6,6 +6,7 @@ import shutil
 import subprocess
 import sys
 
+import ansys.tools.path
 import pytest
 
 import ansys.mechanical.core as pymechanical
@@ -182,6 +183,7 @@ def test_env():
 def launch_mechanical_instance(cleanup_on_exit=False):
     print("launching mechanical instance")
     return pymechanical.launch_mechanical(
+        allow_input=False,
         verbose_mechanical=True,
         cleanup_on_exit=cleanup_on_exit,
         log_mechanical="pymechanical_log.txt",
@@ -262,7 +264,7 @@ def mechanical_pool():
     if not pymechanical.mechanical.get_start_instance():
         return None
 
-    path, version = pymechanical.find_mechanical()
+    path, version = ansys.tools.path.find_mechanical()
 
     exec_file = path
     instances_count = 2

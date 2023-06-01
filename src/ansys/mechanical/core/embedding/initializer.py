@@ -5,10 +5,13 @@ from pathlib import Path
 import sys
 import warnings
 
+import ansys.tools.path as atp
+
 from ansys.mechanical.core.embedding.loader import load_clr
 from ansys.mechanical.core.embedding.resolver import resolve
 
 INITIALIZED_VERSION = None
+SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS = {241: "2024R1", 232: "2023R2", 231: "2023R1"}
 
 
 def __add_sys_path(version) -> str:
@@ -27,13 +30,54 @@ def __disable_sec() -> None:
     os.environ["ANSYS_MECHANICAL_EMBEDDING_NO_SEC"] = "1"
 
 
-def initialize(version):
+def _get_default_linux_version() -> int:
+    """Try to get the active linux version from the environment.
+
+    On linux, embedding is only possible by setting environment variables before starting python.
+    The version will then be fixed  to a specific version, based on those env vars.
+    The documented way to set those variables is to run python using the .workbench_lite script,
+    which is distributed with the unified installer.
+    That script doesn't quite set an env var to the version number, like 232, however it does set
+    the env var AWP_ROOT{version} to some path. So here, we can search for which of those env
+    vars are set assuming that the user did not set any others.
+    To overcome this, if multiple are set, the user should set the version number in the
+    constructor of the app, like app(version=232)
+    """
+    supported_versions = [232, 241]
+    awp_roots = {ver: os.environ.get(f"AWP_ROOT{ver}", "") for ver in supported_versions}
+    installed_versions = {
+        ver: path for ver, path in awp_roots.items() if path and os.path.isdir(path)
+    }
+    assert len(installed_versions) == 1, "multiple AWP_ROOT environment variables found!"
+    return next(iter(installed_versions))
+
+
+def _get_default_version() -> int:
+    if os.name == "posix":
+        return _get_default_linux_version()
+
+    if os.name != "nt":  # pragma: no cover
+        raise Exception("Unexpected platform!")
+
+    _, version = atp.find_mechanical(
+        supported_versions=SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS
+    )
+
+    # version is of the form 23.2
+    int_version = int(str(version).replace(".", ""))
+    return int_version
+
+
+def initialize(version=None):
     """Initialize Mechanical embedding."""
     global INITIALIZED_VERSION
     if INITIALIZED_VERSION != None:
         assert INITIALIZED_VERSION == version
         return
     INITIALIZED_VERSION = version
+
+    if version == None:
+        version = _get_default_version()
 
     __disable_sec()
 
@@ -57,3 +101,5 @@ def initialize(version):
 
     # attach the resolver
     resolve(version)
+
+    return version

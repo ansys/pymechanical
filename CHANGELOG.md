@@ -16,6 +16,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Changed
 
+-   Use ansys-tools-path (#231)
 -   Bump sphinx-design from 0.3.0 to 0.4.1 (#219)
 -   Bump sphinx-copybutton from 0.5.1 to 0.5.2 (#218)
 -   Bump sphinx-gallery from 0.12.2 to 0.13.0 (#217)

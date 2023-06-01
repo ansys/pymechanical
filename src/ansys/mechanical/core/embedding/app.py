@@ -1,33 +1,9 @@
 """Main application class for embedded Mechanical."""
 import atexit
 import os
-import typing
 
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.config import Configuration, configure
-
-
-def _get_available_versions() -> typing.Dict[int, str]:
-    supported_versions = [222, 231, 232]
-    if os.name == "nt":  # pragma: no cover
-        supported_versions = [222, 231, 232]
-        awp_roots = {ver: os.environ.get(f"AWP_ROOT{ver}", "") for ver in supported_versions}
-        installed_versions = {
-            ver: path for ver, path in awp_roots.items() if path and os.path.isdir(path)
-        }
-        return installed_versions
-    else:
-        # TODO - this assumes the env var is set.
-        return {232: os.environ["AWP_ROOT232"]}
-
-
-def _get_default_version() -> int:
-    vers = _get_available_versions()
-    if not vers:  # pragma: no cover
-        raise Exception(
-            "Appropriate version of Ansys Mechanical is not installed. Must be at least v222"
-        )
-    return max(vers.keys())
 
 
 def _get_default_configuration() -> Configuration:
@@ -67,10 +43,8 @@ class App:
                 return
         if len(INSTANCES) > 0:
             raise Exception("Cannot have more than one embedded mechanical instance")
-        self._version = kwargs.get("version")
-        if self._version == None:
-            self._version = _get_default_version()
-        initializer.initialize(self._version)
+        version = kwargs.get("version")
+        self._version = initializer.initialize(version)
         import clr
 
         clr.AddReference("Ansys.Mechanical.Embedding")
