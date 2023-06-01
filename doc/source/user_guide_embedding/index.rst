@@ -54,8 +54,7 @@ Running PyMechanical embedding scripts inside Mechanical with IronPython
 ------------------------------------------------------------------------
 If your PyMechanical embedding script does not use any other third-party Python package, such as `NumPy`,
 it is possible to adapt it so that it can run inside of Mechanical with IronPython. With scripting inside
-Mechanical
-command line. For instance, the following script:
+Mechanical's command line interface. For instance, the following script:
 
 .. code:: python
 
