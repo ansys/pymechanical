@@ -17,7 +17,7 @@ from ansys.mechanical.core.embedding.logger import sinks
 
 def _get_dll():
     installdir = os.environ[f"AWP_ROOT{initializer.INITIALIZED_VERSION}"]
-    dll = ctypes.CDLL(os.path.join(installdir, 'aisol/dll/linx64/libAns.Common.WBLogger.so'))
+    dll = ctypes.CDLL(os.path.join(installdir, "aisol/dll/linx64/libAns.Common.WBLogger.so"))
 
     dll.wb_logger_enable_sink.argtypes = [ctypes.c_int32]
 
@@ -42,7 +42,7 @@ def _get_sink_id(standard_sink_type: int) -> ctypes.c_int32:
     """Convert standard sink type to sink id."""
     return {
         sinks.StandardSinks.STANDARD_LOG_FILE: ctypes.c_int32(1),
-        sinks.StandardSinks.CONSOLE: ctypes.c_int32(2)
+        sinks.StandardSinks.CONSOLE: ctypes.c_int32(2),
     }[standard_sink_type]
 
 

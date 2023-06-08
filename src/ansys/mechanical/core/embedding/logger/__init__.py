@@ -31,13 +31,15 @@ import os
 import typing
 
 from ansys.mechanical.core.embedding import initializer
-from ansys.mechanical.core.embedding.logger import environ, sinks, windows_api, linux_api
+from ansys.mechanical.core.embedding.logger import environ, linux_api, sinks, windows_api
 
 LOGGING_SINKS: typing.Set[int] = set()
 LOGGING_CONTEXT: str = "PYMECHANICAL"
 
 
-def _get_backend() -> typing.Union[windows_api.APIBackend, linux_api.APIBackend, environ.EnvironBackend]:
+def _get_backend() -> (
+    typing.Union[windows_api.APIBackend, linux_api.APIBackend, environ.EnvironBackend]
+):
     """Get the appropriate logger backend.
 
     Before embedding is initialized, logging is configured via environment variables
