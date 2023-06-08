@@ -28,7 +28,7 @@ def _get_success(process: subprocess.Popen) -> int:
     # throw. To check for the subprocess success, ensure that the stdout
     # is "success"
     stdout = process.stdout.read().decode()
-    return stdout == "success"
+    return stdout == "success\n"
 
 
 def _run_embedding_log_test(rootdir, testname) -> typing.Tuple[str, bool]:
