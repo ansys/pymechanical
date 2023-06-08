@@ -17,6 +17,7 @@ an instance of Mechanical in Python.
 
    configuration
    globals
+   logging
 
 
 Overview
@@ -49,6 +50,11 @@ Additional configuration
 By default, an instance of the :class:`Application <ansys.mechanical.core.embedding.Application>` class
 is configured in the same way as Mechanical. To customize an instance, see
 :ref:`ref_embedding_user_guide_configuration`.
+
+Diagnosing problems with embedding
+----------------------------------
+In some cases, debugging why the embedded Mechanical instance isn't working requires additional logging.
+See the :ref:`ref_embedding_user_guide_logging` for instructions on how to configure logging.
 
 Running PyMechanical embedding scripts inside Mechanical with IronPython
 ------------------------------------------------------------------------

@@ -10,7 +10,9 @@ import pytest
 def _run_embedding_log_test_process(rootdir, testname) -> subprocess.Popen:
     """Runs the process and returns it after it finishes"""
     embedded_py = os.path.join(rootdir, "tests", "scripts", "embedding_log_test.py")
-    p = subprocess.Popen([sys.executable, embedded_py, testname], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen(
+        [sys.executable, embedded_py, testname], stderr=subprocess.PIPE, stdout=subprocess.PIPE
+    )
     p.wait()
     return p
 
@@ -57,9 +59,7 @@ def test_logging_write_log_before_init(rootdir):
 @pytest.mark.embedding
 def test_logging_write_info_after_initialize_with_error_level(rootdir):
     """Test that no output is written when an info is logged when configured at the error level."""
-    stderr, success = _run_embedding_log_test(
-        rootdir, "log_info_after_initialize_with_error_level"
-    )
+    stderr, success = _run_embedding_log_test(rootdir, "log_info_after_initialize_with_error_level")
     assert success
     assert stderr == ""
 
@@ -67,9 +67,7 @@ def test_logging_write_info_after_initialize_with_error_level(rootdir):
 @pytest.mark.embedding
 def test_logging_write_error_after_initialize_with_info_level(rootdir):
     """Test that output is written when an error is logged when configured at the info level."""
-    stderr, success = _run_embedding_log_test(
-        rootdir, "log_error_after_initialize_with_info_level"
-    )
+    stderr, success = _run_embedding_log_test(rootdir, "log_error_after_initialize_with_info_level")
     assert success
     assert "Will no one rid me of this turbulent priest?" in stderr
 

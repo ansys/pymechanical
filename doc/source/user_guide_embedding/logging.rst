@@ -1,0 +1,31 @@
+.. _ref_embedding_user_guide_logging:
+
+*******
+Logging
+*******
+
+Mechanical has a logging system that is useful when debugging issues. Normally, it is
+enabled by setting environment variables before starting Mechanical. With PyMechanical,
+it is possible to configure logging at any time, whether it is before or after creating
+the embedded Application, using the same Python API.
+
+Use the :class:`Configuration <ansys.mechanical.core.embedding.logger.Configuration>` to
+configure logging to the stdout for all warning messages and above(i.e. error and fatal).
+For example:
+
+.. code:: python
+
+    import ansys.mechanical.core as mech
+    from ansys.mechanical.core.embedding.logger import Configuration, Logger
+
+    Configuration.configure(level=logging.WARNING, to_stdout=True)
+    _ = mech.App()
+
+After the embedded application has been created, you can write messages to the this same
+log using the :class:`Logger <ansys.mechanical.core.embedding.logger.Logger>` like this:
+
+.. code:: python
+
+    from ansys.mechanical.core.embedding.logger import Logger
+
+    Logger.error("message")
