@@ -27,16 +27,17 @@ Then, the Logger class can be used to write messages to the log, for instance:
 """
 
 import logging
+import os
 import typing
 
 from ansys.mechanical.core.embedding import initializer
-from ansys.mechanical.core.embedding.logger import api, environ, sinks
+from ansys.mechanical.core.embedding.logger import environ, sinks, windows_api, linux_api
 
 LOGGING_SINKS: typing.Set[int] = set()
 LOGGING_CONTEXT: str = "PYMECHANICAL"
 
 
-def _get_backend() -> typing.Union[api.APIBackend, environ.EnvironBackend]:
+def _get_backend() -> typing.Union[windows_api.APIBackend, linux_api.APIBackend, environ.EnvironBackend]:
     """Get the appropriate logger backend.
 
     Before embedding is initialized, logging is configured via environment variables
@@ -47,9 +48,13 @@ def _get_backend() -> typing.Union[api.APIBackend, environ.EnvironBackend]:
         Setting the base directory only works before initializing
         Actually logging a message or flushing the log only works after initializing
     """
-    embedding_initialized = initializer.INITIALIZED_VERSION != None
     # TODO - use abc instead of a union type?
-    return api.APIBackend() if embedding_initialized else environ.EnvironBackend()
+    embedding_initialized = initializer.INITIALIZED_VERSION != None
+    if not embedding_initialized:
+        return environ.EnvironBackend()
+    if os.name == "nt":
+        return windows_api.APIBackend()
+    return linux_api.APIBackend()
 
 
 class Configuration:

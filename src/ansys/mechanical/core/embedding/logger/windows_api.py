@@ -1,4 +1,4 @@
-"""Internal mechanical logging API.
+"""Internal mechanical logging windows API.
 
 Note - some options are not supported with the API, namely the base directory
 and the log filename
