@@ -10,7 +10,7 @@ it is possible to configure logging at any time, whether it is before or after c
 the embedded Application, using the same Python API.
 
 Use the :class:`Configuration <ansys.mechanical.core.embedding.logger.Configuration>` to
-configure logging to the stdout for all warning messages and above(i.e. error and fatal).
+configure logging to the stdout for all warning messages and above(that is error and fatal).
 For example:
 
 .. code:: python

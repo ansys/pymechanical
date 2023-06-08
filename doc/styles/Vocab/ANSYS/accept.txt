@@ -26,6 +26,7 @@ Windows
 windows
 WSL
 wsl
+stdout
 CPython
 namespaces
 Globals
