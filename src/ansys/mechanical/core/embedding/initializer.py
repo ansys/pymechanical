@@ -74,10 +74,11 @@ def initialize(version=None):
     if INITIALIZED_VERSION != None:
         assert INITIALIZED_VERSION == version
         return
-    INITIALIZED_VERSION = version
 
     if version == None:
         version = _get_default_version()
+
+    INITIALIZED_VERSION = version
 
     __disable_sec()
 

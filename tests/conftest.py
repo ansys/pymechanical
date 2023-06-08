@@ -134,6 +134,13 @@ def mke_app_reset(request):
 
 
 @pytest.fixture()
+def rootdir():
+    """Return the root directory of the pymechanical git repo"""
+    base = pathlib.Path(__file__).parent
+    yield base.parent
+
+
+@pytest.fixture()
 def test_env():
     """Create a virtual environment scoped to the test"""
     venv_name = "test_env"
@@ -160,8 +167,6 @@ def test_env():
         env = env_copy
         # python executable inside the environment
         python = os.path.join(venv_bin, exe_name)
-        # for convenience - the root directory of the pymechanical git repo
-        pymechanical_root = base.parent
 
     test_env_object = TestEnv()
 

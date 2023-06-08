@@ -55,8 +55,7 @@ class App:
         self._app = Ansys.Mechanical.Embedding.Application(db_file)
         runtime.initialize(self._version)
         self._disposed = False
-        if len(INSTANCES) == 0:
-            atexit.register(_dispose_embedded_app, INSTANCES)
+        atexit.register(_dispose_embedded_app, INSTANCES)
         INSTANCES.append(self)
 
     def __repr__(self):
