@@ -2,7 +2,7 @@
 
 
 class StandardSinks:
-    """Built-in sinks."""
+    """Provides built-in sinks."""
 
     STANDARD_LOG_FILE = 0
     CONSOLE = 1
