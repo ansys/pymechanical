@@ -124,8 +124,8 @@ class Configuration:
         _get_backend().set_directory(value)
 
     @classmethod
-    def set_log_base_directory(cls, value: str) -> None:
-        """Configure logging to write in a time-stamped subfolder in the given directory."""
+    def set_log_base_directory(cls, directory: str) -> None:
+        """Configure logging to write in a time-stamped subfolder in this directory."""
         if value == None:
             return
         _get_backend().set_base_directory(value)
@@ -165,7 +165,7 @@ class Logger:
 
     @classmethod
     def can_log_message(cls, level: int) -> bool:
-        """Get whether a message at the given level can be logged."""
+        """Get whether a message at this level is logged."""
         return _get_backend().can_log_message(level)
 
     @classmethod
