@@ -93,7 +93,7 @@ class APIBackend:
         The base directory contains time-stamped subfolders where the log file
         is actually written to. This takes precedence over set_directory if set.
 
-        This does not have an API to set at runtime!
+        This does not have an API to set at runtime.
         """
         raise Exception("Base directory can only be set before starting the Mechanical instance.")
 
