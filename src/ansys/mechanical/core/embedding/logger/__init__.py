@@ -156,7 +156,7 @@ class Configuration:
 
 
 class Logger:
-    """Logger class for embedding."""
+    """Provides the ``Logger`` class for embedding."""
 
     @classmethod
     def flush(cls):
