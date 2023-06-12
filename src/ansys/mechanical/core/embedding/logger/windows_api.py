@@ -95,7 +95,7 @@ class APIBackend:
 
         This does not have an API to set at runtime!
         """
-        raise Exception("Base directory can only be set before starting the Mechanical instance!")
+        raise Exception("Base directory can only be set before starting the Mechanical instance.")
 
     def can_log_message(self, level: int) -> bool:
         """Return whether a message with the given severity will be output into the log."""
