@@ -87,7 +87,7 @@ class Configuration:
         cls.set_log_directory(directory)
         cls.set_log_base_directory(base_directory)
 
-        # Setup the sink-specific log configuration, store to global state.
+        # Set up the sink-specific log configuration and store to global state.
         cls._store_stdout_sink_enabled(to_stdout)
         file_sink_enabled = directory != None or base_directory != None
         cls._store_file_sink_enabled(file_sink_enabled)
