@@ -7,7 +7,7 @@ from ansys.mechanical.core.embedding.logger import sinks
 
 
 class EnvironBackend:
-    """Environment variable backend for mechanical logging."""
+    """Provides the environment variable backend for Mechanical logging."""
 
     def flush(self):
         """Flush the log."""
