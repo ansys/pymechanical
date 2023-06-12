@@ -44,7 +44,7 @@ def _get_backend() -> (
 
     Before embedding is initialized, logging is configured via environment variables.
     After embedding is initialized, logging is configured by making API calls into the
-    mechanical logging system.
+    Mechanical logging system.
 
     However, the API is mostly the same in both cases, though some methods only work
     in one of the two backends.
