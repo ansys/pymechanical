@@ -28,6 +28,7 @@ def _get_success(process: subprocess.Popen) -> int:
     # throw. To check for the subprocess success, ensure that the stdout
     # is "success"
     stdout = process.stdout.read().decode()
+    print(stdout)
     return stdout == "success\n"
 
 
@@ -51,7 +52,7 @@ def test_logging_write_log_before_init(rootdir):
     stderr, success = _run_embedding_log_test(rootdir, "log_before_initialize")
     assert not success
     assert (
-        "Can't log to the embedding logger until the Mechanical application is initialized"
+        "Can't log to the embedding logger until Mechanical is initialized"
         in stderr
     )
 
@@ -60,16 +61,16 @@ def test_logging_write_log_before_init(rootdir):
 def test_logging_write_info_after_initialize_with_error_level(rootdir):
     """Test that no output is written when an info is logged when configured at the error level."""
     stderr, success = _run_embedding_log_test(rootdir, "log_info_after_initialize_with_error_level")
-    assert success
     assert "0xdeadbeef" not in stderr
+    assert success
 
 
 @pytest.mark.embedding
 def test_logging_write_error_after_initialize_with_info_level(rootdir):
     """Test that output is written when an error is logged when configured at the info level."""
     stderr, success = _run_embedding_log_test(rootdir, "log_error_after_initialize_with_info_level")
-    assert success
     assert "Will no one rid me of this turbulent priest?" in stderr
+    assert success
 
 
 @pytest.mark.embedding
