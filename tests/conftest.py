@@ -135,7 +135,7 @@ def mke_app_reset(request):
 
 @pytest.fixture()
 def rootdir():
-    """Return the root directory of the PyMechanical GitHub repository."""
+    """Return the root directory of the local clone of the PyMechanical GitHub repository."""
     base = pathlib.Path(__file__).parent
     yield base.parent
 
