@@ -8,7 +8,7 @@ Usage
 Configuring logger
 ~~~~~~~~~~~~~~~~~~
 
-Configuring the logger can be done using the Configuration class, for instance:
+Configuring the logger can be done using the :class:`Configuration <ansys.mechanical.core.embedding.logger.Configuration>` class:
 
 .. code:: python
   import ansys.mechanical.core as mech
