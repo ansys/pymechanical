@@ -59,8 +59,8 @@ In some cases, debugging why the embedded Mechanical instance is not working req
 Running PyMechanical embedding scripts inside Mechanical with IronPython
 ------------------------------------------------------------------------
 If your PyMechanical embedding script does not use any other third-party Python package, such as `NumPy`,
-it is possible to adapt it so that it can run inside of Mechanical with IronPython. With scripting inside
-Mechanical's command line interface. For instance, the following script:
+it is possible to adapt it so that it can run inside of Mechanical with IronPython with scripting inside
+Mechanical's command line interface. For instance, the consider the following PyMechanical code:
 
 .. code:: python
 
@@ -71,14 +71,14 @@ Mechanical's command line interface. For instance, the following script:
   ns = DataModel.Project.Model.AddNamedSelection()
   ns.Name = "Jarvis"
 
-can be converted to a Python file, such as "file.py" with the following content:
+The above code can be written as a Python file, such as "file.py" with only the following content:
 
 .. code:: python
 
   ns = DataModel.Project.Model.AddNamedSelection()
   ns.Name = "Jarvis"
 
-and run inside mechanical using the command line
+That python file does not contain the PyMechanical import statements, and can inside Mechanical using the command line
 
 **On Windows**
 
@@ -95,8 +95,11 @@ Open a command prompt and run this command:
 
 **On Linux**
 
+From a terminal, run this command:
+
 .. code::
 
     /usr/ansys_inc/v231/aisol/.workbench -DSApplet -AppModeMech -nosplash -notabctrl -script file.py
 
-Add the command line argument `-b` to run the script in batch mode.
+
+On either Windows or Linux, add the command line argument `-b` to run the script in batch mode.
