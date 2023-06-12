@@ -516,7 +516,7 @@ def test_launch_grpc_not_supported_version():
 @pytest.mark.remote_session_launch
 @pytest.mark.python_env
 def test_warning_message_pythonnet(test_env, rootdir):
-    """Test pythonnet warning of the remote session in virtual env."""
+    """Test Python.NET warning of the remote session in the virtual environment."""
 
     # Install pymechanical
     subprocess.check_call(
