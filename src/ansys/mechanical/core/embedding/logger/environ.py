@@ -42,7 +42,7 @@ class EnvironBackend:
             os.environ["ANSYS_WORKBENCH_LOGGING"] = "0"
 
     def set_log_level(self, level: int, sink: int = sinks.StandardSinks.CONSOLE):
-        """Set the log level for the Mechanical application based on the python log level."""
+        """Set the log level for Mechanical based on the Python log level."""
         if level == logging.NOTSET:
             self.disable(sink)
             return
