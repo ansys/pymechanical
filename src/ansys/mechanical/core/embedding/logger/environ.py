@@ -26,7 +26,7 @@ class EnvironBackend:
             os.environ["ANSYS_WORKBENCH_LOGGING_FATAL_MESSAGE_BOX"] = "1"
 
     def disable(self, sink: int = sinks.StandardSinks.CONSOLE):
-        """Disable the given sink."""
+        """Disable the log level for this sink."""
         if sink == sinks.StandardSinks.CONSOLE:
             os.environ["ANSYS_WORKBENCH_LOGGING_CONSOLE"] = "0"
         elif sink == sinks.StandardSinks.WINDOWS_DEBUGGER:
@@ -40,7 +40,7 @@ class EnvironBackend:
             os.environ["ANSYS_WORKBENCH_LOGGING"] = "0"
 
     def set_log_level(self, level: int, sink: int = sinks.StandardSinks.CONSOLE):
-        """Set the log level for Mechanical based on the Python log level."""
+        """Set the log level for this sink based on the Python log level."""
         if level == logging.NOTSET:
             self.disable(sink)
             return
