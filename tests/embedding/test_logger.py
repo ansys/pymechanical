@@ -51,10 +51,7 @@ def test_logging_write_log_before_init(rootdir):
     """Test that an error is thrown when trying to log before initializing"""
     stderr, success = _run_embedding_log_test(rootdir, "log_before_initialize")
     assert not success
-    assert (
-        "Can't log to the embedding logger until Mechanical is initialized"
-        in stderr
-    )
+    assert "Can't log to the embedding logger until Mechanical is initialized" in stderr
 
 
 @pytest.mark.embedding
