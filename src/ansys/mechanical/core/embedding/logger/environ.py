@@ -11,9 +11,7 @@ class EnvironBackend:
 
     def flush(self):
         """Flush the log."""
-        raise Exception(
-            "The embedding log cannot be flushed until Mechanical is initialized."
-        )
+        raise Exception("The embedding log cannot be flushed until Mechanical is initialized.")
 
     def enable(self, sink: int = sinks.StandardSinks.CONSOLE):
         """Enable the given sink."""
@@ -100,6 +98,4 @@ class EnvironBackend:
 
     def log_message(self, level: int, context: str, message: str) -> None:
         """Log the message to the configured logging mechanism."""
-        raise Exception(
-            "Can't log to the embedding logger until Mechanical is initialized."
-        )
+        raise Exception("Can't log to the embedding logger until Mechanical is initialized.")
