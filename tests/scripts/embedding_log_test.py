@@ -16,7 +16,7 @@ def log_info_after_initialize_with_error_level():
     """Log at the info level after initializing with the error level."""
     Configuration.configure(level=logging.ERROR, to_stdout=True, base_directory=None)
     _ = mech.App(version=232)
-    Logger.info("message")
+    Logger.info("0xdeadbeef")
 
 
 def log_error_after_initialize_with_info_level():
