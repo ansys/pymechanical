@@ -15,5 +15,4 @@ Remote session examples
 
 Remote session examples demonstrate the basic simulation capabilities of Mechanical using remote sessions.
 
-The documentation to these examples can be found in the
-`Remote sessions examples <pymechanical_remote_ex_all_>`_ section.
+For more information, see `Remote sessions examples <pymechanical_remote_ex_all_>`_.
