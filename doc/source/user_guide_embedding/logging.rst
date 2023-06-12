@@ -9,7 +9,7 @@ enabled by setting environment variables before starting Mechanical. With PyMech
 it is possible to configure logging at any time, whether it is before or after creating
 the embedded application, using the same Python API.
 
-Use the :class:`Configuration <ansys.mechanical.core.embedding.logger.Configuration>` to
+Use the :class:`Configuration <ansys.mechanical.core.embedding.logger.Configuration>` class to
 configure logging to the stdout for all warning messages and above(that is error and fatal).
 For example:
 
