@@ -7,7 +7,7 @@ Logging
 Mechanical has a logging system that is useful when debugging issues. Normally, it is
 enabled by setting environment variables before starting Mechanical. With PyMechanical,
 it is possible to configure logging at any time, whether it is before or after creating
-the embedded Application, using the same Python API.
+the embedded application, using the same Python API.
 
 Use the :class:`Configuration <ansys.mechanical.core.embedding.logger.Configuration>` to
 configure logging to the stdout for all warning messages and above(that is error and fatal).
