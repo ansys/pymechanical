@@ -180,7 +180,7 @@ class Logger:
 
     @classmethod
     def info(cls, msg: str):
-        """Write a info message to the log."""
+        """Write an info message to the log."""
         _get_backend().log_message(logging.INFO, LOGGING_CONTEXT, msg)
 
     @classmethod
