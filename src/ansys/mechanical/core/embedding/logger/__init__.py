@@ -99,7 +99,7 @@ class Configuration:
 
     @classmethod
     def set_log_to_stdout(cls, value: bool) -> None:
-        """Configure logging to write to the stdout."""
+        """Configure logging to write to the standard output."""
         cls._store_stdout_sink_enabled(value)
         cls._commit_enabled_configuration()
 
