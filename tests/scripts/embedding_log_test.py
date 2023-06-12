@@ -52,4 +52,4 @@ if __name__ == "__main__":
         "log_check_can_log_message": log_check_can_log_message,
     }
     tests[test_name]()
-    print("success")
+    print("@@success@@")

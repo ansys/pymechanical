@@ -128,7 +128,7 @@ class Configuration:
         """Configure logging to write in a time-stamped subfolder in this directory."""
         if value == None:
             return
-        _get_backend().set_base_directory(value)
+        _get_backend().set_base_directory(directory)
 
     @classmethod
     def _commit_level_configuration(cls, level: int) -> None:
