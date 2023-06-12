@@ -142,7 +142,7 @@ def rootdir():
 
 @pytest.fixture()
 def test_env():
-    """Create a virtual environment scoped to the test"""
+    """Create a virtual environment scoped to the test."""
     venv_name = "test_env"
 
     base = pathlib.Path(__file__).parent
