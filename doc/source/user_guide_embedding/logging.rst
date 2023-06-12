@@ -21,7 +21,7 @@ For example:
     Configuration.configure(level=logging.WARNING, to_stdout=True)
     _ = mech.App()
 
-After the embedded application has been created, you can write messages to the this same
+After the embedded application has been created, you can write messages to the same
 log using the :class:`Logger <ansys.mechanical.core.embedding.logger.Logger>` like this:
 
 .. code:: python
