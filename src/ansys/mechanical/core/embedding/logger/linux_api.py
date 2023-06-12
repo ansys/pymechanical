@@ -1,9 +1,8 @@
-"""Internal mechanical logging linux API.
+"""Internal Mechanical logging Linux API.
 
-Note - this is needed for version 2023 R2, where the .NET backend is windows-only
-
-Note - some options are not supported with the API, namely the base directory
-and the log filename
+.. note::
+   The Linux API is needed for version 2023 R2, where the .NET backend is Windows-only.
+   This API does not support some options, namely the base directory and log filename.
 
 """
 
@@ -57,10 +56,10 @@ def _bool_to_single_byte_int(value: bool) -> ctypes.c_int8:
 
 
 def _to_wb_logger_severity(level: int) -> ctypes.c_int32:
-    """Convert to internal int."""
+    """Convert to internal integer."""
     if level <= logging.DEBUG:
-        # level 0 in workbench logging is trace, level 1 is debug.
-        # python logging.DEBUG will imply trace.
+        # Level 0 in Workbench logging is trace. Level 1 is debug.
+        # Python logging.DEBUG implies trace.
         return ctypes.c_int32(0)
     elif level <= logging.INFO:
         return ctypes.c_int32(2)
@@ -76,7 +75,7 @@ def _to_wb_logger_severity(level: int) -> ctypes.c_int32:
 
 
 class APIBackend:
-    """API backend for Mechanical logging system."""
+    """Provides the API backend for the Mechanical logging system."""
 
     def flush(self) -> None:
         """Flush the log manually."""
@@ -93,7 +92,7 @@ class APIBackend:
         _get_dll().wb_logger_disable_sink(sinkid)
 
     def set_log_level(self, level: int, sink: int = sinks.StandardSinks.CONSOLE) -> None:
-        """Set the log level for the Mechanical application based on the python log level."""
+        """Set the log level for Mechanical based on the Python log level."""
         if level == logging.NOTSET:
             self.disable(sink)
 
@@ -115,14 +114,15 @@ class APIBackend:
         """Set the base location to write the log file to.
 
         The base directory contains time-stamped subfolders where the log file
-        is actually written to. This takes precedence over set_directory if set.
+        is actually written to. If a base directory is set, it takes precedence over the
+        ``set_directory`` location.
 
-        This does not have an API to set at runtime!
+        This does not have an API to set at runtime.
         """
-        raise Exception("Base directory can only be set before starting the Mechanical instance!")
+        raise Exception("Base directory can only be set before starting the Mechanical instance.")
 
     def can_log_message(self, level: int) -> bool:
-        """Return whether a message with the given severity will be output into the log."""
+        """Return whether a message with the given severity is outputted to the log."""
         wb_level = _to_wb_logger_severity(level)
         return bool(_get_dll().wb_logger_can_log_message(wb_level))
 

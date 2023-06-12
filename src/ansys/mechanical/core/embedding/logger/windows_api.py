@@ -1,7 +1,8 @@
-"""Internal mechanical logging windows API.
+"""Windows API for internal Mechanical logging.
 
-Note - some options are not supported with the API, namely the base directory
-and the log filename
+.. note::
+   This API does not support some options, namely the base directory
+   and log filename.
 
 """
 
@@ -19,11 +20,11 @@ def _get_logger():
 
         return Ansys.Common.WB1ManagedUtils.Logger
     except:
-        raise Exception("Cannot use logging until after mechanical embedding is initialized")
+        raise Exception("Logging cannot be used until after Mechanical embedding is initialized.")
 
 
 def _get_sink_id(standard_sink_type: int) -> int:
-    """Convert standard sink type to sink id."""
+    """Convert standard sink type to sink ID."""
     sink_enum = _get_logger().StandardSinks
     return {
         sinks.StandardSinks.STANDARD_LOG_FILE: sink_enum.StandardLogFile,
@@ -37,8 +38,8 @@ def _get_sink_id(standard_sink_type: int) -> int:
 def _to_wb_logger_severity(level: int):
     """Convert to internal enum."""
     if level <= logging.DEBUG:
-        # level 0 in workbench logging is trace, level 1 is debug.
-        # python logging.DEBUG will imply trace.
+        # Level 0 in Workbench logging is trace. Level 1 is debug.
+        # Python logging.DEBUG implies trace.
         return _get_logger().LoggerSeverity.Trace
     elif level <= logging.INFO:
         return _get_logger().LoggerSeverity.Info
@@ -54,7 +55,7 @@ def _to_wb_logger_severity(level: int):
 
 
 class APIBackend:
-    """API backend for Mechanical logging system."""
+    """Provides API backend for Mechanical logging system."""
 
     def flush(self) -> None:
         """Flush the log manually."""
@@ -71,7 +72,7 @@ class APIBackend:
         _get_logger().Configuration.DisableSink(sinkid)
 
     def set_log_level(self, level: int, sink: int = sinks.StandardSinks.CONSOLE) -> None:
-        """Set the log level for the Mechanical application based on the python log level."""
+        """Set the log level for Mechanical based on the Python log level."""
         if level == logging.NOTSET:
             self.disable(sink)
 
@@ -91,7 +92,8 @@ class APIBackend:
         """Set the base location to write the log file to.
 
         The base directory contains time-stamped subfolders where the log file
-        is actually written to. This takes precedence over set_directory if set.
+        is actually written to. If a base directory is set, it takes precedence over the
+        ``set_directory`` location.
 
         This does not have an API to set at runtime.
         """

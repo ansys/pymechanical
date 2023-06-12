@@ -12,7 +12,7 @@ class EnvironBackend:
     def flush(self):
         """Flush the log."""
         raise Exception(
-            "Can't flush the embedding log until the Mechanical application is initialized"
+            "The embedding log cannot be flushed until Mechanical is initialized."
         )
 
     def enable(self, sink: int = sinks.StandardSinks.CONSOLE):
@@ -73,12 +73,13 @@ class EnvironBackend:
         """Set the base location to write the log file to.
 
         The base directory contains time-stamped subfolders where the log file
-        is actually written to. This takes precedence over set_directory if set
+        is actually written to. If a base directory is set, it takes precedence over the
+        ``set_directory`` location.
         """
         os.environ["ANSYS_WORKBENCH_LOGGING_BASE_DIRECTORY"] = base_directory
 
     def can_log_message(self, level: int) -> bool:
-        """Return whether a message with the given severity will be output into the log."""
+        """Return whether a message with the given severity is outputted to the log."""
         if os.environ.get("ANSYS_WORKBENCH_LOGGING", 0) == 0:
             return False
 
@@ -100,5 +101,5 @@ class EnvironBackend:
     def log_message(self, level: int, context: str, message: str) -> None:
         """Log the message to the configured logging mechanism."""
         raise Exception(
-            "Can't log to the embedding logger until the Mechanical application is initialized"
+            "Can't log to the embedding logger until Mechanical is initialized."
         )
