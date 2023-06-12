@@ -62,7 +62,7 @@ def _get_backend() -> (
 
 
 class Configuration:
-    """Logger configuration for Mechanical embedding."""
+    """Configures logger for Mechanical embedding."""
 
     @classmethod
     def configure(cls, level=logging.WARNING, directory=None, base_directory=None, to_stdout=True):
