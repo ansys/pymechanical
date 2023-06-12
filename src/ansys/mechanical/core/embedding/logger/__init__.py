@@ -42,7 +42,7 @@ def _get_backend() -> (
 ):
     """Get the appropriate logger backend.
 
-    Before embedding is initialized, logging is configured via environment variables
+    Before embedding is initialized, logging is configured via environment variables.
     After embedding is initialized, logging is configured by making API calls into the
     mechanical logging system.
 
