@@ -49,8 +49,8 @@ def _get_backend() -> (
     However, the API is mostly the same in both cases, though some methods only work
     in one of the two backends.
 
-    Setting the base directory only works before initializing
-    Actually logging a message or flushing the log only works after initializing
+    Setting the base directory only works before initializing.
+    Actually logging a message or flushing the log only works after initializing.
     """
     # TODO - use abc instead of a union type?
     embedding_initialized = initializer.INITIALIZED_VERSION != None
