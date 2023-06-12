@@ -98,7 +98,7 @@ class APIBackend:
         raise Exception("Base directory can only be set before starting the Mechanical instance.")
 
     def can_log_message(self, level: int) -> bool:
-        """Return whether a message with the given severity will be output into the log."""
+        """Return whether a message with the given severity is outputted to the log."""
         wb_level = _to_wb_logger_severity(level)
         return _get_logger().CanLogMessage(wb_level)
 
