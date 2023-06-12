@@ -83,7 +83,7 @@ class Configuration:
             Whether to write log messages to the standard output, which is the
             command line. The default is ``True``.
         """
-        # Setup the global log configuration.
+        # Set up the global log configuration.
         cls.set_log_directory(directory)
         cls.set_log_base_directory(base_directory)
 
