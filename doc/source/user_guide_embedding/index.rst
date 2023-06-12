@@ -54,7 +54,7 @@ is configured in the same way as Mechanical. To customize an instance, see
 Diagnosing problems with embedding
 ----------------------------------
 In some cases, debugging why the embedded Mechanical instance is not working requires additional logging.
-See the :ref:`ref_embedding_user_guide_logging` for instructions on how to configure logging.
+ For information on how to configure logging, see :ref:`ref_embedding_user_guide_logging` .
 
 Running PyMechanical embedding scripts inside Mechanical with IronPython
 ------------------------------------------------------------------------
