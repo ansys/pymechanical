@@ -2,7 +2,6 @@
 import os
 import subprocess
 import sys
-import typing
 
 import pytest
 
@@ -39,7 +38,7 @@ def _assert_success(process: subprocess.Popen, pass_expected: bool) -> int:
 def _run_embedding_log_test(rootdir: str, testname: str, pass_expected: bool = True) -> str:
     """Test stderr logging using a subprocess.
 
-    Also ensure that the subprocess either passes or fails besed on pass_expected
+    Also ensure that the subprocess either passes or fails based on pass_expected
     Mechanical logging all goes into the process stderr at the C level, but capturing
     that from python isn't possible because python's stderr stream isn't aware of content
     that doesn't come from python (or its C/API)
