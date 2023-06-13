@@ -57,13 +57,13 @@ def test_app_version(embedded_app):
 
 @pytest.mark.embedding
 @pytest.mark.python_env
-def test_warning_message(test_env):
-    """Test pythonnet warning of the embedded instance, using a test-scoped python environment."""
+def test_warning_message(test_env, rootdir):
+    """Test Python.NET warning of the embedded instance using a test-scoped Python environment."""
 
     # Install pymechanical
     subprocess.check_call(
         [test_env.python, "-m", "pip", "install", "-e", "."],
-        cwd=test_env.pymechanical_root,
+        cwd=rootdir,
         env=test_env.env,
     )
 
@@ -71,9 +71,7 @@ def test_warning_message(test_env):
     subprocess.check_call([test_env.python, "-m", "pip", "install", "pythonnet"], env=test_env.env)
 
     # Run embedded instance in virtual env with pythonnet installed
-    embedded_py = os.path.join(
-        test_env.pymechanical_root, "tests", "scripts", "run_embedded_app.py"
-    )
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
     check_warning = subprocess.Popen(
         [test_env.python, embedded_py],
         stderr=subprocess.PIPE,
