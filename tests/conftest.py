@@ -91,13 +91,13 @@ def ensure_embedding() -> None:
         raise Exception("Cannot run embedded tests if Mechanical embedding is not installed")
 
 
-def start_embedding_app() -> datetime.timedelta:
+def start_embedding_app(version) -> datetime.timedelta:
     from ansys.mechanical.core import App
 
     global EMBEDDED_APP
     ensure_embedding()
     start = datetime.datetime.now()
-    EMBEDDED_APP = App(version=232)
+    EMBEDDED_APP = App(version=int(version))
     startup_time = (datetime.datetime.now() - start).total_seconds()
     num_cores = os.environ.get("NUM_CORES", None)
     if num_cores != None:
@@ -111,9 +111,9 @@ EMBEDDED_APP = None
 
 
 @pytest.fixture(scope="session")
-def embedded_app(request):
+def embedded_app(pytestconfig, request):
     global EMBEDDED_APP
-    startup_time = start_embedding_app()
+    startup_time = start_embedding_app(pytestconfig.getoption("ansys_version"))
     terminal_reporter = request.config.pluginmanager.getplugin("terminalreporter")
     if terminal_reporter is not None:
         terminal_reporter.write_line(f"\t{startup_time}\tStarting Mechanical")
@@ -292,3 +292,8 @@ def mechanical_pool():
 
     assert f"Mechanical pool with {instances_count} active instances" in str(pool)
     pool.exit(block=True)
+
+
+def pytest_addoption(parser):
+    # parser.addoption("--debugging", action="store_true")
+    parser.addoption("--ansys-version", default="232")
