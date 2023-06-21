@@ -5,7 +5,7 @@ build-backend = "flit_core.buildapi"
 [project]
 # Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
 name = "ansys-mechanical-core"
-version = "0.9.dev0"
+version = "0.9.dev1"
 description = "A python wrapper for Ansys Mechanical"
 readme = "README.rst"
 requires-python = ">=3.7,<4.0"
@@ -31,7 +31,7 @@ classifiers = [
 dependencies = [
     "ansys_api_mechanical==0.1.0",
     "ansys-pythonnet>=3.1.0rc1",
-    "ansys-tools-path>=0.2.3",
+    "ansys-tools-path>=0.2.5",
     "importlib-metadata>=4.0",
     "appdirs>=1.4.0",
     "grpcio>=1.30.0",
