@@ -11,7 +11,11 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 -   Add version configuration for embedding tests (#270)
 
-## [0.9.0](https://github.com/ansys/pymechanical/releases/tag/v0.8.0) - June 13 2023
+### Fixed
+
+-   FIX: Use updated ansys-tools-path to resolve - missing 1 required positional argument: 'exe_loc' issue (#280)
+
+## [0.9.0](https://github.com/ansys/pymechanical/releases/tag/v0.9.0) - June 13 2023
 
 ### Added
 
