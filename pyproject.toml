@@ -55,7 +55,7 @@ tests = [
 doc = [
     "Sphinx==6.2.1", # BLOCKED BY sphinx-design - Cannot upgrade to Sphinx 7 for now
     "ansys-sphinx-theme==0.9.9",
-    "grpcio==1.54.2",
+    "grpcio==1.56.0",
     "imageio-ffmpeg==0.4.8",
     "imageio==2.31.1",
     "jupyter_sphinx==0.4.0",
