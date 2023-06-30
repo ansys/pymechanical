@@ -91,7 +91,11 @@ def initialize(version=None):
         warnings.warn(
             "The pythonnet package was found in your environment "
             "which interferes with the ansys-pythonnet package. "
-            "Some APIs may not work due to pythonnet being installed.",
+            "Some APIs may not work due to pythonnet being installed.\n\n"
+            "For using PyMechanical, we recommend you do the following:\n"
+            "1. Uninstall your existing pythonnet package: pip uninstall pythonnet\n"
+            "2. Install the ansys-pythonnet package: pip install --upgrade "
+            "--force-reinstall ansys-pythonnet\n",
             stacklevel=2,
         )
     except ModuleNotFoundError:
