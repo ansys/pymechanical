@@ -1,6 +1,7 @@
 """Main application class for embedded Mechanical."""
 import atexit
 import os
+import shutil
 
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.config import Configuration, configure
@@ -22,14 +23,22 @@ def _dispose_embedded_app(instances):  # pragma: nocover
         instance._dispose()
 
 
+def _cleanup_private_appdata(folder):
+    shutil.rmtree(folder, ignore_errors=True)
+
+
 class App:
     """Mechanical embedding Application."""
 
-    def __init__(self, db_file=None, **kwargs):
+    def __init__(self, db_file=None, private_appdata=False, **kwargs):
         """Construct an instance of the mechanical Application.
 
         db_file is an optional path to a mechanical database file (.mechdat or .mechdb)
         you may set a version number with the `version` keyword argument.
+
+        private_appdata is an optional setting for a temporary AppData directory.
+        By default, private_appdata is False. This is beneficial for running parallel
+        instances of mechanical.
         """
         global INSTANCES
         from ansys.mechanical.core import BUILDING_GALLERY
@@ -52,6 +61,12 @@ class App:
 
         configuration = kwargs.get("config", _get_default_configuration())
         configure(configuration)
+
+        if private_appdata:
+            self.pid = os.getpid()
+            self.tmp_dir = initializer.set_private_appdata(self.pid)
+            atexit.register(_cleanup_private_appdata, self.tmp_dir)
+
         self._app = Ansys.Mechanical.Embedding.Application(db_file)
         runtime.initialize(self._version)
         self._disposed = False

@@ -86,3 +86,59 @@ def test_warning_message(test_env, rootdir):
 
     # Assert warning message appears for embedded app
     assert warning, "UserWarning should appear in the output of the script"
+
+
+@pytest.mark.embedding
+@pytest.mark.python_env
+def test_private_appdata(test_env, rootdir):
+    """Test embedded instance does not save ShowTriad using a test-scoped Python environment."""
+
+    # Install pymechanical
+    subprocess.check_call(
+        [test_env.python, "-m", "pip", "install", "-e", "."],
+        cwd=rootdir,
+        env=test_env.env,
+    )
+
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+
+    # Set ShowTriad to False
+    subprocess.check_call([test_env.python, embedded_py, "True", "Set"], env=test_env.env)
+
+    # Check ShowTriad is True for private_appdata embedded sessions
+    stdout = subprocess.check_output(
+        [test_env.python, embedded_py, "True", "Run"], env=test_env.env
+    )
+    stdout = stdout.decode().strip("\r\n")
+
+    assert stdout == "True"
+
+
+@pytest.mark.embedding
+@pytest.mark.python_env
+def test_normal_appdata(test_env, rootdir):
+    """Test embedded instance saves ShowTriad value using a test-scoped Python environment."""
+
+    # Install pymechanical
+    subprocess.check_call(
+        [test_env.python, "-m", "pip", "install", "-e", "."],
+        cwd=rootdir,
+        env=test_env.env,
+    )
+
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+
+    # Set ShowTriad to False
+    subprocess.check_call([test_env.python, embedded_py, "False", "Set"], env=test_env.env)
+
+    # Check ShowTriad is False for regular embedded session
+    stdout = subprocess.check_output(
+        [test_env.python, embedded_py, "False", "Run"], env=test_env.env
+    )
+    stdout = stdout.decode().strip("\r\n")
+
+    # Set ShowTriad back to True for regular embedded session
+    subprocess.check_call([test_env.python, embedded_py, "False", "Reset"], env=test_env.env)
+
+    # Assert ShowTriad was set to False for regular embedded session
+    assert stdout == "False"
