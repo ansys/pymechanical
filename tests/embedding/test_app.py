@@ -103,21 +103,13 @@ def test_private_appdata(test_env, rootdir):
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
     # Set ShowTriad to False
-    set_showtriad = subprocess.Popen(
-        [test_env.python, embedded_py, "True", "Set"],
-        stdout=subprocess.PIPE,
-        env=test_env.env,
-    )
-    set_showtriad.wait()
+    subprocess.check_call([test_env.python, embedded_py, "True", "Set"], env=test_env.env)
 
     # Check ShowTriad is True for private_appdata embedded sessions
-    launch_private_app = subprocess.Popen(
-        [test_env.python, embedded_py, "True", "Run"],
-        stdout=subprocess.PIPE,
-        env=test_env.env,
+    stdout = subprocess.check_output(
+        [test_env.python, embedded_py, "True", "Run"], env=test_env.env
     )
-    launch_private_app.wait()
-    stdout = launch_private_app.stdout.read().decode().strip("\n").strip("\r")
+    stdout = stdout.decode().strip("\r\n")
 
     assert stdout == "True"
 
@@ -137,29 +129,16 @@ def test_normal_appdata(test_env, rootdir):
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
     # Set ShowTriad to False
-    set_showtriad = subprocess.Popen(
-        [test_env.python, embedded_py, "False", "Set"],
-        stdout=subprocess.PIPE,
-        env=test_env.env,
-    )
-    set_showtriad.wait()
+    subprocess.check_call([test_env.python, embedded_py, "False", "Set"], env=test_env.env)
 
     # Check ShowTriad is False for regular embedded session
-    launch_app = subprocess.Popen(
-        [test_env.python, embedded_py, "False", "Run"],
-        stdout=subprocess.PIPE,
-        env=test_env.env,
+    stdout = subprocess.check_output(
+        [test_env.python, embedded_py, "False", "Run"], env=test_env.env
     )
-    launch_app.wait()
-    stdout = launch_app.stdout.read().decode().strip("\n").strip("\r")
+    stdout = stdout.decode().strip("\r\n")
 
     # Set ShowTriad back to True for regular embedded session
-    reset_showtriad = subprocess.Popen(
-        [test_env.python, embedded_py, "False", "Reset"],
-        stdout=subprocess.PIPE,
-        env=test_env.env,
-    )
-    reset_showtriad.wait()
+    subprocess.check_call([test_env.python, embedded_py, "False", "Reset"], env=test_env.env)
 
     # Assert ShowTriad was set to False for regular embedded session
     assert stdout == "False"

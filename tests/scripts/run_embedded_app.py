@@ -13,24 +13,17 @@ def launch_app(appdata_option):
     return app
 
 
-def set_false(appdata_option):
+def set_showtriad(appdata_option, value):
     """Launch embedded instance of app & set ShowTriad to False."""
     app = launch_app(appdata_option)
-    app.ExtAPI.Graphics.ViewOptions.ShowTriad = False
+    app.ExtAPI.Graphics.ViewOptions.ShowTriad = value
     app.close()
 
 
-def check_showtriad(appdata_option):
+def print_showtriad(appdata_option):
     """Return ShowTriad value."""
     app = launch_app(appdata_option)
     print(app.ExtAPI.Graphics.ViewOptions.ShowTriad)
-    app.close()
-
-
-def reset_showtriad(appdata_option):
-    """Set ShowTriad value to True for user."""
-    app = launch_app(appdata_option)
-    app.ExtAPI.Graphics.ViewOptions.ShowTriad = True
     app.close()
 
 
@@ -39,10 +32,10 @@ try:
     action = sys.argv[2]
 
     if action == "Set":
-        set_false(appdata_option)
+        set_showtriad(appdata_option, False)
     elif action == "Run":
-        check_showtriad(appdata_option)
+        print_showtriad(appdata_option)
     elif action == "Reset":
-        reset_showtriad(appdata_option)
+        set_showtriad(appdata_option, True)
 except:
     launch_app("")

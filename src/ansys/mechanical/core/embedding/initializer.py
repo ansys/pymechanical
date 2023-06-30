@@ -136,9 +136,9 @@ def set_private_appdata(pid):
     newProfile.set_env()
 
     warnings.warn(
-        "Please be advised that using the private_appdata option allows you to run "
-        "multiple pymechanical instances in parallel, but there are leftover files "
-        r"in a temporary directory:   C:\Users\<username><pid>.",
+        "Using the private_appdata option creates temporary directories when "
+        "running the pymechanical instances in parallel. "
+        f"There may be leftover files in {profileName}.",
         stacklevel=2,
     )
 

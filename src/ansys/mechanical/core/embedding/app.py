@@ -24,15 +24,7 @@ def _dispose_embedded_app(instances):  # pragma: nocover
 
 
 def _cleanup_private_appdata(folder):
-    try:
-        shutil.rmtree(folder)
-    except:
-        for root, dirs, files in os.walk(folder):
-            try:
-                for dir in dirs:
-                    shutil.rmtree(os.path.join(root, dir))
-            except:
-                pass
+    shutil.rmtree(folder, ignore_errors=True)
 
 
 class App:
