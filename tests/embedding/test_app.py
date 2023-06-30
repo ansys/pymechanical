@@ -86,3 +86,80 @@ def test_warning_message(test_env, rootdir):
 
     # Assert warning message appears for embedded app
     assert warning, "UserWarning should appear in the output of the script"
+
+
+@pytest.mark.embedding
+@pytest.mark.python_env
+def test_private_appdata(test_env, rootdir):
+    """Test embedded instance does not save ShowTriad using a test-scoped Python environment."""
+
+    # Install pymechanical
+    subprocess.check_call(
+        [test_env.python, "-m", "pip", "install", "-e", "."],
+        cwd=rootdir,
+        env=test_env.env,
+    )
+
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+
+    # Set ShowTriad to False
+    set_showtriad = subprocess.Popen(
+        [test_env.python, embedded_py, "True", "Set"],
+        stdout=subprocess.PIPE,
+        env=test_env.env,
+    )
+    set_showtriad.wait()
+
+    # Check ShowTriad is True for private_appdata embedded sessions
+    launch_private_app = subprocess.Popen(
+        [test_env.python, embedded_py, "True", "Run"],
+        stdout=subprocess.PIPE,
+        env=test_env.env,
+    )
+    launch_private_app.wait()
+    stdout = launch_private_app.stdout.read().decode().strip("\n").strip("\r")
+
+    assert stdout == "True"
+
+
+@pytest.mark.embedding
+@pytest.mark.python_env
+def test_normal_appdata(test_env, rootdir):
+    """Test embedded instance saves ShowTriad value using a test-scoped Python environment."""
+
+    # Install pymechanical
+    subprocess.check_call(
+        [test_env.python, "-m", "pip", "install", "-e", "."],
+        cwd=rootdir,
+        env=test_env.env,
+    )
+
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+
+    # Set ShowTriad to False
+    set_showtriad = subprocess.Popen(
+        [test_env.python, embedded_py, "False", "Set"],
+        stdout=subprocess.PIPE,
+        env=test_env.env,
+    )
+    set_showtriad.wait()
+
+    # Check ShowTriad is False for regular embedded session
+    launch_app = subprocess.Popen(
+        [test_env.python, embedded_py, "False", "Run"],
+        stdout=subprocess.PIPE,
+        env=test_env.env,
+    )
+    launch_app.wait()
+    stdout = launch_app.stdout.read().decode().strip("\n").strip("\r")
+
+    # Set ShowTriad back to True for regular embedded session
+    reset_showtriad = subprocess.Popen(
+        [test_env.python, embedded_py, "False", "Reset"],
+        stdout=subprocess.PIPE,
+        env=test_env.env,
+    )
+    reset_showtriad.wait()
+
+    # Assert ShowTriad was set to False for regular embedded session
+    assert stdout == "False"
