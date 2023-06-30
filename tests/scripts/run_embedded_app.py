@@ -1,4 +1,6 @@
 """Launch embedded instance."""
+import sys
+
 import ansys.mechanical.core as pymechanical
 
 
