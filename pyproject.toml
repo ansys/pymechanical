@@ -48,14 +48,14 @@ Tracker = "https://github.com/ansys/pymechanical/issues"
 
 [project.optional-dependencies]
 tests = [
-    "pytest==7.3.2",
+    "pytest==7.4.0",
     "pytest-cov==4.1.0",
-    "pytest-print==0.3.2",
+    "pytest-print==0.3.3",
 ]
 doc = [
     "Sphinx==6.2.1", # BLOCKED BY sphinx-design - Cannot upgrade to Sphinx 7 for now
     "ansys-sphinx-theme==0.9.9",
-    "grpcio==1.54.2",
+    "grpcio==1.56.0",
     "imageio-ffmpeg==0.4.8",
     "imageio==2.31.1",
     "jupyter_sphinx==0.4.0",
@@ -66,7 +66,7 @@ doc = [
     "pypandoc==1.11",
     "pytest-sphinx==0.5.0",
     "pythreejs==2.4.2",
-    "pyvista==0.39.1",
+    "pyvista==0.40.0",
     "sphinx-autobuild==2021.3.14",
     "sphinx-autodoc-typehints==1.23.0",
     "sphinx-copybutton==0.5.2",

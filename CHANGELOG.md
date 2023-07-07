@@ -10,6 +10,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Added
 
 -   Add version configuration for embedding tests (#270)
+-   Add temporary private AppData functionality to run parallel embedded instances (#279)
 
 ### Fixed
 

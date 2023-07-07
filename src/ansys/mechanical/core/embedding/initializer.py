@@ -2,6 +2,7 @@
 from importlib.metadata import distribution
 import os
 from pathlib import Path
+import shutil
 import sys
 import warnings
 
@@ -12,6 +13,56 @@ from ansys.mechanical.core.embedding.resolver import resolve
 
 INITIALIZED_VERSION = None
 SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS = {241: "2024R1", 232: "2023R2", 231: "2023R1"}
+
+
+class TmpUser:
+    """Create Unique User Profile (for AppData)."""
+
+    def __init__(self, defaultProfile, profileName):
+        """Initialize TmpUser class."""
+        self.defaultProfile = defaultProfile
+        self.profileName = profileName
+
+    def set_env(self):
+        """Set environment variables for new user profile."""
+        home = self.profileName
+        if "win" in sys.platform:
+            os.environ["USERPROFILE"] = home
+            os.environ["APPDATA"] = os.path.join(home, "AppData/Roaming")
+            os.environ["LOCALAPPDATA"] = os.path.join(home, "AppData/Local")
+            os.environ["TMP"] = os.path.join(home, "AppData/Local/Temp")
+            os.environ["TEMP"] = os.path.join(home, "AppData/Local/Temp")
+        elif "lin" in sys.platform:
+            os.environ["HOME"] = home
+
+    def exists(self):
+        """Check if unique profile name already exists."""
+        if os.path.exists(self.profileName):
+            return True
+        else:
+            return False
+
+    def mkdirs(self):
+        """Create unique user profile & set up directory tree."""
+        os.makedirs(self.profileName)
+        if "win" in sys.platform:
+            locs = ["AppData/Roaming", "AppData/Local", "AppData/Local/Temp", "Documents"]
+        elif "lin" in sys.platform:
+            locs = [".config", "temp/reports"]
+
+        for loc in locs:
+            os.makedirs(os.path.join(self.profileName, loc))
+
+    def copy_profiles(self):
+        """Copy directories from current user into new user profile."""
+        if "win" in sys.platform:
+            locs = ["AppData/Roaming/Ansys", "AppData/Local/Ansys"]
+        elif "lin" in sys.platform:
+            locs = [".mw/Application Data/Ansys", ".config/Ansys"]
+        for loc in locs:
+            shutil.copytree(
+                os.path.join(self.defaultProfile, loc), os.path.join(self.profileName, loc)
+            )
 
 
 def __add_sys_path(version) -> str:
@@ -68,6 +119,32 @@ def _get_default_version() -> int:
     return int_version
 
 
+def set_private_appdata(pid):
+    """Set up unique user sessions when running parallel instances."""
+    defaultProfile = os.path.expanduser("~")
+    profileName = rf"{os.path.expanduser( '~' )}{pid}"
+
+    newProfile = TmpUser(defaultProfile, profileName)
+
+    if newProfile.exists():
+        newProfile.delete_dir()
+
+    newProfile.mkdirs()
+
+    newProfile.copy_profiles()
+
+    newProfile.set_env()
+
+    warnings.warn(
+        "Using the private_appdata option creates temporary directories when "
+        "running the pymechanical instances in parallel. "
+        f"There may be leftover files in {profileName}.",
+        stacklevel=2,
+    )
+
+    return profileName
+
+
 def initialize(version=None):
     """Initialize Mechanical embedding."""
     global INITIALIZED_VERSION
@@ -91,7 +168,11 @@ def initialize(version=None):
         warnings.warn(
             "The pythonnet package was found in your environment "
             "which interferes with the ansys-pythonnet package. "
-            "Some APIs may not work due to pythonnet being installed.",
+            "Some APIs may not work due to pythonnet being installed.\n\n"
+            "For using PyMechanical, we recommend you do the following:\n"
+            "1. Uninstall your existing pythonnet package: pip uninstall pythonnet\n"
+            "2. Install the ansys-pythonnet package: pip install --upgrade "
+            "--force-reinstall ansys-pythonnet\n",
             stacklevel=2,
         )
     except ModuleNotFoundError:
