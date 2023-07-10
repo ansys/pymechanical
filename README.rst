@@ -108,7 +108,7 @@ and later. Here is an example:
    import ansys.mechanical.core as pymechanical
 
    app = pymechanical.App()
-   result = app.ExtAPI.DataModel.Project.ProjectDirectory
+   project_dir = app.ExtAPI.DataModel.Project.ProjectDirectory
 
 Testing and Development
 -----------------------
