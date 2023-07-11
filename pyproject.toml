@@ -31,7 +31,7 @@ classifiers = [
 dependencies = [
     "ansys_api_mechanical==0.1.0",
     "ansys-pythonnet>=3.1.0rc1",
-    "ansys-tools-path>=0.2.6",
+    "ansys-tools-path>=0.3.1",
     "importlib-metadata>=4.0",
     "appdirs>=1.4.0",
     "grpcio>=1.30.0",
@@ -60,7 +60,7 @@ doc = [
     "imageio==2.31.1",
     "jupyter_sphinx==0.4.0",
     "jupyterlab>=3.2.8",
-    "matplotlib==3.7.1",
+    "matplotlib==3.7.2",
     "numpydoc==1.5.0",
     "plotly==5.15.0",
     "pypandoc==1.11",
