@@ -66,7 +66,7 @@ usage, type the following command:
 
         USAGE:
 
-        This example demonstrates the main use of this tool:
+        The following example demonstrates the main use of this tool:
 
             $ ansys-mechanical -r 232 -g
 
@@ -74,7 +74,7 @@ usage, type the following command:
 
     Options:
         -h, --help                 Show this message and exit.
-        -p, --project-file TEXT    Mechanical project file (.mechdb) to open. Cannot
+        -p, --project-file TEXT    Opens Mechanical project file (.mechdb). Cannot
                                     be mixed with -i
         --port INTEGER             Start mechanical in server mode with the given
                                     port number
