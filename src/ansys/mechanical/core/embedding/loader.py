@@ -1,7 +1,6 @@
 """clr_loader for pymechanical embedding. This loads the CLR on both windows and linux."""
-import os
-
 from importlib.metadata import version
+import os
 
 
 def __get_clr_loader_version():
