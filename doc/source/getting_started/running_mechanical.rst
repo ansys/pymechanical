@@ -92,8 +92,8 @@ usage, type the following command:
     ...
 
 
-You can launch Mechanical from the command line in server mode and then
-manually connect to the server. Use the `port` argument to select the port.```
+You can launch Mechanical in server mode from the command line and then
+manually connect to the server. Use the `port` argument to select the port.
 
 ..code::
 
