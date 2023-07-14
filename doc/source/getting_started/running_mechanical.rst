@@ -54,7 +54,7 @@ Launch Mechanical from the command line
 
 The `ansys-mechanical` utility is installed automatically with PyMechanical,
 and can be used to run Mechanical from the command line. To obtain help on
-usage, type this command:
+usage, type the following command:
 
 .. code:: console
 
@@ -93,7 +93,7 @@ usage, type this command:
 
 
 You can launch Mechanical from the command line in server mode and then
-manually connect to it. Use the `port` argument to select the port.
+manually connect to the server. Use the `port` argument to select the port.```
 
 ..code::
 
@@ -184,10 +184,10 @@ You can then use this output to debug why Mechanical isn't launching.
 
 Debug from the command line
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In some cases, debugging why Mechanical isn't launching might require
+You may need to run the launch command from the command line in order to debug why Mechanical is not launching.
 running the launch command from the command line.
 
-Open a terminal and run this command:
+Open a terminal and run the following command:
 
 .. code:: console
 
