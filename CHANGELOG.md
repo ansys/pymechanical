@@ -9,17 +9,18 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Added
 
--   Add console script (#297)
--   added import logging to doc file (#299)
+-   Add ansys-mechanical console script (#297)
 
 ### Changed
 
 -   Bump matplotlib from 3.7.1 to 3.7.2 (#294)
 -   Bump pyvista from 0.40.0 to 0.40.1 (#293)
+-   remove pkg-resources and importlib_metadata #300
 
 ### Fixed
 
 -   Update code snippet for accessing project directory. (#295)
+-   added import logging to doc file (#299)
 
 ## [0.9.2](https://github.com/ansys/pymechanical/releases/tag/v0.9.1) - July 7 2023
 
