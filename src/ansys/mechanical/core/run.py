@@ -61,7 +61,7 @@ def _run(args):
     "-p",
     "--project-file",
     default=None,
-    help="Mechanical project file (.mechdb) to open. Cannot be mixed with -i",
+    help="Opens Mechanical project file (.mechdb). Cannot be mixed with -i",
 )
 @click.option(
     "--port",
@@ -116,7 +116,7 @@ def cli(
 
     USAGE:
 
-    This example demonstrates the main use of this tool:
+    The following example demonstrates the main use of this tool:
 
         $ ansys-mechanical -r 232 -g
 
