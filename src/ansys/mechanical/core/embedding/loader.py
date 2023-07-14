@@ -1,23 +1,10 @@
 """clr_loader for pymechanical embedding. This loads the CLR on both windows and linux."""
+from importlib.metadata import version
 import os
-
-try:
-    from importlib.metadata import version
-
-    HAS_IMPORTLIB = True
-except:  # pragma: no cover
-    # TODO - only support importlib.metadata::version after dropping python3.7 support.
-    # pkg_resources is part of distutils and is considered obsolete.
-    import pkg_resources
-
-    HAS_IMPORTLIB = False
 
 
 def __get_clr_loader_version():
-    if HAS_IMPORTLIB:
-        return version("clr_loader")
-    else:  # pragma: no cover
-        return pkg_resources.get_distribution("clr_loader").version
+    return version("clr_loader")
 
 
 def __get_mono(assembly_dir, config_dir):
