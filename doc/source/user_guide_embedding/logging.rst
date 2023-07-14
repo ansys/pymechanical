@@ -15,6 +15,7 @@ For example:
 
 .. code:: python
 
+    import logging
     import ansys.mechanical.core as mech
     from ansys.mechanical.core.embedding.logger import Configuration, Logger
 
