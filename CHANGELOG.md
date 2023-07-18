@@ -9,8 +9,44 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Added
 
+-   Add ansys-mechanical console script (#297)
+
+### Changed
+
+-   Bump matplotlib from 3.7.1 to 3.7.2 (#294)
+-   Bump pyvista from 0.40.0 to 0.40.1 (#293)
+-   remove pkg-resources and importlib_metadata #300
+
+### Fixed
+
+-   Update code snippet for accessing project directory. (#295)
+-   added import logging to doc file (#299)
+
+## [0.9.2](https://github.com/ansys/pymechanical/releases/tag/v0.9.1) - July 7 2023
+
+
+### Added
+
+-   Added private AppData functionality to embedding (#285)
+
+### Fixed
+
+-   Updated pythonnet warning message (#286)
+
+### Changed
+
+-   Bump pytest from 7.3.2 to 7.4.0 (#282)
+-   Bump grpcio from 1.54.2 to 1.56.0 (#283)
+
+## [0.9.1](https://github.com/ansys/pymechanical/releases/tag/v0.9.1) - June 21 2023
+
+### Added
+
 -   Add version configuration for embedding tests (#270)
--   Add temporary private AppData functionality to run parallel embedded instances (#279)
+
+### Changed
+
+-   Bump pytest-print from 0.3.1 to 0.3.2 (#273)
 
 ### Fixed
 
