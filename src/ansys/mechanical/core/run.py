@@ -136,10 +136,10 @@ def cli(
 
     if not revision:
         exe, version = atp.find_mechanical()
-        version = int(version * 10)
     else:
-        exe, _ = atp.find_mechanical(version=revision)
+        exe, version = atp.find_mechanical(version=revision)
 
+    version = int(version * 10)
     version_name = atp.SUPPORTED_ANSYS_VERSIONS[version]
 
     args = [exe, "-DSApplet"]
