@@ -21,6 +21,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 -   Update code snippet for accessing project directory. (#295)
 -   added import logging to doc file (#299)
+-   Fix version variable issue running "ansys-mechanical -r {revn} -g" (#302)
 
 ## [0.9.2](https://github.com/ansys/pymechanical/releases/tag/v0.9.1) - July 7 2023
 
