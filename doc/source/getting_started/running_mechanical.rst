@@ -184,7 +184,7 @@ You can then use this output to debug why Mechanical isn't launching.
 
 Debug from the command line
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-You may need to run the launch command from the command line in order to debug why Mechanical is not launching.
+You may need to run the ``launch`` command from the command line to debug why Mechanical is not launching.
 running the launch command from the command line.
 
 Open a terminal and run the following command:
