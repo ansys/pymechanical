@@ -68,7 +68,7 @@ doc = [
     "pythreejs==2.4.2",
     "pyvista==0.40.1",
     "sphinx-autobuild==2021.3.14",
-    "sphinx-autodoc-typehints==1.23.0", # BLOCKED BY sphinx-design - Cannot upgrade to Sphinx 7 for now
+    "sphinx-autodoc-typehints==1.24.0", # BLOCKED BY sphinx-design - Cannot upgrade to Sphinx 7 for now
     "sphinx-copybutton==0.5.2",
     "sphinx_design==0.4.1",
     "sphinx-gallery==0.13.0",
