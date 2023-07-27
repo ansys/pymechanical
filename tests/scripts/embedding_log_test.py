@@ -4,6 +4,7 @@ import logging
 import sys
 
 import ansys.mechanical.core as mech
+from ansys.mechanical.core.embedding.config import Configuration as EmbeddingConfiguration
 from ansys.mechanical.core.embedding.logger import Configuration, Logger
 
 
@@ -24,6 +25,20 @@ def log_error_after_initialize_with_info_level(version):
     _ = mech.App(version=version)
     Configuration.configure(level=logging.INFO, to_stdout=True, base_directory=None)
     Logger.error("Will no one rid me of this turbulent priest?")
+
+
+def log_configuration_mechanical(version):
+    """Log at the info level after app starts with the `Mechanical` configuration."""
+    _ = mech.App(version=version, config=EmbeddingConfiguration("Mechanical"))
+    Configuration.configure(level=logging.INFO, to_stdout=True, base_directory=None)
+    Logger.error("Mechanical configuration!")
+
+
+def log_configuration_workbench(version):
+    """Log at the info level after app starts with the `WorkBench` configuration."""
+    _ = mech.App(version=version, config=EmbeddingConfiguration("WorkBench"))
+    Configuration.configure(level=logging.INFO, to_stdout=True, base_directory=None)
+    Logger.error("WorkBench configuration!")
 
 
 def log_check_can_log_message(version):
@@ -51,6 +66,8 @@ if __name__ == "__main__":
         "log_info_after_initialize_with_error_level": log_info_after_initialize_with_error_level,
         "log_error_after_initialize_with_info_level": log_error_after_initialize_with_info_level,
         "log_check_can_log_message": log_check_can_log_message,
+        "log_configuration_Mechanical": log_configuration_mechanical,
+        "log_configuration_WorkBench": log_configuration_workbench,
     }
     tests[test_name](int(version))
     print("@@success@@")
