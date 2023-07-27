@@ -49,52 +49,55 @@ Launch Mechanical locally with this code:
     Software build date:Wednesday, August 10, 2022 4:28:15 PM
 
 
-Launch a Mechanical server from the command line
+Launch Mechanical from the command line
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can launch Mechanical from the command line in server mode and then
-manually connect to it.
+The `ansys-mechanical` utility is installed automatically with PyMechanical,
+and can be used to run Mechanical from the command line. To obtain help on
+usage, type the following command:
 
-**On Windows**
+.. code:: console
 
-Assume that Mechanical is installed at ``C:/Program Files/ANSYS Inc/vXXX``
-, where ``XXX`` is the three-digit format for the version. For example,
-the path for 2023 R1 is typically ``C:/Program Files/ANSYS Inc/v231``.
+    $ ansys-mechanical --help
 
-Launch Mechanical in server mode with this code:
+    Usage: ansys-mechanical [OPTIONS]
 
-.. code::
+        CLI tool to run mechanical.
 
-    C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe -DSApplet -AppModeMech -nosplash -notabctrl -grpc 10000
+        USAGE:
 
-**On Linux**
+        The following example demonstrates the main use of this tool:
 
-Assume that Mechanical 2023 R1 is installed at ``/usr/ansys_inc``.
+            $ ansys-mechanical -r 232 -g
 
-Launch Mechanical in server mode with this code:
+            Starting Ansys Mechanical version 2023R2 in graphical mode...
 
-.. code::
+    Options:
+        -h, --help                 Show this message and exit.
+        -p, --project-file TEXT    Opens Mechanical project file (.mechdb). Cannot
+                                    be mixed with -i
+        --port INTEGER             Start mechanical in server mode with the given
+                                    port number
+        -i, --input-script TEXT    Name of the input Python script. Cannot be mixed
+                                    with -p
+        -s, --show-welcome-screen  Show the welcome screen, where you can select the
+                                    file to open.        Only affects graphical mode
+        --debug                    Show a debug dialog right when the process
+                                    starts.
+        -r, --revision INTEGER     Ansys Revision number, e.g. "241" or "232". If
+                                    none is specified, uses the default from ansys-
+                                    tools-path
+        -g, --graphical            Graphical mode
 
-    /usr/ansys_inc/v231/aisol/.workbench -dsapplet -AppModeMech -nosplash -notabctrl -grpc 10000
+    ...
 
 
-View server information
-~~~~~~~~~~~~~~~~~~~~~~~~
-As Mechanical starts in server mode, you can see the server information:
+You can launch Mechanical in server mode from the command line and then
+manually connect to the server. Use the `port` argument to select the port.
 
-.. code::
+..code::
 
-    Starting the grpc server at port 10000
-    Started the grpc server at port 10000
-
-If you want to configure the port that the Mechanical server listens on, when you launch
-Mechanical, use the ``-grpc`` argument. For example, on Linux, launch Mechanical 2023 R1
-on port ``10001`` with:
-
-.. code::
-
-    C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe -grpc 10001
-
+    ansys-mechanical --port 10000
 
 Connect to a Mechanical session
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -181,30 +184,14 @@ You can then use this output to debug why Mechanical isn't launching.
 
 Debug from the command line
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In some cases, debugging why Mechanical isn't launching might require
-running the launch command from the command line. The following
-Windows and Linux code examples assume that you are launching Mechanical
-2023 R1.
+You may need to run the ``launch`` command from the command line to debug why Mechanical is not launching.
+running the launch command from the command line.
 
-**On Windows**
+Open a terminal and run the following command:
 
-Open a command prompt and run this command:
+.. code:: console
 
-.. code::
-
-    "C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe -DSApplet -AppModeMech -nosplash -notabctrl -grpc 10000"
-
-.. note::
-   PowerShell users can run the preceding command without including the opening and
-   closing quotation marks.
-
-
-**On Linux**
-
-.. code::
-
-    /usr/ansys_inc/v231/aisol/.workbench -DSApplet -AppModeMech -nosplash -notabctrl -grpc 10000
-
+    ansys-mechanical -g --port 10000
 
 If the preceding command for your operating system doesn't launch Mechanical, you might have
 a variety of issues, including:
