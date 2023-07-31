@@ -53,7 +53,7 @@ tests = [
     "pytest-print==0.3.3",
 ]
 doc = [
-    "Sphinx==6.2.1", # BLOCKED BY sphinx-design - Cannot upgrade to Sphinx 7 for now
+    "Sphinx==7.1.1", # BLOCKED BY sphinx-design - Cannot upgrade to Sphinx 7 for now
     "ansys-sphinx-theme==0.9.9",
     "grpcio==1.56.2",
     "imageio-ffmpeg==0.4.8",
