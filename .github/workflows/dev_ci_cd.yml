@@ -1,0 +1,330 @@
+name: Dev GitHub CI
+# on:
+#   pull_request:
+#   workflow_dispatch:
+#   push:
+#     tags:
+#       - "*"
+#     branches:
+#       - main
+#       - release/*
+
+env:
+  PYMECHANICAL_PORT: 10000  # default won't work on GitHub runners
+  PYMECHANICAL_START_INSTANCE: FALSE
+  DOCKER_PACKAGE: ghcr.io/ansys/mechanical
+  DOCKER_IMAGE_VERSION: 24.1.0
+  DOCKER_MECH_CONTAINER_NAME: mechanical
+  MAIN_PYTHON_VERSION: '3.10'
+  PACKAGE_NAME: ansys-mechanical-core
+  PACKAGE_NAMESPACE: ansys.mechanical.core
+  DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  style:
+    name: Code style
+    runs-on: ubuntu-latest
+    steps:
+      - name: PyAnsys code style checks
+        uses: ansys/actions/code-style@v4
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+
+  docs-style:
+    name: Documentation Style Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: PyAnsys documentation style checks
+        uses: ansys/actions/doc-style@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  smoke-tests:
+    name: Build and Smoke tests
+    runs-on: ${{ matrix.os }}
+    needs: [style]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.8', '3.9', '3.10', '3.11']
+        should-release: 
+          - ${{ github.event_name == 'push' && contains(github.ref, 'refs/tags') }}
+        exclude:
+          - should-release: false
+            os: macos-latest
+    steps:
+      - name: Build wheelhouse and perform smoke test
+        uses: ansys/actions/build-wheelhouse@v4
+        with:
+          library-name: ${{ env.PACKAGE_NAME }}
+          library-namespace: ${{ env.PACKAGE_NAMESPACE }}
+          operating-system: ${{ matrix.os }}
+          python-version: ${{ matrix.python-version }}
+          # use-python-cache: false
+
+  tests:
+    name: Testing and coverage - Mechanical ${{ matrix.mechanical-version }}
+    runs-on: public-ubuntu-latest-8-cores
+    needs: [smoke-tests]
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      fail-fast: false
+      matrix:
+        mechanical-version: ['24.1.0']
+        experimental: [false]
+
+    steps:
+      - name: Login in Github Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull, launch, and validate Mechanical service
+        env:
+          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
+          MECHANICAL_IMAGE: ${{ env.DOCKER_PACKAGE }}:${{ matrix.mechanical-version }}
+        run: |
+          docker pull ${{ env.MECHANICAL_IMAGE }}
+          docker run --restart always --name ${{ env.DOCKER_MECH_CONTAINER_NAME }} -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }} > log.txt &
+          grep -q 'WB Initialize Done' <(timeout 60 tail -f log.txt)
+
+      - name: Testing
+        uses: ansys/actions/tests-pytest@v4
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+
+      # - name: Upload coverage to Codecov
+      #   uses: codecov/codecov-action@v3
+
+      - name: Upload coverage results
+        uses: actions/upload-artifact@v3
+        if: matrix.mechanical-version == env.DOCKER_IMAGE_VERSION
+        with:
+          name: coverage-tests
+          path: .cov
+          retention-days: 7
+
+      - name: Upload coverage results (as .coverage)
+        uses: actions/upload-artifact@v3
+        if: matrix.mechanical-version == env.DOCKER_IMAGE_VERSION
+        with:
+          name: coverage-file-tests
+          path: .coverage
+          retention-days: 7
+
+      - name: Get Mechanical container logs
+        if: always()
+        run: |
+          docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > mechanical_tests_log-${{ matrix.mechanical-version }}.txt 2>&1
+          echo CONTAINER LOGS OUTPUT
+          cat mechanical_tests_log-${{ matrix.mechanical-version }}.txt
+          echo CPU info
+          lscpu
+
+      - name: Upload container logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: mechanical_tests_log-${{ matrix.mechanical-version }}
+          path: mechanical_tests_log-${{ matrix.mechanical-version }}.txt
+          retention-days: 7
+
+  embedding-tests:
+    name: Embedding testing and coverage
+    runs-on: ubuntu-latest
+    # needs: [smoke-tests]
+    container:
+      image: ghcr.io/ansys/mechanical:24.1.0
+      options: --entrypoint /bin/bash
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11']
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          apt update
+          apt install -y lsb-release
+          apt install -y python3-pip
+          apt install -y python3.8-venv
+          pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
+          pip3 install --upgrade pip flit
+      - name: Install packages for testing
+        run: |
+          pip install .[tests]
+
+      - name: Unit Testing and coverage
+        env:
+          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
+          ANSYSCL241_DIR: /install/ansys_inc/v241/licensingclient
+          ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
+          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
+          ANSYS_WORKBENCH_LOGGING: 0
+          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
+          NUM_CORES: 1
+        run: |
+          /install/ansys_inc/v241/aisol/.workbench_lite pytest -m embedding -k logging > pytest_output.txt || true
+          cat pytest_output.txt
+          #
+          # Check if failure occurred
+          #
+          output=$(grep -c "FAILURES" pytest_output.txt || true)
+          if [ $output -eq 0 ]; then
+            echo "Pytest execution succeeded"
+            exit 0
+          else
+            echo "Pytest execution failed"
+            exit 1
+          fi
+
+      - name: Upload coverage results
+        uses: actions/upload-artifact@v3
+        if: env.MAIN_PYTHON_VERSION == matrix.python-version
+        with:
+          name: coverage-tests-embedding
+          path: .cov
+          retention-days: 7
+
+      - name: Upload coverage results (as .coverage)
+        uses: actions/upload-artifact@v3
+        if: env.MAIN_PYTHON_VERSION == matrix.python-version
+        with:
+          name: coverage-file-tests-embedding
+          path: .coverage
+          retention-days: 7
+
+  launch-tests:
+    name: Launch testing and coverage
+    runs-on: public-ubuntu-latest-8-cores
+    container:
+      image: ghcr.io/ansys/mechanical:24.1.0
+      options: --entrypoint /bin/bash
+    needs: [ smoke-tests ]
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11' ]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          apt update
+          apt install -y lsb-release
+          apt install -y python3-pip
+          apt install -y python3.8-venv
+          pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
+          pip3 install --upgrade pip flit
+      - name: Install packages for testing
+        run: |
+          pip install .[tests]
+
+      - name: Unit Testing and coverage
+        env:
+          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
+          ANSYSCL232_DIR: /install/ansys_inc/v241/licensingclient
+          ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
+          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
+        run: |
+          unset PYMECHANICAL_PORT
+          unset PYMECHANICAL_START_INSTANCE
+          pytest -m remote_session_launch > pytest_output.txt || true
+          cat pytest_output.txt
+          #
+          # Check if failure occurred
+          #
+          output=$(grep -c "FAILURES" pytest_output.txt || true)
+          if [ $output -eq 0 ]; then
+            echo "Pytest execution succeeded"
+            exit 0
+          else
+            echo "Pytest execution failed"
+            exit 1
+          fi
+
+
+  coverage:
+    name: Merging coverage
+    needs: [tests, embedding-tests, launch-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+
+      - name: Install coverage
+        run: |
+          python -m pip install -U pip
+          pip install coverage
+          pip install -e .
+
+      - name: Create common coverage directory
+        run: mkdir cov-dir
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: coverage-file-tests-embedding
+          path: cov-dir/embedding
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: coverage-file-tests-remote-session-launch
+          path: cov-dir/launch
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: coverage-file-tests
+          path: cov-dir/normal
+
+      - name: Display structure of downloaded files
+        run: ls -Ra
+
+      - name: Move files to common location
+        run: |
+          mv cov-dir/embedding/.coverage .coverage.Embedding
+          mv cov-dir/launch/.coverage .coverage.Launch
+          mv cov-dir/normal/.coverage .coverage.Normal
+          rm -rf cov-dir
+      
+      - name: Generate .coveragerc file
+        run: |
+          cat > .coveragerc << 'EOF'
+
+          # .coveragerc to control coverage.py
+          [run]
+          relative_files = True
+
+          [paths]
+          source =
+              src/ansys/mechanical
+              /opt/hostedtoolcache/**/ansys/mechanical
+              /usr/local/lib/**/ansys/mechanical
+
+          EOF
+      
+      - name: Run coverage merge and show results
+        run: |
+          coverage combine --keep --debug=pathmap --rcfile=.coveragerc
+          coverage report
+          coverage html -d .coverage-combined/html
+          coverage xml -o .coverage-combined/xml
+
+      - name: Upload combined coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: combined-coverage-results
+          path: .coverage-combined
+          retention-days: 7
