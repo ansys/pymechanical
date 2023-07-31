@@ -70,7 +70,7 @@ doc = [
     "sphinx-autobuild==2021.3.14",
     "sphinx-autodoc-typehints==1.23.0", # BLOCKED BY sphinx-design - Cannot upgrade to Sphinx 7 for now
     "sphinx-copybutton==0.5.2",
-    "sphinx_design==0.4.1",
+    "sphinx_design==0.5.0",
     "sphinx-gallery==0.13.0",
     "sphinx-notfound-page==0.8.3",
     "sphinxcontrib-websupport==1.2.4",
