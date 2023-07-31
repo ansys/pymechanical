@@ -1,4 +1,7 @@
 name: Dev GitHub CI
+on: 
+  workflow_dispatch:
+
 # on:
 #   pull_request:
 #   workflow_dispatch:
