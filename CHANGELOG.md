@@ -9,19 +9,32 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [0.9.3](https://github.com/ansys/pymechanical/releases/tag/v0.9.3) - July 27 2023
+
+### Added
+
 -   Add ansys-mechanical console script (#297)
 
 ### Changed
 
 -   Bump matplotlib from 3.7.1 to 3.7.2 (#294)
 -   Bump pyvista from 0.40.0 to 0.40.1 (#293)
--   remove pkg-resources and importlib_metadata #300
+-   Bump sphinx-autodoc-typehints from 1.23.0 to 1.23.3 (#284)
+-   Bump patch version (#292)
+-   Remove pkg-resources and importlib_metadata (#300)
+-   Bump grpcio from 1.56.0 to 1.56.2 (#305)
+-   Bump pyvista from 0.40.1 to 0.41.1 (#306)
 
 ### Fixed
 
 -   Update code snippet for accessing project directory. (#295)
--   added import logging to doc file (#299)
+-   Added import logging to doc file (#299)
 -   Fix version variable issue running "ansys-mechanical -r {revn} -g" (#302)
+-   Update wording in running_mechanical.rst (#303)
 
 ## [0.9.2](https://github.com/ansys/pymechanical/releases/tag/v0.9.1) - July 7 2023
 
