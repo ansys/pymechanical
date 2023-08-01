@@ -115,7 +115,13 @@ class App:
         self.DataModel.Project.New()
 
     def close(self):
-        """Close the application."""
+        """Close the application and remove the lock file."""
+        lockfile_path = os.path.join(self.DataModel.Project.ProjectDirectory, ".mech_lock")
+        if os.path.exists(lockfile_path):
+            try:
+                os.remove(lockfile_path)
+            except:
+                raise Exception("There was an issue removing the lock file.")
         self.ExtAPI.Application.Close()
 
     def execute_script(self, script: str):
