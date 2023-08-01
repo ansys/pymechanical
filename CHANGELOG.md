@@ -13,6 +13,8 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Fixed
 
+-   Broken links (#316)
+
 ## [0.9.3](https://github.com/ansys/pymechanical/releases/tag/v0.9.3) - July 27 2023
 
 ### Added
