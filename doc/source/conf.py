@@ -273,3 +273,7 @@ epub_title = project
 
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ["search.html"]
+
+# -- Linkcheck config --------------------------------------------------------
+
+linkcheck_ignore = [r"https://github.com/ansys/pymechanical/pkgs/container/.*"]
