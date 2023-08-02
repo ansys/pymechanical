@@ -116,13 +116,13 @@ class App:
 
     def close(self):
         """Close the application and remove the lock file."""
+        self.ExtAPI.Application.Close()
         lockfile_path = os.path.join(self.DataModel.Project.ProjectDirectory, ".mech_lock")
         if os.path.exists(lockfile_path):
             try:
                 os.remove(lockfile_path)
             except:
                 raise Exception("There was an issue removing the lock file.")
-        self.ExtAPI.Application.Close()
 
     def execute_script(self, script: str):
         """Execute the given script with the internal IronPython engine."""
