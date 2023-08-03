@@ -83,17 +83,19 @@ jobs:
         with:
           files_yaml: |
             doc:
-              - '**.md'
+              - 'CHANGELOG.md'
 
       - name: Conditionally Run
-        if:   not contains(${{ steps.changed-files-yaml.outputs.doc_all_changed_files }}, "CHANGELOG.md")
-        run:  echo "CHANGELOG did not exist and should run"
+        if: "!contains(${{ steps.changed-files-yaml.outputs.doc_all_changed_files }}, 'CHANGELOG.md')"
+        run: |
+          echo "Please update CHANGELOG.md before submitting the pull request."
+          exit 1
 
       # - name: List all changed files tracked and untracked files
-        # if: ${{ steps.changed-files-yaml.outputs.doc_all_changed_files }} != "CHANGELOG.md"
+       # if: ${{ steps.changed-files-yaml.outputs.doc_all_changed_files }} != "CHANGELOG.md"
         # run: |
-          
-          # echo "List all the files that have changed: '${{ steps.changed-files-yaml.outputs.doc_all_changed_files }}'"
+          #echo "List all the files that have changed: '${{ steps.changed-files-yaml.outputs.doc_all_changed_files }}'"
+          #exit 1
 
   tests:
     name: Testing and coverage - Mechanical ${{ matrix.mechanical-version }}
