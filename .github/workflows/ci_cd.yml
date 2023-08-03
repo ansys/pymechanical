@@ -79,7 +79,7 @@ jobs:
 
       - name: List all changed files tracked and untracked files
         run: |
-          echo ${{ containsValue(${{ steps.verify-changed-files.outputs.changed_files }}, 'CHANGELOG.md') }}
+          echo contains(${{ steps.verify-changed-files.outputs.changed_files }}, 'CHANGELOG.md')
 
   tests:
     name: Testing and coverage - Mechanical ${{ matrix.mechanical-version }}
