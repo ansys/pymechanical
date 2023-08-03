@@ -10,6 +10,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Added
 
 -   Added warning for ansys-mechanical when provided an input script (#319)
+-   Added version check for ansys-mechanical warning message (#323)
 
 ### Changed
 
