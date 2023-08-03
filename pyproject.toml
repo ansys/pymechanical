@@ -125,5 +125,6 @@ markers = [
     "python_env: tests that check for an appropriate python environment",
     "remote_session_launch: tests that launch Mechanical and work with gRPC server inside it",
     "remote_session_connect: tests that connect to Mechanical and work with gRPC server inside it",
+    "version_dependent: tests that run if ansys-version is greater than or equal to 241",
 ]
 xfail_strict = true

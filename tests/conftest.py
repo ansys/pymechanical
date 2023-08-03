@@ -297,3 +297,14 @@ def mechanical_pool():
 def pytest_addoption(parser):
     # parser.addoption("--debugging", action="store_true")
     parser.addoption("--ansys-version", default="232")
+
+
+def pytest_collection_modifyitems(config, items):
+    """Skips tests marked version_dependent if ansys-version is less than 241."""
+    if int(config.getoption("--ansys-version")) < 241:
+        skip_versions = pytest.mark.skip(
+            reason="Requires ansys-version greater than or equal to 241."
+        )
+        for item in items:
+            if "version_dependent" in item.keywords:
+                item.add_marker(skip_versions)

@@ -74,10 +74,9 @@ def test_logging_write_info_after_initialize_with_error_level(rootdir, pytestcon
 
 @pytest.mark.parametrize("addin_configuration", ["Mechanical", "WorkBench"])
 @pytest.mark.embedding
+@pytest.mark.version_dependent
 def test_addin_configuration(rootdir, pytestconfig, addin_configuration):
-    """Test that mechanical can start with both the Mechanical and WorkBench configuration"""
-
-    # TODO - this test only makes sense for version 241+. Find a way to restrict it...
+    """Test that mechanical can start with both the Mechanical and WorkBench configuration."""
     stderr = _run_embedding_log_test(
         rootdir, pytestconfig, f"log_configuration_{addin_configuration}"
     )
