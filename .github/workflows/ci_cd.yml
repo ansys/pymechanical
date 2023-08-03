@@ -70,6 +70,7 @@ jobs:
 
   changelog-check:
     name: Changelog Update Check
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -79,7 +80,7 @@ jobs:
 
       - name: List all changed files tracked and untracked files
         run: |
-          echo contains(${{ steps.verify-changed-files.outputs.changed_files }}, 'CHANGELOG.md')
+          echo ${{ steps.verify-changed-files.outputs.changed_files }}
 
   tests:
     name: Testing and coverage - Mechanical ${{ matrix.mechanical-version }}
