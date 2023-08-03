@@ -87,7 +87,7 @@ jobs:
 
       - name: Check Changelog Edited
         run: |
-          if [[ "${{ steps.changed-files-yaml.outputs.doc_all_changed_files }}" =~ "CHANGELOG.md" ]]; then
+          if [[ "${{ steps.changed-files-yaml.outputs.doc_all_changed_files }}" == "CHANGELOG.md" ]]; then
               echo "CHANGELOG.md was updated."
           else
               echo "Please update CHANGELOG.md before merging the pull request."
