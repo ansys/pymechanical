@@ -40,11 +40,13 @@ def log_configuration_workbench(version):
     Configuration.configure(level=logging.INFO, to_stdout=True, base_directory=None)
     Logger.error("WorkBench configuration!")
 
+
 def log_configuration_legacy(version):
     """Log at the info level after app starts with the `WorkBench` configuration."""
     _ = mech.App(version=version, config=EmbeddingConfiguration("Legacy"))
     Configuration.configure(level=logging.INFO, to_stdout=True, base_directory=None)
     Logger.error("Legacy configuration!")
+
 
 def log_check_can_log_message(version):
     """Configure logger before app initialization and check can_log_message."""
