@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.916
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ansys.Mechanical.Future", "Ansys.Mechanical.Future.csproj", "{5AF8D903-F620-49AD-ADD3-BD094C44CEC9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5AF8D903-F620-49AD-ADD3-BD094C44CEC9}.Debug|x64.ActiveCfg = Debug|x64
+		{5AF8D903-F620-49AD-ADD3-BD094C44CEC9}.Debug|x64.Build.0 = Debug|x64
+		{5AF8D903-F620-49AD-ADD3-BD094C44CEC9}.Release|x64.ActiveCfg = Release|x64
+		{5AF8D903-F620-49AD-ADD3-BD094C44CEC9}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CFAA26ED-3A54-429E-9624-86F36D077F35}
+	EndGlobalSection
+EndGlobal
