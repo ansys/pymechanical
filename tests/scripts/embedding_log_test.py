@@ -4,7 +4,7 @@ import logging
 import sys
 
 import ansys.mechanical.core as mech
-from ansys.mechanical.core.embedding.config import Configuration as EmbeddingConfiguration
+from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.embedding.logger import Configuration, Logger
 
 
@@ -29,21 +29,21 @@ def log_error_after_initialize_with_info_level(version):
 
 def log_configuration_mechanical(version):
     """Log at the info level after app starts with the `Mechanical` configuration."""
-    _ = mech.App(version=version, config=EmbeddingConfiguration("Mechanical"))
+    _ = mech.App(version=version, config=AddinConfiguration("Mechanical"))
     Configuration.configure(level=logging.INFO, to_stdout=True, base_directory=None)
     Logger.error("Mechanical configuration!")
 
 
 def log_configuration_workbench(version):
     """Log at the info level after app starts with the `WorkBench` configuration."""
-    _ = mech.App(version=version, config=EmbeddingConfiguration("WorkBench"))
+    _ = mech.App(version=version, config=AddinConfiguration("WorkBench"))
     Configuration.configure(level=logging.INFO, to_stdout=True, base_directory=None)
     Logger.error("WorkBench configuration!")
 
 
 def log_configuration_legacy(version):
     """Log at the info level after app starts with the `WorkBench` configuration."""
-    _ = mech.App(version=version, config=EmbeddingConfiguration("Legacy"))
+    _ = mech.App(version=version, config=AddinConfiguration("Legacy"))
     Configuration.configure(level=logging.INFO, to_stdout=True, base_directory=None)
     Logger.error("Legacy configuration!")
 

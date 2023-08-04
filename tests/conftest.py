@@ -12,6 +12,7 @@ import pytest
 import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core import LocalMechanicalPool
 from ansys.mechanical.core._version import SUPPORTED_MECHANICAL_VERSIONS
+from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.errors import MechanicalExitedError
 from ansys.mechanical.core.misc import get_mechanical_bin
 
@@ -97,6 +98,9 @@ def start_embedding_app(version) -> datetime.timedelta:
     global EMBEDDED_APP
     ensure_embedding()
     start = datetime.datetime.now()
+
+    config = AddinConfiguration(pytestconfig.getoption("addin_configuration"))
+
     EMBEDDED_APP = App(version=int(version))
     startup_time = (datetime.datetime.now() - start).total_seconds()
     num_cores = os.environ.get("NUM_CORES", None)
@@ -308,3 +312,5 @@ def pytest_collection_modifyitems(config, items):
         for item in items:
             if "version_dependent" in item.keywords:
                 item.add_marker(skip_versions)
+
+    parser.addoption("--addin-configuration", default="Mechanical")

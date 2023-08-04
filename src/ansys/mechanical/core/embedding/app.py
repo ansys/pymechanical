@@ -4,13 +4,11 @@ import os
 import shutil
 
 from ansys.mechanical.core.embedding import initializer, runtime
-from ansys.mechanical.core.embedding.config import Configuration
+from ansys.mechanical.core.embedding.addins import AddinConfiguration
 
 
-def _get_default_configuration() -> Configuration:
-    configuration = Configuration()
-    if os.name != "nt":
-        configuration.no_act_addins = True
+def _get_default_addin_configuration() -> AddinConfiguration:
+    configuration = AddinConfiguration()
     return configuration
 
 

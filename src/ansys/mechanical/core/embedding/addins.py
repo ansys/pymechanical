@@ -2,12 +2,16 @@
 import os
 
 
-class Configuration:
+class AddinConfiguration:
     """Configuration class for Mechanical."""
 
-    def __init__(self, addin_configuration: str = "Mechanical"):
+    def __init__(self, addin_configuration: str = "Mechanical", **kwargs):
         """Construct a new Configuration instance."""
-        self._no_act_addins = False
+
+        # by default, disable ACT addins on linux
+        disable_act_addins: bool = os.name != "nt"
+
+        self._no_act_addins = kwargs.get("disable_act_addins", disable_act_addins)
         self._addin_configuration = addin_configuration
 
     @property
