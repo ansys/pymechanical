@@ -126,7 +126,13 @@ class App:
         self.DataModel.Project.New()
 
     def close(self):
-        """Close the application."""
+        """Close the active project."""
+        # Call New() to remove the lock file of the
+        # current project on close.
+        self.DataModel.Project.New()
+
+    def exit(self):
+        """Exit the application."""
         self.ExtAPI.Application.Close()
 
     def execute_script(self, script: str):
