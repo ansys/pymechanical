@@ -68,6 +68,32 @@ jobs:
           python-version: ${{ matrix.python-version }}
           # use-python-cache: false
 
+  changelog-check:
+    name: Changelog Update Check
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          
+      - name: Get all doc files that have changed
+        id: changed-files-yaml
+        uses: tj-actions/changed-files@v37
+        with:
+          files_yaml: |
+            doc:
+              - 'CHANGELOG.md'
+
+      - name: Check Changelog Edited
+        run: |
+          if [[ "${{ steps.changed-files-yaml.outputs.doc_all_changed_files }}" == "CHANGELOG.md" ]]; then
+              echo "CHANGELOG.md was updated."
+          else
+              echo "Please update CHANGELOG.md before merging the pull request."
+              exit 1
+          fi
+
   tests:
     name: Testing and coverage - Mechanical ${{ matrix.mechanical-version }}
     runs-on: public-ubuntu-latest-8-cores
