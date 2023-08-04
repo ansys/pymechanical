@@ -303,6 +303,7 @@ def pytest_addoption(parser):
     parser.addoption("--ansys-version", default="232")
     parser.addoption("--addin-configuration", default="Mechanical")
 
+
 def pytest_collection_modifyitems(config, items):
     """Skips tests marked version_dependent if ansys-version is less than 241."""
     if int(config.getoption("--ansys-version")) < 241:
