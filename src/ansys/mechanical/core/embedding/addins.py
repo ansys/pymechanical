@@ -7,7 +7,6 @@ class AddinConfiguration:
 
     def __init__(self, addin_configuration: str = "Mechanical", **kwargs):
         """Construct a new Configuration instance."""
-
         # by default, disable ACT addins on linux
         disable_act_addins: bool = os.name != "nt"
 
