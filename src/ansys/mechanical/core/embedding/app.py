@@ -25,7 +25,7 @@ def _cleanup_private_appdata(folder):
     shutil.rmtree(folder, ignore_errors=True)
 
 
-def _start_application(configuration: Configuration, version, db_file) -> "App":
+def _start_application(configuration: AddinConfiguration, version, db_file) -> "App":
     import clr
 
     clr.AddReference("Ansys.Mechanical.Embedding")
