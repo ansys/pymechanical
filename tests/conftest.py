@@ -305,11 +305,12 @@ def pytest_addoption(parser):
 
 
 def pytest_collection_modifyitems(config, items):
-    """Skips tests marked version_dependent if ansys-version is less than 241."""
-    if int(config.getoption("--ansys-version")) < 241:
-        skip_versions = pytest.mark.skip(
-            reason="Requires ansys-version greater than or equal to 241."
-        )
-        for item in items:
-            if "version_dependent" in item.keywords:
+    """Skips tests marked minimum_version if ansys-version is less than mark argument."""
+    for item in items:
+        if "minimum_version" in item.keywords:
+            revn = [mark.args[0] for mark in item.iter_markers(name="minimum_version")]
+            if int(config.getoption("--ansys-version")) < revn[0]:
+                skip_versions = pytest.mark.skip(
+                    reason=f"Requires ansys-version greater than or equal to {revn[0]}."
+                )
                 item.add_marker(skip_versions)
