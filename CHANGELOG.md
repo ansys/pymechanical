@@ -10,6 +10,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Added
 
 -   Added warning for ansys-mechanical when provided an input script (#319)
+-   Add changelog check to CI/CD (#322)
 -   Added version check for ansys-mechanical warning message (#323)
 
 ### Changed
@@ -17,6 +18,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Fixed
 
 -   Broken links (#316)
+-   Fixed warning message for ansys-mechanical (#326)
 
 ## [0.9.3](https://github.com/ansys/pymechanical/releases/tag/v0.9.3) - July 27 2023
 

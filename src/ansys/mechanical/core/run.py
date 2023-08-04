@@ -179,6 +179,13 @@ def cli(
             stacklevel=2,
         )
 
+        if version < 241:
+            warnings.warn(
+                "Please ensure ExtAPI.Application.Close() is at the end of your script. "
+                "Without this command, Batch mode will not terminate.",
+                stacklevel=2,
+            )
+
     print(f"Starting Ansys Mechanical version {version_name} in {mode} mode...")
     if port:
         # TODO - Mechanical doesn't write anything to the stdout in grpc mode
