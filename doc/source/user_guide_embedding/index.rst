@@ -48,7 +48,7 @@ namespaces, and types, see :ref:`ref_embedding_user_guide_globals`.
 Additional configuration
 ------------------------
 By default, an instance of the :class:`Application <ansys.mechanical.core.embedding.Application>` class
-uses the same addin configuration as standalone Mechanical. To customize addins, see
+uses the same Addin configuration as standalone Mechanical. To customize Addins, see
 :ref:`ref_embedding_user_guide_addin_configuration`.
 
 Diagnosing problems with embedding
