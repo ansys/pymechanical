@@ -71,7 +71,7 @@ class App:
         version = kwargs.get("version")
         self._version = initializer.initialize(version)
 
-        configuration = kwargs.get("config", _get_default_configuration())
+        configuration = kwargs.get("config", _get_default_addin_configuration())
 
         if private_appdata:
             self.pid = os.getpid()

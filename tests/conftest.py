@@ -92,7 +92,7 @@ def ensure_embedding() -> None:
         raise Exception("Cannot run embedded tests if Mechanical embedding is not installed")
 
 
-def start_embedding_app(version) -> datetime.timedelta:
+def start_embedding_app(version, pytestconfig) -> datetime.timedelta:
     from ansys.mechanical.core import App
 
     global EMBEDDED_APP
@@ -117,7 +117,7 @@ EMBEDDED_APP = None
 @pytest.fixture(scope="session")
 def embedded_app(pytestconfig, request):
     global EMBEDDED_APP
-    startup_time = start_embedding_app(pytestconfig.getoption("ansys_version"))
+    startup_time = start_embedding_app(pytestconfig.getoption("ansys_version"), pytestconfig)
     terminal_reporter = request.config.pluginmanager.getplugin("terminalreporter")
     if terminal_reporter is not None:
         terminal_reporter.write_line(f"\t{startup_time}\tStarting Mechanical")
