@@ -145,16 +145,12 @@ def test_normal_appdata(test_env, rootdir):
 
 
 @pytest.mark.embedding
-def test_rm_lockfile(embedded_app):
+def test_rm_lockfile(embedded_app, tmp_path: pytest.TempPathFactory):
     """Test lock file is removed on close of embedded application."""
-    mechdat_path = os.path.join(os.getcwd(), "test.mechdat")
+    mechdat_path = os.path.join(tmp_path, "test.mechdat")
     embedded_app.save(mechdat_path)
     embedded_app.close()
 
     lockfile_path = os.path.join(embedded_app.DataModel.Project.ProjectDirectory, ".mech_lock")
     # Assert lock file path does not exist
     assert not os.path.exists(lockfile_path)
-
-    # Remove ProjectDirectory and test.mechdat
-    shutil.rmtree(embedded_app.DataModel.Project.ProjectDirectory)
-    os.remove(mechdat_path)
