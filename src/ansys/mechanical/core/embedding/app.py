@@ -41,7 +41,8 @@ def _start_application(configuration: Configuration, version, db_file) -> "App":
     # of Application
     if version >= 241:
         return Ansys.Mechanical.Embedding.Application(db_file, addin_configuration_name)
-    return Ansys.Mechanical.Embedding.Application(db_file)
+    else:
+        return Ansys.Mechanical.Embedding.Application(db_file)
 
 
 class App:
