@@ -371,7 +371,7 @@ This method does not show a notification:
     powershell.exe -Command "Set-NetFirewallProfile -DisabledInterfaceAliases \"vEthernet (WSL)\""
 
 
-On Windows 10, you can use the `wsl-windows-toolbar-launcher <https://github.com/cascadium/wsl-windows-toolbar-launcher#firewall-rules/>`_
+On Windows 10, you can use the `wsl-windows-toolbar-launcher <https://github.com/cascadium/wsl-windows-toolbar-launcher#firewall-rules>`_
 package to launch Linux native apps directly from Windows with the standard
 Windows toolbar. Because the toolbar in Windows 11 differs, the README
 file for this package explains how to run Microsoft's `PowerToys <https://github.com/microsoft/PowerToys>`_

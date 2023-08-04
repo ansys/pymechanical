@@ -19,7 +19,7 @@ Running Mechanical in a containerized environment like Docker or `Apptainer <htt
 Install the Mechanical image
 -----------------------------
 There is a Docker image hosted in the `PyMechanical GitHub
-<https://github.com/ansys/pymechanical/pkgs/container/pymechanical%2Fmechanical>`_ repository that you
+<https://github.com/ansys/pymechanical/pkgs/container/mechanical>`_ repository that you
 can download using your GitHub credentials.
 
 Assuming that you have Docker installed, you can authorize Docker to access
