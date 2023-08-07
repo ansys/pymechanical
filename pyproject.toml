@@ -51,6 +51,7 @@ tests = [
     "pytest==7.4.0",
     "pytest-cov==4.1.0",
     "pytest-print==0.3.3",
+    "clr-loader==0.2.5",
 ]
 doc = [
     "Sphinx==7.1.2",
