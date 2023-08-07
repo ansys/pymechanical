@@ -1,6 +1,5 @@
 """Miscellaneous embedding tests"""
 import os
-import shutil
 import subprocess
 import tempfile
 
@@ -17,7 +16,7 @@ def test_app_repr(embedded_app):
 
 
 @pytest.mark.embedding
-def test_app_save_open(embedded_app):
+def test_app_save_open(embedded_app, tmp_path: pytest.TempPathFactory):
     """Test save and open of the Application class."""
     import System
     import clr  # noqa: F401
@@ -28,23 +27,17 @@ def test_app_save_open(embedded_app):
 
     embedded_app.DataModel.Project.Name = "PROJECT 1"
     tmpname = tempfile.mktemp()
-    project_file = f"{tmpname}.mechdat"
-    project_files = f"{tmpname}_Mech_Files"
+    project_file = os.path.join(tmp_path, f"{tmpname}.mechdat")
     embedded_app.save_as(project_file)
-    try:
-        embedded_app.new()
-        embedded_app.open(project_file)
-        assert embedded_app.DataModel.Project.Name == "PROJECT 1"
-        embedded_app.DataModel.Project.Name = "PROJECT 2"
-        embedded_app.save()
-        embedded_app.new()
-        embedded_app.open(project_file)
-        assert embedded_app.DataModel.Project.Name == "PROJECT 2"
-        embedded_app.new()
-    except:
-        # clean up the project files
-        shutil.rmtree(project_files)
-        os.remove(project_file)
+    embedded_app.new()
+    embedded_app.open(project_file)
+    assert embedded_app.DataModel.Project.Name == "PROJECT 1"
+    embedded_app.DataModel.Project.Name = "PROJECT 2"
+    embedded_app.save()
+    embedded_app.new()
+    embedded_app.open(project_file)
+    assert embedded_app.DataModel.Project.Name == "PROJECT 2"
+    embedded_app.new()
 
 
 @pytest.mark.embedding
