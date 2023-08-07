@@ -11,21 +11,13 @@ def __get_mono(assembly_dir, config_dir):
     import clr_loader
 
     libmono = os.path.join(assembly_dir, "libmonosgen-2.0.so")
-    if __get_clr_loader_version() == "0.2.5":
-        mono = clr_loader.get_mono(
-            set_signal_chaining=True,
-            libmono=libmono,
-            assembly_dir=assembly_dir.encode("utf-8"),
-            config_dir=config_dir.encode("utf-8"),
-        )
-    else:
-        # the bugs with get_mono are fixed (clr_loader PR #48)
-        mono = clr_loader.get_mono(
-            set_signal_chaining=True,
-            libmono=libmono,  # find_mono is broken on version 0.2.6
-            assembly_dir=assembly_dir,
-            config_dir=config_dir,
-        )
+    # the bugs with get_mono are fixed (clr_loader PR #48)
+    mono = clr_loader.get_mono(
+        set_signal_chaining=True,
+        libmono=libmono,  # find_mono is broken on version 0.2.6
+        assembly_dir=assembly_dir,
+        config_dir=config_dir,
+    )
     return mono
 
 
