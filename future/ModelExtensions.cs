@@ -15,8 +15,8 @@ namespace Ansys.Mechanical.Future
         public static void ExportHDF5TransferFile(
             this Model model,
             string filename,
-            Enums.TransferFileFormat format,
-            ModelHDF5ExportSettings settings)
+            Enums.TransferFileFormat format = Enums.TransferFileFormat.HDF5,
+            ModelHDF5ExportSettings settings = null)
         {
             if (format != Enums.TransferFileFormat.HDF5)
                 throw new System.Exception("Unknown format");
