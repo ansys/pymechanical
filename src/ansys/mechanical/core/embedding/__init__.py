@@ -1,4 +1,4 @@
 """Imports for the embedding sub-package."""
+from .addins import AddinConfiguration
 from .app import App
-from .config import Configuration
 from .imports import global_variables
