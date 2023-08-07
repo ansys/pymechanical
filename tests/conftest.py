@@ -12,6 +12,7 @@ import pytest
 import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core import LocalMechanicalPool
 from ansys.mechanical.core._version import SUPPORTED_MECHANICAL_VERSIONS
+from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.errors import MechanicalExitedError
 from ansys.mechanical.core.misc import get_mechanical_bin
 
@@ -91,12 +92,15 @@ def ensure_embedding() -> None:
         raise Exception("Cannot run embedded tests if Mechanical embedding is not installed")
 
 
-def start_embedding_app(version) -> datetime.timedelta:
+def start_embedding_app(version, pytestconfig) -> datetime.timedelta:
     from ansys.mechanical.core import App
 
     global EMBEDDED_APP
     ensure_embedding()
     start = datetime.datetime.now()
+
+    config = AddinConfiguration(pytestconfig.getoption("addin_configuration"))
+
     EMBEDDED_APP = App(version=int(version))
     startup_time = (datetime.datetime.now() - start).total_seconds()
     num_cores = os.environ.get("NUM_CORES", None)
@@ -113,7 +117,7 @@ EMBEDDED_APP = None
 @pytest.fixture(scope="session")
 def embedded_app(pytestconfig, request):
     global EMBEDDED_APP
-    startup_time = start_embedding_app(pytestconfig.getoption("ansys_version"))
+    startup_time = start_embedding_app(pytestconfig.getoption("ansys_version"), pytestconfig)
     terminal_reporter = request.config.pluginmanager.getplugin("terminalreporter")
     if terminal_reporter is not None:
         terminal_reporter.write_line(f"\t{startup_time}\tStarting Mechanical")
@@ -297,3 +301,16 @@ def mechanical_pool():
 def pytest_addoption(parser):
     # parser.addoption("--debugging", action="store_true")
     parser.addoption("--ansys-version", default="232")
+    parser.addoption("--addin-configuration", default="Mechanical")
+
+
+def pytest_collection_modifyitems(config, items):
+    """Skips tests marked minimum_version if ansys-version is less than mark argument."""
+    for item in items:
+        if "minimum_version" in item.keywords:
+            revn = [mark.args[0] for mark in item.iter_markers(name="minimum_version")]
+            if int(config.getoption("--ansys-version")) < revn[0]:
+                skip_versions = pytest.mark.skip(
+                    reason=f"Requires ansys-version greater than or equal to {revn[0]}."
+                )
+                item.add_marker(skip_versions)

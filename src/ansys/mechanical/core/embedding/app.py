@@ -4,13 +4,11 @@ import os
 import shutil
 
 from ansys.mechanical.core.embedding import initializer, runtime
-from ansys.mechanical.core.embedding.config import Configuration, configure
+from ansys.mechanical.core.embedding.addins import AddinConfiguration
 
 
-def _get_default_configuration() -> Configuration:
-    configuration = Configuration()
-    if os.name != "nt":
-        configuration.no_act_addins = True
+def _get_default_addin_configuration() -> AddinConfiguration:
+    configuration = AddinConfiguration()
     return configuration
 
 
@@ -25,6 +23,24 @@ def _dispose_embedded_app(instances):  # pragma: nocover
 
 def _cleanup_private_appdata(folder):
     shutil.rmtree(folder, ignore_errors=True)
+
+
+def _start_application(configuration: AddinConfiguration, version, db_file) -> "App":
+    import clr
+
+    clr.AddReference("Ansys.Mechanical.Embedding")
+    import Ansys
+
+    if configuration.no_act_addins:
+        os.environ["ANSYS_MECHANICAL_STANDALONE_NO_ACT_EXTENSIONS"] = "1"
+
+    addin_configuration_name = configuration.addin_configuration
+    # Starting with version 241 we can pass a configuration name to the constructor
+    # of Application
+    if version >= 241:
+        return Ansys.Mechanical.Embedding.Application(db_file, addin_configuration_name)
+    else:
+        return Ansys.Mechanical.Embedding.Application(db_file)
 
 
 class App:
@@ -54,20 +70,15 @@ class App:
             raise Exception("Cannot have more than one embedded mechanical instance")
         version = kwargs.get("version")
         self._version = initializer.initialize(version)
-        import clr
 
-        clr.AddReference("Ansys.Mechanical.Embedding")
-        import Ansys
-
-        configuration = kwargs.get("config", _get_default_configuration())
-        configure(configuration)
+        configuration = kwargs.get("config", _get_default_addin_configuration())
 
         if private_appdata:
             self.pid = os.getpid()
             self.tmp_dir = initializer.set_private_appdata(self.pid)
             atexit.register(_cleanup_private_appdata, self.tmp_dir)
 
-        self._app = Ansys.Mechanical.Embedding.Application(db_file)
+        self._app = _start_application(configuration, self._version, db_file)
         runtime.initialize(self._version)
         self._disposed = False
         atexit.register(_dispose_embedded_app, INSTANCES)

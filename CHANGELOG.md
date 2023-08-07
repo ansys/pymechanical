@@ -27,6 +27,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Added
 
 -   Add ansys-mechanical console script (#297)
+-   addin configuration and tests (#308)
 
 ### Changed
 
