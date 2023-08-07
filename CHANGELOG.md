@@ -17,6 +17,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Changed
 
 -   Update python minimum requirement from 3.7 to 3.8 (#333)
+-   Minor private appdata updates (#335)
 
 ### Fixed
 

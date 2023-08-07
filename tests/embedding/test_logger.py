@@ -27,7 +27,7 @@ def _assert_success(process: subprocess.Popen, pass_expected: bool) -> int:
 
     # HACK! On linux, due to bug #85, there is always a crash on shutdown
     # so instead there's a print("success") that happens after the test
-    # function runs, which will only be execution if the function doesn't
+    # function runs that will only be executed if the function doesn't
     # throw. To check for the subprocess success, ensure that the stdout
     # has "@@success@@" (a value written there in the subprocess after the
     # test function runs)

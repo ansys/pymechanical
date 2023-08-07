@@ -122,7 +122,7 @@ def _get_default_version() -> int:
 def set_private_appdata(pid):
     """Set up unique user sessions when running parallel instances."""
     defaultProfile = os.path.expanduser("~")
-    profileName = rf"{os.path.expanduser( '~' )}{pid}"
+    profileName = os.path.join(defaultProfile, f"PyMechanical-{pid}")
 
     newProfile = TmpUser(defaultProfile, profileName)
 
@@ -138,8 +138,7 @@ def set_private_appdata(pid):
     warnings.warn(
         "Using the private_appdata option creates temporary directories when "
         "running the pymechanical instances in parallel. "
-        f"There may be leftover files in {profileName}.",
-        stacklevel=2,
+        f"There may be leftover files in {profileName}."
     )
 
     return profileName
