@@ -9,6 +9,17 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Added
 
+
+### Changed
+
+
+### Fixed
+
+
+## [0.10.0](https://github.com/ansys/pymechanical/releases/tag/v0.10.0) - August 7 2023
+
+### Added
+
 -   Added warning for ansys-mechanical when provided an input script (#319)
 -   Add changelog check to CI/CD (#322)
 -   Added version check for ansys-mechanical warning message (#323)
@@ -50,7 +61,6 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 -   Update wording in running_mechanical.rst (#303)
 
 ## [0.9.2](https://github.com/ansys/pymechanical/releases/tag/v0.9.1) - July 7 2023
-
 
 ### Added
 
