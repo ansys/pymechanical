@@ -138,8 +138,7 @@ def set_private_appdata(pid):
     warnings.warn(
         "Using the private_appdata option creates temporary directories when "
         "running the pymechanical instances in parallel. "
-        f"There may be leftover files in {profileName}.",
-        stacklevel=2,
+        f"There may be leftover files in {profileName}."
     )
 
     return profileName
