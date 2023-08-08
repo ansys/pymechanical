@@ -21,7 +21,6 @@ class UniqueUserProfile:
             self.cleanup()
         self.mkdirs()
         self.copy_profiles()
-        self.warn()
 
     def cleanup(self) -> None:
         """Cleanup unique user profile."""

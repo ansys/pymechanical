@@ -76,6 +76,7 @@ class App:
         if private_appdata:
             new_profile_name = f"PyMechanical-{os.getpid()}"
             profile = UniqueUserProfile(new_profile_name)
+            profile.warn()
             profile.update_environment(os.environ)
             atexit.register(_cleanup_private_appdata, profile)
 
