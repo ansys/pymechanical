@@ -172,6 +172,7 @@ jobs:
       image: ghcr.io/ansys/mechanical:23.2.0
       options: --entrypoint /bin/bash
     strategy:
+      max-parallel: 2
       fail-fast: false
       matrix:
         python-version: ['3.8', '3.9', '3.10', '3.11']
