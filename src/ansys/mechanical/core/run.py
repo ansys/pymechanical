@@ -70,8 +70,8 @@ def _run(args, env):
     "--private-appdata",
     default=None,
     is_flag=True,
-    help="Use a private appdata.\
- This is beneficial for running parallel instances of Mechanical.",
+    help="Make the appdata folder private.\
+ This enables you to run parallel instances of Mechanical.",
 )
 @click.option(
     "--port",

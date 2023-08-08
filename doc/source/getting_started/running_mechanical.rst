@@ -76,8 +76,8 @@ usage, type the following command:
         -h, --help                 Show this message and exit.
         -p, --project-file TEXT    Opens Mechanical project file (.mechdb). Cannot
                                     be mixed with -i
-        --private-appdata          Use a private appdata. This is beneficial for
-                                    running parallel instances of Mechanical.
+        --private-appdata         Make the appdata folder private. This enables you
+                                    to run parallel instances of Mechanical.
         --port INTEGER             Start mechanical in server mode with the given
                                     port number
         -i, --input-script TEXT    Name of the input Python script. Cannot be mixed
