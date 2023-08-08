@@ -13,7 +13,6 @@ from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 
 # TODO - add logging options (reuse env var based logging initialization)
 # TODO - add timeout
-# TODO - close mechanical automatically after script exits
 
 
 async def _read_and_display(cmd, env):
@@ -84,6 +83,15 @@ def _run(args, env):
     help="Name of the input Python script. Cannot be mixed with -p",
 )
 @click.option(
+    "--exit",
+    is_flag=True,
+    default=None,
+    help="Exit after running input script. \
+        Can only be used with -i.\
+        Defaults to true if not graphical mode. \
+        Only supported in versions 241 and later",
+)
+@click.option(
     "-s",
     "--show-welcome-screen",
     is_flag=True,
@@ -121,6 +129,7 @@ def cli(
     graphical: bool,
     show_welcome_screen: bool,
     private_appdata: bool,
+    exit: bool,
 ):
     """CLI tool to run mechanical.
 
@@ -181,19 +190,19 @@ def cli(
         args.append("-script")
         args.append(input_script)
 
-    if (not graphical) and input_script and (version < 241):
-        warnings.warn(
-            "Please ensure ExtAPI.Application.Close() is at the end of your script. "
-            "Without this command, Batch mode will not terminate.",
-            stacklevel=2,
-        )
+    if (not graphical) and input_script and version >= 241:
+        args.exit = True
 
+    if (not graphical) and input_script:
         if version < 241:
             warnings.warn(
                 "Please ensure ExtAPI.Application.Close() is at the end of your script. "
                 "Without this command, Batch mode will not terminate.",
                 stacklevel=2,
             )
+
+    if exit and input_script:
+        args.append("-x")
 
     profile: UniqueUserProfile = None
     if private_appdata:
