@@ -17,7 +17,7 @@ from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 
 
 async def _read_and_display(cmd, env):
-    """Read cmd's stdout, stderr while displaying them as they arrive."""
+    """Read command's stdout and stderr and display them as they are processed."""
     # start process
     process = await asyncio.create_subprocess_exec(*cmd, stdout=PIPE, stderr=PIPE)
 
