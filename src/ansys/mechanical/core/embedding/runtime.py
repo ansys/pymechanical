@@ -23,16 +23,4 @@ def initialize(version: int) -> None:
     do some special codec handling to make sure the
     interop works well for Mechanical.
     """
-    if loader.is_pythonnet_3():
-        __initialize_runtime_pythonnet_3()
-    else:  # pragma: no cover
-        # pythonnet 2.5 is supported with some codecs
-        # and some additions to the system path that are shipped with Mechanical in 2023 R1
-        # these additions to the system path may not be desirable for pymechanical embedding
-        if version == 231:
-            import clr
-
-            clr.AddReference("Ansys.Mechanical.CPython")
-            import Ansys
-
-            Ansys.Mechanical.CPython.CPythonEngine.InitializeRuntime()
+    __initialize_runtime_pythonnet_3()
