@@ -8,7 +8,26 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ## [Unreleased][]
 
 ### Added
+
 -   New features for ansys-mechanical console script (#343)
+
+### Changed
+
+-   Remove library-namespace from CI/CD (#342)
+
+### Fixed
+
+## [0.10.1](https://github.com/ansys/pymechanical/releases/tag/v0.10.1) - August 8 2023
+
+### Changed
+
+-   Bump ansys-sphinx-theme from 0.10.0 to 0.10.2 (#337)
+-   Update clr-loader dependency (#339)
+
+## [0.10.0](https://github.com/ansys/pymechanical/releases/tag/v0.10.0) - August 7 2023
+
+### Added
+
 -   Added warning for ansys-mechanical when provided an input script (#319)
 -   Add changelog check to CI/CD (#322)
 -   Added version check for ansys-mechanical warning message (#323)
@@ -18,8 +37,6 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 -   Update python minimum requirement from 3.7 to 3.8 (#333)
 -   Minor private appdata updates (#335)
--   Bump ansys-sphinx-theme from 0.10.0 to 0.10.2 (#337)
--   Update clr-loader dependency (#339)
 
 ### Fixed
 
@@ -52,7 +69,6 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 -   Update wording in running_mechanical.rst (#303)
 
 ## [0.9.2](https://github.com/ansys/pymechanical/releases/tag/v0.9.1) - July 7 2023
-
 
 ### Added
 
