@@ -5,6 +5,13 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 This document follows the conventions laid out in [Keep a CHANGELOG](https://keepachangelog.com/en/1.0.0).
 
+## [0.10.1](https://github.com/ansys/pymechanical/releases/tag/v0.10.1) - August 8 2023
+
+### Changed
+
+-   Bump ansys-sphinx-theme from 0.10.0 to 0.10.2 (#337)
+-   Update clr-loader dependency (#339)
+
 ## [0.10.0](https://github.com/ansys/pymechanical/releases/tag/v0.10.0) - August 7 2023
 
 ### Added
@@ -50,7 +57,6 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 -   Update wording in running_mechanical.rst (#303)
 
 ## [0.9.2](https://github.com/ansys/pymechanical/releases/tag/v0.9.1) - July 7 2023
-
 
 ### Added
 
