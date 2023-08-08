@@ -4,6 +4,7 @@ import asyncio
 from asyncio.subprocess import PIPE
 import os
 import sys
+import typing
 import warnings
 
 import ansys.tools.path as atp
@@ -190,10 +191,8 @@ def cli(
         args.append("-script")
         args.append(input_script)
 
-    if (not graphical) and input_script and version >= 241:
-        args.exit = True
-
     if (not graphical) and input_script:
+        exit = True
         if version < 241:
             warnings.warn(
                 "Please ensure ExtAPI.Application.Close() is at the end of your script. "
@@ -201,24 +200,24 @@ def cli(
                 stacklevel=2,
             )
 
-    if exit and input_script:
+    if exit and input_script and version >= 241:
         args.append("-x")
 
     profile: UniqueUserProfile = None
+    env: typing.Dict[str, str] = None
     if private_appdata:
         env = os.environ.copy()
         new_profile_name = f"Mechanical-{os.getpid()}"
-        profile = UniqueUserProfile(new_profile_name, os.environ)
+        profile = UniqueUserProfile(new_profile_name)
         profile.update_environment(env)
-    else:
-        env = None
 
     print(f"Starting Ansys Mechanical version {version_name} in {mode} mode...")
     if port:
         # TODO - Mechanical doesn't write anything to the stdout in grpc mode
-        #        when logging is off.. Ideally we les Mechanical write it, so
+        #        when logging is off.. Ideally we let Mechanical write it, so
         #        the user only sees the message when the server is ready.
         print(f"Serving on port {port}")
+
     _run(args, env)
 
     if private_appdata:
