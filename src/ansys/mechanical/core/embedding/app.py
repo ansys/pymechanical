@@ -53,8 +53,8 @@ class App:
         you may set a version number with the `version` keyword argument.
 
         private_appdata is an optional setting for a temporary AppData directory.
-        By default, private_appdata is False. This is beneficial for running parallel
-        instances of mechanical.
+        By default, private_appdata is False. This enables you to run parallel
+        instances of Mechanical.
         """
         global INSTANCES
         from ansys.mechanical.core import BUILDING_GALLERY

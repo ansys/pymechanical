@@ -54,7 +54,7 @@ class UniqueUserProfile:
         return os.path.exists(self.location)
 
     def mkdirs(self) -> None:
-        """Create unique user profile & set up directory tree."""
+        """Create a unique user profile & set up the directory tree."""
         os.makedirs(self.location)
         if "win" in sys.platform:
             locs = ["AppData/Roaming", "AppData/Local", "Documents"]
@@ -65,7 +65,7 @@ class UniqueUserProfile:
             os.makedirs(os.path.join(self.location, loc))
 
     def copy_profiles(self) -> None:
-        """Copy directories from current user into new user profile."""
+        """Copy current user directories into a new user profile."""
         if "win" in sys.platform:
             locs = ["AppData/Roaming/Ansys", "AppData/Local/Ansys"]
         elif "lin" in sys.platform:

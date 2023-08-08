@@ -89,10 +89,11 @@ usage, type the following command:
                                     application in graphical mode. The ``exit``
                                     command is only supported in version 2024 R1 or
                                     later.
-        -s, --show-welcome-screen  Show the welcome screen, where you can select the
-                                    file to open. Only affects graphical mode
-        --debug                    Show a debug dialog right when the process
-                                    starts.
+        -s, --show-welcome-screen  Show the welcome screen. You use this screen to
+                                    open a file. This argument only affects the
+                                    application when in graphical mode.
+        --debug                    Show a debug dialog window at the start of the
+                                    process.
         -r, --revision INTEGER     Ansys Revision number, e.g. "241" or "232". If
                                     none is specified, uses the default from ansys-
                                     tools-path
