@@ -24,13 +24,12 @@ class UniqueUserProfile:
 
     def cleanup(self) -> None:
         """Cleanup unique user profile."""
+        text = "The `private_appdata` option was used, but the following files were not removed: "
         message = []
 
         def onerror(function, path, excinfo):
             if len(message) == 0:
-                message.append(
-                    f"The private_appdata option was used, but the following files were not removed: {path}"
-                )
+                message.append(f"{text}{path}")
                 warnings.warn(message[0])
 
         shutil.rmtree(self.location, onerror=onerror)
