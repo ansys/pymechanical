@@ -4,8 +4,8 @@ import os
 import shutil
 
 from ansys.mechanical.core.embedding import initializer, runtime
+from ansys.mechanical.core.embedding.appdata import set_private_appdata
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
-
 
 def _get_default_addin_configuration() -> AddinConfiguration:
     configuration = AddinConfiguration()
@@ -75,7 +75,7 @@ class App:
 
         if private_appdata:
             self.pid = os.getpid()
-            self.tmp_dir = initializer.set_private_appdata(self.pid)
+            self.tmp_dir = set_private_appdata(self.pid).profile_name
             atexit.register(_cleanup_private_appdata, self.tmp_dir)
 
         self._app = _start_application(configuration, self._version, db_file)
