@@ -9,9 +9,11 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Added
 
+-   Max parallel 2 for embedding tests - ci_cd.yml (#341)
+
 ### Changed
 
-- Remove library-namespace from CI/CD (#342)
+-   Remove library-namespace from CI/CD (#342)
 
 ### Fixed
 
