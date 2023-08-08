@@ -82,9 +82,13 @@ usage, type the following command:
                                     port number
         -i, --input-script TEXT    Name of the input Python script. Cannot be mixed
                                     with -p
-        --exit                     Exit after running input script.  Can only be
-                                    used with -i. Defaults to true if not graphical
-                                    mode. Only supported in versions 241 and later.
+        --exit                     Exit the application after running an input
+                                    script. You can only use this command with
+                                    --input-script argument (-i). The command
+                                    defaults to true you are not running the
+                                    application in graphical mode. The ``exit``
+                                    command is only supported in version 2024 R1 or
+                                    later.
         -s, --show-welcome-screen  Show the welcome screen, where you can select the
                                     file to open. Only affects graphical mode
         --debug                    Show a debug dialog right when the process

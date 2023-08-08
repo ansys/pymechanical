@@ -88,10 +88,10 @@ def _run(args, env):
     "--exit",
     is_flag=True,
     default=None,
-    help="Exit after running input script. \
- Can only be used with -i.\
- Defaults to true if not graphical mode.\
- Only supported in versions 241 and later.",
+    help="Exit the application after running an input script. \
+You can only use this command with --input-script argument (-i). \
+The command defaults to true you are not running the application in graphical mode. \
+The ``exit`` command is only supported in version 2024 R1 or later.",
 )
 @click.option(
     "-s",
