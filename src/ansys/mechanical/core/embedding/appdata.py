@@ -24,7 +24,7 @@ class UniqueUserProfile:
         self.warn()
 
     def cleanup(self) -> None:
-        """Cleanup unique user profile"""
+        """Cleanup unique user profile."""
         shutil.rmtree(self.location, ignore_errors=True)
 
     @property
@@ -71,7 +71,7 @@ class UniqueUserProfile:
             )
 
     def warn(self) -> None:
-        """Issue warning"""
+        """Issue warning."""
         warnings.warn(
             "Using the private_appdata option creates temporary directories when "
             "running mechanical in parallel. "

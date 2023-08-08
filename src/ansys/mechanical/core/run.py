@@ -9,12 +9,14 @@ import warnings
 import ansys.tools.path as atp
 import click
 
+from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
+
 # TODO - add logging options (reuse env var based logging initialization)
 # TODO - add timeout
 # TODO - close mechanical automatically after script exits
 
 
-async def _read_and_display(cmd):
+async def _read_and_display(cmd, env):
     """Read cmd's stdout, stderr while displaying them as they arrive."""
     # start process
     process = await asyncio.create_subprocess_exec(*cmd, stdout=PIPE, stderr=PIPE)
@@ -42,14 +44,14 @@ async def _read_and_display(cmd):
     return rc, b"".join(stdout), b"".join(stderr)
 
 
-def _run(args):
+def _run(args, env):
     if os.name == "nt":
         loop = asyncio.ProactorEventLoop()  # for subprocess' pipes on Windows
         asyncio.set_event_loop(loop)
     else:
         loop = asyncio.get_event_loop()
     try:
-        rc, *output = loop.run_until_complete(_read_and_display(args))
+        rc, *output = loop.run_until_complete(_read_and_display(args, env))
         if rc:
             sys.exit("child failed with '{}' exit code".format(rc))
     finally:
@@ -63,6 +65,12 @@ def _run(args):
     "--project-file",
     default=None,
     help="Opens Mechanical project file (.mechdb). Cannot be mixed with -i",
+)
+@click.option(
+    "--private-appdata",
+    default=None,
+    is_flag=True,
+    help="Use a private appdata. This is beneficial for running parallel instances of Mechanical",
 )
 @click.option(
     "--port",
@@ -112,6 +120,7 @@ def cli(
     revision: int,
     graphical: bool,
     show_welcome_screen: bool,
+    private_appdata: bool,
 ):
     """CLI tool to run mechanical.
 
@@ -186,10 +195,22 @@ def cli(
                 stacklevel=2,
             )
 
+    profile: UniqueUserProfile = None
+    if private_appdata:
+        env = os.environ.copy()
+        new_profile_name = f"Mechanical-{os.getpid()}"
+        profile = UniqueUserProfile(new_profile_name, os.environ)
+        profile.update_environment(env)
+    else:
+        env = None
+
     print(f"Starting Ansys Mechanical version {version_name} in {mode} mode...")
     if port:
         # TODO - Mechanical doesn't write anything to the stdout in grpc mode
         #        when logging is off.. Ideally we les Mechanical write it, so
         #        the user only sees the message when the server is ready.
         print(f"Serving on port {port}")
-    _run(args)
+    _run(args, env)
+
+    if private_appdata:
+        profile.cleanup()
