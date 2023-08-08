@@ -88,9 +88,9 @@ def _run(args, env):
     is_flag=True,
     default=None,
     help="Exit after running input script. \
-        Can only be used with -i.\
-        Defaults to true if not graphical mode. \
-        Only supported in versions 241 and later",
+Can only be used with -i.\
+Defaults to true if not graphical mode. \
+Only supported in versions 241 and later",
 )
 @click.option(
     "-s",
@@ -98,7 +98,7 @@ def _run(args, env):
     is_flag=True,
     default=False,
     help="Show the welcome screen, where you can select the file to open.\
-        Only affects graphical mode",
+Only affects graphical mode",
 )
 @click.option(
     "--debug",
