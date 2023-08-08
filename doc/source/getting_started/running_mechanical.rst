@@ -77,16 +77,16 @@ usage, type the following command:
         -p, --project-file TEXT    Opens Mechanical project file (.mechdb). Cannot
                                     be mixed with -i
         --private-appdata          Use a private appdata. This is beneficial for
-                                    running parallel instances of Mechanical
+                                    running parallel instances of Mechanical.
         --port INTEGER             Start mechanical in server mode with the given
                                     port number
         -i, --input-script TEXT    Name of the input Python script. Cannot be mixed
                                     with -p
-        --exit                     Exit after running input script. Can only be used
-                                    with -i.Defaults to true if not graphical mode.
-                                    Only supported in versions 241 and later
+        --exit                     Exit after running input script.  Can only be
+                                    used with -i. Defaults to true if not graphical
+                                    mode. Only supported in versions 241 and later.
         -s, --show-welcome-screen  Show the welcome screen, where you can select the
-                                    file to open.Only affects graphical mode
+                                    file to open. Only affects graphical mode
         --debug                    Show a debug dialog right when the process
                                     starts.
         -r, --revision INTEGER     Ansys Revision number, e.g. "241" or "232". If

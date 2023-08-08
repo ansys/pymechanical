@@ -70,7 +70,8 @@ def _run(args, env):
     "--private-appdata",
     default=None,
     is_flag=True,
-    help="Use a private appdata. This is beneficial for running parallel instances of Mechanical",
+    help="Use a private appdata.\
+ This is beneficial for running parallel instances of Mechanical.",
 )
 @click.option(
     "--port",
@@ -88,9 +89,9 @@ def _run(args, env):
     is_flag=True,
     default=None,
     help="Exit after running input script. \
-Can only be used with -i.\
-Defaults to true if not graphical mode. \
-Only supported in versions 241 and later",
+ Can only be used with -i.\
+ Defaults to true if not graphical mode.\
+ Only supported in versions 241 and later.",
 )
 @click.option(
     "-s",
@@ -98,7 +99,7 @@ Only supported in versions 241 and later",
     is_flag=True,
     default=False,
     help="Show the welcome screen, where you can select the file to open.\
-Only affects graphical mode",
+ Only affects graphical mode",
 )
 @click.option(
     "--debug",
