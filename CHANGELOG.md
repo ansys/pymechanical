@@ -9,9 +9,11 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Added
 
+-   New features for ansys-mechanical console script (#343)
+
 ### Changed
 
-- Remove library-namespace from CI/CD (#342)
+-   Remove library-namespace from CI/CD (#342)
 
 ### Fixed
 
