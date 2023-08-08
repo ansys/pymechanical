@@ -10,6 +10,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Added
 
 -   Max parallel 2 for embedding tests - ci_cd.yml (#341)
+-   New features for ansys-mechanical console script (#343)
 
 ### Changed
 
