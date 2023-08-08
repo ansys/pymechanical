@@ -1,7 +1,6 @@
 """Main application class for embedded Mechanical."""
 import atexit
 import os
-import shutil
 
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
@@ -22,8 +21,8 @@ def _dispose_embedded_app(instances):  # pragma: nocover
         instance._dispose()
 
 
-def _cleanup_private_appdata(folder):
-    shutil.rmtree(folder, ignore_errors=True)
+def _cleanup_private_appdata(profile: UniqueUserProfile):
+    profile.cleanup()
 
 
 def _start_application(configuration: AddinConfiguration, version, db_file) -> "App":
@@ -78,7 +77,7 @@ class App:
             new_profile_name = f"PyMechanical-{os.getpid()}"
             profile = UniqueUserProfile(new_profile_name, os.environ)
             profile.update_environment(os.environ)
-            atexit.register(_cleanup_private_appdata, profile.profile_name)
+            atexit.register(_cleanup_private_appdata, profile)
 
         self._app = _start_application(configuration, self._version, db_file)
         runtime.initialize()
