@@ -11,7 +11,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Changed
 
-- Update CHANGELOG.md and remove library-namespace from CI/CD (#342)
+- Remove library-namespace from CI/CD (#342)
 
 ### Fixed
 
