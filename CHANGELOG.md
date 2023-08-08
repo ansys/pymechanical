@@ -7,6 +7,14 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ## [Unreleased][]
 
+### Added
+
+### Changed
+
+### Fixed
+
+## [0.10.1](https://github.com/ansys/pymechanical/releases/tag/v0.10.1) - August 8 2023
+
 ### Changed
 
 -   Bump ansys-sphinx-theme from 0.10.0 to 0.10.2 (#337)
