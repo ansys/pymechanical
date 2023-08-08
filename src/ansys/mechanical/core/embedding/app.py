@@ -79,7 +79,7 @@ class App:
             atexit.register(_cleanup_private_appdata, self.tmp_dir)
 
         self._app = _start_application(configuration, self._version, db_file)
-        runtime.initialize(self._version)
+        runtime.initialize()
         self._disposed = False
         atexit.register(_dispose_embedded_app, INSTANCES)
         INSTANCES.append(self)
