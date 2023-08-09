@@ -99,6 +99,6 @@ This is the best place to post questions and code.
 To reach the project support team, email `pyansys.core@ansys.com <pyansys.core@ansys.com>`_.
 
 Project index
-*************
+-------------
 
 * :ref:`genindex`
