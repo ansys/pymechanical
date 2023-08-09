@@ -65,7 +65,7 @@ intersphinx_mapping = {
     "numpy": ("https://numpy.org/devdocs", None),
     "matplotlib": ("https://matplotlib.org/stable", None),
     "grpc": ("https://grpc.github.io/grpc/python/", None),
-    "pypim": ("https://pypim.docs.pyansys.com/", None),
+    "pypim": ("https://pypim.docs.pyansys.com/version/dev/", None),
 }
 
 suppress_warnings = ["label.*"]
