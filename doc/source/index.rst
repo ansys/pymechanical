@@ -78,6 +78,25 @@ there, Mechanical's entire data model is available for use from Python code.
 
 For information on using an embedded instance, see :ref:`ref_user_guide_embedding`.
 
+Documentation and issues
+------------------------
+Documentation for the latest stable release of PyMechanical is hosted at `PyMechanical documentation
+<https://mechanical.docs.pyansys.com/version/stable/>`_.
+
+In the upper right corner of the documentation's title bar, there is an option for switching from
+viewing the documentation for the latest stable release to viewing the documentation for the
+development version or previously released versions.
+
+You can also `view <https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.png>`_ or
+`download <https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.pdf>`_ the
+PyMechanical cheat sheet. This one-page reference provides syntax rules and commands
+for using PyMechanical. 
+
+On the `PyMechanical Issues <https://github.com/ansys/pymechanical/issues>`_ page,
+you can create issues to submit questions, report bugs, and request new features.
+This is the best place to post questions and code.
+
+To reach the project support team, email `pyansys.core@ansys.com <pyansys.core@ansys.com>`_.
 
 Project index
 *************

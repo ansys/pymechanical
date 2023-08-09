@@ -46,7 +46,8 @@ Install PyMechanical using `pip` with::
 
    pip install ansys-mechanical-core
 
-For more details, see `PyMechanical - Install the package <https://mechanical.docs.pyansys.com/version/stable/getting_started/index.html>`_
+For more information, see `Install the package <https://mechanical.docs.pyansys.com/version/stable/getting_started/index.html>`_
+in the PyMechanical documentation.
 
 
 Dependencies
@@ -109,6 +110,26 @@ and later. Here is an example:
 
    app = pymechanical.App()
    project_dir = app.ExtAPI.DataModel.Project.ProjectDirectory
+
+Documentation and issues
+------------------------
+Documentation for the latest stable release of PyMechanical is hosted at `PyMechanical documentation
+<https://mechanical.docs.pyansys.com/version/stable/>`_.
+
+In the upper right corner of the documentation's title bar, there is an option for switching from
+viewing the documentation for the latest stable release to viewing the documentation for the
+development version or previously released versions.
+
+You can also `view <https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.png>`_ or
+`download <https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.pdf>`_ the
+PyMechanical cheat sheet. This one-page reference provides syntax rules and commands
+for using PyMechanical. 
+
+On the `PyMechanical Issues <https://github.com/ansys/pymechanical/issues>`_ page,
+you can create issues to submit questions, report bugs, and request new features.
+This is the best place to post questions and code.
+
+To reach the project support team, email `pyansys.core@ansys.com <pyansys.core@ansys.com>`_.
 
 Testing and Development
 -----------------------
