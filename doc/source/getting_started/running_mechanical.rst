@@ -76,19 +76,24 @@ usage, type the following command:
         -h, --help                 Show this message and exit.
         -p, --project-file TEXT    Opens Mechanical project file (.mechdb). Cannot
                                     be mixed with -i
-        --private-appdata          Use a private appdata. This is beneficial for
-                                    running parallel instances of Mechanical.
+        --private-appdata         Make the appdata folder private. This enables you
+                                    to run parallel instances of Mechanical.
         --port INTEGER             Start mechanical in server mode with the given
                                     port number
         -i, --input-script TEXT    Name of the input Python script. Cannot be mixed
                                     with -p
-        --exit                     Exit after running input script.  Can only be
-                                    used with -i. Defaults to true if not graphical
-                                    mode. Only supported in versions 241 and later.
-        -s, --show-welcome-screen  Show the welcome screen, where you can select the
-                                    file to open. Only affects graphical mode
-        --debug                    Show a debug dialog right when the process
-                                    starts.
+        --exit                     Exit the application after running an input
+                                    script. You can only use this command with
+                                    --input-script argument (-i). The command
+                                    defaults to true you are not running the
+                                    application in graphical mode. The ``exit``
+                                    command is only supported in version 2024 R1 or
+                                    later.
+        -s, --show-welcome-screen  Show the welcome screen. You use this screen to
+                                    open a file. This argument only affects the
+                                    application when in graphical mode.
+        --debug                    Show a debug dialog window at the start of the
+                                    process.
         -r, --revision INTEGER     Ansys Revision number, e.g. "241" or "232". If
                                     none is specified, uses the default from ansys-
                                     tools-path

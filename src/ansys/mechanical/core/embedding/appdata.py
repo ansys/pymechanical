@@ -24,7 +24,15 @@ class UniqueUserProfile:
 
     def cleanup(self) -> None:
         """Cleanup unique user profile."""
-        shutil.rmtree(self.location, ignore_errors=True)
+        text = "The `private_appdata` option was used, but the following files were not removed: "
+        message = []
+
+        def onerror(function, path, excinfo):
+            if len(message) == 0:
+                message.append(f"{text}{path}")
+                warnings.warn(message[0])
+
+        shutil.rmtree(self.location, onerror=onerror)
 
     @property
     def location(self) -> str:
@@ -38,8 +46,6 @@ class UniqueUserProfile:
             env["USERPROFILE"] = home
             env["APPDATA"] = os.path.join(home, "AppData/Roaming")
             env["LOCALAPPDATA"] = os.path.join(home, "AppData/Local")
-            env["TMP"] = os.path.join(home, "AppData/Local/Temp")
-            env["TEMP"] = os.path.join(home, "AppData/Local/Temp")
         elif "lin" in sys.platform:
             env["HOME"] = home
 
@@ -48,10 +54,10 @@ class UniqueUserProfile:
         return os.path.exists(self.location)
 
     def mkdirs(self) -> None:
-        """Create unique user profile & set up directory tree."""
+        """Create a unique user profile & set up the directory tree."""
         os.makedirs(self.location)
         if "win" in sys.platform:
-            locs = ["AppData/Roaming", "AppData/Local", "AppData/Local/Temp", "Documents"]
+            locs = ["AppData/Roaming", "AppData/Local", "Documents"]
         elif "lin" in sys.platform:
             locs = [".config", "temp/reports"]
 
@@ -59,7 +65,7 @@ class UniqueUserProfile:
             os.makedirs(os.path.join(self.location, loc))
 
     def copy_profiles(self) -> None:
-        """Copy directories from current user into new user profile."""
+        """Copy current user directories into a new user profile."""
         if "win" in sys.platform:
             locs = ["AppData/Roaming/Ansys", "AppData/Local/Ansys"]
         elif "lin" in sys.platform:
@@ -68,11 +74,3 @@ class UniqueUserProfile:
             shutil.copytree(
                 os.path.join(self._default_profile, loc), os.path.join(self.location, loc)
             )
-
-    def warn(self) -> None:
-        """Issue warning."""
-        warnings.warn(
-            "Using the private_appdata option creates temporary directories when "
-            "running mechanical in parallel. "
-            f"There may be leftover files in {self.location}."
-        )
