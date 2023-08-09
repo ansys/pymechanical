@@ -18,6 +18,8 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Fixed
 
+-   Fix issues with PyPIM object.inv location (#345)
+
 ## [0.10.1](https://github.com/ansys/pymechanical/releases/tag/v0.10.1) - August 8 2023
 
 ### Changed
