@@ -134,8 +134,9 @@ To reach the project support team, email `pyansys.core@ansys.com <pyansys.core@a
 
 Testing and Development
 -----------------------
-If you would like to test or contribute to the development of PyMechanical, please visit
-`PyMechanical - Contributing <https://mechanical.docs.pyansys.com/version/stable/contributing.html>`_.
+If you would like to test or contribute to the development of PyMechanical, see
+`Contribute <https://mechanical.docs.pyansys.com/version/stable/contributing.html>`_ in
+the PyMechanical documentation.
 
 .. LINKS AND REFERENCES
 .. _black: https://github.com/psf/black
