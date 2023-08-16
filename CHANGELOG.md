@@ -20,6 +20,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 -   Remove library-namespace from CI/CD (#342)
 -   Bump grpcio from 1.56.2 to 1.57.0 (#349)
+-   Bump ansys-sphinx-theme from 0.10.2 to 0.10.3 (#351)
 
 ### Fixed
 
