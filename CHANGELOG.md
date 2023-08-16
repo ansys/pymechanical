@@ -19,6 +19,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Changed
 
 -   Remove library-namespace from CI/CD (#342)
+-   Bump grpcio from 1.56.2 to 1.57.0 (#349)
 
 ### Fixed
 
