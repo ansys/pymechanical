@@ -19,6 +19,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Changed
 
 -   Remove library-namespace from CI/CD (#342)
+-   Bump sphinxcontrib-websupport from 1.2.4 to 1.2.6 (#350)
 -   Bump ansys-sphinx-theme from 0.10.2 to 0.10.3 (#351)
 
 ### Fixed
