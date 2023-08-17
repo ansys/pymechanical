@@ -9,12 +9,10 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Added
 
--   Add a "Documentation and issues" section to README and doc landing page (#347)
-
-### Added
-
 -   Max parallel 2 for embedding tests - ci_cd.yml (#341)
 -   New features for ansys-mechanical console script (#343)
+-   Add a "Documentation and issues" section to README and doc landing page (#347)
+-   Dependabot changelog automation (#354)
 
 ### Changed
 
