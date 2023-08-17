@@ -10,6 +10,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Added
 
 -   Add a "Documentation and issues" section to README and doc landing page (#347)
+-   demo 
 
 ### Added
 
