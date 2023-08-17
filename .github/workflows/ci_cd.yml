@@ -102,7 +102,6 @@ jobs:
 
       - uses: dangoslen/dependabot-changelog-helper@v3
         with:
-          version: 'Unreleased'
           activationLabel: 'dependabot'
           changelogPath: './CHANGELOG.md'
 
