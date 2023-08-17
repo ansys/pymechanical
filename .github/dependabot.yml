@@ -7,6 +7,7 @@ updates:
     labels:
       - "maintenance"
       - "dependencies"
+      - "dependabot"
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -15,3 +16,4 @@ updates:
     labels:
       - "maintenance"
       - "dependencies"
+      - "dependabot"
