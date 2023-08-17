@@ -6,6 +6,10 @@
   description: Related with project dependencies
   color: ffc0cb
 
+- name: dependabot
+  description: Related to dependabot
+  color: f56cda
+
 - name: documentation
   description: Improvements or additions to documentation
   color: 0677ba
