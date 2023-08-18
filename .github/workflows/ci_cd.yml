@@ -70,8 +70,6 @@ jobs:
   changelog-check:
     name: Changelog Update Check
     if: github.event_name == 'pull_request'
-    permissions:
-      contents: write # Give the default GITHUB_TOKEN write permission
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -82,10 +80,11 @@ jobs:
           activationLabel: 'dependabot'
           changelogPath: './CHANGELOG.md'
 
-      - uses: stefanzweifel/git-auto-commit-action@v4
+      - uses: ad-m/github-push-action@master
         if: ${{ github.actor == 'dependabot[bot]' }}
         with:
-          commit_message: "Updated Changelog"
+          github_token: ${{ secrets.DEPENDABOT_TOKEN }}
+          branch: ${{ github.ref }}
 
       - name: Get all doc files that have changed
         id: changed-files-yaml
