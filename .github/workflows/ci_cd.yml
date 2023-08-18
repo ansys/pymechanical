@@ -73,6 +73,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.CHANGELOG_TOKEN }}
+          fetch-depth: 0
 
       - uses: dangoslen/dependabot-changelog-helper@v3
         if: ${{ github.actor == 'dependabot[bot]' }}
@@ -83,7 +86,7 @@ jobs:
       - uses: ad-m/github-push-action@master
         if: ${{ github.actor == 'dependabot[bot]' }}
         with:
-          github_token: ${{ secrets.DEPENDABOT_TOKEN }}
+          github_token: ${{ secrets.CHANGELOG_TOKEN }}
           branch: ${{ github.ref }}
 
       - name: Get all doc files that have changed
