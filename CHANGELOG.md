@@ -28,6 +28,9 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 -   Fix private appdata issue (#344)
 -   Fix issues with PyPIM object.inv location (#345)
 
+### Dependencies
+- Bump `plotly` from 5.16.0 to 5.16.1 ([#357](https://github.com/ansys/pymechanical/pull/357))
+
 ## [0.10.1](https://github.com/ansys/pymechanical/releases/tag/v0.10.1) - August 8 2023
 
 ### Changed
