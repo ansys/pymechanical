@@ -96,6 +96,7 @@ jobs:
   dependabot-changelog:
     name: Automate dependabot changelog
     runs-on: ubuntu-latest
+    if: contains(github.ref, 'refs/heads/dependabot')
     steps:
       - uses: actions/checkout@v3
         with:
