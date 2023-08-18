@@ -13,6 +13,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 -   New features for ansys-mechanical console script (#343)
 -   Add a "Documentation and issues" section to README and doc landing page (#347)
 -   Dependabot changelog automation (#354)
+-   Follow up of dependabot automated changelog (#359)
 
 ### Changed
 
