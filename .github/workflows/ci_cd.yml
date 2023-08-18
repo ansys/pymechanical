@@ -93,6 +93,24 @@ jobs:
               exit 1
           fi
 
+  dependabot-changelog:
+    name: Automate dependabot changelog
+    runs-on: ubuntu-latest
+    if: contains(github.ref, 'refs/heads/dependabot')
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: dangoslen/dependabot-changelog-helper@v3
+        with:
+          activationLabel: 'dependabot'
+          changelogPath: './CHANGELOG.md'
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Updated Changelog"
+
   tests:
     name: Testing and coverage - Mechanical ${{ matrix.mechanical-version }}
     runs-on: public-ubuntu-latest-8-cores
