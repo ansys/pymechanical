@@ -75,7 +75,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           token: ${{ secrets.CHANGELOG_TOKEN }}
-          fetch-depth: 0
 
       - uses: dangoslen/dependabot-changelog-helper@v3
         if: ${{ github.actor == 'dependabot[bot]' }}
@@ -83,11 +82,10 @@ jobs:
           activationLabel: 'dependabot'
           changelogPath: './CHANGELOG.md'
 
-      - uses: ad-m/github-push-action@master
+      - uses: stefanzweifel/git-auto-commit-action@v4
         if: ${{ github.actor == 'dependabot[bot]' }}
         with:
-          github_token: ${{ secrets.CHANGELOG_TOKEN }}
-          branch: ${{ github.ref }}
+          commit_message: "Updated Changelog"
 
       - name: Get all doc files that have changed
         id: changed-files-yaml
