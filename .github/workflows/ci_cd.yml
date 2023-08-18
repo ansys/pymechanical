@@ -99,6 +99,8 @@ jobs:
         run: |
           if [[ "${{ steps.changed-files-yaml.outputs.doc_all_changed_files }}" == "CHANGELOG.md" ]]; then
               echo "CHANGELOG.md was updated."
+          elif [[ "${{ github.actor }}" == "dependabot[bot]" ]]; then
+              echo "CHANGELOG.md was autoupdated... Workflow will trigger."
           else
               echo "Please update CHANGELOG.md before merging the pull request."
               exit 1
