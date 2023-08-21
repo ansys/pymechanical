@@ -30,6 +30,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Dependencies
 - Bump `plotly` from 5.16.0 to 5.16.1 ([#357](https://github.com/ansys/pymechanical/pull/357))
+- Bump `sphinx-gallery` from 0.13.0 to 0.14.0 ([#361](https://github.com/ansys/pymechanical/pull/361))
 
 ## [0.10.1](https://github.com/ansys/pymechanical/releases/tag/v0.10.1) - August 8 2023
 
