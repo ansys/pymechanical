@@ -55,7 +55,7 @@ tests = [
 ]
 doc = [
     "Sphinx==7.2.2",
-    "ansys-sphinx-theme==0.10.3",
+    "ansys-sphinx-theme==0.10.4",
     "grpcio==1.57.0",
     "imageio-ffmpeg==0.4.8",
     "imageio==2.31.1",
@@ -72,7 +72,7 @@ doc = [
     "sphinx-autodoc-typehints==1.24.0",
     "sphinx-copybutton==0.5.2",
     "sphinx_design==0.5.0",
-    "sphinx-gallery==0.13.0",
+    "sphinx-gallery==0.14.0",
     "sphinx-notfound-page==0.8.3",
     "sphinxcontrib-websupport==1.2.6",
     "sphinxemoji==0.2.0",

@@ -22,6 +22,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 -   Bump plotly from 5.15.0 to 5.16.0 (#348)
 -   Bump sphinxcontrib-websupport from 1.2.4 to 1.2.6 (#350)
 -   Bump ansys-sphinx-theme from 0.10.2 to 0.10.3 (#351)
+-   pre-commit autoupdate ([#362](https://github.com/ansys/pymechanical/pull/362))
 
 ### Fixed
 
@@ -31,6 +32,8 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Dependencies
 - Bump `plotly` from 5.16.0 to 5.16.1 ([#357](https://github.com/ansys/pymechanical/pull/357))
 - Bump `sphinx` from 7.1.2 to 7.2.2 ([#358](https://github.com/ansys/pymechanical/pull/358))
+- Bump `sphinx-gallery` from 0.13.0 to 0.14.0 ([#361](https://github.com/ansys/pymechanical/pull/361))
+- Bump `ansys-sphinx-theme` from 0.10.3 to 0.10.4 ([#360](https://github.com/ansys/pymechanical/pull/360))
 
 ## [0.10.1](https://github.com/ansys/pymechanical/releases/tag/v0.10.1) - August 8 2023
 
