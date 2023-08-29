@@ -35,6 +35,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `sphinx-gallery` from 0.13.0 to 0.14.0 ([#361](https://github.com/ansys/pymechanical/pull/361))
 - Bump `ansys-sphinx-theme` from 0.10.3 to 0.10.4 ([#360](https://github.com/ansys/pymechanical/pull/360))
 - Bump `pytest-print` from 0.3.3 to 1.0.0 ([#369](https://github.com/ansys/pymechanical/pull/369))
+- Bump `imageio` from 2.31.1 to 2.31.2 ([#370](https://github.com/ansys/pymechanical/pull/370))
 
 ## [0.10.1](https://github.com/ansys/pymechanical/releases/tag/v0.10.1) - August 8 2023
 
