@@ -16,6 +16,12 @@ This section provides an overview of Mechanical scripting.
 
    threading
 
+.. toctree::
+    :hidden:
+    :maxdepth: 3
+
+    Mechanical API Documentation <https://scripting.mechanical.docs.pyansys.com/index.html>
+
 
 Overview
 ========
@@ -88,4 +94,6 @@ from those entry points.
 Additional resources
 ^^^^^^^^^^^^^^^^^^^^
 The `ACT API Reference Guide <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/act_ref/act_ref.html>`_
-provides descriptions of the objects, methods, and properties for all namespaces.
+and `Mechanical API Documentation <https://scripting.mechanical.docs.pyansys.com/>`_ provide descriptions of the objects, methods,
+and properties for all namespaces. Both references contain the same API information, except the Mechanical API Documentation
+is generated with Sphinx.
