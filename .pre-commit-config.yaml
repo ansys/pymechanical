@@ -26,6 +26,11 @@ repos:
   hooks:
   - id: codespell
 
+- repo: https://github.com/ansys/pre-commit-hooks
+  rev: v0.1.0
+  hooks:
+  - id: add-license-headers
+
 - repo: https://github.com/pycqa/pydocstyle
   rev: 6.3.0
   hooks:
@@ -45,4 +50,3 @@ repos:
           examples/01_tips_n_tricks/example_01_run_python_script_output.py |
           examples/01_tips_n_tricks/example_02_run_python_script_scope.py
         )$
-
