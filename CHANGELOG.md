@@ -39,6 +39,9 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `pytest-print` from 0.3.3 to 1.0.0 ([#369](https://github.com/ansys/pymechanical/pull/369))
 - Bump `tj-actions/changed-files` from 37 to 38 ([#367](https://github.com/ansys/pymechanical/pull/367))
 - Bump `imageio` from 2.31.1 to 2.31.2 ([#370](https://github.com/ansys/pymechanical/pull/370))
+- Bump `pytest` from 7.4.0 to 7.4.1 ([#375](https://github.com/ansys/pymechanical/pull/375))
+- Bump `actions/checkout` from 3 to 4 ([#379](https://github.com/ansys/pymechanical/pull/379))
+- Bump `imageio` from 2.31.2 to 2.31.3 ([#376](https://github.com/ansys/pymechanical/pull/376))
 - Bump `sphinx-notfound-page` from 1.0.0rc1 to 1.0.0 ([#374](https://github.com/ansys/pymechanical/pull/374))
 
 ## [0.10.1](https://github.com/ansys/pymechanical/releases/tag/v0.10.1) - August 8 2023

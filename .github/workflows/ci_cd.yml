@@ -72,7 +72,7 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           token: ${{ secrets.CHANGELOG_TOKEN }}
 
@@ -191,7 +191,7 @@ jobs:
         python-version: ['3.8', '3.9', '3.10', '3.11']
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install dependencies
         run: |
           apt update
@@ -257,7 +257,7 @@ jobs:
         python-version: ['3.8', '3.9', '3.10', '3.11' ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install dependencies
         run: |
           apt update
@@ -355,7 +355,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
