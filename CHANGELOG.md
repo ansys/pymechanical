@@ -14,7 +14,6 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 -   Add a "Documentation and issues" section to README and doc landing page (#347)
 -   Dependabot changelog automation (#354)
 -   Follow up of dependabot automated changelog (#359)
--   Link Mechanical API Docs to the Mechanical Scripting tab (#372)
 -   Add license headers to files in src (#373)
 
 ### Changed
