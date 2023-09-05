@@ -33,7 +33,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Dependencies
 - Bump `plotly` from 5.16.0 to 5.16.1 ([#357](https://github.com/ansys/pymechanical/pull/357))
-- Bump `sphinx` from 7.1.2 to 7.2.2 ([#358](https://github.com/ansys/pymechanical/pull/358))
+- Bump `sphinx` from 7.1.2 to 7.2.5 ([#358](https://github.com/ansys/pymechanical/pull/358), [#378](https://github.com/ansys/pymechanical/pull/378))
 - Bump `sphinx-gallery` from 0.13.0 to 0.14.0 ([#361](https://github.com/ansys/pymechanical/pull/361))
 - Bump `ansys-sphinx-theme` from 0.10.3 to 0.10.4 ([#360](https://github.com/ansys/pymechanical/pull/360))
 - Bump `pytest-print` from 0.3.3 to 1.0.0 ([#369](https://github.com/ansys/pymechanical/pull/369))
