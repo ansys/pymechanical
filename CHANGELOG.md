@@ -5,6 +5,44 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 This document follows the conventions laid out in [Keep a CHANGELOG](https://keepachangelog.com/en/1.0.0).
 
+## [Unreleased][]
+
+### Added
+
+-   Max parallel 2 for embedding tests - ci_cd.yml (#341)
+-   New features for ansys-mechanical console script (#343)
+-   Add a "Documentation and issues" section to README and doc landing page (#347)
+-   Dependabot changelog automation (#354)
+-   Follow up of dependabot automated changelog (#359)
+-   Add license headers to files in src (#373)
+
+### Changed
+
+-   Remove library-namespace from CI/CD (#342)
+-   Bump grpcio from 1.56.2 to 1.57.0 (#349)
+-   Bump plotly from 5.15.0 to 5.16.0 (#348)
+-   Bump sphinxcontrib-websupport from 1.2.4 to 1.2.6 (#350)
+-   Bump ansys-sphinx-theme from 0.10.2 to 0.10.3 (#351)
+-   pre-commit autoupdate ([#362](https://github.com/ansys/pymechanical/pull/362)), ([#380](https://github.com/ansys/pymechanical/pull/380))
+
+### Fixed
+
+-   Fix private appdata issue (#344)
+-   Fix issues with PyPIM object.inv location (#345)
+
+### Dependencies
+- Bump `plotly` from 5.16.0 to 5.16.1 ([#357](https://github.com/ansys/pymechanical/pull/357))
+- Bump `sphinx` from 7.1.2 to 7.2.5 ([#358](https://github.com/ansys/pymechanical/pull/358), [#378](https://github.com/ansys/pymechanical/pull/378))
+- Bump `sphinx-gallery` from 0.13.0 to 0.14.0 ([#361](https://github.com/ansys/pymechanical/pull/361))
+- Bump `ansys-sphinx-theme` from 0.10.3 to 0.10.4 ([#360](https://github.com/ansys/pymechanical/pull/360))
+- Bump `pytest-print` from 0.3.3 to 1.0.0 ([#369](https://github.com/ansys/pymechanical/pull/369))
+- Bump `tj-actions/changed-files` from 37 to 38 ([#367](https://github.com/ansys/pymechanical/pull/367))
+- Bump `imageio` from 2.31.1 to 2.31.2 ([#370](https://github.com/ansys/pymechanical/pull/370))
+- Bump `pytest` from 7.4.0 to 7.4.1 ([#375](https://github.com/ansys/pymechanical/pull/375))
+- Bump `actions/checkout` from 3 to 4 ([#379](https://github.com/ansys/pymechanical/pull/379))
+- Bump `imageio` from 2.31.2 to 2.31.3 ([#376](https://github.com/ansys/pymechanical/pull/376))
+- Bump `sphinx-notfound-page` from 1.0.0rc1 to 1.0.0 ([#374](https://github.com/ansys/pymechanical/pull/374))
+
 ## [0.10.1](https://github.com/ansys/pymechanical/releases/tag/v0.10.1) - August 8 2023
 
 ### Changed

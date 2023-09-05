@@ -16,7 +16,6 @@ This section provides an overview of Mechanical scripting.
 
    threading
 
-
 Overview
 ========
 You could already perform scripting of Mechanical with Python from inside
