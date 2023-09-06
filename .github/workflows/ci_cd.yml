@@ -2,8 +2,10 @@ name: GitHub CI
 on:
   workflow_dispatch:
   workflow_run:
-    workflows: ["Labeler"]
-    types: [completed]
+    workflows:
+      - Labeler
+    types:
+      - completed
   push:
     tags:
       - "*"
