@@ -1,8 +1,29 @@
+# Copyright (C) 2023 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 """Initializer for Mechanical embedding. Sets up paths and resolvers."""
 from importlib.metadata import distribution
 import os
 from pathlib import Path
-import shutil
 import sys
 import warnings
 
@@ -13,56 +34,6 @@ from ansys.mechanical.core.embedding.resolver import resolve
 
 INITIALIZED_VERSION = None
 SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS = {241: "2024R1", 232: "2023R2", 231: "2023R1"}
-
-
-class TmpUser:
-    """Create Unique User Profile (for AppData)."""
-
-    def __init__(self, defaultProfile, profileName):
-        """Initialize TmpUser class."""
-        self.defaultProfile = defaultProfile
-        self.profileName = profileName
-
-    def set_env(self):
-        """Set environment variables for new user profile."""
-        home = self.profileName
-        if "win" in sys.platform:
-            os.environ["USERPROFILE"] = home
-            os.environ["APPDATA"] = os.path.join(home, "AppData/Roaming")
-            os.environ["LOCALAPPDATA"] = os.path.join(home, "AppData/Local")
-            os.environ["TMP"] = os.path.join(home, "AppData/Local/Temp")
-            os.environ["TEMP"] = os.path.join(home, "AppData/Local/Temp")
-        elif "lin" in sys.platform:
-            os.environ["HOME"] = home
-
-    def exists(self):
-        """Check if unique profile name already exists."""
-        if os.path.exists(self.profileName):
-            return True
-        else:
-            return False
-
-    def mkdirs(self):
-        """Create unique user profile & set up directory tree."""
-        os.makedirs(self.profileName)
-        if "win" in sys.platform:
-            locs = ["AppData/Roaming", "AppData/Local", "AppData/Local/Temp", "Documents"]
-        elif "lin" in sys.platform:
-            locs = [".config", "temp/reports"]
-
-        for loc in locs:
-            os.makedirs(os.path.join(self.profileName, loc))
-
-    def copy_profiles(self):
-        """Copy directories from current user into new user profile."""
-        if "win" in sys.platform:
-            locs = ["AppData/Roaming/Ansys", "AppData/Local/Ansys"]
-        elif "lin" in sys.platform:
-            locs = [".mw/Application Data/Ansys", ".config/Ansys"]
-        for loc in locs:
-            shutil.copytree(
-                os.path.join(self.defaultProfile, loc), os.path.join(self.profileName, loc)
-            )
 
 
 def __add_sys_path(version) -> str:
@@ -117,31 +88,6 @@ def _get_default_version() -> int:
     # version is of the form 23.2
     int_version = int(str(version).replace(".", ""))
     return int_version
-
-
-def set_private_appdata(pid):
-    """Set up unique user sessions when running parallel instances."""
-    defaultProfile = os.path.expanduser("~")
-    profileName = os.path.join(defaultProfile, f"PyMechanical-{pid}")
-
-    newProfile = TmpUser(defaultProfile, profileName)
-
-    if newProfile.exists():
-        newProfile.delete_dir()
-
-    newProfile.mkdirs()
-
-    newProfile.copy_profiles()
-
-    newProfile.set_env()
-
-    warnings.warn(
-        "Using the private_appdata option creates temporary directories when "
-        "running the pymechanical instances in parallel. "
-        f"There may be leftover files in {profileName}."
-    )
-
-    return profileName
 
 
 def initialize(version=None):

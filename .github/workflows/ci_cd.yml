@@ -63,7 +63,6 @@ jobs:
         uses: ansys/actions/build-wheelhouse@v4
         with:
           library-name: ${{ env.PACKAGE_NAME }}
-          library-namespace: ${{ env.PACKAGE_NAMESPACE }}
           operating-system: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
           # use-python-cache: false
@@ -73,13 +72,24 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          token: ${{ secrets.CHANGELOG_TOKEN }}
+
+      - uses: dangoslen/dependabot-changelog-helper@v3
+        if: ${{ github.actor == 'dependabot[bot]' }}
+        with:
+          activationLabel: 'dependabot'
+          changelogPath: './CHANGELOG.md'
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        if: ${{ github.actor == 'dependabot[bot]' }}
+        with:
+          commit_message: "Updated Changelog"
 
       - name: Get all doc files that have changed
         id: changed-files-yaml
-        uses: tj-actions/changed-files@v37
+        uses: tj-actions/changed-files@v38
         with:
           files_yaml: |
             doc:
@@ -89,6 +99,8 @@ jobs:
         run: |
           if [[ "${{ steps.changed-files-yaml.outputs.doc_all_changed_files }}" == "CHANGELOG.md" ]]; then
               echo "CHANGELOG.md was updated."
+          elif [[ "${{ github.actor }}" == "dependabot[bot]" ]]; then
+              echo "CHANGELOG.md was autoupdated... Workflow will trigger."
           else
               echo "Please update CHANGELOG.md before merging the pull request."
               exit 1
@@ -173,12 +185,13 @@ jobs:
       image: ghcr.io/ansys/mechanical:23.2.0
       options: --entrypoint /bin/bash
     strategy:
+      max-parallel: 2
       fail-fast: false
       matrix:
         python-version: ['3.8', '3.9', '3.10', '3.11']
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install dependencies
         run: |
           apt update
@@ -244,7 +257,7 @@ jobs:
         python-version: ['3.8', '3.9', '3.10', '3.11' ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install dependencies
         run: |
           apt update
@@ -342,7 +355,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4

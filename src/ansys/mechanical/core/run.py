@@ -1,21 +1,45 @@
+# Copyright (C) 2023 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 """Convenience CLI to run mechanical."""
 
 import asyncio
 from asyncio.subprocess import PIPE
 import os
 import sys
+import typing
 import warnings
 
 import ansys.tools.path as atp
 import click
 
+from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
+
 # TODO - add logging options (reuse env var based logging initialization)
 # TODO - add timeout
-# TODO - close mechanical automatically after script exits
 
 
-async def _read_and_display(cmd):
-    """Read cmd's stdout, stderr while displaying them as they arrive."""
+async def _read_and_display(cmd, env):
+    """Read command's stdout and stderr and display them as they are processed."""
     # start process
     process = await asyncio.create_subprocess_exec(*cmd, stdout=PIPE, stderr=PIPE)
 
@@ -42,14 +66,14 @@ async def _read_and_display(cmd):
     return rc, b"".join(stdout), b"".join(stderr)
 
 
-def _run(args):
+def _run(args, env):
     if os.name == "nt":
         loop = asyncio.ProactorEventLoop()  # for subprocess' pipes on Windows
         asyncio.set_event_loop(loop)
     else:
         loop = asyncio.get_event_loop()
     try:
-        rc, *output = loop.run_until_complete(_read_and_display(args))
+        rc, *output = loop.run_until_complete(_read_and_display(args, env))
         if rc:
             sys.exit("child failed with '{}' exit code".format(rc))
     finally:
@@ -65,6 +89,13 @@ def _run(args):
     help="Opens Mechanical project file (.mechdb). Cannot be mixed with -i",
 )
 @click.option(
+    "--private-appdata",
+    default=None,
+    is_flag=True,
+    help="Make the appdata folder private.\
+ This enables you to run parallel instances of Mechanical.",
+)
+@click.option(
     "--port",
     type=int,
     help="Start mechanical in server mode with the given port number",
@@ -76,12 +107,21 @@ def _run(args):
     help="Name of the input Python script. Cannot be mixed with -p",
 )
 @click.option(
+    "--exit",
+    is_flag=True,
+    default=None,
+    help="Exit the application after running an input script. \
+You can only use this command with --input-script argument (-i). \
+The command defaults to true you are not running the application in graphical mode. \
+The ``exit`` command is only supported in version 2024 R1 or later.",
+)
+@click.option(
     "-s",
     "--show-welcome-screen",
     is_flag=True,
     default=False,
     help="Show the welcome screen, where you can select the file to open.\
-        Only affects graphical mode",
+ Only affects graphical mode",
 )
 @click.option(
     "--debug",
@@ -112,6 +152,8 @@ def cli(
     revision: int,
     graphical: bool,
     show_welcome_screen: bool,
+    private_appdata: bool,
+    exit: bool,
 ):
     """CLI tool to run mechanical.
 
@@ -172,13 +214,8 @@ def cli(
         args.append("-script")
         args.append(input_script)
 
-    if (not graphical) and input_script and (version < 241):
-        warnings.warn(
-            "Please ensure ExtAPI.Application.Close() is at the end of your script. "
-            "Without this command, Batch mode will not terminate.",
-            stacklevel=2,
-        )
-
+    if (not graphical) and input_script:
+        exit = True
         if version < 241:
             warnings.warn(
                 "Please ensure ExtAPI.Application.Close() is at the end of your script. "
@@ -186,10 +223,25 @@ def cli(
                 stacklevel=2,
             )
 
+    if exit and input_script and version >= 241:
+        args.append("-x")
+
+    profile: UniqueUserProfile = None
+    env: typing.Dict[str, str] = None
+    if private_appdata:
+        env = os.environ.copy()
+        new_profile_name = f"Mechanical-{os.getpid()}"
+        profile = UniqueUserProfile(new_profile_name)
+        profile.update_environment(env)
+
     print(f"Starting Ansys Mechanical version {version_name} in {mode} mode...")
     if port:
         # TODO - Mechanical doesn't write anything to the stdout in grpc mode
-        #        when logging is off.. Ideally we les Mechanical write it, so
+        #        when logging is off.. Ideally we let Mechanical write it, so
         #        the user only sees the message when the server is ready.
         print(f"Serving on port {port}")
-    _run(args)
+
+    _run(args, env)
+
+    if private_appdata:
+        profile.cleanup()

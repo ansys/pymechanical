@@ -1,10 +1,32 @@
+# Copyright (C) 2023 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 """Main application class for embedded Mechanical."""
 import atexit
 import os
-import shutil
 
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
+from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 
 
 def _get_default_addin_configuration() -> AddinConfiguration:
@@ -21,8 +43,8 @@ def _dispose_embedded_app(instances):  # pragma: nocover
         instance._dispose()
 
 
-def _cleanup_private_appdata(folder):
-    shutil.rmtree(folder, ignore_errors=True)
+def _cleanup_private_appdata(profile: UniqueUserProfile):
+    profile.cleanup()
 
 
 def _start_application(configuration: AddinConfiguration, version, db_file) -> "App":
@@ -53,8 +75,8 @@ class App:
         you may set a version number with the `version` keyword argument.
 
         private_appdata is an optional setting for a temporary AppData directory.
-        By default, private_appdata is False. This is beneficial for running parallel
-        instances of mechanical.
+        By default, private_appdata is False. This enables you to run parallel
+        instances of Mechanical.
         """
         global INSTANCES
         from ansys.mechanical.core import BUILDING_GALLERY
@@ -74,9 +96,10 @@ class App:
         configuration = kwargs.get("config", _get_default_addin_configuration())
 
         if private_appdata:
-            self.pid = os.getpid()
-            self.tmp_dir = initializer.set_private_appdata(self.pid)
-            atexit.register(_cleanup_private_appdata, self.tmp_dir)
+            new_profile_name = f"PyMechanical-{os.getpid()}"
+            profile = UniqueUserProfile(new_profile_name)
+            profile.update_environment(os.environ)
+            atexit.register(_cleanup_private_appdata, profile)
 
         self._app = _start_application(configuration, self._version, db_file)
         runtime.initialize()
