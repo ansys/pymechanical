@@ -3,7 +3,7 @@ name: GitHub CI
 on:
   pull_request:
   schedule:
-    - cron: '00 21 * * *'
+    - cron: '00 22 * * *'  # UTC time, may start 5-15 mins later than scheduled time
   workflow_dispatch:
     inputs:
       default-revn:
@@ -59,16 +59,22 @@ jobs:
       - id: save-versions
         run: |
           parse_revns() {
-            revn=$1
+            revn=$1  # For example, 231
             container_name=$2
             license_name=$3
-            
-            container_version="${revn:0:2}.${revn:2}.0"
+
+            # Create container_version from revn
+            container_version="${revn:0:2}.${revn:2}.0"  # For example, 23.1.0
+
+            # Set output variables
             echo "$container_name=$container_version" >> $GITHUB_OUTPUT
             echo "$license_name=$revn" >> $GITHUB_OUTPUT
           }
 
+          # Use default revn values if the input values were not chosen.
+          # The input values are only selected in workflow_dispatch events.
           if [[ -z "${{ inputs.default-revn }}" || -z "${{ inputs.test-revn }}" ]]; then
+            # If the event is a scheduled run, set the value to the DEV_REVN env var.
             if ${{ github.event_name == 'schedule' }}; then
               parse_revns "${{ env.DEV_REVN }}" "default" "default_lic"
               parse_revns "${{ env.DEV_REVN }}" "test" "test_lic"
@@ -77,6 +83,7 @@ jobs:
               parse_revns "${{ env.TEST_REVN }}" "test" "test_lic"
             fi
           else
+            # If the input values are selected, use those values instead of the env vars
             parse_revns "${{ inputs.default-revn }}" "default" "default_lic"
             parse_revns "${{ inputs.test-revn }}" "test" "test_lic"
           fi
@@ -270,7 +277,6 @@ jobs:
       - name: Unit Testing and coverage
         env:
           LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
-          # ANSYSCL232_DIR: /install/ansys_inc/v232/licensingclient
           ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
           ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
           ANSYS_WORKBENCH_LOGGING: 0
@@ -339,7 +345,6 @@ jobs:
       - name: Unit Testing and coverage
         env:
           LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
-          # ANSYSCL232_DIR: /install/ansys_inc/v232/licensingclient
           ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
           ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
         run: |
