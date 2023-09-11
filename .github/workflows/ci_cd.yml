@@ -72,7 +72,7 @@ jobs:
     needs: [echo_var]
     steps:
       - name: Set the environment variable
-        run: echo "DOCKER_IMAGE_VERSION=${{needs.echo_var.outputs.default}}" >> $GITHUB_ENV
+        run: echo DOCKER_IMAGE_VERSION=${{needs.echo_var.outputs.default}} >> $GITHUB_ENV
         
   style:
     name: Code style
