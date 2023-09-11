@@ -64,9 +64,9 @@ jobs:
             license_name=$3
 
             if [ "$container_name" == "default" ]; then
-              get_revn=${{ inputs.default-revn }}
+              get_revn="${{ inputs.default-revn }}"
             else
-              get_revn=${{ inputs.test-revn }}
+              get_revn="${{ inputs.test-revn }}"
             fi
 
             if [ -z "$get_revn" ]; then
