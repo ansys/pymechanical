@@ -10,17 +10,17 @@ on:
         type: choice
         description: 'Default revision number for containers.'
         options: 
-        - '231'
-        - '232'
         - '241'
+        - '232'
+        - '231'
         default: '231'  # ensure this is the same as env.DEFAULT_REVN
       test-revn:
         type: choice
         description: 'Revision number for tests.'
         options: 
-        - '231'
-        - '232'
         - '241'
+        - '232'
+        - '231'
         default: '232'  # ensure this is the same as env.TEST_REVN
   push:
     tags:
@@ -63,20 +63,19 @@ jobs:
             container_name=$2
             license_name=$3
 
-            if [ "$container_name" == "default" ]; then
-              get_revn="${{ inputs.default-revn }}"
-            else
-              get_revn="${{ inputs.test-revn }}"
-            fi
-
-            if [ -z "$get_revn" ]; then
+            if [ -z "${{ inputs.default-revn }}" ]; then
                get_revn="$revn"
+            else
+              get_revn="${{ inputs.default-revn }}"
             fi
             
             echo $get_revn
             container_version="${get_revn:0:2}.${get_revn:2}.0"
             echo "$container_name=$container_version" >> $GITHUB_OUTPUT
             echo "$license_name=$revn" >> $GITHUB_OUTPUT
+            
+            echo $container_name
+            echo $license_name
           
           }
 
