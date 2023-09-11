@@ -230,7 +230,7 @@ jobs:
   embedding-tests:
     name: Embedding testing and coverage
     runs-on: ubuntu-latest
-    needs: [style]
+    needs: [style, echo_var, set-env-var]
     container:
       image: ghcr.io/ansys/mechanical:${{needs.echo_var.outputs.test}}
       options: --entrypoint /bin/bash
@@ -303,7 +303,7 @@ jobs:
     container:
       image: ghcr.io/ansys/mechanical:${{needs.echo_var.outputs.test}}
       options: --entrypoint /bin/bash
-    needs: [ smoke-tests ]
+    needs: [ smoke-tests, echo_var, set-env-var ]
     strategy:
       fail-fast: false
       matrix:
@@ -367,7 +367,7 @@ jobs:
 
   docs:
     name: Documentation
-    needs: [docs-style]
+    needs: [docs-style, echo_var, set-env-var]
     runs-on: public-ubuntu-latest-8-cores
     steps:
       - name: Login in Github Container registry
