@@ -55,14 +55,14 @@ jobs:
       - id: step1
         run: |
           revn='231'
-          default=${{ inputs.default-revn || $revn }}
+          default=${{ inputs.default-revn || '$revn' }}
           default_version="${default:0:2}.${default:2}.0"
           echo "default=$default_version" >> $GITHUB_OUTPUT
           echo "default_lic=$revn" >> $GITHUB_OUTPUT
       - id: step2
         run: |
           revn='232'
-          test=${{ inputs.test-revn || $revn }}
+          test=${{ inputs.test-revn || '$revn' }}
           test_version="${test:0:2}.${test:2}.0"
           echo "test=$test_version" >> $GITHUB_OUTPUT
           echo "test_lic=$revn" >> $GITHUB_OUTPUT
