@@ -40,6 +40,7 @@ env:
   DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
   DEFAULT_REVN: '231'  # ensure this is the same as inputs.default-revn.default
   TEST_REVN: '232'  # ensure this is the same as inputs.test-revn.default
+  DEV_REVN: '241'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -69,8 +70,13 @@ jobs:
           
           }
 
-          parse_revns "${{ env.DEFAULT_REVN }}" "default" "default_lic"
-          parse_revns "${{ env.TEST_REVN }}" "test" "test_lic"
+          if ${{ github.event_name == 'schedule' }}; then
+            parse_revns "${{ env.DEV_REVN }}" "default" "default_lic"
+            parse_revns "${{ env.DEV_REVN }}" "test" "test_lic"
+          else
+            parse_revns "${{ env.DEFAULT_REVN }}" "default" "default_lic"
+            parse_revns "${{ env.TEST_REVN }}" "test" "test_lic"
+          fi
        
   style:
     name: Code style
