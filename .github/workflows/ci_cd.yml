@@ -3,7 +3,7 @@ name: GitHub CI
 on:
   pull_request:
   schedule:
-    - cron: '36 17 * * *'
+    - cron: '00 21 * * *'
   workflow_dispatch:
     inputs:
       default-revn:
