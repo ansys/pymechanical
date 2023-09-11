@@ -62,29 +62,22 @@ jobs:
             revn=$1
             container_name=$2
             license_name=$3
-
-            if [ -z "${{ inputs.default-revn }}" ]; then
-               get_revn="$revn"
-            else
-              get_revn="${{ inputs.default-revn }}"
-            fi
             
-            echo $get_revn
-            container_version="${get_revn:0:2}.${get_revn:2}.0"
+            container_version="${revn:0:2}.${revn:2}.0"
             echo "$container_name=$container_version" >> $GITHUB_OUTPUT
             echo "$license_name=$revn" >> $GITHUB_OUTPUT
-            
-            echo $container_name
-            echo $license_name
-          
           }
 
-          if ${{ github.event_name == 'schedule' }}; then
-            parse_revns "${{ env.DEV_REVN }}" "default" "default_lic"
-            parse_revns "${{ env.DEV_REVN }}" "test" "test_lic"
+          if [[ -z "${{ inputs.default-revn }}" && -z "${{ inputs.test-revn }}" ]]; then
+            if ${{ github.event_name == 'schedule' }}; then
+              parse_revns "${{ env.DEV_REVN }}" "default" "default_lic"
+              parse_revns "${{ env.DEV_REVN }}" "test" "test_lic"
+            else
+              parse_revns "${{ env.DEFAULT_REVN }}" "default" "default_lic"
+              parse_revns "${{ env.TEST_REVN }}" "test" "test_lic"
           else
-            parse_revns "${{ env.DEFAULT_REVN }}" "default" "default_lic"
-            parse_revns "${{ env.TEST_REVN }}" "test" "test_lic"
+            parse_revns "${{ inputs.default-revn }}" "default" "default_lic"
+            parse_revns "${{ inputs.test-revn }}" "test" "test_lic"
           fi
        
   style:
