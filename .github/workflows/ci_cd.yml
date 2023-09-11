@@ -64,12 +64,15 @@ jobs:
             license_name=$3
 
             if [ "$container_name" == "default" ]; then
-              container_name_revn = $ {{ inputs.default-revn }}
+              get_revn=${{ inputs.default-revn }}
             else
-              container_name_revn = $ {{ inputs.test-revn }}
+              get_revn=${{ inputs.test-revn }}
+            fi
+
+            if [ -z "$get_revn" ]; then
+               get_revn="$revn"
             fi
             
-            get_revn="${{ $container_name_revn || $revn }}"
             echo $get_revn
             container_version="${get_revn:0:2}.${get_revn:2}.0"
             echo "$container_name=$container_version" >> $GITHUB_OUTPUT
