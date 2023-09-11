@@ -68,13 +68,14 @@ jobs:
             echo "$license_name=$revn" >> $GITHUB_OUTPUT
           }
 
-          if [[ -z "${{ inputs.default-revn }}" && -z "${{ inputs.test-revn }}" ]]; then
+          if [[ -z "${{ inputs.default-revn }}" || -z "${{ inputs.test-revn }}" ]]; then
             if ${{ github.event_name == 'schedule' }}; then
               parse_revns "${{ env.DEV_REVN }}" "default" "default_lic"
               parse_revns "${{ env.DEV_REVN }}" "test" "test_lic"
             else
               parse_revns "${{ env.DEFAULT_REVN }}" "default" "default_lic"
               parse_revns "${{ env.TEST_REVN }}" "test" "test_lic"
+            fi
           else
             parse_revns "${{ inputs.default-revn }}" "default" "default_lic"
             parse_revns "${{ inputs.test-revn }}" "test" "test_lic"
