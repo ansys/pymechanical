@@ -7,6 +7,12 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ## [Unreleased][]
 
+## Added
+
+- Set up daily run for 241 testing and added manual inputs for workflow dispatch (#385)
+
+## [0.10.2](https://github.com/ansys/pymechanical/releases/tag/v0.10.2) - September 8, 2023
+
 ### Added
 
 -   Max parallel 2 for embedding tests - ci_cd.yml (#341)
