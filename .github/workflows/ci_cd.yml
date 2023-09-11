@@ -62,9 +62,12 @@ jobs:
             revn=$1
             container_name=$2
             license_name=$3
-            
-            container_name_revn=inputs.$container_name-revn
-            echo $container_name_revn
+
+            if [ "$container_name" == "default" ]; then
+              container_name_revn = $ {{ inputs.default-revn }}
+            else
+              container_name_revn = $ {{ inputs.test-revn }}
+            fi
             
             get_revn="${{ $container_name_revn || $revn }}"
             echo $get_revn
