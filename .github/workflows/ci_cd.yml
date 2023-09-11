@@ -1,17 +1,5 @@
 name: GitHub CI
 
-env:
-  PYMECHANICAL_PORT: 10000  # default won't work on GitHub runners
-  PYMECHANICAL_START_INSTANCE: FALSE
-  DOCKER_PACKAGE: ghcr.io/ansys/mechanical
-  DOCKER_MECH_CONTAINER_NAME: mechanical
-  MAIN_PYTHON_VERSION: '3.10'
-  PACKAGE_NAME: ansys-mechanical-core
-  PACKAGE_NAMESPACE: ansys.mechanical.core
-  DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
-  DEFAULT_REVN: '231'
-  TEST_REVN: '232'
-
 on:
   pull_request:
   schedule:
@@ -25,7 +13,7 @@ on:
         - '231'
         - '232'
         - '241'
-        default: '${{ env.DEFAULT_REVN }}'
+        default: '231'  # ensure this is the same as env.DEFAULT_REVN
       test-revn:
         type: choice
         description: 'Revision number for tests.'
@@ -33,13 +21,25 @@ on:
         - '231'
         - '232'
         - '241'
-        default: '${{ env.TEST_REVN }}'
+        default: '232'  # ensure this is the same as env.TEST_REVN
   push:
     tags:
       - "*"
     branches:
       - main
       - release/*
+
+env:
+  PYMECHANICAL_PORT: 10000  # default won't work on GitHub runners
+  PYMECHANICAL_START_INSTANCE: FALSE
+  DOCKER_PACKAGE: ghcr.io/ansys/mechanical
+  DOCKER_MECH_CONTAINER_NAME: mechanical
+  MAIN_PYTHON_VERSION: '3.10'
+  PACKAGE_NAME: ansys-mechanical-core
+  PACKAGE_NAMESPACE: ansys.mechanical.core
+  DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
+  DEFAULT_REVN: '231'  # ensure this is the same as inputs.default-revn.default
+  TEST_REVN: '232'  # ensure this is the same as inputs.test-revn.default
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
