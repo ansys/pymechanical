@@ -63,9 +63,10 @@ jobs:
             container_name=$2
             license_name=$3
             
-            container_name_revn=$container_name-revn
-
-            get_revn="${{ inputs.$container_name_revn || $revn }}"
+            container_name_revn=inputs.$container_name-revn
+            echo $container_name_revn
+            
+            get_revn="${{ $container_name_revn || $revn }}"
             echo $get_revn
             container_version="${get_revn:0:2}.${get_revn:2}.0"
             echo "$container_name=$container_version" >> $GITHUB_OUTPUT
