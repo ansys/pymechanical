@@ -37,6 +37,8 @@ env:
   PACKAGE_NAME: ansys-mechanical-core
   PACKAGE_NAMESPACE: ansys.mechanical.core
   DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
+  DEFAULT_REVN: '231'
+  TEST_REVN: '232'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -49,23 +51,26 @@ jobs:
     outputs:
       default: ${{ steps.step1.outputs.default }}
       default_lic: ${{ steps.step1.outputs.default_lic }}
-      test: ${{ steps.step2.outputs.test }}
-      test_lic:  ${{ steps.step2.outputs.test_lic }}
+      test: ${{ steps.step1.outputs.test }}
+      test_lic:  ${{ steps.step1.outputs.test_lic }}
     steps:
       - id: step1
         run: |
-          revn='231'
-          default=${{ inputs.default-revn || '$revn' }}
-          default_version="${default:0:2}.${default:2}.0"
-          echo "default=$default_version" >> $GITHUB_OUTPUT
-          echo "default_lic=$revn" >> $GITHUB_OUTPUT
-      - id: step2
-        run: |
-          revn='232'
-          test=${{ inputs.test-revn || '$revn' }}
-          test_version="${test:0:2}.${test:2}.0"
-          echo "test=$test_version" >> $GITHUB_OUTPUT
-          echo "test_lic=$revn" >> $GITHUB_OUTPUT        
+          parse_revns() {
+            revn=$1
+            container_name=$2
+            license_name=$3
+
+            get_revn=${{ inputs.default-revn || '${{ env.DEFAULT_REVN }}' }}
+            container_version="${get_revn:0:2}.${get_revn:2}.0"
+            echo "$container_name=$container_version" >> $GITHUB_OUTPUT
+            echo "$license_name=$revn" >> $GITHUB_OUTPUT
+          
+          }
+
+          parse_revns "${{ env.DEFAULT_REVN }}" "default" "default_lic"
+          parse_revns "${{ env.TEST_REVN }}" "test" "test_lic"
+       
   style:
     name: Code style
     runs-on: ubuntu-latest
