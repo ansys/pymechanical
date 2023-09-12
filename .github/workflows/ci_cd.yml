@@ -59,9 +59,22 @@ jobs:
          apt install python${{ matrix.python-version }} -y
          ln -s /usr/bin/python${{ matrix.python-version }} /usr/bin/python
          apt install python${{ matrix.python-version }}-venv -y
+      
+      - name: Install pip
+        if: ${{ matrix.python-version }} == '3.8'
+        run: |
+         apt install -y python3-pip
+
+      - name: Install pip for >3.8
+        if: ${{ matrix.python-version }} != '3.8'
+        run: |
          python -m ensurepip --default-pip
-         python --version
-         pip --version
+
+      - name: Upgrade pip
+        run: |
+          pip3 install --upgrade pip
+          python --version
+          pip3 --version
 
       - name: Install dependencies
         run: |
