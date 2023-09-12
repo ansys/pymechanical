@@ -1,7 +1,27 @@
 name: GitHub CI
+
 on:
   pull_request:
+  schedule:
+    - cron: '00 22 * * *'  # UTC time, may start 5-15 mins later than scheduled time
   workflow_dispatch:
+    inputs:
+      default-revn:
+        type: choice
+        description: 'Default revision number for containers.'
+        options: 
+        - '241'
+        - '232'
+        - '231'
+        default: '231'  # ensure this is the same as env.DEFAULT_REVN
+      test-revn:
+        type: choice
+        description: 'Revision number for tests.'
+        options: 
+        - '241'
+        - '232'
+        - '231'
+        default: '232'  # ensure this is the same as env.TEST_REVN
   push:
     tags:
       - "*"
@@ -13,19 +33,61 @@ env:
   PYMECHANICAL_PORT: 10000  # default won't work on GitHub runners
   PYMECHANICAL_START_INSTANCE: FALSE
   DOCKER_PACKAGE: ghcr.io/ansys/mechanical
-  DOCKER_IMAGE_VERSION: 23.1.0
   DOCKER_MECH_CONTAINER_NAME: mechanical
   MAIN_PYTHON_VERSION: '3.10'
   PACKAGE_NAME: ansys-mechanical-core
   PACKAGE_NAMESPACE: ansys.mechanical.core
   DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
+  DEFAULT_REVN: '231'  # ensure this is the same as inputs.default-revn.default
+  TEST_REVN: '232'  # ensure this is the same as inputs.test-revn.default
+  DEV_REVN: '241'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  revn-variations:
+    name: Save variations of revn
+    runs-on: ubuntu-latest
+    outputs:
+      default: ${{ steps.save-versions.outputs.default }}
+      default_lic: ${{ steps.save-versions.outputs.default_lic }}
+      test: ${{ steps.save-versions.outputs.test }}
+      test_lic:  ${{ steps.save-versions.outputs.test_lic }}
+    steps:
+      - id: save-versions
+        run: |
+          parse_revns() {
+            revn=$1  # For example, 231
+            container_name=$2
+            license_name=$3
 
+            # Create container_version from revn
+            container_version="${revn:0:2}.${revn:2}.0"  # For example, 23.1.0
+
+            # Set output variables
+            echo "$container_name=$container_version" >> $GITHUB_OUTPUT
+            echo "$license_name=$revn" >> $GITHUB_OUTPUT
+          }
+
+          # Use default revn values if the input values were not chosen.
+          # The input values are only selected in workflow_dispatch events.
+          if [[ -z "${{ inputs.default-revn }}" || -z "${{ inputs.test-revn }}" ]]; then
+            # If the event is a scheduled run, set the value to the DEV_REVN env var.
+            if ${{ github.event_name == 'schedule' }}; then
+              parse_revns "${{ env.DEV_REVN }}" "default" "default_lic"
+              parse_revns "${{ env.DEV_REVN }}" "test" "test_lic"
+            else
+              parse_revns "${{ env.DEFAULT_REVN }}" "default" "default_lic"
+              parse_revns "${{ env.TEST_REVN }}" "test" "test_lic"
+            fi
+          else
+            # If the input values are selected, use those values instead of the env vars
+            parse_revns "${{ inputs.default-revn }}" "default" "default_lic"
+            parse_revns "${{ inputs.test-revn }}" "test" "test_lic"
+          fi
+       
   style:
     name: Code style
     runs-on: ubuntu-latest
@@ -109,16 +171,18 @@ jobs:
   tests:
     name: Testing and coverage - Mechanical ${{ matrix.mechanical-version }}
     runs-on: public-ubuntu-latest-8-cores
-    needs: [smoke-tests]
+    needs: [smoke-tests, revn-variations]
     continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
       matrix:
-        mechanical-version: ['23.1.0']
+        # Add the experimental mechanical-version to mechanical-version
+        # matrix below once we switch to the next revn
+        mechanical-version: ['${{needs.revn-variations.outputs.default}}']
         experimental: [false]
         # The following versions would be allowed to fail
         include:
-          - mechanical-version: '23.2.0'
+          - mechanical-version: '${{needs.revn-variations.outputs.test}}'
             experimental: true
     steps:
       - name: Login in Github Container registry
@@ -144,6 +208,9 @@ jobs:
 
       # - name: Upload coverage to Codecov
       #   uses: codecov/codecov-action@v3
+
+      - name: Set the environment variable
+        run: echo "DOCKER_IMAGE_VERSION=${{needs.revn-variations.outputs.default}}" >> $GITHUB_ENV
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v3
@@ -180,9 +247,9 @@ jobs:
   embedding-tests:
     name: Embedding testing and coverage
     runs-on: ubuntu-latest
-    needs: [style]
+    needs: [style, revn-variations]
     container:
-      image: ghcr.io/ansys/mechanical:23.2.0
+      image: ghcr.io/ansys/mechanical:${{needs.revn-variations.outputs.test}}
       options: --entrypoint /bin/bash
     strategy:
       max-parallel: 2
@@ -204,17 +271,19 @@ jobs:
         run: |
           pip install .[tests]
 
+      - name: Set environment variable
+        run: echo "ANSYSCL${{ needs.revn-variations.outputs.test_lic }}_DIR=/install/ansys_inc/v${{ needs.revn-variations.outputs.test_lic }}/licensingclient" >> $GITHUB_ENV
+
       - name: Unit Testing and coverage
         env:
           LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
-          ANSYSCL232_DIR: /install/ansys_inc/v232/licensingclient
           ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
           ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
           ANSYS_WORKBENCH_LOGGING: 0
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
           NUM_CORES: 1
         run: |
-          /install/ansys_inc/v232/aisol/.workbench_lite pytest -m embedding -k logging > pytest_output.txt || true
+          /install/ansys_inc/v${{ needs.revn-variations.outputs.test_lic }}/aisol/.workbench_lite pytest -m embedding -k logging > pytest_output.txt || true
           cat pytest_output.txt
           #
           # Check if failure occurred
@@ -248,9 +317,9 @@ jobs:
     name: Launch testing and coverage
     runs-on: public-ubuntu-latest-8-cores
     container:
-      image: ghcr.io/ansys/mechanical:23.2.0
+      image: ghcr.io/ansys/mechanical:${{needs.revn-variations.outputs.test}}
       options: --entrypoint /bin/bash
-    needs: [ smoke-tests ]
+    needs: [ smoke-tests, revn-variations]
     strategy:
       fail-fast: false
       matrix:
@@ -270,10 +339,12 @@ jobs:
         run: |
           pip install .[tests]
 
+      - name: Set environment variable
+        run: echo "ANSYSCL${{ needs.revn-variations.outputs.test_lic }}_DIR=/install/ansys_inc/v${{ needs.revn-variations.outputs.test_lic }}/licensingclient" >> $GITHUB_ENV
+
       - name: Unit Testing and coverage
         env:
           LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
-          ANSYSCL232_DIR: /install/ansys_inc/v232/licensingclient
           ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
           ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
         run: |
@@ -311,9 +382,12 @@ jobs:
 
   docs:
     name: Documentation
-    needs: [docs-style]
+    needs: [docs-style, revn-variations]
     runs-on: public-ubuntu-latest-8-cores
     steps:
+      - name: Set the environment variable
+        run: echo "DOCKER_IMAGE_VERSION=${{needs.revn-variations.outputs.default}}" >> $GITHUB_ENV
+        
       - name: Login in Github Container registry
         uses: docker/login-action@v2
         with:
