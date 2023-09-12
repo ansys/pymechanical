@@ -73,8 +73,8 @@ jobs:
         run: |
           pip install .[tests]
 
-          - name: Set environment variable
-          run: echo "ANSYSCL${{ needs.revn-variations.outputs.test_lic }}_DIR=/install/ansys_inc/v${{ needs.revn-variations.outputs.test_lic }}/licensingclient" >> $GITHUB_ENV
+      - name: Set environment variable
+        run: echo "ANSYSCL${{ needs.revn-variations.outputs.test_lic }}_DIR=/install/ansys_inc/v${{ needs.revn-variations.outputs.test_lic }}/licensingclient" >> $GITHUB_ENV
   
       - name: Unit Testing and coverage
         env:
