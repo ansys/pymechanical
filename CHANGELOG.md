@@ -29,7 +29,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 -   Bump plotly from 5.15.0 to 5.16.0 (#348)
 -   Bump sphinxcontrib-websupport from 1.2.4 to 1.2.6 (#350)
 -   Bump ansys-sphinx-theme from 0.10.2 to 0.10.3 (#351)
--   pre-commit autoupdate ([#362](https://github.com/ansys/pymechanical/pull/362)), ([#380](https://github.com/ansys/pymechanical/pull/380))
+-   pre-commit autoupdate ([#362](https://github.com/ansys/pymechanical/pull/362)), ([#380](https://github.com/ansys/pymechanical/pull/380)), ([#391](https://github.com/ansys/pymechanical/pull/391))
 
 ### Fixed
 
