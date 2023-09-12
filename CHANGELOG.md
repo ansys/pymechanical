@@ -42,6 +42,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `actions/checkout` from 3 to 4 ([#379](https://github.com/ansys/pymechanical/pull/379))
 - Bump `imageio` from 2.31.2 to 2.31.3 ([#376](https://github.com/ansys/pymechanical/pull/376))
 - Bump `sphinx-notfound-page` from 1.0.0rc1 to 1.0.0 ([#374](https://github.com/ansys/pymechanical/pull/374))
+- Bump `pyvista` from 0.42.0 to 0.42.1 ([#388](https://github.com/ansys/pymechanical/pull/388))
 
 ## [0.10.1](https://github.com/ansys/pymechanical/releases/tag/v0.10.1) - August 8 2023
 
