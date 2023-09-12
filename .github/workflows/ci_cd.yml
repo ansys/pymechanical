@@ -57,7 +57,6 @@ jobs:
          apt install software-properties-common -y
          add-apt-repository ppa:deadsnakes/ppa -y
          apt install python${{ matrix.python-version }} -y
-         apt install python3-pip
          ln -s /usr/bin/python${{ matrix.python-version }} /usr/bin/python
          apt install python${{ matrix.python-version }}-venv -y
          python -m ensurepip --default-pip
@@ -66,7 +65,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          apt update
           apt install -y lsb-release
           pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
           pip3 install --upgrade pip flit
