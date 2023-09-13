@@ -7,13 +7,13 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ## [Unreleased][]
 
-## Added
+### Added
 
-- Set up daily run for 241 testing and added manual inputs for workflow dispatch (#385)
+-   Set up daily run for 241 testing and added manual inputs for workflow dispatch (#385)
 
 ### Fixed
 
--   Fix embedded testing for all python version in CI/CD (#271)
+-   Fix embedded testing for all python version in CI/CD ([#393](https://github.com/ansys/pymechanical/pull/393))
 
 ## [0.10.2](https://github.com/ansys/pymechanical/releases/tag/v0.10.2) - September 8, 2023
 
