@@ -64,18 +64,29 @@ def _start_application(configuration: AddinConfiguration, version, db_file) -> "
     else:
         return Ansys.Mechanical.Embedding.Application(db_file)
 
+
 class GetterWrapper(object):
+    """Wrapper class around an attribute of an object."""
+
     def __init__(self, obj, getter):
-        self.__dict__['_wrapped_obj'] = obj
-        self.__dict__['_getter'] = getter
+        """Create a new instance of GetterWrapper."""
+        # immortal class which provides wrapped object
+        self.__dict__["_immortal_object"] = obj
+        # function to get the wrapped object from the immortal class
+        self.__dict__["_get_wrapped_object"] = getter
+
     def __getattr__(self, attr):
+        """Wrap getters to the wrapped object."""
         if attr in self.__dict__:
             return getattr(self, attr)
-        return getattr(self._getter(self._wrapped_obj), attr)
+        return getattr(self._get_wrapped_object(self._immortal_object), attr)
+
     def __setattr__(self, attr, value):
+        """Wrap setters to the wrapped object."""
         if attr in self.__dict__:
             setattr(self, attr, value)
-        setattr(self._getter(self._wrapped_obj), attr, value)
+        setattr(self._get_wrapped_object(self._immortal_object), attr, value)
+
 
 class App:
     """Mechanical embedding Application."""
