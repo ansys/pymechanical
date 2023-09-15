@@ -156,7 +156,10 @@ class App:
 
     def exit(self):
         """Exit the application."""
-        self.ExtAPI.Application.Close()
+        if self.version < 241:
+            self.ExtAPI.Application.Close()
+        else:
+            self.ExtAPI.Application.Exit()
 
     def execute_script(self, script: str):
         """Execute the given script with the internal IronPython engine."""
