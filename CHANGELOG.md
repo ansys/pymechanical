@@ -10,6 +10,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Added
 
 -   Set up daily run for 241 testing and added manual inputs for workflow dispatch (#385)
+-   add experimental libraries method (#395)
 
 ### Fixed
 
