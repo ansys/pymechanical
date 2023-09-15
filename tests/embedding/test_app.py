@@ -50,6 +50,26 @@ def test_app_version(embedded_app):
 
 
 @pytest.mark.embedding
+def test_app_getters_notstale(embedded_app):
+    """The getters of app should be usable after a new().
+
+    The C# objects referred to by ExtAPI, Model, DataModel, and Tree
+    are reset on each call to app.new(), so storing them in
+    global variables will be broken.
+
+    To resolve this, we have to wrap those objects, and ensure
+    that they properly redirect the calls to the appropriate C#
+    object after a new()
+    """
+    data_model = embedded_app.DataModel
+    data_model.Project.Name = "a"
+    model = embedded_app.Model
+    model.Name = "b"
+    embedded_app.new()
+    assert data_model.Project.Name != "a"
+    assert model.Name != "b"
+
+@pytest.mark.embedding
 @pytest.mark.python_env
 def test_warning_message(test_env, pytestconfig, rootdir):
     """Test Python.NET warning of the embedded instance using a test-scoped Python environment."""
