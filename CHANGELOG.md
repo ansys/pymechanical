@@ -14,6 +14,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Fixed
 
 -   Fix embedded testing for all python version in CI/CD ([#393](https://github.com/ansys/pymechanical/pull/393))
+-   use Application.Exit() in 241+ (#396)
 
 ## [0.10.2](https://github.com/ansys/pymechanical/releases/tag/v0.10.2) - September 8, 2023
 
