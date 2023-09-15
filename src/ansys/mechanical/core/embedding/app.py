@@ -88,7 +88,6 @@ class GetterWrapper(object):
         setattr(self._get_wrapped_object(self._immortal_object), attr, value)
 
 
-
 class App:
     """Mechanical embedding Application."""
 
