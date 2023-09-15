@@ -28,7 +28,7 @@ def test_qk_eng_wb2_005(printer, selection, embedded_app):
 
     From Mechanical/QK_ENG_WB2/QK_ENG_WB2_005
     """
-    globals().update(global_variables(embedded_app))
+    globals().update(global_variables(embedded_app, True))
     printer("Setting up test - adding linked static structural + buckling analysis system")
     Model.AddStaticStructuralAnalysis()
     Model.AddEigenvalueBucklingAnalysis()
@@ -41,30 +41,22 @@ def test_qk_eng_wb2_005(printer, selection, embedded_app):
 
     def _innertest():
         printer("Setup units")
-        ExtAPI.Application.ActiveUnitSystem = (
-            Ansys.ACT.Interfaces.Common.MechanicalUnitSystem.StandardBIN
-        )
+        ExtAPI.Application.ActiveUnitSystem = MechanicalUnitSystem.StandardBIN
         MODEL = Model
-        MODEL.Geometry.ElementControl = Ansys.Mechanical.DataModel.Enums.ElementControl.Manual
+        MODEL.Geometry.ElementControl = ElementControl.Manual
         STAT_STRUC = MODEL.Analyses[0]
         printer("Apply loads")
-        selection.UpdateSelection(
-            ExtAPI, [26], Ansys.ACT.Interfaces.Common.SelectionTypeEnum.GeometryEntities
-        )
+        selection.UpdateSelection(ExtAPI, [26], SelectionTypeEnum.GeometryEntities)
         FIX_SUP = STAT_STRUC.AddFixedSupport()
-        selection.UpdateSelection(
-            ExtAPI, [25], Ansys.ACT.Interfaces.Common.SelectionTypeEnum.GeometryEntities
-        )
+        selection.UpdateSelection(ExtAPI, [25], SelectionTypeEnum.GeometryEntities)
         FRC = STAT_STRUC.AddForce()
-        FRC.DefineBy = Ansys.Mechanical.DataModel.Enums.LoadDefineBy.Components
+        FRC.DefineBy = LoadDefineBy.Components
         FRC.ZComponent.Output.SetDiscreteValue(0, Quantity("-1 [lbf]"))
         ExtAPI.SelectionManager.ClearSelection()
         printer("Insert Static Structural results and Solve")
         DIR_DEF01_STAT_STRUC = STAT_STRUC.Solution.AddDirectionalDeformation()
         STAT_STRUC.Solution.Solve(True)
-        assert (
-            STAT_STRUC.Solution.ObjectState == Ansys.Mechanical.DataModel.Enums.ObjectState.Solved
-        )
+        assert STAT_STRUC.Solution.ObjectState == ObjectState.Solved
 
         printer("Setup Linear Buckling analysis")
         BUCK = MODEL.Analyses[1]
@@ -87,11 +79,11 @@ def test_qk_eng_wb2_005(printer, selection, embedded_app):
         EQV_STRS_BUCK = BUCK.Solution.AddEquivalentStress()
         EQV_STRS_BUCK.Mode = 6
         BUCK.Solution.Solve(True)
-        assert BUCK.Solution.ObjectState == Ansys.Mechanical.DataModel.Enums.ObjectState.Solved
+        assert BUCK.Solution.ObjectState == ObjectState.Solved
 
         printer("Clean and Solve")
         embedded_app.execute_script("ExtAPI.DataModel.Project.Model.ClearGeneratedData()")
-        assert BUCK.Solution.ObjectState != Ansys.Mechanical.DataModel.Enums.ObjectState.Solved
+        assert BUCK.Solution.ObjectState != ObjectState.Solved
         # embedded_app.DataModel.Project.ClearGeneratedData()
         MODEL.Solve(True)
         printer("Validate Results")
@@ -115,7 +107,7 @@ def test_qk_eng_wb2_007(printer, selection, embedded_app):
 
     From Mechanical/QK_ENG_WB2/QK_ENG_WB2_007
     """
-    globals().update(global_variables(embedded_app))
+    globals().update(global_variables(embedded_app, True))
     printer("Setting up test - adding two static structural systems")
     Model.AddStaticStructuralAnalysis()
     Model.AddStaticStructuralAnalysis()
@@ -140,17 +132,13 @@ def test_qk_eng_wb2_007(printer, selection, embedded_app):
         printer("Apply loads")
         STAT_STRUC1 = MODEL.Analyses[0]
 
-        selection.UpdateSelection(
-            ExtAPI, [29], Ansys.ACT.Interfaces.Common.SelectionTypeEnum.GeometryEntities
-        )
+        selection.UpdateSelection(ExtAPI, [29], SelectionTypeEnum.GeometryEntities)
         FIX_SUP = STAT_STRUC1.AddFixedSupport()
 
         ExtAPI.SelectionManager.ClearSelection()
-        selection.UpdateSelection(
-            ExtAPI, [28], Ansys.ACT.Interfaces.Common.SelectionTypeEnum.GeometryEntities
-        )
+        selection.UpdateSelection(ExtAPI, [28], SelectionTypeEnum.GeometryEntities)
         FRC = STAT_STRUC1.AddForce()
-        FRC.DefineBy = Ansys.Mechanical.DataModel.Enums.LoadDefineBy.Components
+        FRC.DefineBy = LoadDefineBy.Components
         values = System.Collections.Generic.List[Quantity]()
         values.Add(Quantity("0 [N]"))
         values.Add(Quantity("1000000000 [N]"))
@@ -159,30 +147,22 @@ def test_qk_eng_wb2_007(printer, selection, embedded_app):
         printer("Add Results and Solve")
         SOLN_STAT_STRUC1 = STAT_STRUC1.Solution
         SHEAR_STRS1_STAT_STRUC1 = SOLN_STAT_STRUC1.AddShearStress()
-        SHEAR_STRS1_STAT_STRUC1.ShearOrientation = (
-            Ansys.Mechanical.DataModel.Enums.ShearOrientationType.YZPlane
-        )
+        SHEAR_STRS1_STAT_STRUC1.ShearOrientation = ShearOrientationType.YZPlane
         SHEAR_STRS2_STAT_STRUC1 = SOLN_STAT_STRUC1.AddShearStress()
-        SHEAR_STRS2_STAT_STRUC1.ShearOrientation = (
-            Ansys.Mechanical.DataModel.Enums.ShearOrientationType.XZPlane
-        )
+        SHEAR_STRS2_STAT_STRUC1.ShearOrientation = ShearOrientationType.XZPlane
         SOLN_STAT_STRUC1.Solve(True)
 
         printer("Apply loads for Static 2 ")
         STAT_STRUC2 = MODEL.Analyses[1]
 
         ExtAPI.SelectionManager.ClearSelection()
-        selection.UpdateSelection(
-            ExtAPI, [29], Ansys.ACT.Interfaces.Common.SelectionTypeEnum.GeometryEntities
-        )
+        selection.UpdateSelection(ExtAPI, [29], SelectionTypeEnum.GeometryEntities)
         FIX_SUP2 = STAT_STRUC2.AddFixedSupport()
 
         ExtAPI.SelectionManager.ClearSelection()
-        selection.UpdateSelection(
-            ExtAPI, [28], Ansys.ACT.Interfaces.Common.SelectionTypeEnum.GeometryEntities
-        )
+        selection.UpdateSelection(ExtAPI, [28], SelectionTypeEnum.GeometryEntities)
         FRC2 = STAT_STRUC2.AddForce()
-        FRC2.DefineBy = Ansys.Mechanical.DataModel.Enums.LoadDefineBy.Components
+        FRC2.DefineBy = LoadDefineBy.Components
         values = System.Collections.Generic.List[Quantity]()
         values.Add(Quantity("0 [N]"))
         values.Add(Quantity("1000000000 [N]"))
@@ -192,15 +172,9 @@ def test_qk_eng_wb2_007(printer, selection, embedded_app):
         SOLN_STAT_STRUC2 = STAT_STRUC2.Solution
 
         SHEAR_STRS1_STAT_STRUC2 = SOLN_STAT_STRUC2.AddShearStress()  # YZ stress
-        SHEAR_STRS1_STAT_STRUC2.ShearOrientation = (
-            Ansys.Mechanical.DataModel.Enums.ShearOrientationType.YZPlane
-        )
-
+        SHEAR_STRS1_STAT_STRUC2.ShearOrientation = ShearOrientationType.YZPlane
         SHEAR_STRS2_STAT_STRUC2 = SOLN_STAT_STRUC2.AddShearStress()  # XZ stress
-        SHEAR_STRS2_STAT_STRUC1.ShearOrientation = (
-            Ansys.Mechanical.DataModel.Enums.ShearOrientationType.XZPlane
-        )
-
+        SHEAR_STRS2_STAT_STRUC1.ShearOrientation = ShearOrientationType.XZPlane
         SOLN_STAT_STRUC2.Solve(True)
 
         ExtAPI.SelectionManager.ClearSelection()
@@ -222,11 +196,9 @@ def test_qk_eng_wb2_007(printer, selection, embedded_app):
 
         printer("Add and Setup Fatigue Tool 1")
         FAT_TOOL1 = SOLN_COMB.AddFatigueTool()
-        FAT_TOOL1.LoadingType = Ansys.Mechanical.DataModel.Enums.FatigueLoadType.NonProportional
-        FAT_TOOL1.MeanStressTheory = Ansys.Mechanical.DataModel.Enums.MeanStressTheoryType.Goodman
-        FAT_TOOL1.StressComponent = (
-            Ansys.Mechanical.DataModel.Enums.FatigueStressComponentType.FatigueToolComponent_YZ
-        )
+        FAT_TOOL1.LoadingType = FatigueLoadType.NonProportional
+        FAT_TOOL1.MeanStressTheory = MeanStressTheoryType.Goodman
+        FAT_TOOL1.StressComponent = FatigueStressComponentType.FatigueToolComponent_YZ
         FAT_TOOL1.ScaleFactor = 0.85
         LIFE = FAT_TOOL1.AddLife()
         DAMAGE = FAT_TOOL1.AddDamage()
@@ -236,9 +208,7 @@ def test_qk_eng_wb2_007(printer, selection, embedded_app):
 
         printer("Add and Setup Fatigue Tool 2")
         FAT_TOOL2 = FAT_TOOL1.Duplicate()
-        FAT_TOOL2.StressComponent = (
-            Ansys.Mechanical.DataModel.Enums.FatigueStressComponentType.FatigueToolComponent_XZ
-        )
+        FAT_TOOL2.StressComponent = FatigueStressComponentType.FatigueToolComponent_XZ
 
         printer("Solve and Validate Fatigue Tool results")
         MODEL.Solve(True)
