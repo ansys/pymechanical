@@ -30,7 +30,7 @@ import clr
 
 clr.AddReference("Ansys.Mechanical.DataModel")
 clr.AddReference("Ansys.ACT.Interfaces")
-from Ansys.ACT.Interfaces.Common import *
-from Ansys.Mechanical.DataModel.Enums import *
+from Ansys.ACT.Interfaces.Common import *  # noqa
+from Ansys.Mechanical.DataModel.Enums import *  # noqa
 
-import Ansys
+import Ansys  # noqa
