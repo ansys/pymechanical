@@ -12,6 +12,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 -   Set up daily run for 241 testing and added manual inputs for workflow dispatch (#385)
 -   add option to include enums in global variables (#394)
 -   add experimental libraries method (#395)
+-   add nonblocking sleep (#399)
 
 ### Fixed
 
