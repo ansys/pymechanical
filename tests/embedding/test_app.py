@@ -3,8 +3,11 @@ import os
 import subprocess
 import sys
 import tempfile
+import time
 
 import pytest
+
+import ansys.mechanical.core.embedding.utils as utils
 
 
 @pytest.mark.embedding
@@ -47,6 +50,15 @@ def test_app_version(embedded_app):
     version = embedded_app.version
     assert type(version) is int
     assert version >= 231
+
+
+@pytest.mark.embedding
+def test_nonblock_sleep(embedded_app):
+    """Test non-blocking sleep."""
+    t1 = time.time()
+    utils.sleep(2000)
+    t2 = time.time()
+    assert (t2 - t1) >= 2
 
 
 @pytest.mark.embedding
