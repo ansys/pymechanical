@@ -26,7 +26,7 @@ following code:
 
 
 By default enums, such as `SelectionTypeEnum` or `LoadDefineBy` are not included in these
-global variables, because there are thousands of them. To include enums, ste the second
+global variables, because there are thousands of them. To include enums, set the second
 argument of `global_variables`` to True.
 
 .. code:: python

@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Library to import Mechanical enums
+"""Library to import Mechanical enums.
 
 A useful subset of what is imported by
 Ansys Inc/v{NNN}/ACT/apis/Mechanical.py
@@ -30,6 +30,7 @@ import clr
 
 clr.AddReference("Ansys.Mechanical.DataModel")
 clr.AddReference("Ansys.ACT.Interfaces")
-import Ansys
 from Ansys.ACT.Interfaces.Common import *
 from Ansys.Mechanical.DataModel.Enums import *
+
+import Ansys
