@@ -69,6 +69,7 @@ def test_app_getters_notstale(embedded_app):
     assert data_model.Project.Name != "a"
     assert model.Name != "b"
 
+
 @pytest.mark.embedding
 @pytest.mark.python_env
 def test_warning_message(test_env, pytestconfig, rootdir):

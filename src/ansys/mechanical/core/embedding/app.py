@@ -64,18 +64,22 @@ def _start_application(configuration: AddinConfiguration, version, db_file) -> "
     else:
         return Ansys.Mechanical.Embedding.Application(db_file)
 
+
 class GetterWrapper(object):
     def __init__(self, obj, getter):
-        self.__dict__['_wrapped_obj'] = obj
-        self.__dict__['_getter'] = getter
+        self.__dict__["_wrapped_obj"] = obj
+        self.__dict__["_getter"] = getter
+
     def __getattr__(self, attr):
         if attr in self.__dict__:
             return getattr(self, attr)
         return getattr(self._getter(self._wrapped_obj), attr)
+
     def __setattr__(self, attr, value):
         if attr in self.__dict__:
             setattr(self, attr, value)
         setattr(self._getter(self._wrapped_obj), attr, value)
+
 
 class App:
     """Mechanical embedding Application."""
