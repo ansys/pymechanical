@@ -27,9 +27,9 @@ Ansys Inc/v{NNN}/ACT/apis/Mechanical.py
 """
 
 import clr
+
 clr.AddReference("Ansys.Mechanical.DataModel")
 clr.AddReference("Ansys.ACT.Interfaces")
 import Ansys
-from Ansys.Mechanical.DataModel.Enums import *
 from Ansys.ACT.Interfaces.Common import *
-
+from Ansys.Mechanical.DataModel.Enums import *
