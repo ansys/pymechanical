@@ -54,7 +54,7 @@ tests = [
     "pytest-print==1.0.0",
 ]
 doc = [
-    "Sphinx==7.2.5",
+    "Sphinx==7.2.6",
     "ansys-sphinx-theme==0.11.1",
     "grpcio==1.58.0",
     "imageio-ffmpeg==0.4.8",
