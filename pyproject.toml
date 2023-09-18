@@ -61,7 +61,7 @@ doc = [
     "imageio==2.31.3",
     "jupyter_sphinx==0.4.0",
     "jupyterlab>=3.2.8",
-    "matplotlib==3.7.2",
+    "matplotlib==3.8.0",
     "numpydoc==1.5.0",
     "plotly==5.16.1",
     "pypandoc==1.11",
