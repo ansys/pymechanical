@@ -10,10 +10,17 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Added
 
 -   Set up daily run for 241 testing and added manual inputs for workflow dispatch (#385)
+-   add option to include enums in global variables (#394)
+-   add experimental libraries method (#395)
+-   add nonblocking sleep (#399)
 
 ### Fixed
 
 -   Fix embedded testing for all python version in CI/CD ([#393](https://github.com/ansys/pymechanical/pull/393))
+-   fix broken link (#397)
+-   use Application.Exit() in 241+ (#396)
+-   Fix stale globals by wrapping them (#398)
+
 
 ## [0.10.2](https://github.com/ansys/pymechanical/releases/tag/v0.10.2) - September 8, 2023
 

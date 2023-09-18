@@ -20,8 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Imports for the embedding sub-package."""
-from .addins import AddinConfiguration
-from .app import App
-from .app_libraries import add_mechanical_python_libraries
-from .imports import global_variables
+"""Library to import Mechanical enums.
+
+A useful subset of what is imported by
+Ansys Inc/v{NNN}/ACT/apis/Mechanical.py
+"""
+
+import clr
+
+clr.AddReference("Ansys.Mechanical.DataModel")
+clr.AddReference("Ansys.ACT.Interfaces")
+
+from Ansys.ACT.Interfaces.Common import *  # noqa isort: skip
+from Ansys.Mechanical.DataModel.Enums import *  # noqa isort: skip
+
+import Ansys  # noqa  isort: skip
