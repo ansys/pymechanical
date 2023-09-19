@@ -25,6 +25,9 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Dependencies
 
 - Bump `sphinx` from 7.2.5 to 7.2.6 ([#403](https://github.com/ansys/pymechanical/pull/403))
+- Bump `ansys-sphinx-theme` from 0.11.1 to 0.11.2 ([#406](https://github.com/ansys/pymechanical/pull/406))
+- Bump `plotly` from 5.16.1 to 5.17.0 ([#407](https://github.com/ansys/pymechanical/pull/407))
+- Bump `docker/login-action` from 2 to 3 ([#408](https://github.com/ansys/pymechanical/pull/408))
 
 ## [0.10.2](https://github.com/ansys/pymechanical/releases/tag/v0.10.2) - September 8 2023
 
