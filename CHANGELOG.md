@@ -22,8 +22,11 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 -   use Application.Exit() in 241+ (#396)
 -   Fix stale globals by wrapping them (#398)
 
+### Dependencies
 
-## [0.10.2](https://github.com/ansys/pymechanical/releases/tag/v0.10.2) - September 8, 2023
+- Bump `imageio-ffmpeg` from 0.4.8 to 0.4.9 ([#405](https://github.com/ansys/pymechanical/pull/405)
+
+## [0.10.2](https://github.com/ansys/pymechanical/releases/tag/v0.10.2) - September 8 2023
 
 ### Added
 
