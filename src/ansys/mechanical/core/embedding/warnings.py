@@ -25,10 +25,16 @@
 import typing
 import warnings
 
+# TODO: Investigate `warnings.showwarning = my_special_function` in order to better
+#       control the printing behavior of warnings. But this is global state, so the
+#       function should only affect warnings that are thrown here.
+
+
 def _get_method_to_check(method_info: typing.Any) -> typing.Any:
     """Get the reflection method to check for obsolete attributes.
 
-    If its a getter or setter, it has to be done in a different way."""
+    If its a getter or setter, it has to be done in a different way.
+    """
     if not method_info.IsSpecialName:
         return method_info
     type_props = [prop for prop in method_info.DeclaringType.GetProperties()]
@@ -47,10 +53,13 @@ def _on_obsolete_message(sender: typing.Any, args: typing.Any):
         return
 
     attribs = method_info.GetCustomAttributes(True)
-    obsolete_attributes = [attrib for attrib in attribs if attrib.GetType().ToString() == "System.ObsoleteAttribute"]
+    obsolete_attributes = [
+        attrib for attrib in attribs if attrib.GetType().ToString() == "System.ObsoleteAttribute"
+    ]
     for obsolete_attribute in obsolete_attributes:
         message = f"Obsolete: '{method_info.Name}': {obsolete_attribute.Message}"
         warnings.warn(message, UserWarning, stacklevel=2)
+
 
 def connect_warnings(app: "ansys.mechanical.core.embedding.app.App"):
     """Connect Mechanical warnings to the `warnings` Python module."""
