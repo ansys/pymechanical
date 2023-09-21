@@ -33,7 +33,7 @@ import warnings
 def _get_method_to_check(method_info: typing.Any) -> typing.Any:
     """Get the reflection method to check for obsolete attributes.
 
-    If its a getter or setter, it has to be done in a different way.
+    If it's a getter or setter, it has to be done in a different way.
     """
     if not method_info.IsSpecialName:
         return method_info
