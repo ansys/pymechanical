@@ -20,6 +20,14 @@ def test_app_repr(embedded_app):
 
 
 @pytest.mark.embedding
+@pytest.mark.minimum_version(241)
+def test_deprecation_warning(embedded_app):
+    struct = embedded_app.Model.AddStaticStructuralAnalysis()
+    with pytest.warns(UserWarning):
+        struct.SystemID
+
+
+@pytest.mark.embedding
 def test_app_save_open(embedded_app, tmp_path: pytest.TempPathFactory):
     """Test save and open of the Application class."""
     import System
