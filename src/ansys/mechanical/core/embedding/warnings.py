@@ -66,7 +66,11 @@ def connect_warnings(app: "ansys.mechanical.core.embedding.app.App"):
     if app.version < 241:
         return
 
-    app._app.OnObsoleteMessage += _on_obsolete_message
+    # TODO _ remove try/except
+    try:
+        app._app.OnObsoleteMessage += _on_obsolete_message
+    except:
+        pass
 
 
 def disconnect_warnings(app):
@@ -74,4 +78,8 @@ def disconnect_warnings(app):
     if app.version < 241:
         return
 
-    app._app.OnObsoleteMessage -= _on_obsolete_message
+    # TODO _ remove try/except
+    try:
+        app._app.OnObsoleteMessage -= _on_obsolete_message
+    except:
+        pass
