@@ -26,7 +26,7 @@ following code:
 
 
 Some enum types are available when scripting inside of mechanical, such as `SelectionTypeEnum`
-or `LoadDefineBy`. Because thes number in the thousands, by default, these enums are not
+or `LoadDefineBy`. Because these number in the thousands, by default, these enums are not
 included in these global variables. To include enums, set the second argument of
 `global_variables`` to True.
 
