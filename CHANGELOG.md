@@ -22,6 +22,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 -   fix broken link (#397)
 -   use Application.Exit() in 241+ (#396)
 -   Fix stale globals by wrapping them (#398)
+-   Fix API documentation (#411)
 
 ### Dependencies
 
