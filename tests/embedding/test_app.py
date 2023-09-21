@@ -22,9 +22,9 @@ def test_app_repr(embedded_app):
 @pytest.mark.embedding
 @pytest.mark.minimum_version(241)
 def test_deprecation_warning(embedded_app):
-    struc = embedded_app.Model.AddStaticStructuralAnalysis()
+    struct = embedded_app.Model.AddStaticStructuralAnalysis()
     with pytest.warns(UserWarning):
-        struc.SystemID
+        struct.SystemID
 
 
 @pytest.mark.embedding

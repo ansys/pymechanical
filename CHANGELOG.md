@@ -13,6 +13,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 -   add option to include enums in global variables (#394)
 -   add experimental libraries method (#395)
 -   add nonblocking sleep (#399)
+-   Warn for obsolete apis (#409)
 
 ### Fixed
 
