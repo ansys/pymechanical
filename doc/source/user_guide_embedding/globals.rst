@@ -25,9 +25,10 @@ following code:
    globals().update(global_variables(app))
 
 
-By default enums, such as `SelectionTypeEnum` or `LoadDefineBy` are not included in these
-global variables, because there are thousands of them. To include enums, set the second
-argument of `global_variables`` to True.
+Some enum types are available when scripting inside of mechanical, such as `SelectionTypeEnum`
+or `LoadDefineBy`. Because thes number in the thousands, by default, these enums are not
+included in these global variables. To include enums, set the second argument of
+`global_variables`` to True.
 
 .. code:: python
 
