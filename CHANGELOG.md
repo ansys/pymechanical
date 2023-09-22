@@ -14,6 +14,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 -   add experimental libraries method (#395)
 -   add nonblocking sleep (#399)
 -   Add test case for exporting off screen image([#400](https://github.com/ansys/pymechanical/pull/400))
+-   Warn for obsolete apis (#409)
 
 ### Fixed
 
@@ -21,6 +22,8 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 -   fix broken link (#397)
 -   use Application.Exit() in 241+ (#396)
 -   Fix stale globals by wrapping them (#398)
+-   Fix API documentation (#411)
+-   doc fix (#412)
 
 ### Dependencies
 

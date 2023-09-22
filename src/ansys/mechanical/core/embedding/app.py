@@ -27,6 +27,7 @@ import os
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
+from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
 
 
 def _get_default_addin_configuration() -> AddinConfiguration:
@@ -115,7 +116,6 @@ class App:
             raise Exception("Cannot have more than one embedded mechanical instance")
         version = kwargs.get("version")
         self._version = initializer.initialize(version)
-
         configuration = kwargs.get("config", _get_default_addin_configuration())
 
         if private_appdata:
@@ -126,6 +126,8 @@ class App:
 
         self._app = _start_application(configuration, self._version, db_file)
         runtime.initialize()
+        connect_warnings(self)
+
         self._disposed = False
         atexit.register(_dispose_embedded_app, INSTANCES)
         INSTANCES.append(self)
@@ -152,6 +154,7 @@ class App:
     def _dispose(self):
         if self._disposed:
             return
+        disconnect_warnings(self)
         self._app.Dispose()
         self._disposed = True
 
