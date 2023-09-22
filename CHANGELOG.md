@@ -171,6 +171,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 -   Bump imageio from 2.30.0 to 2.31.0 (#264)
 -   Bump pytest from 7.3.1 to 7.3.2 (#267)
 -   Bump plotly from 5.14.1 to 5.15.0 (#268)
+-   Update examples page (#413)
 
 ### Fixed
 
