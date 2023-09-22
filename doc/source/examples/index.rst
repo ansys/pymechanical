@@ -5,11 +5,9 @@ Examples
 ========
 
 Here are examples using Mechanical with the ``ansys-mechanical-core`` library through 
-an embedded instance or remote session. To see how the same example is implemented 
-when using an embedded instance or remote session, refer to the 
-`Embedding and Remote Session Example`_ below.
+an embedded instance or remote session.
 
-.. grid:: 2
+.. grid:: 1
    :gutter: 2
 
    .. grid-item-card:: Embedding Examples
@@ -21,6 +19,11 @@ when using an embedded instance or remote session, refer to the
       :link: https://examples.mechanical.docs.pyansys.com/index.html
 
       Uses PyMechanical as a client to a remote Mechanical instance.
+
+   .. grid-item-card:: Embedding Instance & Remote Session Example
+      :link: gallery_examples/embedding_n_remote/embedding_remote.html
+
+      The same example implemented using an embedded instance or a remote session.
 
 
 .. Embedding and Remote Session Example
@@ -35,5 +38,5 @@ when using an embedded instance or remote session, refer to the
 ..
    We have to include this rather than include it in a tree.
 
-.. include:: gallery_examples/embedding_n_remote/index.rst
-   :start-line: 2
+.. .. include:: gallery_examples/embedding_n_remote/index.rst
+..    :start-line: 2

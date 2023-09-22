@@ -17,7 +17,7 @@ remote session.
 ###############################################################################
 # Download the geometry file
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Set working directory to project location and download Valve.pmdb to that location.
+# Download Valve.pmdb.
 
 import os
 
@@ -195,7 +195,7 @@ from ansys.mechanical.core.examples import download_file
 geometry_path = download_file("Valve.pmdb", "pymechanical", "embedding")
 print(f"Downloaded the geometry file to: {geometry_path}")
 
-# script_file_path = # upload remote_script.py to example-data/pymechanical/
+script_file_path = download_file("remote_script.py", "pymechanical", "embedding")
 print(f"Downloaded the script file to: {script_file_path}")
 
 
@@ -242,7 +242,7 @@ print(f"part_file_path on server: {result}")
 ###############################################################################
 # Run mechanical automation script
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Run the script to run the workflow
+# Run remote_script.py in the mechanical remote session.
 
 mechanical.run_python_script_from_file(script_file_path)
 
@@ -250,7 +250,6 @@ mechanical.run_python_script_from_file(script_file_path)
 ###############################################################################
 # Get list of generated files
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Get list of generated files
 
 list_files = mechanical.list_files()
 for file in list_files:
@@ -260,7 +259,6 @@ for file in list_files:
 ###############################################################################
 # Download files back to local working directory
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Download files back to local working directory
 
 dest_dir = "download"
 dest_dir = os.path.join(os.getcwd(), dest_dir)
