@@ -2,7 +2,9 @@
 
 Embedding & Remote Example
 --------------------------
-The code below illustrates the same example, first demonstrated using an embedded instance, and later demonstrated using a remote session.
+The code below illustrates the same example, first demonstrated 
+using an embedded instance, and later demonstrated using a 
+remote session.
 
 """
 
@@ -11,21 +13,30 @@ The code below illustrates the same example, first demonstrated using an embedde
 # Embedded Instance
 # -----------------
 
+
 ###############################################################################
-# Launch Embedding Instance
-# ~~~~~~~~~~~~~~~~~~~~~~~~~
-# Launch a new embedding instance for Ansys Mechanical version 232.
-# Starts a non-graphical Mechanical session within the python.exe, and
-# updates global variables to get access to the same variables (Model, DataModel, etc.)
-# as in the Mechanical scripting console​.
+# Download the geometry file
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Set working directory to project location and download Valve.pmdb to that location.
 
 import os
+
 import ansys.mechanical.core as mech
 from ansys.mechanical.core.examples import download_file
 
-app = mech.App(version=232) 
+geometry_path = download_file("Valve.pmdb", "pymechanical", "embedding")
+print(f"Downloaded the geometry file to: {geometry_path}")
+
+
+###############################################################################
+# Embed Mechanical and set global variables
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Open an embedded instance of Mechanical and set global variables.
+
+app = mech.App(version=232)
 globals().update(mech.global_variables(app))
 print(app)
+
 
 ###############################################################################
 # Add Static Analysis
@@ -34,47 +45,33 @@ print(app)
 
 analysis = Model.AddStaticStructuralAnalysis()
 
-###############################################################################
-# Download Valve.pmdb file
-# ~~~~~~~~~~~~~~~~~~~~~~~~
-# Set working directory to project location and download Valve.pmdb to that location.
-
-work_dir = app.ExtAPI.DataModel.Project.ProjectDirectory # os.getcwd()
-
-filename = download_file("Valve.pmdb", "pymechanical", "embedding", destination=work_dir)
-print(filename)
 
 ###############################################################################
 # Import geometry
 # ~~~~~~~~~~~~~~~
 
-geometry_file = os.path.join(work_dir,'Valve.pmdb')
+geometry_file = geometry_path
 geometry_import = Model.GeometryImportGroup.AddGeometryImport()
 geometry_import_format = Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.Format.Automatic
 geometry_import_preferences = Ansys.ACT.Mechanical.Utilities.GeometryImportPreferences()
 geometry_import_preferences.ProcessNamedSelections = True
 geometry_import.Import(geometry_file, geometry_import_format, geometry_import_preferences)
 
-# Assign material
-# To import materials library: method 1
-#import sys
-#path_to_232_lib = os.path.join(path_to_232,'Addins\ACT\libraries\Mechanical')
-#sys.path.append(path_to_232_lib)
-#import materials
-
-# To import materials library: method 2
-#material_file = get_material_file().replace("\\", "\\\\")
-#script = 'DS.Tree.Projects.Item(1).LoadEngrDataLibraryFromFile("' + material_file + '");'
-#ExtAPI.Application.ScriptByName('jscript').ExecuteCommand(script)
-#import materials
 
 ###############################################################################
 # Assign material
 # ~~~~~~~~~~~~~~~
 
 matAssignment = Model.Materials.AddMaterialAssignment()
-tempSel = ExtAPI.SelectionManager.CreateSelectionInfo(Ansys.ACT.Interfaces.Common.SelectionTypeEnum.GeometryEntities)
-bodies = [body for body in ExtAPI.DataModel.Project.Model.Geometry.GetChildren(Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Body,True)]
+tempSel = ExtAPI.SelectionManager.CreateSelectionInfo(
+    Ansys.ACT.Interfaces.Common.SelectionTypeEnum.GeometryEntities
+)
+bodies = [
+    body
+    for body in ExtAPI.DataModel.Project.Model.Geometry.GetChildren(
+        Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Body, True
+    )
+]
 geobodies = [body.GetGeoBody() for body in bodies]
 ids = System.Collections.Generic.List[System.Int32]()
 [ids.Add(item.Id) for item in geobodies]
@@ -82,13 +79,15 @@ tempSel.Ids = ids
 matAssignment.Location = tempSel
 matAssignment.Material = "Structural Steel"
 
+
 ###############################################################################
 # Define mesh settings
 # ~~~~~~~~~~~~~~~~~~~~
 
 mesh = Model.Mesh
-mesh.ElementSize = Quantity('25 [mm]')
+mesh.ElementSize = Quantity("25 [mm]")
 mesh.GenerateMesh()
+
 
 ###############################################################################
 # Define boundary conditions
@@ -103,8 +102,8 @@ frictionlessSupport.Location = ExtAPI.DataModel.GetObjectsByName("NSFrictionless
 pressure = analysis.AddPressure()
 pressure.Location = ExtAPI.DataModel.GetObjectsByName("NSInsideFaces")[0]
 
-inputs_quantities = [Quantity("0 [s]"), Quantity("1 [s]")]  
-output_quantities = [Quantity("0 [Pa]"), Quantity("15 [MPa]")]  
+inputs_quantities = [Quantity("0 [s]"), Quantity("1 [s]")]
+output_quantities = [Quantity("0 [Pa]"), Quantity("15 [MPa]")]
 
 inputs_quantities_2 = System.Collections.Generic.List[Ansys.Core.Units.Quantity]()
 [inputs_quantities_2.Add(item) for item in inputs_quantities]
@@ -115,11 +114,13 @@ output_quantities_2 = System.Collections.Generic.List[Ansys.Core.Units.Quantity]
 pressure.Magnitude.Inputs[0].DiscreteValues = inputs_quantities_2
 pressure.Magnitude.Output.DiscreteValues = output_quantities_2
 
+
 ###############################################################################
 # Solve model
 # ~~~~~~~~~~~
 
 Model.Solve()
+
 
 ###############################################################################
 # Add results
@@ -130,31 +131,73 @@ solution.AddTotalDeformation()
 solution.AddEquivalentStress()
 solution.EvaluateAllResults()
 
-###############################################################################
-# Export result values to a text file
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-fileExtension=r".txt"
-results =  solution.GetChildren(Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Result,True)
-for result in results:
-    fileName = str(result.Name)
-    path = os.path.join(work_dir,fileName+fileExtension)
-    result.ExportToTextFile(True,path)
 
 ###############################################################################
 # Save model
 # ~~~~~~~~~~
 
-app.save(os.path.join(work_dir,'file.mechdat')) 
-app.close()
-# exit()
+project_directory = ExtAPI.DataModel.Project.ProjectDirectory
+print(f"project directory = {project_directory}")
+ExtAPI.DataModel.Project.SaveAs(os.path.join(project_directory, "file.mechdb"))
 
+
+###############################################################################
+# Write the file contents to console
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+def write_file_contents_to_console(path, number_lines=-1):
+    count = 1
+    with open(path, "rt") as file:
+        for line in file:
+            if number_lines == -1 or count <= number_lines:
+                print(line, end="")
+                count = count + 1
+            else:
+                break
+
+
+###############################################################################
+# Export result values to a text file
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+fileExtension = r".txt"
+results = solution.GetChildren(
+    Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Result, True
+)
+for result in results:
+    fileName = str(result.Name)
+    path = os.path.join(project_directory, fileName + fileExtension)
+    result.ExportToTextFile(True, path)
+    print("Exported Text file Contents", path)
+    write_file_contents_to_console(path, number_lines=20)
+
+app.close()
 
 
 ###############################################################################
 # --------------
 # Remote Session
 # --------------
+
+
+###############################################################################
+# Download required files
+# ~~~~~~~~~~~~~~~~~~~~~~~
+# Download the required files. Print the file paths for the geometry file and
+# script file.
+
+import os
+
+from ansys.mechanical.core import launch_mechanical
+from ansys.mechanical.core.examples import download_file
+
+geometry_path = download_file("Valve.pmdb", "pymechanical", "embedding")
+print(f"Downloaded the geometry file to: {geometry_path}")
+
+# script_file_path = # upload remote_script.py to example-data/pymechanical/
+print(f"Downloaded the script file to: {script_file_path}")
+
 
 ###############################################################################
 #
@@ -165,6 +208,7 @@ app.close()
 # must call  the ``mechanical.exit()`` method.
 
 import os
+
 from ansys.mechanical.core import launch_mechanical
 
 # Launch mechanical
@@ -173,60 +217,63 @@ print(mechanical)
 
 
 ###############################################################################
-# Download required files
-# ~~~~~~~~~~~~~~~~~~~~~~~
-# Download the required files. Print the file path for the geometry file.
+# Initialize variable for workflow
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Set the ``part_file_path`` variable on the server for later use.
+# Make this variable compatible for Windows, Linux, and Docker containers.
 
-# Check working directory
-server_project_directory = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
-print(server_project_directory)
+project_directory = mechanical.project_directory
+print(f"project directory = {project_directory}")
 
-# Download the Valve.pmdb file
-filename = download_file("Valve.pmdb", "pymechanical", "embedding", destination=server_project_directory)
-print(filename)
+# Upload the file to the project directory.
+mechanical.upload(file_name=geometry_path, file_location_destination=project_directory)
+
+# Build the path relative to project directory.
+base_name = os.path.basename(geometry_path)
+combined_path = os.path.join(project_directory, base_name)
+part_file_path = combined_path.replace("\\", "\\\\")
+mechanical.run_python_script(f"part_file_path='{part_file_path}'")
+
+# Verify the path
+result = mechanical.run_python_script("part_file_path")
+print(f"part_file_path on server: {result}")
 
 
 ###############################################################################
-# Run mech_script.py
-# ~~~~~~~~~~~~~~~~~~
-# Run mech_script.py in the current working directory.
-
-# Set work_dir 
-work_dir = os.getcwd()
-# Have to move mech_script.py into example-data github
-
 # Run mechanical automation script
-mechanical_script = os.path.join(work_dir,'mech_script.py')
-print(mechanical_script)
-# result = mechanical.run_python_script_from_file(mechanical_script, enable_logging=True, log_level="DEBUG", progress_interval=1000)
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Run the script to run the workflow
+
+mechanical.run_python_script_from_file(script_file_path)
 
 
 ###############################################################################
 # Get list of generated files
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Print each file in the list of generated files.
+# Get list of generated files
 
-# # Get list of generated files
-# list_files = mechanical.list_files()
-# for file in list_files:
-#     print(file)
+list_files = mechanical.list_files()
+for file in list_files:
+    print(file)
 
 
 ###############################################################################
-# Download files to local working directory.
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Download files back to local working directory.
+# Download files back to local working directory
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Download files back to local working directory
 
-# dest_dir = "download"
-# dest_dir = os.path.join(work_dir, dest_dir)
-# for file in list_files:
-#     downloaded = mechanical.download(file, target_dir=dest_dir)
+dest_dir = "download"
+dest_dir = os.path.join(os.getcwd(), dest_dir)
+for file in list_files:
+    downloaded = mechanical.download(file, target_dir=dest_dir)
+    if file.endswith(".txt"):
+        print("contents of ", downloaded, " : ")
+        write_file_contents_to_console(downloaded[0], number_lines=20)
 
 
 ###############################################################################
 # Exit remote session
-# ~~~~~~~~~~~~~~~~~~~
-# Leave the active remote session.
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Close the Mechanical instance.
 
-# # Exit remote session
-# mechanical.exit(force=True)
+mechanical.exit()

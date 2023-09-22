@@ -129,6 +129,7 @@ exclude_patterns = [
     ".DS_Store",
     # because we include this in examples/index.rst
     "examples/gallery_examples/index.rst",
+    "examples/gallery_examples/embedding_n_remote/index.rst",
     "links.rst",
 ]
 

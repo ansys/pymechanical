@@ -4,7 +4,10 @@
 Examples
 ========
 
-Here is a series of examples using Mechanical with the ``ansys-mechanical-core`` library.
+Here are examples using Mechanical with the ``ansys-mechanical-core`` library through 
+an embedded instance or remote session. To see how the same example is implemented 
+when using an embedded instance or remote session, refer to the 
+`Embedding and Remote Session Example`_ below.
 
 .. grid:: 2
    :gutter: 2
