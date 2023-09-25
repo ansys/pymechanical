@@ -457,7 +457,7 @@ jobs:
 
       - name: Install Python requirements
         run: |
-          pip3 install .[doc]
+          pip install .[doc]
 
       - name: Retrieve PyMechanial version
         run: |
