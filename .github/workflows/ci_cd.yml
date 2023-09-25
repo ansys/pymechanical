@@ -442,9 +442,10 @@ jobs:
           apt update
           apt install software-properties-common -y
           add-apt-repository ppa:deadsnakes/ppa -y
-          apt install python${{ env.MAIN_PYTHON_VERSION }} -y
+          apt install python${{ env.MAIN_PYTHON_VERSION }} -y python3-pip
           ln -s /usr/bin/python${{ env.MAIN_PYTHON_VERSION }} /usr/bin/python
           apt install python${{ env.MAIN_PYTHON_VERSION }}-venv -y
+          python -m pip install --upgrade pip
 
       - name: Install system dependencies
         run: |
@@ -457,7 +458,7 @@ jobs:
 
       - name: Install Python requirements
         run: |
-          pip install .[doc]
+          pip3 install .[doc]
 
       - name: Retrieve PyMechanial version
         run: |
