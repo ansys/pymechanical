@@ -433,29 +433,35 @@ jobs:
     steps:
       - name: Install Git and checkout project
         uses: actions/checkout@v4
-        
-      - name: Set up Python
+
+      - name: Set up python and pip
         run: |
           apt update
-          apt install -y python3.9 python3-pip
-          ln -s /usr/bin/python3.9 /usr/bin/python
-          python -m pip install --upgrade pip
+          apt install software-properties-common -y
+          add-apt-repository ppa:deadsnakes/ppa -y
+          apt install python${{ env.MAIN_PYTHON_VERSION }} -y
+          ln -s /usr/bin/python${{ env.MAIN_PYTHON_VERSION }} /usr/bin/python
+          apt install python${{ env.MAIN_PYTHON_VERSION }}-venv -y
+        
+      - name: Install pip
+        run: |
+          python -m ensurepip --default-pip
+
+      - name: Upgrade pip
+        run: |
+          pip3 install --upgrade pip
           python --version
           pip3 --version
 
-      - name: Install system dependencies
+      - name: Install dependencies
         run: |
-          apt update
-          apt install -y sudo curl lsb-release
-          apt install -y zip pandoc libgl1-mesa-glx mesa-utils xvfb texlive-latex-extra latexmk nodejs npm graphviz
-          apt install -y tini
-          # pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org
-          npm install -g @mermaid-js/mermaid-cli
+          apt install -y lsb-release
+          pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
+          pip3 install --upgrade pip flit
 
-      - name: "Install Python library"
-        shell: bash
+      - name: Install packages
         run: |
-          python -m pip install .
+          pip install .
 
       - name: Retrieve PyMechanial version
         run: |
