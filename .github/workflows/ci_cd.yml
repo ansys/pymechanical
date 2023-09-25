@@ -445,7 +445,6 @@ jobs:
           apt install python${{ env.MAIN_PYTHON_VERSION }} -y
           ln -s /usr/bin/python${{ env.MAIN_PYTHON_VERSION }} /usr/bin/python
           apt install python${{ env.MAIN_PYTHON_VERSION }}-venv -y
-          python -m pip install --upgrade pip
 
       - name: Install pip for >3.8
         run: |
