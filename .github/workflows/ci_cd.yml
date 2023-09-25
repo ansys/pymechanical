@@ -429,44 +429,80 @@ jobs:
   docs:
     name: Documentation
     needs: [docs-style, revn-variations]
-    runs-on: public-ubuntu-latest-8-cores
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/ansys/mechanical:${{needs.revn-variations.outputs.test}}
+      options: --entrypoint /bin/bash
     steps:
-      - name: Set the environment variable
-        run: echo "DOCKER_IMAGE_VERSION=${{needs.revn-variations.outputs.default}}" >> $GITHUB_ENV
-        
-      - name: Login in Github Container registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install Git and checkout project
+        uses: actions/checkout@v4
 
-      - name: Pull, launch, and validate Mechanical service
-        env:
-          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
-          MECHANICAL_IMAGE: ${{ env.DOCKER_PACKAGE }}:${{ env.DOCKER_IMAGE_VERSION }}
+      - name: Set up Python
         run: |
-          echo CPU info
-          lscpu
-          docker pull ${{ env.MECHANICAL_IMAGE }}
-          docker run --restart always --name ${{ env.DOCKER_MECH_CONTAINER_NAME }} -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }} > log.txt &
-          grep -q 'WB Initialize Done' <(timeout 60 tail -f log.txt)
+          apt update
+          apt install software-properties-common -y
+          add-apt-repository ppa:deadsnakes/ppa -y
+          apt install python${{ env.MAIN_PYTHON_VERSION }} -y
+          ln -s /usr/bin/python${{ env.MAIN_PYTHON_VERSION }} /usr/bin/python
+          apt install python${{ env.MAIN_PYTHON_VERSION }}-venv -y
 
-      - name: Run Ansys documentation building action
-        uses: ansys/actions/doc-build@v4
-        with:
-          python-version: ${{ env.MAIN_PYTHON_VERSION }}
-          dependencies: "pandoc"
+      - name: Install pip for >3.8
+        run: |
+          python -m ensurepip --default-pip
 
-      - name: Get Mechanical container logs
-        if: always()
-        run: docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > mechanical_documentation_log.txt 2>&1
+      - name: Upgrade pip
+        run: |
+          pip3 install --upgrade pip
+          python --version
+          pip3 --version
 
-      - name: Upload container logs
+      - name: Install system dependencies
+        run: |
+          apt update
+          apt install -y sudo curl lsb-release
+          apt install -y zip pandoc libgl1-mesa-glx mesa-utils xvfb texlive-latex-extra latexmk nodejs npm graphviz
+          apt install -y tini
+          # pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org
+          npm install -g @mermaid-js/mermaid-cli
+
+      - name: Install Python requirements
+        run: |
+          pip3 install .[doc]
+          pip3 install pytz --upgrade
+          pip3 install tzdata --upgrade
+
+      - name: Retrieve PyMechanial version
+        run: |
+          echo "PYMECHANICAL_VERSION=$(python -c 'from ansys.mechanical.core import __version__; print(__version__)')" >> $GITHUB_ENV
+          echo "PyMechanical version is: $(python -c "from ansys.mechanical.core import __version__; print(__version__)")"
+        id: version
+
+      - name: Build docs
+        env:
+          SPHINXOPTS: '-j auto'
+          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
+          ANSYSCL232_DIR: /install/ansys_inc/v232/licensingclient
+          ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
+          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 0
+        run: |
+          xvfb-run /install/ansys_inc/v232/aisol/.workbench_lite make -C doc html > doc_build_output.txt 2>&1 || true
+          cat doc_build_output.txt
+          #
+          # Check if "build succeeded" string is present in doc_build_output.txt
+          #
+          if grep -q "build succeeded" doc_build_output.txt; then
+            echo "Documentation building succeeded"
+            exit 0
+          else
+            echo "Documentation building failed"
+            exit 1
+          fi
+
+      - name: Upload HTML Documentation
         uses: actions/upload-artifact@v3
         with:
-          name: mechanical_documentation_log
-          path: mechanical_documentation_log.txt
+          name: documentation-html
+          path: doc/_build/html
           retention-days: 7
 
   coverage:
