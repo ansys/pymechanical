@@ -167,11 +167,14 @@ results = solution.GetChildren(
 )
 
 for result in results:
-    fileName = str(result.Name).replace(" ", "")
+    fileName = str(result.Name)
     print(f"filename: {fileName}")
     path = os.path.join(project_directory, fileName + fileExtension)
     print(path)
-    result.ExportToTextFile(f"{path}")
+    try:
+        result.ExportToTextFile(f"{path}")
+    except:
+        print("export to text file failure")
     print("Exported Text file Contents", path)
     write_file_contents_to_console(path, number_lines=20)
 
