@@ -30,4 +30,5 @@ an embedded instance or remote session.
       :text-align: center
       :margin: 2 2 0 0
 
-      See the same example implemented using an embedded instance or a remote session.
+      Demonstrates the same model setup in both an embedded instance and remote session, 
+      as well as examples using a combination of embedded instances and remote sessions.
