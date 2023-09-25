@@ -429,7 +429,10 @@ jobs:
   docs:
     name: Documentation
     needs: [docs-style, revn-variations]
-    runs-on: public-ubuntu-latest-8-cores
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/ansys/mechanical:${{needs.revn-variations.outputs.test}}
+      options: --entrypoint /bin/bash
     steps:
       - name: Install Git and checkout project
         uses: actions/checkout@v4
