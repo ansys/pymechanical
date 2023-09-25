@@ -167,7 +167,7 @@ results = solution.GetChildren(
 )
 
 for result in results:
-    fileName = str(result.Name).replace(' ','')
+    fileName = str(result.Name).replace(" ", "")
     print(f"filename: {fileName}")
     path = os.path.join(project_directory, fileName + fileExtension)
     print(path)
