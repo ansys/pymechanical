@@ -459,8 +459,12 @@ jobs:
       - name: Install dependencies
         run: |
           apt install -y lsb-release
+          apt install -y sudo curl lsb-release
+          apt install -y zip pandoc libgl1-mesa-glx mesa-utils xvfb texlive-latex-extra latexmk nodejs npm graphviz
+          apt install -y tini
           pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
           pip3 install --upgrade pip flit
+          npm install -g @mermaid-js/mermaid-cli
 
       - name: Install packages
         run: |
