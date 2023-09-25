@@ -432,7 +432,10 @@ jobs:
     runs-on: public-ubuntu-latest-8-cores
     steps:
       - name: Set the environment variable
-        run: echo "DOCKER_IMAGE_VERSION=${{needs.revn-variations.outputs.default}}" >> $GITHUB_ENV
+        run: |
+            echo "DOCKER_IMAGE_VERSION=${{needs.revn-variations.outputs.default}}" >> $GITHUB_ENV
+            echo "AWP_ROOT${{needs.revn-variations.outputs.test}}=/install/ansys_inc/v${{needs.revn-variations.outputs.test}}" >> $GITHUB_ENV
+            ${{ env.AWP_ROOT${{needs.revn-variations.outputs.test}} }}
         
       - name: Login in Github Container registry
         uses: docker/login-action@v3
