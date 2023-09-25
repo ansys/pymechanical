@@ -469,7 +469,7 @@ jobs:
 
       - name: Install packages
         run: |
-          pip install .
+          pip install .[doc]
 
       - name: Retrieve PyMechanial version
         run: |
