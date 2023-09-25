@@ -165,12 +165,25 @@ fileExtension = r".txt"
 results = solution.GetChildren(
     Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Result, True
 )
+
+print("")
+print("LISTING FILES IN DIRECTORY")
+print(os.listdir(os.path.join(project_directory)))
+print("")
+
 for result in results:
     fileName = str(result.Name)
+    print(f"filename: {fileName}")
+    print(result)
     path = os.path.join(project_directory, fileName + fileExtension)
-    result.ExportToTextFile(True, path)
+    result.ExportToTextFile(path)
     print("Exported Text file Contents", path)
     write_file_contents_to_console(path, number_lines=20)
+
+print("")
+print("LISTING FILES IN DIRECTORY")
+print(os.listdir(os.path.join(project_directory)))
+print("")
 
 app.close()
 
