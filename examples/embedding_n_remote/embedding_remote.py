@@ -171,12 +171,12 @@ for result in results:
     print(f"filename: {fileName}")
     path = os.path.join(project_directory, fileName + fileExtension)
     print(path)
-    try:
-        result.ExportToTextFile(f"{path}")
-    except:
-        print("export to text file failure")
+    result.ExportToTextFile(f"{path}")
     print("Exported Text file Contents", path)
-    write_file_contents_to_console(path, number_lines=20)
+    try:
+        write_file_contents_to_console(path, number_lines=20)
+    except:
+        print(os.listdir(project_directory))
 
 app.close()
 
