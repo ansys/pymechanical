@@ -464,7 +464,7 @@ jobs:
           apt install -y tini
           apt install -y python3-sphinx
           pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
-          pip3 install --upgrade pip flit
+          pip3 install --upgrade pip flit ansys-sphinx-theme
           npm install -g @mermaid-js/mermaid-cli
 
       - name: Install packages
