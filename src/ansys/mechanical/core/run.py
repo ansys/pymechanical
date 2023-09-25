@@ -245,3 +245,85 @@ def cli(
 
     if private_appdata:
         profile.cleanup()
+
+
+class EnvironmentUpdater:
+    """Updates the Environment with default and custom provided values to run in linux."""
+
+    def __init__(self, revision):
+        """Initialize Environment Updater Instance.
+
+        Parameters
+        ----------
+        revision : int
+            The Ansys Revision number.
+        """
+        self.revision = revision
+        self._default_env = {
+            "DS_INSTALL_DIR": "$(dirname `realpath $0`)",
+            # Rest of the environment variables...
+        }
+        self.update_revision()
+
+    @property
+    def default_env(self):
+        """Get the default environment variables."""
+        return self._default_env
+
+    def update_revision(self):
+        """Update the default environment based on the provided revision."""
+        self._default_env[f"AWP_ROOT{self.revision}"] = f"$DS_INSTALL_DIR/.."
+        # Rest of the environment updates...
+
+    def update_custom_environment(self, custom_env=None):
+        """Update based on the custom provided environment variables."""
+        var_name, var_value = custom_env.split("=")
+        self._default_env[var_name] = var_value
+        print(f"export {var_name}={var_value}")
+
+
+@click.command()
+@click.help_option("--help", "-h")
+@click.option(
+    "-r",
+    "--revision",
+    default=None,
+    type=int,
+    help='Ansys Revision number, e.g. "241" or "232". If none is specified\
+, uses the default from ansys-tools-path',
+)
+@click.argument("custom_env", nargs=-1)
+def update_environment(revision: int, custom_env):
+    """
+    Update environment variables with default values and user-defined custom variables.
+
+    Parameters
+    ----------
+    revision : int
+        The Ansys Revision number.
+    custom_env : list
+        A list of custom environment variables in the format 'name=value'.
+
+    USAGE:
+
+    The following example demonstrates the main use of this tool:
+
+        $ ansys-mechanical -r 232 -g
+    """
+    # Process the custom environment variables provided as arguments
+    custom_env_args = [arg for arg in custom_env if "=" in arg]
+    # Gets the revision number
+    if not revision:
+        exe, version = atp.find_mechanical()
+    else:
+        exe, version = atp.find_mechanical(version=revision)
+    version = int(version * 10)
+
+    env_updater = EnvironmentUpdater(version)
+
+    if custom_env_args:
+        for arg in custom_env_args:
+            env_updater.update_custom_environment(arg)
+
+    for key, value in env_updater.default_env.items():
+        print(f"{key}: {value}")
