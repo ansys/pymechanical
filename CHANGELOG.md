@@ -15,6 +15,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 -   add nonblocking sleep (#399)
 -   Add test case for exporting off screen image([#400](https://github.com/ansys/pymechanical/pull/400))
 -   Warn for obsolete apis (#409)
+-   Console for updating environment in Linux (#416)
 
 ### Fixed
 

@@ -261,7 +261,14 @@ class EnvironmentUpdater:
         self.revision = revision
         self._default_env = {
             "DS_INSTALL_DIR": "$(dirname `realpath $0`)",
-            # Rest of the environment variables...
+            "ANSISMAINWINLITEMODE": 1,
+            "MWCONFIG_NAME": "amd64_linux",
+            "MWDEBUG_LEVEL": 0,
+            "MWOS": "linux",
+            "MWRT_MODE": "classic",
+            "MWRUNTIME": 1,
+            "MWDONT_XCLOSEDISPLAY": 1,
+            "LD_PRELOAD": "libstdc++.so.6.0.28",
         }
         self.update_revision()
 
@@ -272,14 +279,68 @@ class EnvironmentUpdater:
 
     def update_revision(self):
         """Update the default environment based on the provided revision."""
-        self._default_env[f"AWP_ROOT{self.revision}"] = f"$DS_INSTALL_DIR/.."
+        try:
+            self._default_env[f"AWP_ROOT{self.revision}"] = f"$DS_INSTALL_DIR/.."
+            self._default_env[f"AWP_LOCALE{self.revision}"] = "en-us"
+            self.default_env[
+                f"CADOE_LIBDIR{self.revision}"
+            ] = f"${{AWP_ROOT241}}/commonfiles/language/${{AWP_LOCALE241}}"
+            self.default_env[
+                "ANSYSLIC_DIR"
+            ] = f"${{AWP_ROOT{self.revision}}}/../shared_files/licensing"
+            self._default_env["ANSYSCOMMON_DIR"] = f"${{AWP_ROOT{self.revision}}}/commonfiles"
+            self._default_env[
+                f"ANSYSCL{self.revision}_DIR"
+            ] = f"${{AWP_ROOT{self.revision}}}/licensingclient"
+            self._default_env[
+                "MWHOME"
+            ] = f"${{AWP_ROOT{self.revision}}}/commonfiles/MainWin/linx64/mw"
+            self._default_env[
+                "MWREGISTRY"
+            ] = f"${{DS_INSTALL_DIR}}/WBMWRegistry/hklm_${{MWCONFIG_NAME}}.bin"
+            self._default_env["MWUSER_DIRECTORY"] = f"${{HOME}}/.mw"
+            self._default_env["LD_LIBRARY_PATH"] = (
+                f"${{AWP_ROOT{self.revision}}}/tp/stdc++:"
+                f"${{AWP_ROOT{self.revision}}}/tp/openssl/1.1.1/linx64/lib:"
+                f"${{MWHOME}}/lib-amd64_linux:"
+                f"${{MWHOME}}/lib-amd64_linux_optimized:"
+                f"${{LD_LIBRARY_PATH}}:"
+                f"${{AWP_ROOT{self.revision}}}/Tools/mono/Linux64/lib:"
+                f"${{DS_INSTALL_DIR}}/lib/linx64:"
+                f"${{DS_INSTALL_DIR}}/dll/linx64:"
+                f"${{DS_INSTALL_DIR}}/libshared/linx64:"
+                f"${{AWP_ROOT{self.revision}}}/tp/IntelCompiler/2019.3.199/linx64/lib/intel64:"
+                f"${{AWP_ROOT{self.revision}}}/tp/IntelMKL/2020.0.166/linx64/lib/intel64:"
+                f"${{AWP_ROOT{self.revision}}}/tp/qt_fw/5.9.6/Linux64/lib:"
+                f"${{AWP_ROOT{self.revision}}}/commonfiles/CAD/Acis/linx64:"
+                f"${{AWP_ROOT{self.revision}}}/commonfiles/fluids/lib/linx64:"
+                f"${{AWP_ROOT{self.revision}}}/Framework/bin/Linux64"
+            )
+            self._default_env["PATH"] = (
+                f"${{MWHOME}}/bin-amd64_linux_optimized:"
+                f"${{DS_INSTALL_DIR}}/CommonFiles/linx64:"
+                f"${{DS_INSTALL_DIR}}/CADIntegration/linx64:"
+                f"${{AWP_ROOT{self.revision}}}/Tools/mono/Linux64/bin:"
+                f"${{PATH}}"
+            )
+        except:
+            raise Exception("Could not set the Environment variables.")
         # Rest of the environment updates...
 
     def update_custom_environment(self, custom_env=None):
         """Update based on the custom provided environment variables."""
-        var_name, var_value = custom_env.split("=")
-        self._default_env[var_name] = var_value
-        print(f"export {var_name}={var_value}")
+        if "=" not in custom_env:
+            raise ValueError(f"Invalid custom environment variable format: {custom_env}")
+        var_name, var_value = custom_env.split("=", 1)
+        try:
+            if "=" in var_value:
+                warnings.warn(
+                    f"Warning: '=' character in custom environment variable value: {var_value}",
+                    stacklevel=2,
+                )
+            self._default_env[var_name] = var_value
+        except:
+            raise ValueError("Could not add custom Environment variables.")
 
 
 @click.command()
@@ -294,8 +355,7 @@ class EnvironmentUpdater:
 )
 @click.argument("custom_env", nargs=-1)
 def update_environment(revision: int, custom_env):
-    """
-    Update environment variables with default values and user-defined custom variables.
+    """Update environment variables with default values and user-defined custom variables.
 
     Parameters
     ----------
@@ -308,8 +368,13 @@ def update_environment(revision: int, custom_env):
 
     The following example demonstrates the main use of this tool:
 
-        $ ansys-mechanical -r 232 -g
+        $ mechanical-env -r 232 HOME=/usr/home/ LOG=1
     """
+    #  Should not update env variables in Windows
+    if os.name == "nt":
+        print("This feature is not available in Windows !")
+        return True
+
     # Process the custom environment variables provided as arguments
     custom_env_args = [arg for arg in custom_env if "=" in arg]
     # Gets the revision number
@@ -324,6 +389,23 @@ def update_environment(revision: int, custom_env):
     if custom_env_args:
         for arg in custom_env_args:
             env_updater.update_custom_environment(arg)
+    # Print all envirornment variables
 
+    print("-" * 30)
+    print("user env")
     for key, value in env_updater.default_env.items():
+        print(f"{key}: {value}")
+    print("-" * 30)
+    print("Current env")
+    env = os.environ.copy()
+    for key, value in env.items():
+        print(f"{key}: {value}")
+    try:
+        env.update(env_updater.default_env)
+    except:
+        raise Exception("Could not set the environment variables.")
+
+    print("-" * 30)
+    print("updated env")
+    for key, value in env.items():
         print(f"{key}: {value}")
