@@ -20,8 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Imports for the embedding sub-package."""
-from .addins import AddinConfiguration
-from .app import App
-from .app_libraries import add_mechanical_python_libraries
-from .imports import global_variables
+"""Miscellaneous utilities."""
+
+
+def sleep(ms: int) -> None:
+    """Non-blocking sleep for `ms` milliseconds.
+
+    Mechanical should still work during the sleep.
+    """
+    import clr
+
+    clr.AddReference("Ans.Common.WB1ManagedUtils")
+    import Ansys
+
+    Ansys.Common.WB1ManagedUtils.TestHelper().Wait(ms)

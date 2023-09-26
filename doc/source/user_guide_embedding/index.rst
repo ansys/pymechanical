@@ -18,6 +18,7 @@ an instance of Mechanical in Python.
    configuration
    globals
    logging
+   libraries
 
 
 Overview

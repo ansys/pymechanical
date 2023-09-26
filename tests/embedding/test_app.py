@@ -3,8 +3,11 @@ import os
 import subprocess
 import sys
 import tempfile
+import time
 
 import pytest
+
+import ansys.mechanical.core.embedding.utils as utils
 
 
 @pytest.mark.embedding
@@ -14,6 +17,14 @@ def test_app_repr(embedded_app):
     assert app_repr_lines[0].startswith("Ansys Mechanical")
     assert app_repr_lines[1].startswith("Product Version")
     assert app_repr_lines[2].startswith("Software build date:")
+
+
+@pytest.mark.embedding
+@pytest.mark.minimum_version(241)
+def test_deprecation_warning(embedded_app):
+    struct = embedded_app.Model.AddStaticStructuralAnalysis()
+    with pytest.warns(UserWarning):
+        struct.SystemID
 
 
 @pytest.mark.embedding
@@ -47,6 +58,36 @@ def test_app_version(embedded_app):
     version = embedded_app.version
     assert type(version) is int
     assert version >= 231
+
+
+@pytest.mark.embedding
+def test_nonblock_sleep(embedded_app):
+    """Test non-blocking sleep."""
+    t1 = time.time()
+    utils.sleep(2000)
+    t2 = time.time()
+    assert (t2 - t1) >= 2
+
+
+@pytest.mark.embedding
+def test_app_getters_notstale(embedded_app):
+    """The getters of app should be usable after a new().
+
+    The C# objects referred to by ExtAPI, Model, DataModel, and Tree
+    are reset on each call to app.new(), so storing them in
+    global variables will be broken.
+
+    To resolve this, we have to wrap those objects, and ensure
+    that they properly redirect the calls to the appropriate C#
+    object after a new()
+    """
+    data_model = embedded_app.DataModel
+    data_model.Project.Name = "a"
+    model = embedded_app.Model
+    model.Name = "b"
+    embedded_app.new()
+    assert data_model.Project.Name != "a"
+    assert model.Name != "b"
 
 
 @pytest.mark.embedding

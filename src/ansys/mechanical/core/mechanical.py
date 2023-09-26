@@ -1017,7 +1017,7 @@ class Mechanical(object):
 
         2+3
 
-        >>> mechanical.run_python_script('simple.py')
+        >>> mechanical.run_python_script_from_file('simple.py')
         '5'
 
         Return a value from a simple function call.
@@ -1028,7 +1028,7 @@ class Mechanical(object):
 
         math.pow(2,3)
 
-        >>> mechanical.run_python_script('test.py')
+        >>> mechanical.run_python_script_from_file('test.py')
         '8'
 
         """

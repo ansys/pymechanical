@@ -9,6 +9,36 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Added
 
+-   Set up daily run for 241 testing and added manual inputs for workflow dispatch (#385)
+-   add option to include enums in global variables (#394)
+-   add experimental libraries method (#395)
+-   add nonblocking sleep (#399)
+-   Add test case for exporting off screen image([#400](https://github.com/ansys/pymechanical/pull/400))
+-   Warn for obsolete apis (#409)
+
+### Fixed
+
+-   Fix embedded testing for all python version in CI/CD ([#393](https://github.com/ansys/pymechanical/pull/393))
+-   fix broken link (#397)
+-   use Application.Exit() in 241+ (#396)
+-   Fix stale globals by wrapping them (#398)
+-   Fix API documentation (#411)
+-   doc fix (#412)
+
+### Dependencies
+
+- Bump `sphinx` from 7.2.5 to 7.2.6 ([#403](https://github.com/ansys/pymechanical/pull/403))
+- Bump `matplotlib` from 3.7.2 to 3.8.0 ([#404](https://github.com/ansys/pymechanical/pull/404)
+- Bump `imageio-ffmpeg` from 0.4.8 to 0.4.9 ([#405](https://github.com/ansys/pymechanical/pull/405)
+- Bump `ansys-sphinx-theme` from 0.11.1 to 0.11.2 ([#406](https://github.com/ansys/pymechanical/pull/406))
+- Bump `plotly` from 5.16.1 to 5.17.0 ([#407](https://github.com/ansys/pymechanical/pull/407))
+- Bump `docker/login-action` from 2 to 3 ([#408](https://github.com/ansys/pymechanical/pull/408))
+- Bump `pyvista` from 0.42.1 to 0.42.2 ([#414](https://github.com/ansys/pymechanical/pull/414))
+
+## [0.10.2](https://github.com/ansys/pymechanical/releases/tag/v0.10.2) - September 8 2023
+
+### Added
+
 -   Max parallel 2 for embedding tests - ci_cd.yml (#341)
 -   New features for ansys-mechanical console script (#343)
 -   Add a "Documentation and issues" section to README and doc landing page (#347)
@@ -23,7 +53,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 -   Bump plotly from 5.15.0 to 5.16.0 (#348)
 -   Bump sphinxcontrib-websupport from 1.2.4 to 1.2.6 (#350)
 -   Bump ansys-sphinx-theme from 0.10.2 to 0.10.3 (#351)
--   pre-commit autoupdate ([#362](https://github.com/ansys/pymechanical/pull/362)), ([#380](https://github.com/ansys/pymechanical/pull/380))
+-   pre-commit autoupdate ([#362](https://github.com/ansys/pymechanical/pull/362)), ([#380](https://github.com/ansys/pymechanical/pull/380)), ([#391](https://github.com/ansys/pymechanical/pull/391))
 
 ### Fixed
 
@@ -34,14 +64,15 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `plotly` from 5.16.0 to 5.16.1 ([#357](https://github.com/ansys/pymechanical/pull/357))
 - Bump `sphinx` from 7.1.2 to 7.2.5 ([#358](https://github.com/ansys/pymechanical/pull/358), [#378](https://github.com/ansys/pymechanical/pull/378))
 - Bump `sphinx-gallery` from 0.13.0 to 0.14.0 ([#361](https://github.com/ansys/pymechanical/pull/361))
-- Bump `ansys-sphinx-theme` from 0.10.3 to 0.10.4 ([#360](https://github.com/ansys/pymechanical/pull/360))
+- Bump `ansys-sphinx-theme` from 0.10.3 to 0.11.1 ([#360](https://github.com/ansys/pymechanical/pull/360), [#387](https://github.com/ansys/pymechanical/pull/387))
 - Bump `pytest-print` from 0.3.3 to 1.0.0 ([#369](https://github.com/ansys/pymechanical/pull/369))
-- Bump `tj-actions/changed-files` from 37 to 38 ([#367](https://github.com/ansys/pymechanical/pull/367))
+- Bump `tj-actions/changed-files` from 37 to 39 ([#367](https://github.com/ansys/pymechanical/pull/367), [#386](https://github.com/ansys/pymechanical/pull/386))
 - Bump `imageio` from 2.31.1 to 2.31.2 ([#370](https://github.com/ansys/pymechanical/pull/370))
-- Bump `pytest` from 7.4.0 to 7.4.1 ([#375](https://github.com/ansys/pymechanical/pull/375))
+- Bump `pytest` from 7.4.0 to 7.4.2 ([#375](https://github.com/ansys/pymechanical/pull/375), [#389](https://github.com/ansys/pymechanical/pull/389))
 - Bump `actions/checkout` from 3 to 4 ([#379](https://github.com/ansys/pymechanical/pull/379))
 - Bump `imageio` from 2.31.2 to 2.31.3 ([#376](https://github.com/ansys/pymechanical/pull/376))
 - Bump `sphinx-notfound-page` from 1.0.0rc1 to 1.0.0 ([#374](https://github.com/ansys/pymechanical/pull/374))
+- Bump `pyvista` from 0.42.0 to 0.42.1 ([#388](https://github.com/ansys/pymechanical/pull/388))
 
 ## [0.10.1](https://github.com/ansys/pymechanical/releases/tag/v0.10.1) - August 8 2023
 
