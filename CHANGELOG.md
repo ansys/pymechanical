@@ -5,7 +5,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 This document follows the conventions laid out in [Keep a CHANGELOG](https://keepachangelog.com/en/1.0.0).
 
-## [0.10.2](https://github.com/ansys/pymechanical/releases/tag/v0.10.2) - September 8 2023
+## [0.10.3](https://github.com/ansys/pymechanical/releases/tag/v0.10.3) - September 26 2023
 
 ### Added
 
