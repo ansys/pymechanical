@@ -79,7 +79,7 @@ doc = [
 ]
 
 [project.scripts]
-ansys-mechanicals = "ansys.mechanical.core.run:cli"
+ansys-mechanical = "ansys.mechanical.core.run:cli"
 mechanical-env = "ansys.mechanical.core.run:update_environment"
 
 [tool.flit.module]
