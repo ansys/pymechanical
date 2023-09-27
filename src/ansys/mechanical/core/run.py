@@ -265,12 +265,11 @@ def update_environment(revision: int, args):
     ----------
     revision : int
         The Ansys Revision number.
-    args : list
-        A list of custom environment variables in the format 'name=value'.
+
     USAGE:
     The following example demonstrates the main use of this tool:
-        $ mechanical-env -r 232 python examples/basic/valve.py
-        $ mechanical-env -r 232 python make -C doc html
+        $ mechanical-env -r 232 -- python examples/basic/valve.py
+        $ mechanical-env -r 232 -- make -C doc html
     """
     #  Should not update env variables in Windows
     if os.name == "nt":
@@ -287,7 +286,7 @@ def update_environment(revision: int, args):
     env = os.environ.copy()
 
     # workbench (mechanical) installation directory
-    env["DS_INSTALL_DIR"] = f"$(dirname `realpath $0`)"
+    env["DS_INSTALL_DIR"] = os.path.dirname(exe)
     env[f"AWP_ROOT{version}"] = f'{env.get("DS_INSTALL_DIR")}/..'
 
     # Env vars used by workbench (mechanical) code
