@@ -9,6 +9,8 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Added
 
+- Add codeql.yml for security checks ([#423](https://github.com/ansys/pymechanical/pull/423))
+
 ### Fixed
 
  - Fix enum printout ([#421](https://github.com/ansys/pymechanical/pull/421))
