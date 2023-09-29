@@ -258,7 +258,7 @@ def cli(
 , uses the default from ansys-tools-path',
 )
 @click.argument("args", nargs=-1)
-def update_environment(revision: int, args):
+def cli_env(revision: int, args):
     """CLI tool to load the environment required to run in Linux.
 
     Parameters
@@ -299,18 +299,18 @@ def update_environment(revision: int, args):
     env[f"ANSYSCL{version}_DIR"] = f'{env.get(f"AWP_ROOT{version}")}/licensingclient'
 
     # MainWin vars
-    env["ANSISMAINWINLITEMODE"] = 1
+    env["ANSISMAINWINLITEMODE"] = "1"
     env["MWCONFIG_NAME"] = "amd64_linux"
-    env["MWDEBUG_LEVEL"] = 0
+    env["MWDEBUG_LEVEL"] = "0"
     env["MWHOME"] = f'{env.get(f"AWP_ROOT{version}")}/commonfiles/MainWin/linx64/mw'
     env["MWOS"] = "linux"
     env["MWREGISTRY"] = (
         env.get("DS_INSTALL_DIR") + "/WBMWRegistry/hklm_" + env.get("MWCONFIG_NAME") + ".bin"
     )
     env["MWRT_MODE"] = "classic"
-    env["MWRUNTIME"] = 1
+    env["MWRUNTIME"] = "1"
     env["MWUSER_DIRECTORY"] = env.get("HOME") + "/.mw"
-    env["MWDONT_XCLOSEDISPLAY"] = 1
+    env["MWDONT_XCLOSEDISPLAY"] = "1"
 
     # dynamic library preload
     env["LD_PRELOAD"] = "libstdc++.so.6.0.28"
@@ -358,8 +358,5 @@ def update_environment(revision: int, args):
         + "/Tools/mono/Linux64/bin:"
         + env.get("PATH")
     )
-
-    for key, value in env.items():
-        print(f"{key}: {value}")
 
     _run(args, env)
