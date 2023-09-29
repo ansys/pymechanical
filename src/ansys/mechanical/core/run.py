@@ -41,7 +41,7 @@ from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 async def _read_and_display(cmd, env):
     """Read command's stdout and stderr and display them as they are processed."""
     # start process
-    process = await asyncio.create_subprocess_exec(*cmd, stdout=PIPE, stderr=PIPE)
+    process = await asyncio.create_subprocess_exec(*cmd, stdout=PIPE, stderr=PIPE, env=env)
 
     # read child's stdout/stderr concurrently
     stdout, stderr = [], []  # stderr, stdout buffers
@@ -268,8 +268,8 @@ def cli_env(revision: int, args):
 
     USAGE:
     The following example demonstrates the main use of this tool:
-        $ mechanical-env -r 232 -- python examples/basic/valve.py
-        $ mechanical-env -r 232 -- make -C doc html
+        $ mechanical-env -r 232 -- python test.py
+        $ mechanical-env -- make -C doc html
     """
     #  Should not update env variables in Windows
     if os.name == "nt":
