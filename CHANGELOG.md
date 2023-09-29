@@ -9,11 +9,15 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Added
 
+- Add codeql.yml for security checks ([#423](https://github.com/ansys/pymechanical/pull/423))
+
 ### Fixed
+
+ - Fix enum printout ([#421](https://github.com/ansys/pymechanical/pull/421))
 
 ### Changed
 
-### Dependencies 
+### Dependencies
 
 ## [0.10.3](https://github.com/ansys/pymechanical/releases/tag/v0.10.3) - September 26 2023
 
