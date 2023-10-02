@@ -18,6 +18,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Changed
 
 ### Dependencies
+- Bump `ansys-sphinx-theme` from 0.11.2 to 0.12.1 ([#427](https://github.com/ansys/pymechanical/pull/427))
 
 ## [0.10.3](https://github.com/ansys/pymechanical/releases/tag/v0.10.3) - September 26 2023
 
