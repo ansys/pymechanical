@@ -288,9 +288,6 @@ def cli_env(revision: int, args):
     version = int(version * 10)
 
     env = os.environ.copy()
-    DS_INSTALL_DIR = os.path.dirname(exe)
-    AWP_ROOT = f"{DS_INSTALL_DIR}/.."
-
     # workbench (mechanical) installation directory
     env["DS_INSTALL_DIR"] = os.path.dirname(exe)
     DS_INSTALL_DIR = env.get("DS_INSTALL_DIR")
