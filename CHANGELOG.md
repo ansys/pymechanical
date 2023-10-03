@@ -1,6 +1,6 @@
 # CHANGELOG
 
-All notable changes to Python.NET will be documented in this file. This
+All notable changes to PyMechanical will be documented in this file. This
 project adheres to [Semantic Versioning](https://semver.org/).
 
 This document follows the conventions laid out in [Keep a CHANGELOG](https://keepachangelog.com/en/1.0.0).
@@ -16,6 +16,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
  - Fix enum printout ([#421](https://github.com/ansys/pymechanical/pull/421))
  - fix appdata tests ([#425](https://github.com/ansys/pymechanical/pull/425))
  - Run all embedding tests & fix appdata tests ([#433](https://github.com/ansys/pymechanical/pull/433))
+ - unset all logging environment variables ([#434](https://github.com/ansys/pymechanical/pull/434))
 
 ### Changed
 

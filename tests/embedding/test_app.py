@@ -143,7 +143,6 @@ def test_private_appdata(pytestconfig, rootdir):
     )
     p2.wait()
     stdout = p2.stdout.read().decode()
-    # stdout = stdout.decode().strip("\r\n")
 
     assert "ShowTriad value is True" in stdout
 
