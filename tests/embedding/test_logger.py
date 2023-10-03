@@ -5,15 +5,23 @@ import sys
 
 import pytest
 
-
 def _run_embedding_log_test_process(rootdir, pytestconfig, testname) -> subprocess.Popen:
     """Runs the process and returns it after it finishes"""
     version = pytestconfig.getoption("ansys_version")
     embedded_py = os.path.join(rootdir, "tests", "scripts", "embedding_log_test.py")
+
+    # unset all logging environment variables.
+    env = os.environ.copy()
+    del env["ANSYS_WORKBENCH_LOGGING"]
+    del env["ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL"]
+    del env["ANSYS_WORKBENCH_LOGGING_CONSOLE"]
+    del env["ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH"]
+    del env["ANSYS_WORKBENCH_LOGGING_DIRECTORY"]
     p = subprocess.Popen(
         [sys.executable, embedded_py, version, testname],
         stderr=subprocess.PIPE,
         stdout=subprocess.PIPE,
+        env=env,
     )
     p.wait()
     return p
