@@ -15,6 +15,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
  - Fix enum printout ([#421](https://github.com/ansys/pymechanical/pull/421))
  - fix appdata tests ([#425](https://github.com/ansys/pymechanical/pull/425))
+ - Run all embedding tests & fix appdata tests ([#433](https://github.com/ansys/pymechanical/pull/433))
 
 ### Changed
 
