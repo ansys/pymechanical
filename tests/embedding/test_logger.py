@@ -5,6 +5,7 @@ import sys
 
 import pytest
 
+
 def _run_embedding_log_test_process(rootdir, pytestconfig, testname) -> subprocess.Popen:
     """Runs the process and returns it after it finishes"""
     version = pytestconfig.getoption("ansys_version")
