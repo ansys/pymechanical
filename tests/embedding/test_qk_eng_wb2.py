@@ -247,6 +247,7 @@ def test_qk_eng_wb2_007(printer, selection, embedded_app):
 
 
 @pytest.mark.embedding
+@pytest.mark.skip(reason="Does not work on Linux container")
 def test_image_export(printer, selection, embedded_app):
     """Image export.
 
