@@ -21,7 +21,6 @@ def print_showtriad(version, appdata_option):
     """Return ShowTriad value."""
     app = launch_app(version, appdata_option)
     print("ShowTriad value is " + str(app.ExtAPI.Graphics.ViewOptions.ShowTriad))
-    # print(app.ExtAPI.Graphics.ViewOptions.ShowTriad)
     app.close()
 
 
