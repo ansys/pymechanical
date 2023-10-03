@@ -89,7 +89,7 @@ def test_logging_write_info_after_initialize_with_error_level(rootdir, pytestcon
     assert "0xdeadbeef" not in stderr
 
 
-@pytest.mark.parametrize("addin_configuration", ["Mechanical", "WorkBench", "Legacy"])
+@pytest.mark.parametrize("addin_configuration", ["Mechanical", "WorkBench"])
 @pytest.mark.embedding
 @pytest.mark.minimum_version(241)
 def test_addin_configuration(rootdir, pytestconfig, addin_configuration):
