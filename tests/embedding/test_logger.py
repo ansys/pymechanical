@@ -5,6 +5,7 @@ import sys
 
 import pytest
 
+
 def _unset_var(env, var) -> None:
     if var in env:
         del env[var]
