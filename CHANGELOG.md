@@ -19,6 +19,8 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Changed
 
+ - remove version limit for protobuf ([#432](https://github.com/ansys/pymechanical/pull/432))
+
 ### Dependencies
 - Update ``pre-commit`` ([#431](https://github.com/ansys/pymechanical/pull/431))
 - Bump `numpydoc` from 1.5.0 to 1.6.0 ([#428](https://github.com/ansys/pymechanical/pull/428))
