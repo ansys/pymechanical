@@ -20,6 +20,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Dependencies
 - Bump `numpydoc` from 1.5.0 to 1.6.0 ([#428](https://github.com/ansys/pymechanical/pull/428))
 - Bump `ansys-sphinx-theme` from 0.11.2 to 0.12.1 ([#427](https://github.com/ansys/pymechanical/pull/427))
+- Bump `actions/checkout` from 3 to 4 ([#426](https://github.com/ansys/pymechanical/pull/426))
 
 ## [0.10.3](https://github.com/ansys/pymechanical/releases/tag/v0.10.3) - September 26 2023
 
