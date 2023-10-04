@@ -307,7 +307,7 @@ jobs:
           NUM_CORES: 1
         run: |
           git update-index --chmod=+x ./mechanical-env
-          xvfb-run ./mechanical-env -r ${{ needs.revn-variations.outputs.test_lic }} -- pytest -m embedding -k logging > pytest_output.txt || true
+          xvfb-run ./mechanical-env -r ${{ needs.revn-variations.outputs.test_lic }} -- pytest -m embedding > pytest_output.txt || true
           cat pytest_output.txt
           #
           # Check if failure occurred
