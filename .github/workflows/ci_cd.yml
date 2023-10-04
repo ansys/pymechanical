@@ -306,7 +306,8 @@ jobs:
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
           NUM_CORES: 1
         run: |
-          ./mechanical-env -r ${{ needs.revn-variations.outputs.test_lic }} -- pytest -m embedding -k logging > pytest_output.txt || true
+          git update-index --chmod=+x ./mechanical-env
+          xvfb-run ./mechanical-env -r ${{ needs.revn-variations.outputs.test_lic }} -- pytest -m embedding -k logging > pytest_output.txt || true
           cat pytest_output.txt
           #
           # Check if failure occurred
