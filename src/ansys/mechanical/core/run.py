@@ -258,7 +258,6 @@ def cli(
          If a revision number is not specified, it uses the default from \
             ansys-tools-path.',
 )
-@click.argument("args", nargs=-1)
 def cli_find_mechanical(revision: int):
     """CLI tool to find the mechanical location.
 
