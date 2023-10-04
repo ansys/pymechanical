@@ -307,7 +307,7 @@ def pytest_addoption(parser):
         parser.addoption("--ansys-version", default="232")
     else:
         mechanical_version = atp.version_from_path("mechanical", mechanical_path)
-        parser.addoption("--ansys-version", default=mechanical_version)
+        parser.addoption("--ansys-version", default=str(mechanical_version))
 
     # parser.addoption("--debugging", action="store_true")
     parser.addoption("--addin-configuration", default="Mechanical")
