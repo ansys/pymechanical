@@ -17,6 +17,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
  - fix appdata tests ([#425](https://github.com/ansys/pymechanical/pull/425))
  - Run all embedding tests & fix appdata tests ([#433](https://github.com/ansys/pymechanical/pull/433))
  - unset all logging environment variables ([#434](https://github.com/ansys/pymechanical/pull/434))
+ - pytest --ansys-version dependent on existing install ([#439](https://github.com/ansys/pymechanical/pull/439))
 
 ### Changed
 
