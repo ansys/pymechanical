@@ -60,7 +60,7 @@ def _start_application(configuration: AddinConfiguration, version, db_file) -> "
     addin_configuration_name = configuration.addin_configuration
     # Starting with version 241 we can pass a configuration name to the constructor
     # of Application
-    if version >= 241:
+    if int(version) >= 241:
         return Ansys.Mechanical.Embedding.Application(db_file, addin_configuration_name)
     else:
         return Ansys.Mechanical.Embedding.Application(db_file)

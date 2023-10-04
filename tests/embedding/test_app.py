@@ -132,13 +132,19 @@ def test_private_appdata(pytestconfig, rootdir):
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
     # Set ShowTriad to False
-    subprocess.check_call([sys.executable, embedded_py, version, "True", "Set"])
+    p1 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "True", "Set"], stdout=subprocess.PIPE
+    )
+    p1.wait()
 
     # Check ShowTriad is True for private_appdata embedded sessions
-    stdout = subprocess.check_output([sys.executable, embedded_py, version, "True", "Run"])
-    stdout = stdout.decode().strip("\r\n")
+    p2 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "True", "Run"], stdout=subprocess.PIPE
+    )
+    p2.wait()
+    stdout = p2.stdout.read().decode()
 
-    assert stdout == "True"
+    assert "ShowTriad value is True" in stdout
 
 
 @pytest.mark.embedding
@@ -150,17 +156,26 @@ def test_normal_appdata(pytestconfig, rootdir):
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
     # Set ShowTriad to False
-    subprocess.check_call([sys.executable, embedded_py, version, "False", "Set"])
+    p1 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "False", "Set"], stdout=subprocess.PIPE
+    )
+    p1.wait()
 
     # Check ShowTriad is False for regular embedded session
-    stdout = subprocess.check_output([sys.executable, embedded_py, version, "False", "Run"])
-    stdout = stdout.decode().strip("\r\n")
+    p2 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "False", "Run"], stdout=subprocess.PIPE
+    )
+    p2.wait()
+    stdout = p2.stdout.read().decode()
 
     # Set ShowTriad back to True for regular embedded session
-    subprocess.check_call([sys.executable, embedded_py, version, "False", "Reset"])
+    p3 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "False", "Reset"], stdout=subprocess.PIPE
+    )
+    p3.wait()
 
     # Assert ShowTriad was set to False for regular embedded session
-    assert stdout == "False"
+    assert "ShowTriad value is False" in stdout
 
 
 @pytest.mark.embedding

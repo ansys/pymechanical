@@ -63,7 +63,7 @@ def _on_obsolete_message(sender: typing.Any, args: typing.Any):
 
 def connect_warnings(app: "ansys.mechanical.core.embedding.app.App"):
     """Connect Mechanical warnings to the `warnings` Python module."""
-    if app.version < 241:
+    if int(app.version) < 241:
         return
 
     # TODO _ remove try/except
@@ -75,7 +75,7 @@ def connect_warnings(app: "ansys.mechanical.core.embedding.app.App"):
 
 def disconnect_warnings(app):
     """Disconnect Mechanical warnings from the `warnings` Python module."""
-    if app.version < 241:
+    if int(app.version) < 241:
         return
 
     # TODO _ remove try/except

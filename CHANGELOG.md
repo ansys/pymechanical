@@ -1,6 +1,6 @@
 # CHANGELOG
 
-All notable changes to Python.NET will be documented in this file. This
+All notable changes to PyMechanical will be documented in this file. This
 project adheres to [Semantic Versioning](https://semver.org/).
 
 This document follows the conventions laid out in [Keep a CHANGELOG](https://keepachangelog.com/en/1.0.0).
@@ -14,10 +14,21 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Fixed
 
  - Fix enum printout ([#421](https://github.com/ansys/pymechanical/pull/421))
+ - fix appdata tests ([#425](https://github.com/ansys/pymechanical/pull/425))
+ - Run all embedding tests & fix appdata tests ([#433](https://github.com/ansys/pymechanical/pull/433))
+ - unset all logging environment variables ([#434](https://github.com/ansys/pymechanical/pull/434))
 
 ### Changed
 
+ - remove version limit for protobuf ([#432](https://github.com/ansys/pymechanical/pull/432))
+ - remove legacy configuration test ([#436](https://github.com/ansys/pymechanical/pull/436))
+
 ### Dependencies
+- Update ``pre-commit`` ([#431](https://github.com/ansys/pymechanical/pull/431))
+- Bump `numpydoc` from 1.5.0 to 1.6.0 ([#428](https://github.com/ansys/pymechanical/pull/428))
+- Bump `ansys-sphinx-theme` from 0.11.2 to 0.12.1 ([#427](https://github.com/ansys/pymechanical/pull/427))
+- Bump `grpcio` from 1.58.0 to 1.59.0 ([#429](https://github.com/ansys/pymechanical/pull/429))
+- Bump `actions/checkout` from 3 to 4 ([#426](https://github.com/ansys/pymechanical/pull/426))
 
 ## [0.10.3](https://github.com/ansys/pymechanical/releases/tag/v0.10.3) - September 26 2023
 

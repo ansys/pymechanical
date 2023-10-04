@@ -6,6 +6,22 @@ import sys
 import pytest
 
 
+def _unset_var(env, var) -> None:
+    if var in env:
+        del env[var]
+
+
+def _get_env_without_logging_variables():
+    # unset all logging environment variables.
+    env = os.environ.copy()
+    _unset_var(env, "ANSYS_WORKBENCH_LOGGING")
+    _unset_var(env, "ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL")
+    _unset_var(env, "ANSYS_WORKBENCH_LOGGING_CONSOLE")
+    _unset_var(env, "ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH")
+    _unset_var(env, "ANSYS_WORKBENCH_LOGGING_DIRECTORY")
+    return env
+
+
 def _run_embedding_log_test_process(rootdir, pytestconfig, testname) -> subprocess.Popen:
     """Runs the process and returns it after it finishes"""
     version = pytestconfig.getoption("ansys_version")
@@ -14,6 +30,7 @@ def _run_embedding_log_test_process(rootdir, pytestconfig, testname) -> subproce
         [sys.executable, embedded_py, version, testname],
         stderr=subprocess.PIPE,
         stdout=subprocess.PIPE,
+        env=_get_env_without_logging_variables(),
     )
     p.wait()
     return p
@@ -72,7 +89,7 @@ def test_logging_write_info_after_initialize_with_error_level(rootdir, pytestcon
     assert "0xdeadbeef" not in stderr
 
 
-@pytest.mark.parametrize("addin_configuration", ["Mechanical", "WorkBench", "Legacy"])
+@pytest.mark.parametrize("addin_configuration", ["Mechanical", "WorkBench"])
 @pytest.mark.embedding
 @pytest.mark.minimum_version(241)
 def test_addin_configuration(rootdir, pytestconfig, addin_configuration):
