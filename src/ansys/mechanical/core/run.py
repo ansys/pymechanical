@@ -259,25 +259,22 @@ def cli(
             ansys-tools-path.',
 )
 @click.argument("args", nargs=-1)
-def cli_env(revision: int, args):
-    """CLI tool to load the environment required to run in Linux.
+def cli_find_mechanical(revision: int):
+    """CLI tool to find the mechanical location.
 
     Parameters
     ----------
     revision : int
         The Ansys Revision number.
 
-    Examples
-    --------
-    $ mechanical-env -r 232 -- python test.py
-    Loads the environment to run a test.py file in Linux.
-
-    $ mechanical-env -- make -C doc html
-    Loads the environment to generate Sphinx documents in Linux.
+    USAGE:
+    The following example demonstrates the main use of this tool:
+        $ mechanical-env -r 232 -- python test.py
+        $ mechanical-env -- make -C doc html
     """
     #  Should not update env variables in Windows
     if os.name == "nt":
-        print("This feature is not available in Windows!")
+        print("This feature is not available in Windows !")
         return True
 
     # Gets the revision number
@@ -287,62 +284,5 @@ def cli_env(revision: int, args):
         exe, version = atp.find_mechanical(version=revision)
     version = int(version * 10)
 
-    env = os.environ.copy()
-    # workbench (mechanical) installation directory
-    env["DS_INSTALL_DIR"] = os.path.dirname(exe)
-    DS_INSTALL_DIR = env.get("DS_INSTALL_DIR")
-    env[f"AWP_ROOT{version}"] = f"{DS_INSTALL_DIR}/.."
-    AWP_ROOT = env.get(f"AWP_ROOT{version}")  # AWP_ROOT with revision number
-
-    # Env vars used by workbench (mechanical) code
-    env[f"AWP_LOCALE{version}"] = "en-us"
-    env[
-        f"CADOE_LIBDIR{version}"
-    ] = f'{AWP_ROOT}/commonfiles/language/{env.get(f"AWP_LOCALE{version}")}'
-    env["ANSYSLIC_DIR"] = f"{AWP_ROOT}/../shared_files/licensing"
-    env["ANSYSCOMMON_DIR"] = f"{AWP_ROOT}/commonfiles"
-    env[f"ANSYSCL{version}_DIR"] = f"{AWP_ROOT}/licensingclient"
-
-    # MainWin vars
-    env["ANSISMAINWINLITEMODE"] = "1"
-    env["MWCONFIG_NAME"] = "amd64_linux"
-    env["MWDEBUG_LEVEL"] = "0"
-    env["MWHOME"] = f"{AWP_ROOT}/commonfiles/MainWin/linx64/mw"
-    env["MWOS"] = "linux"
-    env["MWREGISTRY"] = f'{DS_INSTALL_DIR}/WBMWRegistry/hklm_{env.get("MWCONFIG_NAME")}.bin'
-    env["MWRT_MODE"] = "classic"
-    env["MWRUNTIME"] = "1"
-    env["MWUSER_DIRECTORY"] = env.get("HOME") + "/.mw"
-    env["MWDONT_XCLOSEDISPLAY"] = "1"
-
-    # dynamic library preload
-    env["LD_PRELOAD"] = "libstdc++.so.6.0.28"
-
-    # dynamic library load path
-    env["LD_LIBRARY_PATH"] = (
-        f"{AWP_ROOT}/tp/stdc++:"
-        + f"{AWP_ROOT}/tp/openssl/1.1.1/linx64/lib:"
-        + f'{env.get("MWHOME")}/lib-amd64_linux:'
-        + f'{env.get("MWHOME")}/lib-amd64_linux_optimized:'
-        + f'{env.get("LD_LIBRARY_PATH")}:'
-        + f"{AWP_ROOT}/Tools/mono/Linux64/lib:"
-        + f"{DS_INSTALL_DIR}/lib/linx64:"
-        + f"{DS_INSTALL_DIR}/dll/linx64:"
-        + f"{DS_INSTALL_DIR}/libshared/linx64:"
-        + f"{AWP_ROOT}/tp/IntelCompiler/2019.3.199/linx64/lib/intel64:"
-        + f"{AWP_ROOT}/tp/qt_fw/5.9.6/Linux64/lib:"
-        + f"{AWP_ROOT}/commonfiles/CAD/Acis/linx64:"
-        + f"{AWP_ROOT}/commonfiles/fluids/lib/linx64:"
-        + f"{AWP_ROOT}/Framework/bin/Linux64"
-    )
-
-    # system path
-    env["PATH"] = (
-        f'{env.get("MWHOME")}/bin-amd64_linux_optimized:'
-        + f"{DS_INSTALL_DIR}/CommonFiles/linx64:"
-        + f"{DS_INSTALL_DIR}/CADIntegration/linx64:"
-        + f"{AWP_ROOT}/Tools/mono/Linux64/bin:"
-        + env.get("PATH")
-    )
-
-    _run(args, env)
+    aisol_path = os.path.dirname(exe)
+    print(version, aisol_path)
