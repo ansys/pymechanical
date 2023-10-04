@@ -9,7 +9,7 @@ on:
       default-revn:
         type: choice
         description: 'Default revision number for containers.'
-        options: 
+        options:
         - '241'
         - '232'
         - '231'
@@ -17,7 +17,7 @@ on:
       test-revn:
         type: choice
         description: 'Revision number for tests.'
-        options: 
+        options:
         - '241'
         - '232'
         - '231'
@@ -87,7 +87,7 @@ jobs:
             parse_revns "${{ inputs.default-revn }}" "default" "default_lic"
             parse_revns "${{ inputs.test-revn }}" "test" "test_lic"
           fi
-       
+
   style:
     name: Code style
     runs-on: ubuntu-latest
@@ -267,7 +267,7 @@ jobs:
           apt install python${{ matrix.python-version }} -y
           ln -s /usr/bin/python${{ matrix.python-version }} /usr/bin/python
           apt install python${{ matrix.python-version }}-venv -y
-        
+
       - name: Install pip
         if: matrix.python-version == '3.8'
         run: |
@@ -286,7 +286,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          apt install -y lsb-release
+          apt install -y lsb-release xvfb
           pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
           pip3 install --upgrade pip flit
 
@@ -359,7 +359,7 @@ jobs:
           apt install python${{ matrix.python-version }} -y
           ln -s /usr/bin/python${{ matrix.python-version }} /usr/bin/python
           apt install python${{ matrix.python-version }}-venv -y
-        
+
       - name: Install pip
         if: matrix.python-version == '3.8'
         run: |
@@ -434,7 +434,7 @@ jobs:
     steps:
       - name: Set the environment variable
         run: echo "DOCKER_IMAGE_VERSION=${{needs.revn-variations.outputs.default}}" >> $GITHUB_ENV
-        
+
       - name: Login in Github Container registry
         uses: docker/login-action@v3
         with:
