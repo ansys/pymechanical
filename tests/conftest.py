@@ -102,6 +102,7 @@ def start_embedding_app(version, pytestconfig) -> datetime.timedelta:
     config = AddinConfiguration(pytestconfig.getoption("addin_configuration"))
 
     EMBEDDED_APP = App(version=int(version))
+    assert not EMBEDDED_APP.readonly, "Can't run test cases, Mechanical is in readonly mode! Check license configuration."
     startup_time = (datetime.datetime.now() - start).total_seconds()
     num_cores = os.environ.get("NUM_CORES", None)
     if num_cores != None:
