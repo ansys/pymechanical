@@ -20,12 +20,12 @@ def set_showtriad(version, appdata_option, value):
 def print_showtriad(version, appdata_option):
     """Return ShowTriad value."""
     app = launch_app(version, appdata_option)
-    print(app.ExtAPI.Graphics.ViewOptions.ShowTriad)
+    print("ShowTriad value is " + str(app.ExtAPI.Graphics.ViewOptions.ShowTriad))
     app.close()
 
 
 if __name__ == "__main__":
-    version = sys.argv[1]
+    version = int(sys.argv[1])
     if len(sys.argv) == 2:
         launch_app(version, False)
         sys.exit(0)
