@@ -231,6 +231,7 @@ class App:
     def readonly(self):
         """Return whether the Mechanical object is read-only."""
         import Ansys
+
         return Ansys.ACT.Mechanical.MechanicalAPI.Instance.ReadOnlyMode
 
     @property
