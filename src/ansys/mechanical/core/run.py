@@ -25,6 +25,7 @@
 import asyncio
 from asyncio.subprocess import PIPE
 import os
+import subprocess
 import sys
 import typing
 import warnings
@@ -258,7 +259,8 @@ def cli(
          If a revision number is not specified, it uses the default from \
             ansys-tools-path.',
 )
-def cli_find_mechanical(revision: int):
+@click.argument("command", nargs=-1)
+def cli_find_mechanical(revision: int, command):
     """CLI tool to find the mechanical version and location.
 
     Parameters
@@ -281,3 +283,33 @@ def cli_find_mechanical(revision: int):
 
     aisol_path = os.path.dirname(exe)
     print(version, aisol_path)
+
+    # get command - have to wrap it in quotes if there are flags
+    # (mechanical-env "pytest -m embedding")
+    command = " ".join(sys.argv[1:])
+    print(command)
+
+    # run mechanical_env.sh script with the arguments
+    p2 = subprocess.Popen(
+        [
+            "./src/ansys/mechanical/core/mechanical_env.sh",
+            "-r",
+            str(version),
+            "-p",
+            str(aisol_path),
+            "-c",
+            str(command),
+        ],
+        stdout=subprocess.PIPE,
+    )
+
+    # print each line in the stdout of the process
+    # this is where the process hangs (once it's done printing)
+    for line in p2.stdout:
+        print(line.decode(), end="")
+    p2.stdout.close()
+    retcode = p2.wait()
+    print(retcode)
+    # stdout = p2.stdout.read().decode()
+
+    # print(stdout)

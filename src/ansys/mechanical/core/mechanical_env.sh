@@ -1,5 +1,27 @@
 #!/bin/bash
 
+# Copyright (C) 2023 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 # Check if at least one argument was provided
 if [ $# -lt 1 ]; then
     echo "Usage: ./.mechanical-env [-r REVISION] [COMMAND]"
@@ -8,52 +30,76 @@ fi
 
 # Initialize variables
 revision=""
+path=""
 command=""
 
 # Process command line arguments
-while [ "$#" -gt 0 ]; do
-    case "$1" in
-        -r|--revision)
-            revision="$2"
-            shift 2
-            ;;
-        *)
-            command="$@"
-            break
-            ;;
+#while [ "$#" -gt 0 ]; do
+#    case "$1" in
+#        -r|--revision)
+#            revision="$2"
+#	    shift
+#	    shift
+#            ;;
+#        -p|--path)
+#	    path="$3"
+#	    shift
+#	    shift
+#	    ;;
+#        *)
+#            command="$@"
+#            break
+#            ;;
+#    esac
+#done
+
+# get command line options passed in by mechanical-env
+# the colon after each letter means there's going to be
+# a string after it
+while getopts r:p:c: flag
+do
+    case "${flag}" in
+        r|--revision) revision=${OPTARG};;
+	p|--path) path=${OPTARG};;
+	c|--command) command=${OPTARG};;
     esac
 done
 
+#echo $revision
+#echo $path
+#echo $command
+
 # Check if a command was provided
 if [ -z "$command" ]; then
-    echo "Usage: ./.mechanical-env [-r REVISION] [COMMAND]"
+    echo "Usage: mechanical-env [-r REVISION] [COMMAND]"
     exit 1
 fi
 
 # Determine the appropriate command to run find-mechanical
-if [ -n "$revision" ]; then
-    find_mechanical_command="find-mechanical -r $revision"
-else
-    find_mechanical_command="find-mechanical"
-fi
+#if [ -n "$revision" ]; then
+#    find_mechanical_command="find-mechanical -r $revision"
+#else
+#    find_mechanical_command="find-mechanical"
+#fi
 
 # Run the find-mechanical command and capture its output
-output=$($find_mechanical_command)
+# output="$path"  #$($find_mechanical_command)
 
 # Check if there was an error
-if [ $? -ne 0 ]; then
-    echo "Error running the find-mechanical."
-    exit 1
-fi
+#if [ $? -ne 0 ]; then
+#    echo "Error running the find-mechanical."
+#    exit 1
+#fi
 
 # Extract and print the captured values
-read -r version DS_INSTALL_DIR <<< "$output"
+# read -r version DS_INSTALL_DIR <<< "$output"
 
 # Envs
+DS_INSTALL_DIR=$path
 awp_root="AWP_ROOT${version}"
 eval ${awp_root}=$DS_INSTALL_DIR/..
 
-# # Env vars used by workbench (mechanical) code
+# Env vars used by workbench (mechanical) code
 awp_locale="AWP_LOCALE${version}"
 eval ${awp_locale}=en-us
 cadoe_libdir="CADOE_LIBDIR${version}"
@@ -124,6 +170,7 @@ export LD_PRELOAD
 export LD_LIBRARY_PATH
 export PATH
 
-eval $@
+# run the command
+eval $command
 returnCode=$?
 exit $returnCode
