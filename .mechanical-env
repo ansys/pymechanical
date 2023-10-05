@@ -26,7 +26,7 @@ done
 
 # Check if a command was provided
 if [ -z "$command" ]; then
-    echo "Usage: ./mechanical-env [-r REVISION] [COMMAND]"
+    echo "Usage: ./.mechanical-env [-r REVISION] [COMMAND]"
     exit 1
 fi
 
