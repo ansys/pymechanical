@@ -259,23 +259,19 @@ def cli(
             ansys-tools-path.',
 )
 def cli_find_mechanical(revision: int):
-    """CLI tool to find the mechanical location.
+    """CLI tool to find the mechanical version and location.
 
     Parameters
     ----------
     revision : int
         The Ansys Revision number.
 
-    USAGE:
-    The following example demonstrates the main use of this tool:
-        $ mechanical-env -r 232 -- python test.py
-        $ mechanical-env -- make -C doc html
-    """
-    #  Should not update env variables in Windows
-    if os.name == "nt":
-        print("This feature is not available in Windows !")
-        return True
+    Example:
+    --------
+    Gets the version amd location of install directory
 
+    >>> find-mechanical -r 232
+    """
     # Gets the revision number
     if not revision:
         exe, version = atp.find_mechanical()

@@ -2,7 +2,7 @@
 
 # Check if at least one argument was provided
 if [ $# -lt 1 ]; then
-    echo "Usage: ./mechanical-env [-r REVISION] [COMMAND]"
+    echo "Usage: ./.mechanical-env [-r REVISION] [COMMAND]"
     exit 1
 fi
 
@@ -102,7 +102,6 @@ PATH=${MWHOME}/bin-amd64_linux_optimized\
 :${!awp_root}/Tools/mono/Linux64/bin\
 :${PATH}
 
-
 export $awp_root
 export $awp_locale
 export $cadoe_libdir
@@ -125,8 +124,6 @@ export LD_PRELOAD
 export LD_LIBRARY_PATH
 export PATH
 
-
-env
 eval $@
 returnCode=$?
 exit $returnCode
