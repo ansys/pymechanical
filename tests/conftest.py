@@ -117,7 +117,7 @@ EMBEDDED_APP = None
 @pytest.fixture(scope="session")
 def embedded_app(pytestconfig, request):
     global EMBEDDED_APP
-    startup_time = start_embedding_app(pytestconfig.getoption("ansys-version"), pytestconfig)
+    startup_time = start_embedding_app(pytestconfig.getoption("ansys_version"), pytestconfig)
     terminal_reporter = request.config.pluginmanager.getplugin("terminalreporter")
     if terminal_reporter is not None:
         terminal_reporter.write_line(f"\t{startup_time}\tStarting Mechanical")
