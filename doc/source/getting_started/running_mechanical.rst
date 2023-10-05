@@ -235,15 +235,15 @@ Additional information for Linux
 Starting with 2023 R2, it is possible to embed an instance of Mechanical on Linux.
 However, because of differences in how Mechanical works on Linux, you cannot simply
 run Python as usual. On Linux, certain environment variables must be set for the Python
-process before it starts. You can set up these environment variables using the ``.workbench_lite``
-script that is shipped with the Mechanical installation.
+process before it starts. You can set up these environment variables using the ``.mechanical-env``
+script that is with PyMechanical repository.
 
-Assume that Mechanical 2023 R2 is installed at ``/usr/ansys_inc``.
-You would run Python with this command:
+It takes revision number as optional argument to find the location of the Mechanical installation 
+directory to update the required environment variables.
 
 .. code::
 
-    /usr/ansys_inc/v232/aisol/.workbench_lite python
+    ./.mechanical-env -r 232 python
 
 
 Licensing issues
