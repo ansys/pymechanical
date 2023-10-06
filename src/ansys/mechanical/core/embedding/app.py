@@ -228,6 +228,13 @@ class App:
         return GetterWrapper(self._app, lambda app: app.DataModel.Project.Model)
 
     @property
+    def readonly(self):
+        """Return whether the Mechanical object is read-only."""
+        import Ansys
+
+        return Ansys.ACT.Mechanical.MechanicalAPI.Instance.ReadOnlyMode
+
+    @property
     def version(self):
         """Returns the version of the app."""
         return self._version
