@@ -5,6 +5,12 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 This document follows the conventions laid out in [Keep a CHANGELOG](https://keepachangelog.com/en/1.0.0).
 
+## [Unreleased]()
+
+### Dependencies
+
+- Update `ansys_mechanical_api` from 0.1.0 to 0.1.1 ([#444](https://github.com/ansys/pymechanical/pull/444))
+
 ## [0.10.3](https://github.com/ansys/pymechanical/releases/tag/v0.10.3) - September 26 2023
 
 ### Added
