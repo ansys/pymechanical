@@ -123,6 +123,7 @@ jobs:
         run: |
           apt update
           apt install -y sudo curl lsb-release
+          add-apt-repository ppa:deadsnakes/ppa -y
           apt install -y zip pandoc libgl1-mesa-glx mesa-utils xvfb texlive-latex-extra latexmk nodejs npm graphviz
           apt install -y tini
           npm install -g @mermaid-js/mermaid-cli
