@@ -41,13 +41,6 @@ def log_configuration_workbench(version):
     Logger.error("WorkBench configuration!")
 
 
-def log_configuration_legacy(version):
-    """Log at the info level after app starts with the `WorkBench` configuration."""
-    _ = mech.App(version=version, config=AddinConfiguration("Legacy"))
-    Configuration.configure(level=logging.INFO, to_stdout=True, base_directory=None)
-    Logger.error("Legacy configuration!")
-
-
 def log_check_can_log_message(version):
     """Configure logger before app initialization and check can_log_message."""
     Configuration.configure(level=logging.WARNING, to_stdout=True, base_directory=None)
@@ -75,7 +68,6 @@ if __name__ == "__main__":
         "log_check_can_log_message": log_check_can_log_message,
         "log_configuration_Mechanical": log_configuration_mechanical,
         "log_configuration_WorkBench": log_configuration_workbench,
-        "log_configuration_Legacy": log_configuration_legacy,
     }
     tests[test_name](int(version))
     print("@@success@@")

@@ -1,11 +1,43 @@
 # CHANGELOG
 
-All notable changes to Python.NET will be documented in this file. This
+All notable changes to PyMechanical will be documented in this file. This
 project adheres to [Semantic Versioning](https://semver.org/).
 
 This document follows the conventions laid out in [Keep a CHANGELOG](https://keepachangelog.com/en/1.0.0).
 
-## [Unreleased][]
+## [Unreleased]()
+
+### Added
+
+- Add codeql.yml for security checks ([#423](https://github.com/ansys/pymechanical/pull/423))
+- add readonly flag and assertion ([#441](https://github.com/ansys/pymechanical/pull/441))
+
+### Fixed
+
+ - Fix enum printout ([#421](https://github.com/ansys/pymechanical/pull/421))
+ - fix appdata tests ([#425](https://github.com/ansys/pymechanical/pull/425))
+ - Run all embedding tests & fix appdata tests ([#433](https://github.com/ansys/pymechanical/pull/433))
+ - unset all logging environment variables ([#434](https://github.com/ansys/pymechanical/pull/434))
+
+### Changed
+
+ - remove version limit for protobuf ([#432](https://github.com/ansys/pymechanical/pull/432))
+ - remove legacy configuration test ([#436](https://github.com/ansys/pymechanical/pull/436))
+
+### Dependencies
+- Update ``pre-commit`` ([#431](https://github.com/ansys/pymechanical/pull/431))
+- Bump `numpydoc` from 1.5.0 to 1.6.0 ([#428](https://github.com/ansys/pymechanical/pull/428))
+- Bump `ansys-sphinx-theme` from 0.11.2 to 0.12.1 ([#427](https://github.com/ansys/pymechanical/pull/427))
+- Bump `grpcio` from 1.58.0 to 1.59.0 ([#429](https://github.com/ansys/pymechanical/pull/429))
+- Bump `actions/checkout` from 3 to 4 ([#426](https://github.com/ansys/pymechanical/pull/426))
+
+## [0.10.4](https://github.com/ansys/pymechanical/releases/tag/v0.10.4) - October 6 2023
+
+### Dependencies
+
+- Update `ansys_mechanical_api` from 0.1.0 to 0.1.1 ([#444](https://github.com/ansys/pymechanical/pull/444))
+
+## [0.10.3](https://github.com/ansys/pymechanical/releases/tag/v0.10.3) - September 26 2023
 
 ### Added
 
@@ -33,6 +65,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `ansys-sphinx-theme` from 0.11.1 to 0.11.2 ([#406](https://github.com/ansys/pymechanical/pull/406))
 - Bump `plotly` from 5.16.1 to 5.17.0 ([#407](https://github.com/ansys/pymechanical/pull/407))
 - Bump `docker/login-action` from 2 to 3 ([#408](https://github.com/ansys/pymechanical/pull/408))
+- Bump `pyvista` from 0.42.1 to 0.42.2 ([#414](https://github.com/ansys/pymechanical/pull/414))
 
 ## [0.10.2](https://github.com/ansys/pymechanical/releases/tag/v0.10.2) - September 8 2023
 
