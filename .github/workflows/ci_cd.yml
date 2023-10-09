@@ -119,25 +119,23 @@ jobs:
       - name: Install Git and checkout project
         uses: actions/checkout@v4
 
-      - name: Install system dependencies
-        run: |
-          apt update
-          apt install software-properties-common -y
-          add-apt-repository ppa:deadsnakes/ppa -y
-          apt install -y sudo curl lsb-release
-          apt install -y zip pandoc libgl1-mesa-glx mesa-utils xvfb texlive-latex-extra latexmk nodejs npm graphviz
-          apt install -y tini
-          npm install -g @mermaid-js/mermaid-cli
-
       - name: Set up Python
         run: |
           apt update
-          apt install -y python3.9
+          apt install -y python3.9 python3-pip
           ln -s /usr/bin/python3.9 /usr/bin/python
-          apt install python3.9-venv -y
-          python -m ensurepip --default-pip
+          python -m pip install --upgrade pip
           python --version
           pip3 --version
+
+      - name: Install system dependencies
+        run: |
+          apt update
+          apt install -y sudo curl lsb-release
+          apt install -y zip pandoc libgl1-mesa-glx mesa-utils xvfb texlive-latex-extra latexmk nodejs npm graphviz
+          apt install -y tini
+          # pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org
+          npm install -g @mermaid-js/mermaid-cli
 
       - name: Install Python requirements
         run: |
@@ -148,6 +146,22 @@ jobs:
           echo "PYMECHANICAL_VERSION=$(python -c 'from ansys.mechanical.core import __version__; print(__version__)')" >> $GITHUB_ENV
           echo "PyMechanical version is: $(python -c "from ansys.mechanical.core import __version__; print(__version__)")"
         id: version
+
+      # - name: Cache Basic examples
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: doc/source/basic
+      #     key: Examples-v${{ env.RESET_EXAMPLES_CACHE }}-${{ env.PYMECHANICAL_VERSION }}-${{ github.sha }}
+      #     restore-keys: |
+      #       Examples-v${{ env.RESET_EXAMPLES_CACHE }}-${{ env.PYMECHANICAL_VERSION }}
+
+      # - name: "Cache docs build directory"
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: doc/_build
+      #     key: doc-build-v${{ env.RESET_DOC_BUILD_CACHE }}-${{ env.PYMECHANICAL_VERSION }}-${{ github.sha }}
+      #     restore-keys: |
+      #       doc-build-v${{ env.RESET_DOC_BUILD_CACHE }}-${{ env.PYMECHANICAL_VERSION }}
 
       - name: Build docs
         env:
@@ -169,10 +183,3 @@ jobs:
             echo "Documentation building failed"
             exit 1
           fi
-
-      - name: Upload HTML Documentation
-        uses: actions/upload-artifact@v3
-        with:
-          name: documentation-html
-          path: doc/_build/html
-          retention-days: 7
