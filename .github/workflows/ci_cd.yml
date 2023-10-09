@@ -122,8 +122,9 @@ jobs:
       - name: Install system dependencies
         run: |
           apt update
-          apt install -y sudo curl lsb-release
+          apt install software-properties-common -y
           add-apt-repository ppa:deadsnakes/ppa -y
+          apt install -y sudo curl lsb-release
           apt install -y zip pandoc libgl1-mesa-glx mesa-utils xvfb texlive-latex-extra latexmk nodejs npm graphviz
           apt install -y tini
           npm install -g @mermaid-js/mermaid-cli
