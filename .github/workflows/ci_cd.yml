@@ -132,9 +132,9 @@ jobs:
       - name: Set up Python
         run: |
           apt update
-          apt install -y python${{ env.MAIN_PYTHON_VERSION }}
-          ln -s /usr/bin/python${{ env.MAIN_PYTHON_VERSION }} /usr/bin/python
-          apt install python3.10-venv -y
+          apt install -y python3.9
+          ln -s /usr/bin/python3.9 /usr/bin/python
+          apt install python3.9-venv -y
           python -m ensurepip --default-pip
           python --version
           pip3 --version
