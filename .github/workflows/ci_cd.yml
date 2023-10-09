@@ -30,19 +30,19 @@ on:
       - release/*
 
 env:
-  MAIN_PYTHON_VERSION: '3.9'
+  MAIN_PYTHON_VERSION: '3.10'
   PYMECHANICAL_VERSION: '23.2'
   RESET_EXAMPLES_CACHE: 0
   RESET_DOC_BUILD_CACHE: 0
   
-  #PYMECHANICAL_PORT: 10000  # default won't work on GitHub runners
-  #PYMECHANICAL_START_INSTANCE: FALSE
-  #DOCKER_PACKAGE: ghcr.io/ansys/mechanical
-  #DOCKER_MECH_CONTAINER_NAME: mechanical
+  PYMECHANICAL_PORT: 10000  # default won't work on GitHub runners
+  PYMECHANICAL_START_INSTANCE: FALSE
+  DOCKER_PACKAGE: ghcr.io/ansys/mechanical
+  DOCKER_MECH_CONTAINER_NAME: mechanical
   #MAIN_PYTHON_VERSION: '3.10'
-  #PACKAGE_NAME: ansys-mechanical-core
-  #PACKAGE_NAMESPACE: ansys.mechanical.core
-  #DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
+  PACKAGE_NAME: ansys-mechanical-core
+  PACKAGE_NAMESPACE: ansys.mechanical.core
+  DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
   DEFAULT_REVN: '231'  # ensure this is the same as inputs.default-revn.default
   TEST_REVN: '232'  # ensure this is the same as inputs.test-revn.default
   DEV_REVN: '241'
@@ -50,11 +50,6 @@ env:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
-permissions:
-  contents: write
-  pull-requests: write
-  packages: read
 
 jobs:
   revn-variations:
@@ -132,9 +127,12 @@ jobs:
       - name: Set up Python
         run: |
           apt update
-          apt install -y python3.9 python3-pip
-          ln -s /usr/bin/python3.9 /usr/bin/python
-          python -m pip install --upgrade pip
+          apt install software-properties-common -y
+          add-apt-repository ppa:deadsnakes/ppa -y
+          apt install -y python${{ env.MAIN_PYTHON_VERSION }}
+          ln -s /usr/bin/python${{ env.MAIN_PYTHON_VERSION }} /usr/bin/python
+          apt install python3.10-venv -y
+          python -m ensurepip --default-pip
           python --version
           pip3 --version
 
@@ -151,27 +149,14 @@ jobs:
         run: |
           pip3 install -r requirements/requirements_doc.txt
 
+      - name: Set environment variable
+        run: echo "ANSYSCL${{ needs.revn-variations.outputs.test_lic }}_DIR=/install/ansys_inc/v${{ needs.revn-variations.outputs.test_lic }}/licensingclient" >> $GITHUB_ENV
+
       - name: Retrieve PyMechanial version
         run: |
           echo "PYMECHANICAL_VERSION=$(python -c 'from ansys.mechanical.core import __version__; print(__version__)')" >> $GITHUB_ENV
           echo "PyMechanical version is: $(python -c "from ansys.mechanical.core import __version__; print(__version__)")"
         id: version
-
-      # - name: Cache Basic examples
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: doc/source/basic
-      #     key: Examples-v${{ env.RESET_EXAMPLES_CACHE }}-${{ env.PYMECHANICAL_VERSION }}-${{ github.sha }}
-      #     restore-keys: |
-      #       Examples-v${{ env.RESET_EXAMPLES_CACHE }}-${{ env.PYMECHANICAL_VERSION }}
-
-      # - name: "Cache docs build directory"
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: doc/_build
-      #     key: doc-build-v${{ env.RESET_DOC_BUILD_CACHE }}-${{ env.PYMECHANICAL_VERSION }}-${{ github.sha }}
-      #     restore-keys: |
-      #       doc-build-v${{ env.RESET_DOC_BUILD_CACHE }}-${{ env.PYMECHANICAL_VERSION }}
 
       - name: Build docs
         env:
@@ -181,6 +166,9 @@ jobs:
           ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 0
         run: |
+          unset PYMECHANICAL_PORT
+          unset PYMECHANICAL_START_INSTANCE
+          
           xvfb-run /install/ansys_inc/v232/aisol/.workbench_lite make -C doc html > doc_build_output.txt 2>&1 || true
           cat doc_build_output.txt
           #
