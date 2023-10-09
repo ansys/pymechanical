@@ -30,14 +30,19 @@ on:
       - release/*
 
 env:
-  PYMECHANICAL_PORT: 10000  # default won't work on GitHub runners
-  PYMECHANICAL_START_INSTANCE: FALSE
-  DOCKER_PACKAGE: ghcr.io/ansys/mechanical
-  DOCKER_MECH_CONTAINER_NAME: mechanical
-  MAIN_PYTHON_VERSION: '3.10'
-  PACKAGE_NAME: ansys-mechanical-core
-  PACKAGE_NAMESPACE: ansys.mechanical.core
-  DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
+  MAIN_PYTHON_VERSION: '3.9'
+  PYMECHANICAL_VERSION: '23.2'
+  RESET_EXAMPLES_CACHE: 0
+  RESET_DOC_BUILD_CACHE: 0
+  
+  #PYMECHANICAL_PORT: 10000  # default won't work on GitHub runners
+  #PYMECHANICAL_START_INSTANCE: FALSE
+  #DOCKER_PACKAGE: ghcr.io/ansys/mechanical
+  #DOCKER_MECH_CONTAINER_NAME: mechanical
+  #MAIN_PYTHON_VERSION: '3.10'
+  #PACKAGE_NAME: ansys-mechanical-core
+  #PACKAGE_NAMESPACE: ansys.mechanical.core
+  #DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
   DEFAULT_REVN: '231'  # ensure this is the same as inputs.default-revn.default
   TEST_REVN: '232'  # ensure this is the same as inputs.test-revn.default
   DEV_REVN: '241'
@@ -45,6 +50,11 @@ env:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+  packages: read
 
 jobs:
   revn-variations:
