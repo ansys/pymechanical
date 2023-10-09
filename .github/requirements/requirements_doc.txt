@@ -1,0 +1,19 @@
+# Documentation dependencies
+ansys-sphinx-theme==0.12.1
+jupyter_sphinx==0.4.0
+jupyterlab>=3.2.8
+numpy==1.26.0
+numpydoc==1.6.0
+pandas==2.1.1
+panel==1.2.3
+plotly==5.17.0
+pypandoc==1.11
+pythreejs==2.4.2
+pyvista==0.42.2
+Sphinx==7.2.6
+sphinx-copybutton==0.5.1
+sphinx-gallery==0.14.0
+sphinx-autobuild==2021.3.14
+sphinx-autodoc-typehints==1.24.0
+sphinx-notfound-page==1.0.0
+sphinxemoji==0.2.0
