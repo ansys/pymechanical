@@ -109,6 +109,326 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+  smoke-tests:
+    name: Build and Smoke tests
+    runs-on: ${{ matrix.os }}
+    needs: [style]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.8', '3.9', '3.10', '3.11']
+        should-release:
+          - ${{ github.event_name == 'push' && contains(github.ref, 'refs/tags') }}
+        exclude:
+          - should-release: false
+            os: macos-latest
+    steps:
+      - name: Build wheelhouse and perform smoke test
+        uses: ansys/actions/build-wheelhouse@v4
+        with:
+          library-name: ${{ env.PACKAGE_NAME }}
+          operating-system: ${{ matrix.os }}
+          python-version: ${{ matrix.python-version }}
+          # use-python-cache: false
+
+  changelog-check:
+    name: Changelog Update Check
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.CHANGELOG_TOKEN }}
+
+      - uses: dangoslen/dependabot-changelog-helper@v3
+        if: ${{ github.actor == 'dependabot[bot]' }}
+        with:
+          activationLabel: 'dependabot'
+          changelogPath: './CHANGELOG.md'
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        if: ${{ github.actor == 'dependabot[bot]' }}
+        with:
+          commit_message: "Updated Changelog"
+
+      - name: Get all doc files that have changed
+        id: changed-files-yaml
+        uses: tj-actions/changed-files@v39
+        with:
+          files_yaml: |
+            doc:
+              - 'CHANGELOG.md'
+
+      - name: Check Changelog Edited
+        run: |
+          if [[ "${{ steps.changed-files-yaml.outputs.doc_all_changed_files }}" == "CHANGELOG.md" ]]; then
+              echo "CHANGELOG.md was updated."
+          elif [[ "${{ github.actor }}" == "dependabot[bot]" ]]; then
+              echo "CHANGELOG.md was autoupdated... Workflow will trigger."
+          else
+              echo "Please update CHANGELOG.md before merging the pull request."
+              exit 1
+          fi
+
+  tests:
+    name: Testing and coverage - Mechanical ${{ matrix.mechanical-version }}
+    runs-on: public-ubuntu-latest-8-cores
+    needs: [smoke-tests, revn-variations]
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # Add the experimental mechanical-version to mechanical-version
+        # matrix below once we switch to the next revn
+        mechanical-version: ['${{needs.revn-variations.outputs.default}}']
+        experimental: [false]
+        # The following versions would be allowed to fail
+        include:
+          - mechanical-version: '${{needs.revn-variations.outputs.test}}'
+            experimental: true
+    steps:
+      - name: Login in Github Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull, launch, and validate Mechanical service
+        env:
+          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
+          MECHANICAL_IMAGE: ${{ env.DOCKER_PACKAGE }}:${{ matrix.mechanical-version }}
+        run: |
+          docker pull ${{ env.MECHANICAL_IMAGE }}
+          docker run --restart always --name ${{ env.DOCKER_MECH_CONTAINER_NAME }} -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }} > log.txt &
+          grep -q 'WB Initialize Done' <(timeout 60 tail -f log.txt)
+
+      - name: Testing
+        uses: ansys/actions/tests-pytest@v4
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+
+      # - name: Upload coverage to Codecov
+      #   uses: codecov/codecov-action@v3
+
+      - name: Set the environment variable
+        run: echo "DOCKER_IMAGE_VERSION=${{needs.revn-variations.outputs.default}}" >> $GITHUB_ENV
+
+      - name: Upload coverage results
+        uses: actions/upload-artifact@v3
+        if: matrix.mechanical-version == env.DOCKER_IMAGE_VERSION
+        with:
+          name: coverage-tests
+          path: .cov
+          retention-days: 7
+
+      - name: Upload coverage results (as .coverage)
+        uses: actions/upload-artifact@v3
+        if: matrix.mechanical-version == env.DOCKER_IMAGE_VERSION
+        with:
+          name: coverage-file-tests
+          path: .coverage
+          retention-days: 7
+
+      - name: Get Mechanical container logs
+        if: always()
+        run: |
+          docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > mechanical_tests_log-${{ matrix.mechanical-version }}.txt 2>&1
+          echo CONTAINER LOGS OUTPUT
+          cat mechanical_tests_log-${{ matrix.mechanical-version }}.txt
+          echo CPU info
+          lscpu
+
+      - name: Upload container logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: mechanical_tests_log-${{ matrix.mechanical-version }}
+          path: mechanical_tests_log-${{ matrix.mechanical-version }}.txt
+          retention-days: 7
+
+  embedding-tests:
+    name: Embedding testing and coverage
+    runs-on: ubuntu-latest
+    needs: [style, revn-variations]
+    container:
+      image: ghcr.io/ansys/mechanical:${{needs.revn-variations.outputs.test}}
+      options: --entrypoint /bin/bash
+    strategy:
+      max-parallel: 2
+      fail-fast: false
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11']
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up python and pip
+        run: |
+          apt update
+          apt install software-properties-common -y
+          add-apt-repository ppa:deadsnakes/ppa -y
+          apt install python${{ matrix.python-version }} -y
+          ln -s /usr/bin/python${{ matrix.python-version }} /usr/bin/python
+          apt install python${{ matrix.python-version }}-venv -y
+
+      - name: Install pip
+        if: matrix.python-version == '3.8'
+        run: |
+          apt install -y python3-pip
+
+      - name: Install pip for >3.8
+        if: matrix.python-version != '3.8'
+        run: |
+          python -m ensurepip --default-pip
+
+      - name: Upgrade pip
+        run: |
+          pip3 install --upgrade pip
+          python --version
+          pip3 --version
+
+      - name: Install dependencies
+        run: |
+          apt install -y lsb-release xvfb
+          pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
+          pip3 install --upgrade pip flit
+
+      - name: Install packages for testing
+        run: |
+          pip install .[tests]
+
+      - name: Set environment variable
+        run: echo "ANSYSCL${{ needs.revn-variations.outputs.test_lic }}_DIR=/install/ansys_inc/v${{ needs.revn-variations.outputs.test_lic }}/licensingclient" >> $GITHUB_ENV
+
+      - name: Unit Testing and coverage
+        env:
+          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
+          ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
+          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
+          ANSYS_WORKBENCH_LOGGING: 0
+          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
+          NUM_CORES: 1
+        run: |
+          xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.test_lic }}/aisol/.workbench_lite pytest -m embedding > pytest_output.txt || true
+          cat pytest_output.txt
+          #
+          # Check if failure occurred
+          #
+          output=$(grep -c "FAILURES" pytest_output.txt || true)
+          if [ $output -eq 0 ]; then
+            echo "Pytest execution succeeded"
+            exit 0
+          else
+            echo "Pytest execution failed"
+            exit 1
+          fi
+
+      - name: Upload coverage results
+        uses: actions/upload-artifact@v3
+        if: env.MAIN_PYTHON_VERSION == matrix.python-version
+        with:
+          name: coverage-tests-embedding
+          path: .cov
+          retention-days: 7
+
+      - name: Upload coverage results (as .coverage)
+        uses: actions/upload-artifact@v3
+        if: env.MAIN_PYTHON_VERSION == matrix.python-version
+        with:
+          name: coverage-file-tests-embedding
+          path: .coverage
+          retention-days: 7
+
+  launch-tests:
+    name: Launch testing and coverage
+    runs-on: public-ubuntu-latest-8-cores
+    container:
+      image: ghcr.io/ansys/mechanical:${{needs.revn-variations.outputs.test}}
+      options: --entrypoint /bin/bash
+    needs: [ smoke-tests, revn-variations]
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11' ]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up python and pip
+        run: |
+          apt update
+          apt install software-properties-common -y
+          add-apt-repository ppa:deadsnakes/ppa -y
+          apt install python${{ matrix.python-version }} -y
+          ln -s /usr/bin/python${{ matrix.python-version }} /usr/bin/python
+          apt install python${{ matrix.python-version }}-venv -y
+
+      - name: Install pip
+        if: matrix.python-version == '3.8'
+        run: |
+          apt install -y python3-pip
+
+      - name: Install pip for >3.8
+        if: matrix.python-version != '3.8'
+        run: |
+          python -m ensurepip --default-pip
+
+      - name: Upgrade pip
+        run: |
+          pip3 install --upgrade pip
+          python --version
+          pip3 --version
+
+      - name: Install dependencies
+        run: |
+          apt install -y lsb-release
+          pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
+          pip3 install --upgrade pip flit
+
+      - name: Install packages for testing
+        run: |
+          pip install .[tests]
+
+      - name: Set environment variable
+        run: echo "ANSYSCL${{ needs.revn-variations.outputs.test_lic }}_DIR=/install/ansys_inc/v${{ needs.revn-variations.outputs.test_lic }}/licensingclient" >> $GITHUB_ENV
+
+      - name: Unit Testing and coverage
+        env:
+          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
+          ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
+          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
+        run: |
+          unset PYMECHANICAL_PORT
+          unset PYMECHANICAL_START_INSTANCE
+          pytest -m remote_session_launch > pytest_output.txt || true
+          cat pytest_output.txt
+          #
+          # Check if failure occurred
+          #
+          output=$(grep -c "FAILURES" pytest_output.txt || true)
+          if [ $output -eq 0 ]; then
+            echo "Pytest execution succeeded"
+            exit 0
+          else
+            echo "Pytest execution failed"
+            exit 1
+          fi
+
+      - name: Upload coverage results
+        uses: actions/upload-artifact@v3
+        if: env.MAIN_PYTHON_VERSION == matrix.python-version
+        with:
+          name: coverage-tests-remote-session-launch
+          path: .cov
+          retention-days: 7
+
+      - name: Upload coverage results (as .coverage)
+        uses: actions/upload-artifact@v3
+        if: env.MAIN_PYTHON_VERSION == matrix.python-version
+        with:
+          name: coverage-file-tests-remote-session-launch
+          path: .coverage
+          retention-days: 7
+
   doc-build:
     name: Documentation building
     runs-on: ubuntu-latest
@@ -129,7 +449,7 @@ jobs:
           add-apt-repository ppa:deadsnakes/ppa -y
           apt install -y python${{ env.MAIN_PYTHON_VERSION }}
           ln -s /usr/bin/python${{ env.MAIN_PYTHON_VERSION }} /usr/bin/python
-          apt install python3.10-venv -y
+          apt install python${{ env.MAIN_PYTHON_VERSION }}-venv -y
           python -m ensurepip --default-pip
           python --version
           pip3 --version
@@ -161,14 +481,13 @@ jobs:
         env:
           SPHINXOPTS: '-j auto'
           LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
-          ANSYSCL232_DIR: /install/ansys_inc/v232/licensingclient
           ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 0
         run: |
           unset PYMECHANICAL_PORT
           unset PYMECHANICAL_START_INSTANCE
           
-          xvfb-run /install/ansys_inc/v232/aisol/.workbench_lite make -C doc html > doc_build_output.txt 2>&1 || true
+          xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.test_lic }}/aisol/.workbench_lite make -C doc html > doc_build_output.txt 2>&1 || true
           cat doc_build_output.txt
           #
           # Check if "build succeeded" string is present in doc_build_output.txt
