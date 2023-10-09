@@ -41,6 +41,7 @@ cname = os.getenv("DOCUMENTATION_CNAME", default="nocname.com")
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 # -- General configuration ---------------------------------------------------
+# Sphinx extensions
 extensions = [
     "jupyter_sphinx",
     "notfound.extension",
@@ -51,9 +52,7 @@ extensions = [
     "sphinx.ext.doctest",
     "sphinx.ext.extlinks",
     "sphinx.ext.intersphinx",
-    "sphinx_autodoc_typehints",
     "sphinx_copybutton",
-    "sphinx_design",
     "sphinx_gallery.gen_gallery",
     "sphinxemoji.sphinxemoji",
 ]
