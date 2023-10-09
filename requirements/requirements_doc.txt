@@ -1,3 +1,6 @@
+#PyMechanical
+ansys-mechanical-core==0.10.4
+
 # Documentation dependencies
 ansys-sphinx-theme==0.12.1
 jupyter_sphinx==0.4.0
