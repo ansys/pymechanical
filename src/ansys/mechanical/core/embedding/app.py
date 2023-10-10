@@ -164,7 +164,10 @@ class App:
 
     def save(self, path=None):
         """Save the project."""
-        self.DataModel.Project.Save(path)
+        if path is not None:
+            self.DataModel.Project.Save(path)
+        else:
+            self.DataModel.Project.Save()
 
     def save_as(self, path):
         """Save the project as."""
