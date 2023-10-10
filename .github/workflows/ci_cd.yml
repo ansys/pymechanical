@@ -469,7 +469,7 @@ jobs:
           pip3 install -r requirements/requirements_doc.txt
 
       - name: Set environment variable
-        run: echo "ANSYSCL${{ needs.revn-variations.outputs.test_lic }}_DIR=/install/ansys_inc/v${{ needs.revn-variations.outputs.test_lic }}/licensingclient" >> $GITHUB_ENV
+        run: echo "ANSYSCL${{ env.TEST_REVN }}_DIR=/install/ansys_inc/v${{ env.TEST_REVN }}/licensingclient" >> $GITHUB_ENV
 
       - name: Retrieve PyMechanial version
         run: |
@@ -487,7 +487,7 @@ jobs:
           unset PYMECHANICAL_PORT
           unset PYMECHANICAL_START_INSTANCE
           
-          xvfb-run /install/ansys_inc/${{ needs.revn-variations.outputs.test_lic }}/aisol/.workbench_lite make -C doc html > doc_build_output.txt 2>&1 || true
+          xvfb-run /install/ansys_inc/v${{ env.TEST_REVN }}/aisol/.workbench_lite make -C doc html > doc_build_output.txt 2>&1 || true
           cat doc_build_output.txt
           #
           # Check if "build succeeded" string is present in doc_build_output.txt
