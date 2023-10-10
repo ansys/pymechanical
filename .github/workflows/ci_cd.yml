@@ -31,7 +31,6 @@ on:
 
 env:
   MAIN_PYTHON_VERSION: '3.10'
-  PYMECHANICAL_VERSION: '23.2'
   RESET_EXAMPLES_CACHE: 0
   RESET_DOC_BUILD_CACHE: 0
   PYMECHANICAL_PORT: 10000  # default won't work on GitHub runners
@@ -465,16 +464,9 @@ jobs:
       - name: Install Python requirements
         run: |
           pip3 install -e .[doc]
-          # pip3 install -r requirements/requirements_doc.txt
 
       - name: Set environment variable
         run: echo "ANSYSCL${{ needs.revn-variations.outputs.test_lic }}_DIR=/install/ansys_inc/v${{ needs.revn-variations.outputs.test_lic }}/licensingclient" >> $GITHUB_ENV
-
-      - name: Retrieve PyMechanial version
-        run: |
-          echo "PYMECHANICAL_VERSION=$(python -c 'from ansys.mechanical.core import __version__; print(__version__)')" >> $GITHUB_ENV
-          echo "PyMechanical version is: $(python -c "from ansys.mechanical.core import __version__; print(__version__)")"
-        id: version
 
       - name: Build docs
         env:
