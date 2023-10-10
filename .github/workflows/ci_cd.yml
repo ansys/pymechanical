@@ -146,7 +146,7 @@ jobs:
           activationLabel: 'dependabot'
           changelogPath: './CHANGELOG.md'
 
-      - uses: stefanzweifel/git-auto-commit-action@v4
+      - uses: stefanzweifel/git-auto-commit-action@v5
         if: ${{ github.actor == 'dependabot[bot]' }}
         with:
           commit_message: "Updated Changelog"

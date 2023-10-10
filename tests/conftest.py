@@ -6,7 +6,7 @@ import shutil
 import subprocess
 import sys
 
-import ansys.tools.path
+import ansys.tools.path as atp
 import pytest
 
 import ansys.mechanical.core as pymechanical
@@ -276,7 +276,7 @@ def mechanical_pool():
     if not pymechanical.mechanical.get_start_instance():
         return None
 
-    path, version = ansys.tools.path.find_mechanical()
+    path, version = atp.find_mechanical()
 
     exec_file = path
     instances_count = 2
@@ -302,8 +302,15 @@ def mechanical_pool():
 
 
 def pytest_addoption(parser):
+    mechanical_path = atp.get_mechanical_path(False)
+
+    if mechanical_path == None:
+        parser.addoption("--ansys-version", default="232")
+    else:
+        mechanical_version = atp.version_from_path("mechanical", mechanical_path)
+        parser.addoption("--ansys-version", default=str(mechanical_version))
+
     # parser.addoption("--debugging", action="store_true")
-    parser.addoption("--ansys-version", default="232")
     parser.addoption("--addin-configuration", default="Mechanical")
 
 
