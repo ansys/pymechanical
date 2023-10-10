@@ -52,7 +52,9 @@ extensions = [
     "sphinx.ext.doctest",
     "sphinx.ext.extlinks",
     "sphinx.ext.intersphinx",
+    "sphinx_autodoc_typehints",
     "sphinx_copybutton",
+    "sphinx_design",
     "sphinx_gallery.gen_gallery",
     "sphinxemoji.sphinxemoji",
 ]
@@ -126,9 +128,6 @@ exclude_patterns = [
     "_build",
     "Thumbs.db",
     ".DS_Store",
-    # because we include this in examples/index.rst
-    "examples/gallery_examples/index.rst",
-    "examples/gallery_examples/embedding_n_remote/index.rst",
     "links.rst",
 ]
 

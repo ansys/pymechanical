@@ -10,7 +10,7 @@ an embedded instance or remote session.
 .. grid:: 2
 
    .. grid-item-card:: Embedding Examples
-      :link: https://embedding.examples.mechanical.docs.pyansys.com/examples/index.html
+      :link: https://embedding.examples.mechanical.docs.pyansys.com/index.html
       :text-align: center
       :margin: 2 2 0 0
 

@@ -1,4 +1,5 @@
 Embedding and Remote Session Example
 ====================================
 
-Below is the same example first demonstrated using an embedding instance, and next demonstrated using a remote session.
+This code, which uses the same example, first demonstrates how to use
+an embedding instance and then demonstrates how to use a remote session.
