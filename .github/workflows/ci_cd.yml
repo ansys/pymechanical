@@ -429,7 +429,7 @@ jobs:
           retention-days: 7
 
   doc-build:
-    name: Documentation building
+    name: Documentation
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/ansys/mechanical:${{needs.revn-variations.outputs.test}}
