@@ -22,10 +22,8 @@
 
 """Convenience CLI to run mechanical."""
 
-import asyncio
-from asyncio.subprocess import PIPE
 import os
-import sys
+import subprocess
 import typing
 import warnings
 
@@ -36,48 +34,6 @@ from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 
 # TODO - add logging options (reuse env var based logging initialization)
 # TODO - add timeout
-
-
-async def _read_and_display(cmd, env):
-    """Read command's stdout and stderr and display them as they are processed."""
-    # start process
-    process = await asyncio.create_subprocess_exec(*cmd, stdout=PIPE, stderr=PIPE)
-
-    # read child's stdout/stderr concurrently
-    stdout, stderr = [], []  # stderr, stdout buffers
-    tasks = {
-        asyncio.Task(process.stdout.readline()): (stdout, process.stdout, sys.stdout.buffer),
-        asyncio.Task(process.stderr.readline()): (stderr, process.stderr, sys.stderr.buffer),
-    }
-    while tasks:
-        done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
-        assert done
-        for future in done:
-            buf, stream, display = tasks.pop(future)
-            line = future.result()
-            if line:  # not EOF
-                buf.append(line)  # save for later
-                display.write(line)  # display in terminal
-                # schedule to read the next line
-                tasks[asyncio.Task(stream.readline())] = buf, stream, display
-
-    # wait for the process to exit
-    rc = await process.wait()
-    return rc, b"".join(stdout), b"".join(stderr)
-
-
-def _run(args, env):
-    if os.name == "nt":
-        loop = asyncio.ProactorEventLoop()  # for subprocess' pipes on Windows
-        asyncio.set_event_loop(loop)
-    else:
-        loop = asyncio.get_event_loop()
-    try:
-        rc, *output = loop.run_until_complete(_read_and_display(args, env))
-        if rc:
-            sys.exit("child failed with '{}' exit code".format(rc))
-    finally:
-        loop.close()
 
 
 @click.command()
@@ -241,7 +197,122 @@ def cli(
         #        the user only sees the message when the server is ready.
         print(f"Serving on port {port}")
 
-    _run(args, env)
+    subprocess.run(list(args), env=env, check=True)
 
     if private_appdata:
         profile.cleanup()
+
+
+@click.command()
+@click.help_option("--help", "-h")
+@click.option(
+    "-r",
+    "--revision",
+    default=None,
+    type=int,
+    help='Ansys Revision number, e.g. "241" or "232". If none is specified\
+, uses the default from ansys-tools-path',
+)
+@click.argument("args", nargs=-1)
+def cli_env(revision: int, args):
+    """CLI tool to load the environment required to run in Linux.
+
+    Parameters
+    ----------
+    revision : int
+        The Ansys Revision number.
+
+    USAGE:
+    The following example demonstrates the main use of this tool:
+        $ mechanical-env -r 232 -- python test.py
+        $ mechanical-env -- make -C doc html
+    """
+    #  Should not update env variables in Windows
+    if os.name == "nt":
+        print("This feature is not available in Windows !")
+        return True
+
+    # Gets the revision number
+    if not revision:
+        exe, version = atp.find_mechanical()
+    else:
+        exe, version = atp.find_mechanical(version=revision)
+    version = int(version * 10)
+
+    env = os.environ.copy()
+
+    # workbench (mechanical) installation directory
+    env["DS_INSTALL_DIR"] = os.path.dirname(exe)
+    env[f"AWP_ROOT{version}"] = f'{env.get("DS_INSTALL_DIR")}/..'
+
+    # Env vars used by workbench (mechanical) code
+    env[f"AWP_LOCALE{version}"] = "en-us"
+    env[
+        f"CADOE_LIBDIR{version}"
+    ] = f'{env.get(f"AWP_ROOT{version}")}/commonfiles/language/{env.get(f"AWP_LOCALE{version}")}'
+    env["ANSYSLIC_DIR"] = f'{env.get(f"AWP_ROOT{version}")}/../shared_files/licensing'
+    env["ANSYSCOMMON_DIR"] = f'{env.get(f"AWP_ROOT{version}")}/commonfiles'
+    env[f"ANSYSCL{version}_DIR"] = f'{env.get(f"AWP_ROOT{version}")}/licensingclient'
+
+    # MainWin vars
+    env["ANSISMAINWINLITEMODE"] = "1"
+    env["MWCONFIG_NAME"] = "amd64_linux"
+    env["MWDEBUG_LEVEL"] = "0"
+    env["MWHOME"] = f'{env.get(f"AWP_ROOT{version}")}/commonfiles/MainWin/linx64/mw'
+    env["MWOS"] = "linux"
+    env["MWREGISTRY"] = (
+        env.get("DS_INSTALL_DIR") + "/WBMWRegistry/hklm_" + env.get("MWCONFIG_NAME") + ".bin"
+    )
+    env["MWRT_MODE"] = "classic"
+    env["MWRUNTIME"] = "1"
+    env["MWUSER_DIRECTORY"] = env.get("HOME") + "/.mw"
+    env["MWDONT_XCLOSEDISPLAY"] = "1"
+
+    # dynamic library preload
+    env["LD_PRELOAD"] = "libstdc++.so.6.0.28"
+
+    # dynamic library load path
+    env["LD_LIBRARY_PATH"] = (
+        env.get(f"AWP_ROOT{version}")
+        + "/tp/stdc++:"
+        + env.get(f"AWP_ROOT{version}")
+        + "/tp/openssl/1.1.1/linx64/lib:"
+        + env.get("MWHOME")
+        + "/lib-amd64_linux:"
+        + env.get("MWHOME")
+        + "/lib-amd64_linux_optimized:"
+        + env.get("LD_LIBRARY_PATH")
+        + env.get(f"AWP_ROOT{version}")
+        + "/Tools/mono/Linux64/lib:"
+        + env.get("DS_INSTALL_DIR")
+        + "/lib/linx64:"
+        + env.get("DS_INSTALL_DIR")
+        + "/dll/linx64:"
+        + env.get("DS_INSTALL_DIR")
+        + "/libshared/linx64:"
+        + env.get(f"AWP_ROOT{version}")
+        + "/tp/IntelCompiler/2019.3.199/linx64/lib/intel64:"
+        + env.get(f"AWP_ROOT{version}")
+        + "/tp/qt_fw/5.9.6/Linux64/lib:"
+        + env.get(f"AWP_ROOT{version}")
+        + "/commonfiles/CAD/Acis/linx64:"
+        + env.get(f"AWP_ROOT{version}")
+        + "/commonfiles/fluids/lib/linx64:"
+        + env.get(f"AWP_ROOT{version}")
+        + "/Framework/bin/Linux64"
+    )
+
+    # system path
+    env["PATH"] = (
+        env.get("MWHOME")
+        + "/bin-amd64_linux_optimized:"
+        + env.get("DS_INSTALL_DIR")
+        + "/CommonFiles/linx64:"
+        + env.get("DS_INSTALL_DIR")
+        + "/CADIntegration/linx64:"
+        + env.get(f"AWP_ROOT{version}")
+        + "/Tools/mono/Linux64/bin:"
+        + env.get("PATH")
+    )
+
+    subprocess.run(list(args), env=env, check=True)
