@@ -197,6 +197,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 -   link to pymechanical remote sessions examples (#252)
 -   add doc to run script without embedding (#262)
 -   pre-commit autoupdate (#269)
+-   Add environment variable for Linux (#454)
 
 ### Changed
 
