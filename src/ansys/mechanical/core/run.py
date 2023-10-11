@@ -22,8 +22,11 @@
 
 """Convenience CLI to run mechanical."""
 
+import asyncio
+from asyncio.subprocess import PIPE
 import os
 import subprocess
+import sys
 import typing
 import warnings
 
@@ -34,6 +37,48 @@ from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 
 # TODO - add logging options (reuse env var based logging initialization)
 # TODO - add timeout
+
+
+async def _read_and_display(cmd, env):
+    """Read command's stdout and stderr and display them as they are processed."""
+    # start process
+    process = await asyncio.create_subprocess_exec(*cmd, stdout=PIPE, stderr=PIPE)
+
+    # read child's stdout/stderr concurrently
+    stdout, stderr = [], []  # stderr, stdout buffers
+    tasks = {
+        asyncio.Task(process.stdout.readline()): (stdout, process.stdout, sys.stdout.buffer),
+        asyncio.Task(process.stderr.readline()): (stderr, process.stderr, sys.stderr.buffer),
+    }
+    while tasks:
+        done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+        assert done
+        for future in done:
+            buf, stream, display = tasks.pop(future)
+            line = future.result()
+            if line:  # not EOF
+                buf.append(line)  # save for later
+                display.write(line)  # display in terminal
+                # schedule to read the next line
+                tasks[asyncio.Task(stream.readline())] = buf, stream, display
+
+    # wait for the process to exit
+    rc = await process.wait()
+    return rc, b"".join(stdout), b"".join(stderr)
+
+
+def _run(args, env):
+    if os.name == "nt":
+        loop = asyncio.ProactorEventLoop()  # for subprocess' pipes on Windows
+        asyncio.set_event_loop(loop)
+    else:
+        loop = asyncio.get_event_loop()
+    try:
+        rc, *output = loop.run_until_complete(_read_and_display(args, env))
+        if rc:
+            sys.exit("child failed with '{}' exit code".format(rc))
+    finally:
+        loop.close()
 
 
 @click.command()
@@ -197,7 +242,7 @@ def cli(
         #        the user only sees the message when the server is ready.
         print(f"Serving on port {port}")
 
-    subprocess.run(list(args), env=env, check=True)
+    _run(args, env=env)
 
     if private_appdata:
         profile.cleanup()
