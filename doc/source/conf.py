@@ -41,6 +41,7 @@ cname = os.getenv("DOCUMENTATION_CNAME", default="nocname.com")
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 # -- General configuration ---------------------------------------------------
+# Sphinx extensions
 extensions = [
     "jupyter_sphinx",
     "notfound.extension",
@@ -127,8 +128,6 @@ exclude_patterns = [
     "_build",
     "Thumbs.db",
     ".DS_Store",
-    # because we include this in examples/index.rst
-    "examples/gallery_examples/index.rst",
     "links.rst",
 ]
 
