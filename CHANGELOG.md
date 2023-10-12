@@ -25,6 +25,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
  - remove version limit for protobuf ([#432](https://github.com/ansys/pymechanical/pull/432))
  - remove legacy configuration test ([#436](https://github.com/ansys/pymechanical/pull/436))
+ - remove unneeded try/except ([#457](https://github.com/ansys/pymechanical/pull/457))
 
 ### Dependencies
 - Update ``pre-commit`` ([#431](https://github.com/ansys/pymechanical/pull/431))
