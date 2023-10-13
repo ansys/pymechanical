@@ -20,7 +20,7 @@ an embedding instance and then demonstrates how to use a remote session.
 
 import os
 
-from ansys.tools.path import find_mechanical
+from ansys.tools.path import find_mechanical, version_from_path
 
 import ansys.mechanical.core as mech
 from ansys.mechanical.core.examples import download_file
@@ -35,9 +35,10 @@ print(f"Downloaded the geometry file to: {geometry_path}")
 # Find the mechanical installation path & version.
 # Open an embedded instance of Mechanical and set global variables.
 
-path, version = find_mechanical()
-
-if not version:
+try:
+    path, version = find_mechanical()
+    version = version_from_path("mechanical", path)
+except:
     version = 232
 
 app = mech.App(version=version)
