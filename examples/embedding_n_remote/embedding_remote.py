@@ -22,6 +22,7 @@ import os
 
 import ansys.mechanical.core as mech
 from ansys.mechanical.core.examples import download_file
+from ansys.tools.path import find_mechanical
 
 geometry_path = download_file("Valve.pmdb", "pymechanical", "embedding")
 print(f"Downloaded the geometry file to: {geometry_path}")
@@ -30,9 +31,15 @@ print(f"Downloaded the geometry file to: {geometry_path}")
 ###############################################################################
 # Embed Mechanical and set global variables
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Find the mechanical installation path & version.
 # Open an embedded instance of Mechanical and set global variables.
 
-app = mech.App(version=232)
+path, version = find_mechanical()
+
+if not version:
+    version = 232
+
+app = mech.App(version=version)
 globals().update(mech.global_variables(app))
 print(app)
 
