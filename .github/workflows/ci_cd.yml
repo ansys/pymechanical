@@ -53,11 +53,15 @@ jobs:
     name: Save variations of revn
     runs-on: ubuntu-latest
     outputs:
-      # The output variables' values are assinged within the parse_revns() function below
+      # The output variables' values are assigned within the parse_revns() function below
       # These output variables are referenced later in the workflow to provide flexibility for
       # container versions and versions to run pytest on.
+
+      # default: stable_container_revn=23.1.0
       stable_container_revn: ${{ steps.save-versions.outputs.stable_container_revn }}
+      # default: experimental_container_revn=23.2.0
       experimental_container_revn: ${{ steps.save-versions.outputs.experimental_container_revn }}
+      # default: experimental_revn=232
       experimental_revn:  ${{ steps.save-versions.outputs.experimental_revn }}
     steps:
       - id: save-versions
