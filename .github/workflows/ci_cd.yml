@@ -77,9 +77,12 @@ jobs:
 
             # Save variable values into github output variables of the same name
             # For example, echo "stable_container_revn=23.1.0" >> $GITHUB_OUTPUT
+
+            parse_stable_revn="${stable_revn:0:2}.${stable_revn:2}.0"
+            parse_experimental_revn="${experimental_revn:0:2}.${experimental_revn:2}.0"
             
-            echo 'stable_container_revn="${stable_revn:0:2}.${stable_revn:2}.0"' >> $GITHUB_OUTPUT
-            echo 'experimental_container_revn="${experimental_revn:0:2}.${experimental_revn:2}.0"' >> $GITHUB_OUTPUT
+            echo "stable_container_revn=$parse_stable_revn" >> $GITHUB_OUTPUT
+            echo "experimental_container_revn=$parse_experimental_revn" >> $GITHUB_OUTPUT
             echo "experimental_revn=$2" >> $GITHUB_OUTPUT
           }
 
