@@ -27,6 +27,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
  - remove legacy configuration test ([#436](https://github.com/ansys/pymechanical/pull/436))
  - Update examples page ([#450](https://github.com/ansys/pymechanical/pull/450))
  - remove unneeded try/except ([#457](https://github.com/ansys/pymechanical/pull/457))
+ - Updated wording for revn-variations section ([#458](https://github.com/ansys/pymechanical/pull/458))
 
 ### Dependencies
 - Update ``pre-commit`` ([#431](https://github.com/ansys/pymechanical/pull/431))
