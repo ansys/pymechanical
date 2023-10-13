@@ -20,9 +20,10 @@ an embedding instance and then demonstrates how to use a remote session.
 
 import os
 
+from ansys.tools.path import find_mechanical
+
 import ansys.mechanical.core as mech
 from ansys.mechanical.core.examples import download_file
-from ansys.tools.path import find_mechanical
 
 geometry_path = download_file("Valve.pmdb", "pymechanical", "embedding")
 print(f"Downloaded the geometry file to: {geometry_path}")
