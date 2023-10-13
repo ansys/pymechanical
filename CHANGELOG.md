@@ -19,7 +19,8 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
  - Run all embedding tests & fix appdata tests ([#433](https://github.com/ansys/pymechanical/pull/433))
  - unset all logging environment variables ([#434](https://github.com/ansys/pymechanical/pull/434))
  - pytest --ansys-version dependent on existing install ([#439](https://github.com/ansys/pymechanical/pull/439))
- - Fix app.save method for saving already saved project in current session (https://github.com/ansys/pymechanical/pull/453)
+ - Fix app.save method for saving already saved project in current session ([#453](https://github.com/ansys/pymechanical/pull/453))
+ - Flexible version for embedding & remote example ([#459](https://github.com/ansys/pymechanical/pull/459))
 
 ### Changed
 
