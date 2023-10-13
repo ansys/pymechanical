@@ -53,6 +53,9 @@ jobs:
     name: Save variations of revn
     runs-on: ubuntu-latest
     outputs:
+      # The output variables' values are assinged within the parse_revns() function below
+      # These output variables are referenced later in the workflow to provide flexibility for
+      # container versions and versions to run pytest on.
       stable_container_revn: ${{ steps.save-versions.outputs.stable_container_revn }}
       experimental_container_revn: ${{ steps.save-versions.outputs.experimental_container_revn }}
       experimental_revn:  ${{ steps.save-versions.outputs.experimental_revn }}
@@ -60,45 +63,31 @@ jobs:
       - id: save-versions
         run: |
           parse_revns() {
-            # This function accepts 2-3 arguments:
-            # $1 is the revision number (for example, 232)
-            # $2 is the name of the container revision number variable to be assigned (for example, stable_container_revn)
-            # $3 is the name of the revision number variable to be assigned (for example, experimental_revn)
-            #    This is required only for the experimental revn to set up the ANSYSCL<revn>_DIR environment variable
-            #    later in the workflow.
-          
-            # Get revision number from env variable or input (for manually run workflows)
-            # For example, revn=231
-            revn=$1
+            # $1 is the stable revision number (for example, 232)
+            #    The stable revision number could be a version of mechanical that has been released and is stable
+            # $2 is the experimental revision number (for example, 241)
+            #    The experimental revision number could be a version of mechanical that has not been released yet
 
-            # Create container_version from revn
-            # For example, container_version=23.1.0
-            container_version="${revn:0:2}.${revn:2}.0" 
+            stable_revn=$1
+            experimental_revn=$2
 
-            # Set stable_container_revn or experimental_container_revn to the container_version
-            # These variables are saved in the "output" section above.
+            # Save variable values into github output variables of the same name
             # For example, echo "stable_container_revn=23.1.0" >> $GITHUB_OUTPUT
-            echo "$2=$container_version" >> $GITHUB_OUTPUT
-
-            # Set experimental_revn to the revn
-            # For example, echo "experimental_revn=231" >> $GITHUB_OUTPUT
-            if [[ $3 == *"experimental"* ]]; then
-                echo "$3=$revn" >> $GITHUB_OUTPUT
-            fi
+            
+            echo 'stable_container_revn="${stable_revn:0:2}.${stable_revn:2}.0"' >> $GITHUB_OUTPUT
+            echo 'experimental_container_revn="${experimental_revn:0:2}.${experimental_revn:2}.0"' >> $GITHUB_OUTPUT
+            echo "experimental_revn=$2" >> $GITHUB_OUTPUT
           }
 
           if ${{ github.event_name == 'schedule' }}; then
               # Scheduled runs use the DEV_REVN environment variable
-              parse_revns "${{ env.DEV_REVN }}" "stable_container_revn"
-              parse_revns "${{ env.DEV_REVN }}" "experimental_container_revn" "experimental_revn"
+              parse_revns "${{ env.DEV_REVN }}" "${{ env.DEV_REVN }}"
           elif ${{ github.event_name == 'workflow_dispatch' }}; then
               # Manual workflow dispatches use the user-selected revision numbers
-              parse_revns "${{ inputs.stable-revn }}" "stable_container_revn"
-              parse_revns "${{ inputs.experimental-revn }}" "experimental_container_revn" "experimental_revn"
+              parse_revns "${{ inputs.stable-revn }}" "${{ inputs.experimental-revn }}"
           else
               # Pull requests use the revision numbers from the environment variables
-              parse_revns "${{ env.STABLE_REVN }}" "stable_container_revn"
-              parse_revns "${{ env.EXPERIMENTAL_REVN }}" "experimental_container_revn" "experimental_revn"
+              parse_revns "${{ env.STABLE_REVN }}" "${{ env.EXPERIMENTAL_REVN }}"
           fi
 
   style:
