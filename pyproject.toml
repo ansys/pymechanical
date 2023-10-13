@@ -5,7 +5,7 @@ build-backend = "flit_core.buildapi"
 [project]
 # Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
 name = "ansys-mechanical-core"
-version = "0.11.dev0"
+version = "0.11.dev1"
 description = "A python wrapper for Ansys Mechanical"
 readme = "README.rst"
 requires-python = ">=3.8,<4.0"
@@ -62,7 +62,10 @@ doc = [
     "jupyter_sphinx==0.4.0",
     "jupyterlab>=3.2.8",
     "matplotlib==3.8.0",
+    "numpy==1.26.0",
     "numpydoc==1.6.0",
+    "pandas==2.1.1",
+    "panel==1.2.3",
     "plotly==5.17.0",
     "pypandoc==1.11",
     "pytest-sphinx==0.5.0",
