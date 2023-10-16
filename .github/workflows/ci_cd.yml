@@ -75,7 +75,7 @@ jobs:
           else
               # Pull requests and scheduled runs use the revision numbers from the environment variables
               parse_revns "${{ env.DEV_REVN }}"
-
+          fi
 
   style:
     name: Code style
