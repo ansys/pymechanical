@@ -31,7 +31,7 @@ env:
   RESET_EXAMPLES_CACHE: 0
   RESET_DOC_BUILD_CACHE: 0
   MAIN_PYTHON_VERSION: '3.10'
-  # DOCKER_IMAGE_VERSION is the newest stable mechanical release
+  # DOCKER_IMAGE_VERSION is the newest stable mechanical container version
   DOCKER_IMAGE_VERSION: '23.2.0'
   # embedding-tests, launch-tests, and doc-build steps use the DEV_REVN
   DEV_REVN: '241'
