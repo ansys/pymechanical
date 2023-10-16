@@ -2,8 +2,9 @@ name: GitHub CI
 
 on:
   pull_request:
-  schedule:
-    - cron: '00 22 * * *'  # UTC time, may start 5-15 mins later than scheduled time
+  registry_package:
+      # Run workflow when package is published or updated
+      types: [published, updated]
   push:
     tags:
       - "*"
