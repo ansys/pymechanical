@@ -40,6 +40,8 @@ jobs:
       dev_container: '${{ env.DOCKER_PACKAGE }}:${{ env.DEV_CONTAINER_REVN }}'
       # 24.1.0
       dev_container_revn: '${{ env.DEV_CONTAINER_REVN }}'
+    steps:
+      - run: echo "Setting stable_container, dev_container, and dev_container_revn values."
 
   style:
     name: Code style
