@@ -4,15 +4,6 @@ on:
   pull_request:
   schedule:
     - cron: '00 22 * * *'  # UTC time, may start 5-15 mins later than scheduled time
-  workflow_dispatch:
-    inputs:
-      dev-revn:
-        type: choice
-        description: 'The experimental mechanical install revision number.'
-        options:
-        # - '242' # Uncomment this when 242 container is available
-        - '241'
-        default: '241'  # ensure this matches env.DEV_REVN
   push:
     tags:
       - "*"
@@ -28,13 +19,11 @@ env:
   PACKAGE_NAME: ansys-mechanical-core
   PACKAGE_NAMESPACE: ansys.mechanical.core
   DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
-  RESET_EXAMPLES_CACHE: 0
-  RESET_DOC_BUILD_CACHE: 0
   MAIN_PYTHON_VERSION: '3.10'
-  # DOCKER_IMAGE_VERSION is the newest stable mechanical container version
-  DOCKER_IMAGE_VERSION: '23.2.0'
-  # embedding-tests, launch-tests, and doc-build steps use the DEV_REVN
+  # embedding-tests and launch-tests steps use the DEV_REVN & DEV_CONTAINER_REVN
   DEV_REVN: '241'
+  DEV_CONTAINER_REVN: '24.1.0'
+  LATEST_STABLE_DOCKER_IMAGE_VERSION: '23.2.0'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -45,39 +34,12 @@ jobs:
     name: Save variations of revn
     runs-on: ubuntu-latest
     outputs:
-      # The output variables' values are assigned within the parse_revns() function below
-      # These output variables are referenced later in the workflow to provide flexibility for
-      # container versions and versions to run pytest on.
-
-      # default: dev_container_revn=24.1.0
-      dev_container_revn: ${{ steps.save-versions.outputs.dev_container_revn }}
-      # default: dev_revn=241
-      dev_revn:  ${{ steps.save-versions.outputs.dev_revn }}
-    steps:
-      - id: save-versions
-        run: |
-          parse_revns() {
-            # $1 is the development revision number (for example, 241)
-            #    The development revision number could be a version of mechanical that has not been released yet
-
-            dev_revn=$1
-
-            # Save variable values into github output variables of the same name
-            # For example, echo "dev_container_revn=24.1.0" >> $GITHUB_OUTPUT
-
-            parse_dev_revn="${dev_revn:0:2}.${dev_revn:2}.0"
-
-            echo "dev_container_revn=$parse_dev_revn" >> $GITHUB_OUTPUT
-            echo "dev_revn=$1" >> $GITHUB_OUTPUT
-          }
-
-          if ${{ github.event_name == 'workflow_dispatch' }}; then
-              # Manual workflow dispatches use the user-selected revision numbers
-              parse_revns "${{ inputs.dev-revn }}"
-          else
-              # Pull requests and scheduled runs use the revision numbers from the environment variables
-              parse_revns "${{ env.DEV_REVN }}"
-          fi
+      # ghcr.io/ansys/mechanical:23.2.0
+      stable_container: '${{ env.DOCKER_PACKAGE }}:${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}'
+      # ghcr.io/ansys/mechanical:24.1.0
+      dev_container: '${{ env.DOCKER_PACKAGE }}:${{ env.DEV_CONTAINER_REVN }}'
+      # 24.1.0
+      dev_container_revn: '${{ env.DEV_CONTAINER_REVN }}'
 
   style:
     name: Code style
@@ -171,7 +133,7 @@ jobs:
         experimental: [false]
         # The DEV_REVN is allowed to fail
         include:
-          - mechanical-version: '${{needs.revn-variations.outputs.dev_container_revn}}'
+          - mechanical-version: ${{ needs.revn-variations.outputs.dev_container_revn }}
             experimental: true
     steps:
       - name: Login in Github Container registry
@@ -200,7 +162,7 @@ jobs:
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v3
-        if: matrix.mechanical-version == env.DOCKER_IMAGE_VERSION
+        if: matrix.mechanical-version == env.LATEST_STABLE_DOCKER_IMAGE_VERSION
         with:
           name: coverage-tests
           path: .cov
@@ -208,7 +170,7 @@ jobs:
 
       - name: Upload coverage results (as .coverage)
         uses: actions/upload-artifact@v3
-        if: matrix.mechanical-version == env.DOCKER_IMAGE_VERSION
+        if: matrix.mechanical-version == env.LATEST_STABLE_DOCKER_IMAGE_VERSION
         with:
           name: coverage-file-tests
           path: .coverage
@@ -235,7 +197,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [style, revn-variations]
     container:
-      image: ghcr.io/ansys/mechanical:${{needs.revn-variations.outputs.dev_container_revn}}
+      image: ${{ needs.revn-variations.outputs.dev_container }}
       options: --entrypoint /bin/bash
     strategy:
       max-parallel: 2
@@ -281,7 +243,7 @@ jobs:
           pip install .[tests]
 
       - name: Set environment variable
-        run: echo "ANSYSCL${{ needs.revn-variations.outputs.dev_revn }}_DIR=/install/ansys_inc/v${{ needs.revn-variations.outputs.dev_revn }}/licensingclient" >> $GITHUB_ENV
+        run: echo "ANSYSCL${{ env.DEV_REVN }}_DIR=/install/ansys_inc/v${{ env.DEV_REVN }}/licensingclient" >> $GITHUB_ENV
 
       - name: Unit Testing and coverage
         env:
@@ -292,7 +254,7 @@ jobs:
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
           NUM_CORES: 1
         run: |
-          xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.dev_revn }}/aisol/.workbench_lite pytest -m embedding > pytest_output.txt || true
+          xvfb-run /install/ansys_inc/v${{ env.DEV_REVN }}/aisol/.workbench_lite pytest -m embedding > pytest_output.txt || true
           cat pytest_output.txt
           #
           # Check if failure occurred
@@ -326,7 +288,7 @@ jobs:
     name: Launch testing and coverage
     runs-on: public-ubuntu-latest-8-cores
     container:
-      image: ghcr.io/ansys/mechanical:${{needs.revn-variations.outputs.dev_container_revn}}
+      image: ${{ needs.revn-variations.outputs.dev_container }}
       options: --entrypoint /bin/bash
     needs: [ smoke-tests, revn-variations]
     strategy:
@@ -372,7 +334,7 @@ jobs:
           pip install .[tests]
 
       - name: Set environment variable
-        run: echo "ANSYSCL${{ needs.revn-variations.outputs.dev_revn }}_DIR=/install/ansys_inc/v${{ needs.revn-variations.outputs.dev_revn }}/licensingclient" >> $GITHUB_ENV
+        run: echo "ANSYSCL${{ env.DEV_REVN }}_DIR=/install/ansys_inc/v${{ env.DEV_REVN }}/licensingclient" >> $GITHUB_ENV
 
       - name: Unit Testing and coverage
         env:
@@ -416,7 +378,7 @@ jobs:
     name: Documentation
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/ansys/mechanical:${{needs.revn-variations.outputs.dev_container_revn}}
+      image: ${{ needs.revn-variations.outputs.stable_container }}
       options: --entrypoint /bin/bash
     needs: [style, doc-style, revn-variations]
 
@@ -450,7 +412,7 @@ jobs:
           pip3 install -e .[doc]
 
       - name: Set environment variable
-        run: echo "ANSYSCL${{ needs.revn-variations.outputs.dev_revn }}_DIR=/install/ansys_inc/v${{ needs.revn-variations.outputs.dev_revn }}/licensingclient" >> $GITHUB_ENV
+        run: echo "ANSYSCL${{ env.DEV_REVN }}_DIR=/install/ansys_inc/v${{ env.DEV_REVN }}/licensingclient" >> $GITHUB_ENV
 
       - name: Build docs
         env:
@@ -463,7 +425,7 @@ jobs:
           unset PYMECHANICAL_PORT
           unset PYMECHANICAL_START_INSTANCE
           
-          xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.dev_revn }}/aisol/.workbench_lite make -C doc html > doc_build_output.txt 2>&1 || true
+          xvfb-run /install/ansys_inc/v${{ env.DEV_REVN }}/aisol/.workbench_lite make -C doc html > doc_build_output.txt 2>&1 || true
           cat doc_build_output.txt
           #
           # Check if "build succeeded" string is present in doc_build_output.txt
