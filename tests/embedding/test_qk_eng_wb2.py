@@ -123,7 +123,7 @@ def test_qk_eng_wb2_007(printer, selection, embedded_app):
         printer("Add material file")
         MODEL = Model
         MODEL.RefreshMaterials()
-        MODEL.Geometry.Children[0].Assignment = "eng200_material"
+        MODEL.Geometry.Children[0].Material = "eng200_material"
 
         printer("Setup Mesh")
         MSH = MODEL.Mesh
