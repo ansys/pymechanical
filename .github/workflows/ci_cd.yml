@@ -24,6 +24,7 @@ env:
   # embedding-tests and launch-tests steps use the DEV_REVN & DEV_CONTAINER_REVN
   DEV_REVN: '241'
   DEV_CONTAINER_REVN: '24.1.0'
+  LATEST_STABLE_REVN: '232'
   LATEST_STABLE_DOCKER_IMAGE_VERSION: '23.2.0'
 
 concurrency:
@@ -415,7 +416,7 @@ jobs:
           pip3 install -e .[doc]
 
       - name: Set environment variable
-        run: echo "ANSYSCL${{ env.DEV_REVN }}_DIR=/install/ansys_inc/v${{ env.DEV_REVN }}/licensingclient" >> $GITHUB_ENV
+        run: echo "ANSYSCL${{ env.LATEST_STABLE_REVN }}_DIR=/install/ansys_inc/v${{ env.LATEST_STABLE_REVN }}/licensingclient" >> $GITHUB_ENV
 
       - name: Build docs
         env:
@@ -428,7 +429,7 @@ jobs:
           unset PYMECHANICAL_PORT
           unset PYMECHANICAL_START_INSTANCE
           
-          xvfb-run /install/ansys_inc/v${{ env.DEV_REVN }}/aisol/.workbench_lite make -C doc html > doc_build_output.txt 2>&1 || true
+          xvfb-run /install/ansys_inc/v${{ env.LATEST_STABLE_REVN }}/aisol/.workbench_lite make -C doc html > doc_build_output.txt 2>&1 || true
           cat doc_build_output.txt
           #
           # Check if "build succeeded" string is present in doc_build_output.txt
