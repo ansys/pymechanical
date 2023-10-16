@@ -38,7 +38,7 @@ def test_app_save_open(embedded_app, tmp_path: pytest.TempPathFactory):
         embedded_app.save()
 
     embedded_app.DataModel.Project.Name = "PROJECT 1"
-    tmpfile = NamedTemporaryFile(mode="w+", delete=False)
+    tmpfile = NamedTemporaryFile()
     tmpname = tmpfile.name
     project_file = os.path.join(tmp_path, f"{tmpname}.mechdat")
     embedded_app.save_as(project_file)
