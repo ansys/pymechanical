@@ -23,7 +23,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
  - Flexible version for embedding & remote example ([#459](https://github.com/ansys/pymechanical/pull/459))
  - Fix obsolete API call in embedding test ([#456](https://github.com/ansys/pymechanical/pull/456))
  - Fix ignored env passing to cli ([#465](https://github.com/ansys/pymechanical/pull/465)
- 
+
 ### Changed
 
  - remove version limit for protobuf ([#432](https://github.com/ansys/pymechanical/pull/432))
