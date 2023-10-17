@@ -5,6 +5,7 @@ on:
   registry_package:
       # Run workflow when package is published or updated
       types: [published, updated]
+      image_name: "mechanical" 
   push:
     tags:
       - "*"
