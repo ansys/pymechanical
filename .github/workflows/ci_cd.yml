@@ -21,9 +21,9 @@ env:
   PACKAGE_NAMESPACE: ansys.mechanical.core
   DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
   MAIN_PYTHON_VERSION: '3.10'
-  # embedding-tests and launch-tests steps use the DEV_REVN & DEV_CONTAINER_REVN
+  # embedding-tests and launch-tests steps use the DEV_REVN & DEV_DOCKER_IMAGE_VERSION
   DEV_REVN: '241'
-  DEV_CONTAINER_REVN: '24.1.0'
+  DEV_DOCKER_IMAGE_VERSION: '24.1.0'
   LATEST_STABLE_REVN: '232'
   LATEST_STABLE_DOCKER_IMAGE_VERSION: '23.2.0'
 
@@ -39,11 +39,11 @@ jobs:
       # ghcr.io/ansys/mechanical:23.2.0
       stable_container: '${{ env.DOCKER_PACKAGE }}:${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}'
       # ghcr.io/ansys/mechanical:24.1.0
-      dev_container: '${{ env.DOCKER_PACKAGE }}:${{ env.DEV_CONTAINER_REVN }}'
+      dev_container: '${{ env.DOCKER_PACKAGE }}:${{ env.DEV_DOCKER_IMAGE_VERSION }}'
       # 24.1.0
-      dev_container_revn: '${{ env.DEV_CONTAINER_REVN }}'
+      DEV_DOCKER_IMAGE_VERSION: '${{ env.DEV_DOCKER_IMAGE_VERSION }}'
     steps:
-      - run: echo "Setting stable_container, dev_container, and dev_container_revn values."
+      - run: echo "Setting stable_container, dev_container, and DEV_DOCKER_IMAGE_VERSION values."
 
   style:
     name: Code style
@@ -137,7 +137,7 @@ jobs:
         experimental: [false]
         # The DEV_REVN is allowed to fail
         include:
-          - mechanical-version: ${{ needs.revn-variations.outputs.dev_container_revn }}
+          - mechanical-version: ${{ needs.revn-variations.outputs.DEV_DOCKER_IMAGE_VERSION }}
             experimental: true
     steps:
       - name: Login in Github Container registry
