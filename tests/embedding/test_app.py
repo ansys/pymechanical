@@ -2,7 +2,7 @@
 import os
 import subprocess
 import sys
-import tempfile
+from tempfile import NamedTemporaryFile
 import time
 
 import pytest
@@ -38,7 +38,8 @@ def test_app_save_open(embedded_app, tmp_path: pytest.TempPathFactory):
         embedded_app.save()
 
     embedded_app.DataModel.Project.Name = "PROJECT 1"
-    tmpname = tempfile.mktemp()
+    tmpfile = NamedTemporaryFile()
+    tmpname = tmpfile.name
     project_file = os.path.join(tmp_path, f"{tmpname}.mechdat")
     embedded_app.save_as(project_file)
     embedded_app.new()
