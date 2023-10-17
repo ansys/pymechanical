@@ -21,7 +21,8 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
  - pytest --ansys-version dependent on existing install ([#439](https://github.com/ansys/pymechanical/pull/439))
  - Fix app.save method for saving already saved project in current session ([#453](https://github.com/ansys/pymechanical/pull/453))
  - Flexible version for embedding & remote example ([#459](https://github.com/ansys/pymechanical/pull/459))
- - Fix obsolete API call in embedding test ([#456](https://github.com/ansys/pymechanical/issues/456))
+ - Fix obsolete API call in embedding test ([#456](https://github.com/ansys/pymechanical/pull/456))
+ - Fix ignored env passing to cli ([#465](https://github.com/ansys/pymechanical/pull/465)
 
 ### Changed
 
