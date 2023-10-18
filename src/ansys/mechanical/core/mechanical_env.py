@@ -19,12 +19,14 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 """Create environment in Linux similar to workbench and run command."""
 import argparse
 import os
+import subprocess
 import sys
 
-# from ansys.tools.path import find_mechanical
+from ansys.tools.path import find_mechanical
 
 
 def create_env(version, aisol_path):
@@ -74,38 +76,49 @@ def create_env(version, aisol_path):
     os.environ[
         "LD_LIBRARY_PATH"
     ] = f"""
-    {awp_root}/tp/stdc++:
-    {awp_root}/tp/openssl/1.1.1/linx64/lib:
-    {mwhome}/lib-amd64_linux:
-    {mwhome}/lib-amd64_linux_optimized:
-    {ld_library_path}:
-    {awp_root}/Tools/mono/Linux64/lib:
-    {ds_install_dir}/lib/linx64:
-    {ds_install_dir}/dll/linx64:
-    {ds_install_dir}/libshared/linx64:
-    {awp_root}/tp/IntelCompiler/2019.3.199/linx64/lib/intel64:
-    {awp_root}/tp/IntelMKL/2020.0.166/linx64/lib/intel64:
-    {awp_root}/tp/qt_fw/5.9.6/Linux64/lib:
-    {awp_root}/commonfiles/CAD/Acis/linx64:
-    {awp_root}/commonfiles/fluids/lib/linx64:
-    {awp_root}/Framework/bin/Linux64"""
+{awp_root}/tp/stdc++:\
+{awp_root}/tp/openssl/1.1.1/linx64/lib:\
+{mwhome}/lib-amd64_linux:\
+{mwhome}/lib-amd64_linux_optimized:\
+{ld_library_path}:\
+{awp_root}/Tools/mono/Linux64/lib:\
+{ds_install_dir}/lib/linx64:\
+{ds_install_dir}/dll/linx64:\
+{ds_install_dir}/libshared/linx64:\
+{awp_root}/tp/IntelCompiler/2019.3.199/linx64/lib/intel64:\
+{awp_root}/tp/IntelMKL/2020.0.166/linx64/lib/intel64:\
+{awp_root}/tp/qt_fw/5.9.6/Linux64/lib:\
+{awp_root}/commonfiles/CAD/Acis/linx64:\
+{awp_root}/commonfiles/fluids/lib/linx64:\
+{awp_root}/Framework/bin/Linux64"""
 
     # System path
     path = os.environ.get("PATH")
     os.environ[
         "PATH"
     ] = f"""
-    {mwhome}/bin-amd64_linux_optimized:
-    {ds_install_dir}/CommonFiles/linx64:
-    {ds_install_dir}/CADIntegration/linx64:
-    {awp_root}/Tools/mono/Linux64/bin:
-    {path}
-    """
+{mwhome}/bin-amd64_linux_optimized:\
+{ds_install_dir}/CommonFiles/linx64:\
+{ds_install_dir}/CADIntegration/linx64:\
+{awp_root}/Tools/mono/Linux64/bin:\
+{path}"""
 
 
 def run_command(cmd):
     """Run command from user."""
-    print(f"running {cmd}")
+    # Run the command in a subprocess and print stdout as process is running
+    popen = subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE,
+    )
+    for line in popen.stdout:
+        print(line.decode(), end="")
+    popen.stdout.close()
+    retcode = popen.wait()
+
+    # Return non-zero codes
+    if retcode:
+        raise subprocess.CalledProcessError(retcode, cmd)
 
 
 def main():
@@ -114,7 +127,7 @@ def main():
         print("mechanical-env is only available for Linux.")
     else:
         # Get revision number
-        exe, version = (r"C:\Program Files\Ansys Inc\v232\aisol", 23.2)  # find_mechanical()
+        exe, version = find_mechanical()
         default_revn = int(version * 10)
 
         parser = argparse.ArgumentParser()
@@ -131,19 +144,30 @@ def main():
 
         args = parser.parse_args()
 
+        # If the user chooses a revision number, find the mechanical install of the given revision
         if int(args.revision) != default_revn:
-            exe, version = (
-                rf"C:\Program Files\Ansys Inc\v{int(args.revision)}\aisol",
-                int(args.revision) / 10,
-            )  # find_mechanical(version=int(args.revision))
-            version = int(version * 10)
+            try:
+                exe, version = find_mechanical(version=int(args.revision))
+                version = int(version * 10)
+            except ValueError as e:
+                print(f"There was a ValueError for version {args.revision}.")
+                exit(1)
 
+        # Get aisol_path for Linux system
         aisol_path = os.path.dirname(exe)
-        # print(version)
-        # print(aisol_path)
 
-        create_env(version, aisol_path)
-        run_command(args.command)
+        # Set command list for subprocess
+        if len(args.command) == 1:
+            cmd = args.command[0].split()
+        else:
+            cmd = args.command
+
+        # If the version and aisol_path exist, run the command
+        if version and aisol_path:
+            create_env(version, aisol_path)
+            run_command(cmd)
+        else:
+            print("There was a problem getting the version and aisol_path")
 
 
 if __name__ == "__main__":
