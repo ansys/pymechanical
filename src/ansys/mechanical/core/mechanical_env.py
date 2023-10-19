@@ -31,49 +31,51 @@ from ansys.tools.path import find_mechanical
 
 def create_env(version, aisol_path):
     """Set up the environment in Linux."""
-    # /install/ansys_inc/v241/aisol
-    os.environ["DS_INSTALL_DIR"] = str(aisol_path)
-    ds_install_dir = os.environ.get("DS_INSTALL_DIR")
-    # /install/ansys_inc/v241
-    os.environ[f"AWP_ROOT{version}"] = f"{ds_install_dir}/../"
+    proc_env = os.environ.copy()
 
-    awp_root = os.environ.get(f"AWP_ROOT{version}")
+    # /install/ansys_inc/v241/aisol
+    proc_env["DS_INSTALL_DIR"] = str(aisol_path)
+    ds_install_dir = proc_env.get("DS_INSTALL_DIR")
+    # /install/ansys_inc/v241
+    proc_env[f"AWP_ROOT{version}"] = f"{ds_install_dir}/../"
+
+    awp_root = proc_env.get(f"AWP_ROOT{version}")
 
     # Environment variables used by workbench (mechanical) code
-    os.environ[f"AWP_LOCALE{version}"] = "en-us"
-    awp_locale = os.environ.get(f"AWP_LOCALE{version}")
+    proc_env[f"AWP_LOCALE{version}"] = "en-us"
+    awp_locale = proc_env.get(f"AWP_LOCALE{version}")
     # /install/ansys_inc/v241/commonfiles/language/en-us
-    os.environ[f"CADOE_LIBDIR{version}"] = f"{awp_root}/commonfiles/language/{awp_locale}"
+    proc_env[f"CADOE_LIBDIR{version}"] = f"{awp_root}/commonfiles/language/{awp_locale}"
     # /install/ansys_inc/shared_files/licensing
-    os.environ["ANSYSLIC_DIR"] = f"{awp_root}/../shared_files/licensing"
+    proc_env["ANSYSLIC_DIR"] = f"{awp_root}/../shared_files/licensing"
     # /install/ansys_inc/v241/commonfiles
-    os.environ["ANSYSCOMMON_DIR"] = f"{awp_root}/commonfiles"
+    proc_env["ANSYSCOMMON_DIR"] = f"{awp_root}/commonfiles"
     # /install/ansys_inc/v241/licensingclient
-    os.environ[f"ANSYSCL{version}_DIR"] = f"{awp_root}/licensingclient"
+    proc_env[f"ANSYSCL{version}_DIR"] = f"{awp_root}/licensingclient"
 
     # MainWin variables
-    home = os.environ.get("HOME")
-    os.environ["ANSISMAINWINLITEMODE"] = "1"
-    os.environ["MWCONFIG_NAME"] = "amd64_linux"
-    mwconfig_name = os.environ.get("MWCONFIG_NAME")
-    os.environ["MWDEBUG_LEVEL"] = "0"
+    home = proc_env.get("HOME")
+    proc_env["ANSISMAINWINLITEMODE"] = "1"
+    proc_env["MWCONFIG_NAME"] = "amd64_linux"
+    mwconfig_name = proc_env.get("MWCONFIG_NAME")
+    proc_env["MWDEBUG_LEVEL"] = "0"
     # /install/ansys_inc/v241/commonfiles/MainWin/linx64/mw
-    os.environ["MWHOME"] = f"{awp_root}/commonfiles/MainWin/linx64/mw"
-    mwhome = os.environ.get("MWHOME")
-    os.environ["MWOS"] = "linux"
+    proc_env["MWHOME"] = f"{awp_root}/commonfiles/MainWin/linx64/mw"
+    mwhome = proc_env.get("MWHOME")
+    proc_env["MWOS"] = "linux"
     # /install/ansys_inc/v241/aisol/WBMWRegistry/hklm_amd64_linux.bin
-    os.environ["MWREGISTRY"] = f"{ds_install_dir}/WBMWRegistry/hklm_{mwconfig_name}.bin"
-    os.environ["MWRT_MODE"] = "classic"
-    os.environ["MWRUNTIME"] = "1"
-    os.environ["MWUSER_DIRECTORY"] = f"{home}/.mw"
-    os.environ["MWDONT_XCLOSEDISPLAY"] = "1"
+    proc_env["MWREGISTRY"] = f"{ds_install_dir}/WBMWRegistry/hklm_{mwconfig_name}.bin"
+    proc_env["MWRT_MODE"] = "classic"
+    proc_env["MWRUNTIME"] = "1"
+    proc_env["MWUSER_DIRECTORY"] = f"{home}/.mw"
+    proc_env["MWDONT_XCLOSEDISPLAY"] = "1"
 
     # Dynamic library preload
-    os.environ["LD_PRELOAD"] = "libstdc++.so.6.0.28"
+    proc_env["LD_PRELOAD"] = "libstdc++.so.6.0.28"
 
     # Dynamic library load path
-    ld_library_path = os.environ.get("LD_LIBRARY_PATH")
-    os.environ[
+    ld_library_path = proc_env.get("LD_LIBRARY_PATH")
+    proc_env[
         "LD_LIBRARY_PATH"
     ] = f"""
 {awp_root}/tp/stdc++:\
@@ -93,8 +95,8 @@ def create_env(version, aisol_path):
 {awp_root}/Framework/bin/Linux64"""
 
     # System path
-    path = os.environ.get("PATH")
-    os.environ[
+    path = proc_env.get("PATH")
+    proc_env[
         "PATH"
     ] = f"""
 {mwhome}/bin-amd64_linux_optimized:\
@@ -103,12 +105,17 @@ def create_env(version, aisol_path):
 {awp_root}/Tools/mono/Linux64/bin:\
 {path}"""
 
+    print(f"proc_env: {proc_env}")
 
-def run_command(cmd):
+    return proc_env
+
+
+def run_command(proc_env, cmd):
     """Run command from user."""
     # Run the command in a subprocess and print stdout as process is running
     popen = subprocess.Popen(
         cmd,
+        env=proc_env,
         stdout=subprocess.PIPE,
     )
     for line in popen.stdout:
@@ -162,12 +169,19 @@ def main():
         else:
             cmd = args.command
 
+        before_env = os.environ
+
         # If the version and aisol_path exist, run the command
         if version and aisol_path:
-            create_env(version, aisol_path)
-            run_command(cmd)
+            proc_env = create_env(version, aisol_path)
+            # run_command(proc_env, cmd)
         else:
             print("There was a problem getting the version and aisol_path")
+
+        after_env = os.environ
+
+        print("is before_env the same as after_env?")
+        print(before_env == after_env)
 
 
 if __name__ == "__main__":
