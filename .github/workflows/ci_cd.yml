@@ -486,7 +486,7 @@ jobs:
           unset PYMECHANICAL_PORT
           unset PYMECHANICAL_START_INSTANCE
           
-          mechanical-env "make -C doc html" > doc_build_output.txt 2>&1 || true
+          xvfb-run mechanical-env "make -C doc html" > doc_build_output.txt 2>&1 || true
           cat doc_build_output.txt
           #
           # Check if "build succeeded" string is present in doc_build_output.txt
