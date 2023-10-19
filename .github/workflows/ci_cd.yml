@@ -315,7 +315,7 @@ jobs:
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
           NUM_CORES: 1
         run: |
-          xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.experimental_revn }}/aisol/.workbench_lite pytest -m embedding > pytest_output.txt || true
+          xvfb-run mechanical-env "pytest -m embedding" > pytest_output.txt || true
           cat pytest_output.txt
           #
           # Check if failure occurred
@@ -486,7 +486,7 @@ jobs:
           unset PYMECHANICAL_PORT
           unset PYMECHANICAL_START_INSTANCE
           
-          xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.experimental_revn }}/aisol/.workbench_lite make -C doc html > doc_build_output.txt 2>&1 || true
+          xvfb-run mechanical-env "make -C doc html" > doc_build_output.txt 2>&1 || true
           cat doc_build_output.txt
           #
           # Check if "build succeeded" string is present in doc_build_output.txt

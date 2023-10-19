@@ -120,7 +120,10 @@ def run_command(proc_env, cmd):
     retcode = popen.wait()
 
     # Return non-zero codes
-    if retcode:
+    # Ignore retcode of 6 since Mechanical crashes on close for Linux
+    if (retcode == 0) or (retcode == -6):
+        pass
+    else:
         raise subprocess.CalledProcessError(retcode, cmd)
 
 
