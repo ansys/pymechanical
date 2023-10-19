@@ -116,6 +116,8 @@ def run_command(proc_env, cmd):
     )
     for line in popen.stdout:
         print(line.decode(), end="")
+        if "make: Leaving directory" in line.decode():
+            break
     popen.stdout.close()
     retcode = popen.wait()
 
