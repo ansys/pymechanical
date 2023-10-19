@@ -114,9 +114,12 @@ def run_command(proc_env, cmd):
         env=proc_env,
         stdout=subprocess.PIPE,
     )
+    success = False
     for line in popen.stdout:
         print(line.decode(), end="")
-        if "make: Leaving directory" in line.decode():
+        if "build succeeded" in line.decode():
+            success = True
+        if ("make: Leaving directory" in line.decode()) and success:
             break
     popen.stdout.close()
     retcode = popen.wait()
