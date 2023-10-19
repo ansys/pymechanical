@@ -88,9 +88,7 @@ def create_env(revn, aisol_path):
 
     # Dynamic library load path
     ld_library_path = proc_env.get("LD_LIBRARY_PATH")
-    proc_env[
-        "LD_LIBRARY_PATH"
-    ] = f"""{awp_root}/tp/stdc++:\
+    new_ld_lib_path = f"""{awp_root}/tp/stdc++:\
 {awp_root}/tp/openssl/1.1.1/linx64/lib:\
 {mwhome}/lib-amd64_linux:\
 {mwhome}/lib-amd64_linux_optimized:\
@@ -102,10 +100,16 @@ def create_env(revn, aisol_path):
 {awp_root}/tp/IntelCompiler/2019.3.199/linx64/lib/intel64:\
 {awp_root}/tp/IntelMKL/2020.0.166/linx64/lib/intel64:\
 {awp_root}/tp/qt_fw/5.9.6/Linux64/lib:\
-{awp_root}/commonfiles/CAD/Acis/linx64:\
-{awp_root}/tp/nss/3.89/lib:\
-{awp_root}/commonfiles/fluids/lib/linx64:\
+{awp_root}/commonfiles/CAD/Acis/linx64:"""
+
+    # Add path if revn is 241
+    if revn == 241:
+        new_ld_lib_path += f"{awp_root}/tp/nss/3.89/lib:"
+
+    new_ld_lib_path += f"""{awp_root}/commonfiles/fluids/lib/linx64:\
 {awp_root}/Framework/bin/Linux64"""
+
+    proc_env["LD_LIBRARY_PATH"] = new_ld_lib_path
 
     # System path
     path = proc_env.get("PATH")
@@ -161,19 +165,13 @@ def run_command(proc_env, cmd):
     # Print the output of the subprocess as it runs
     for line in popen.stdout:
         print(line.decode(), end="")
-        # Leave loop if the workflow doc-build message says, "make: Leaving directory"
-        if "make: Leaving directory" in line.decode():
-            break
     popen.stdout.close()
 
     # Wait for process to finish and get return code
     retcode = popen.wait()
 
-    # Raise CalledProcessError for non-zero codes (other than 6)
-    # Ignore retcode of 6 since Mechanical crashes on close for Linux
-    if (retcode == 0) or (retcode == -6):
-        pass
-    else:
+    # Raise CalledProcessError for non-zero codes
+    if retcode:
         raise subprocess.CalledProcessError(retcode, cmd)
 
 

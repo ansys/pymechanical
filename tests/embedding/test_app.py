@@ -189,3 +189,66 @@ def test_rm_lockfile(embedded_app, tmp_path: pytest.TempPathFactory):
     lockfile_path = os.path.join(embedded_app.DataModel.Project.ProjectDirectory, ".mech_lock")
     # Assert lock file path does not exist
     assert not os.path.exists(lockfile_path)
+
+
+def mechanical_env_helper(revn, cmd):
+    """Helper function for mechanical-env tests."""
+    # Get environment before running mechanical-env
+    start_env = os.environ
+
+    subproc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    subproc.wait()
+    stdout = subproc.stdout.read().decode()
+    stderr = subproc.stderr.read().decode()
+
+    # Get environment after running mechanical-env
+    end_env = os.environ
+
+    # Assert the environment did not change
+    assert start_env == end_env
+
+    return stdout, stderr
+
+
+@pytest.mark.mechanical_env
+def test_maintain_env(pytestconfig, rootdir):
+    """Ensure the environment does not change when running ``mechanical-env``."""
+    # Set version variable and get print_instance.py path
+    version = pytestconfig.getoption("ansys_version")
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "print_instance.py")
+    cmd = ["mechanical-env", "python", embedded_py, version]
+
+    stdout, stderr = mechanical_env_helper(version, cmd)
+
+    # Assert embedded app output was printed
+    assert "Ansys Mechanical [Ansys Mechanical Enterprise]" in stdout
+
+
+@pytest.mark.mechanical_env
+def test_nonzero_retcode(rootdir):
+    """Non-zero return code is raised in mechanical-env."""
+    # Set version variable and get print_instance.py path
+    version = "212"
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "print_instance.py")
+    cmd = ["mechanical-env", "python", embedded_py, version]
+
+    stdout, stderr = mechanical_env_helper(version, cmd)
+
+    # Assert KeyError and ValueError exist
+    assert "KeyError: 'AWP_ROOT212'" in stderr
+
+
+@pytest.mark.mechanical_env
+def test_user_revn(pytestconfig, rootdir):
+    """Test user selected revision number is used in mechanical-env."""
+    # Set version variable and get print_instance.py
+    version = "232"
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "print_instance.py")
+    cmd = ["mechanical-env", f"--revision={version}", "python", embedded_py, version]
+
+    stdout, stderr = mechanical_env_helper(version, cmd)
+
+    if stderr and (version != pytestconfig.getoption("ansys_version")):
+        assert f"KeyError: {version}" in stderr
+    else:
+        assert "Ansys Mechanical [Ansys Mechanical Enterprise]" in stdout

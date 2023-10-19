@@ -130,6 +130,7 @@ markers = [
     "python_env: tests that check for an appropriate python environment",
     "remote_session_launch: tests that launch Mechanical and work with gRPC server inside it",
     "remote_session_connect: tests that connect to Mechanical and work with gRPC server inside it",
-     "minimum_version(num): tests that run if ansys-version is greater than or equal to the minimum version provided",
+    "minimum_version(num): tests that run if ansys-version is greater than or equal to the minimum version provided",
+    "mechanical_env: tests that check the mechanical-env command line script",
 ]
 xfail_strict = true
