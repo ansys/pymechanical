@@ -211,6 +211,7 @@ def mechanical_env_helper(revn, cmd):
 
 
 @pytest.mark.mechanical_env
+@pytest.mark.embedding
 def test_maintain_env(pytestconfig, rootdir):
     """Ensure the environment does not change when running ``mechanical-env``."""
     # Set version variable and get print_instance.py path
@@ -225,6 +226,7 @@ def test_maintain_env(pytestconfig, rootdir):
 
 
 @pytest.mark.mechanical_env
+@pytest.mark.embedding
 def test_nonzero_retcode(rootdir):
     """Non-zero return code is raised in mechanical-env."""
     # Set version variable and get print_instance.py path
@@ -239,6 +241,7 @@ def test_nonzero_retcode(rootdir):
 
 
 @pytest.mark.mechanical_env
+@pytest.mark.embedding
 def test_user_revn(pytestconfig, rootdir):
     """Test user selected revision number is used in mechanical-env."""
     # Set version variable and get print_instance.py
