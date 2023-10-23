@@ -43,6 +43,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `ansys-sphinx-theme` from 0.12.1 to 0.12.2 ([#447](https://github.com/ansys/pymechanical/pull/447))
 - Bump `stefanzweifel/git-auto-commit-action` from 4 to 5 ([#448](https://github.com/ansys/pymechanical/pull/448))
 - Bump `numpy` from 1.26.0 to 1.26.1 ([#464](https://github.com/ansys/pymechanical/pull/464))
+- Bump `pypandoc` from 1.11 to 1.12 ([#470](https://github.com/ansys/pymechanical/pull/470))
 
 ## [0.10.4](https://github.com/ansys/pymechanical/releases/tag/v0.10.4) - October 6 2023
 
