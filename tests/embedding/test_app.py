@@ -1,3 +1,5 @@
+# Copyright (C) 2023 ANSYS, Inc. and/or its affiliates.
+
 """Miscellaneous embedding tests"""
 import os
 import subprocess

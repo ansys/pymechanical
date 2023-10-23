@@ -1,3 +1,5 @@
+# Copyright (C) 2023 ANSYS, Inc. and/or its affiliates.
+
 """Migration from QK_ENG_WB2 tests"""
 import os
 import pathlib

@@ -1,3 +1,5 @@
+# Copyright (C) 2023 ANSYS, Inc. and/or its affiliates.
+
 """ .. _ref_embedding_remote:
 
 Embedding & Remote Example
