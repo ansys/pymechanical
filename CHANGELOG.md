@@ -34,7 +34,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
  - Update temporary file creation in test_app ([#466](https://github.com/ansys/pymechanical/pull/466))
 
 ### Dependencies
-- Update ``pre-commit`` ([#431](https://github.com/ansys/pymechanical/pull/431))
+- Update ``pre-commit`` ([#431](https://github.com/ansys/pymechanical/pull/431), [#471](https://github.com/ansys/pymechanical/pull/471))
 - Bump `numpydoc` from 1.5.0 to 1.6.0 ([#428](https://github.com/ansys/pymechanical/pull/428))
 - Bump `ansys-sphinx-theme` from 0.11.2 to 0.12.3 ([#427](https://github.com/ansys/pymechanical/pull/427), [#463](https://github.com/ansys/pymechanical/pull/463))
 - Bump `grpcio` from 1.58.0 to 1.59.0 ([#429](https://github.com/ansys/pymechanical/pull/429))
