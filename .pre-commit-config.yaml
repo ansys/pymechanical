@@ -30,8 +30,6 @@ repos:
   rev: v0.2.0
   hooks:
   - id: add-license-headers
-    args:
-    - --custom_template=ansys2
 
 - repo: https://github.com/pycqa/pydocstyle
   rev: 6.3.0
