@@ -34,7 +34,7 @@ class UniqueUserProfile:
     def __init__(self, profile_name):
         """Initialize UniqueUserProfile class."""
         self._default_profile = os.path.expanduser("~")
-        self._location = os.path.join(self._default_profile, profile_name)
+        self._location = os.path.join(self._default_profile, "PyMechanical-AppData", profile_name)
         self.initialize()
 
     def initialize(self) -> None:
@@ -79,7 +79,7 @@ class UniqueUserProfile:
 
     def mkdirs(self) -> None:
         """Create a unique user profile & set up the directory tree."""
-        os.makedirs(self.location)
+        os.makedirs(self.location, exist_ok=True)
         if "win" in sys.platform:
             locs = ["AppData/Roaming", "AppData/Local", "Documents"]
         elif "lin" in sys.platform:
