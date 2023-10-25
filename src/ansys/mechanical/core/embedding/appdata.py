@@ -68,6 +68,8 @@ class UniqueUserProfile:
             env["USERPROFILE"] = home
             env["APPDATA"] = os.path.join(home, "AppData/Roaming")
             env["LOCALAPPDATA"] = os.path.join(home, "AppData/Local")
+            env["TMP"] = os.path.join(home, "AppData/Local/Temp")
+            env["TEMP"] = os.path.join(home, "AppData/Local/Temp")
         elif "lin" in sys.platform:
             env["HOME"] = home
 
