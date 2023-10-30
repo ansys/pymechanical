@@ -47,6 +47,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `pypandoc` from 1.11 to 1.12 ([#470](https://github.com/ansys/pymechanical/pull/470))
 - Bump `imageio` from 2.31.5 to 2.31.6 ([#469](https://github.com/ansys/pymechanical/pull/469))
 - Bump `add-license-headers` from v0.1.3 to v0.2.0 ([#472](https://github.com/ansys/pymechanical/pull/472))
+- Bump `panel` from 1.2.3 to 1.3.0 ([#479](https://github.com/ansys/pymechanical/pull/479))
 
 ## [0.10.4](https://github.com/ansys/pymechanical/releases/tag/v0.10.4) - October 6 2023
 
