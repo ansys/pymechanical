@@ -27,6 +27,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Changed
 
+ - Update python minimum requirement from 3.8 to 3.9 ()
  - remove version limit for protobuf ([#432](https://github.com/ansys/pymechanical/pull/432))
  - remove legacy configuration test ([#436](https://github.com/ansys/pymechanical/pull/436))
  - Update examples page ([#450](https://github.com/ansys/pymechanical/pull/450))
