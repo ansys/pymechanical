@@ -49,13 +49,13 @@ Tracker = "https://github.com/ansys/pymechanical/issues"
 
 [project.optional-dependencies]
 tests = [
-    "pytest==7.4.2",
+    "pytest==7.4.3",
     "pytest-cov==4.1.0",
     "pytest-print==1.0.0",
 ]
 doc = [
     "Sphinx==7.2.6",
-    "ansys-sphinx-theme==0.12.3",
+    "ansys-sphinx-theme==0.12.4",
     "grpcio==1.59.0",
     "imageio-ffmpeg==0.4.9",
     "imageio==2.31.6",

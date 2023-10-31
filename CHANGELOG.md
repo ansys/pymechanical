@@ -37,7 +37,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Dependencies
 - Update ``pre-commit`` ([#431](https://github.com/ansys/pymechanical/pull/431), [#471](https://github.com/ansys/pymechanical/pull/471))
 - Bump `numpydoc` from 1.5.0 to 1.6.0 ([#428](https://github.com/ansys/pymechanical/pull/428))
-- Bump `ansys-sphinx-theme` from 0.11.2 to 0.12.3 ([#427](https://github.com/ansys/pymechanical/pull/427), [#463](https://github.com/ansys/pymechanical/pull/463))
+- Bump `ansys-sphinx-theme` from 0.11.2 to 0.12.4 ([#427](https://github.com/ansys/pymechanical/pull/427), [#463](https://github.com/ansys/pymechanical/pull/463), [#480](https://github.com/ansys/pymechanical/pull/480))
 - Bump `grpcio` from 1.58.0 to 1.59.0 ([#429](https://github.com/ansys/pymechanical/pull/429))
 - Bump `actions/checkout` from 3 to 4 ([#426](https://github.com/ansys/pymechanical/pull/426))
 - Bump `pyvista` from 0.42.2 to 0.42.3 ([#446](https://github.com/ansys/pymechanical/pull/446))
@@ -48,6 +48,8 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `imageio` from 2.31.5 to 2.31.6 ([#469](https://github.com/ansys/pymechanical/pull/469))
 - Bump `add-license-headers` from v0.1.3 to v0.2.0 ([#472](https://github.com/ansys/pymechanical/pull/472))
 - Bump `panel` from 1.2.3 to 1.3.0 ([#479](https://github.com/ansys/pymechanical/pull/479))
+- Bump `pytest` from 7.4.2 to 7.4.3 ([#482](https://github.com/ansys/pymechanical/pull/482))
+- Bump `tj-actions/changed-files` from 39 to 40 ([#477](https://github.com/ansys/pymechanical/pull/477))
 
 ## [0.10.4](https://github.com/ansys/pymechanical/releases/tag/v0.10.4) - October 6 2023
 
