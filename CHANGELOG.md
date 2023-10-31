@@ -48,6 +48,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `imageio` from 2.31.5 to 2.31.6 ([#469](https://github.com/ansys/pymechanical/pull/469))
 - Bump `add-license-headers` from v0.1.3 to v0.2.0 ([#472](https://github.com/ansys/pymechanical/pull/472))
 - Bump `pytest` from 7.4.2 to 7.4.3 ([#482](https://github.com/ansys/pymechanical/pull/482))
+- Bump `tj-actions/changed-files` from 39 to 40 ([#477](https://github.com/ansys/pymechanical/pull/477))
 
 ## [0.10.4](https://github.com/ansys/pymechanical/releases/tag/v0.10.4) - October 6 2023
 
