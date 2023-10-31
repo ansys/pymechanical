@@ -127,7 +127,7 @@ jobs:
         should-release:
           - ${{ github.event_name == 'push' && contains(github.ref, 'refs/tags') }}
         exclude:
-          - should-release: false
+          - should-release: false 
             os: macos-latest
     steps:
       - name: Build wheelhouse and perform smoke test
@@ -256,6 +256,7 @@ jobs:
   embedding-tests:
     name: Embedding testing and coverage
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: [style, revn-variations]
     container:
       image: ghcr.io/ansys/mechanical:${{needs.revn-variations.outputs.experimental_container_revn}}
