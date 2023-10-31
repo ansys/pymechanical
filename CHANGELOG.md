@@ -51,6 +51,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `pytest` from 7.4.2 to 7.4.3 ([#482](https://github.com/ansys/pymechanical/pull/482))
 - Bump `tj-actions/changed-files` from 39 to 40 ([#477](https://github.com/ansys/pymechanical/pull/477))
 - Bump `plotly` from 5.17.0 to 5.18.0 ([#478](https://github.com/ansys/pymechanical/pull/478))
+- Bump `pandas` from 2.1.1 to 2.1.2 ([#481](https://github.com/ansys/pymechanical/pull/481))
 
 ## [0.10.4](https://github.com/ansys/pymechanical/releases/tag/v0.10.4) - October 6 2023
 
