@@ -53,6 +53,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `tj-actions/changed-files` from 39 to 40 ([#477](https://github.com/ansys/pymechanical/pull/477))
 - Bump `plotly` from 5.17.0 to 5.18.0 ([#478](https://github.com/ansys/pymechanical/pull/478))
 - Bump `pandas` from 2.1.1 to 2.1.2 ([#481](https://github.com/ansys/pymechanical/pull/481))
+- Bump `matplotlib` from 3.8.0 to 3.8.1 ([#488](https://github.com/ansys/pymechanical/pull/488))
 
 ## [0.10.4](https://github.com/ansys/pymechanical/releases/tag/v0.10.4) - October 6 2023
 
