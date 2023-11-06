@@ -48,7 +48,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `pypandoc` from 1.11 to 1.12 ([#470](https://github.com/ansys/pymechanical/pull/470))
 - Bump `imageio` from 2.31.5 to 2.31.6 ([#469](https://github.com/ansys/pymechanical/pull/469))
 - Bump `add-license-headers` from v0.1.3 to v0.2.0 ([#472](https://github.com/ansys/pymechanical/pull/472))
-- Bump `panel` from 1.2.3 to 1.3.0 ([#479](https://github.com/ansys/pymechanical/pull/479))
+- Bump `panel` from 1.2.3 to 1.3.1 ([#479](https://github.com/ansys/pymechanical/pull/479), [#486](https://github.com/ansys/pymechanical/pull/486))
 - Bump `pytest` from 7.4.2 to 7.4.3 ([#482](https://github.com/ansys/pymechanical/pull/482))
 - Bump `tj-actions/changed-files` from 39 to 40 ([#477](https://github.com/ansys/pymechanical/pull/477))
 - Bump `plotly` from 5.17.0 to 5.18.0 ([#478](https://github.com/ansys/pymechanical/pull/478))
