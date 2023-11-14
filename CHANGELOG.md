@@ -44,7 +44,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `pyvista` from 0.42.2 to 0.42.3 ([#446](https://github.com/ansys/pymechanical/pull/446))
 - Bump `ansys-sphinx-theme` from 0.12.1 to 0.12.2 ([#447](https://github.com/ansys/pymechanical/pull/447))
 - Bump `stefanzweifel/git-auto-commit-action` from 4 to 5 ([#448](https://github.com/ansys/pymechanical/pull/448))
-- Bump `numpy` from 1.26.0 to 1.26.1 ([#464](https://github.com/ansys/pymechanical/pull/464))
+- Bump `numpy` from 1.26.0 to 1.26.2 ([#464](https://github.com/ansys/pymechanical/pull/464), [#495](https://github.com/ansys/pymechanical/pull/495))
 - Bump `pypandoc` from 1.11 to 1.12 ([#470](https://github.com/ansys/pymechanical/pull/470))
 - Bump `imageio` from 2.31.5 to 2.32.0 ([#469](https://github.com/ansys/pymechanical/pull/469), [#487](https://github.com/ansys/pymechanical/pull/487))
 - Bump `add-license-headers` from v0.1.3 to v0.2.0 ([#472](https://github.com/ansys/pymechanical/pull/472))
