@@ -36,9 +36,9 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
  - Update temporary file creation in test_app ([#466](https://github.com/ansys/pymechanical/pull/466))
 
 ### Dependencies
-- Update ``pre-commit`` ([#431](https://github.com/ansys/pymechanical/pull/431), [#471](https://github.com/ansys/pymechanical/pull/471))
+- Update ``pre-commit`` ([#431](https://github.com/ansys/pymechanical/pull/431), [#471](https://github.com/ansys/pymechanical/pull/471), [#489](https://github.com/ansys/pymechanical/pull/489))
 - Bump `numpydoc` from 1.5.0 to 1.6.0 ([#428](https://github.com/ansys/pymechanical/pull/428))
-- Bump `ansys-sphinx-theme` from 0.11.2 to 0.12.4 ([#427](https://github.com/ansys/pymechanical/pull/427), [#463](https://github.com/ansys/pymechanical/pull/463), [#480](https://github.com/ansys/pymechanical/pull/480))
+- Bump `ansys-sphinx-theme` from 0.11.2 to 0.12.5 ([#427](https://github.com/ansys/pymechanical/pull/427), [#463](https://github.com/ansys/pymechanical/pull/463), [#480](https://github.com/ansys/pymechanical/pull/480), [#493](https://github.com/ansys/pymechanical/pull/493))
 - Bump `grpcio` from 1.58.0 to 1.59.2 ([#429](https://github.com/ansys/pymechanical/pull/429), [#485](https://github.com/ansys/pymechanical/pull/485))
 - Bump `actions/checkout` from 3 to 4 ([#426](https://github.com/ansys/pymechanical/pull/426))
 - Bump `pyvista` from 0.42.2 to 0.42.3 ([#446](https://github.com/ansys/pymechanical/pull/446))
@@ -52,7 +52,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `pytest` from 7.4.2 to 7.4.3 ([#482](https://github.com/ansys/pymechanical/pull/482))
 - Bump `tj-actions/changed-files` from 39 to 40 ([#477](https://github.com/ansys/pymechanical/pull/477))
 - Bump `plotly` from 5.17.0 to 5.18.0 ([#478](https://github.com/ansys/pymechanical/pull/478))
-- Bump `pandas` from 2.1.1 to 2.1.2 ([#481](https://github.com/ansys/pymechanical/pull/481))
+- Bump `pandas` from 2.1.1 to 2.1.3 ([#481](https://github.com/ansys/pymechanical/pull/481), [#494](https://github.com/ansys/pymechanical/pull/494))
 - Bump `matplotlib` from 3.8.0 to 3.8.1 ([#488](https://github.com/ansys/pymechanical/pull/488))
 
 ## [0.10.4](https://github.com/ansys/pymechanical/releases/tag/v0.10.4) - October 6 2023
