@@ -5,10 +5,10 @@ build-backend = "flit_core.buildapi"
 [project]
 # Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
 name = "ansys-mechanical-core"
-version = "0.11.dev1"
+version = "0.11.dev0"
 description = "A python wrapper for Ansys Mechanical"
 readme = "README.rst"
-requires-python = ">=3.8,<4.0"
+requires-python = ">=3.9,<4.0"
 license = {file = "LICENSE"}
 authors = [
     {name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"},
@@ -21,10 +21,10 @@ classifiers = [
     "Development Status :: 4 - Beta",
     'Intended Audience :: Science/Research',
     'Topic :: Scientific/Engineering :: Information Analysis',
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
@@ -49,30 +49,30 @@ Tracker = "https://github.com/ansys/pymechanical/issues"
 
 [project.optional-dependencies]
 tests = [
-    "pytest==7.4.2",
+    "pytest==7.4.3",
     "pytest-cov==4.1.0",
     "pytest-print==1.0.0",
 ]
 doc = [
     "Sphinx==7.2.6",
-    "ansys-sphinx-theme==0.12.3",
-    "grpcio==1.59.0",
+    "ansys-sphinx-theme==0.12.5",
+    "grpcio==1.59.2",
     "imageio-ffmpeg==0.4.9",
-    "imageio==2.31.6",
+    "imageio==2.32.0",
     "jupyter_sphinx==0.4.0",
     "jupyterlab>=3.2.8",
-    "matplotlib==3.8.0",
-    "numpy==1.26.1",
+    "matplotlib==3.8.1",
+    "numpy==1.26.2",
     "numpydoc==1.6.0",
-    "pandas==2.1.1",
-    "panel==1.2.3",
-    "plotly==5.17.0",
+    "pandas==2.1.3",
+    "panel==1.3.1",
+    "plotly==5.18.0",
     "pypandoc==1.12",
     "pytest-sphinx==0.5.0",
     "pythreejs==2.4.2",
     "pyvista==0.42.3",
     "sphinx-autobuild==2021.3.14",
-    "sphinx-autodoc-typehints==1.24.0",
+    "sphinx-autodoc-typehints==1.25.2",
     "sphinx-copybutton==0.5.2",
     "sphinx_design==0.5.0",
     "sphinx-gallery==0.14.0",
