@@ -35,7 +35,6 @@ env:
   DOCKER_PACKAGE: ghcr.io/ansys/mechanical
   DOCKER_MECH_CONTAINER_NAME: mechanical
   PACKAGE_NAME: ansys-mechanical-core
-  PACKAGE_NAMESPACE: ansys.mechanical.core
   DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
   RESET_EXAMPLES_CACHE: 0
   RESET_DOC_BUILD_CACHE: 0
@@ -123,11 +122,11 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ['3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.9', '3.10', '3.11', '3.12']
         should-release:
           - ${{ github.event_name == 'push' && contains(github.ref, 'refs/tags') }}
         exclude:
-          - should-release: false
+          - should-release: false 
             os: macos-latest
     steps:
       - name: Build wheelhouse and perform smoke test
@@ -160,7 +159,7 @@ jobs:
 
       - name: Get all doc files that have changed
         id: changed-files-yaml
-        uses: tj-actions/changed-files@v39
+        uses: tj-actions/changed-files@v40
         with:
           files_yaml: |
             doc:
@@ -256,6 +255,7 @@ jobs:
   embedding-tests:
     name: Embedding testing and coverage
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: [style, revn-variations]
     container:
       image: ghcr.io/ansys/mechanical:${{needs.revn-variations.outputs.experimental_container_revn}}
@@ -264,7 +264,7 @@ jobs:
       max-parallel: 2
       fail-fast: false
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.9', '3.10', '3.11', '3.12']
 
     steps:
       - uses: actions/checkout@v4
@@ -276,19 +276,7 @@ jobs:
           apt install python${{ matrix.python-version }} -y
           ln -s /usr/bin/python${{ matrix.python-version }} /usr/bin/python
           apt install python${{ matrix.python-version }}-venv -y
-
-      - name: Install pip
-        if: matrix.python-version == '3.8'
-        run: |
-          apt install -y python3-pip
-
-      - name: Install pip for >3.8
-        if: matrix.python-version != '3.8'
-        run: |
           python -m ensurepip --default-pip
-
-      - name: Upgrade pip
-        run: |
           pip3 install --upgrade pip
           python --version
           pip3 --version
@@ -355,7 +343,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11' ]
+        python-version: ['3.9', '3.10', '3.11', '3.12']
 
     steps:
       - uses: actions/checkout@v4
@@ -367,19 +355,7 @@ jobs:
           apt install python${{ matrix.python-version }} -y
           ln -s /usr/bin/python${{ matrix.python-version }} /usr/bin/python
           apt install python${{ matrix.python-version }}-venv -y
-
-      - name: Install pip
-        if: matrix.python-version == '3.8'
-        run: |
-          apt install -y python3-pip
-
-      - name: Install pip for >3.8
-        if: matrix.python-version != '3.8'
-        run: |
           python -m ensurepip --default-pip
-
-      - name: Upgrade pip
-        run: |
           pip3 install --upgrade pip
           python --version
           pip3 --version
