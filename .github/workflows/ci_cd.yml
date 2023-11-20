@@ -261,7 +261,6 @@ jobs:
       image: ghcr.io/ansys/mechanical:${{needs.revn-variations.outputs.experimental_container_revn}}
       options: --entrypoint /bin/bash
     strategy:
-      max-parallel: 2
       fail-fast: false
       matrix:
         python-version: ['3.9', '3.10', '3.11', '3.12']

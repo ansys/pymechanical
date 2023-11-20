@@ -557,12 +557,11 @@ def test_warning_message_pythonnet(test_env, rootdir):
         stderr=subprocess.PIPE,
         env=test_env.env,
     )
-    check_warning.wait()
-    stderr = check_warning.stderr.read().decode()
+    stdout, stderr = check_warning.communicate()
 
     # If UserWarning & pythonnet are in the stderr output, set warning to True.
     # Otherwise, set warning to False
-    warning = True if "UserWarning" and "pythonnet" in stderr else False
+    warning = True if "UserWarning" and "pythonnet" in stderr.decode() else False
 
     # Assert the warning message did not appear for the remote session
     assert not warning
@@ -576,12 +575,11 @@ def test_warning_message_default():
     # Run remote session
     remote_py = os.path.join(base, "tests", "scripts", "run_remote_session.py")
     check_warning = subprocess.Popen([sys.executable, remote_py], stderr=subprocess.PIPE)
-    check_warning.wait()
-    stderr_output = check_warning.stderr.read().decode()
+    stdout, stderr = check_warning.communicate()
 
     # If UserWarning & pythonnet are in the stderr output, set warning to True.
     # Otherwise, set warning to False
-    warning = True if "UserWarning" and "pythonnet" in stderr_output else False
+    warning = True if "UserWarning" and "pythonnet" in stderr.decode() else False
 
     # Assert the warning message did not appear for the remote session
     assert not warning
