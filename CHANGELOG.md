@@ -41,7 +41,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Update ``pre-commit`` ([#431](https://github.com/ansys/pymechanical/pull/431), [#471](https://github.com/ansys/pymechanical/pull/471), [#489](https://github.com/ansys/pymechanical/pull/489))
 - Bump `numpydoc` from 1.5.0 to 1.6.0 ([#428](https://github.com/ansys/pymechanical/pull/428))
 - Bump `ansys-sphinx-theme` from 0.11.2 to 0.12.5 ([#427](https://github.com/ansys/pymechanical/pull/427), [#463](https://github.com/ansys/pymechanical/pull/463), [#480](https://github.com/ansys/pymechanical/pull/480), [#493](https://github.com/ansys/pymechanical/pull/493))
-- Bump `grpcio` from 1.58.0 to 1.59.2 ([#429](https://github.com/ansys/pymechanical/pull/429), [#485](https://github.com/ansys/pymechanical/pull/485))
+- Bump `grpcio` from 1.58.0 to 1.59.3 ([#429](https://github.com/ansys/pymechanical/pull/429), [#485](https://github.com/ansys/pymechanical/pull/485), [#504](https://github.com/ansys/pymechanical/pull/504))
 - Bump `actions/checkout` from 3 to 4 ([#426](https://github.com/ansys/pymechanical/pull/426))
 - Bump `pyvista` from 0.42.2 to 0.42.3 ([#446](https://github.com/ansys/pymechanical/pull/446))
 - Bump `ansys-sphinx-theme` from 0.12.1 to 0.12.2 ([#447](https://github.com/ansys/pymechanical/pull/447))
