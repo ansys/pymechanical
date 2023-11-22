@@ -107,7 +107,7 @@ notfound_urls_prefix = "/../"
 
 # static path
 html_static_path = ["_static"]
-
+templates_path = ["_templates"]
 # The suffix(es) of source filenames.
 source_suffix = ".rst"
 
@@ -206,6 +206,11 @@ html_theme_options = {
     ],
 }
 
+html_sidebars = {
+    "index": [
+        "cheatsheet_sidebar.html",
+    ],
+}
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
