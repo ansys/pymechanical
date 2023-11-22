@@ -11,6 +11,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 - Add codeql.yml for security checks ([#423](https://github.com/ansys/pymechanical/pull/423))
 - add readonly flag and assertion ([#441](https://github.com/ansys/pymechanical/pull/441))
+- Add PyMeilisearch in documentation ([#508](https://github.com/ansys/pymechanical/pull/508))
 
 ### Fixed
 
