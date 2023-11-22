@@ -204,6 +204,12 @@ html_theme_options = {
             "icon": "fa fa-comment fa-fw",
         },
     ],
+    "use_meilisearch": {
+        "api_key": os.getenv("MEILISEARCH_API_KEY", ""),
+        "index_uids": {
+            f"pymemchanical-v{get_version_match(version).replace('.', '-')}": "PyMechanical",
+        },
+    },
 }
 
 # -- Options for HTMLHelp output ---------------------------------------------
