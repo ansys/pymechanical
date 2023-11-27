@@ -612,7 +612,7 @@ jobs:
         uses: ansys/actions/doc-deploy-index@v4
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}/version/dev
-          index-name: pyansys-geometry-vdev
+          index-name: pymechanical-vdev
           host-url: ${{ env.MEILISEARCH_HOST_URL }}
           api-key: ${{ env.MEILISEARCH_API_KEY }}
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
