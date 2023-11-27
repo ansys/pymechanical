@@ -56,6 +56,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `plotly` from 5.17.0 to 5.18.0 ([#478](https://github.com/ansys/pymechanical/pull/478))
 - Bump `pandas` from 2.1.1 to 2.1.3 ([#481](https://github.com/ansys/pymechanical/pull/481), [#494](https://github.com/ansys/pymechanical/pull/494))
 - Bump `matplotlib` from 3.8.0 to 3.8.2 ([#488](https://github.com/ansys/pymechanical/pull/488), [#502](https://github.com/ansys/pymechanical/pull/502))
+- Bump `sphinx-gallery` from 0.14.0 to 0.15.0 ([#509](https://github.com/ansys/pymechanical/pull/509))
 
 ## [0.10.4](https://github.com/ansys/pymechanical/releases/tag/v0.10.4) - October 6 2023
 
