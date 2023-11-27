@@ -208,6 +208,7 @@ jobs:
       options: --entrypoint /bin/bash
     strategy:
       fail-fast: false
+      max-parallel: 2
       matrix:
         python-version: ['3.9', '3.10', '3.11', '3.12']
 
