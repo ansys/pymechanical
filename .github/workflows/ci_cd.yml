@@ -38,6 +38,8 @@ jobs:
     name: Save variations of revn
     runs-on: ubuntu-latest
     outputs:
+      # 24.1.0
+      stable_version: '${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}'
       # ghcr.io/ansys/mechanical:24.1.0
       stable_container: '${{ env.DOCKER_PACKAGE }}:${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}'
       # ghcr.io/ansys/mechanical:24.2.0
@@ -135,7 +137,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        mechanical-version: ['23.1.0', '23.2.0', '${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}']
+        mechanical-version: ['23.1.0', '23.2.0', '${{ needs.revn-variations.outputs.stable_version }}']
         experimental: [false]
         # The DEV_REVN is allowed to fail
         include:
