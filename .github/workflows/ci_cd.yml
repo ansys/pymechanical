@@ -2,10 +2,12 @@ name: GitHub CI
 
 on:
   pull_request:
-  registry_package:
+  schedule:
+    - cron: '00 22 * * *'  # UTC time, may start 5-15 mins later than scheduled time
+  # registry_package:
       # Run workflow when package is published or updated
-      types: [published, updated]
-      image_name: "mechanical" 
+      # types: [published, updated]
+      # image_name: "mechanical" 
   push:
     tags:
       - "*"
@@ -23,10 +25,10 @@ env:
   DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
   MAIN_PYTHON_VERSION: '3.10'
   # embedding-tests and launch-tests steps use the DEV_REVN & DEV_DOCKER_IMAGE_VERSION
-  DEV_REVN: '241'
-  DEV_DOCKER_IMAGE_VERSION: '24.1.0'
-  LATEST_STABLE_REVN: '232'
-  LATEST_STABLE_DOCKER_IMAGE_VERSION: '23.2.0'
+  DEV_REVN: '242'
+  DEV_DOCKER_IMAGE_VERSION: '24.2.0'
+  LATEST_STABLE_REVN: '241'
+  LATEST_STABLE_DOCKER_IMAGE_VERSION: '24.1.0'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -37,11 +39,11 @@ jobs:
     name: Save variations of revn
     runs-on: ubuntu-latest
     outputs:
-      # ghcr.io/ansys/mechanical:23.2.0
-      stable_container: '${{ env.DOCKER_PACKAGE }}:${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}'
       # ghcr.io/ansys/mechanical:24.1.0
+      stable_container: '${{ env.DOCKER_PACKAGE }}:${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}'
+      # ghcr.io/ansys/mechanical:24.2.0
       dev_container: '${{ env.DOCKER_PACKAGE }}:${{ env.DEV_DOCKER_IMAGE_VERSION }}'
-      # 24.1.0
+      # 24.2.0
       DEV_DOCKER_IMAGE_VERSION: '${{ env.DEV_DOCKER_IMAGE_VERSION }}'
     steps:
       - run: echo "Setting stable_container, dev_container, and DEV_DOCKER_IMAGE_VERSION values."
@@ -134,7 +136,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        mechanical-version: ['23.1.0', '23.2.0']
+        mechanical-version: ['23.1.0', '23.2.0', '${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}']
         experimental: [false]
         # The DEV_REVN is allowed to fail
         include:
