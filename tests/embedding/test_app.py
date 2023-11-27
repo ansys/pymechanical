@@ -135,12 +135,11 @@ def test_warning_message(test_env, pytestconfig, rootdir):
         stderr=subprocess.PIPE,
         env=test_env.env,
     )
-    check_warning.wait()
-    stderr = check_warning.stderr.read().decode()
+    stdout, stderr = check_warning.communicate()
 
     # If UserWarning & pythonnet are in the stderr output, set warning to True.
     # Otherwise, set warning to False
-    warning = True if "UserWarning" and "pythonnet" in stderr else False
+    warning = True if "UserWarning" and "pythonnet" in stderr.decode() else False
 
     # Assert warning message appears for embedded app
     assert warning, "UserWarning should appear in the output of the script"
@@ -158,16 +157,15 @@ def test_private_appdata(pytestconfig, rootdir):
     p1 = subprocess.Popen(
         [sys.executable, embedded_py, version, "True", "Set"], stdout=subprocess.PIPE
     )
-    p1.wait()
+    p1.communicate()
 
     # Check ShowTriad is True for private_appdata embedded sessions
     p2 = subprocess.Popen(
         [sys.executable, embedded_py, version, "True", "Run"], stdout=subprocess.PIPE
     )
-    p2.wait()
-    stdout = p2.stdout.read().decode()
+    stdout, stderr = p2.communicate()
 
-    assert "ShowTriad value is True" in stdout
+    assert "ShowTriad value is True" in stdout.decode()
 
 
 @pytest.mark.embedding
@@ -182,23 +180,22 @@ def test_normal_appdata(pytestconfig, rootdir):
     p1 = subprocess.Popen(
         [sys.executable, embedded_py, version, "False", "Set"], stdout=subprocess.PIPE
     )
-    p1.wait()
+    p1.communicate()
 
     # Check ShowTriad is False for regular embedded session
     p2 = subprocess.Popen(
         [sys.executable, embedded_py, version, "False", "Run"], stdout=subprocess.PIPE
     )
-    p2.wait()
-    stdout = p2.stdout.read().decode()
+    stdout, stderr = p2.communicate()
 
     # Set ShowTriad back to True for regular embedded session
     p3 = subprocess.Popen(
         [sys.executable, embedded_py, version, "False", "Reset"], stdout=subprocess.PIPE
     )
-    p3.wait()
+    p3.communicate()
 
     # Assert ShowTriad was set to False for regular embedded session
-    assert "ShowTriad value is False" in stdout
+    assert "ShowTriad value is False" in stdout.decode()
 
 
 @pytest.mark.embedding

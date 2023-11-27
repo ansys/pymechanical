@@ -23,9 +23,12 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
  - Flexible version for embedding & remote example ([#459](https://github.com/ansys/pymechanical/pull/459))
  - Fix obsolete API call in embedding test ([#456](https://github.com/ansys/pymechanical/pull/456))
  - Fix ignored env passing to cli ([#465](https://github.com/ansys/pymechanical/pull/465)
+ - Fix private appdata environment variables and folder layout ([#474](https://github.com/ansys/pymechanical/pull/474))
+ - Fix hanging embedding tests ([#498](https://github.com/ansys/pymechanical/pull/498))
 
 ### Changed
 
+ - Update python minimum requirement from 3.8 to 3.9 ([#484](https://github.com/ansys/pymechanical/pull/484))
  - remove version limit for protobuf ([#432](https://github.com/ansys/pymechanical/pull/432))
  - remove legacy configuration test ([#436](https://github.com/ansys/pymechanical/pull/436))
  - Update examples page ([#450](https://github.com/ansys/pymechanical/pull/450))
@@ -33,20 +36,27 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
  - Updated wording for revn-variations section ([#458](https://github.com/ansys/pymechanical/pull/458))
  - change which revisions are stable & dev in workflow ([#462](https://github.com/ansys/pymechanical/pull/462))
  - Update temporary file creation in test_app ([#466](https://github.com/ansys/pymechanical/pull/466))
+ - Remove .reuse and LICENSES directories & bump add-license-header version ([#496](https://github.com/ansys/pymechanical/pull/496))
 
 ### Dependencies
-- Update ``pre-commit`` ([#431](https://github.com/ansys/pymechanical/pull/431))
+- Update ``pre-commit`` ([#431](https://github.com/ansys/pymechanical/pull/431), [#471](https://github.com/ansys/pymechanical/pull/471), [#489](https://github.com/ansys/pymechanical/pull/489))
 - Bump `numpydoc` from 1.5.0 to 1.6.0 ([#428](https://github.com/ansys/pymechanical/pull/428))
-- Bump `ansys-sphinx-theme` from 0.11.2 to 0.12.3 ([#427](https://github.com/ansys/pymechanical/pull/427), [#463](https://github.com/ansys/pymechanical/pull/463))
-- Bump `grpcio` from 1.58.0 to 1.59.0 ([#429](https://github.com/ansys/pymechanical/pull/429))
+- Bump `ansys-sphinx-theme` from 0.11.2 to 0.12.5 ([#427](https://github.com/ansys/pymechanical/pull/427), [#463](https://github.com/ansys/pymechanical/pull/463), [#480](https://github.com/ansys/pymechanical/pull/480), [#493](https://github.com/ansys/pymechanical/pull/493))
+- Bump `grpcio` from 1.58.0 to 1.59.3 ([#429](https://github.com/ansys/pymechanical/pull/429), [#485](https://github.com/ansys/pymechanical/pull/485), [#504](https://github.com/ansys/pymechanical/pull/504))
 - Bump `actions/checkout` from 3 to 4 ([#426](https://github.com/ansys/pymechanical/pull/426))
 - Bump `pyvista` from 0.42.2 to 0.42.3 ([#446](https://github.com/ansys/pymechanical/pull/446))
 - Bump `ansys-sphinx-theme` from 0.12.1 to 0.12.2 ([#447](https://github.com/ansys/pymechanical/pull/447))
 - Bump `stefanzweifel/git-auto-commit-action` from 4 to 5 ([#448](https://github.com/ansys/pymechanical/pull/448))
-- Bump `numpy` from 1.26.0 to 1.26.1 ([#464](https://github.com/ansys/pymechanical/pull/464))
+- Bump `numpy` from 1.26.0 to 1.26.2 ([#464](https://github.com/ansys/pymechanical/pull/464), [#495](https://github.com/ansys/pymechanical/pull/495))
 - Bump `pypandoc` from 1.11 to 1.12 ([#470](https://github.com/ansys/pymechanical/pull/470))
-- Bump `imageio` from 2.31.5 to 2.31.6 ([#469](https://github.com/ansys/pymechanical/pull/469))
+- Bump `imageio` from 2.31.5 to 2.33.0 ([#469](https://github.com/ansys/pymechanical/pull/469), [#487](https://github.com/ansys/pymechanical/pull/487), [#503](https://github.com/ansys/pymechanical/pull/503))
 - Bump `add-license-headers` from v0.1.3 to v0.2.0 ([#472](https://github.com/ansys/pymechanical/pull/472))
+- Bump `panel` from 1.2.3 to 1.3.1 ([#479](https://github.com/ansys/pymechanical/pull/479), [#486](https://github.com/ansys/pymechanical/pull/486))
+- Bump `pytest` from 7.4.2 to 7.4.3 ([#482](https://github.com/ansys/pymechanical/pull/482))
+- Bump `tj-actions/changed-files` from 39 to 40 ([#477](https://github.com/ansys/pymechanical/pull/477))
+- Bump `plotly` from 5.17.0 to 5.18.0 ([#478](https://github.com/ansys/pymechanical/pull/478))
+- Bump `pandas` from 2.1.1 to 2.1.3 ([#481](https://github.com/ansys/pymechanical/pull/481), [#494](https://github.com/ansys/pymechanical/pull/494))
+- Bump `matplotlib` from 3.8.0 to 3.8.2 ([#488](https://github.com/ansys/pymechanical/pull/488), [#502](https://github.com/ansys/pymechanical/pull/502))
 
 ## [0.10.4](https://github.com/ansys/pymechanical/releases/tag/v0.10.4) - October 6 2023
 
