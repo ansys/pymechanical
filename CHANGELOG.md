@@ -13,7 +13,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - add readonly flag and assertion ([#441](https://github.com/ansys/pymechanical/pull/441))
 - Add PyMeilisearch in documentation ([#508](https://github.com/ansys/pymechanical/pull/508))
 - Add cheetsheat and improve example visibility ([#506](https://github.com/ansys/pymechanical/pull/506))
-
+- Add release note configuration ([#512](https://github.com/ansys/pymechanical/pull/512))
 ### Fixed
 
  - Fix enum printout ([#421](https://github.com/ansys/pymechanical/pull/421))
