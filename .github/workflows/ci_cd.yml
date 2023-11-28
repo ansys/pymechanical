@@ -156,7 +156,7 @@ jobs:
         experimental: [false]
         # The DEV_REVN is allowed to fail
         include:
-          - mechanical-version: ${{ needs.revn-variations.outputs.DEV_DOCKER_IMAGE_VERSION }}
+          - mechanical-version: ${{ needs.revn-variations.outputs.dev_docker_image_version }}
             experimental: true
     steps:
       - name: Login in Github Container registry
