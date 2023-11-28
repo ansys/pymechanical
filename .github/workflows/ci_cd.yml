@@ -2,8 +2,8 @@ name: GitHub CI
 
 on:
   pull_request:
-  # schedule:
-    # - cron: '00 22 * * *'  # UTC time, may start 5-15 mins later than scheduled time
+  schedule:
+    - cron: '00 22 * * *'  # UTC time, may start 5-15 mins later than scheduled time
   registry_package:
     # Run workflow when package is published or updated
     types: [published]
@@ -39,7 +39,7 @@ jobs:
   update_dev_revn:
     name: Update DEV_REVN value
     runs-on: ubuntu-latest
-    if: ${{ github.event.registry_package.package_version.container_metadata.tag.name == 'mechanical:24.2.0' }}
+    if: ${{ github.event_name == 'schedule' }} || ${{ github.event.registry_package.package_version.container_metadata.tag.name == 'mechanical:24.2.0' }}
     steps:
     - name: Update DEV_REVN variables
       run: |
