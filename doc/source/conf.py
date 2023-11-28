@@ -171,7 +171,6 @@ sphinx_gallery_conf = {
     "thumbnail_size": (350, 350),
 }
 
-
 # -- Options for HTML output -------------------------------------------------
 html_short_title = html_title = "PyMechanical"
 html_theme = "ansys_sphinx_theme"
@@ -204,6 +203,12 @@ html_theme_options = {
             "icon": "fa fa-comment fa-fw",
         },
     ],
+    "use_meilisearch": {
+        "api_key": os.getenv("MEILISEARCH_PUBLIC_API_KEY", ""),
+        "index_uids": {
+            f"pymemchanical-v{get_version_match(version).replace('.', '-')}": "PyMechanical",
+        },
+    },
 }
 
 html_sidebars = {
