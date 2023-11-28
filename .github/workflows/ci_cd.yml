@@ -37,7 +37,7 @@ concurrency:
 
 jobs:
   update_dev_revn:
-    name: Update DEV_REVN if registry package run
+    name: Update DEV_REVN value
     runs-on: ubuntu-latest
     if: ${{ github.event.registry_package.package_version.container_metadata.tag.name == 'mechanical:24.2.0' }}
     steps:
@@ -149,7 +149,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        mechanical-version: ['23.1.0', '23.2.0', '${{ needs.revn-variations.outputs.stable_version }}']
+        mechanical-version: ['23.1.0', '${{ needs.revn-variations.outputs.stable_version }}']
         experimental: [false]
         # The DEV_REVN is allowed to fail
         include:
