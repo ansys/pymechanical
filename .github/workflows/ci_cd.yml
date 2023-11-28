@@ -2,12 +2,11 @@ name: GitHub CI
 
 on:
   pull_request:
-  schedule:
-    - cron: '00 22 * * *'  # UTC time, may start 5-15 mins later than scheduled time
-  # registry_package:
-      # Run workflow when package is published or updated
-      # types: [published, updated]
-      # image_name: "mechanical" 
+  # schedule:
+    # - cron: '00 22 * * *'  # UTC time, may start 5-15 mins later than scheduled time
+  registry_package:
+    # Run workflow when package is published or updated
+    types: [published]
   push:
     tags:
       - "*"
@@ -24,27 +23,37 @@ env:
   DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
   MAIN_PYTHON_VERSION: '3.10'
   # embedding-tests and launch-tests steps use the DEV_REVN & DEV_DOCKER_IMAGE_VERSION
-  DEV_REVN: '242'
-  DEV_DOCKER_IMAGE_VERSION: '24.2.0'
-  LATEST_STABLE_REVN: '241'
-  LATEST_STABLE_DOCKER_IMAGE_VERSION: '24.1.0'
+  LATEST_STABLE_REVN: '232'
+  LATEST_STABLE_DOCKER_IMAGE_VERSION: '23.2.0'
+  DEV_REVN: '241'
+  DEV_DOCKER_IMAGE_VERSION: '24.1.0'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  update_dev_revn:
+    name: Update DEV_REVN if registry package run
+    runs-on: ubuntu-latest
+    if: ${{ github.event.registry_package.package_version.container_metadata.tag.name == 'mechanical:24.2.0' }}
+    steps:
+    - name: Update DEV_REVN variables
+      run: |
+        echo "DEV_REVN='242'" >> $GITHUB_ENV
+        echo "DEV_DOCKER_IMAGE_VERSION='24.2.0'" >> $GITHUB_ENV
+  
   revn-variations:
     name: Save variations of revn
     runs-on: ubuntu-latest
     outputs:
-      # 24.1.0
+      # 23.2.0
       stable_version: '${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}'
-      # ghcr.io/ansys/mechanical:24.1.0
+      # ghcr.io/ansys/mechanical:23.2.0
       stable_container: '${{ env.DOCKER_PACKAGE }}:${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}'
-      # ghcr.io/ansys/mechanical:24.2.0
+      # ghcr.io/ansys/mechanical:24.1.0
       dev_container: '${{ env.DOCKER_PACKAGE }}:${{ env.DEV_DOCKER_IMAGE_VERSION }}'
-      # 24.2.0
+      # 24.1.0
       DEV_DOCKER_IMAGE_VERSION: '${{ env.DEV_DOCKER_IMAGE_VERSION }}'
     steps:
       - run: echo "Setting stable_container, dev_container, and DEV_DOCKER_IMAGE_VERSION values."
