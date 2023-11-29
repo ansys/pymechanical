@@ -15,5 +15,6 @@ dependencies:
 - pyproject.toml
 - requirements/*
 CI/CD:
+- docker/**/*
 - .github/**/*
 - .ci/**/*
