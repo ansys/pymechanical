@@ -55,7 +55,7 @@ jobs:
     steps:
       - id: save-versions
         run: |
-          if [ ${{ github.event_name == 'schedule' }} ] || [ ${{ github.event.registry_package.package_version.container_metadata.tag.name == 'mechanical:24.2.0' }} ]; then
+          if ${{ github.event_name == 'schedule' }} || ${{ github.event.registry_package.package_version.container_metadata.tag.name == 'mechanical:24.2.0' }}; then
             # 242
             echo "dev_revn=${{ env.SCHEDULED_REVN }}" >> $GITHUB_OUTPUT
             # ghcr.io/ansys/mechanical:24.2.0
