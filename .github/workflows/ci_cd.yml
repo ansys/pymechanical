@@ -54,7 +54,7 @@ jobs:
       dev_docker_image_version: ${{ steps.save-versions.outputs.dev_docker_image_version }}
     steps:
       - id: save-versions
-      - run: |
+        run: |
           if [ ${{ github.event_name == 'schedule' }} ] || [ ${{ github.event_name == 'registry_package' }} ] && [ ${{ github.event.registry_package.package_version.container_metadata.tag.name == 'mechanical:24.2.0' }} ]; then
             # 242
             echo "dev_revn='${{ env.SCHEDULED_REVN }}'" >> $GITHUB_OUTPUT
