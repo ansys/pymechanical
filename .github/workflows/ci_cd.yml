@@ -42,20 +42,20 @@ jobs:
     name: Save variations of revn
     runs-on: ubuntu-latest
     outputs:
-      # 23.2.0
+      # '23.2.0'
       stable_version: '${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}'
       # ghcr.io/ansys/mechanical:23.2.0
       stable_container: ${{ env.DOCKER_PACKAGE }}:${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}
-      # 241 or 242
+      # '241' or '242'
       dev_revn: '${{ steps.save-versions.outputs.dev_revn }}'
       # ghcr.io/ansys/mechanical:24.1.0 or ghcr.io/ansys/mechanical:24.2.0
       dev_container: ${{ steps.save-versions.outputs.dev_container }}
-      # 24.1.0 or 24.2.0
+      # '24.1.0' or '24.2.0'
       dev_docker_image_version: '${{ steps.save-versions.outputs.dev_docker_image_version }}'
     steps:
       - id: save-versions
         run: |
-          if [ ${{ github.event_name == 'schedule' }} ] || [ ${{ github.event_name == 'registry_package' }} ] && [ ${{ github.event.registry_package.package_version.container_metadata.tag.name == 'mechanical:24.2.0' }} ]; then
+          if [ ${{ github.event_name == 'schedule' }} ] || [ ${{ github.event.registry_package.package_version.container_metadata.tag.name == 'mechanical:24.2.0' }} ]; then
             # 242
             echo "dev_revn=${{ env.SCHEDULED_REVN }}" >> $GITHUB_OUTPUT
             # ghcr.io/ansys/mechanical:24.2.0
