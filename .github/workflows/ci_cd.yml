@@ -151,20 +151,28 @@ jobs:
               exit 1
           fi
 
+  config-matrix:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        run: |
+          if github.event_name == 'push' && contains(github.ref, 'refs/tags'); then
+            echo "matrix={\"mechanical-version\":['23.1.0', '23.2.0', '24.1.0', '24.2.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
+          else
+            echo "matrix={\"mechanical-version\":['${{ needs.revn-variations.outputs.dev_docker_image_version }}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
+          fi
+
   tests:
     name: Testing and coverage - Mechanical ${{ matrix.mechanical-version }}
     runs-on: public-ubuntu-latest-8-cores
-    needs: [smoke-tests, revn-variations]
+    needs: [smoke-tests, revn-variations, config-matrix]
     continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
-      matrix:
-        mechanical-version: ['23.1.0', '${{ needs.revn-variations.outputs.stable_version }}']
-        experimental: [false]
-        # The DEV_REVN is allowed to fail
-        include:
-          - mechanical-version: ${{ needs.revn-variations.outputs.dev_docker_image_version }}
-            experimental: true
+      matrix: ${{ fromJSON(needs.config-matrix.outputs.matrix) }}
     steps:
       - name: Login in Github Container registry
         uses: docker/login-action@v3
