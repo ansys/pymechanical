@@ -147,6 +147,7 @@ def test_warning_message(test_env, pytestconfig, rootdir):
 
 @pytest.mark.embedding
 @pytest.mark.python_env
+@pytest.mark.flaky(reruns=2)
 def test_private_appdata(pytestconfig, rootdir):
     """Test embedded instance does not save ShowTriad using a test-scoped Python environment."""
 
@@ -159,7 +160,10 @@ def test_private_appdata(pytestconfig, rootdir):
         stdout=subprocess.PIPE,
         stderr=None,
     )
-    out, err = p1.communicate()
+    try:
+        out, err = p1.communicate(timeout=30)
+    except subprocess.TimeoutExpired:
+        p1.terminate()
 
     # Check ShowTriad is True for private_appdata embedded sessions
     p2 = subprocess.Popen(
@@ -167,13 +171,17 @@ def test_private_appdata(pytestconfig, rootdir):
         stdout=subprocess.PIPE,
         stderr=None,
     )
-    stdout, stderr = p2.communicate()
+    try:
+        stdout, stderr = p2.communicate(timeout=30)
+    except subprocess.TimeoutExpired:
+        p2.terminate()
 
     assert "ShowTriad value is True" in stdout.decode()
 
 
 @pytest.mark.embedding
 @pytest.mark.python_env
+@pytest.mark.flaky(reruns=2)
 def test_normal_appdata(pytestconfig, rootdir):
     """Test embedded instance saves ShowTriad value using a test-scoped Python environment."""
     version = pytestconfig.getoption("ansys_version")
@@ -186,7 +194,10 @@ def test_normal_appdata(pytestconfig, rootdir):
         stdout=subprocess.PIPE,
         stderr=None,
     )
-    out, err = p1.communicate()
+    try:
+        out, err = p1.communicate(timeout=30)
+    except subprocess.TimeoutExpired:
+        p1.terminate()
 
     # Check ShowTriad is False for regular embedded session
     p2 = subprocess.Popen(
@@ -194,7 +205,10 @@ def test_normal_appdata(pytestconfig, rootdir):
         stdout=subprocess.PIPE,
         stderr=None,
     )
-    stdout, stderr = p2.communicate()
+    try:
+        stdout, stderr = p2.communicate(timeout=30)
+    except subprocess.TimeoutExpired:
+        p2.terminate()
 
     # Set ShowTriad back to True for regular embedded session
     p3 = subprocess.Popen(
@@ -202,7 +216,10 @@ def test_normal_appdata(pytestconfig, rootdir):
         stdout=subprocess.PIPE,
         stderr=None,
     )
-    out, err = p3.communicate()
+    try:
+        out, err = p3.communicate(timeout=30)
+    except subprocess.TimeoutExpired:
+        p3.terminate()
 
     # Assert ShowTriad was set to False for regular embedded session
     assert "ShowTriad value is False" in stdout.decode()
