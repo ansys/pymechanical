@@ -159,7 +159,7 @@ def test_private_appdata(pytestconfig, rootdir):
         stdout=subprocess.PIPE,
         stderr=None,
     )
-    p1.communicate()
+    out, err = p1.communicate()
 
     # Check ShowTriad is True for private_appdata embedded sessions
     p2 = subprocess.Popen(
@@ -186,7 +186,7 @@ def test_normal_appdata(pytestconfig, rootdir):
         stdout=subprocess.PIPE,
         stderr=None,
     )
-    p1.communicate()
+    out, err = p1.communicate()
 
     # Check ShowTriad is False for regular embedded session
     p2 = subprocess.Popen(
@@ -202,7 +202,7 @@ def test_normal_appdata(pytestconfig, rootdir):
         stdout=subprocess.PIPE,
         stderr=None,
     )
-    p3.communicate()
+    out, err = p3.communicate()
 
     # Assert ShowTriad was set to False for regular embedded session
     assert "ShowTriad value is False" in stdout.decode()
