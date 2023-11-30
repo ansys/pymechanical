@@ -155,13 +155,17 @@ def test_private_appdata(pytestconfig, rootdir):
 
     # Set ShowTriad to False
     p1 = subprocess.Popen(
-        [sys.executable, embedded_py, version, "True", "Set"], stdout=subprocess.PIPE, stderr=None
+        [sys.executable, embedded_py, version, "True", "Set"],
+        stdout=subprocess.PIPE,
+        stderr=None,
     )
     p1.communicate()
 
     # Check ShowTriad is True for private_appdata embedded sessions
     p2 = subprocess.Popen(
-        [sys.executable, embedded_py, version, "True", "Run"], stdout=subprocess.PIPE, stderr=None
+        [sys.executable, embedded_py, version, "True", "Run"],
+        stdout=subprocess.PIPE,
+        stderr=None,
     )
     stdout, stderr = p2.communicate()
 
@@ -178,19 +182,25 @@ def test_normal_appdata(pytestconfig, rootdir):
 
     # Set ShowTriad to False
     p1 = subprocess.Popen(
-        [sys.executable, embedded_py, version, "False", "Set"], stdout=subprocess.PIPE, stderr=None
+        [sys.executable, embedded_py, version, "False", "Set"],
+        stdout=subprocess.PIPE,
+        stderr=None,
     )
     p1.communicate()
 
     # Check ShowTriad is False for regular embedded session
     p2 = subprocess.Popen(
-        [sys.executable, embedded_py, version, "False", "Run"], stdout=subprocess.PIPE, stderr=None
+        [sys.executable, embedded_py, version, "False", "Run"],
+        stdout=subprocess.PIPE,
+        stderr=None,
     )
     stdout, stderr = p2.communicate()
 
     # Set ShowTriad back to True for regular embedded session
     p3 = subprocess.Popen(
-        [sys.executable, embedded_py, version, "False", "Reset"], stdout=subprocess.PIPE, stderr=None
+        [sys.executable, embedded_py, version, "False", "Reset"],
+        stdout=subprocess.PIPE,
+        stderr=None,
     )
     p3.communicate()
 
