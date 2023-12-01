@@ -43,7 +43,6 @@ def test_app_repr(embedded_app):
 
 @pytest.mark.embedding
 @pytest.mark.minimum_version(241)
-@pytest.mark.skip()
 def test_deprecation_warning(embedded_app):
     struct = embedded_app.Model.AddStaticStructuralAnalysis()
     with pytest.warns(UserWarning):
@@ -137,6 +136,7 @@ def test_warning_message(test_env, pytestconfig, rootdir):
         env=test_env.env,
     )
     stdout, stderr = check_warning.communicate()
+    check_warning.terminate()
 
     # If UserWarning & pythonnet are in the stderr output, set warning to True.
     # Otherwise, set warning to False
@@ -162,6 +162,7 @@ def test_private_appdata(pytestconfig, rootdir):
         stderr=None,
     )
     p1.communicate(timeout=30)
+    p1.terminate()
 
     # Check ShowTriad is True for private_appdata embedded sessions
     p2 = subprocess.Popen(
@@ -170,6 +171,7 @@ def test_private_appdata(pytestconfig, rootdir):
         stderr=None,
     )
     stdout, stderr = p2.communicate(timeout=30)
+    p2.terminate()
 
     assert "ShowTriad value is True" in stdout.decode()
 
@@ -190,6 +192,7 @@ def test_normal_appdata(pytestconfig, rootdir):
         stderr=None,
     )
     p1.communicate(timeout=30)
+    p1.terminate()
 
     # Check ShowTriad is False for regular embedded session
     p2 = subprocess.Popen(
@@ -198,6 +201,7 @@ def test_normal_appdata(pytestconfig, rootdir):
         stderr=None,
     )
     stdout, stderr = p2.communicate(timeout=30)
+    p2.terminate()
 
     # Set ShowTriad back to True for regular embedded session
     p3 = subprocess.Popen(
@@ -206,6 +210,7 @@ def test_normal_appdata(pytestconfig, rootdir):
         stderr=None,
     )
     p3.communicate(timeout=30)
+    p3.terminate()
 
     # Assert ShowTriad was set to False for regular embedded session
     assert "ShowTriad value is False" in stdout.decode()
