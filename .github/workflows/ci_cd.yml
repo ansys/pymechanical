@@ -279,6 +279,7 @@ jobs:
           ANSYS_WORKBENCH_LOGGING: 0
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
           NUM_CORES: 1
+        shell: bash
         run: |
           xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.dev_revn }}/aisol/.workbench_lite pytest -m embedding | sed 1d | while read i; do   echo $i >> pytest_output.txt;    if [[ $i == *"slowest durations"* ]]; then     pkill pytest;   fi; done
 
