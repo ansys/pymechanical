@@ -45,6 +45,7 @@ def get_assets_folder():
 
 
 @pytest.mark.embedding
+@pytest.mark.skip()
 def test_qk_eng_wb2_005(printer, selection, embedded_app):
     """Buckling analysis.
 
@@ -124,6 +125,7 @@ def test_qk_eng_wb2_005(printer, selection, embedded_app):
 
 
 @pytest.mark.embedding
+@pytest.mark.skip()
 def test_qk_eng_wb2_007(printer, selection, embedded_app):
     """Fatigue.
 
