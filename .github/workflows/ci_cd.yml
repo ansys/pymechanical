@@ -4,9 +4,9 @@ on:
   pull_request:
   schedule:
     - cron: '00 22 * * *'  # UTC time, may start 5-15 mins later than scheduled time
-  registry_package:
+  # registry_package:
     # Run workflow when package is published or updated
-    types: [published]
+    # types: [published]
   push:
     tags:
       - "*"
@@ -38,39 +38,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  revn-variations:
-    name: Save variations of revn
-    runs-on: ubuntu-latest
-    outputs:
-      # '23.2.0'
-      stable_version: '${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}'
-      # ghcr.io/ansys/mechanical:23.2.0
-      stable_container: ${{ env.DOCKER_PACKAGE }}:${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}
-      # '241' or '242'
-      dev_revn: '${{ steps.save-versions.outputs.dev_revn }}'
-      # ghcr.io/ansys/mechanical:24.1.0 or ghcr.io/ansys/mechanical:24.2.0
-      dev_container: ${{ steps.save-versions.outputs.dev_container }}
-      # '24.1.0' or '24.2.0'
-      dev_docker_image_version: '${{ steps.save-versions.outputs.dev_docker_image_version }}'
-    steps:
-      - id: save-versions
-        run: |
-          if ${{ github.event_name == 'schedule' }} || ${{ github.event.registry_package.package_version.container_metadata.tag.name == 'mechanical:24.2.0' }}; then
-            # 242
-            echo "dev_revn=${{ env.SCHEDULED_REVN }}" >> $GITHUB_OUTPUT
-            # ghcr.io/ansys/mechanical:24.2.0
-            echo "dev_container=${{ env.DOCKER_PACKAGE }}:${{ env.SCHEDULED_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
-            # 24.2.0
-            echo "dev_docker_image_version=${{ env.SCHEDULED_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
-          else
-            # 241
-            echo "dev_revn=${{ env.DEV_REVN }}" >> $GITHUB_OUTPUT
-            # ghcr.io/ansys/mechanical:24.1.0
-            echo "dev_container=${{ env.DOCKER_PACKAGE }}:${{ env.DEV_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
-            # 24.1.0
-            echo "dev_docker_image_version=${{ env.DEV_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
-          fi
-
   style:
     name: Code style
     runs-on: ubuntu-latest
@@ -151,6 +118,39 @@ jobs:
               exit 1
           fi
 
+  revn-variations:
+    name: Save variations of revn
+    runs-on: ubuntu-latest
+    outputs:
+      # '23.2.0'
+      stable_version: '${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}'
+      # ghcr.io/ansys/mechanical:23.2.0
+      stable_container: ${{ env.DOCKER_PACKAGE }}:${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}
+      # '241' or '242'
+      dev_revn: '${{ steps.save-versions.outputs.dev_revn }}'
+      # ghcr.io/ansys/mechanical:24.1.0 or ghcr.io/ansys/mechanical:24.2.0
+      dev_container: ${{ steps.save-versions.outputs.dev_container }}
+      # '24.1.0' or '24.2.0'
+      dev_docker_image_version: '${{ steps.save-versions.outputs.dev_docker_image_version }}'
+    steps:
+      - id: save-versions
+        run: |
+          if ${{ github.event_name == 'schedule' }}; then  # || ${{ github.event.registry_package.package_version.container_metadata.tag.name == 'mechanical:24.2.0' }}; then
+            # 242
+            echo "dev_revn=${{ env.SCHEDULED_REVN }}" >> $GITHUB_OUTPUT
+            # ghcr.io/ansys/mechanical:24.2.0
+            echo "dev_container=${{ env.DOCKER_PACKAGE }}:${{ env.SCHEDULED_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
+            # 24.2.0
+            echo "dev_docker_image_version=${{ env.SCHEDULED_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
+          else
+            # 241
+            echo "dev_revn=${{ env.DEV_REVN }}" >> $GITHUB_OUTPUT
+            # ghcr.io/ansys/mechanical:24.1.0
+            echo "dev_container=${{ env.DOCKER_PACKAGE }}:${{ env.DEV_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
+            # 24.1.0
+            echo "dev_docker_image_version=${{ env.DEV_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
+          fi
+
   config-matrix:
     runs-on: ubuntu-latest
     needs: [revn-variations]
@@ -159,7 +159,7 @@ jobs:
     steps:
       - id: set-matrix
         run: |
-          if ${{ github.event_name == 'push' }} && ${{ contains(github.ref, 'refs/tags') }}; then
+          if ${{ github.event_name == 'push' }} && ${{ contains(github.ref, 'refs/tags') }} || ${{ github.event_name == 'schedule' }}; then
             echo "matrix={\"mechanical-version\":['23.1.0', '23.2.0', '24.1.0', '24.2.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           else
             echo "matrix={\"mechanical-version\":['${{ needs.revn-variations.outputs.dev_docker_image_version }}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
@@ -281,7 +281,7 @@ jobs:
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
           NUM_CORES: 1
         run: |
-          xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.dev_revn }}/aisol/.workbench_lite pytest -m embedding | tee pytest_output.txt || true
+          gdb -ex run -ex bt -ex quit --args xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.dev_revn }}/aisol/.workbench_lite pytest -m embedding | tee pytest_output.txt || true
           cat pytest_output.txt
 
           # Check if failure occurred
