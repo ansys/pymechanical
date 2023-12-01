@@ -53,7 +53,6 @@ tests = [
     "pytest-cov==4.1.0",
     "pytest-print==1.0.0",
     "pytest-rerunfailures==13.0",
-    "pytest-timeout==2.2.0",
 ]
 doc = [
     "Sphinx==7.2.6",
