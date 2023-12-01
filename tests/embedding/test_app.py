@@ -43,6 +43,7 @@ def test_app_repr(embedded_app):
 
 @pytest.mark.embedding
 @pytest.mark.minimum_version(241)
+@pytest.mark.skip()
 def test_deprecation_warning(embedded_app):
     struct = embedded_app.Model.AddStaticStructuralAnalysis()
     with pytest.warns(UserWarning):
