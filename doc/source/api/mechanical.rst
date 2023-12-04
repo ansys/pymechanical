@@ -3,8 +3,10 @@
 Mechanical
 ==========
 
-Mechanical class-specific methods and attributes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This section describes the methods in the
+:class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>` class for working
+with a Mechanical gRPC server.
+
 .. currentmodule:: ansys.mechanical.core
 
 .. autoclass:: ansys.mechanical.core.mechanical.Mechanical
