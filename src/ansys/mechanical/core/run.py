@@ -180,7 +180,7 @@ def cli(
     if not revision:
         exe = atp.get_mechanical_path()  # check for saved mechanical path
         if exe:
-            version = atp.version_from_path(exe)
+            version = atp.version_from_path("mechanical", exe)
         else:
             exe, version = atp.find_mechanical()
             version = int(version * 10)
