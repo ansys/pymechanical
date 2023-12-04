@@ -281,7 +281,7 @@ jobs:
           NUM_CORES: 1
         shell: bash
         run: |
-          trap 'xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.dev_revn }}/aisol/.workbench_lite pytest -m embedding' SIGABRT
+          trap 'xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.dev_revn }}/aisol/.workbench_lite pytest -m embedding | tee nohup.out' SIGABRT
 
           # sleep while command is running
           while true
