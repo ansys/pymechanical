@@ -286,14 +286,14 @@ jobs:
           echo $?
 
           # Check if failure occurred
-          # output=$(grep -c "FAILURES" nohup.out)
-          # if [ $output -eq 0 ]; then
-          #   echo "Pytest execution succeeded"
-          #   exit 0
-          # else
-          #   echo "Pytest execution failed"
-          #   exit 1
-          # fi
+          output=$(grep -c "FAILURES" nohup.out)
+          if [ $output -eq 0 ]; then
+            echo "Pytest execution succeeded"
+            exit 0
+          else
+            echo "Pytest execution failed"
+            exit 1
+          fi
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v3
