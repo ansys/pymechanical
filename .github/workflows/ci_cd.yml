@@ -240,7 +240,6 @@ jobs:
       options: --entrypoint /bin/bash
     strategy:
       fail-fast: false
-      max-parallel: 1
       matrix:
         python-version: ['3.9', '3.10', '3.11', '3.12']
 
@@ -282,7 +281,13 @@ jobs:
           NUM_CORES: 1
         shell: bash
         run: |
-          nohup timeout 300 xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.dev_revn }}/aisol/.workbench_lite pytest -m embedding
+          nohup timeout 300 xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.dev_revn }}/aisol/.workbench_lite pytest -m embedding &
+          
+          # Get nohup PID
+          pid=$!
+
+          # Wait for nohup to finish running
+          wait $pid
 
           # Check if failure occurred
 
