@@ -281,16 +281,23 @@ jobs:
           NUM_CORES: 1
         shell: bash
         run: |
-          nohup timeout 300 xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.dev_revn }}/aisol/.workbench_lite pytest -m embedding &
+          trap 'xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.dev_revn }}/aisol/.workbench_lite pytest -m embedding' SIGABRT
+
+          # sleep while command is running
+          while true
+          do
+            sleep 10
+          done
+
+          # nohup timeout 300 xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.dev_revn }}/aisol/.workbench_lite pytest -m embedding &
           
           # Get nohup PID
-          pid=$!
+          # pid=$!
 
           # Wait for nohup to finish running
-          wait $pid
+          # wait $pid
 
           # Check if failure occurred
-
           output=$(grep -c "FAILURES" nohup.out)
           if [ $output -eq 0 ]; then
             echo "Pytest execution succeeded"
