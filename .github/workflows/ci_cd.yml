@@ -281,6 +281,7 @@ jobs:
           NUM_CORES: 1
         shell: bash
         run: |
+          trap "" SIGABRT
           nohup xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.dev_revn }}/aisol/.workbench_lite pytest -m embedding
 
           # Check if failure occurred
