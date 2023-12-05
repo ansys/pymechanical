@@ -20,7 +20,8 @@ on:
         options:
         - '242'
         - '241'
-        default: '241'  # ensure this matches env.DEV_REVN
+        - '232'
+        default: '232'  # ensure this matches env.EXPERIMENTAL_REVN
   push:
     tags:
       - "*"
@@ -39,8 +40,8 @@ env:
   RESET_DOC_BUILD_CACHE: 0
   MAIN_PYTHON_VERSION: '3.10'
   STABLE_REVN: '231'  # ensure this matches inputs.stable-revn.default
-  EXPERIMENTAL_REVN: '232'
-  DEV_REVN: '241'  # ensure this matches inputs.experimental-revn.default
+  EXPERIMENTAL_REVN: '232' # ensure this matches inputs.experimental-revn.default
+  DEV_REVN: '241'
   MEILISEARCH_API_KEY: ${{ secrets.MEILISEARCH_API_KEY }}
   MEILISEARCH_HOST_URL: ${{ vars.MEILISEARCH_HOST_URL }}
   MEILISEARCH_PUBLIC_API_KEY: ${{ secrets.MEILISEARCH_PUBLIC_API_KEY }}
