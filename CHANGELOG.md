@@ -14,6 +14,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Add PyMeilisearch in documentation ([#508](https://github.com/ansys/pymechanical/pull/508))
 - Add cheetsheat and improve example visibility ([#506](https://github.com/ansys/pymechanical/pull/506))
 - Fix ansys-mechanical finding path ([#516](https://github.com/ansys/pymechanical/pull/516))
+
 ### Fixed
 
  - Fix enum printout ([#421](https://github.com/ansys/pymechanical/pull/421))
