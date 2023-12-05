@@ -18,9 +18,9 @@ on:
         type: choice
         description: 'The experimental mechanical install revision number.'
         options:
+        - '242'
         - '241'
         - '232'
-        - '231'
         default: '232'  # ensure this matches env.EXPERIMENTAL_REVN
   push:
     tags:
@@ -40,7 +40,7 @@ env:
   RESET_DOC_BUILD_CACHE: 0
   MAIN_PYTHON_VERSION: '3.10'
   STABLE_REVN: '231'  # ensure this matches inputs.stable-revn.default
-  EXPERIMENTAL_REVN: '232'  # ensure this matches inputs.experimental-revn.default
+  EXPERIMENTAL_REVN: '232' # ensure this matches inputs.experimental-revn.default
   DEV_REVN: '241'
   MEILISEARCH_API_KEY: ${{ secrets.MEILISEARCH_API_KEY }}
   MEILISEARCH_HOST_URL: ${{ vars.MEILISEARCH_HOST_URL }}
@@ -90,7 +90,7 @@ jobs:
 
           if ${{ github.event_name == 'schedule' }}; then
               # Scheduled runs use the DEV_REVN environment variable
-              parse_revns "${{ env.DEV_REVN }}" "${{ env.DEV_REVN }}"
+              parse_revns "${{ env.DEV_REVN }}" "242"
           elif ${{ github.event_name == 'workflow_dispatch' }}; then
               # Manual workflow dispatches use the user-selected revision numbers
               parse_revns "${{ inputs.stable-revn }}" "${{ inputs.experimental-revn }}"

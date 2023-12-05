@@ -13,7 +13,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - add readonly flag and assertion ([#441](https://github.com/ansys/pymechanical/pull/441))
 - Add PyMeilisearch in documentation ([#508](https://github.com/ansys/pymechanical/pull/508))
 - Add cheetsheat and improve example visibility ([#506](https://github.com/ansys/pymechanical/pull/506))
-- Fix ansys-mechanical finding path ([#516](https://github.com/ansys/pymechanical/pull/516))
+- Add 242 to scheduled nightly run ([#519](https://github.com/ansys/pymechanical/pull/519))
 
 ### Fixed
 
@@ -28,6 +28,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
  - Fix ignored env passing to cli ([#465](https://github.com/ansys/pymechanical/pull/465)
  - Fix private appdata environment variables and folder layout ([#474](https://github.com/ansys/pymechanical/pull/474))
  - Fix hanging embedding tests ([#498](https://github.com/ansys/pymechanical/pull/498))
+ - Fix ansys-mechanical finding path ([#516](https://github.com/ansys/pymechanical/pull/516))
 
 ### Changed
 
@@ -60,6 +61,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `pandas` from 2.1.1 to 2.1.3 ([#481](https://github.com/ansys/pymechanical/pull/481), [#494](https://github.com/ansys/pymechanical/pull/494))
 - Bump `matplotlib` from 3.8.0 to 3.8.2 ([#488](https://github.com/ansys/pymechanical/pull/488), [#502](https://github.com/ansys/pymechanical/pull/502))
 - Bump `sphinx-gallery` from 0.14.0 to 0.15.0 ([#509](https://github.com/ansys/pymechanical/pull/509))
+- Bump `actions/labeler` from 4 to 5 ([#517](https://github.com/ansys/pymechanical/pull/517))
 
 ## [0.10.4](https://github.com/ansys/pymechanical/releases/tag/v0.10.4) - October 6 2023
 
