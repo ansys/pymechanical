@@ -80,20 +80,26 @@ This package is required to use PyMechanical.
 
    >>> find_mechanical(version=231)  # for specific version
 
-   'C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe', 23.1)  # windows
-   /usr/ansys_inc/v231/aisol/.workbench, 23.1) # Linux
+   ('C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe', 23.1)  # windows
+   ('/usr/ansys_inc/v231/aisol/.workbench', 23.1) # Linux
 
 If you install Ansys in a directory other than the default or typical location,
-you can save this directory path using the ``save_mechanical_path`` function.
-This enables the use of the ``find_mechanical``. For more details, refer to the :ref:`ref_ansys_tools_path_api`.
+you can save this directory path using the ``save_mechanical_path`` function. Then use
+``get_mechanical_path`` and ``version_from_path`` functions to verify the path and version.
+For more details, refer to the :ref:`ref_ansys_tools_path_api`.
 
 .. code:: pycon
 
    >>> from ansys.tools.path import save_mechanical_path, find_mechanical
    >>> save_mechanical_path("home/username/ansys_inc/v231/aisol/.workbench")
-   >>> find_mechanical()
+   >>> path = get_mechanical_path()
+   >>> print(path)
 
-   ('home/username/ansys_inc/v231/aisol/.workbench', 23.1)
+   /home/username/ansys_inc/v242/aisol/.workbench
+
+   >>> version = version_from_path("mechanical", path)
+
+   242
 
 Verify a remote session
 ^^^^^^^^^^^^^^^^^^^^^^^
