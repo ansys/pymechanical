@@ -281,7 +281,7 @@ jobs:
           NUM_CORES: 1
         run: |
           {
-            nohup xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.dev_revn }}/aisol/.workbench_lite pytest -m embedding | tee nohup.out &&
+            nohup xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.dev_revn }}/aisol/.workbench_lite pytest -m embedding &
             wait $!
           } || {
             true
