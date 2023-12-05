@@ -13,6 +13,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - add readonly flag and assertion ([#441](https://github.com/ansys/pymechanical/pull/441))
 - Add PyMeilisearch in documentation ([#508](https://github.com/ansys/pymechanical/pull/508))
 - Add cheetsheat and improve example visibility ([#506](https://github.com/ansys/pymechanical/pull/506))
+- Add 242 to scheduled nightly run ([#519](https://github.com/ansys/pymechanical/pull/519))
 
 ### Fixed
 
@@ -53,13 +54,14 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `pypandoc` from 1.11 to 1.12 ([#470](https://github.com/ansys/pymechanical/pull/470))
 - Bump `imageio` from 2.31.5 to 2.33.0 ([#469](https://github.com/ansys/pymechanical/pull/469), [#487](https://github.com/ansys/pymechanical/pull/487), [#503](https://github.com/ansys/pymechanical/pull/503))
 - Bump `add-license-headers` from v0.1.3 to v0.2.0 ([#472](https://github.com/ansys/pymechanical/pull/472))
-- Bump `panel` from 1.2.3 to 1.3.2 ([#479](https://github.com/ansys/pymechanical/pull/479), [#486](https://github.com/ansys/pymechanical/pull/486), [#510](https://github.com/ansys/pymechanical/pull/510))
+- Bump `panel` from 1.2.3 to 1.3.4 ([#479](https://github.com/ansys/pymechanical/pull/479), [#486](https://github.com/ansys/pymechanical/pull/486), [#510](https://github.com/ansys/pymechanical/pull/510), [#518](https://github.com/ansys/pymechanical/pull/518))
 - Bump `pytest` from 7.4.2 to 7.4.3 ([#482](https://github.com/ansys/pymechanical/pull/482))
 - Bump `tj-actions/changed-files` from 39 to 40 ([#477](https://github.com/ansys/pymechanical/pull/477))
 - Bump `plotly` from 5.17.0 to 5.18.0 ([#478](https://github.com/ansys/pymechanical/pull/478))
 - Bump `pandas` from 2.1.1 to 2.1.3 ([#481](https://github.com/ansys/pymechanical/pull/481), [#494](https://github.com/ansys/pymechanical/pull/494))
 - Bump `matplotlib` from 3.8.0 to 3.8.2 ([#488](https://github.com/ansys/pymechanical/pull/488), [#502](https://github.com/ansys/pymechanical/pull/502))
 - Bump `sphinx-gallery` from 0.14.0 to 0.15.0 ([#509](https://github.com/ansys/pymechanical/pull/509))
+- Bump `actions/labeler` from 4 to 5 ([#517](https://github.com/ansys/pymechanical/pull/517))
 
 ## [0.10.4](https://github.com/ansys/pymechanical/releases/tag/v0.10.4) - October 6 2023
 
