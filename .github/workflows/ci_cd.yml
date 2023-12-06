@@ -281,14 +281,17 @@ jobs:
           NUM_CORES: 1
         run: |
           run_embedding_tests() {
-            nohup xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.dev_revn }}/aisol/.workbench_lite pytest -m embedding &
+            nohup xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.dev_revn }}/aisol/.workbench_lite pytest -m embedding > pytest_output.txt &
             wait $!
           }
           
           run_embedding_tests || true
 
+          # Display pytest output
+          cat pytest_output.txt
+
           # Check if failure occurred
-          output=$(grep -c "FAILED" nohup.out)
+          output=$(grep -c "FAILED" pytest_output.txt)
           echo "output: $output"
 
           if [ $output -eq 0 ]; then
