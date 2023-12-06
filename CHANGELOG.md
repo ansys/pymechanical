@@ -28,6 +28,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
  - Fix ignored env passing to cli ([#465](https://github.com/ansys/pymechanical/pull/465)
  - Fix private appdata environment variables and folder layout ([#474](https://github.com/ansys/pymechanical/pull/474))
  - Fix hanging embedding tests ([#498](https://github.com/ansys/pymechanical/pull/498))
+ - Fix ansys-mechanical finding path ([#516](https://github.com/ansys/pymechanical/pull/516))
 
 ### Changed
 

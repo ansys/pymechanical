@@ -1,3 +1,5 @@
+.. _ref_logger_api:
+
 Logging
 =======
 To make the logging of events consistent, PyMechanical has a specific
