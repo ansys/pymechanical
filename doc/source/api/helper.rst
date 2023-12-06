@@ -1,4 +1,4 @@
-.. _launcher_api:
+.. _ref_launcher_api:
 
 Helper functions
 ================
@@ -10,8 +10,5 @@ These methods provide helper functions for launching Mechanical, closing Mechani
    :toctree: _autosummary
 
 
-   change_default_mechanical_path
-   close_all_local_instances
-   find_mechanical
    launch_mechanical
-
+   close_all_local_instances

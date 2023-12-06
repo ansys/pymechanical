@@ -178,7 +178,12 @@ def cli(
             raise Exception("Cannot open in server mode with an input script.")
 
     if not revision:
-        exe, version = atp.find_mechanical()
+        exe = atp.get_mechanical_path()  # check for saved mechanical path
+        if exe:
+            version = atp.version_from_path("mechanical", exe)
+        else:
+            exe, version = atp.find_mechanical()
+            version = int(version * 10)
     else:
         exe, version = atp.find_mechanical(version=revision)
 

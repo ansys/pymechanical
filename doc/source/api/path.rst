@@ -1,4 +1,4 @@
-.. _ansys_tools_path_api:
+.. _ref_ansys_tools_path_api:
 
 Ansys path tools
 ================
