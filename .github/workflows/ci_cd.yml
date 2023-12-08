@@ -266,6 +266,7 @@ jobs:
 
       - name: Install packages for testing
         run: |
+          python -m pip install ansys-mechanical-env
           pip install .[tests]
 
       - name: Set environment variable
@@ -280,19 +281,10 @@ jobs:
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
           NUM_CORES: 1
         run: |
-          run_embedding_tests() {
-            nohup xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.dev_revn }}/aisol/.workbench_lite pytest -m embedding > pytest_output.txt &
-            wait $!
-          }
-          
-          run_embedding_tests || true
-
-          # Display pytest output
-          cat pytest_output.txt
+          xvfb-run mechanical-env pytest -m embedding | tee pytest_output.txt || true
 
           # Check if failure occurred
           output=$(grep -c "FAILED" pytest_output.txt)
-          echo "output: $output"
 
           if [ $output -eq 0 ]; then
             echo "Pytest execution succeeded"
