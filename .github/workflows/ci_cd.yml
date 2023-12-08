@@ -23,12 +23,10 @@ env:
   DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
   MAIN_PYTHON_VERSION: '3.10'
   # embedding-tests and launch-tests steps use the DEV_REVN & DEV_DOCKER_IMAGE_VERSION
-  LATEST_STABLE_REVN: '232'
-  LATEST_STABLE_DOCKER_IMAGE_VERSION: '23.2.0'
-  DEV_REVN: '241'
-  DEV_DOCKER_IMAGE_VERSION: '24.1.0'
-  SCHEDULED_REVN: '242'
-  SCHEDULED_DOCKER_IMAGE_VERSION: '24.2.0'
+  LATEST_STABLE_REVN: '241'
+  LATEST_STABLE_DOCKER_IMAGE_VERSION: '24.1.0'
+  DEV_REVN: '242'
+  DEV_DOCKER_IMAGE_VERSION: '24.2.0'
   MEILISEARCH_API_KEY: ${{ secrets.MEILISEARCH_API_KEY }}
   MEILISEARCH_HOST_URL: ${{ vars.MEILISEARCH_HOST_URL }}
   MEILISEARCH_PUBLIC_API_KEY: ${{ secrets.MEILISEARCH_PUBLIC_API_KEY }}
@@ -122,10 +120,8 @@ jobs:
     name: Save variations of revn
     runs-on: ubuntu-latest
     outputs:
-      # '23.2.0'
-      stable_version: '${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}'
       # ghcr.io/ansys/mechanical:23.2.0
-      stable_container: ${{ env.DOCKER_PACKAGE }}:${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}
+      stable_container: ${{ steps.save-versions.outputs.stable_container }}
       # '241' or '242'
       dev_revn: '${{ steps.save-versions.outputs.dev_revn }}'
       # ghcr.io/ansys/mechanical:24.1.0 or ghcr.io/ansys/mechanical:24.2.0
@@ -137,19 +133,21 @@ jobs:
         run: |
           if ${{ github.event_name == 'schedule' }}; then  # || ${{ github.event.registry_package.package_version.container_metadata.tag.name == 'mechanical:24.2.0' }}; then
             # 242
-            echo "dev_revn=${{ env.SCHEDULED_REVN }}" >> $GITHUB_OUTPUT
+            echo "dev_revn=${{ env.DEV_REVN }}" >> $GITHUB_OUTPUT
             # ghcr.io/ansys/mechanical:24.2.0
-            echo "dev_container=${{ env.DOCKER_PACKAGE }}:${{ env.SCHEDULED_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
+            echo "dev_container=${{ env.DOCKER_PACKAGE }}:${{ env.DEV_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
             # 24.2.0
-            echo "dev_docker_image_version=${{ env.SCHEDULED_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
+            echo "dev_docker_image_version=${{ env.DEV_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
           else
             # 241
-            echo "dev_revn=${{ env.DEV_REVN }}" >> $GITHUB_OUTPUT
+            echo "dev_revn=${{ env.LATEST_STABLE_REVN }}" >> $GITHUB_OUTPUT
             # ghcr.io/ansys/mechanical:24.1.0
-            echo "dev_container=${{ env.DOCKER_PACKAGE }}:${{ env.DEV_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
+            echo "dev_container=${{ env.DOCKER_PACKAGE }}:${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
             # 24.1.0
-            echo "dev_docker_image_version=${{ env.DEV_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
+            echo "dev_docker_image_version=${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
           fi
+
+          echo "stable_container=${{ env.DOCKER_PACKAGE }}:${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
 
   config-matrix:
     runs-on: ubuntu-latest
@@ -268,9 +266,6 @@ jobs:
         run: |
           python -m pip install ansys-mechanical-env
           pip install .[tests]
-
-      - name: Set environment variable
-        run: echo "ANSYSCL${{ needs.revn-variations.outputs.dev_revn }}_DIR=/install/ansys_inc/v${{ needs.revn-variations.outputs.dev_revn }}/licensingclient" >> $GITHUB_ENV
 
       - name: Unit Testing and coverage
         env:
@@ -434,9 +429,6 @@ jobs:
       - name: Install Python requirements
         run: |
           pip3 install -e .[doc]
-
-      - name: Set environment variable
-        run: echo "ANSYSCL${{ env.LATEST_STABLE_REVN }}_DIR=/install/ansys_inc/v${{ env.LATEST_STABLE_REVN }}/licensingclient" >> $GITHUB_ENV
 
       - name: Build docs
         env:

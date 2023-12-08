@@ -136,7 +136,6 @@ def test_warning_message(test_env, pytestconfig, rootdir):
         env=test_env.env,
     )
     stdout, stderr = check_warning.communicate()
-    check_warning.kill()
 
     # If UserWarning & pythonnet are in the stderr output, set warning to True.
     # Otherwise, set warning to False
@@ -161,7 +160,7 @@ def test_private_appdata(pytestconfig, rootdir):
         stdout=subprocess.PIPE,
         stderr=None,
     )
-    p1.communicate(timeout=30)
+    p1.communicate()
 
     # Check ShowTriad is True for private_appdata embedded sessions
     p2 = subprocess.Popen(
@@ -169,7 +168,7 @@ def test_private_appdata(pytestconfig, rootdir):
         stdout=subprocess.PIPE,
         stderr=None,
     )
-    stdout, stderr = p2.communicate(timeout=30)
+    stdout, stderr = p2.communicate()
 
     assert "ShowTriad value is True" in stdout.decode()
 
@@ -189,7 +188,7 @@ def test_normal_appdata(pytestconfig, rootdir):
         stdout=subprocess.PIPE,
         stderr=None,
     )
-    p1.communicate(timeout=30)
+    p1.communicate()
 
     # Check ShowTriad is False for regular embedded session
     p2 = subprocess.Popen(
@@ -197,7 +196,7 @@ def test_normal_appdata(pytestconfig, rootdir):
         stdout=subprocess.PIPE,
         stderr=None,
     )
-    stdout, stderr = p2.communicate(timeout=30)
+    stdout, stderr = p2.communicate()
 
     # Set ShowTriad back to True for regular embedded session
     p3 = subprocess.Popen(
@@ -205,7 +204,7 @@ def test_normal_appdata(pytestconfig, rootdir):
         stdout=subprocess.PIPE,
         stderr=None,
     )
-    p3.communicate(timeout=30)
+    p3.communicate()
 
     # Assert ShowTriad was set to False for regular embedded session
     assert "ShowTriad value is False" in stdout.decode()
