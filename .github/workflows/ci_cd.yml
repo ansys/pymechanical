@@ -281,7 +281,7 @@ jobs:
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
           NUM_CORES: 1
         run: |
-          xvfb-run mechanical-env pytest -m embedding | tee pytest_output.txt || true
+          xvfb-run mechanical-env pytest -m embedding || true | tee pytest_output.txt 
 
           # Check if failure occurred
           output=$(grep -c "FAILED" pytest_output.txt)
