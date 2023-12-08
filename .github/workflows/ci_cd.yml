@@ -282,7 +282,7 @@ jobs:
           run_pytest() {
             timeout 240 xvfb-run mechanical-env pytest -m embedding > pytest_output.txt
             retcode=$?
-            if [ $retcode -eq 124 ]; then
+            if [ $retcode -eq 2 ]; then
               run_pytest
             fi
           }
