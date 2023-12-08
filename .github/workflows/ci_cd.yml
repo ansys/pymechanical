@@ -22,7 +22,7 @@ env:
   PACKAGE_NAME: ansys-mechanical-core
   DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
   MAIN_PYTHON_VERSION: '3.10'
-  # embedding-tests and launch-tests steps use the DEV_REVN & DEV_DOCKER_IMAGE_VERSION
+  # embedding-tests and launch-tests steps use the LATEST_STABLE_REVN & LATEST_STABLE_DOCKER_IMAGE_VERSION
   LATEST_STABLE_REVN: '241'
   LATEST_STABLE_DOCKER_IMAGE_VERSION: '24.1.0'
   DEV_REVN: '242'
@@ -125,7 +125,7 @@ jobs:
       # '241' or '242'
       dev_revn: '${{ steps.save-versions.outputs.dev_revn }}'
       # ghcr.io/ansys/mechanical:24.1.0 or ghcr.io/ansys/mechanical:24.2.0
-      dev_container: ${{ steps.save-versions.outputs.dev_container }}
+      test_container: ${{ steps.save-versions.outputs.test_container }}
       # '24.1.0' or '24.2.0'
       dev_docker_image_version: '${{ steps.save-versions.outputs.dev_docker_image_version }}'
     steps:
@@ -135,14 +135,14 @@ jobs:
             # 242
             echo "dev_revn=${{ env.DEV_REVN }}" >> $GITHUB_OUTPUT
             # ghcr.io/ansys/mechanical:24.2.0
-            echo "dev_container=${{ env.DOCKER_PACKAGE }}:${{ env.DEV_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
+            echo "test_container=${{ env.DOCKER_PACKAGE }}:${{ env.DEV_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
             # 24.2.0
             echo "dev_docker_image_version=${{ env.DEV_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
           else
             # 241
             echo "dev_revn=${{ env.LATEST_STABLE_REVN }}" >> $GITHUB_OUTPUT
             # ghcr.io/ansys/mechanical:24.1.0
-            echo "dev_container=${{ env.DOCKER_PACKAGE }}:${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
+            echo "test_container=${{ env.DOCKER_PACKAGE }}:${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
             # 24.1.0
             echo "dev_docker_image_version=${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
           fi
@@ -234,7 +234,7 @@ jobs:
     timeout-minutes: 15
     needs: [style, revn-variations]
     container:
-      image: ${{ needs.revn-variations.outputs.dev_container }}
+      image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
     strategy:
       fail-fast: false
@@ -277,14 +277,14 @@ jobs:
           NUM_CORES: 1
         run: |
           run_pytest() {
-            timeout 240 xvfb-run mechanical-env pytest -m embedding > pytest_output.txt || true
+            timeout 240 xvfb-run mechanical-env pytest -m embedding > pytest_output.txt
             retcode=$?
             if [ $retcode -eq 124 ]; then
               run_pytest
             fi
           }
 
-          run_pytest
+          run_pytest || true
 
           cat pytest_output.txt
           #
@@ -319,7 +319,7 @@ jobs:
     name: Launch testing and coverage
     runs-on: public-ubuntu-latest-8-cores
     container:
-      image: ${{ needs.revn-variations.outputs.dev_container }}
+      image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
     needs: [ smoke-tests, revn-variations]
     strategy:
@@ -428,6 +428,7 @@ jobs:
 
       - name: Install Python requirements
         run: |
+          python -m pip install ansys-mechanical-env
           pip3 install -e .[doc]
 
       - name: Build docs
