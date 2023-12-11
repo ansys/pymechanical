@@ -291,7 +291,6 @@ jobs:
 
       - name: Install packages for testing
         run: |
-          python -m pip install ansys-mechanical-env
           pip install .[tests]
 
       - name: Unit Testing and coverage
@@ -446,7 +445,6 @@ jobs:
 
       - name: Install Python requirements
         run: |
-          python -m pip install ansys-mechanical-env
           pip3 install -e .[doc]
 
       - name: Build docs
