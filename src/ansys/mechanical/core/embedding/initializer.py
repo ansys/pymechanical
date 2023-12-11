@@ -57,8 +57,8 @@ def _get_default_linux_version() -> int:
 
     On linux, embedding is only possible by setting environment variables before starting python.
     The version will then be fixed  to a specific version, based on those env vars.
-    The documented way to set those variables is to run python using the .workbench_lite script,
-    which is distributed with the unified installer.
+    The documented way to set those variables is to run python using the mechanical-env script,
+    which can be used after installing ansys-mechanical-env: ``pip install ansys-mechanical-env``.
     That script doesn't quite set an env var to the version number, like 232, however it does set
     the env var AWP_ROOT{version} to some path. So here, we can search for which of those env
     vars are set assuming that the user did not set any others.
