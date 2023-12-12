@@ -31,7 +31,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
  - Fix ansys-mechanical finding path ([#516](https://github.com/ansys/pymechanical/pull/516))
 
 ### Changed
-
+ - Update ``pre-commit`` ([#528](https://github.com/ansys/pymechanical/pull/528))
  - Update python minimum requirement from 3.8 to 3.9 ([#484](https://github.com/ansys/pymechanical/pull/484))
  - remove version limit for protobuf ([#432](https://github.com/ansys/pymechanical/pull/432))
  - remove legacy configuration test ([#436](https://github.com/ansys/pymechanical/pull/436))
