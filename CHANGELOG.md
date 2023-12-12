@@ -62,6 +62,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `matplotlib` from 3.8.0 to 3.8.2 ([#488](https://github.com/ansys/pymechanical/pull/488), [#502](https://github.com/ansys/pymechanical/pull/502))
 - Bump `sphinx-gallery` from 0.14.0 to 0.15.0 ([#509](https://github.com/ansys/pymechanical/pull/509))
 - Bump `actions/labeler` from 4 to 5 ([#517](https://github.com/ansys/pymechanical/pull/517))
+- Bump `actions/setup-python` from 4 to 5 ([#523](https://github.com/ansys/pymechanical/pull/523))
 
 ## [0.10.4](https://github.com/ansys/pymechanical/releases/tag/v0.10.4) - October 6 2023
 
