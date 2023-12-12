@@ -58,7 +58,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `pytest` from 7.4.2 to 7.4.3 ([#482](https://github.com/ansys/pymechanical/pull/482))
 - Bump `tj-actions/changed-files` from 39 to 40 ([#477](https://github.com/ansys/pymechanical/pull/477))
 - Bump `plotly` from 5.17.0 to 5.18.0 ([#478](https://github.com/ansys/pymechanical/pull/478))
-- Bump `pandas` from 2.1.1 to 2.1.3 ([#481](https://github.com/ansys/pymechanical/pull/481), [#494](https://github.com/ansys/pymechanical/pull/494))
+- Bump `pandas` from 2.1.1 to 2.1.4 ([#481](https://github.com/ansys/pymechanical/pull/481), [#494](https://github.com/ansys/pymechanical/pull/494), [#525](https://github.com/ansys/pymechanical/pull/525))
 - Bump `matplotlib` from 3.8.0 to 3.8.2 ([#488](https://github.com/ansys/pymechanical/pull/488), [#502](https://github.com/ansys/pymechanical/pull/502))
 - Bump `sphinx-gallery` from 0.14.0 to 0.15.0 ([#509](https://github.com/ansys/pymechanical/pull/509))
 - Bump `actions/labeler` from 4 to 5 ([#517](https://github.com/ansys/pymechanical/pull/517))
