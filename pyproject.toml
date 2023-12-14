@@ -39,6 +39,7 @@ dependencies = [
     "grpcio>=1.30.0",
     "protobuf>=3.12.2",
     "tqdm>=4.45.0",
+    "ansys-mechanical-env>=0.1.0",
 ]
 
 [project.urls]
