@@ -60,7 +60,7 @@ def _start_application(configuration: AddinConfiguration, version, db_file) -> "
     addin_configuration_name = configuration.addin_configuration
     # Starting with version 241 we can pass a configuration name to the constructor
     # of Application
-    if version >= 241:
+    if int(version) >= 241:
         return Ansys.Mechanical.Embedding.Application(db_file, addin_configuration_name)
     else:
         return Ansys.Mechanical.Embedding.Application(db_file)
@@ -164,7 +164,10 @@ class App:
 
     def save(self, path=None):
         """Save the project."""
-        self.DataModel.Project.Save(path)
+        if path is not None:
+            self.DataModel.Project.Save(path)
+        else:
+            self.DataModel.Project.Save()
 
     def save_as(self, path):
         """Save the project as."""
@@ -226,6 +229,13 @@ class App:
     def Model(self):
         """Return the ExtAPI object."""
         return GetterWrapper(self._app, lambda app: app.DataModel.Project.Model)
+
+    @property
+    def readonly(self):
+        """Return whether the Mechanical object is read-only."""
+        import Ansys
+
+        return Ansys.ACT.Mechanical.MechanicalAPI.Instance.ReadOnlyMode
 
     @property
     def version(self):

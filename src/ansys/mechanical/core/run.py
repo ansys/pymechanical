@@ -41,7 +41,7 @@ from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 async def _read_and_display(cmd, env):
     """Read command's stdout and stderr and display them as they are processed."""
     # start process
-    process = await asyncio.create_subprocess_exec(*cmd, stdout=PIPE, stderr=PIPE)
+    process = await asyncio.create_subprocess_exec(*cmd, stdout=PIPE, stderr=PIPE, env=env)
 
     # read child's stdout/stderr concurrently
     stdout, stderr = [], []  # stderr, stdout buffers
@@ -178,7 +178,12 @@ def cli(
             raise Exception("Cannot open in server mode with an input script.")
 
     if not revision:
-        exe, version = atp.find_mechanical()
+        exe = atp.get_mechanical_path()  # check for saved mechanical path
+        if exe:
+            version = atp.version_from_path("mechanical", exe)
+        else:
+            exe, version = atp.find_mechanical()
+            version = int(version * 10)
     else:
         exe, version = atp.find_mechanical(version=revision)
 

@@ -1,9 +1,69 @@
 # CHANGELOG
 
-All notable changes to Python.NET will be documented in this file. This
+All notable changes to PyMechanical will be documented in this file. This
 project adheres to [Semantic Versioning](https://semver.org/).
 
 This document follows the conventions laid out in [Keep a CHANGELOG](https://keepachangelog.com/en/1.0.0).
+
+## [0.10.5](https://github.com/ansys/pymechanical/releases/tag/v0.10.5) - December 15 2023
+
+### Added
+
+- Add codeql.yml for security checks ([#423](https://github.com/ansys/pymechanical/pull/423))
+- add readonly flag and assertion ([#441](https://github.com/ansys/pymechanical/pull/441))
+- Add PyMeilisearch in documentation ([#508](https://github.com/ansys/pymechanical/pull/508))
+- Add cheetsheat and improve example visibility ([#506](https://github.com/ansys/pymechanical/pull/506))
+- Add 242 to scheduled nightly run ([#519](https://github.com/ansys/pymechanical/pull/519))
+- Add mechanical-env to workflow ([#521](https://github.com/ansys/pymechanical/pull/521))
+
+### Fixed
+
+ - Fix enum printout ([#421](https://github.com/ansys/pymechanical/pull/421))
+ - fix appdata tests ([#425](https://github.com/ansys/pymechanical/pull/425))
+ - Run all embedding tests & fix appdata tests ([#433](https://github.com/ansys/pymechanical/pull/433))
+ - unset all logging environment variables ([#434](https://github.com/ansys/pymechanical/pull/434))
+ - pytest --ansys-version dependent on existing install ([#439](https://github.com/ansys/pymechanical/pull/439))
+ - Fix app.save method for saving already saved project in current session ([#453](https://github.com/ansys/pymechanical/pull/453))
+ - Flexible version for embedding & remote example ([#459](https://github.com/ansys/pymechanical/pull/459))
+ - Fix obsolete API call in embedding test ([#456](https://github.com/ansys/pymechanical/pull/456))
+ - Fix ignored env passing to cli ([#465](https://github.com/ansys/pymechanical/pull/465)
+ - Fix private appdata environment variables and folder layout ([#474](https://github.com/ansys/pymechanical/pull/474))
+ - Fix hanging embedding tests ([#498](https://github.com/ansys/pymechanical/pull/498))
+ - Fix ansys-mechanical finding path ([#516](https://github.com/ansys/pymechanical/pull/516))
+
+### Changed
+ - Update ``pre-commit`` ([#528](https://github.com/ansys/pymechanical/pull/528))
+ - Update python minimum requirement from 3.8 to 3.9 ([#484](https://github.com/ansys/pymechanical/pull/484))
+ - remove version limit for protobuf ([#432](https://github.com/ansys/pymechanical/pull/432))
+ - remove legacy configuration test ([#436](https://github.com/ansys/pymechanical/pull/436))
+ - Update examples page ([#450](https://github.com/ansys/pymechanical/pull/450))
+ - remove unneeded try/except ([#457](https://github.com/ansys/pymechanical/pull/457))
+ - Updated wording for revn-variations section ([#458](https://github.com/ansys/pymechanical/pull/458))
+ - Update temporary file creation in test_app ([#466](https://github.com/ansys/pymechanical/pull/466))
+ - Remove .reuse and LICENSES directories & bump add-license-header version ([#496](https://github.com/ansys/pymechanical/pull/496))
+
+### Dependencies
+- Update ``pre-commit`` ([#431](https://github.com/ansys/pymechanical/pull/431), [#471](https://github.com/ansys/pymechanical/pull/471), [#489](https://github.com/ansys/pymechanical/pull/489))
+- Bump `numpydoc` from 1.5.0 to 1.6.0 ([#428](https://github.com/ansys/pymechanical/pull/428))
+- Bump `ansys-sphinx-theme` from 0.11.2 to 0.12.5 ([#427](https://github.com/ansys/pymechanical/pull/427), [#463](https://github.com/ansys/pymechanical/pull/463), [#480](https://github.com/ansys/pymechanical/pull/480), [#493](https://github.com/ansys/pymechanical/pull/493))
+- Bump `grpcio` from 1.58.0 to 1.60.0 ([#429](https://github.com/ansys/pymechanical/pull/429), [#485](https://github.com/ansys/pymechanical/pull/485), [#504](https://github.com/ansys/pymechanical/pull/504), [#527](https://github.com/ansys/pymechanical/pull/527))
+- Bump `actions/checkout` from 3 to 4 ([#426](https://github.com/ansys/pymechanical/pull/426))
+- Bump `pyvista` from 0.42.2 to 0.43.0 ([#446](https://github.com/ansys/pymechanical/pull/446), [#526](https://github.com/ansys/pymechanical/pull/526))
+- Bump `ansys-sphinx-theme` from 0.12.1 to 0.12.2 ([#447](https://github.com/ansys/pymechanical/pull/447))
+- Bump `stefanzweifel/git-auto-commit-action` from 4 to 5 ([#448](https://github.com/ansys/pymechanical/pull/448))
+- Bump `numpy` from 1.26.0 to 1.26.2 ([#464](https://github.com/ansys/pymechanical/pull/464), [#495](https://github.com/ansys/pymechanical/pull/495))
+- Bump `pypandoc` from 1.11 to 1.12 ([#470](https://github.com/ansys/pymechanical/pull/470))
+- Bump `imageio` from 2.31.5 to 2.33.1 ([#469](https://github.com/ansys/pymechanical/pull/469), [#487](https://github.com/ansys/pymechanical/pull/487), [#503](https://github.com/ansys/pymechanical/pull/503), [#524](https://github.com/ansys/pymechanical/pull/524))
+- Bump `add-license-headers` from v0.1.3 to v0.2.0 ([#472](https://github.com/ansys/pymechanical/pull/472))
+- Bump `panel` from 1.2.3 to 1.3.4 ([#479](https://github.com/ansys/pymechanical/pull/479), [#486](https://github.com/ansys/pymechanical/pull/486), [#510](https://github.com/ansys/pymechanical/pull/510), [#518](https://github.com/ansys/pymechanical/pull/518))
+- Bump `pytest` from 7.4.2 to 7.4.3 ([#482](https://github.com/ansys/pymechanical/pull/482))
+- Bump `tj-actions/changed-files` from 39 to 40 ([#477](https://github.com/ansys/pymechanical/pull/477))
+- Bump `plotly` from 5.17.0 to 5.18.0 ([#478](https://github.com/ansys/pymechanical/pull/478))
+- Bump `pandas` from 2.1.1 to 2.1.4 ([#481](https://github.com/ansys/pymechanical/pull/481), [#494](https://github.com/ansys/pymechanical/pull/494), [#525](https://github.com/ansys/pymechanical/pull/525))
+- Bump `matplotlib` from 3.8.0 to 3.8.2 ([#488](https://github.com/ansys/pymechanical/pull/488), [#502](https://github.com/ansys/pymechanical/pull/502))
+- Bump `sphinx-gallery` from 0.14.0 to 0.15.0 ([#509](https://github.com/ansys/pymechanical/pull/509))
+- Bump `actions/labeler` from 4 to 5 ([#517](https://github.com/ansys/pymechanical/pull/517))
+- Bump `actions/setup-python` from 4 to 5 ([#523](https://github.com/ansys/pymechanical/pull/523))
 
 ## [0.10.4](https://github.com/ansys/pymechanical/releases/tag/v0.10.4) - October 6 2023
 

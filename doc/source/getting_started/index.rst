@@ -23,8 +23,8 @@ page on the Ansys website.
 
 Install the package
 -------------------
-The ``ansys.mechanical.core`` package supports Python 3.8 through
-Python 3.11 on Windows, Linux, and Mac.
+The latest ``ansys.mechanical.core`` package supports Python 3.9 through
+Python 3.12 on Windows, Linux, and Mac.
 
 You should consider installing PyMechanical in a virtual environment.
 For more information, see Python's
@@ -46,26 +46,60 @@ machine architecture from the `Releases page <https://github.com/ansys/pymechani
 of the PyMechanical repository.
 
 Each wheelhouse archive contains all the Python wheels necessary to install
-PyMechanical from scratch on Windows and Linux for Python 3.8 through Python 3.10. You can install
+PyMechanical from scratch on Windows and Linux for Python 3.9 through Python 3.12. You can install
 a wheelhouse archive on an isolated system with a fresh Python installation or on a
 virtual environment.
 
-For example, on Linux with Python 3.8, unzip the wheelhouse archive and install it with
+For example, on Linux with Python 3.9, unzip the wheelhouse archive and install it with
 this code:
 
 .. code::
 
-   unzip ansys-mechanical-core-v0.7.dev0-wheelhouse-Linux-3.8 wheelhouse
+   unzip ansys-mechanical-core-v0.11.dev0-wheelhouse-Linux-3.9 wheelhouse
    pip install ansys-mechanical-core -f wheelhouse --no-index --upgrade --ignore-installed
 
-If you are on Windows with Python 3.9, unzip the ``ansys-mechanical-core-v0.7.dev0-wheelhouse-Windows-3.9``
+If you are on Windows with Python 3.9, unzip the ``ansys-mechanical-core-v0.11.dev0-wheelhouse-Windows-3.9``
 wheelhouse archive to a ``wheelhouse`` directory and then install it using ``pip`` like
 in the preceding example.
 
 Verify your installation
 ------------------------
+
 The way that you verify your installation depends on whether you want to run
 Mechanical using a remote session or an embedded instance.
+Before running either, you must first verify that you can find
+the installed version of Mechanical using the ``ansys.tools.path`` package.
+This package is required to use PyMechanical.
+
+.. code:: pycon
+
+   >>> from ansys.tools.path import find_mechanical
+   >>> find_mechanical()
+
+   or
+
+   >>> find_mechanical(version=231)  # for specific version
+
+   ('C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe', 23.1)  # windows
+   ('/usr/ansys_inc/v231/aisol/.workbench', 23.1) # Linux
+
+If you install Ansys in a directory other than the default or typical location,
+you can save this directory path using the ``save_mechanical_path`` function. Then use
+``get_mechanical_path`` and ``version_from_path`` functions to verify the path and version.
+For more details, refer to the :ref:`ref_ansys_tools_path_api`.
+
+.. code:: pycon
+
+   >>> from ansys.tools.path import save_mechanical_path, find_mechanical
+   >>> save_mechanical_path("home/username/ansys_inc/v231/aisol/.workbench")
+   >>> path = get_mechanical_path()
+   >>> print(path)
+
+   /home/username/ansys_inc/v242/aisol/.workbench
+
+   >>> version = version_from_path("mechanical", path)
+
+   242
 
 Verify a remote session
 ^^^^^^^^^^^^^^^^^^^^^^^

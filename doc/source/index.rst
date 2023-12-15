@@ -7,11 +7,11 @@ PyMechanical documentation |version|
 
 
    getting_started/index
-   user_guide_scripting/index
+   examples/index
    user_guide_session/index
    user_guide_embedding/index
+   user_guide_scripting/index
    api/index
-   examples/index
    contributing
 
 

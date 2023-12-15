@@ -5,10 +5,10 @@ build-backend = "flit_core.buildapi"
 [project]
 # Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
 name = "ansys-mechanical-core"
-version = "0.10.4"
+version = "0.10.5"
 description = "A python wrapper for Ansys Mechanical"
 readme = "README.rst"
-requires-python = ">=3.8,<4.0"
+requires-python = ">=3.9,<4.0"
 license = {file = "LICENSE"}
 authors = [
     {name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"},
@@ -21,24 +21,25 @@ classifiers = [
     "Development Status :: 4 - Beta",
     'Intended Audience :: Science/Research',
     'Topic :: Scientific/Engineering :: Information Analysis',
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
 dependencies = [
     "ansys_api_mechanical==0.1.1",
     "ansys-platform-instancemanagement>=1.0.1",
-    "ansys-pythonnet>=3.1.0rc1",
+    "ansys-pythonnet>=3.1.0rc2",
     "ansys-tools-path>=0.3.1",
     "appdirs>=1.4.0",
     "click>=8.1.3", # for CLI interface
     "clr-loader==0.2.6",
     "grpcio>=1.30.0",
-    "protobuf>=3.12.2,<3.21.0",
+    "protobuf>=3.12.2",
     "tqdm>=4.45.0",
+    "ansys-mechanical-env>=0.1.0",
 ]
 
 [project.urls]
@@ -49,30 +50,33 @@ Tracker = "https://github.com/ansys/pymechanical/issues"
 
 [project.optional-dependencies]
 tests = [
-    "pytest==7.4.2",
+    "pytest==7.4.3",
     "pytest-cov==4.1.0",
     "pytest-print==1.0.0",
 ]
 doc = [
     "Sphinx==7.2.6",
-    "ansys-sphinx-theme==0.11.2",
-    "grpcio==1.58.0",
+    "ansys-sphinx-theme==0.12.5",
+    "grpcio==1.60.0",
     "imageio-ffmpeg==0.4.9",
-    "imageio==2.31.4",
+    "imageio==2.33.1",
     "jupyter_sphinx==0.4.0",
     "jupyterlab>=3.2.8",
-    "matplotlib==3.8.0",
-    "numpydoc==1.5.0",
-    "plotly==5.17.0",
-    "pypandoc==1.11",
+    "matplotlib==3.8.2",
+    "numpy==1.26.2",
+    "numpydoc==1.6.0",
+    "pandas==2.1.4",
+    "panel==1.3.4",
+    "plotly==5.18.0",
+    "pypandoc==1.12",
     "pytest-sphinx==0.5.0",
     "pythreejs==2.4.2",
-    "pyvista==0.42.2",
+    "pyvista==0.43.0",
     "sphinx-autobuild==2021.3.14",
-    "sphinx-autodoc-typehints==1.24.0",
+    "sphinx-autodoc-typehints==1.25.2",
     "sphinx-copybutton==0.5.2",
     "sphinx_design==0.5.0",
-    "sphinx-gallery==0.14.0",
+    "sphinx-gallery==0.15.0",
     "sphinx-notfound-page==1.0.0",
     "sphinxcontrib-websupport==1.2.6",
     "sphinxemoji==0.2.0",

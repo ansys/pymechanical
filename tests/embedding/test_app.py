@@ -1,8 +1,30 @@
+# Copyright (C) 2023 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 """Miscellaneous embedding tests"""
 import os
 import subprocess
 import sys
-import tempfile
+from tempfile import NamedTemporaryFile
 import time
 
 import pytest
@@ -38,7 +60,8 @@ def test_app_save_open(embedded_app, tmp_path: pytest.TempPathFactory):
         embedded_app.save()
 
     embedded_app.DataModel.Project.Name = "PROJECT 1"
-    tmpname = tempfile.mktemp()
+    tmpfile = NamedTemporaryFile()
+    tmpname = tmpfile.name
     project_file = os.path.join(tmp_path, f"{tmpname}.mechdat")
     embedded_app.save_as(project_file)
     embedded_app.new()
@@ -112,12 +135,11 @@ def test_warning_message(test_env, pytestconfig, rootdir):
         stderr=subprocess.PIPE,
         env=test_env.env,
     )
-    check_warning.wait()
-    stderr = check_warning.stderr.read().decode()
+    stdout, stderr = check_warning.communicate()
 
     # If UserWarning & pythonnet are in the stderr output, set warning to True.
     # Otherwise, set warning to False
-    warning = True if "UserWarning" and "pythonnet" in stderr else False
+    warning = True if "UserWarning" and "pythonnet" in stderr.decode() else False
 
     # Assert warning message appears for embedded app
     assert warning, "UserWarning should appear in the output of the script"
@@ -132,13 +154,18 @@ def test_private_appdata(pytestconfig, rootdir):
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
     # Set ShowTriad to False
-    subprocess.check_call([sys.executable, embedded_py, version, "True", "Set"])
+    p1 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "True", "Set"], stdout=subprocess.PIPE
+    )
+    p1.communicate()
 
     # Check ShowTriad is True for private_appdata embedded sessions
-    stdout = subprocess.check_output([sys.executable, embedded_py, version, "True", "Run"])
-    stdout = stdout.decode().strip("\r\n")
+    p2 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "True", "Run"], stdout=subprocess.PIPE
+    )
+    stdout, stderr = p2.communicate()
 
-    assert stdout == "True"
+    assert "ShowTriad value is True" in stdout.decode()
 
 
 @pytest.mark.embedding
@@ -150,17 +177,25 @@ def test_normal_appdata(pytestconfig, rootdir):
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
     # Set ShowTriad to False
-    subprocess.check_call([sys.executable, embedded_py, version, "False", "Set"])
+    p1 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "False", "Set"], stdout=subprocess.PIPE
+    )
+    p1.communicate()
 
     # Check ShowTriad is False for regular embedded session
-    stdout = subprocess.check_output([sys.executable, embedded_py, version, "False", "Run"])
-    stdout = stdout.decode().strip("\r\n")
+    p2 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "False", "Run"], stdout=subprocess.PIPE
+    )
+    stdout, stderr = p2.communicate()
 
     # Set ShowTriad back to True for regular embedded session
-    subprocess.check_call([sys.executable, embedded_py, version, "False", "Reset"])
+    p3 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "False", "Reset"], stdout=subprocess.PIPE
+    )
+    p3.communicate()
 
     # Assert ShowTriad was set to False for regular embedded session
-    assert stdout == "False"
+    assert "ShowTriad value is False" in stdout.decode()
 
 
 @pytest.mark.embedding

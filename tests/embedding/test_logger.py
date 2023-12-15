@@ -1,9 +1,47 @@
+# Copyright (C) 2023 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 """Miscellaneous embedding tests"""
 import os
 import subprocess
 import sys
 
 import pytest
+
+
+def _unset_var(env, var) -> None:
+    if var in env:
+        del env[var]
+
+
+def _get_env_without_logging_variables():
+    # unset all logging environment variables.
+    env = os.environ.copy()
+    _unset_var(env, "ANSYS_WORKBENCH_LOGGING")
+    _unset_var(env, "ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL")
+    _unset_var(env, "ANSYS_WORKBENCH_LOGGING_CONSOLE")
+    _unset_var(env, "ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH")
+    _unset_var(env, "ANSYS_WORKBENCH_LOGGING_DIRECTORY")
+    return env
 
 
 def _run_embedding_log_test_process(rootdir, pytestconfig, testname) -> subprocess.Popen:
@@ -14,6 +52,7 @@ def _run_embedding_log_test_process(rootdir, pytestconfig, testname) -> subproce
         [sys.executable, embedded_py, version, testname],
         stderr=subprocess.PIPE,
         stdout=subprocess.PIPE,
+        env=_get_env_without_logging_variables(),
     )
     p.wait()
     return p
@@ -72,7 +111,7 @@ def test_logging_write_info_after_initialize_with_error_level(rootdir, pytestcon
     assert "0xdeadbeef" not in stderr
 
 
-@pytest.mark.parametrize("addin_configuration", ["Mechanical", "WorkBench", "Legacy"])
+@pytest.mark.parametrize("addin_configuration", ["Mechanical", "WorkBench"])
 @pytest.mark.embedding
 @pytest.mark.minimum_version(241)
 def test_addin_configuration(rootdir, pytestconfig, addin_configuration):

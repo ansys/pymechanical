@@ -1,3 +1,25 @@
+# Copyright (C) 2023 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 import datetime
 import os
 import pathlib
@@ -6,7 +28,7 @@ import shutil
 import subprocess
 import sys
 
-import ansys.tools.path
+import ansys.tools.path as atp
 import pytest
 
 import ansys.mechanical.core as pymechanical
@@ -102,6 +124,9 @@ def start_embedding_app(version, pytestconfig) -> datetime.timedelta:
     config = AddinConfiguration(pytestconfig.getoption("addin_configuration"))
 
     EMBEDDED_APP = App(version=int(version))
+    assert (
+        not EMBEDDED_APP.readonly
+    ), "Can't run test cases, Mechanical is in readonly mode! Check license configuration."
     startup_time = (datetime.datetime.now() - start).total_seconds()
     num_cores = os.environ.get("NUM_CORES", None)
     if num_cores != None:
@@ -273,7 +298,7 @@ def mechanical_pool():
     if not pymechanical.mechanical.get_start_instance():
         return None
 
-    path, version = ansys.tools.path.find_mechanical()
+    path, version = atp.find_mechanical()
 
     exec_file = path
     instances_count = 2
@@ -299,8 +324,15 @@ def mechanical_pool():
 
 
 def pytest_addoption(parser):
+    mechanical_path = atp.get_mechanical_path(False)
+
+    if mechanical_path == None:
+        parser.addoption("--ansys-version", default="232")
+    else:
+        mechanical_version = atp.version_from_path("mechanical", mechanical_path)
+        parser.addoption("--ansys-version", default=str(mechanical_version))
+
     # parser.addoption("--debugging", action="store_true")
-    parser.addoption("--ansys-version", default="232")
     parser.addoption("--addin-configuration", default="Mechanical")
 
 

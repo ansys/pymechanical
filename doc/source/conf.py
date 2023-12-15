@@ -41,6 +41,7 @@ cname = os.getenv("DOCUMENTATION_CNAME", default="nocname.com")
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 # -- General configuration ---------------------------------------------------
+# Sphinx extensions
 extensions = [
     "jupyter_sphinx",
     "notfound.extension",
@@ -106,7 +107,7 @@ notfound_urls_prefix = "/../"
 
 # static path
 html_static_path = ["_static"]
-
+templates_path = ["_templates"]
 # The suffix(es) of source filenames.
 source_suffix = ".rst"
 
@@ -127,8 +128,6 @@ exclude_patterns = [
     "_build",
     "Thumbs.db",
     ".DS_Store",
-    # because we include this in examples/index.rst
-    "examples/gallery_examples/index.rst",
     "links.rst",
 ]
 
@@ -172,7 +171,6 @@ sphinx_gallery_conf = {
     "thumbnail_size": (350, 350),
 }
 
-
 # -- Options for HTML output -------------------------------------------------
 html_short_title = html_title = "PyMechanical"
 html_theme = "ansys_sphinx_theme"
@@ -189,12 +187,12 @@ html_theme_options = {
         "version_match": get_version_match(version),
     },
     "check_switcher": False,
-    "navbar_end": ["version-switcher", "theme-switcher", "navbar-icon-links"],
     "github_url": "https://github.com/ansys/pymechanical",
     "show_prev_next": False,
     "show_breadcrumbs": True,
     "collapse_navigation": True,
     "use_edit_page_button": True,
+    "header_links_before_dropdown": 4,  # number of links before the dropdown menu
     "additional_breadcrumbs": [
         ("PyAnsys", "https://docs.pyansys.com/"),
     ],
@@ -205,8 +203,19 @@ html_theme_options = {
             "icon": "fa fa-comment fa-fw",
         },
     ],
+    "use_meilisearch": {
+        "api_key": os.getenv("MEILISEARCH_PUBLIC_API_KEY", ""),
+        "index_uids": {
+            f"pymemchanical-v{get_version_match(version).replace('.', '-')}": "PyMechanical",
+        },
+    },
 }
 
+html_sidebars = {
+    "index": [
+        "cheatsheet_sidebar.html",
+    ],
+}
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
