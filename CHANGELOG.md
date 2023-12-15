@@ -42,6 +42,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
  - Updated wording for revn-variations section ([#458](https://github.com/ansys/pymechanical/pull/458))
  - Update temporary file creation in test_app ([#466](https://github.com/ansys/pymechanical/pull/466))
  - Remove .reuse and LICENSES directories & bump add-license-header version ([#496](https://github.com/ansys/pymechanical/pull/496))
+ - Replace workbench_lite with mechanical-env in the docs ([#522](https://github.com/ansys/pymechanical/pull/522))
 
 ### Dependencies
 - Update ``pre-commit`` ([#431](https://github.com/ansys/pymechanical/pull/431), [#471](https://github.com/ansys/pymechanical/pull/471), [#489](https://github.com/ansys/pymechanical/pull/489))
