@@ -15,6 +15,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Add cheetsheat and improve example visibility ([#506](https://github.com/ansys/pymechanical/pull/506))
 - Add 242 to scheduled nightly run ([#519](https://github.com/ansys/pymechanical/pull/519))
 - Add mechanical-env to workflow ([#521](https://github.com/ansys/pymechanical/pull/521))
+- Add doc pdf build to workflow ([#529](https://github.com/ansys/pymechanical/pull/529))
 
 ### Fixed
 
