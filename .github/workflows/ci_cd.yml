@@ -490,7 +490,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: documentation-pdf
-          path: doc/_build/latex/doc.pdf
+          path: doc/_build/latex/*.pdf
           retention-days: 7
 
   coverage:
