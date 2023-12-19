@@ -19,6 +19,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 - Bump `github/codeql-action` from 2 to 3 ([#532](https://github.com/ansys/pymechanical/pull/532))
 - Update ``pre-commit`` ([#537](https://github.com/ansys/pymechanical/pull/537))
+- Bump `pyvista` from 0.43.0 to 0.43.1 ([#536](https://github.com/ansys/pymechanical/pull/536))
 
 ## [0.10.5](https://github.com/ansys/pymechanical/releases/tag/v0.10.5) - December 15, 2023
 
