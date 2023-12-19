@@ -224,7 +224,7 @@ jobs:
         run: echo "DOCKER_IMAGE_VERSION=${{needs.revn-variations.outputs.stable_container_revn}}" >> $GITHUB_ENV
 
       - name: Upload coverage results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: matrix.mechanical-version == env.DOCKER_IMAGE_VERSION
         with:
           name: coverage-tests
@@ -232,7 +232,7 @@ jobs:
           retention-days: 7
 
       - name: Upload coverage results (as .coverage)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: matrix.mechanical-version == env.DOCKER_IMAGE_VERSION
         with:
           name: coverage-file-tests
@@ -249,7 +249,7 @@ jobs:
           lscpu
 
       - name: Upload container logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: mechanical_tests_log-${{ matrix.mechanical-version }}
           path: mechanical_tests_log-${{ matrix.mechanical-version }}.txt
@@ -317,7 +317,7 @@ jobs:
           fi
 
       - name: Upload coverage results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
           name: coverage-tests-embedding
@@ -325,7 +325,7 @@ jobs:
           retention-days: 7
 
       - name: Upload coverage results (as .coverage)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
           name: coverage-file-tests-embedding
@@ -395,7 +395,7 @@ jobs:
           fi
 
       - name: Upload coverage results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
           name: coverage-tests-remote-session-launch
@@ -403,7 +403,7 @@ jobs:
           retention-days: 7
 
       - name: Upload coverage results (as .coverage)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
           name: coverage-file-tests-remote-session-launch
@@ -480,14 +480,14 @@ jobs:
           validate_output doc_pdf_output.txt
 
       - name: Upload HTML Documentation
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: documentation-html
           path: doc/_build/html
           retention-days: 7
 
       - name: Upload PDF Documentation
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: documentation-pdf
           path: doc/_build/latex/*.pdf
@@ -564,7 +564,7 @@ jobs:
           coverage xml -o .coverage-combined/xml
 
       - name: Upload combined coverage results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: combined-coverage-results
           path: .coverage-combined
