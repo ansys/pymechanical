@@ -206,7 +206,7 @@ html_theme_options = {
     "use_meilisearch": {
         "api_key": os.getenv("MEILISEARCH_PUBLIC_API_KEY", ""),
         "index_uids": {
-            f"pymemchanical-v{get_version_match(version).replace('.', '-')}": "PyMechanical",
+            f"pymechanical-v{get_version_match(version).replace('.', '-')}": "PyMechanical",
         },
     },
 }
