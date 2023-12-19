@@ -41,3 +41,7 @@
 - name: CI/CD
   description: ""
   color: b5f226
+
+- name: future
+  description: To be implemented in the future
+  color: 5319e7

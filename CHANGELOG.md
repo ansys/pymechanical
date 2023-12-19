@@ -9,11 +9,25 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Added
 
+- Add release note configuration ([#512](https://github.com/ansys/pymechanical/pull/512))- Add 242 to scheduled nightly run ([#519](https://github.com/ansys/pymechanical/pull/519))
+
+### Fixed
+
+### Changed
+
+### Dependencies
+
+- Bump `github/codeql-action` from 2 to 3 ([#532](https://github.com/ansys/pymechanical/pull/532))
+
+
+## [0.10.5](https://github.com/ansys/pymechanical/releases/tag/v0.10.5) - December 15, 2023
+
+### Added
+
 - Add codeql.yml for security checks ([#423](https://github.com/ansys/pymechanical/pull/423))
 - add readonly flag and assertion ([#441](https://github.com/ansys/pymechanical/pull/441))
 - Add PyMeilisearch in documentation ([#508](https://github.com/ansys/pymechanical/pull/508))
 - Add cheetsheat and improve example visibility ([#506](https://github.com/ansys/pymechanical/pull/506))
-- Add 242 to scheduled nightly run ([#519](https://github.com/ansys/pymechanical/pull/519))
 - Add mechanical-env to workflow ([#521](https://github.com/ansys/pymechanical/pull/521))
 - Add doc pdf build to workflow ([#529](https://github.com/ansys/pymechanical/pull/529))
 
