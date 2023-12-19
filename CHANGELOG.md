@@ -12,6 +12,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Add release note configuration ([#512](https://github.com/ansys/pymechanical/pull/512))- Add 242 to scheduled nightly run ([#519](https://github.com/ansys/pymechanical/pull/519))
 
 ### Fixed
+- fix: pymeilisearch name typo and favicon ([#538](https://github.com/ansys/pymechanical/pull/538))
 
 ### Changed
 
