@@ -18,9 +18,9 @@ on:
         type: choice
         description: 'The experimental mechanical install revision number.'
         options:
+        - '242'
         - '241'
         - '232'
-        - '231'
         default: '232'  # ensure this matches env.EXPERIMENTAL_REVN
   push:
     tags:
@@ -40,7 +40,7 @@ env:
   RESET_DOC_BUILD_CACHE: 0
   MAIN_PYTHON_VERSION: '3.10'
   STABLE_REVN: '231'  # ensure this matches inputs.stable-revn.default
-  EXPERIMENTAL_REVN: '232'  # ensure this matches inputs.experimental-revn.default
+  EXPERIMENTAL_REVN: '232' # ensure this matches inputs.experimental-revn.default
   DEV_REVN: '241'
   MEILISEARCH_API_KEY: ${{ secrets.MEILISEARCH_API_KEY }}
   MEILISEARCH_HOST_URL: ${{ vars.MEILISEARCH_HOST_URL }}
@@ -90,7 +90,7 @@ jobs:
 
           if ${{ github.event_name == 'schedule' }}; then
               # Scheduled runs use the DEV_REVN environment variable
-              parse_revns "${{ env.DEV_REVN }}" "${{ env.DEV_REVN }}"
+              parse_revns "${{ env.DEV_REVN }}" "242"
           elif ${{ github.event_name == 'workflow_dispatch' }}; then
               # Manual workflow dispatches use the user-selected revision numbers
               parse_revns "${{ inputs.stable-revn }}" "${{ inputs.experimental-revn }}"
@@ -293,9 +293,6 @@ jobs:
         run: |
           pip install .[tests]
 
-      - name: Set environment variable
-        run: echo "ANSYSCL${{ needs.revn-variations.outputs.experimental_revn }}_DIR=/install/ansys_inc/v${{ needs.revn-variations.outputs.experimental_revn }}/licensingclient" >> $GITHUB_ENV
-
       - name: Unit Testing and coverage
         env:
           LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
@@ -305,7 +302,7 @@ jobs:
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
           NUM_CORES: 1
         run: |
-          xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.experimental_revn }}/aisol/.workbench_lite pytest -m embedding > pytest_output.txt || true
+          xvfb-run mechanical-env pytest -m embedding > pytest_output.txt || true
           cat pytest_output.txt
           #
           # Check if failure occurred
@@ -450,9 +447,6 @@ jobs:
         run: |
           pip3 install -e .[doc]
 
-      - name: Set environment variable
-        run: echo "ANSYSCL${{ needs.revn-variations.outputs.experimental_revn }}_DIR=/install/ansys_inc/v${{ needs.revn-variations.outputs.experimental_revn }}/licensingclient" >> $GITHUB_ENV
-
       - name: Build docs
         env:
           SPHINXOPTS: '-j auto'
@@ -460,28 +454,43 @@ jobs:
           ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 0
         run: |
+          # Create doc html and pdf, and validate it passed
+          validate_output() {
+            # $1 is the file we are checking
+            cat $1
+            #
+            # Check if "build succeeded" string is present in doc_build_output.txt
+            #
+            if grep -q "build succeeded" $1; then
+              echo "Documentation building succeeded"
+            else
+              echo "Documentation building failed"
+              exit 1
+            fi
+          }
+           
           # Need to unset PYMECHANICAL_PORT and PYMECHANICAL_START_INSTANCE when running code containing remote sessions
           unset PYMECHANICAL_PORT
           unset PYMECHANICAL_START_INSTANCE
           
-          xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.experimental_revn }}/aisol/.workbench_lite make -C doc html > doc_build_output.txt 2>&1 || true
-          cat doc_build_output.txt
-          #
-          # Check if "build succeeded" string is present in doc_build_output.txt
-          #
-          if grep -q "build succeeded" doc_build_output.txt; then
-            echo "Documentation building succeeded"
-            exit 0
-          else
-            echo "Documentation building failed"
-            exit 1
-          fi
+          xvfb-run mechanical-env make -C doc html > doc_build_output.txt 2>&1 || true
+          validate_output doc_build_output.txt
+          
+          xvfb-run mechanical-env make -C doc pdf > doc_pdf_output.txt 2>&1 || true
+          validate_output doc_pdf_output.txt
 
       - name: Upload HTML Documentation
         uses: actions/upload-artifact@v3
         with:
           name: documentation-html
           path: doc/_build/html
+          retention-days: 7
+
+      - name: Upload PDF Documentation
+        uses: actions/upload-artifact@v3
+        with:
+          name: documentation-pdf
+          path: doc/_build/latex/*.pdf
           retention-days: 7
 
   coverage:
@@ -493,7 +502,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
