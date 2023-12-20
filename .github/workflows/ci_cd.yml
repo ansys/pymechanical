@@ -515,17 +515,17 @@ jobs:
       - name: Create common coverage directory
         run: mkdir cov-dir
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: coverage-file-tests-embedding
           path: cov-dir/embedding
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: coverage-file-tests-remote-session-launch
           path: cov-dir/launch
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: coverage-file-tests
           path: cov-dir/normal
