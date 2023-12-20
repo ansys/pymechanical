@@ -12,7 +12,8 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Add release note configuration ([#512](https://github.com/ansys/pymechanical/pull/512))- Add 242 to scheduled nightly run ([#519](https://github.com/ansys/pymechanical/pull/519))
 
 ### Fixed
-- fix: pymeilisearch name typo and favicon ([#538](https://github.com/ansys/pymechanical/pull/538))
+
+- Fix pymeilisearch name typo and favicon ([#538](https://github.com/ansys/pymechanical/pull/538))
 
 ### Changed
 
@@ -22,6 +23,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Update ``pre-commit`` ([#537](https://github.com/ansys/pymechanical/pull/537))
 - Bump `pyvista` from 0.43.0 to 0.43.1 ([#536](https://github.com/ansys/pymechanical/pull/536))
 - Bump `panel` from 1.3.4 to 1.3.5 ([#535](https://github.com/ansys/pymechanical/pull/535))
+- Bump `actions/upload-artifact` and `actions/dwonload-artifact`from 3 to 4 ([#533](https://github.com/ansys/pymechanical/pull/533))
 
 ## [0.10.5](https://github.com/ansys/pymechanical/releases/tag/v0.10.5) - December 15, 2023
 
