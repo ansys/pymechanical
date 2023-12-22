@@ -14,6 +14,8 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Fixed
 
 - Fix pymeilisearch name typo and favicon ([#538](https://github.com/ansys/pymechanical/pull/538))
+- Update the gif to reduce the whitespace ([#540](https://github.com/ansys/pymechanical/pull/540))
+- Update ansys/actions to v5 ([#541](https://github.com/ansys/pymechanical/pull/541))
 
 ### Changed
 
