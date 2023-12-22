@@ -42,7 +42,8 @@ def global_variables(app: "ansys.mechanical.core.App", enums: bool = False) -> t
 
     clr.AddReference("System.Collections")
     clr.AddReference("Ansys.ACT.WB1")
-    from Ansys.ACT.Mechanical import Transaction
+    # from Ansys.ACT.Mechanical import Transaction
+    # When ansys-pythonnet issue #14 is fixed, uncomment above
     from Ansys.Core.Units import Quantity
 
     import System  # isort: skip
@@ -51,8 +52,9 @@ def global_variables(app: "ansys.mechanical.core.App", enums: bool = False) -> t
     vars["Quantity"] = Quantity
     vars["System"] = System
     vars["Ansys"] = Ansys
-    vars["Transaction"] = Transaction
-
+    # vars["Transaction"] = Transaction
+    # When ansys-pythonnet issue #14 is fixed, uncomment above
+    # and Transaction class will be removed
     if enums:
         vars.update(get_all_enums())
 
