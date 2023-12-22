@@ -20,8 +20,34 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Imports for the embedding sub-package."""
-from .addins import AddinConfiguration
-from .app import App
-from .app_libraries import add_mechanical_python_libraries
-from .imports import global_variables
+"""Embedding tests for global variables associated with Mechanical"""
+import pytest
+
+import ansys.mechanical.core as pymechanical
+from ansys.mechanical.core import global_variables
+
+
+@pytest.mark.embedding
+def test_global_variables(embedded_app):
+    """Test the global variables"""
+    globals_dict = global_variables(embedded_app, True)
+    assert "ExtAPI" in globals_dict
+    assert "DataModel" in globals_dict
+    assert "Model" in globals_dict
+    assert "Tree" in globals_dict
+    assert "Quantity" in globals_dict
+    assert "System" in globals_dict
+    assert "Ansys" in globals_dict
+    assert "Transaction" in globals_dict
+
+
+@pytest.mark.embedding
+def test_transaction(embedded_app):
+    """Test Transaction"""
+    globals().update(pymechanical.global_variables(embedded_app, True))
+
+    with Transaction() as transaction:
+        assert isinstance(transaction, Transaction)
+        assert transaction._disposed is False, "Transaction remains in scope"
+
+    assert transaction._disposed is True, "Transaction instance has been disposed"
