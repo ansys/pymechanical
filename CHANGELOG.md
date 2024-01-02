@@ -26,6 +26,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `pyvista` from 0.43.0 to 0.43.1 ([#536](https://github.com/ansys/pymechanical/pull/536))
 - Bump `panel` from 1.3.4 to 1.3.5 ([#535](https://github.com/ansys/pymechanical/pull/535))
 - Bump `actions/upload-artifact` and `actions/dwonload-artifact`from 3 to 4 ([#533](https://github.com/ansys/pymechanical/pull/533))
+- Bump `tj-actions/changed-files` from 40 to 41 ([#544](https://github.com/ansys/pymechanical/pull/544))
 - Bump `pytest` from 7.4.3 to 7.4.4 ([#546](https://github.com/ansys/pymechanical/pull/546))
 
 ## [0.10.5](https://github.com/ansys/pymechanical/releases/tag/v0.10.5) - December 15, 2023
