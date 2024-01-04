@@ -30,7 +30,7 @@ classifiers = [
 ]
 dependencies = [
     "ansys_api_mechanical==0.1.1",
-    "ansys-mechanical-env>=0.1.0",
+    "ansys-mechanical-env==0.1.0",
     "ansys-platform-instancemanagement>=1.0.1",
     "ansys-pythonnet>=3.1.0rc2",
     "ansys-tools-path>=0.3.1",
@@ -40,7 +40,6 @@ dependencies = [
     "grpcio>=1.30.0",
     "protobuf>=3.12.2",
     "tqdm>=4.45.0",
-    "ansys-mechanical-env>=0.1.0",
 ]
 
 [project.urls]
