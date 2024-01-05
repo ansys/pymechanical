@@ -16,7 +16,7 @@ on:
 
 env:
   PYMECHANICAL_PORT: 10000  # default won't work on GitHub runners
-  PYMECHANICAL_START_INSTANCE: FALSE
+  PYMECHANICAL_START_INSTANCE: false
   DOCKER_PACKAGE: ghcr.io/ansys/mechanical
   DOCKER_MECH_CONTAINER_NAME: mechanical
   PACKAGE_NAME: ansys-mechanical-core
@@ -458,11 +458,14 @@ jobs:
           }
            
           # Need to unset PYMECHANICAL_PORT and PYMECHANICAL_START_INSTANCE when running code containing remote sessions
-          # unset PYMECHANICAL_PORT
-          # unset PYMECHANICAL_START_INSTANCE
+          unset PYMECHANICAL_PORT
+          unset PYMECHANICAL_START_INSTANCE
           
           xvfb-run mechanical-env make -C doc html > doc_build_output.txt 2>&1 || true
           validate_output doc_build_output.txt
+
+          unset PYMECHANICAL_PORT
+          unset PYMECHANICAL_START_INSTANCE
           
           xvfb-run mechanical-env make -C doc pdf > doc_pdf_output.txt 2>&1 || true
           validate_output doc_pdf_output.txt
