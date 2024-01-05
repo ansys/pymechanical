@@ -183,7 +183,6 @@ def cli(
             version = atp.version_from_path("mechanical", exe)
         else:
             exe, version = atp.find_mechanical()
-            version = int(version * 10)
     else:
         exe, version = atp.find_mechanical(version=revision)
 
