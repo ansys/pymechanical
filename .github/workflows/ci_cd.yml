@@ -442,7 +442,20 @@ jobs:
           ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 0
         run: |
-          # Create doc html and pdf, and validate it passed
+          # Create html or pdf doc
+          create_doc() {
+            # $1 is the type of file we are creating (html or pdf)
+            
+            # Need to unset PYMECHANICAL_PORT and PYMECHANICAL_START_INSTANCE when running code containing remote sessions
+            unset PYMECHANICAL_PORT
+            unset PYMECHANICAL_START_INSTANCE
+            
+            output_file=doc_$1_output.txt
+            xvfb-run mechanical-env make -C doc $1 > $output_file 2>&1 || true
+            validate_output $output_file
+          }
+
+          # Validate that the html or pdf build succeeded
           validate_output() {
             # $1 is the file we are checking
             cat $1
@@ -457,18 +470,11 @@ jobs:
             fi
           }
            
-          # Need to unset PYMECHANICAL_PORT and PYMECHANICAL_START_INSTANCE when running code containing remote sessions
-          unset PYMECHANICAL_PORT
-          unset PYMECHANICAL_START_INSTANCE
-          
-          xvfb-run mechanical-env make -C doc html > doc_build_output.txt 2>&1 || true
-          validate_output doc_build_output.txt
+          # Create the html doc & validate results
+          create_doc html
 
-          unset PYMECHANICAL_PORT
-          unset PYMECHANICAL_START_INSTANCE
-          
-          xvfb-run mechanical-env make -C doc pdf > doc_pdf_output.txt 2>&1 || true
-          validate_output doc_pdf_output.txt
+          # Create the pdf doc & validate results
+          create_doc pdf
 
       - name: Upload HTML Documentation
         uses: actions/upload-artifact@v4
