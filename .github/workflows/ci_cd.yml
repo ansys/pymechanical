@@ -461,10 +461,10 @@ jobs:
           unset PYMECHANICAL_PORT
           unset PYMECHANICAL_START_INSTANCE
           
-          xvfb-run mechanical-env make -C doc html > doc_build_output.txt 2>&1 || true
+          xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.test_revn }}/aisol/.workbench_lite make -C doc html > doc_build_output.txt 2>&1 || true
           validate_output doc_build_output.txt
           
-          xvfb-run mechanical-env make -C doc pdf > doc_pdf_output.txt 2>&1 || true
+          xvfb-run /install/ansys_inc/v${{ needs.revn-variations.outputs.test_revn }}/aisol/.workbench_lite make -C doc pdf > doc_pdf_output.txt 2>&1 || true
           validate_output doc_pdf_output.txt
 
       - name: Upload HTML Documentation
