@@ -44,6 +44,12 @@ def print_showtriad(version, appdata_option):
     app = launch_app(version, appdata_option)
     print("ShowTriad value is " + str(app.ExtAPI.Graphics.ViewOptions.ShowTriad))
     app.close()
+    
+
+def reset_showtriad(version, appdata_option):
+    app = launch_app(version, appdata_option)
+    app.ExtAPI.Graphics.ViewOptions.Reset
+    app.close()
 
 
 if __name__ == "__main__":
@@ -61,4 +67,4 @@ if __name__ == "__main__":
     elif action == "Run":
         print_showtriad(version, private_appdata)
     elif action == "Reset":
-        set_showtriad(version, private_appdata, True)
+        reset_showtriad(version, appdata_option)
