@@ -33,6 +33,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `tj-actions/changed-files` from 40 to 41 ([#544](https://github.com/ansys/pymechanical/pull/544))
 - Bump `pytest` from 7.4.3 to 7.4.4 ([#546](https://github.com/ansys/pymechanical/pull/546))
 - Bump `add-license-headers` from 0.2.2 to 0.2.4 ([#549](https://github.com/ansys/pymechanical/pull/549))
+- Bump `numpy` from 1.26.2 to 1.26.3 ([#551](https://github.com/ansys/pymechanical/pull/551))
 
 ## [0.10.5](https://github.com/ansys/pymechanical/releases/tag/v0.10.5) - December 15, 2023
 
