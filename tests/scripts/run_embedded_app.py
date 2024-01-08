@@ -47,6 +47,7 @@ def print_showtriad(version, appdata_option):
     
 
 def reset_showtriad(version, appdata_option):
+    """Reset ShowTriad value."""
     app = launch_app(version, appdata_option)
     app.ExtAPI.Graphics.ViewOptions.Reset
     app.close()
