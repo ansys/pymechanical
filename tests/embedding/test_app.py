@@ -150,34 +150,35 @@ def test_warning_message(test_env, pytestconfig, rootdir):
 @pytest.mark.flaky(reruns=2)
 def test_private_appdata(pytestconfig, rootdir):
     """Test embedded instance does not save ShowTriad using a test-scoped Python environment."""
-    with pytest.raises(Exception):
-        version = pytestconfig.getoption("ansys_version")
-        embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+    version = pytestconfig.getoption("ansys_version")
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
-        # Set ShowTriad to False
-        p1 = subprocess.Popen(
-            [sys.executable, embedded_py, version, "True", "Set"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
-        try:
-            p1.communicate(timeout=30)
-        except subprocess.TimeoutExpired:
-            p1.kill()
-            p1.communicate()
+    # Set ShowTriad to False
+    p1 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "True", "Set"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    try:
+        p1.communicate(timeout=60)
+    except subprocess.TimeoutExpired:
+        p1.kill()
+        p1.communicate()
+        exit(1)
 
-        # Check ShowTriad is True for private_appdata embedded sessions
-        p2 = subprocess.Popen(
-            [sys.executable, embedded_py, version, "True", "Run"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
-        try:
-            stdout, stderr = p2.communicate(timeout=30)
-            assert "ShowTriad value is True" in stdout.decode()
-        except subprocess.TimeoutExpired:
-            p2.kill()
-            p2.communicate()
+    # Check ShowTriad is True for private_appdata embedded sessions
+    p2 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "True", "Run"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    try:
+        stdout, stderr = p2.communicate(timeout=60)
+        assert "ShowTriad value is True" in stdout.decode()
+    except subprocess.TimeoutExpired:
+        p2.kill()
+        p2.communicate()
+        exit(1)
 
 
 @pytest.mark.embedding
@@ -185,49 +186,51 @@ def test_private_appdata(pytestconfig, rootdir):
 @pytest.mark.flaky(reruns=2)
 def test_normal_appdata(pytestconfig, rootdir):
     """Test embedded instance saves ShowTriad value using a test-scoped Python environment."""
-    with pytest.raises(Exception):
-        version = pytestconfig.getoption("ansys_version")
-        embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+    version = pytestconfig.getoption("ansys_version")
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
-        # Set ShowTriad to False
-        p1 = subprocess.Popen(
-            [sys.executable, embedded_py, version, "False", "Set"],
+    # Set ShowTriad to False
+    p1 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "False", "Set"],
+        stdout=subprocess.PIPE,
+        stderr=None,
+    )
+    try:
+        p1.communicate(timeout=60)
+    except subprocess.TimeoutExpired:
+        p1.kill()
+        p1.communicate()
+        exit(1)
+
+    # Check ShowTriad is False for regular embedded session
+    p2 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "False", "Run"],
+        stdout=subprocess.PIPE,
+        stderr=None,
+    )
+
+    try:
+        stdout, stderr = p2.communicate(timeout=60)
+
+        # Set ShowTriad back to True for regular embedded session
+        p3 = subprocess.Popen(
+            [sys.executable, embedded_py, version, "False", "Reset"],
             stdout=subprocess.PIPE,
             stderr=None,
         )
         try:
-            p1.communicate(timeout=30)
+            p3.communicate(timeout=60)
         except subprocess.TimeoutExpired:
-            p1.kill()
-            p1.communicate()
+            p3.kill()
+            p3.communicate()
+            exit(1)
 
-        # Check ShowTriad is False for regular embedded session
-        p2 = subprocess.Popen(
-            [sys.executable, embedded_py, version, "False", "Run"],
-            stdout=subprocess.PIPE,
-            stderr=None,
-        )
-
-        try:
-            stdout, stderr = p2.communicate(timeout=30)
-
-            # Set ShowTriad back to True for regular embedded session
-            p3 = subprocess.Popen(
-                [sys.executable, embedded_py, version, "False", "Reset"],
-                stdout=subprocess.PIPE,
-                stderr=None,
-            )
-            try:
-                p3.communicate(timeout=30)
-            except subprocess.TimeoutExpired:
-                p3.kill()
-                p3.communicate()
-
-            # Assert ShowTriad was set to False for regular embedded session
-            assert "ShowTriad value is False" in stdout.decode()
-        except subprocess.TimeoutExpired:
-            p2.kill()
-            p2.communicate()
+        # Assert ShowTriad was set to False for regular embedded session
+        assert "ShowTriad value is False" in stdout.decode()
+    except subprocess.TimeoutExpired:
+        p2.kill()
+        p2.communicate()
+        exit(1)
 
 
 @pytest.mark.embedding
