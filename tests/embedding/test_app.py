@@ -23,12 +23,12 @@
 """Miscellaneous embedding tests"""
 import os
 import subprocess
-import sys
 from tempfile import NamedTemporaryFile
 import time
 
 import pytest
 
+import ansys.mechanical.core as pymechanical
 import ansys.mechanical.core.embedding.utils as utils
 
 
@@ -145,92 +145,54 @@ def test_warning_message(test_env, pytestconfig, rootdir):
     assert warning, "UserWarning should appear in the output of the script"
 
 
-@pytest.mark.embedding
-@pytest.mark.python_env
-@pytest.mark.flaky(reruns=2)
-def test_private_appdata(pytestconfig, rootdir):
-    """Test embedded instance does not save ShowTriad using a test-scoped Python environment."""
-    version = pytestconfig.getoption("ansys_version")
-    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+def launch_app(version, private_appdata):
+    """Launch embedded instance of app."""
+    app = pymechanical.App(version=version, private_appdata=private_appdata)
+    return app
 
-    # Set ShowTriad to False
-    p1 = subprocess.Popen(
-        [sys.executable, embedded_py, version, "True", "Set"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
-    try:
-        p1.communicate(timeout=60)
-    except subprocess.TimeoutExpired:
-        p1.kill()
-        p1.communicate()
-        exit(1)
 
-    # Check ShowTriad is True for private_appdata embedded sessions
-    p2 = subprocess.Popen(
-        [sys.executable, embedded_py, version, "True", "Run"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
-    try:
-        stdout, stderr = p2.communicate(timeout=60)
-        assert "ShowTriad value is True" in stdout.decode()
-    except subprocess.TimeoutExpired:
-        p2.kill()
-        p2.communicate()
-        exit(1)
+def set_showtriad(version, appdata_option, value):
+    """Launch embedded instance of app & set ShowTriad to False."""
+    app = launch_app(version, appdata_option)
+    app.ExtAPI.Graphics.ViewOptions.ShowTriad = value
+    app.close()
+
+
+def print_showtriad(version, appdata_option):
+    """Return ShowTriad value."""
+    app = launch_app(version, appdata_option)
+    # print("ShowTriad value is " + str(app.ExtAPI.Graphics.ViewOptions.ShowTriad))
+    showtriad_value = "ShowTriad value is " + str(app.ExtAPI.Graphics.ViewOptions.ShowTriad)
+    app.close()
+    return showtriad_value
 
 
 @pytest.mark.embedding
-@pytest.mark.python_env
-@pytest.mark.flaky(reruns=2)
-def test_normal_appdata(pytestconfig, rootdir):
-    """Test embedded instance saves ShowTriad value using a test-scoped Python environment."""
+def test_private_appdata(pytestconfig):
+    """Test the embedded instance does not save the ShowTriad value."""
     version = pytestconfig.getoption("ansys_version")
-    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
-    # Set ShowTriad to False
-    p1 = subprocess.Popen(
-        [sys.executable, embedded_py, version, "False", "Set"],
-        stdout=subprocess.PIPE,
-        stderr=None,
-    )
-    try:
-        p1.communicate(timeout=60)
-    except subprocess.TimeoutExpired:
-        p1.kill()
-        p1.communicate()
-        exit(1)
+    # Set ShowTriad to False when private_appdata is True
+    set_showtriad(version, appdata_option=True, value=False)
 
-    # Check ShowTriad is False for regular embedded session
-    p2 = subprocess.Popen(
-        [sys.executable, embedded_py, version, "False", "Run"],
-        stdout=subprocess.PIPE,
-        stderr=None,
-    )
+    # Check ShowTriad is True when private_appdata is True
+    # ShowTriad should not be False even though it was previously set
+    assert "ShowTriad value is True" == print_showtriad(version, appdata_option=True)
 
-    try:
-        stdout, stderr = p2.communicate(timeout=60)
 
-        # Set ShowTriad back to True for regular embedded session
-        p3 = subprocess.Popen(
-            [sys.executable, embedded_py, version, "False", "Reset"],
-            stdout=subprocess.PIPE,
-            stderr=None,
-        )
-        try:
-            p3.communicate(timeout=60)
-        except subprocess.TimeoutExpired:
-            p3.kill()
-            p3.communicate()
-            exit(1)
+@pytest.mark.embedding
+def test_normal_appdata(pytestconfig):
+    """Test the embedded instance saves the ShowTriad value."""
+    version = pytestconfig.getoption("ansys_version")
 
-        # Assert ShowTriad was set to False for regular embedded session
-        assert "ShowTriad value is False" in stdout.decode()
-    except subprocess.TimeoutExpired:
-        p2.kill()
-        p2.communicate()
-        exit(1)
+    # Set ShowTriad to False when private_appdata is False
+    set_showtriad(version, appdata_option=False, value=False)
+
+    # Check ShowTriad is False when private_appdata is False
+    assert "ShowTriad value is False" == print_showtriad(version, appdata_option=False)
+
+    # Reset ShowTriad to True
+    set_showtriad(version, appdata_option=False, value=True)
 
 
 @pytest.mark.embedding
