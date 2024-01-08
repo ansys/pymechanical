@@ -155,7 +155,7 @@ def set_showtriad(version, appdata_option, value):
     """Launch embedded instance of app & set ShowTriad to False."""
     app = launch_app(version, appdata_option)
     app.ExtAPI.Graphics.ViewOptions.ShowTriad = value
-    app.close()
+    app.exit()
 
 
 def print_showtriad(version, appdata_option):
@@ -163,7 +163,7 @@ def print_showtriad(version, appdata_option):
     app = launch_app(version, appdata_option)
     # print("ShowTriad value is " + str(app.ExtAPI.Graphics.ViewOptions.ShowTriad))
     showtriad_value = "ShowTriad value is " + str(app.ExtAPI.Graphics.ViewOptions.ShowTriad)
-    app.close()
+    app.exit()
     return showtriad_value
 
 
