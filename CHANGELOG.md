@@ -25,7 +25,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Dependencies
 
 - Bump `github/codeql-action` from 2 to 3 ([#532](https://github.com/ansys/pymechanical/pull/532))
-- Update ``pre-commit`` ([#537](https://github.com/ansys/pymechanical/pull/537), [#545](https://github.com/ansys/pymechanical/pull/545))
+- Update ``pre-commit`` ([#537](https://github.com/ansys/pymechanical/pull/537), [#545](https://github.com/ansys/pymechanical/pull/545), [#553](https://github.com/ansys/pymechanical/pull/553))
 - Bump `pyvista` from 0.43.0 to 0.43.1 ([#536](https://github.com/ansys/pymechanical/pull/536))
 - Bump `panel` from 1.3.4 to 1.3.6 ([#535](https://github.com/ansys/pymechanical/pull/535), [#543](https://github.com/ansys/pymechanical/pull/543))
 - Bump `actions/upload-artifact` and `actions/dwonload-artifact`from 3 to 4 ([#533](https://github.com/ansys/pymechanical/pull/533))
