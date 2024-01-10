@@ -1,4 +1,4 @@
-# Copyright (C) 2023 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -23,7 +23,6 @@
 """Embedding tests for global variables associated with Mechanical"""
 import pytest
 
-import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core import global_variables
 
 
@@ -39,15 +38,3 @@ def test_global_variables(embedded_app):
     assert "System" in globals_dict
     assert "Ansys" in globals_dict
     assert "Transaction" in globals_dict
-
-
-@pytest.mark.embedding
-def test_transaction(embedded_app):
-    """Test Transaction"""
-    globals().update(pymechanical.global_variables(embedded_app, True))
-
-    with Transaction() as transaction:
-        assert isinstance(transaction, Transaction)
-        assert transaction._disposed is False, "Transaction remains in scope"
-
-    assert transaction._disposed is True, "Transaction instance has been disposed"

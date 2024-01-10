@@ -1,4 +1,4 @@
-# Copyright (C) 2023 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2023 - 2024 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -93,7 +93,6 @@ class Transaction:  # When ansys-pythonnet issue #14 is fixed, this class will b
         import Ansys
 
         self._transaction = Ansys.ACT.Mechanical.Transaction()
-        self._disposed = False
 
     def __enter__(self):
         """Enter the context of the transaction."""
@@ -102,4 +101,3 @@ class Transaction:  # When ansys-pythonnet issue #14 is fixed, this class will b
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Exit the context of the transaction and disposes of resources."""
         self._transaction.Dispose()
-        self._disposed = True
