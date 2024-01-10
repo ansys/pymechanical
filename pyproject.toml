@@ -30,7 +30,7 @@ classifiers = [
 ]
 dependencies = [
     "ansys_api_mechanical==0.1.1",
-    "ansys-mechanical-env>=0.1.0",
+    "ansys-mechanical-env==0.1.0",
     "ansys-platform-instancemanagement>=1.0.1",
     "ansys-pythonnet>=3.1.0rc2",
     "ansys-tools-path>=0.3.1",
@@ -40,7 +40,6 @@ dependencies = [
     "grpcio>=1.30.0",
     "protobuf>=3.12.2",
     "tqdm>=4.45.0",
-    "ansys-mechanical-env>=0.1.0",
 ]
 
 [project.urls]
@@ -51,23 +50,23 @@ Tracker = "https://github.com/ansys/pymechanical/issues"
 
 [project.optional-dependencies]
 tests = [
-    "pytest==7.4.3",
+    "pytest==7.4.4",
     "pytest-cov==4.1.0",
     "pytest-print==1.0.0",
 ]
 doc = [
     "Sphinx==7.2.6",
-    "ansys-sphinx-theme==0.12.5",
+    "ansys-sphinx-theme==0.13.0",
     "grpcio==1.60.0",
     "imageio-ffmpeg==0.4.9",
     "imageio==2.33.1",
-    "jupyter_sphinx==0.4.0",
+    "jupyter_sphinx==0.5.3",
     "jupyterlab>=3.2.8",
     "matplotlib==3.8.2",
     "numpy==1.26.2",
     "numpydoc==1.6.0",
     "pandas==2.1.4",
-    "panel==1.3.5",
+    "panel==1.3.6",
     "plotly==5.18.0",
     "pypandoc==1.12",
     "pytest-sphinx==0.5.0",

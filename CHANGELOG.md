@@ -21,13 +21,19 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Changed
 
+- Update LICENSE ([#548](https://github.com/ansys/pymechanical/pull/548))
+
 ### Dependencies
 
 - Bump `github/codeql-action` from 2 to 3 ([#532](https://github.com/ansys/pymechanical/pull/532))
-- Update ``pre-commit`` ([#537](https://github.com/ansys/pymechanical/pull/537))
+- Update ``pre-commit`` ([#537](https://github.com/ansys/pymechanical/pull/537), [#545](https://github.com/ansys/pymechanical/pull/545))
 - Bump `pyvista` from 0.43.0 to 0.43.1 ([#536](https://github.com/ansys/pymechanical/pull/536))
-- Bump `panel` from 1.3.4 to 1.3.5 ([#535](https://github.com/ansys/pymechanical/pull/535))
+- Bump `panel` from 1.3.4 to 1.3.6 ([#535](https://github.com/ansys/pymechanical/pull/535), [#543](https://github.com/ansys/pymechanical/pull/543))
 - Bump `actions/upload-artifact` and `actions/dwonload-artifact`from 3 to 4 ([#533](https://github.com/ansys/pymechanical/pull/533))
+- Bump `jupyter-sphinx` from 0.4.0 to 0.5.3 ([#547](https://github.com/ansys/pymechanical/pull/547))
+- Bump `tj-actions/changed-files` from 40 to 41 ([#544](https://github.com/ansys/pymechanical/pull/544))
+- Bump `pytest` from 7.4.3 to 7.4.4 ([#546](https://github.com/ansys/pymechanical/pull/546))
+- Bump `add-license-headers` from 0.2.2 to 0.2.4 ([#549](https://github.com/ansys/pymechanical/pull/549))
 
 ## [0.10.5](https://github.com/ansys/pymechanical/releases/tag/v0.10.5) - December 15, 2023
 
