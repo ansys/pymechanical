@@ -9,7 +9,9 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Added
 
-- Add release note configuration ([#512](https://github.com/ansys/pymechanical/pull/512))- Add 242 to scheduled nightly run ([#519](https://github.com/ansys/pymechanical/pull/519))
+- Add release note configuration ([#512](https://github.com/ansys/pymechanical/pull/512))
+- Add 242 to scheduled nightly run ([#519](https://github.com/ansys/pymechanical/pull/519))
+- Add transaction for embedding ([#542](https://github.com/ansys/pymechanical/pull/542))
 
 ### Fixed
 
