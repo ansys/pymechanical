@@ -67,9 +67,9 @@ tasks until after a block of commands are run. Here is an example:
 
 .. code:: python
 
-    with Transaction():
-        for obj in Tree:
-            obj.Name = obj.Name + " suffix"
+   with Transaction():
+       for obj in Tree:
+           obj.Name = obj.Name + " suffix"
 
 API entry points
 ^^^^^^^^^^^^^^^^

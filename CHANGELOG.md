@@ -9,11 +9,43 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Added
 
+- Add release note configuration ([#512](https://github.com/ansys/pymechanical/pull/512))
+- Add 242 to scheduled nightly run ([#519](https://github.com/ansys/pymechanical/pull/519))
+- Add transaction for embedding ([#542](https://github.com/ansys/pymechanical/pull/542))
+
+### Fixed
+
+- Fix pymeilisearch name typo and favicon ([#538](https://github.com/ansys/pymechanical/pull/538))
+- Update the gif to reduce the whitespace ([#540](https://github.com/ansys/pymechanical/pull/540))
+- Update ansys/actions to v5 ([#541](https://github.com/ansys/pymechanical/pull/541))
+- Fix cli find mechanical ([#550](https://github.com/ansys/pymechanical/pull/550))
+
+### Changed
+
+- Update LICENSE ([#548](https://github.com/ansys/pymechanical/pull/548))
+- Update license headers and package versions ([#556](https://github.com/ansys/pymechanical/pull/556))
+
+### Dependencies
+
+- Bump `github/codeql-action` from 2 to 3 ([#532](https://github.com/ansys/pymechanical/pull/532))
+- Update ``pre-commit`` ([#537](https://github.com/ansys/pymechanical/pull/537), [#545](https://github.com/ansys/pymechanical/pull/545), [#553](https://github.com/ansys/pymechanical/pull/553))
+- Bump `pyvista` from 0.43.0 to 0.43.1 ([#536](https://github.com/ansys/pymechanical/pull/536))
+- Bump `panel` from 1.3.4 to 1.3.6 ([#535](https://github.com/ansys/pymechanical/pull/535), [#543](https://github.com/ansys/pymechanical/pull/543))
+- Bump `actions/upload-artifact` and `actions/dwonload-artifact`from 3 to 4 ([#533](https://github.com/ansys/pymechanical/pull/533))
+- Bump `jupyter-sphinx` from 0.4.0 to 0.5.3 ([#547](https://github.com/ansys/pymechanical/pull/547))
+- Bump `tj-actions/changed-files` from 40 to 41 ([#544](https://github.com/ansys/pymechanical/pull/544))
+- Bump `pytest` from 7.4.3 to 7.4.4 ([#546](https://github.com/ansys/pymechanical/pull/546))
+- Bump `add-license-headers` from 0.2.2 to 0.2.4 ([#549](https://github.com/ansys/pymechanical/pull/549))
+- Bump `numpy` from 1.26.2 to 1.26.3 ([#551](https://github.com/ansys/pymechanical/pull/551))
+
+## [0.10.5](https://github.com/ansys/pymechanical/releases/tag/v0.10.5) - December 15, 2023
+
+### Added
+
 - Add codeql.yml for security checks ([#423](https://github.com/ansys/pymechanical/pull/423))
 - add readonly flag and assertion ([#441](https://github.com/ansys/pymechanical/pull/441))
 - Add PyMeilisearch in documentation ([#508](https://github.com/ansys/pymechanical/pull/508))
 - Add cheetsheat and improve example visibility ([#506](https://github.com/ansys/pymechanical/pull/506))
-- Add 242 to scheduled nightly run ([#519](https://github.com/ansys/pymechanical/pull/519))
 - Add mechanical-env to workflow ([#521](https://github.com/ansys/pymechanical/pull/521))
 - Add doc pdf build to workflow ([#529](https://github.com/ansys/pymechanical/pull/529))
 
