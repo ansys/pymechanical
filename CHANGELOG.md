@@ -23,6 +23,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Changed
 
 - Update LICENSE ([#548](https://github.com/ansys/pymechanical/pull/548))
+- Update license headers and package versions ([#556](https://github.com/ansys/pymechanical/pull/556))
 
 ### Dependencies
 
