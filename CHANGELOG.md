@@ -9,6 +9,16 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Added
 
+### Fixed
+
+### Changed
+
+### Dependencies
+
+## [0.10.6](https://github.com/ansys/pymechanical/releases/tag/v0.10.6) - January 11 2024
+
+### Added
+
 - Add release note configuration ([#512](https://github.com/ansys/pymechanical/pull/512))
 - Add 242 to scheduled nightly run ([#519](https://github.com/ansys/pymechanical/pull/519))
 - Add transaction for embedding ([#542](https://github.com/ansys/pymechanical/pull/542))
