@@ -23,7 +23,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Changed
 
 - Update LICENSE ([#548](https://github.com/ansys/pymechanical/pull/548))
-
+- Testing
 ### Dependencies
 
 - Bump `github/codeql-action` from 2 to 3 ([#532](https://github.com/ansys/pymechanical/pull/532))
