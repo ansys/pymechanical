@@ -9,4 +9,4 @@ dependencies:
   - any-glob-to-any-file: ['pyproject.toml', 'requirements/*']
 CI/CD:
 - changed-files:
-  - any-glob-to-any-file: ['.github/**/*', '.ci/**/*']
+  - any-glob-to-any-file: ['.github/**/*', '.ci/**/*', 'docker/**/*']

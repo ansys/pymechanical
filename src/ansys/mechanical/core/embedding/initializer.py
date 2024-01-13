@@ -1,4 +1,4 @@
-# Copyright (C) 2023 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -57,13 +57,11 @@ def _get_default_linux_version() -> int:
 
     On linux, embedding is only possible by setting environment variables before starting python.
     The version will then be fixed  to a specific version, based on those env vars.
-    The documented way to set those variables is to run python using the .workbench_lite script,
-    which is distributed with the unified installer.
-    That script doesn't quite set an env var to the version number, like 232, however it does set
-    the env var AWP_ROOT{version} to some path. So here, we can search for which of those env
-    vars are set assuming that the user did not set any others.
-    To overcome this, if multiple are set, the user should set the version number in the
-    constructor of the app, like app(version=232)
+    The documented way to set those variables is to run python using the ``mechanical-env`` script,
+    which can be used after installing the ``ansys-mechanical-env`` package with this command:
+    ``pip install ansys-mechanical-env``. The script takes user input of a version. If the user
+    does not provide a version, the ``find_mechanical()`` function from the ``ansys-tools-path``
+    package is used to find a version of Mechanical.
     """
     supported_versions = [232, 241]
     awp_roots = {ver: os.environ.get(f"AWP_ROOT{ver}", "") for ver in supported_versions}
