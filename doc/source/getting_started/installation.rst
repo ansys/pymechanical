@@ -88,11 +88,11 @@ For more details, refer to the :ref:`ref_ansys_tools_path_api`.
    >>> path = get_mechanical_path()
    >>> print(path)
 
-   /home/username/ansys_inc/v242/aisol/.workbench
+   /home/username/ansys_inc/v231/aisol/.workbench
 
    >>> version = version_from_path("mechanical", path)
 
-   242
+   231
 
 Verify a remote session
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -120,16 +120,15 @@ Verify your installation by loading an embedded instance of Mechanical in Python
 .. note::
    If you are running on Linux, you must set some environment variables for
    embedding of Mechanical in Python to work. A script that sets these variables is
-   distributed with Mechanical 2023 R2 and later. For 2023 R2, the script is located
-   here:
-   
-   ``/path/to/ansys_inc/v232/aisol/.workbench_lite``
+   available to install using pip:
+
+   ``pip install ansys-mechanical-env`` 
 
 To use the script, prepend it to any invocation of Python:
 
 .. code::
 
-    /path/to/ansys_inc/v232/aisol/.workbench_lite python
+    mechanical-env python
 
 
 Inside of Python, use the following commands to load an embedded instance:
@@ -140,5 +139,5 @@ Inside of Python, use the following commands to load an embedded instance:
    >>> app = App()
    >>> print(app)
    Ansys Mechanical [Ansys Mechanical Enterprise]
-   Product Version:231
-   Software build date:Wednesday, August 10, 2022 4:28:15 PM
+   Product Version:232
+   Software build date: 05/30/2023 15:25:53
