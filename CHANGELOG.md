@@ -14,6 +14,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Changed
 
 ### Dependencies
+- Bump `pyvista` from 0.43.1 to 0.43.2 ([#564](https://github.com/ansys/pymechanical/pull/564))
 
 ## [0.10.6](https://github.com/ansys/pymechanical/releases/tag/v0.10.6) - January 11 2024
 
