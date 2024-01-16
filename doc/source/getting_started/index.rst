@@ -6,12 +6,7 @@ Getting Started
 
 To run PyMechanical, you must have a licensed copy of Ansys Mechanical
 installed locally. The version installed dictates the interface and
-features that are available to you.
-
-PyMechanical is compatible with Mechanical 2023 R1 and later on Windows
-and Linux. Later releases provide significantly better support and features.
-
-For more information, see the `Ansys Mechanical <https://www.ansys.com/products/structures/ansys-mechanical>`_
+features that are available to you. For more information, see the `Ansys Mechanical <https://www.ansys.com/products/structures/ansys-mechanical>`_
 page on the Ansys website.
 
 .. grid:: 2
@@ -33,13 +28,13 @@ page on the Ansys website.
 
 .. grid:: 1
 
-    .. grid-item-card:: Running standalone mechanical :fas:`fa-solid fa-gears`
+    .. grid-item-card:: Running PyMechanical from a standard installation :fas:`fa-solid fa-gears`
         :link: running_mechanical
         :link-type: doc
         :text-align: center
 
 
-        Mechanical -- how to run it and what to expect
+        How to launch and interface with Mechanical from Python using PyMechanical
 
 .. grid:: 2
 
@@ -61,7 +56,7 @@ page on the Ansys website.
 
 .. grid:: 1
 
-    .. grid-item-card:: Frequently Asked questions (FAQs) :fas:`fa-solid fa-clipboard-question`
+    .. grid-item-card:: FAQs :fas:`fa-solid fa-clipboard-question`
         :link: faq
         :link-type: doc
         :text-align: center
@@ -74,8 +69,9 @@ page on the Ansys website.
    :hidden:
    :maxdepth: 2
 
-   running_mechanical
+   installation
    versioning
+   running_mechanical
    docker
    faq
    wsl
