@@ -10,6 +10,7 @@ features that are available to you. For more information, see the `Ansys Mechani
 page on the Ansys website.
 
 .. grid:: 2
+    :gutter: 2
 
     .. grid-item-card:: Installation guide  :fas:`fa-regular fa-screwdriver-wrench`
         :link: installation
@@ -23,7 +24,6 @@ page on the Ansys website.
         :link-type: doc
         :text-align: center
 
-
         Explains what are supported versions of Ansys Mechanical
 
 .. grid:: 1
@@ -33,16 +33,15 @@ page on the Ansys website.
         :link-type: doc
         :text-align: center
 
-
         How to launch and interface with Mechanical from Python using PyMechanical
 
 .. grid:: 2
-
+    :gutter: 2
+    
     .. grid-item-card:: Docker setup  :fab:`fa-brands fa-docker`
         :link: docker
         :link-type: doc
         :text-align: center
-
 
         Instructions for creating mechanical docker images
 
@@ -50,7 +49,6 @@ page on the Ansys website.
         :link: wsl
         :link-type: doc
         :text-align: center
-
 
         Installation with Windows Subsystem for Linux
 
@@ -60,7 +58,6 @@ page on the Ansys website.
         :link: faq
         :link-type: doc
         :text-align: center
-
 
         Frequently asked questions and answers
 
