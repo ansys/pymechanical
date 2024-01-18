@@ -1,7 +1,7 @@
 .. _ref_getting_started:
 
 ===============
-Getting Started
+Getting started
 ===============
 
 To run PyMechanical, you must have a licensed copy of Ansys Mechanical
