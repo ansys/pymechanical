@@ -12,6 +12,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Fixed
 
 ### Changed
+- Update 232 to 241 in docs, docstrings, examples, and tests ([#566](https://github.com/ansys/pymechanical/pull/566))
 
 ### Dependencies
 - Bump `pyvista` from 0.43.1 to 0.43.2 ([#564](https://github.com/ansys/pymechanical/pull/564))
