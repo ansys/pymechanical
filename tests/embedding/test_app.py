@@ -23,12 +23,12 @@
 """Miscellaneous embedding tests"""
 import os
 import subprocess
+import sys
 from tempfile import NamedTemporaryFile
 import time
 
 import pytest
 
-import ansys.mechanical.core as pymechanical
 import ansys.mechanical.core.embedding.utils as utils
 
 
@@ -145,54 +145,55 @@ def test_warning_message(test_env, pytestconfig, rootdir):
     assert warning, "UserWarning should appear in the output of the script"
 
 
-def launch_app(version, private_appdata):
-    """Launch embedded instance of app."""
-    app = pymechanical.App(version=version, private_appdata=private_appdata)
-    return app
+@pytest.mark.embedding
+@pytest.mark.python_env
+def test_private_appdata(pytestconfig, rootdir):
+    """Test embedded instance does not save ShowTriad using a test-scoped Python environment."""
+    version = pytestconfig.getoption("ansys_version")
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
+    # Set ShowTriad to False
+    p1 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "True", "Set"], stdout=subprocess.PIPE
+    )
+    p1.communicate()
 
-def set_showtriad(version, appdata_option, value):
-    """Launch embedded instance of app & set ShowTriad to False."""
-    app = launch_app(version, appdata_option)
-    app.ExtAPI.Graphics.ViewOptions.ShowTriad = value
-    app.exit()
+    # Check ShowTriad is True for private_appdata embedded sessions
+    p2 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "True", "Run"], stdout=subprocess.PIPE
+    )
+    stdout, stderr = p2.communicate()
 
-
-def print_showtriad(version, appdata_option):
-    """Return ShowTriad value."""
-    app = launch_app(version, appdata_option)
-    # print("ShowTriad value is " + str(app.ExtAPI.Graphics.ViewOptions.ShowTriad))
-    showtriad_value = "ShowTriad value is " + str(app.ExtAPI.Graphics.ViewOptions.ShowTriad)
-    app.exit()
-    return showtriad_value
+    assert "ShowTriad value is True" in stdout.decode()
 
 
 @pytest.mark.embedding
-def test_private_appdata(pytestconfig):
-    """Test the embedded instance does not save the ShowTriad value."""
+@pytest.mark.python_env
+def test_normal_appdata(pytestconfig, rootdir):
+    """Test embedded instance saves ShowTriad value using a test-scoped Python environment."""
     version = pytestconfig.getoption("ansys_version")
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
-    # Set ShowTriad to False when private_appdata is True
-    set_showtriad(version, appdata_option=True, value=False)
+    # Set ShowTriad to False
+    p1 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "False", "Set"], stdout=subprocess.PIPE
+    )
+    p1.communicate()
 
-    # Check ShowTriad is True when private_appdata is True
-    # ShowTriad should not be False even though it was previously set
-    assert "ShowTriad value is True" == print_showtriad(version, appdata_option=True)
+    # Check ShowTriad is False for regular embedded session
+    p2 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "False", "Run"], stdout=subprocess.PIPE
+    )
+    stdout, stderr = p2.communicate()
 
+    # Set ShowTriad back to True for regular embedded session
+    p3 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "False", "Reset"], stdout=subprocess.PIPE
+    )
+    p3.communicate()
 
-@pytest.mark.embedding
-def test_normal_appdata(pytestconfig):
-    """Test the embedded instance saves the ShowTriad value."""
-    version = pytestconfig.getoption("ansys_version")
-
-    # Set ShowTriad to False when private_appdata is False
-    set_showtriad(version, appdata_option=False, value=False)
-
-    # Check ShowTriad is False when private_appdata is False
-    assert "ShowTriad value is False" == print_showtriad(version, appdata_option=False)
-
-    # Reset ShowTriad to True
-    set_showtriad(version, appdata_option=False, value=True)
+    # Assert ShowTriad was set to False for regular embedded session
+    assert "ShowTriad value is False" in stdout.decode()
 
 
 @pytest.mark.embedding
