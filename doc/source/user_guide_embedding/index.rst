@@ -55,7 +55,7 @@ uses the same Addin configuration as standalone Mechanical. To customize Addins,
 Diagnosing problems with embedding
 ----------------------------------
 In some cases, debugging why the embedded Mechanical instance is not working requires additional logging.
- For information on how to configure logging, see :ref:`ref_embedding_user_guide_logging` .
+For information on how to configure logging, see :ref:`ref_embedding_user_guide_logging`.
 
 Running PyMechanical embedding scripts inside Mechanical with IronPython
 ------------------------------------------------------------------------
