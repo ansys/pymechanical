@@ -13,6 +13,7 @@ Windows Server 2019. For more information, see:
 
 
 .. _Windows Subsystem for Linux: https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux
+.. _What is the Windows Subsystem for Linux?: https://learn.microsoft.com/en-us/windows/wsl/about
 
 This page walks you through the installation of WSL on Windows and then
 shows how to use it together with Mechanical, PyMechanical, and
