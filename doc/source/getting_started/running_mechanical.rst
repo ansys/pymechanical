@@ -1,8 +1,8 @@
 .. _using_standard_install:
 
-***********************************************
-Using PyMechanical from a standard installation
-***********************************************
+======================
+Launching PyMechanical
+======================
 
 The ``ansys-mechanical-core`` package requires either a local or
 remote instance of Mechanical to communicate with. This page describes

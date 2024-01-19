@@ -7,7 +7,7 @@ You can run Mechanical within a container on any operating system
 using `Docker <https://www.docker.com/>`_ and connect to it with
 PyMechanical.
 
-Running Mechanical in a containerized environment like Docker or `Apptainer <http://apptainer.org/>`_
+Running Mechanical in a containerized environment like Docker or `Apptainer <https://apptainer.org/>`_
 (formerly Singularity) is advantageous for several reasons, including:
 
 - Ability to run in a consistent environment regardless of the host operating system
@@ -25,7 +25,7 @@ can download using your GitHub credentials.
 Assuming that you have Docker installed, you can authorize Docker to access
 this repository using a GitHub personal access token with ``packages read``
 permission. For more information, see GitHub's `Creating a personal access token
-<https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token>`_.
+<https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens>`_.
 
 Save this token to a file with a command like this:
 

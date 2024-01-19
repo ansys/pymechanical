@@ -3,58 +3,56 @@
 ===============
 Getting started
 ===============
+This section provides the following information.
 
-To run PyMechanical, you must have a licensed copy of Ansys Mechanical
-installed locally. The version installed dictates the interface and
-features that are available to you. For more information, see the `Ansys Mechanical <https://www.ansys.com/products/structures/ansys-mechanical>`_
-page on the Ansys website.
 
 .. grid:: 2
     :gutter: 2
 
-    .. grid-item-card:: Installation guide  :fas:`fa-regular fa-screwdriver-wrench`
+    .. grid-item-card:: :fas:`fa-regular fa-screwdriver-wrench`  Installation guide
         :link: installation
         :link-type: doc
         :text-align: center
 
-        Instructions for installing and setting up PyMechanical
+        How to install and verify PyMechanical
 
-    .. grid-item-card:: Versioning :fas:`fa-solid fa-code-compare`
+    .. grid-item-card:: :fas:`fa-solid fa-code-compare`  Versioning
         :link: versioning
         :link-type: doc
         :text-align: center
 
-        Explains what are supported versions of Ansys Mechanical
+        Versioning requirements and support for Ansys Mechanical
 
-.. grid:: 1
 
-    .. grid-item-card:: Running PyMechanical from a standard installation :fas:`fa-solid fa-gears`
+.. grid:: 2
+    :gutter: 2
+
+    .. grid-item-card:: :fas:`fa-solid fa-gears`  Launching PyMechanical
         :link: running_mechanical
         :link-type: doc
         :text-align: center
 
-        How to launch and interface with Mechanical from Python using PyMechanical
+        Steps to run PyMechanical
 
-.. grid:: 2
-    :gutter: 2
-    
-    .. grid-item-card:: Docker setup  :fab:`fa-brands fa-docker`
+    .. grid-item-card:: :fab:`fa-brands fa-docker`  Docker setup  
         :link: docker
         :link-type: doc
         :text-align: center
 
-        Instructions for creating mechanical docker images
+        Steps for creating mechanical docker images
 
-    .. grid-item-card:: WSL :fab:`fa-brands fa-ubuntu`
+
+.. grid:: 2
+    :gutter: 2
+
+    .. grid-item-card:: :fab:`fa-brands fa-ubuntu`  WSL
         :link: wsl
         :link-type: doc
         :text-align: center
 
-        Installation with Windows Subsystem for Linux
+        How to install PyMechanical on the Linux platform using a Windows Subsystem
 
-.. grid:: 1
-
-    .. grid-item-card:: FAQs :fas:`fa-solid fa-clipboard-question`
+    .. grid-item-card:: :fas:`fa-solid fa-clipboard-question`  FAQs
         :link: faq
         :link-type: doc
         :text-align: center
@@ -70,5 +68,5 @@ page on the Ansys website.
    versioning
    running_mechanical
    docker
-   faq
    wsl
+   faq

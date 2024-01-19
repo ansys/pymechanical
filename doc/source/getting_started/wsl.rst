@@ -1,8 +1,8 @@
 .. _ref_guide_wsl:
 
-PyAnsys libraries in the Windows Subsystem for Linux and Docker
-###############################################################
-
+===========================
+Windows Subsystem for Linux 
+===========================
 This page explains how you use a PyAnsys library, more specifically PyMechanical,
 in the Windows Subsystem for Linux (WSL). WSL is a compatibility layer for
 running Linux binary executables natively on Windows 10, Windows 11, and
@@ -13,7 +13,6 @@ Windows Server 2019. For more information, see:
 
 
 .. _Windows Subsystem for Linux: https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux
-.. _What is the Windows Subsystem for Linux?: https://docs.microsoft.com/en-us/windows/wsl/about
 
 This page walks you through the installation of WSL on Windows and then
 shows how to use it together with Mechanical, PyMechanical, and
@@ -34,7 +33,7 @@ Install WSL
 
 Install WSL by following the instructions in Microsoft's `Install Linux on Windows with WSL`_.
 
-.. _Install Linux on Windows with WSL: https://docs.microsoft.com/en-us/windows/wsl/install/
+.. _Install Linux on Windows with WSL: https://learn.microsoft.com/en-us/windows/wsl/install
 
 Install the CentOS7 WSL distribution
 ====================================

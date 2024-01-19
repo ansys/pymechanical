@@ -98,8 +98,3 @@ you can create issues to report bugs and request new features. On the `PyMechani
 page on the Ansys Developer portal, you can post questions, share ideas, and get community feedback. 
 
 To reach the project support team, email `pyansys.core@ansys.com <pyansys.core@ansys.com>`_.
-
-Project index
--------------
-
-* :ref:`genindex`
