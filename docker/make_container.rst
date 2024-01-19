@@ -59,12 +59,14 @@ install the minimal files by using:
 .. code:: bash
 
     sh /path-to-mechanical-installer \
-        -install_dir /path-to-install-mechanical/ \
-        -nochecks -mechapdl -silent
+        -silent -overwrite_preview -mechapdl -lsdyna \
+        -install_dir /path-to-install-mechanical/
+        
     # example 
     # sh /home/username/download/linx/INSTALL \
-    #    -install_dir /install/ansys_inc/ \
-    #    -nochecks -mechapdl -silent
+    #    -silent -overwrite_preview -mechapdl -lsdyna \
+    #    -install_dir /install/ansys_inc/
+
 
 Use ``sudo`` if you do not have write permissions in the installation directory.
 The ``-mechapdl`` command installs Mechanical.
