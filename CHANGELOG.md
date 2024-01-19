@@ -9,7 +9,22 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Added
 
-- Add release note configuration ([#512](https://github.com/ansys/pymechanical/pull/512))- Add 242 to scheduled nightly run ([#519](https://github.com/ansys/pymechanical/pull/519))
+### Fixed
+
+### Changed
+
+### Dependencies
+- Bump `pyvista` from 0.43.1 to 0.43.2 ([#564](https://github.com/ansys/pymechanical/pull/564))
+- Bump `sphinxcontrib-websupport` from 1.2.6 to 1.2.7 ([#562](https://github.com/ansys/pymechanical/pull/562))
+- Bump `ansys-sphinx-theme` from 0.13.0 to 0.13.1 ([#563](https://github.com/ansys/pymechanical/pull/563))
+
+## [0.10.6](https://github.com/ansys/pymechanical/releases/tag/v0.10.6) - January 11 2024
+
+### Added
+
+- Add release note configuration ([#512](https://github.com/ansys/pymechanical/pull/512))
+- Add 242 to scheduled nightly run ([#519](https://github.com/ansys/pymechanical/pull/519))
+- Add transaction for embedding ([#542](https://github.com/ansys/pymechanical/pull/542))
 
 ### Fixed
 
@@ -21,6 +36,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Changed
 
 - Update LICENSE ([#548](https://github.com/ansys/pymechanical/pull/548))
+- Update license headers and package versions ([#556](https://github.com/ansys/pymechanical/pull/556))
 
 ### Dependencies
 

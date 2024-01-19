@@ -20,21 +20,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Runtime initialize for pythonnet in embedding."""
+"""Embedding tests for global variables associated with Mechanical"""
+import pytest
+
+from ansys.mechanical.core import global_variables
 
 
-def initialize() -> None:
-    """Initialize the runtime.
-
-    Pythonnet is already initialized but we need to
-    do some special codec handling to make sure the
-    interop works well for Mechanical. These are
-    need to handle (among other things) list and other
-    container conversions between C# and python
-    """
-    import Python.Runtime.Codecs as codecs
-
-    codecs.ListDecoder.Instance.Register()
-    codecs.SequenceDecoder.Instance.Register()
-    codecs.IterableDecoder.Instance.Register()
-    # TODO - FunctionCodec
+@pytest.mark.embedding
+def test_global_variables(embedded_app):
+    """Test the global variables"""
+    globals_dict = global_variables(embedded_app, True)
+    assert "ExtAPI" in globals_dict
+    assert "DataModel" in globals_dict
+    assert "Model" in globals_dict
+    assert "Tree" in globals_dict
+    assert "Quantity" in globals_dict
+    assert "System" in globals_dict
+    assert "Ansys" in globals_dict
+    assert "Transaction" in globals_dict
