@@ -2,6 +2,7 @@
 
 Ansys path tools
 ================
+
 These methods on the ansys-tools-path module provide helper functions for configuration and discovery
 of the installation path of the Mechanical application.
 

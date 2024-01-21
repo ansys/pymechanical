@@ -48,7 +48,6 @@ Launch Mechanical locally with this code:
     Product Version:231
     Software build date:Wednesday, August 10, 2022 4:28:15 PM
 
-
 Launch Mechanical from the command line
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -205,7 +204,6 @@ a variety of issues, including:
   - License server setup
   - Running behind a VPN
   - Missing dependencies
-
 
 Embed a Mechanical instance
 ---------------------------

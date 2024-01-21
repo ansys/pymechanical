@@ -1,5 +1,6 @@
 Create a pool of Mechanical servers
 ===================================
+
 The :class:`LocalMechanicalPool <ansys.mechanical.core.pool.LocalMechanicalPool>`
 class simplifies creating and connecting to multiple servers of the
 :class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>` class for batch
@@ -36,7 +37,8 @@ during a batch process, this instance is automatically restarted. When creating
 the pool, you can disable this behavior by setting ``restart_failed=False``.
 
 Run a set of input files
-~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------
+
 You can use the pool to run a set of pre-generated input files using the
 :func:`run_batch() <ansys.mechanical.core.pool.LocalMechanicalPool.run_batch>` method.
 
@@ -51,7 +53,8 @@ For example, you can run the first set of 20 verification files with this code:
      20
 
 Run a user-defined function
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------
+
 While the previous example uses the :func:`run_batch() <ansys.mechanical.core.pool.LocalMechanicalPool.run_batch>`
 method to run a set of inputs files, you can also use the
 :func:`map() <ansys.mechanical.core.pool.LocalMechanicalPool.map>` method to run a custom user-defined function on
@@ -79,7 +82,7 @@ each instance of Mechanical over a set of input files.
      'result8',
      'result9']
 
-
 API reference
-~~~~~~~~~~~~~
+-------------
+
 For more information, see :ref:`ref_pool_api`.

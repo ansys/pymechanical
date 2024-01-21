@@ -16,7 +16,6 @@ If you want to ask more open-ended questions or are seeking advice
 from experts in the community, you can post on this repository's
 `Discussions <https://github.com/ansys/pymechanical/discussions>`_ page.
 
-
 How is PyMechanical positioned with respect to other related Ansys tools?
 -------------------------------------------------------------------------
 
@@ -58,7 +57,6 @@ PyMechanical allows you to write Python scripts outside of Mechanical, with tigh
 integration with other open source modules and Ansys products. With this tool, you
 bring your own Python environment, which may contain other modules and tools. There is
 no dependency on opening the Mechanical user interface.
-
 
 What is the relationship with Ansys Workbench?
 ----------------------------------------------

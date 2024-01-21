@@ -5,7 +5,6 @@ PyMechanical documentation |version|
    :hidden:
    :maxdepth: 3
 
-
    getting_started/index
    examples/index
    user_guide_session/index
@@ -14,10 +13,9 @@ PyMechanical documentation |version|
    api/index
    contributing
 
-
-
 Introduction
 ------------
+
 PyMechanical is part of the larger `PyAnsys <pyansys_>`_
 effort to facilitate the use of Ansys technologies directly from
 Python. Its primary package, ``ansys-mechanical-core``, provides
@@ -41,9 +39,9 @@ With PyMechanical, you can accomplish tasks like these:
 Contributions to this open source library are welcome. For more information,
 see :ref:`ref_contributing`.
 
-
 Mechanical scripting
 --------------------
+
 You can already perform scripting of Mechanical with Python from inside
 Mechanical. PyMechanical leverages the same APIs as Mechanical but allows
 you to run your automation from outside Mechanical. For more information
@@ -51,10 +49,12 @@ on using these APIs, see :ref:`ref_user_guide_scripting`.
 
 Background
 ----------
+
 PyMechanical contains two interfaces: a remote session and an embedded instance.
 
 Remote session
 ^^^^^^^^^^^^^^
+
 PyMechanical's  remote session is based on `gRPC <https://grpc.io/>`_.
 Mechanical runs as a server, ready to respond to any clients.
 
@@ -80,6 +80,7 @@ For information on using an embedded instance, see :ref:`ref_user_guide_embeddin
 
 Documentation and issues
 ------------------------
+
 Documentation for the latest stable release of PyMechanical is hosted at `PyMechanical documentation
 <https://mechanical.docs.pyansys.com/version/stable/>`_.
 
