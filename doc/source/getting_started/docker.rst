@@ -1,8 +1,8 @@
 .. _ref_docker:
 
-********************************
 Using Mechanical through Docker
-********************************
+===============================
+
 You can run Mechanical within a container on any operating system
 using `Docker <https://www.docker.com/>`_ and connect to it with
 PyMechanical.
@@ -17,7 +17,8 @@ Running Mechanical in a containerized environment like Docker or `Apptainer <htt
 
 
 Install the Mechanical image
------------------------------
+----------------------------
+
 There is a Docker image hosted in the `PyMechanical GitHub
 <https://github.com/ansys/pymechanical/pkgs/container/mechanical>`_ repository that you
 can download using your GitHub credentials.
@@ -75,6 +76,7 @@ As Mechanical starts, you can see status information:
 
 Connect to the Mechanical container
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 You can now connect to the Mechanical container with this code:
 
 .. code:: python
@@ -101,6 +103,7 @@ Verify your connection with this code:
 
 Additional considerations
 -------------------------
+
 You can provide additional command line parameters to Mechanical by appending them
 to the Docker command. For example, this code shows how you pass feature flags:
 

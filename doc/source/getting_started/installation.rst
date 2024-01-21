@@ -1,5 +1,5 @@
 .. _ref_installation:
-==================
+
 Installation guide
 ==================
 
@@ -11,9 +11,9 @@ PyMechanical is compatible with Mechanical 2023 R1 and later on Windows
 and Linux. For more information please refer to  :ref:`ref_versioning` documentation.
 Later releases provide significantly better support and features.
 
-
 Install the package
 -------------------
+
 The latest ``ansys.mechanical.core`` package supports Python 3.9 through
 Python 3.12 on Windows, Linux, and Mac.
 
@@ -28,9 +28,9 @@ Install the latest package from `PyPi
 
    pip install ansys-mechanical-core
 
-
 Install offline
 ---------------
+
 If you want to install PyMechanical on a computer without access to the internet,
 you can download a wheelhouse archive that corresponds to your
 machine architecture from the `Releases page <https://github.com/ansys/pymechanical/releases>`_ 
@@ -50,7 +50,7 @@ this code:
    pip install ansys-mechanical-core -f wheelhouse --no-index --upgrade --ignore-installed
 
 If you are on Windows with Python 3.9, unzip the ``ansys-mechanical-core-v0.11.dev0-wheelhouse-Windows-3.9``
-wheelhouse archive to a ``wheelhouse`` directory and then install it using ``pip`` like
+wheelhouse archive to a ``wheelhouse`` directory and then install it using ``pip`` as
 in the preceding example.
 
 Verify your installation
@@ -94,6 +94,7 @@ For more details, refer to the :ref:`ref_ansys_tools_path_api`.
 
 Verify a remote session
 ^^^^^^^^^^^^^^^^^^^^^^^
+
 Verify your installation by starting a remote session of Mechanical from Python:
 
 .. code:: pycon
@@ -119,7 +120,6 @@ Verify your installation by loading an embedded instance of Mechanical in Python
    If you are running on Linux, you must set some environment variables for
    embedding of Mechanical in Python to work. A script that sets these variables is
    available to install using pip:
-
    ``pip install ansys-mechanical-env`` 
 
 To use the script, prepend it to any invocation of Python:
@@ -127,7 +127,6 @@ To use the script, prepend it to any invocation of Python:
 .. code::
 
     mechanical-env python
-
 
 Inside of Python, use the following commands to load an embedded instance:
 

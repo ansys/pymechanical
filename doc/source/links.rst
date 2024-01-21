@@ -1,5 +1,5 @@
 .. #Pyansys
-.. _pyansys: https://docs.pyansys.com/version/dev/
+.. _pyansys: https://docs.pyansys.com/
 .. _pyansys_support: pyansys.support@ansys.com
 
 .. # PyMechanical Embedding Examples related

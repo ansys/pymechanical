@@ -1,63 +1,62 @@
 .. _ref_getting_started:
 
-===============
 Getting started
 ===============
+
 This section provides the following information.
 
-
 .. grid:: 2
-    :gutter: 2
+    :gutter: 2 2 3 4
 
-    .. grid-item-card:: :fas:`fa-regular fa-screwdriver-wrench`  Installation guide
+    .. grid-item-card:: :fas:`fa-regular fa-screwdriver-wrench` Installation guide
         :link: installation
         :link-type: doc
         :text-align: center
 
-        How to install and verify PyMechanical
+        How to install and verify PyMechanical.
 
-    .. grid-item-card:: :fas:`fa-solid fa-code-compare`  Versioning
+    .. grid-item-card:: :fas:`fa-solid fa-code-compare` Versioning
         :link: versioning
         :link-type: doc
         :text-align: center
 
-        Versioning requirements and support for Ansys Mechanical
+        Versioning requirements and support for Ansys Mechanical.
 
 
 .. grid:: 2
-    :gutter: 2
+    :gutter: 2 2 3 4
 
-    .. grid-item-card:: :fas:`fa-solid fa-gears`  Launching PyMechanical
+    .. grid-item-card:: :fas:`fa-solid fa-gears` Launching PyMechanical
         :link: running_mechanical
         :link-type: doc
         :text-align: center
 
-        Steps to run PyMechanical
+        Steps to run PyMechanical.
 
-    .. grid-item-card:: :fab:`fa-brands fa-docker`  Docker setup  
+    .. grid-item-card:: :fab:`fa-brands fa-docker` Docker setup
         :link: docker
         :link-type: doc
         :text-align: center
 
-        Steps for creating mechanical docker images
+        Steps for creating mechanical docker images.
 
 
 .. grid:: 2
-    :gutter: 2
+    :gutter: 2 2 3 4
 
-    .. grid-item-card:: :fab:`fa-brands fa-ubuntu`  WSL
+    .. grid-item-card:: :fab:`fa-brands fa-ubuntu` WSL
         :link: wsl
         :link-type: doc
         :text-align: center
 
-        How to install PyMechanical on the Linux platform using a Windows Subsystem
+        How to install PyMechanical on the Linux platform using a Windows Subsystem.
 
-    .. grid-item-card:: :fas:`fa-solid fa-clipboard-question`  FAQs
+    .. grid-item-card:: :fas:`fa-solid fa-clipboard-question` FAQs
         :link: faq
         :link-type: doc
         :text-align: center
 
-        Frequently asked questions and answers
+        Frequently asked questions and answers.
 
 
 .. toctree::

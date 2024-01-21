@@ -1,6 +1,5 @@
 .. _ref_versioning:
 
-==========
 Versioning
 ==========
 

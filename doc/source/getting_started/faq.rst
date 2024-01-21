@@ -1,8 +1,8 @@
 .. _faq:
 
-**************************
 Frequently asked questions
-**************************
+==========================
+
 This section provides answers to frequently asked questions.
 
 How do you report issues?
@@ -77,6 +77,7 @@ the hood.
 
 How do you restart a script?
 ----------------------------
+
 If you have trouble terminating a simulation, you do not have to close Python, reopen it, and
 clear all previous data such as the mesh using this code:
 

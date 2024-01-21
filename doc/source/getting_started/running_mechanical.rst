@@ -1,6 +1,5 @@
 .. _using_standard_install:
 
-======================
 Launching PyMechanical
 ======================
 
@@ -194,6 +193,7 @@ You can then use this output to debug why Mechanical isn't launching.
 
 Debug from the command line
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 You may need to run the ``launch`` command from the command line to debug why Mechanical is not launching.
 running the launch command from the command line.
 
@@ -220,6 +220,7 @@ Linux requires some additional environment variables.
 
 Python code
 ~~~~~~~~~~~
+
 .. code:: pycon
 
     >>> from ansys.mechanical.core import App
@@ -259,6 +260,7 @@ comprehensive licensing information.
 
 VPN issues
 ----------
+
 Sometimes, Mechanical has issues starting when VPN software is running. For more information,
 access the `Mechanical Users Guide <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/wb_sim/ds_Home.html>`_
 in the Ansys Help.

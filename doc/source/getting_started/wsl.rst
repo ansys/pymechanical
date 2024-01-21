@@ -1,8 +1,8 @@
 .. _ref_guide_wsl:
 
+Windows Subsystem for Linux
 ===========================
-Windows Subsystem for Linux 
-===========================
+
 This page explains how you use a PyAnsys library, more specifically PyMechanical,
 in the Windows Subsystem for Linux (WSL). WSL is a compatibility layer for
 running Linux binary executables natively on Windows 10, Windows 11, and
@@ -26,6 +26,7 @@ shows how to use it together with Mechanical, PyMechanical, and
 
 Run PyMechanical on WSL
 ***********************
+
 There are two versions of WSL: WSL1 and WSL2. Because WSL2 provides many improvements
 over WSL1, you should upgrade to and use WSL2.
 
