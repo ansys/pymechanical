@@ -15,7 +15,6 @@ Running Mechanical in a containerized environment like Docker or `Apptainer <htt
 - Large-scale cluster deployment using `Kubernetes <https://kubernetes.io/>`_
 - Genuine application isolation through containerization
 
-
 Install the Mechanical image
 ----------------------------
 
@@ -34,7 +33,6 @@ Save this token to a file with a command like this:
 
    echo XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX > GH_TOKEN.txt
 
-
 This command lets you send the token to Docker without leaving the token value
 in your history.
 
@@ -44,7 +42,6 @@ Next, authorize Docker to access the repository with this code:
 
     GH_USERNAME=<my-github-username>
     cat GH_TOKEN.txt | docker login ghcr.io -u $GH_USERNAME --password-stdin
-
 
 You can now launch Mechanical directly from Docker with a short script or
 directly from the command line. Because this image does not contain a license
@@ -61,7 +58,6 @@ Launch Mechanical with this code:
     IMAGE=ghcr.io/ansys/pymechanical/mechanical:$VERSION
     docker run -e ANSYSLMD_LICENSE_FILE=$LICENSE_SERVER -p ip:10000:10000 $IMAGE
 
-
 Note that port ``10000``, which is local to the container, is mapped to
 port ``10000`` on the host. This makes it possible to use different
 port mappings to launch multiple instances of Mechanical.
@@ -72,7 +68,6 @@ As Mechanical starts, you can see status information:
 
     Starting the grpc server at port 10000
     Started the grpc server at port 10000
-
 
 Connect to the Mechanical container
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

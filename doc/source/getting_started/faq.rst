@@ -87,7 +87,6 @@ clear all previous data such as the mesh using this code:
 
     sys.modules[__name__].__dict__.clear()
 
-
 Simply exiting Python should clear the solution within Python. This is because 
 stopping the original process means that nothing should be in present in
 a new process.

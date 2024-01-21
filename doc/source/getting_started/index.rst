@@ -3,8 +3,6 @@
 Getting started
 ===============
 
-This section provides the following information.
-
 .. grid:: 2
     :gutter: 2 2 3 4
 
@@ -21,7 +19,6 @@ This section provides the following information.
         :text-align: center
 
         Versioning requirements and support for Ansys Mechanical.
-
 
 .. grid:: 2
     :gutter: 2 2 3 4
@@ -40,7 +37,6 @@ This section provides the following information.
 
         Steps for creating mechanical docker images.
 
-
 .. grid:: 2
     :gutter: 2 2 3 4
 
@@ -57,7 +53,6 @@ This section provides the following information.
         :text-align: center
 
         Frequently asked questions and answers.
-
 
 .. toctree::
    :hidden:
