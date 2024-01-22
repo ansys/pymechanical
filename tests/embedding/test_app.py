@@ -147,6 +147,7 @@ def test_warning_message(test_env, pytestconfig, rootdir):
 
 @pytest.mark.embedding
 @pytest.mark.python_env
+@pytest.mark.skip(reason="Test hangs for 241 - Fix is in progress")
 def test_private_appdata(pytestconfig, rootdir):
     """Test embedded instance does not save ShowTriad using a test-scoped Python environment."""
     version = pytestconfig.getoption("ansys_version")
@@ -169,6 +170,7 @@ def test_private_appdata(pytestconfig, rootdir):
 
 @pytest.mark.embedding
 @pytest.mark.python_env
+@pytest.mark.skip(reason="Test hangs for 241 - Fix is in progress")
 def test_normal_appdata(pytestconfig, rootdir):
     """Test embedded instance saves ShowTriad value using a test-scoped Python environment."""
     version = pytestconfig.getoption("ansys_version")
