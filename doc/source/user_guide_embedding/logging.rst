@@ -1,8 +1,7 @@
 .. _ref_embedding_user_guide_logging:
 
-*******
 Logging
-*******
+=======
 
 Mechanical has a logging system that is useful when debugging issues. Normally, it is
 enabled by setting environment variables before starting Mechanical. With PyMechanical,
