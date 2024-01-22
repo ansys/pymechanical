@@ -1,9 +1,7 @@
 .. _ref_embedding_user_guide_libraries:
 
-*********
 Libraries
-*********
-
+=========
 
 .. note::
 
