@@ -67,9 +67,9 @@ usage, type the following command:
 
         The following example demonstrates the main use of this tool:
 
-            $ ansys-mechanical -r 232 -g
+            $ ansys-mechanical -r 241 -g
 
-            Starting Ansys Mechanical version 2023R2 in graphical mode...
+            Starting Ansys Mechanical version 2024R1 in graphical mode...
 
     Options:
         -h, --help                 Show this message and exit.
