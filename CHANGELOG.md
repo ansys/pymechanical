@@ -20,6 +20,9 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Dependencies
 - Bump `pyvista` from 0.43.1 to 0.43.2 ([#564](https://github.com/ansys/pymechanical/pull/564))
 - Bump `sphinxcontrib-websupport` from 1.2.6 to 1.2.7 ([#562](https://github.com/ansys/pymechanical/pull/562))
+- Bump `ansys-sphinx-theme` from 0.13.0 to 0.13.1 ([#563](https://github.com/ansys/pymechanical/pull/563))
+- Bump `pandas` from 2.1.4 to 2.2.0 ([#571](https://github.com/ansys/pymechanical/pull/571))
+- Bump `sphinxemoji` from 0.2.0 to 0.3.1 ([#569](https://github.com/ansys/pymechanical/pull/569))
 - Bump `tj-actions/changed-files` from 41 to 42 ([#572](https://github.com/ansys/pymechanical/pull/572))
 - Bump `panel` from 1.3.6 to 1.3.7 ([#570](https://github.com/ansys/pymechanical/pull/570))
 
