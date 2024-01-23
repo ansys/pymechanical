@@ -109,8 +109,7 @@ ENV ANSYS_VERSION=${VERSION} \
     PERL5LIB=${PERL5LIB}:/install/ansys_inc/v${VERSION}/commonfiles/CFX/tools/perl-5.34.1-dynamic/lib/5.34.1 \
     LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CFX5EXECDIR}:${CFX5LIBDIR}/linux-amd64:${CFX5ROOT}/tools/fluentio/linx64/lib \
     LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CFX5ROOT}/tools/poco-1.7.8/linx64/lib:${CFX5PERLDIR}/lib/x86_64-linux/CORE \
-    # need to use EGL with this image's version of Mesa (version might be fine but I think the package was compiled with some flags set differently than what is required, causing offscreen renderings to only show the background blue-white gradient; need to use EGL to overcome it)
-    ANS_WB_FORCE_EGL=1 \
+    # need to use EGL with this image's version of Mesa
     MECHANICAL_ON_DOCKER=TRUE
 
 # expose port for grpc
