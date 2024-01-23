@@ -7,7 +7,7 @@ Overall guidance on contributing to a PyAnsys library appears in
 `Contributing <https://dev.docs.pyansys.com/how-to/contributing.html>`_
 in the *PyAnsys Developer's Guide*. Ensure that you are thoroughly familiar
 with this guide before attempting to contribute to PyMechanical.
- 
+
 The following contribution information is specific to PyMechanical.
 
 Install in developer mode
@@ -63,7 +63,7 @@ To install PyMechanical in developer mode, perform these steps:
 
             python -m venv .venv
             source .venv/bin/activate
-  
+
 
 #. Ensure that you have the latest required build system tools:
 
@@ -146,7 +146,7 @@ variables.
     SET PYMECHANICAL_PORT=<MECHANICAL Port> (default 10000)
     SET PYMECHANICAL_IP=<MECHANICAL IP> (default 127.0.0.1)
 
-The environment variables for your operating system tell PyMechanical 
+The environment variables for your operating system tell PyMechanical
 to attempt to connect to the existing Mechanical service by default
 when you use the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>`
 method.

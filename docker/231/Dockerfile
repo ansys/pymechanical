@@ -11,8 +11,8 @@ LABEL org.opencontainers.image.documentation="https://mechanical.docs.pyansys.co
 
 RUN apt-get update && apt-get install -y \
     libxt6 \
-    libsm6 \ 
-    libice6 \ 
+    libsm6 \
+    libice6 \
     libx11-6 \
     libx11-xcb1 \
     libxext6 \
@@ -56,7 +56,7 @@ RUN apt-get update && apt-get install -y \
     libxm4 \
     libgfortran4 \
     libgfortran5 \
-    xvfb \ 
+    xvfb \
     tini \
     ca-certificates\
     libgomp1
@@ -64,7 +64,7 @@ RUN apt-get update && apt-get install -y \
 # Copying files
 WORKDIR /install/
 
-COPY . . 
+COPY . .
 
 # License server
 # (Optional)

@@ -82,7 +82,7 @@ jobs:
 
             parse_stable_revn="${stable_revn:0:2}.${stable_revn:2}.0"
             parse_experimental_revn="${experimental_revn:0:2}.${experimental_revn:2}.0"
-            
+
             echo "stable_container_revn=$parse_stable_revn" >> $GITHUB_OUTPUT
             echo "experimental_container_revn=$parse_experimental_revn" >> $GITHUB_OUTPUT
             echo "experimental_revn=$2" >> $GITHUB_OUTPUT
@@ -129,7 +129,7 @@ jobs:
         should-release:
           - ${{ github.event_name == 'push' && contains(github.ref, 'refs/tags') }}
         exclude:
-          - should-release: false 
+          - should-release: false
             os: macos-latest
     steps:
       - name: Build wheelhouse and perform smoke test
@@ -468,14 +468,14 @@ jobs:
               exit 1
             fi
           }
-           
+
           # Need to unset PYMECHANICAL_PORT and PYMECHANICAL_START_INSTANCE when running code containing remote sessions
           unset PYMECHANICAL_PORT
           unset PYMECHANICAL_START_INSTANCE
-          
+
           xvfb-run mechanical-env make -C doc html > doc_build_output.txt 2>&1 || true
           validate_output doc_build_output.txt
-          
+
           xvfb-run mechanical-env make -C doc pdf > doc_pdf_output.txt 2>&1 || true
           validate_output doc_pdf_output.txt
 
