@@ -2,6 +2,7 @@
 
 Logging
 =======
+
 To make the logging of events consistent, PyMechanical has a specific
 logging architecture with global and local logging instances.
 
@@ -24,9 +25,9 @@ Because both types of loggers are based in the Python ``logging`` module,
 you can use any of the tools provided in this module to extend or modify
 these loggers.
 
-
 ``Logger`` class
 ----------------
+
 .. currentmodule:: ansys.mechanical.core.logging
 
 .. autosummary::

@@ -1,11 +1,10 @@
 .. _ref_mechanical_scripting_guide_threading:
 
-*********
 Threading
-*********
+=========
 
 Concurrency and threads
-=======================
+-----------------------
 
 .. note::
    The intent is not to provide an extensive explanation of concurrency and threads but
@@ -89,7 +88,7 @@ concurrency is not needed. As such, adopting these strategies causes performance
 problems for the typical user.
 
 Mechanical's threading model
-============================
+----------------------------
 
 Mechanical is a large-scale application with multiple concurrent threads running at
 any one time. However, it exhibits *thread affinity*, where a single thread is privileged above
