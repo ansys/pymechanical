@@ -1,9 +1,7 @@
 .. _ref_embedding_user_guide_libraries:
 
-*********
 Libraries
-*********
-
+=========
 
 .. note::
 
@@ -28,7 +26,7 @@ To use the above function, run the following:
    from ansys.mechanical.core import App, global_variables
    from ansys.mechanical.core.embedding import add_mechanical_python_libraries
 
-   app = App(version=232)
+   app = App(version=241)
 
-   add_mechanical_python_libraries(232)
-   import materials  # This is materials.py that's shipped with Mechanical v232
+   add_mechanical_python_libraries(241)
+   import materials  # This is materials.py that's shipped with Mechanical v241

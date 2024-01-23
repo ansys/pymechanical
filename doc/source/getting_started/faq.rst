@@ -1,8 +1,8 @@
 .. _faq:
 
-**************************
 Frequently asked questions
-**************************
+==========================
+
 This section provides answers to frequently asked questions.
 
 How do you report issues?
@@ -15,7 +15,6 @@ and documentation errors, on the PyMechanical repository's `Issues
 If you want to ask more open-ended questions or are seeking advice
 from experts in the community, you can post on this repository's
 `Discussions <https://github.com/ansys/pymechanical/discussions>`_ page.
-
 
 How is PyMechanical positioned with respect to other related Ansys tools?
 -------------------------------------------------------------------------
@@ -59,7 +58,6 @@ integration with other open source modules and Ansys products. With this tool, y
 bring your own Python environment, which may contain other modules and tools. There is
 no dependency on opening the Mechanical user interface.
 
-
 What is the relationship with Ansys Workbench?
 ----------------------------------------------
 
@@ -77,6 +75,7 @@ the hood.
 
 How do you restart a script?
 ----------------------------
+
 If you have trouble terminating a simulation, you do not have to close Python, reopen it, and
 clear all previous data such as the mesh using this code:
 
@@ -85,7 +84,6 @@ clear all previous data such as the mesh using this code:
     import sys
 
     sys.modules[__name__].__dict__.clear()
-
 
 Simply exiting Python should clear the solution within Python. This is because 
 stopping the original process means that nothing should be in present in
