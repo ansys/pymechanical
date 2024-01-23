@@ -91,11 +91,11 @@ development version or previously released versions.
 You can also `view <https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.png>`_ or
 `download <https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.pdf>`_ the
 PyMechanical cheat sheet. This one-page reference provides syntax rules and commands
-for using PyMechanical. 
+for using PyMechanical.
 
 On the `PyMechanical Issues <https://github.com/ansys/pymechanical/issues>`_ page,
 you can create issues to report bugs and request new features. On the `PyMechanical Discussions
 <https://github.com/ansys/pymechanical/discussions>`_ page or the `Discussions <https://discuss.ansys.com/>`_
-page on the Ansys Developer portal, you can post questions, share ideas, and get community feedback. 
+page on the Ansys Developer portal, you can post questions, share ideas, and get community feedback.
 
 To reach the project support team, email `pyansys.core@ansys.com <pyansys.core@ansys.com>`_.

@@ -54,7 +54,7 @@ Dependencies
 ------------
 
 You must have a licensed copy of `Ansys Mechanical <https://www.ansys.com/products/structures/ansys-mechanical>`_
-installed. When using an embedded instance, that installation must be runnable from the 
+installed. When using an embedded instance, that installation must be runnable from the
 same computer as your Python program. When using a remote session, a connection to that
 session must be reachable from your Python program.
 
@@ -128,7 +128,7 @@ for using PyMechanical.
 On the `PyMechanical Issues <https://github.com/ansys/pymechanical/issues>`_ page,
 you can create issues to report bugs and request new features. On the `PyMechanical Discussions
 <https://github.com/ansys/pymechanical/discussions>`_ page or the `Discussions <https://discuss.ansys.com/>`_
-page on the Ansys Developer portal, you can post questions, share ideas, and get community feedback. 
+page on the Ansys Developer portal, you can post questions, share ideas, and get community feedback.
 
 To reach the project support team, email `pyansys.core@ansys.com <pyansys.core@ansys.com>`_.
 

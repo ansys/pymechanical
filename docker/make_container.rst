@@ -23,7 +23,7 @@ Requirements
   provided you with an account.
 
 * These files are provided:
-  
+
   * `Dockerfile <https://github.com/ansys/pymechanical/tree/main/docker/231/Dockerfile>`_
   * `.dockerignore <https://github.com/ansys/pymechanical/tree/main/docker/231/.dockerignore>`_
 
@@ -59,12 +59,14 @@ install the minimal files by using:
 .. code:: bash
 
     sh /path-to-mechanical-installer \
-        -install_dir /path-to-install-mechanical/ \
-        -nochecks -mechapdl -silent
-    # example 
+        -silent -overwrite_preview -mechapdl -lsdyna \
+        -install_dir /path-to-install-mechanical/
+
+    # example
     # sh /home/username/download/linx/INSTALL \
-    #    -install_dir /install/ansys_inc/ \
-    #    -nochecks -mechapdl -silent
+    #    -silent -overwrite_preview -mechapdl -lsdyna \
+    #    -install_dir /install/ansys_inc/
+
 
 Use ``sudo`` if you do not have write permissions in the installation directory.
 The ``-mechapdl`` command installs Mechanical.
@@ -124,7 +126,7 @@ Summary
 =======
 
 
-* **Step 1:** Download the latest Mechanical version from the Ansys Customer Portal 
+* **Step 1:** Download the latest Mechanical version from the Ansys Customer Portal
   (`Current Release <https://download.ansys.com/Current%20Release>`_).
 
 * **Step 2:** Install Mechanical in a known folder. You can reuse your local

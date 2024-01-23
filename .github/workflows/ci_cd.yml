@@ -67,7 +67,7 @@ jobs:
         should-release:
           - ${{ github.event_name == 'push' && contains(github.ref, 'refs/tags') }}
         exclude:
-          - should-release: false 
+          - should-release: false
             os: macos-latest
     steps:
       - name: Build wheelhouse and perform smoke test

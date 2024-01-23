@@ -33,7 +33,7 @@ Install offline
 
 If you want to install PyMechanical on a computer without access to the internet,
 you can download a wheelhouse archive that corresponds to your
-machine architecture from the `Releases page <https://github.com/ansys/pymechanical/releases>`_ 
+machine architecture from the `Releases page <https://github.com/ansys/pymechanical/releases>`_
 of the PyMechanical repository.
 
 Each wheelhouse archive contains all the Python wheels necessary to install
@@ -120,7 +120,7 @@ Verify your installation by loading an embedded instance of Mechanical in Python
    If you are running on Linux, you must set some environment variables for
    embedding of Mechanical in Python to work. A script that sets these variables is
    available to install using pip:
-   ``pip install ansys-mechanical-env`` 
+   ``pip install ansys-mechanical-env``
 
 To use the script, prepend it to any invocation of Python:
 

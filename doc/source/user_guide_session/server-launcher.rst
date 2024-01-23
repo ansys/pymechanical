@@ -47,7 +47,7 @@ For more information, see the :func:`change_default_mechanical_path() <ansys.mec
 and :func:`find_mechanical() <ansys.tools.path.find_mechanical>` methods.
 
 Additionally, you can use the ``exec_file`` keyword argument to specify the location of the
-Mechanical executable file. 
+Mechanical executable file.
 
 **On Linux**
 
