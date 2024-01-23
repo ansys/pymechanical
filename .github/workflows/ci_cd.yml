@@ -448,11 +448,11 @@ jobs:
           # Create html or pdf doc
           create_doc() {
             # $1 is the type of file we are creating (html or pdf)
-            
+
             # Need to unset PYMECHANICAL_PORT and PYMECHANICAL_START_INSTANCE when running code containing remote sessions
             unset PYMECHANICAL_PORT
             unset PYMECHANICAL_START_INSTANCE
-            
+
             output_file=doc_$1_output.txt
             xvfb-run mechanical-env make -C doc $1 > $output_file 2>&1 || true
             validate_output $output_file
@@ -472,7 +472,7 @@ jobs:
               exit 1
             fi
           }
-           
+
           # Create the html doc & validate results
           create_doc html
 
