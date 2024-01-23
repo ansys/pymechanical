@@ -280,7 +280,8 @@ jobs:
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
           NUM_CORES: 1
         run: |
-          count=0
+          #!/bin/bash
+          count=1
           run_pytest() {
             timeout 240 xvfb-run mechanical-env pytest -m embedding > pytest_output.txt
             retcode=$?
