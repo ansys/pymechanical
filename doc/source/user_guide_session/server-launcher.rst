@@ -1,5 +1,6 @@
 Initial setup for launching a Mechanical session on the local machine
----------------------------------------------------------------------
+=====================================================================
+
 To run, PyMechanical must know the location of your Mechanical installation.
 Most of the time, PyMechanical can determine this location automatically. However,
 if you have a non-standard installation, you must provide this location.
@@ -56,7 +57,6 @@ Mechanical executable file.
 
     mechanical = launch_mechanical(exec_file="/usr/ansys_inc/v231/aisol/.workbench")
 
-
 **On Windows**
 
 .. code:: python
@@ -76,7 +76,6 @@ You can use the ``additional_switches`` keyword argument to specify additional a
     custom_exec = "/usr/ansys_inc/v231/aisol/.workbench"
     add_switch = f"-featureflags mechanical.material.import;"
     mechanical = launch_mechanical(additional_switches=add_switch)
-
 
 API reference
 ~~~~~~~~~~~~~
