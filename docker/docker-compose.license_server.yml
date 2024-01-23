@@ -52,4 +52,3 @@ services:
   mechanical:
     environment:
       - ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER_HOSTNAME}
-      

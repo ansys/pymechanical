@@ -85,7 +85,7 @@ clear all previous data such as the mesh using this code:
 
     sys.modules[__name__].__dict__.clear()
 
-Simply exiting Python should clear the solution within Python. This is because 
+Simply exiting Python should clear the solution within Python. This is because
 stopping the original process means that nothing should be in present in
 a new process.
 
@@ -93,7 +93,7 @@ The way that you clear all data from Mechanical in PyMechanical depends on if
 Mechanical is a remote session or embedded.
 
 - If Mechanical is a remote session, use either the
-  :func:`Mechanical.clear() <ansys.mechanical.core.Mechanical.clear>` 
+  :func:`Mechanical.clear() <ansys.mechanical.core.Mechanical.clear>`
   method or exit and restart Mechanical.
 - If Mechanical is embedded, use the
   :func:`app.new() <ansys.mechanical.core.embedding.Application.new>`

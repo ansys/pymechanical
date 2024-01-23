@@ -29,11 +29,11 @@
 - name: release
   description: Anything related to an incoming release
   color: ffffff
-  
+
 - name: testing
   description: Involves the development of new unit/functional tests
   color: bfe5bf
-  
+
 - name: major
   description: Major issue which may have to be subdivided into smaller ones
   color: 5319e7

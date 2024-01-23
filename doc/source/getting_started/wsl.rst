@@ -52,7 +52,7 @@ If you are using CentOS 7, before installing Mechanical, you must install some
 required libraries:
 
 .. code:: bash
-   
+
    sudo yum install openssl openssh-clients mesa-libGL mesa-libGLU motif libgfortran
 
 Install Ansys products
@@ -62,7 +62,7 @@ To install Ansys products in WSL, perform these steps:
 
 1. Download the **Ansys Structures** image for the `current Ansys release
    <https://download.ansys.com/Current%20Release>`_ from the Ansys Customer Portal.
-   
+
    If you are  downloading the image on a Windows machine, you should later copy the image to
    WSL.
 

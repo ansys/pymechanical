@@ -48,3 +48,13 @@ repos:
           tests/scripts/log_message.py |
           examples/embedding_n_remote/embedding_remote.py
         )$
+
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.5.0
+  hooks:
+  - id: check-merge-conflict
+  - id: debug-statements
+  - id: check-yaml
+  - id: trailing-whitespace
+
+exclude: '^tests/embedding/assets/.*$|^tests/parts/.*$'
