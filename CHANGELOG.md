@@ -19,6 +19,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `pyvista` from 0.43.1 to 0.43.2 ([#564](https://github.com/ansys/pymechanical/pull/564))
 - Bump `sphinxcontrib-websupport` from 1.2.6 to 1.2.7 ([#562](https://github.com/ansys/pymechanical/pull/562))
 - Bump `ansys-sphinx-theme` from 0.13.0 to 0.13.1 ([#563](https://github.com/ansys/pymechanical/pull/563))
+- Bump `panel` from 1.3.6 to 1.3.7 ([#570](https://github.com/ansys/pymechanical/pull/570))
 
 ## [0.10.6](https://github.com/ansys/pymechanical/releases/tag/v0.10.6) - January 11 2024
 
