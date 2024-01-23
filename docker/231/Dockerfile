@@ -110,6 +110,7 @@ ENV ANSYS_VERSION=${VERSION} \
     LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CFX5EXECDIR}:${CFX5LIBDIR}/linux-amd64:${CFX5ROOT}/tools/fluentio/linx64/lib \
     LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CFX5ROOT}/tools/poco-1.7.8/linx64/lib:${CFX5PERLDIR}/lib/x86_64-linux/CORE \
     # need to use EGL with this image's version of Mesa
+    ANS_WB_FORCE_EGL=1 \
     MECHANICAL_ON_DOCKER=TRUE
 
 # expose port for grpc
