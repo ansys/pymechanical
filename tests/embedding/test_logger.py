@@ -90,8 +90,8 @@ def _run_embedding_log_test(
     Returns the stderr
     """
     p, stdout, stderr = _run_embedding_log_test_process(rootdir, pytestconfig, testname)
-    _assert_success(p, stderr, pass_expected)
-    return stderr
+    _assert_success(p, stdout, pass_expected)
+    return stderr.decode()
 
 
 @pytest.mark.embedding
