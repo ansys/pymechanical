@@ -48,13 +48,16 @@ def _run_embedding_log_test_process(rootdir, pytestconfig, testname) -> subproce
     """Runs the process and returns it after it finishes"""
     version = pytestconfig.getoption("ansys_version")
     embedded_py = os.path.join(rootdir, "tests", "scripts", "embedding_log_test.py")
+    print("before subprocess")
     p = subprocess.Popen(
         [sys.executable, embedded_py, version, testname],
         stderr=subprocess.PIPE,
         stdout=subprocess.PIPE,
         env=_get_env_without_logging_variables(),
     )
+    print("communicating subprocess")
     stdout, stderr = p.communicate()
+    print("after subprocess")
     print(stdout.decode())
     return p, stdout, stderr
 
