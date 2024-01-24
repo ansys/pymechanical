@@ -241,7 +241,6 @@ jobs:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
     strategy:
-      max-parallel: 2
       fail-fast: false
       matrix:
         python-version: ['3.9', '3.10', '3.11', '3.12']
@@ -282,7 +281,7 @@ jobs:
           NUM_CORES: 1
         run: |
           run_pytest() {
-            xvfb-run mechanical-env pytest -m embedding | tee pytest_output.txt
+            xvfb-run mechanical-env pytest -m embedding -s | tee pytest_output.txt
           }
 
           run_pytest || true
