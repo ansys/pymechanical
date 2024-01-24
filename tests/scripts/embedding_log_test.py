@@ -51,18 +51,14 @@ def log_error_after_initialize_with_info_level(version):
 
 def log_configuration_mechanical(version):
     """Log at the info level after app starts with the `Mechanical` configuration."""
-    print("before mech.App mechanical")
     _ = mech.App(version=version, config=AddinConfiguration("Mechanical"))
-    print("after mech.App mechanical")
     Configuration.configure(level=logging.INFO, to_stdout=True, base_directory=None)
     Logger.error("Mechanical configuration!")
 
 
 def log_configuration_workbench(version):
     """Log at the info level after app starts with the `WorkBench` configuration."""
-    print("before mech.App workbench")
     _ = mech.App(version=version, config=AddinConfiguration("WorkBench"))
-    print("after mech.App workbench")
     Configuration.configure(level=logging.INFO, to_stdout=True, base_directory=None)
     Logger.error("WorkBench configuration!")
 

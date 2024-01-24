@@ -16,6 +16,8 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Changed
 - Update getting started page ([#561](https://github.com/ansys/pymechanical/pull/561))
 - Update 232 to 241 in docs, docstrings, examples, and tests ([#566](https://github.com/ansys/pymechanical/pull/566))
+- Change which revisions are stable & dev in workflow ([#462](https://github.com/ansys/pymechanical/pull/462))
+
 
 ### Dependencies
 - Bump `pyvista` from 0.43.1 to 0.43.2 ([#564](https://github.com/ansys/pymechanical/pull/564))
@@ -93,7 +95,6 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
  - Update examples page ([#450](https://github.com/ansys/pymechanical/pull/450))
  - remove unneeded try/except ([#457](https://github.com/ansys/pymechanical/pull/457))
  - Updated wording for revn-variations section ([#458](https://github.com/ansys/pymechanical/pull/458))
- - change which revisions are stable & dev in workflow ([#462](https://github.com/ansys/pymechanical/pull/462))
  - Update temporary file creation in test_app ([#466](https://github.com/ansys/pymechanical/pull/466))
  - Remove .reuse and LICENSES directories & bump add-license-header version ([#496](https://github.com/ansys/pymechanical/pull/496))
  - Replace workbench_lite with mechanical-env in the docs ([#522](https://github.com/ansys/pymechanical/pull/522))

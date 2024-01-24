@@ -61,7 +61,6 @@ def _start_application(configuration: AddinConfiguration, version, db_file) -> "
     # Starting with version 241 we can pass a configuration name to the constructor
     # of Application
     if int(version) >= 241:
-        print("starting application")
         return Ansys.Mechanical.Embedding.Application(db_file, addin_configuration_name)
     else:
         return Ansys.Mechanical.Embedding.Application(db_file)
@@ -118,8 +117,6 @@ class App:
         version = kwargs.get("version")
         self._version = initializer.initialize(version)
         configuration = kwargs.get("config", _get_default_addin_configuration())
-        print("configuration")
-        print(configuration)
 
         if private_appdata:
             new_profile_name = f"PyMechanical-{os.getpid()}"
@@ -128,11 +125,8 @@ class App:
             atexit.register(_cleanup_private_appdata, profile)
 
         self._app = _start_application(configuration, self._version, db_file)
-        print("done starting up application")
         runtime.initialize()
-        print("done runtime init")
         connect_warnings(self)
-        print("done connecting warnings")
 
         self._disposed = False
         atexit.register(_dispose_embedded_app, INSTANCES)

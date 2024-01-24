@@ -48,21 +48,17 @@ def _run_embedding_log_test_process(rootdir, pytestconfig, testname) -> subproce
     """Runs the process and returns it after it finishes"""
     version = pytestconfig.getoption("ansys_version")
     embedded_py = os.path.join(rootdir, "tests", "scripts", "embedding_log_test.py")
-    print("before subprocess")
     p = subprocess.Popen(
         [sys.executable, embedded_py, version, testname],
         stderr=subprocess.PIPE,
         stdout=subprocess.PIPE,
         env=_get_env_without_logging_variables(),
     )
-    print("communicating subprocess")
-    stdout, stderr = p.communicate()
-    print("after subprocess")
-    print(stdout.decode())
-    return p, stdout, stderr
+    p.wait()
+    return p
 
 
-def _assert_success(process: subprocess.Popen, output: bytes, pass_expected: bool) -> int:
+def _assert_success(process: subprocess.Popen, pass_expected: bool) -> int:
     """Asserts the outcome of the process matches pass_expected"""
     if os.name == "nt":
         passing = process.returncode == 0
@@ -74,7 +70,7 @@ def _assert_success(process: subprocess.Popen, output: bytes, pass_expected: boo
     # throw. To check for the subprocess success, ensure that the stdout
     # has "@@success@@" (a value written there in the subprocess after the
     # test function runs)
-    stdout = output.decode()
+    stdout = process.stdout.read().decode()
     if pass_expected:
         assert "@@success@@" in stdout
     else:
@@ -93,9 +89,10 @@ def _run_embedding_log_test(
 
     Returns the stderr
     """
-    p, stdout, stderr = _run_embedding_log_test_process(rootdir, pytestconfig, testname)
-    _assert_success(p, stdout, pass_expected)
-    return stderr.decode()
+    p = _run_embedding_log_test_process(rootdir, pytestconfig, testname)
+    stderr = p.stderr.read().decode()
+    _assert_success(p, pass_expected)
+    return stderr
 
 
 @pytest.mark.embedding
@@ -117,7 +114,6 @@ def test_logging_write_info_after_initialize_with_error_level(rootdir, pytestcon
 @pytest.mark.parametrize("addin_configuration", ["Mechanical", "WorkBench"])
 @pytest.mark.embedding
 @pytest.mark.minimum_version(241)
-# @pytest.mark.skip(reason="Test hangs for 241 sometimes")
 def test_addin_configuration(rootdir, pytestconfig, addin_configuration):
     """Test that mechanical can start with both the Mechanical and WorkBench configuration."""
     stderr = _run_embedding_log_test(
@@ -138,7 +134,5 @@ def test_logging_write_error_after_initialize_with_info_level(rootdir, pytestcon
 @pytest.mark.embedding
 def test_logging_level_before_and_after_initialization(rootdir, pytestconfig):
     """Test logging level API  before and after initialization."""
-    p, stdout, stderr = _run_embedding_log_test_process(
-        rootdir, pytestconfig, "log_check_can_log_message"
-    )
-    _assert_success(p, stdout, True)
+    p = _run_embedding_log_test_process(rootdir, pytestconfig, "log_check_can_log_message")
+    _assert_success(p, True)
