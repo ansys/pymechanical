@@ -126,7 +126,7 @@ class App:
             profile = UniqueUserProfile(new_profile_name)
             profile.update_environment(os.environ)
             atexit.register(_cleanup_private_appdata, profile)
-        
+
         self._app = _start_application(configuration, self._version, db_file)
         print("done starting up application")
         runtime.initialize()
