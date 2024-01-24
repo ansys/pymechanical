@@ -280,31 +280,32 @@ jobs:
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
           NUM_CORES: 1
         run: |
-          #!/bin/bash
-          count=1
-          run_pytest() {
-            timeout 240 xvfb-run mechanical-env pytest -m embedding > pytest_output.txt
-            retcode=$?
-            if [ "$count" -lt 3 ] && [ $retcode -eq 124 ]; then
-              ((count++))
-              run_pytest
-            fi
-          }
+          xvfb-run mechanical-env pytest -m embedding
 
-          run_pytest || true
+          # count=1
+          # run_pytest() {
+          #   timeout 240 xvfb-run mechanical-env pytest -m embedding > pytest_output.txt
+          #   retcode=$?
+          #   if [ "$count" -lt 3 ] && [ $retcode -eq 124 ]; then
+          #     ((count++))
+          #     run_pytest
+          #   fi
+          # }
 
-          cat pytest_output.txt
-          #
-          # Check if failure occurred
-          #
-          output=$(grep -c "FAILURES" pytest_output.txt || true)
-          if [ $output -eq 0 ]; then
-            echo "Pytest execution succeeded"
-            exit 0
-          else
-            echo "Pytest execution failed"
-            exit 1
-          fi
+          # run_pytest || true
+
+          # cat pytest_output.txt
+          # #
+          # # Check if failure occurred
+          # #
+          # output=$(grep -c "FAILURES" pytest_output.txt || true)
+          # if [ $output -eq 0 ]; then
+          #   echo "Pytest execution succeeded"
+          #   exit 0
+          # else
+          #   echo "Pytest execution failed"
+          #   exit 1
+          # fi
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v4
