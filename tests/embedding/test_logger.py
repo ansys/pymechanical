@@ -54,11 +54,11 @@ def _run_embedding_log_test_process(rootdir, pytestconfig, testname) -> subproce
         stdout=subprocess.PIPE,
         env=_get_env_without_logging_variables(),
     )
-    p.communicate(input=None, timeout=None)
-    return p
+    stdout, stderr = p.communicate()
+    return p, stdout, stderr
 
 
-def _assert_success(process: subprocess.Popen, pass_expected: bool) -> int:
+def _assert_success(process: subprocess.Popen, output: bytes, pass_expected: bool) -> int:
     """Asserts the outcome of the process matches pass_expected"""
     if os.name == "nt":
         passing = process.returncode == 0
@@ -70,7 +70,7 @@ def _assert_success(process: subprocess.Popen, pass_expected: bool) -> int:
     # throw. To check for the subprocess success, ensure that the stdout
     # has "@@success@@" (a value written there in the subprocess after the
     # test function runs)
-    stdout = process.stdout.read().decode()
+    stdout = output.decode()
     if pass_expected:
         assert "@@success@@" in stdout
     else:
@@ -89,9 +89,8 @@ def _run_embedding_log_test(
 
     Returns the stderr
     """
-    p = _run_embedding_log_test_process(rootdir, pytestconfig, testname)
-    stderr = p.stderr.read().decode()
-    _assert_success(p, pass_expected)
+    p, stdout, stderr = _run_embedding_log_test_process(rootdir, pytestconfig, testname)
+    _assert_success(p, stderr, pass_expected)
     return stderr
 
 
@@ -116,7 +115,7 @@ def test_logging_write_info_after_initialize_with_error_level(rootdir, pytestcon
 @pytest.mark.minimum_version(241)
 def test_addin_configuration(rootdir, pytestconfig, addin_configuration):
     """Test that mechanical can start with both the Mechanical and WorkBench configuration."""
-    stderr = _run_embedding_log_test(
+    p, stdout, stderr = _run_embedding_log_test(
         rootdir, pytestconfig, f"log_configuration_{addin_configuration}"
     )
     assert f"{addin_configuration} configuration!" in stderr
@@ -134,5 +133,5 @@ def test_logging_write_error_after_initialize_with_info_level(rootdir, pytestcon
 @pytest.mark.embedding
 def test_logging_level_before_and_after_initialization(rootdir, pytestconfig):
     """Test logging level API  before and after initialization."""
-    p = _run_embedding_log_test_process(rootdir, pytestconfig, "log_check_can_log_message")
-    _assert_success(p, True)
+    p, stdout, stderr = _run_embedding_log_test_process(rootdir, pytestconfig, "log_check_can_log_message")
+    _assert_success(p, stdout, True)
