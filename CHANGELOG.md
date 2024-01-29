@@ -25,6 +25,8 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `sphinxemoji` from 0.2.0 to 0.3.1 ([#569](https://github.com/ansys/pymechanical/pull/569))
 - Bump `tj-actions/changed-files` from 41 to 42 ([#572](https://github.com/ansys/pymechanical/pull/572))
 - Bump `panel` from 1.3.6 to 1.3.7 ([#570](https://github.com/ansys/pymechanical/pull/570))
+- Bump `peter-evans/create-or-update-comment` from 3 to 4 ([#576](https://github.com/ansys/pymechanical/pull/576))
+- Bump `pytest` from 7.4.4 to 8.0.0 ([#577](https://github.com/ansys/pymechanical/pull/577))
 
 ## [0.10.6](https://github.com/ansys/pymechanical/releases/tag/v0.10.6) - January 11 2024
 
