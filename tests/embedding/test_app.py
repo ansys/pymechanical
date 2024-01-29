@@ -154,7 +154,7 @@ def test_private_appdata(pytestconfig, rootdir):
 
     # Set ShowTriad to False
     p1 = subprocess.Popen(
-        [sys.executable, embedded_py, version, "True", "Set"], stdout=subprocess.PIPEl
+        [sys.executable, embedded_py, version, "True", "Set"], stdout=subprocess.PIPE
     )
     p1.communicate()
 
