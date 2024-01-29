@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Launch embedded instance."""
+import logging
 import sys
 
 import ansys.mechanical.core as pymechanical
@@ -29,12 +30,14 @@ import ansys.mechanical.core as pymechanical
 def launch_app(version, private_appdata):
     """Launch embedded instance of app."""
     app = pymechanical.App(version=version, private_appdata=private_appdata)
+    logging.error("Issue in launch_app %r", app)
     return app
 
 
 def set_showtriad(version, appdata_option, value):
     """Launch embedded instance of app & set ShowTriad to False."""
     app = launch_app(version, appdata_option)
+    logging.error("Issue in set_showtriad %r", app)
     app.ExtAPI.Graphics.ViewOptions.ShowTriad = value
     app.close()
 
@@ -42,6 +45,7 @@ def set_showtriad(version, appdata_option, value):
 def print_showtriad(version, appdata_option):
     """Return ShowTriad value."""
     app = launch_app(version, appdata_option)
+    logging.error("Issue in print_showtriad %r", app)
     print("ShowTriad value is " + str(app.ExtAPI.Graphics.ViewOptions.ShowTriad))
     app.close()
 
@@ -49,6 +53,7 @@ def print_showtriad(version, appdata_option):
 def reset_showtriad(version, appdata_option):
     """Reset ShowTriad value."""
     app = launch_app(version, appdata_option)
+    logging.error("Issue in reset_showtriad %r", app)
     app.ExtAPI.Graphics.ViewOptions.Reset
     app.close()
 

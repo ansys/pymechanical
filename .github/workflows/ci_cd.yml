@@ -281,7 +281,7 @@ jobs:
           NUM_CORES: 1
         run: |
           run_pytest() {
-            xvfb-run mechanical-env pytest -m embedding | tee pytest_output.txt
+            xvfb-run mechanical-env pytest -m embedding -s | tee pytest_output.txt
           }
 
           run_pytest || true
