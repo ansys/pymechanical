@@ -25,14 +25,13 @@ import logging
 import sys
 
 import ansys.mechanical.core as pymechanical
-
-logging.basicConfig(level=logging.DEBUG)
+from ansys.mechanical.core.embedding.logger import Configuration, Logger
 
 
 def launch_app(version, private_appdata):
     """Launch embedded instance of app."""
     app = pymechanical.App(version=version, private_appdata=private_appdata)
-    logging.debug(app)
+    Configuration.configure(level=logging.DEBUG, to_stdout=True, base_directory=None)
     return app
 
 
