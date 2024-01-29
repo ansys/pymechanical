@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Miscellaneous embedding tests"""
+import logging
 import os
 import subprocess
 import sys
@@ -156,12 +157,24 @@ def test_private_appdata(pytestconfig, rootdir):
     p1 = subprocess.Popen(
         [sys.executable, embedded_py, version, "True", "Set"], stdout=subprocess.PIPE
     )
+    with p1.stdout:
+        for line in iter(p1.stdout.readline, b""):  # b'\n'-separated lines
+            logging.debug("got line from subprocess: %r", line)
+    with p1.stderr:
+        for line in iter(p1.stderr.readline, b""):  # b'\n'-separated lines
+            logging.debug("got line from subprocess: %r", line)
     p1.communicate()
 
     # Check ShowTriad is True for private_appdata embedded sessions
     p2 = subprocess.Popen(
         [sys.executable, embedded_py, version, "True", "Run"], stdout=subprocess.PIPE
     )
+    with p2.stdout:
+        for line in iter(p2.stdout.readline, b""):  # b'\n'-separated lines
+            logging.debug("got line from subprocess: %r", line)
+    with p2.stderr:
+        for line in iter(p2.stderr.readline, b""):  # b'\n'-separated lines
+            logging.debug("got line from subprocess: %r", line)
     stdout, stderr = p2.communicate()
 
     assert "ShowTriad value is True" in stdout.decode()
@@ -178,18 +191,36 @@ def test_normal_appdata(pytestconfig, rootdir):
     p1 = subprocess.Popen(
         [sys.executable, embedded_py, version, "False", "Set"], stdout=subprocess.PIPE
     )
+    with p1.stdout:
+        for line in iter(p1.stdout.readline, b""):  # b'\n'-separated lines
+            logging.debug("got line from subprocess: %r", line)
+    with p1.stderr:
+        for line in iter(p1.stderr.readline, b""):  # b'\n'-separated lines
+            logging.debug("got line from subprocess: %r", line)
     p1.communicate()
 
     # Check ShowTriad is False for regular embedded session
     p2 = subprocess.Popen(
         [sys.executable, embedded_py, version, "False", "Run"], stdout=subprocess.PIPE
     )
+    with p2.stdout:
+        for line in iter(p2.stdout.readline, b""):  # b'\n'-separated lines
+            logging.debug("got line from subprocess: %r", line)
+    with p2.stderr:
+        for line in iter(p2.stderr.readline, b""):  # b'\n'-separated lines
+            logging.debug("got line from subprocess: %r", line)
     stdout, stderr = p2.communicate()
 
     # Set ShowTriad back to True for regular embedded session
     p3 = subprocess.Popen(
         [sys.executable, embedded_py, version, "False", "Reset"], stdout=subprocess.PIPE
     )
+    with p3.stdout:
+        for line in iter(p3.stdout.readline, b""):  # b'\n'-separated lines
+            logging.debug("got line from subprocess: %r", line)
+    with p3.stderr:
+        for line in iter(p3.stderr.readline, b""):  # b'\n'-separated lines
+            logging.debug("got line from subprocess: %r", line)
     p3.communicate()
 
     # Assert ShowTriad was set to False for regular embedded session
