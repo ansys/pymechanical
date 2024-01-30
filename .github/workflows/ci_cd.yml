@@ -235,7 +235,7 @@ jobs:
   embedding-tests:
     name: Embedding testing and coverage
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 10
     needs: [style, revn-variations]
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
