@@ -145,6 +145,14 @@ def test_warning_message(test_env, pytestconfig, rootdir):
     assert warning, "UserWarning should appear in the output of the script"
 
 
+def print_stderr(process):
+    while True:
+        line = process.stderr.readline()
+        if not line:
+            break
+        print(line.rstrip().decode())
+
+
 @pytest.mark.embedding
 @pytest.mark.python_env
 def test_private_appdata(pytestconfig, rootdir):
@@ -154,18 +162,20 @@ def test_private_appdata(pytestconfig, rootdir):
 
     # Set ShowTriad to False
     p1 = subprocess.Popen(
-        [sys.executable, embedded_py, version, "True", "Set"], stdout=subprocess.PIPE
+        [sys.executable, embedded_py, version, "True", "Set"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
     )
-    for line in p1.stdout:
-        sys.stdout.write(line.decode())
+    print_stderr(p1)
     p1.communicate()
 
     # Check ShowTriad is True for private_appdata embedded sessions
     p2 = subprocess.Popen(
-        [sys.executable, embedded_py, version, "True", "Run"], stdout=subprocess.PIPE
+        [sys.executable, embedded_py, version, "True", "Run"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
     )
-    for line in p2.stdout:
-        sys.stdout.write(line.decode())
+    print_stderr(p2)
     stdout, stderr = p2.communicate()
 
     assert "ShowTriad value is True" in stdout.decode()
@@ -180,26 +190,29 @@ def test_normal_appdata(pytestconfig, rootdir):
 
     # Set ShowTriad to False
     p1 = subprocess.Popen(
-        [sys.executable, embedded_py, version, "False", "Set"], stdout=subprocess.PIPE
+        [sys.executable, embedded_py, version, "False", "Set"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
     )
-    for line in p1.stdout:
-        sys.stdout.write(line.decode())
+    print_stderr(p1)
     p1.communicate()
 
     # Check ShowTriad is False for regular embedded session
     p2 = subprocess.Popen(
-        [sys.executable, embedded_py, version, "False", "Run"], stdout=subprocess.PIPE
+        [sys.executable, embedded_py, version, "False", "Run"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
     )
-    for line in p2.stdout:
-        sys.stdout.write(line.decode())
+    print_stderr(p2)
     stdout, stderr = p2.communicate()
 
     # Set ShowTriad back to True for regular embedded session
     p3 = subprocess.Popen(
-        [sys.executable, embedded_py, version, "False", "Reset"], stdout=subprocess.PIPE
+        [sys.executable, embedded_py, version, "False", "Reset"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
     )
-    for line in p3.stdout:
-        sys.stdout.write(line.decode())
+    print_stderr(p3)
     p3.communicate()
 
     # Assert ShowTriad was set to False for regular embedded session
