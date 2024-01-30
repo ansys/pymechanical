@@ -114,6 +114,16 @@ def test_app_getters_notstale(embedded_app):
     assert model.Name != "b"
 
 
+def print_stderr(process):
+    while True:
+        print(datetime.datetime.now())
+        line = process.stderr.readline()
+        if not line:
+            break
+        print(line.rstrip().decode())
+    time.sleep(0.001)
+
+
 @pytest.mark.embedding
 @pytest.mark.python_env
 def test_warning_message(test_env, pytestconfig, rootdir):
@@ -136,6 +146,7 @@ def test_warning_message(test_env, pytestconfig, rootdir):
         stderr=subprocess.PIPE,
         env=test_env.env,
     )
+    print_stderr(check_warning)
     stdout, stderr = check_warning.communicate()
 
     # If UserWarning & pythonnet are in the stderr output, set warning to True.
@@ -144,16 +155,6 @@ def test_warning_message(test_env, pytestconfig, rootdir):
 
     # Assert warning message appears for embedded app
     assert warning, "UserWarning should appear in the output of the script"
-
-
-def print_stderr(process):
-    while True:
-        print(datetime.datetime.now())
-        line = process.stderr.readline()
-        if not line:
-            break
-        print(line.rstrip().decode())
-    time.sleep(0.001)
 
 
 @pytest.mark.embedding
