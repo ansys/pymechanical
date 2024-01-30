@@ -116,7 +116,7 @@ jobs:
         uses: ansys/actions/doc-style@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          vale-version: "3.0.0"
+          vale-version: "2.29.6"
 
   smoke-tests:
     name: Build and Smoke tests
