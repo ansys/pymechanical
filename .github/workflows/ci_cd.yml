@@ -117,7 +117,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           vale-config: "doc/.vale.ini"
-          vale-version: "2.29.6"
+          vale-version: "3.0.0"
 
   smoke-tests:
     name: Build and Smoke tests
