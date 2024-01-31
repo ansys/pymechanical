@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 """Miscellaneous embedding tests"""
-import datetime
+# import datetime
 import os
 import subprocess
 import sys
@@ -148,12 +148,12 @@ def test_warning_message(test_env, pytestconfig, rootdir):
 
 def print_stderr(process):
     while True:
-        print(datetime.datetime.now())
+        # print(datetime.datetime.now())
         line = process.stderr.readline()
         if not line:
             break
         print(line.rstrip().decode())
-    time.sleep(0.001)
+    # time.sleep(0.001)
 
 
 @pytest.mark.embedding
