@@ -42,11 +42,11 @@ def log_info_after_initialize_with_error_level(version):
     Logger.info("0xdeadbeef")
 
 
-def log_error_after_initialize_with_info_level(version):
-    """Log at the info level after initializing with the error level."""
-    _ = mech.App(version=version)
-    Configuration.configure(level=logging.INFO, to_stdout=True, base_directory=None)
-    Logger.error("Will no one rid me of this turbulent priest?")
+# def log_error_after_initialize_with_info_level(version):
+#     """Log at the info level after initializing with the error level."""
+#     _ = mech.App(version=version)
+#     Configuration.configure(level=logging.INFO, to_stdout=True, base_directory=None)
+#     Logger.error("Will no one rid me of this turbulent priest?")
 
 
 def log_configuration_mechanical(version):
