@@ -167,34 +167,34 @@ def test_warning_message(test_env, pytestconfig, rootdir):
 #     # time.sleep(0.001)
 
 
-# @pytest.mark.embedding
-# @pytest.mark.python_env
-# def test_private_appdata(pytestconfig, rootdir):
-#     """Test embedded instance does not save ShowTriad using a test-scoped Python environment."""
-#     version = pytestconfig.getoption("ansys_version")
-#     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+@pytest.mark.embedding
+@pytest.mark.python_env
+def test_private_appdata(pytestconfig, rootdir):
+    """Test embedded instance does not save ShowTriad using a test-scoped Python environment."""
+    version = pytestconfig.getoption("ansys_version")
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
-#     # Set ShowTriad to False
-#     p1 = subprocess.Popen(
-#         [sys.executable, embedded_py, version, "True", "Set"],
-#         stdout=subprocess.PIPE,
-#         stderr=subprocess.PIPE,
-#         close_fds=True,
-#     )
-#     print_stderr(p1)
-#     p1.communicate()
+    # Set ShowTriad to False
+    p1 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "True", "Set"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        close_fds=True,
+    )
+    # print_stderr(p1)
+    p1.communicate()
 
-#     # Check ShowTriad is True for private_appdata embedded sessions
-#     p2 = subprocess.Popen(
-#         [sys.executable, embedded_py, version, "True", "Run"],
-#         stdout=subprocess.PIPE,
-#         stderr=subprocess.PIPE,
-#         close_fds=True,
-#     )
-#     print_stderr(p2)
-#     stdout, stderr = p2.communicate()
+    # Check ShowTriad is True for private_appdata embedded sessions
+    p2 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "True", "Run"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        close_fds=True,
+    )
+    # print_stderr(p2)
+    stdout, stderr = p2.communicate()
 
-#     assert "ShowTriad value is True" in stdout.decode()
+    assert "ShowTriad value is True" in stdout.decode()
 
 
 # @pytest.mark.embedding
