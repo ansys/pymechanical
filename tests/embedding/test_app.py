@@ -178,6 +178,7 @@ def test_private_appdata(pytestconfig, rootdir):
         [sys.executable, embedded_py, version, "True", "Set"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
+        close_fds=True,
     )
     print_stderr(p1)
     p1.communicate()
@@ -187,6 +188,7 @@ def test_private_appdata(pytestconfig, rootdir):
         [sys.executable, embedded_py, version, "True", "Run"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
+        close_fds=True,
     )
     print_stderr(p2)
     stdout, stderr = p2.communicate()
@@ -206,6 +208,7 @@ def test_normal_appdata(pytestconfig, rootdir):
         [sys.executable, embedded_py, version, "False", "Set"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
+        close_fds=True,
     )
     print_stderr(p1)
     p1.communicate()
@@ -215,6 +218,7 @@ def test_normal_appdata(pytestconfig, rootdir):
         [sys.executable, embedded_py, version, "False", "Run"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
+        close_fds=True,
     )
     print_stderr(p2)
     stdout, stderr = p2.communicate()
@@ -224,6 +228,7 @@ def test_normal_appdata(pytestconfig, rootdir):
         [sys.executable, embedded_py, version, "False", "Reset"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
+        close_fds=True,
     )
     print_stderr(p3)
     p3.communicate()
