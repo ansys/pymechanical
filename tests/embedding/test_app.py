@@ -200,44 +200,44 @@ def test_private_appdata(pytestconfig, rootdir):
     print("done with private_appdata")
 
 
-# @pytest.mark.embedding
-# def test_normal_appdata(pytestconfig, rootdir):
-#     """Test embedded instance saves ShowTriad value using a test-scoped Python environment."""
-#     version = pytestconfig.getoption("ansys_version")
-#     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+@pytest.mark.embedding
+def test_normal_appdata(pytestconfig, rootdir):
+    """Test embedded instance saves ShowTriad value using a test-scoped Python environment."""
+    version = pytestconfig.getoption("ansys_version")
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
-#     # Set ShowTriad to False
-#     p1 = subprocess.Popen(
-#         [sys.executable, embedded_py, version, "False", "Set"],
-#         stdout=subprocess.PIPE,
-#         stderr=subprocess.PIPE,
-#         close_fds=True,
-#     )
-#     print_stderr(p1)
-#     p1.communicate()
+    # Set ShowTriad to False
+    p1 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "False", "Set"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        close_fds=True,
+    )
+    # print_stderr(p1)
+    p1.communicate()
 
-#     # Check ShowTriad is False for regular embedded session
-#     p2 = subprocess.Popen(
-#         [sys.executable, embedded_py, version, "False", "Run"],
-#         stdout=subprocess.PIPE,
-#         stderr=subprocess.PIPE,
-#         close_fds=True,
-#     )
-#     print_stderr(p2)
-#     stdout, stderr = p2.communicate()
+    # Check ShowTriad is False for regular embedded session
+    p2 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "False", "Run"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        close_fds=True,
+    )
+    # print_stderr(p2)
+    stdout, stderr = p2.communicate()
 
-#     # Set ShowTriad back to True for regular embedded session
-#     p3 = subprocess.Popen(
-#         [sys.executable, embedded_py, version, "False", "Reset"],
-#         stdout=subprocess.PIPE,
-#         stderr=subprocess.PIPE,
-#         close_fds=True,
-#     )
-#     print_stderr(p3)
-#     p3.communicate()
+    # Set ShowTriad back to True for regular embedded session
+    p3 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "False", "Reset"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        close_fds=True,
+    )
+    # print_stderr(p3)
+    p3.communicate()
 
-#     # Assert ShowTriad was set to False for regular embedded session
-#     assert "ShowTriad value is False" in stdout.decode()
+    # Assert ShowTriad was set to False for regular embedded session
+    assert "ShowTriad value is False" in stdout.decode()
 
 
 @pytest.mark.embedding
