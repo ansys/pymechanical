@@ -55,7 +55,7 @@ def _run_embedding_log_test_process(rootdir, pytestconfig, testname) -> subproce
         env=_get_env_without_logging_variables(),
         close_fds=True,
     )
-    p.wait()
+    p.communicate()
     return p
 
 
