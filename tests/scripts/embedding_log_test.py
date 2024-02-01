@@ -40,7 +40,7 @@ def log_info_after_initialize_with_error_level(version):
     Configuration.configure(level=logging.ERROR, to_stdout=True, base_directory=None)
     _ = mech.App(version=version)
     Logger.info("0xdeadbeef")
-    _.close()
+    _.exit()
 
 
 def log_error_after_initialize_with_info_level(version):
