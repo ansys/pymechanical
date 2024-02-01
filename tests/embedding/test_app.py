@@ -23,8 +23,8 @@
 """Miscellaneous embedding tests"""
 # import datetime
 import os
+import subprocess
 
-# import subprocess
 # import sys
 from tempfile import NamedTemporaryFile
 import time
@@ -115,47 +115,47 @@ def test_app_getters_notstale(embedded_app):
     assert model.Name != "b"
 
 
-# @pytest.mark.embedding
-# @pytest.mark.python_env
-# def test_warning_message(test_env, pytestconfig, rootdir):
-#     """Test Python.NET warning of the embedded instance using a test-scoped Python environment."""
+@pytest.mark.embedding
+@pytest.mark.python_env
+def test_warning_message(test_env, pytestconfig, rootdir):
+    """Test Python.NET warning of the embedded instance using a test-scoped Python environment."""
 
-#     # Install pymechanical
-#     subprocess.check_call(
-#         [test_env.python, "-m", "pip", "install", "-e", "."],
-#         cwd=rootdir,
-#         stdout=subprocess.PIPE,
-#         stderr=subprocess.PIPE,
-#         env=test_env.env,
-#         close_fds=True,
-#     )
+    # Install pymechanical
+    subprocess.check_call(
+        [test_env.python, "-m", "pip", "install", "-e", "."],
+        cwd=rootdir,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env=test_env.env,
+        close_fds=True,
+    )
 
-#     # Install pythonnet
-#     install_pythonnet = subprocess.Popen(
-#         [test_env.python, "-m", "pip", "install", "pythonnet"],
-#         stdout=subprocess.PIPE,
-#         stderr=subprocess.PIPE,
-#         env=test_env.env,
-#         close_fds=True,
-#     )
-#     install_pythonnet.communicate()
+    # Install pythonnet
+    install_pythonnet = subprocess.Popen(
+        [test_env.python, "-m", "pip", "install", "pythonnet"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env=test_env.env,
+        close_fds=True,
+    )
+    install_pythonnet.communicate()
 
-#     # Run embedded instance in virtual env with pythonnet installed
-#     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
-#     check_warning = subprocess.Popen(
-#         [test_env.python, embedded_py, pytestconfig.getoption("ansys_version")],
-#         stderr=subprocess.PIPE,
-#         env=test_env.env,
-#         close_fds=True,
-#     )
-#     stdout, stderr = check_warning.communicate()
+    # Run embedded instance in virtual env with pythonnet installed
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+    check_warning = subprocess.Popen(
+        [test_env.python, embedded_py, pytestconfig.getoption("ansys_version")],
+        stderr=subprocess.PIPE,
+        env=test_env.env,
+        close_fds=True,
+    )
+    stdout, stderr = check_warning.communicate()
 
-#     # If UserWarning & pythonnet are in the stderr output, set warning to True.
-#     # Otherwise, set warning to False
-#     warning = True if "UserWarning" and "pythonnet" in stderr.decode() else False
+    # If UserWarning & pythonnet are in the stderr output, set warning to True.
+    # Otherwise, set warning to False
+    warning = True if "UserWarning" and "pythonnet" in stderr.decode() else False
 
-#     # Assert warning message appears for embedded app
-#     assert warning, "UserWarning should appear in the output of the script"
+    # Assert warning message appears for embedded app
+    assert warning, "UserWarning should appear in the output of the script"
 
 
 # def print_stderr(process):
