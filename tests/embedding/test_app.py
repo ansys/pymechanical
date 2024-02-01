@@ -151,24 +151,20 @@ def test_warning_message(test_env, pytestconfig, rootdir):
     # Assert warning message appears for embedded app
     assert warning, "UserWarning should appear in the output of the script"
 
-    print("done with check warning test")
-
 
 def print_stderr(process):
     while True:
-        # print(datetime.datetime.now())
         line = process.stderr.readline()
         if not line:
             break
         print(line.rstrip().decode())
-    time.sleep(0.001)
+    # time.sleep(0.001)
 
 
 @pytest.mark.embedding
 @pytest.mark.python_env
 def test_private_appdata(pytestconfig, rootdir):
     """Test embedded instance does not save ShowTriad using a test-scoped Python environment."""
-    print("starting private appdata test")
     version = pytestconfig.getoption("ansys_version")
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 

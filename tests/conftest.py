@@ -209,9 +209,9 @@ def test_env():
 
     yield test_env_object
 
-    # print(f"\ndeleting virtual environment in {venv_dir}")
+    print(f"\ndeleting virtual environment in {venv_dir}")
     shutil.rmtree(venv_dir)
-    # print(f"deleted virtual environment in {venv_dir}\n")
+    print(f"deleted virtual environment in {venv_dir}\n")
 
 
 def launch_mechanical_instance(cleanup_on_exit=False):
