@@ -123,7 +123,10 @@ def test_warning_message(test_env, pytestconfig, rootdir):
     subprocess.check_call(
         [test_env.python, "-m", "pip", "install", "-e", "."],
         cwd=rootdir,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
         env=test_env.env,
+        close_fds=True,
     )
 
     # Install pythonnet
@@ -132,6 +135,7 @@ def test_warning_message(test_env, pytestconfig, rootdir):
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         env=test_env.env,
+        close_fds=True,
     )
     install_pythonnet.communicate()
 
@@ -141,6 +145,7 @@ def test_warning_message(test_env, pytestconfig, rootdir):
         [test_env.python, embedded_py, pytestconfig.getoption("ansys_version")],
         stderr=subprocess.PIPE,
         env=test_env.env,
+        close_fds=True,
     )
     stdout, stderr = check_warning.communicate()
 
