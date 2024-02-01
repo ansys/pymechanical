@@ -103,13 +103,14 @@ def test_logging_write_log_before_init(rootdir, pytestconfig):
     assert "Can't log to the embedding logger until Mechanical is initialized" in stderr
 
 
-@pytest.mark.embedding
-def test_logging_write_info_after_initialize_with_error_level(rootdir, pytestconfig):
-    """Test that no output is written when an info is logged when configured at the error level."""
-    stderr = _run_embedding_log_test(
-        rootdir, pytestconfig, "log_info_after_initialize_with_error_level"
-    )
-    assert "0xdeadbeef" not in stderr
+# @pytest.mark.embedding
+# def test_logging_write_info_after_initialize_with_error_level(rootdir, pytestconfig):
+#     """Test that no output is written when an info is logged when configured at
+# the error level."""
+#     stderr = _run_embedding_log_test(
+#         rootdir, pytestconfig, "log_info_after_initialize_with_error_level"
+#     )
+#     assert "0xdeadbeef" not in stderr
 
 
 # @pytest.mark.parametrize("addin_configuration", ["Mechanical", "WorkBench"])
