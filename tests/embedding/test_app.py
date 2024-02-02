@@ -116,7 +116,7 @@ def test_app_getters_notstale(embedded_app):
 
 @pytest.mark.embedding
 @pytest.mark.python_env
-def test_warning_message(test_env, pytestconfig, rootdir):
+def test_pythonnet_warning(test_env, pytestconfig, rootdir):
     """Test Python.NET warning of the embedded instance using a test-scoped Python environment."""
     # Install pymechanical
     subprocess.check_call(
@@ -129,14 +129,13 @@ def test_warning_message(test_env, pytestconfig, rootdir):
     )
 
     # Install pythonnet
-    install_pythonnet = subprocess.Popen(
+    subprocess.check_call(
         [test_env.python, "-m", "pip", "install", "pythonnet"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         env=test_env.env,
         close_fds=True,
     )
-    install_pythonnet.communicate()
 
     # Run embedded instance in virtual env with pythonnet installed
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
