@@ -116,6 +116,7 @@ def test_app_getters_notstale(embedded_app):
 
 @pytest.mark.embedding
 @pytest.mark.python_env
+@pytest.mark.timeout(60)
 def test_pythonnet_warning(test_env, pytestconfig, rootdir):
     """Test Python.NET warning of the embedded instance using a test-scoped Python environment."""
     # Install pymechanical and pythonnet
@@ -143,6 +144,7 @@ def test_pythonnet_warning(test_env, pytestconfig, rootdir):
 
 
 @pytest.mark.embedding
+@pytest.mark.timeout(90)
 def test_private_appdata(pytestconfig, rootdir):
     """Test embedded instance does not save ShowTriad using a test-scoped Python environment."""
     version = pytestconfig.getoption("ansys_version")

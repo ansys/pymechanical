@@ -280,7 +280,7 @@ jobs:
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
           NUM_CORES: 1
         run: |
-          xvfb-run mechanical-env pytest -m embedding --junitxml test_results${{ matrix.python-version }}.xml || true
+          xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml || true
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v4
