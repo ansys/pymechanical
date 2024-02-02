@@ -142,6 +142,9 @@ def test_pythonnet_warning(test_env, pytestconfig, rootdir):
     # Assert warning message appears for embedded app
     assert warning, "UserWarning should appear in the output of the script"
 
+    # Kill the check_warning subprocess
+    check_warning.kill()
+
 
 @pytest.mark.embedding
 @pytest.mark.timeout(90)
