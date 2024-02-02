@@ -156,15 +156,6 @@ def test_warning_message(test_env, pytestconfig, rootdir):
     assert warning, "UserWarning should appear in the output of the script"
 
 
-# def print_stderr(process):
-#     while True:
-#         line = process.stderr.readline()
-#         if not line:
-#             break
-#         print(line.rstrip().decode())
-#     # time.sleep(0.001)
-
-
 @pytest.mark.embedding
 def test_private_appdata(pytestconfig, rootdir):
     """Test embedded instance does not save ShowTriad using a test-scoped Python environment."""
@@ -178,7 +169,6 @@ def test_private_appdata(pytestconfig, rootdir):
         stderr=subprocess.PIPE,
         close_fds=True,
     )
-    # print_stderr(p1)
     p1.communicate()
 
     # Check ShowTriad is True for private_appdata embedded sessions
@@ -188,7 +178,6 @@ def test_private_appdata(pytestconfig, rootdir):
         stderr=subprocess.PIPE,
         close_fds=True,
     )
-    # print_stderr(p2)
     stdout, stderr = p2.communicate()
 
     assert "ShowTriad value is True" in stdout.decode()
@@ -207,7 +196,6 @@ def test_normal_appdata(pytestconfig, rootdir):
         stderr=subprocess.PIPE,
         close_fds=True,
     )
-    # print_stderr(p1)
     p1.communicate()
 
     # Check ShowTriad is False for regular embedded session
@@ -217,7 +205,6 @@ def test_normal_appdata(pytestconfig, rootdir):
         stderr=subprocess.PIPE,
         close_fds=True,
     )
-    # print_stderr(p2)
     stdout, stderr = p2.communicate()
 
     # Set ShowTriad back to True for regular embedded session
@@ -227,7 +214,6 @@ def test_normal_appdata(pytestconfig, rootdir):
         stderr=subprocess.PIPE,
         close_fds=True,
     )
-    # print_stderr(p3)
     p3.communicate()
 
     # Assert ShowTriad was set to False for regular embedded session

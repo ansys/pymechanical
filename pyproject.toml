@@ -115,7 +115,7 @@ output = ".cov/coverage.xml"
 [tool.pytest.ini_options]
 minversion = "7.1"
 addopts = """-ra -s -m remote_session_connect --durations=0 --cov=ansys.mechanical --cov-report html:.cov/html \
- --cov-report xml:.cov/xml --cov-report term -vv --print --print-relative-time"""
+ --cov-report xml:.cov/xml --cov-report term --junitxml test_results.xml -vv --print --print-relative-time"""
 # addopts = """-ra -s -m remote_session_launch --durations=0 --cov=ansys.mechanical --cov-report html:.cov/html \
 # --cov-report xml:.cov/xml --cov-report term -vv --print --print-relative-time"""
 # addopts = """-ra -s -m 'remote_session_launch or remote_session_connect' --durations=0 --cov=ansys.mechanical \
