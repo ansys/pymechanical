@@ -153,6 +153,8 @@ def test_private_appdata(pytestconfig, rootdir):
     # Set ShowTriad to False
     p1 = subprocess.Popen(
         [sys.executable, embedded_py, version, "True", "Set"],
+        stdout=None,
+        stderr=None,
     )
     p1.communicate()
 
@@ -160,6 +162,7 @@ def test_private_appdata(pytestconfig, rootdir):
     p2 = subprocess.Popen(
         [sys.executable, embedded_py, version, "True", "Run"],
         stdout=subprocess.PIPE,
+        stderr=None,
     )
     stdout, stderr = p2.communicate()
 
@@ -176,6 +179,8 @@ def test_normal_appdata(pytestconfig, rootdir):
     # Set ShowTriad to False
     p1 = subprocess.Popen(
         [sys.executable, embedded_py, version, "False", "Set"],
+        stdout=None,
+        stderr=None,
     )
     p1.communicate()
 
@@ -183,12 +188,15 @@ def test_normal_appdata(pytestconfig, rootdir):
     p2 = subprocess.Popen(
         [sys.executable, embedded_py, version, "False", "Run"],
         stdout=subprocess.PIPE,
+        stderr=None,
     )
     stdout, stderr = p2.communicate()
 
     # Set ShowTriad back to True for regular embedded session
     p3 = subprocess.Popen(
         [sys.executable, embedded_py, version, "False", "Reset"],
+        stdout=None,
+        stderr=None,
     )
     p3.communicate()
 
