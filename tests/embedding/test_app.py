@@ -230,3 +230,8 @@ def test_rm_lockfile(embedded_app, tmp_path: pytest.TempPathFactory):
     lockfile_path = os.path.join(embedded_app.DataModel.Project.ProjectDirectory, ".mech_lock")
     # Assert lock file path does not exist
     assert not os.path.exists(lockfile_path)
+
+
+@pytest.mark.embedding
+def test_fail():
+    assert 1 == 2
