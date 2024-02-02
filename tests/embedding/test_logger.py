@@ -53,7 +53,6 @@ def _run_embedding_log_test_process(rootdir, pytestconfig, testname) -> subproce
         stderr=subprocess.PIPE,
         stdout=subprocess.PIPE,
         env=_get_env_without_logging_variables(),
-        close_fds=True,
     )
     p.wait()
     return p
