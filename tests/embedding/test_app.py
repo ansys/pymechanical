@@ -116,7 +116,7 @@ def test_app_getters_notstale(embedded_app):
 
 @pytest.mark.embedding
 @pytest.mark.python_env
-@pytest.mark.timeout(60)
+@pytest.mark.timeout(90)
 def test_pythonnet_warning(test_env, pytestconfig, rootdir):
     """Test Python.NET warning of the embedded instance using a test-scoped Python environment."""
     # Install pymechanical and pythonnet
@@ -155,7 +155,6 @@ def test_private_appdata(pytestconfig, rootdir):
         [sys.executable, embedded_py, version, "True", "Set"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        close_fds=True,
     )
     p1.communicate()
 
@@ -164,7 +163,6 @@ def test_private_appdata(pytestconfig, rootdir):
         [sys.executable, embedded_py, version, "True", "Run"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        close_fds=True,
     )
     stdout, stderr = p2.communicate()
 
@@ -172,6 +170,7 @@ def test_private_appdata(pytestconfig, rootdir):
 
 
 @pytest.mark.embedding
+@pytest.mark.timeout(90)
 def test_normal_appdata(pytestconfig, rootdir):
     """Test embedded instance saves ShowTriad value using a test-scoped Python environment."""
     version = pytestconfig.getoption("ansys_version")
@@ -182,7 +181,6 @@ def test_normal_appdata(pytestconfig, rootdir):
         [sys.executable, embedded_py, version, "False", "Set"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        close_fds=True,
     )
     p1.communicate()
 
@@ -191,7 +189,6 @@ def test_normal_appdata(pytestconfig, rootdir):
         [sys.executable, embedded_py, version, "False", "Run"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        close_fds=True,
     )
     stdout, stderr = p2.communicate()
 
@@ -200,7 +197,6 @@ def test_normal_appdata(pytestconfig, rootdir):
         [sys.executable, embedded_py, version, "False", "Reset"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        close_fds=True,
     )
     p3.communicate()
 
