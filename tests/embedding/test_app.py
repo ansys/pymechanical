@@ -142,9 +142,6 @@ def test_pythonnet_warning(test_env, pytestconfig, rootdir):
     # Assert warning message appears for embedded app
     assert warning, "UserWarning should appear in the output of the script"
 
-    # Kill the check_warning subprocess
-    check_warning.kill()
-
 
 @pytest.mark.embedding
 @pytest.mark.timeout(90)
@@ -156,8 +153,6 @@ def test_private_appdata(pytestconfig, rootdir):
     # Set ShowTriad to False
     p1 = subprocess.Popen(
         [sys.executable, embedded_py, version, "True", "Set"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
     )
     p1.communicate()
 
@@ -165,7 +160,6 @@ def test_private_appdata(pytestconfig, rootdir):
     p2 = subprocess.Popen(
         [sys.executable, embedded_py, version, "True", "Run"],
         stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
     )
     stdout, stderr = p2.communicate()
 
@@ -182,8 +176,6 @@ def test_normal_appdata(pytestconfig, rootdir):
     # Set ShowTriad to False
     p1 = subprocess.Popen(
         [sys.executable, embedded_py, version, "False", "Set"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
     )
     p1.communicate()
 
@@ -191,15 +183,12 @@ def test_normal_appdata(pytestconfig, rootdir):
     p2 = subprocess.Popen(
         [sys.executable, embedded_py, version, "False", "Run"],
         stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
     )
     stdout, stderr = p2.communicate()
 
     # Set ShowTriad back to True for regular embedded session
     p3 = subprocess.Popen(
         [sys.executable, embedded_py, version, "False", "Reset"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
     )
     p3.communicate()
 
