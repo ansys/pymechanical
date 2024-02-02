@@ -122,18 +122,11 @@ def test_pythonnet_warning(test_env, pytestconfig, rootdir):
     subprocess.check_call(
         [test_env.python, "-m", "pip", "install", "-e", "."],
         cwd=rootdir,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
         env=test_env.env,
     )
 
     # Install pythonnet
-    subprocess.check_call(
-        [test_env.python, "-m", "pip", "install", "pythonnet"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        env=test_env.env,
-    )
+    subprocess.check_call([test_env.python, "-m", "pip", "install", "pythonnet"], env=test_env.env)
 
     # Run embedded instance in virtual env with pythonnet installed
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
