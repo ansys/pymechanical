@@ -96,6 +96,7 @@ def _run_embedding_log_test(
 
 
 @pytest.mark.embedding
+@pytest.mark.timeout(90)
 def test_logging_write_log_before_init(rootdir, pytestconfig):
     """Test that an error is thrown when trying to log before initializing"""
     stderr = _run_embedding_log_test(rootdir, pytestconfig, "log_before_initialize", False)
@@ -103,6 +104,7 @@ def test_logging_write_log_before_init(rootdir, pytestconfig):
 
 
 @pytest.mark.embedding
+@pytest.mark.timeout(90)
 def test_logging_write_info_after_initialize_with_error_level(rootdir, pytestconfig):
     """Test that no output is written when an info is logged when configured at the error level."""
     stderr = _run_embedding_log_test(
@@ -114,6 +116,7 @@ def test_logging_write_info_after_initialize_with_error_level(rootdir, pytestcon
 @pytest.mark.parametrize("addin_configuration", ["Mechanical", "WorkBench"])
 @pytest.mark.embedding
 @pytest.mark.minimum_version(241)
+@pytest.mark.timeout(180)
 def test_addin_configuration(rootdir, pytestconfig, addin_configuration):
     """Test that mechanical can start with both the Mechanical and WorkBench configuration."""
     stderr = _run_embedding_log_test(
@@ -123,6 +126,7 @@ def test_addin_configuration(rootdir, pytestconfig, addin_configuration):
 
 
 @pytest.mark.embedding
+@pytest.mark.timeout(90)
 def test_logging_write_error_after_initialize_with_info_level(rootdir, pytestconfig):
     """Test that output is written when an error is logged when configured at the info level."""
     stderr = _run_embedding_log_test(
