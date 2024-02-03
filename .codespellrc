@@ -1,3 +1,3 @@
 [codespell]
 # In the event of a false positive, add the problematic word, in all lowercase, to a comma-separated list here:
-ignore-words-list = ans
+ignore-words-list = ans, globaly
