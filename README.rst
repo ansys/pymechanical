@@ -63,7 +63,7 @@ Getting started
 
 PyMechanical uses the built-in scripting capabilities of Mechanical. For information on the
 scripting APIs available, see the `Scripting in Mechanical Guide
-<https://ansyshelp.ansys.com/Views/Secured/corp/v231/en/act_script/act_script.html>`_ in the
+<https://ansyshelp.ansys.com/Views/Secured/corp/v241/en/act_script/act_script.html>`_ in the
 Ansys Help.
 
 Configuring the Mechanical installation

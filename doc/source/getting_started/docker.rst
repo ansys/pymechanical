@@ -107,6 +107,5 @@ to the Docker command. For example, this code shows how you pass feature flags:
     IMAGE=ghcr.io/ansys/pymechanical/mechanical:$VERSION
     docker run -e ANSYSLMD_LICENSE_FILE=$LICENSE_SERVER -p 10000:10000 $IMAGE -featureflags mechanical.material.import;
 
-For additional command line arguments, see the `Scripting in Mechanical Guide
-<https://ansyshelp.ansys.com/Views/Secured/corp/v231/en/act_script/act_script.html>`_ in the
+For additional command line arguments, see the `Scripting in Mechanical Guide`_ in the
 Ansys Help.
