@@ -10,7 +10,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Added
 - Upload 241 docker files ([#567](https://github.com/ansys/pymechanical/pull/567))
 - Add pre-commit hooks ([#575](https://github.com/ansys/pymechanical/pull/575))
-
+- Add LS Dyna unit test ([#584](https://github.com/ansys/pymechanical/pull/584))
 ### Fixed
 
 ### Changed
