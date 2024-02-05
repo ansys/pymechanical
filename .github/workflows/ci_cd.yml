@@ -349,6 +349,7 @@ jobs:
       - name: Set up python and pip
         run: |
           apt update
+          apt install --reinstall ca-certificates
           apt install software-properties-common -y
           add-apt-repository ppa:deadsnakes/ppa -y
           apt install python${{ matrix.python-version }} -y
