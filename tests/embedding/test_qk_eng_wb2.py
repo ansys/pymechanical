@@ -301,6 +301,7 @@ def test_image_export(printer, selection, embedded_app):
 
 
 @pytest.mark.embedding
+@pytest.mark.minimum_version(241)
 def test_lsdyna(printer, selection, embedded_app):
     """Unit test for LSDyna.
 
