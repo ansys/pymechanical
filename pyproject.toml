@@ -72,7 +72,7 @@ doc = [
     "pytest-sphinx==0.6.0",
     "pythreejs==2.4.2",
     "pyvista==0.43.2",
-    "sphinx-autobuild==2021.3.14",
+    "sphinx-autobuild==2024.2.4",
     "sphinx-autodoc-typehints==1.25.3",
     "sphinx-copybutton==0.5.2",
     "sphinx_design==0.5.0",
