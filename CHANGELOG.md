@@ -32,6 +32,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump ``ansys.mechanical.env`` from 0.1.2 to 0.1.3 ([#583](https://github.com/ansys/pymechanical/pull/583))
 - Bump `sphinx-autobuild` from 2021.3.14 to 2024.2.4 ([#588](https://github.com/ansys/pymechanical/pull/588))
 - Bump `pytest-sphinx` from 0.5.0 to 0.6.0 ([#587](https://github.com/ansys/pymechanical/pull/587))
+- Bump `grpcio` from 1.60.0 to 1.60.1 ([#589](https://github.com/ansys/pymechanical/pull/589))
 
 ## [0.10.6](https://github.com/ansys/pymechanical/releases/tag/v0.10.6) - January 11 2024
 
