@@ -16,6 +16,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Changed
 - Update getting started page ([#561](https://github.com/ansys/pymechanical/pull/561))
 - Update 232 to 241 in docs, docstrings, examples, and tests ([#566](https://github.com/ansys/pymechanical/pull/566))
+- Update workflow versions to run 241 and 242 ([#590](https://github.com/ansys/pymechanical/pull/590))
 
 ### Dependencies
 - Bump `pyvista` from 0.43.1 to 0.43.2 ([#564](https://github.com/ansys/pymechanical/pull/564))
