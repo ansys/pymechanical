@@ -22,7 +22,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Dependencies
 - Bump `pyvista` from 0.43.1 to 0.43.2 ([#564](https://github.com/ansys/pymechanical/pull/564))
 - Bump `sphinxcontrib-websupport` from 1.2.6 to 1.2.7 ([#562](https://github.com/ansys/pymechanical/pull/562))
-- Bump `ansys-sphinx-theme` from 0.13.0 to 0.13.1 ([#563](https://github.com/ansys/pymechanical/pull/563))
+- Bump `ansys-sphinx-theme` from 0.13.0 to 0.13.2 ([#563](https://github.com/ansys/pymechanical/pull/563), [#586](https://github.com/ansys/pymechanical/pull/586))
 - Bump `pandas` from 2.1.4 to 2.2.0 ([#571](https://github.com/ansys/pymechanical/pull/571))
 - Bump `sphinxemoji` from 0.2.0 to 0.3.1 ([#569](https://github.com/ansys/pymechanical/pull/569))
 - Bump `tj-actions/changed-files` from 41 to 42 ([#572](https://github.com/ansys/pymechanical/pull/572))
@@ -31,6 +31,10 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `pytest` from 7.4.4 to 8.0.0 ([#577](https://github.com/ansys/pymechanical/pull/577))
 - Bump `sphinx-autodoc-typehints` from 1.25.2 to 1.25.3 ([#578](https://github.com/ansys/pymechanical/pull/578))
 - Update ``pre-commit`` ([#580](https://github.com/ansys/pymechanical/pull/580))
+- Bump ``ansys.mechanical.env`` from 0.1.2 to 0.1.3 ([#583](https://github.com/ansys/pymechanical/pull/583))
+- Bump `sphinx-autobuild` from 2021.3.14 to 2024.2.4 ([#588](https://github.com/ansys/pymechanical/pull/588))
+- Bump `pytest-sphinx` from 0.5.0 to 0.6.0 ([#587](https://github.com/ansys/pymechanical/pull/587))
+- Bump `grpcio` from 1.60.0 to 1.60.1 ([#589](https://github.com/ansys/pymechanical/pull/589))
 
 ## [0.10.6](https://github.com/ansys/pymechanical/releases/tag/v0.10.6) - January 11 2024
 
