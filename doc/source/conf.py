@@ -291,7 +291,6 @@ epub_exclude_files = ["search.html"]
 
 # -- Linkcheck config --------------------------------------------------------
 
-# linkcheck_ignore = [r"https://github.com/ansys/pymechanical/pkgs/container/.*"]
 linkcheck_ignore = [
     "https://github.com/ansys/pymechanical/pkgs/container/.*",
     "gallery_examples/embedding_n_remote/embedding_remote.html",
