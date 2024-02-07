@@ -16,6 +16,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Changed
 - Update getting started page ([#561](https://github.com/ansys/pymechanical/pull/561))
 - Update 232 to 241 in docs, docstrings, examples, and tests ([#566](https://github.com/ansys/pymechanical/pull/566))
+- Update workflow versions to run 241 and 242 ([#590](https://github.com/ansys/pymechanical/pull/590))
 
 ### Dependencies
 - Bump `pyvista` from 0.43.1 to 0.43.2 ([#564](https://github.com/ansys/pymechanical/pull/564))
@@ -30,7 +31,9 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `sphinx-autodoc-typehints` from 1.25.2 to 1.25.3 ([#578](https://github.com/ansys/pymechanical/pull/578))
 - Update ``pre-commit`` ([#580](https://github.com/ansys/pymechanical/pull/580))
 - Bump ``ansys.mechanical.env`` from 0.1.2 to 0.1.3 ([#583](https://github.com/ansys/pymechanical/pull/583))
+- Bump `sphinx-autobuild` from 2021.3.14 to 2024.2.4 ([#588](https://github.com/ansys/pymechanical/pull/588))
 - Bump `pytest-sphinx` from 0.5.0 to 0.6.0 ([#587](https://github.com/ansys/pymechanical/pull/587))
+- Bump `grpcio` from 1.60.0 to 1.60.1 ([#589](https://github.com/ansys/pymechanical/pull/589))
 
 ## [0.10.6](https://github.com/ansys/pymechanical/releases/tag/v0.10.6) - January 11 2024
 
