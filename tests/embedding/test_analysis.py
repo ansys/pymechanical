@@ -32,7 +32,7 @@ except:
     # No embedding - this import breaks test collection
     global_variables = {}
 
-from test_qk_eng_wb2 import get_assets_folder
+from .test_qk_eng_wb2 import get_assets_folder
 
 
 @pytest.mark.embedding
