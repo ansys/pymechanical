@@ -22,8 +22,7 @@ You could already perform scripting of Mechanical with Python from inside
 Mechanical. PyMechanical leverages the same APIs but allows you to run your
 automation from outside Mechanical.
 
-For comprehensive information on these APIs, see the `Scripting in Mechanical Guide
-<https://ansyshelp.ansys.com/Views/Secured/corp/v231/en/act_script/act_script.html>`_ in the
+For comprehensive information on these APIs, see the `Scripting in Mechanical Guide`_ in the
 Ansys Help.
 
 Recording
@@ -90,5 +89,5 @@ from those entry points.
 Additional resources
 --------------------
 
-The `ACT API Reference Guide <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/act_ref/act_ref.html>`_
+The `ACT API Reference Guide`_
 provides descriptions of the objects, methods, and properties for all namespaces.

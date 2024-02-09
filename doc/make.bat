@@ -9,10 +9,12 @@ if "%SPHINXBUILD%" == "" (
 )
 set SOURCEDIR=source
 set BUILDDIR=_build
+set LINKCHECKDIR=\%BUILDDIR%\linkcheck
 
 if "%1" == "" goto help
 if "%1" == "clean" goto clean
 if "%1" == "pdf" goto pdf
+if "%1" == "linkcheck" goto linkcheck
 
 %SPHINXBUILD% >NUL 2>NUL
 if errorlevel 9009 (
@@ -44,6 +46,11 @@ if NOT EXIST ansys-mechanical-core.pdf (
 	Echo "no pdf generated!"
 	exit /b 1)
 Echo "pdf generated!"
+
+:linkcheck
+%SPHINXBUILD% -b %1 %SPHINXOPTS% %SOURCEDIR% %LINKCHECKDIR%
+echo "Check finished. Report is in %LINKCHECKDIR%."
+goto end
 
 :help
 %SPHINXBUILD% -M help %SOURCEDIR% %BUILDDIR% %SPHINXOPTS% %O%
