@@ -52,6 +52,8 @@ on using these APIs, see :ref:`ref_user_guide_scripting`.
 Background
 ----------
 PyMechanical contains two interfaces: a remote session and an embedded instance.
+For a discussion on the application architecture of Mechanical and why there are
+two python interfaces, see :ref:`ref_architecture`.
 
 Remote session
 ^^^^^^^^^^^^^^
@@ -90,12 +92,12 @@ development version or previously released versions.
 You can also `view <https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.png>`_ or
 `download <https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.pdf>`_ the
 PyMechanical cheat sheet. This one-page reference provides syntax rules and commands
-for using PyMechanical. 
+for using PyMechanical.
 
 On the `PyMechanical Issues <https://github.com/ansys/pymechanical/issues>`_ page,
 you can create issues to report bugs and request new features. On the `PyMechanical Discussions
 <https://github.com/ansys/pymechanical/discussions>`_ page or the `Discussions <https://discuss.ansys.com/>`_
-page on the Ansys Developer portal, you can post questions, share ideas, and get community feedback. 
+page on the Ansys Developer portal, you can post questions, share ideas, and get community feedback.
 
 To reach the project support team, email `pyansys.core@ansys.com <pyansys.core@ansys.com>`_.
 
