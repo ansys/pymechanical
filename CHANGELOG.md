@@ -11,6 +11,8 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Upload 241 docker files ([#567](https://github.com/ansys/pymechanical/pull/567))
 - Add pre-commit hooks ([#575](https://github.com/ansys/pymechanical/pull/575))
 - Add Automatic version update for Mechanical scripting external links ([#585](https://github.com/ansys/pymechanical/pull/585))
+- Add PyMechanical logo ([#592](https://github.com/ansys/pymechanical/pull/592))
+
 ### Fixed
 
 ### Changed
