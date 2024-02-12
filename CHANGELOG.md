@@ -30,7 +30,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `panel` from 1.3.6 to 1.3.8 ([#570](https://github.com/ansys/pymechanical/pull/570), [#579](https://github.com/ansys/pymechanical/pull/579))
 - Bump `peter-evans/create-or-update-comment` from 3 to 4 ([#576](https://github.com/ansys/pymechanical/pull/576))
 - Bump `pytest` from 7.4.4 to 8.0.0 ([#577](https://github.com/ansys/pymechanical/pull/577))
-- Bump `sphinx-autodoc-typehints` from 1.25.2 to 1.25.3 ([#578](https://github.com/ansys/pymechanical/pull/578))
+- Bump `sphinx-autodoc-typehints` from 1.25.2 to 2.0.0 ([#578](https://github.com/ansys/pymechanical/pull/578), [#597](https://github.com/ansys/pymechanical/pull/597))
 - Update ``pre-commit`` ([#580](https://github.com/ansys/pymechanical/pull/580))
 - Bump ``ansys.mechanical.env`` from 0.1.2 to 0.1.3 ([#583](https://github.com/ansys/pymechanical/pull/583))
 - Bump `sphinx-autobuild` from 2021.3.14 to 2024.2.4 ([#588](https://github.com/ansys/pymechanical/pull/588))
