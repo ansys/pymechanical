@@ -23,7 +23,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Dependencies
 - Bump `pyvista` from 0.43.1 to 0.43.2 ([#564](https://github.com/ansys/pymechanical/pull/564))
 - Bump `sphinxcontrib-websupport` from 1.2.6 to 1.2.7 ([#562](https://github.com/ansys/pymechanical/pull/562))
-- Bump `ansys-sphinx-theme` from 0.13.0 to 0.13.2 ([#563](https://github.com/ansys/pymechanical/pull/563), [#586](https://github.com/ansys/pymechanical/pull/586))
+- Bump `ansys-sphinx-theme` from 0.13.0 to 0.13.4 ([#563](https://github.com/ansys/pymechanical/pull/563), [#586](https://github.com/ansys/pymechanical/pull/586), [#596](https://github.com/ansys/pymechanical/pull/596))
 - Bump `pandas` from 2.1.4 to 2.2.0 ([#571](https://github.com/ansys/pymechanical/pull/571))
 - Bump `sphinxemoji` from 0.2.0 to 0.3.1 ([#569](https://github.com/ansys/pymechanical/pull/569))
 - Bump `tj-actions/changed-files` from 41 to 42 ([#572](https://github.com/ansys/pymechanical/pull/572))
@@ -36,6 +36,9 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `sphinx-autobuild` from 2021.3.14 to 2024.2.4 ([#588](https://github.com/ansys/pymechanical/pull/588))
 - Bump `pytest-sphinx` from 0.5.0 to 0.6.0 ([#587](https://github.com/ansys/pymechanical/pull/587))
 - Bump `grpcio` from 1.60.0 to 1.60.1 ([#589](https://github.com/ansys/pymechanical/pull/589))
+- Bump `numpy` from 1.26.3 to 1.26.4 ([#595](https://github.com/ansys/pymechanical/pull/595))
+- Bump `imageio` from 2.33.1 to 2.34.0 ([#594](https://github.com/ansys/pymechanical/pull/594))
+- Bump `mikepenz/action-junit-report` from 3 to 4 ([#593](https://github.com/ansys/pymechanical/pull/593))
 
 ## [0.10.6](https://github.com/ansys/pymechanical/releases/tag/v0.10.6) - January 11 2024
 
