@@ -5,15 +5,13 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 This document follows the conventions laid out in [Keep a CHANGELOG](https://keepachangelog.com/en/1.0.0).
 
-## [0.10.6](https://github.com/ansys/pymechanical/releases/tag/v0.10.6) - January 11 2024
+## [0.10.7](https://github.com/ansys/pymechanical/releases/tag/v0.10.7) - February 13 2024
 
 ### Added
 - Upload 241 docker files ([#567](https://github.com/ansys/pymechanical/pull/567))
 - Add pre-commit hooks ([#575](https://github.com/ansys/pymechanical/pull/575))
 - Add Automatic version update for Mechanical scripting external links ([#585](https://github.com/ansys/pymechanical/pull/585))
 - Add PyMechanical logo ([#592](https://github.com/ansys/pymechanical/pull/592))
-
-### Fixed
 
 ### Changed
 - Update getting started page ([#561](https://github.com/ansys/pymechanical/pull/561))
