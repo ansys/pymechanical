@@ -21,7 +21,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Update workflow versions to run 241 and 242 ([#590](https://github.com/ansys/pymechanical/pull/590))
 
 ### Dependencies
-- Bump `pyvista` from 0.43.1 to 0.43.2 ([#564](https://github.com/ansys/pymechanical/pull/564))
+- Bump `pyvista` from 0.43.1 to 0.43.3 ([#564](https://github.com/ansys/pymechanical/pull/564), [#598](https://github.com/ansys/pymechanical/pull/598))
 - Bump `sphinxcontrib-websupport` from 1.2.6 to 1.2.7 ([#562](https://github.com/ansys/pymechanical/pull/562))
 - Bump `ansys-sphinx-theme` from 0.13.0 to 0.13.4 ([#563](https://github.com/ansys/pymechanical/pull/563), [#586](https://github.com/ansys/pymechanical/pull/586), [#596](https://github.com/ansys/pymechanical/pull/596))
 - Bump `pandas` from 2.1.4 to 2.2.0 ([#571](https://github.com/ansys/pymechanical/pull/571))
