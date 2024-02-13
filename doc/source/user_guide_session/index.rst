@@ -1,11 +1,10 @@
 .. _ref_user_guide_session:
 
-===============
 Remote sessions
 ===============
+
 This section  provides an overview of how you use PyMechanical as a client
 to a remote Mechanical session.
-
 
 ..
    This toctreemust be a top level index to get it to show up in
@@ -19,9 +18,9 @@ to a remote Mechanical session.
    mechanical
    pool
 
-
 Overview
-========
+--------
+
 The :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` method
 creates an instance of the :class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>`
 class in the background and sends commands to it as a service. Because errors and warnings

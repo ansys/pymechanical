@@ -3,8 +3,8 @@
 =============
 API reference
 =============
-This section describes PyMechanical classes, functions, and attributes.
 
+This section describes PyMechanical classes, functions, and attributes.
 
 .. toctree::
    :maxdepth: 2

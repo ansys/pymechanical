@@ -43,3 +43,4 @@ mutexes
 Addin
 Addins
 isort
+Codecov

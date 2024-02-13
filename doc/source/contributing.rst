@@ -1,15 +1,14 @@
 .. _ref_contributing:
 
-==========
 Contribute
 ==========
+
 Overall guidance on contributing to a PyAnsys library appears in
 `Contributing <https://dev.docs.pyansys.com/how-to/contributing.html>`_
 in the *PyAnsys Developer's Guide*. Ensure that you are thoroughly familiar
 with this guide before attempting to contribute to PyMechanical.
- 
-The following contribution information is specific to PyMechanical.
 
+The following contribution information is specific to PyMechanical.
 
 Install in developer mode
 -------------------------
@@ -64,7 +63,7 @@ To install PyMechanical in developer mode, perform these steps:
 
             python -m venv .venv
             source .venv/bin/activate
-  
+
 
 #. Ensure that you have the latest required build system tools:
 
@@ -97,10 +96,12 @@ To install PyMechanical in developer mode, perform these steps:
 
 Test PyMechanical
 -----------------
+
 PyMechanical uses `PyTest`_ and `tox`_ for unit testing.
 
 Using ``tox``
 ^^^^^^^^^^^^^
+
 This project takes advantage of `tox`_. This tool automates common development
 tasks (similar to ``Makefile``), but it is oriented towards Python development.
 
@@ -115,7 +116,6 @@ The following environment commands are provided:
 - ``tox -e py-coverage``: Checks for unit testing and code coverage.
 - ``tox -e doc``: Checks for documentation-building process.
 
-
 Without ``tox``
 ^^^^^^^^^^^^^^^
 
@@ -123,7 +123,6 @@ If required, from the command line, you can call style commands like
 `black`_, `isort`_, and `flake8`_. You can also call unit testing commands like `PyTest`_.
 However, running these commands do not guarantee that your project is being tested
 in an isolated environment, which is the reason why tools like ``tox`` exist.
-
 
 Remote testing
 ^^^^^^^^^^^^^^
@@ -139,7 +138,6 @@ variables.
     export PYMECHANICAL_PORT=<MECHANICAL Port> (default 10000)
     export PYMECHANICAL_IP=<MECHANICAL IP> (default 127.0.0.1)
 
-
 **On Windows**
 
 .. code::
@@ -148,11 +146,10 @@ variables.
     SET PYMECHANICAL_PORT=<MECHANICAL Port> (default 10000)
     SET PYMECHANICAL_IP=<MECHANICAL IP> (default 127.0.0.1)
 
-The environment variables for your operating system tell PyMechanical 
+The environment variables for your operating system tell PyMechanical
 to attempt to connect to the existing Mechanical service by default
 when you use the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>`
 method.
-
 
 Documentation
 -------------
@@ -170,14 +167,12 @@ For building documentation, you can run the usual rules provided in the
     .\doc\make.bat html
     start .\doc\_build\html\index.html
 
-
 However, the recommended way of checking documentation integrity is to use
 ``tox``:
 
 .. code:: bash
 
     tox -e doc && your_browser_name .tox/doc_out/index.html
-
 
 Distributing
 ------------
@@ -191,9 +186,9 @@ the building requirements and then executing the build module:
     python -m flit build
     python -m twine check dist/*
 
-
 Post issues
 -----------
+
 Use the `PyMechanical Issues <https://github.com/ansys/pymechanical/issues>`_
 page to submit questions, report bugs, and request new features. When possible,
 use these templates:
@@ -205,9 +200,9 @@ If your issue does not fit into one of these template categories, create your ow
 
 To reach the project support team, email `pyansys.core@ansys.com <pyansys.core@ansys.com>`_.
 
-
 View documentation
 ------------------
+
 Documentation for the latest stable release of PyMechanical is hosted at
 `PyMechanical Documentation <https://mechanical.docs.pyansys.com>`_.
 
@@ -218,6 +213,7 @@ released versions.
 
 Code style
 ----------
+
 As indicated in `Coding style <https://dev.docs.pyansys.com/coding-style/index.html>`_
 in the *PyAnsys Developer's Guide*, PyMechanical follows PEP8 guidelines. PyMechanical
 implements `pre-commit <https://pre-commit.com/>`_ for style checking.
@@ -239,7 +235,6 @@ This way, it's not possible for you to push code that fails the style checks::
   isort....................................................................Passed
   flake8...................................................................Passed
   codespell................................................................Passed
-
 
 .. LINKS AND REFERENCES
 .. _PyAnsys Developer's Guide: https://dev.docs.pyansys.com/
