@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Analysis tests"""
+"""LSDyna analysis test"""
 
 import os
 
@@ -37,10 +37,14 @@ from .test_qk_eng_wb2 import get_assets_folder
 
 @pytest.mark.embedding
 @pytest.mark.windows_only
-def test_lsdyna(printer, selection, embedded_app):
-    """Unit test for LSDyna.
+def test_lsdyna(printer, embedded_app):
+    """
+    Unit test for LSDyna.
 
-    Testing LS Dyna analysis
+    This test focuses on LSDyna analysis in Mechanical.
+    Runs only in Windows environment. This test involves
+    a simple geometry with high velocity
+    hitting on rigid wall.
     """
     globals().update(global_variables(embedded_app, True))
     printer("Setting up test - LSDyna system")

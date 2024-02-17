@@ -285,15 +285,12 @@ def test_image_export(printer, selection, embedded_app):
     geometry_import.Import(geometry_file)
 
     ExtAPI.Graphics.Camera.SetFit()
-    image_export_format = Ansys.Mechanical.DataModel.Enums.GraphicsImageExportFormat.PNG
+    image_export_format = GraphicsImageExportFormat.PNG
     settings_720p = Ansys.Mechanical.Graphics.GraphicsImageExportSettings()
-    settings_720p.Resolution = (
-        Ansys.Mechanical.DataModel.Enums.GraphicsResolutionType.EnhancedResolution
-    )
-    settings_720p.Background = Ansys.Mechanical.DataModel.Enums.GraphicsBackgroundType.White
+    settings_720p.Resolution = GraphicsResolutionType.EnhancedResolution
+    settings_720p.Background = GraphicsBackgroundType.White
     settings_720p.Width = 1280
     settings_720p.Height = 720
-    settings_720p.CurrentGraphicsDisplay = False
     ExtAPI.Graphics.ExportImage(
         os.path.join(os.getcwd(), "geometry.png"), image_export_format, settings_720p
     )
