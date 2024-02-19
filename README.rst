@@ -1,5 +1,5 @@
-.. image:: doc/source/images/pymechanical-logo-light.png
-   :alt: PyMechanical
+.. image:: https://raw.githubusercontent.com/ansys/pymechanical/main/doc/source/_static/logo/pymechanical-logo-light.png
+   :alt: PyMechanical logo
 
 
 |pyansys| |pypi| |python| |GH-CI| |codecov| |MIT| |black|
