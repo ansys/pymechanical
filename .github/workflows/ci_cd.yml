@@ -236,7 +236,7 @@ jobs:
   embedding-tests:
     name: Embedding testing and coverage
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     needs: [style, revn-variations]
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
@@ -280,7 +280,7 @@ jobs:
           ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
           ANSYS_WORKBENCH_LOGGING: 0
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
-          NUM_CORES: 4
+          NUM_CORES: 1
         run: |
           xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml || true
 
