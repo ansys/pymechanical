@@ -90,10 +90,8 @@ To install Ansys products in WSL, perform these steps:
    - ``-<product_flag>`` : Specifies the one or more products to install.
      If you omit this argument, all products are installed. The *Ansys, Inc.
      Installation Guides* in the Ansys Help provides a list of valid
-     values for the ``product_flags`` argument in `Chapter 6
-     <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/installation/unix_silent.html>`_
-     of the *Linux Installation Guide* and `Chapter 7
-     <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/installation/win_silent.html>`_
+     values for the ``product_flags`` argument in `Chapter 6`_
+     of the *Linux Installation Guide* and `Chapter 7`_
      of the *Windows Installation Guide*.
 
      In the preceding example for Mechanical, you only need to specify the ``-mechapdl`` flag.

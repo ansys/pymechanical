@@ -8,10 +8,22 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ## [Unreleased]()
 
 ### Added
-- Upload 241 docker files ([#567](https://github.com/ansys/pymechanical/pull/567))
-- Add pre-commit hooks ([#575](https://github.com/ansys/pymechanical/pull/575))
 
 ### Fixed
+
+### Changed
+- Update Vale version ([#582](https://github.com/ansys/pymechanical/pull/582))
+
+### Dependencies
+- Bump `plotly` from 5.18.0 to 5.19.0 ([#605](https://github.com/ansys/pymechanical/pull/605))
+
+## [0.10.7](https://github.com/ansys/pymechanical/releases/tag/v0.10.7) - February 13 2024
+
+### Added
+- Upload 241 docker files ([#567](https://github.com/ansys/pymechanical/pull/567))
+- Add pre-commit hooks ([#575](https://github.com/ansys/pymechanical/pull/575))
+- Add Automatic version update for Mechanical scripting external links ([#585](https://github.com/ansys/pymechanical/pull/585))
+- Add PyMechanical logo ([#592](https://github.com/ansys/pymechanical/pull/592))
 
 ### Changed
 - Update getting started page ([#561](https://github.com/ansys/pymechanical/pull/561))
@@ -19,22 +31,24 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Update workflow versions to run 241 and 242 ([#590](https://github.com/ansys/pymechanical/pull/590))
 
 ### Dependencies
-- Bump `pyvista` from 0.43.1 to 0.43.2 ([#564](https://github.com/ansys/pymechanical/pull/564))
+- Bump `pyvista` from 0.43.1 to 0.43.3 ([#564](https://github.com/ansys/pymechanical/pull/564), [#598](https://github.com/ansys/pymechanical/pull/598))
 - Bump `sphinxcontrib-websupport` from 1.2.6 to 1.2.7 ([#562](https://github.com/ansys/pymechanical/pull/562))
-- Bump `ansys-sphinx-theme` from 0.13.0 to 0.13.2 ([#563](https://github.com/ansys/pymechanical/pull/563), [#586](https://github.com/ansys/pymechanical/pull/586))
+- Bump `ansys-sphinx-theme` from 0.13.0 to 0.13.4 ([#563](https://github.com/ansys/pymechanical/pull/563), [#586](https://github.com/ansys/pymechanical/pull/586), [#596](https://github.com/ansys/pymechanical/pull/596))
 - Bump `pandas` from 2.1.4 to 2.2.0 ([#571](https://github.com/ansys/pymechanical/pull/571))
 - Bump `sphinxemoji` from 0.2.0 to 0.3.1 ([#569](https://github.com/ansys/pymechanical/pull/569))
 - Bump `tj-actions/changed-files` from 41 to 42 ([#572](https://github.com/ansys/pymechanical/pull/572))
 - Bump `panel` from 1.3.6 to 1.3.8 ([#570](https://github.com/ansys/pymechanical/pull/570), [#579](https://github.com/ansys/pymechanical/pull/579))
 - Bump `peter-evans/create-or-update-comment` from 3 to 4 ([#576](https://github.com/ansys/pymechanical/pull/576))
 - Bump `pytest` from 7.4.4 to 8.0.0 ([#577](https://github.com/ansys/pymechanical/pull/577))
-- Bump `sphinx-autodoc-typehints` from 1.25.2 to 1.25.3 ([#578](https://github.com/ansys/pymechanical/pull/578))
-- Update ``pre-commit`` ([#580](https://github.com/ansys/pymechanical/pull/580))
-- Update Vale version ([#582](https://github.com/ansys/pymechanical/pull/582))
+- Bump `sphinx-autodoc-typehints` from 1.25.2 to 2.0.0 ([#578](https://github.com/ansys/pymechanical/pull/578), [#597](https://github.com/ansys/pymechanical/pull/597))
+- Update ``pre-commit`` ([#580](https://github.com/ansys/pymechanical/pull/580), [#599](https://github.com/ansys/pymechanical/pull/599))
 - Bump ``ansys.mechanical.env`` from 0.1.2 to 0.1.3 ([#583](https://github.com/ansys/pymechanical/pull/583))
 - Bump `sphinx-autobuild` from 2021.3.14 to 2024.2.4 ([#588](https://github.com/ansys/pymechanical/pull/588))
 - Bump `pytest-sphinx` from 0.5.0 to 0.6.0 ([#587](https://github.com/ansys/pymechanical/pull/587))
 - Bump `grpcio` from 1.60.0 to 1.60.1 ([#589](https://github.com/ansys/pymechanical/pull/589))
+- Bump `numpy` from 1.26.3 to 1.26.4 ([#595](https://github.com/ansys/pymechanical/pull/595))
+- Bump `imageio` from 2.33.1 to 2.34.0 ([#594](https://github.com/ansys/pymechanical/pull/594))
+- Bump `mikepenz/action-junit-report` from 3 to 4 ([#593](https://github.com/ansys/pymechanical/pull/593))
 
 ## [0.10.6](https://github.com/ansys/pymechanical/releases/tag/v0.10.6) - January 11 2024
 
