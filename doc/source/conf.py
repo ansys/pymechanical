@@ -16,6 +16,9 @@ from ansys_sphinx_theme import ansys_favicon, get_version_match, pyansys_logo_bl
 from sphinx_gallery.sorting import FileNameSortKey
 
 import ansys.mechanical.core as pymechanical
+from ansys.mechanical.core.embedding.initializer import (
+    SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS,
+)
 
 # necessary when building the sphinx gallery
 pymechanical.BUILDING_GALLERY = True
@@ -138,6 +141,8 @@ rst_epilog = ""
 with open("links.rst") as f:
     rst_epilog += f.read()
 
+current_mechanical_version = next(iter(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS.keys()))
+rst_epilog = rst_epilog.replace("%%VERSION%%", f"v{current_mechanical_version}")
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"
 
@@ -286,5 +291,13 @@ epub_exclude_files = ["search.html"]
 
 # -- Linkcheck config --------------------------------------------------------
 
-linkcheck_ignore = [r"https://github.com/ansys/pymechanical/pkgs/container/.*"]
+linkcheck_ignore = [
+    "https://github.com/ansys/pymechanical/pkgs/container/.*",
+    "gallery_examples/embedding_n_remote/embedding_remote.html",
+    "https://ansyshelp.ansys.com/*",
+    "https://ansysaccount.b2clogin.com/*",
+    "https://answers.microsoft.com/en-us/windows/forum/all/*",
+    "https://download.ansys.com/*",
+]
+
 linkcheck_anchors = False

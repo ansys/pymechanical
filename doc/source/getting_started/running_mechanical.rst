@@ -254,5 +254,5 @@ VPN issues
 ----------
 
 Sometimes, Mechanical has issues starting when VPN software is running. For more information,
-access the `Mechanical Users Guide <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/wb_sim/ds_Home.html>`_
+access the `Mechanical Users Guide`_
 in the Ansys Help.
