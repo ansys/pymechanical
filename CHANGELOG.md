@@ -12,6 +12,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Fixed
 
 ### Changed
+ - Update ``pre-commit`` ([#610](https://github.com/ansys/pymechanical/pull/610))
 
 ### Dependencies
 
