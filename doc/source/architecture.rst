@@ -4,30 +4,30 @@
 PyMechanical Architecture
 =========================
 
-PyMechanical is a Python interface to the Mechanical application. Mechanical
-is a polyglot [#f1]_ desktop application whose graphical user interface (GUI)
-can run on both Windows and Linux.
+PyMechanical provides a Python interface to Ansys Mechanical. Mechanical is a
+polyglot [#f1]_ desktop application whose graphical user interface (GUI) runs
+on either the Windows or Linux operating system. Mechanical's APIs are
+implemented in C# using .NET Framework 4.x. They are exposed to both C# and
+two implementations [#f2]_ of Python, IronPython [#f3]_ and CPython.
 
-For several years now, Mechanical has had Python scripting capabilities using
-a scripting API. Like many other applications developed by Ansys, scripting
-became heavily used for the purpose of *automation*. A user who  would spend
-time doing the same thing over and over again with the GUI could instead write
-a script to do the same thing, saving time and effort.
+Within Mechanical, Python scripting enables you to automate repetitive GUI
+actions. This is not unlike other applications developed either by Ansys or
+other software companies. Python scripting leverages the Mechanical API.
 
-Also like many other applications, Mechanical's API served another purpose.
-That is, it was used for *customization*. Users could use the API as a way to
-add capabilities to Mechanical. It has been used to add buttons to the User
-Interface, add custom objects to the data model, even as far as adding
-third-party solvers that can take advantage of the powerful and intuitive pre-
-and post-processing capabilities of Mechanical.
+Mechanical, like some other applications, is customizable. Using the same
+Mechanical API that you use for scripting, you can implement extensions that
+add to the capabilities of Mechanical. For example, buttons can be added to the
+GUI and custom objects can be added to the data model. Even third-party or
+in-house solvers can be integrated into Mechanical and can take advantage of
+the powerful meshing, generic CAD reader, and the intuitive pre- and post-
+processing experience of Mechanical.
 
-Because the API serves the needs of both *automation* and *customization*, it
-did not use a version of the *Command pattern* (see below). Instead, the API
-provides the data model directly as the API. Mechanical's data model uses
-Object Oriented Programming, or OOP. With OOP, _Objects_ contain data and
-oprations on that data. The Mechanical API interacts with the _Objects_,
-givings access to their _Properties_ and _Methods_. The API also provides the
-_Enums_ that are used by the _Properties_ and _Methods_.
+Before discussing how Mechanical's API is implemented, a design pattern known
+as the "Command Pattern" is discussed. This is an abstract pattern that can be
+used in any object oriented system in many programming languages. A high level
+explanation of the pattern (using the Java programming language) can be found
+here: https://howtodoinjava.com/design-patterns/behavioral/command-pattern/.
+A brief explanation follows.
 
 Command pattern
 ---------------
@@ -49,18 +49,38 @@ APDL, and the Ansys Workbench applications implement automation APIs for
 scripting.
 
 Using the command pattern as a scripting API does come with some disadvantages.
-Most importantly, the API is not symmetric. The four fundamental operations on
-data within a software application are Create, Read, Update, and Delete. These
-are often abbreviated as CRUD. While you can conceptually Update, Create, and
-Delete using Commands, you can not Read. This makes it difficult to "visit" the
-application's data model.
+Most importantly, command APIs are not symmetric. The four fundamental
+operations on data within a software application are Create, Read, Update, and
+Delete. These are often abbreviated as CRUD. While you can conceptually Update,
+Create, and Delete using Commands, you can not Read. This makes it difficult to
+"visit" the application's data model.
 
-Mechanical API Architecture
----------------------------
-Mechanical's API is currently implemented in .NET FW 4.x. Within the
-application, it is made available to the Python and C# programming languages.
-There are two Python implementations [#f2]_, IronPython [#f3]_ and CPython that
-can use the Mechanical API.
+Mechanical API Implementation
+-----------------------------
+Mechanical's API serves the needs of both *automation* and *customization*. For
+customization, it is necessary to Read the data model. Automation alone is not
+sufficient. For example, when integrating a third-party solver, you will need
+to access all of the boundary conditions, geometry, material properties, mesh,
+and connections to properly input them to the solver. As discussed above, the
+command pattern does not allow this kind of access pattern. Due to this fact,
+the Mechanical API exposes its data model directly to the user. This is how a
+hypothetical command-based API would look for renaming an object.
+
+.. code:: python
+
+    RenameCommand(Id=100, Name="New name")
+
+Instead, an API based on a data model, like mechanical, looks like this:
+
+.. code:: python
+
+    obj = DataModel.GetObjectById(100)
+    print(obj.Name)
+    obj.Name="New name"
+
+Notice that the old name could be printed by accessing a property of the
+object. This has no equivalent if the API used a command pattern.
+
 
 PyMechanical Remote Interface
 -----------------------------
