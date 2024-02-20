@@ -76,7 +76,7 @@ Instead, an API based on a data model, like mechanical, looks like this:
 
     obj = DataModel.GetObjectById(100)
     print(obj.Name)
-    obj.Name="New name"
+    obj.Name = "New name"
 
 Notice that the old name could be printed by accessing a property of the
 object. This has no equivalent if the API used a command pattern.
