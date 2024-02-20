@@ -267,7 +267,7 @@ jobs:
           python -m venv .venv
           source .venv/bin/activate
           pip3 install -e .
-          # pip install ansys-mechanical-env
+          pip3 install ansys-mechanical-env
           pip3 install -e .[tests]
 
       - name: Unit Testing and coverage
