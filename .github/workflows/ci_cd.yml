@@ -262,6 +262,11 @@ jobs:
           python --version
           pip3 --version
 
+      - name: Activate virtualenv
+        run: |
+          . .venv/bin/activate
+          echo PATH=$PATH >> $GITHUB_ENV
+
       - name: Install packages for testing
         run: |
           python --version
