@@ -264,7 +264,7 @@ jobs:
         run: |
           python -m venv .venv
           . .venv/bin/activate
-          pip install .[tests]
+          pip install -e .[tests]
 
       - name: Unit Testing and coverage
         env:
@@ -333,7 +333,8 @@ jobs:
         run: |
           python -m venv .venv
           . .venv/bin/activate
-          pip install .[tests]
+          pip install -e .
+          pip install -e .[tests]
 
       - name: Set environment variable
         run: echo "ANSYSCL${{ needs.revn-variations.outputs.test_revn }}_DIR=/install/ansys_inc/v${{ needs.revn-variations.outputs.test_revn }}/licensingclient" >> $GITHUB_ENV
@@ -412,7 +413,7 @@ jobs:
         run: |
           python -m venv .venv
           . .venv/bin/activate
-          pip install .[doc]
+          pip install -e .[doc]
 
 
       - name: Build docs
