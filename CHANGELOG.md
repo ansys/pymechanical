@@ -13,6 +13,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Add logo for dark theme ([#601](https://github.com/ansys/pymechanical/pull/601))
 
 ### Changed
+ - Update ``pre-commit`` ([#610](https://github.com/ansys/pymechanical/pull/610))
 
 ### Dependencies
 - Bump `plotly` from 5.18.0 to 5.19.0 ([#605](https://github.com/ansys/pymechanical/pull/605))
