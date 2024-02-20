@@ -258,15 +258,17 @@ jobs:
           ln -s /usr/bin/python${{ matrix.python-version }} /usr/bin/python
           apt install python${{ matrix.python-version }}-venv -y
           python -m ensurepip --default-pip
-          pip install --upgrade pip
+          pip3 install --upgrade pip
+          python --version
+          pip3 --version
 
       - name: Install packages for testing
         run: |
           python -m venv .venv
           source .venv/bin/activate
-          pip install -e .
+          pip3 install -e .
           # pip install ansys-mechanical-env
-          pip install -e .[tests]
+          pip3 install -e .[tests]
 
       - name: Unit Testing and coverage
         env:
