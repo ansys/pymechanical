@@ -16,6 +16,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Dependencies
 - Bump `plotly` from 5.18.0 to 5.19.0 ([#605](https://github.com/ansys/pymechanical/pull/605))
+- Bump `pypandoc` from 1.12 to 1.13 ([#609](https://github.com/ansys/pymechanical/pull/609))
 
 ## [0.10.7](https://github.com/ansys/pymechanical/releases/tag/v0.10.7) - February 13 2024
 
