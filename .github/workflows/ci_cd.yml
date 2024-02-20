@@ -263,7 +263,9 @@ jobs:
       - name: Install packages for testing
         run: |
           python -m venv .venv
-          . .venv/bin/activate
+          source .venv/bin/activate
+          pip install -e .
+          # pip install ansys-mechanical-env
           pip install -e .[tests]
 
       - name: Unit Testing and coverage
