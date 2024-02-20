@@ -10,6 +10,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Added
 
 ### Fixed
+- Add logo for dark theme ([#601](https://github.com/ansys/pymechanical/pull/601))
 
 ### Changed
 
