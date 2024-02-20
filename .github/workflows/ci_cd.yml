@@ -285,7 +285,9 @@ jobs:
           ANSYS_WORKBENCH_LOGGING: 0
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
           NUM_CORES: 1
+        shell: bash
         run: |
+          . .venv/bin/activate
           xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml || true
 
       - name: Upload coverage results
