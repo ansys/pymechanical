@@ -258,15 +258,7 @@ jobs:
           ln -s /usr/bin/python${{ matrix.python-version }} /usr/bin/python
           apt install python${{ matrix.python-version }}-venv -y
           python -m ensurepip --default-pip
-          pip3 install --upgrade pip
-          python --version
-          pip3 --version
-
-      # - name: Install dependencies
-      #   run: |
-      #     apt install -y lsb-release xvfb
-      #     pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
-      #     pip3 install --upgrade pip flit
+          pip install --upgrade pip
 
       - name: Install packages for testing
         run: |
@@ -335,18 +327,12 @@ jobs:
           ln -s /usr/bin/python${{ matrix.python-version }} /usr/bin/python
           apt install python${{ matrix.python-version }}-venv -y
           python -m ensurepip --default-pip
-          pip3 install --upgrade pip
-          python --version
-          pip3 --version
-
-      - name: Install dependencies
-        run: |
-          apt install -y lsb-release
-          pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
-          pip3 install --upgrade pip flit
+          pip install --upgrade pip
 
       - name: Install packages for testing
         run: |
+          python -m venv .venv
+          . .venv/bin/activate
           pip install .[tests]
 
       - name: Set environment variable
@@ -413,21 +399,21 @@ jobs:
           ln -s /usr/bin/python${{ env.MAIN_PYTHON_VERSION }} /usr/bin/python
           apt install python${{ env.MAIN_PYTHON_VERSION }}-venv -y
           python -m ensurepip --default-pip
-          python --version
-          pip3 --version
+          pip install --upgrade pip
 
       - name: Install system dependencies
         run: |
           apt update
-          apt install -y sudo curl lsb-release
           apt install -y zip pandoc libgl1-mesa-glx mesa-utils xvfb texlive-latex-extra latexmk nodejs npm graphviz
           apt install -y tini
           npm install -g @mermaid-js/mermaid-cli
 
-      - name: Install Python requirements
+      - name: Install packages for docs
         run: |
-          python -m pip install ansys-mechanical-env
-          pip3 install -e .[doc]
+          python -m venv .venv
+          . .venv/bin/activate
+          pip install .[doc]
+
 
       - name: Build docs
         env:
