@@ -1,7 +1,6 @@
 .. _ref_architecture:
 
-=========================
-PyMechanical Architecture
+PyMechanical architecture
 =========================
 
 PyMechanical provides a Python interface to Ansys Mechanical. Mechanical is a
@@ -31,6 +30,7 @@ A brief explanation follows.
 
 Command pattern
 ---------------
+
 Many interactive applications use the Command pattern. In a nutshell, anything
 the user does within the application turns into a Command object, and then the
 Command object is immediately executed. This approach carries some benefits.
@@ -55,8 +55,9 @@ Delete. These are often abbreviated as CRUD. While you can conceptually Update,
 Create, and Delete using Commands, you can not Read. This makes it difficult to
 "visit" the application's data model.
 
-Mechanical API Implementation
+Mechanical API implementation
 -----------------------------
+
 Mechanical's API serves the needs of both *automation* and *customization*. For
 customization, it is necessary to Read the data model. Automation alone is not
 sufficient. For example, when integrating a third-party solver, you will need
@@ -82,22 +83,23 @@ Notice that the old name could be printed by accessing a property of the
 object. This has no equivalent if the API used a command pattern.
 
 
-PyMechanical Remote Interface
+PyMechanical remote interface
 -----------------------------
-One way to interfact with the Mechanical API from CPython is as a Remote
+
+One way to interact with the Mechanical API from CPython is as a Remote
 Session. A session of Mechanical runs as a server and can receive a Remote
 Procedure Call (RPC). The RPC is handled by the server and then the response
 is returned back to the client.
 
-PyMechanical Embeddeded Instance
+PyMechanical embedded instance
 --------------------------------
+
 The embedded instance used by PyMechanical embeds an entire instance of the
 Mechanical application in-memory inside of a CPython program. There is no
 additional running process associated with it. Here, only the CPython interface
 to the Mechanical API can be used.
 
-===================
-Distributed Systems
+Distributed systems
 ===================
 
 This section contains a very basic explanation of Distributed Systems. It is
@@ -124,6 +126,7 @@ Invocation.
 
 Message passing
 ---------------
+
 Message passing is the original model of remote APIs, and in fact the other two
 are implemented using message passing underneath. RPCs are initiated by the
 client and sent to the server as a message, or a sequence of bytes. There must
@@ -131,12 +134,13 @@ be some understanding on both sides of the channel as to what information is in
 these bytes. This is usually handled by a protocol (such as HTTP or TCP) and
 usually also a higher level library (such as gRPC or zeroMQ) implemented using
 the protocol. The server may send back a series of messages to the client to
-indicate that a message was recieved, that it is executing, that it has
+indicate that a message was received, that it is executing, that it has
 executed, and with a response, if any. The protocol and library determine the
 expected sequence of messages, their ordering, and any failure handling.
 
 Resource-based APIs
 -------------------
+
 Resource-based APIs were popularized by REST, and has been shown to be, for
 practical purposes, infinitely scalable. They are traditionally implemented
 using HTTP or HTTPS but implementations can exist in any transport protocol.
@@ -155,16 +159,17 @@ internet.
 
 Remote method invocation
 ------------------------
+
 In the 1990s, OOP exploded in popularity. With it, came a very tempting idea.
 OOP allows programmers to provide abstractions on top of data in their code.
 It was thought that even the difference between RPC calls and calls made in
-a program's addresss space could be abstracted. The user of the library does
+a program's address space could be abstracted. The user of the library does
 not need to know whether an object exists remotely or locally, the call can
 just be made in the same way, and to scale the system to be distributed over a
 network, some middleware would be responsible for load-balancing and allocating
 these objects remotely.
 
-This technique is known as Rmeote Method Invocation (RMI). RMI was widely
+This technique is known as Remote Method Invocation (RMI). RMI was widely
 implemented, using CORBA, DCOM, Remoting (.NET), and Java RMI. However, this
 approach has fallen out of favor with the rise of the internet, as it was
 observed that this paradigm does not scale. As a practical example, recent
@@ -174,8 +179,7 @@ used in modern web stacks.
 An illuminating discussion of the problems with RMI can be found at
 https://martinfowler.com/articles/distributed-objects-microservices.html
 
-=================
-Remote Mechanical
+Remote mechanical
 =================
 
 Mechanical's official API is that of an object model, and PyMechanical provides
@@ -184,7 +188,7 @@ APIs, PyMechanical does not provide that API in a remote fashion. This is why
 the remote session API is based on strings, while the embedded instance API can
 provide the Mechanical API directly to Python.
 
-Another Remote API
+Another remote API
 ------------------
 Amother remote API for Mechanical is definitely possible to provide, so long as
 it is based on message passing or REST. In fact, Mechanical uses a REST API
