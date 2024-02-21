@@ -24,8 +24,8 @@ env:
   DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
   MAIN_PYTHON_VERSION: '3.10'
   # LATEST_STABLE_REVN and its Docker image are used in pull requests
-  LATEST_STABLE_REVN: '242'
-  LATEST_STABLE_DOCKER_IMAGE_VERSION: '24.2.0'
+  LATEST_STABLE_REVN: '241'
+  LATEST_STABLE_DOCKER_IMAGE_VERSION: '24.1.0'
   # DEV_REVN & its Docker image are used in scheduled or registry package runs
   DEV_REVN: '242'
   DEV_DOCKER_IMAGE_VERSION: '24.2.0'
@@ -55,7 +55,6 @@ jobs:
         uses: ansys/actions/doc-style@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          vale-version: "3.1.0"
 
   smoke-tests:
     name: Build and Smoke tests
@@ -275,7 +274,7 @@ jobs:
           ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
           ANSYS_WORKBENCH_LOGGING: 0
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
-          NUM_CORES: 1
+          NUM_CORES: 4
         run: |
           xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml || true
 
@@ -332,12 +331,6 @@ jobs:
           pip3 install --upgrade pip
           python --version
           pip3 --version
-
-      - name: Install dependencies
-        run: |
-          apt install -y lsb-release
-          pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
-          pip3 install --upgrade pip flit
 
       - name: Install packages for testing
         run: |
@@ -410,13 +403,13 @@ jobs:
           python --version
           pip3 --version
 
-      - name: Install system dependencies
-        run: |
-          apt update
-          apt install -y sudo curl lsb-release
-          apt install -y zip pandoc libgl1-mesa-glx mesa-utils xvfb texlive-latex-extra latexmk nodejs npm graphviz
-          apt install -y tini
-          npm install -g @mermaid-js/mermaid-cli
+      # - name: Install system dependencies
+      #   run: |
+      #     apt update
+      #     apt install -y sudo curl lsb-release
+      #     apt install -y zip pandoc libgl1-mesa-glx mesa-utils xvfb texlive-latex-extra latexmk nodejs npm graphviz
+      #     apt install -y tini
+      #     npm install -g @mermaid-js/mermaid-cli
 
       - name: Install Python requirements
         run: |
