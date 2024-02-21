@@ -13,9 +13,11 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Add logo for dark theme ([#601](https://github.com/ansys/pymechanical/pull/601))
 - testing
 ### Changed
+ - Update ``pre-commit`` ([#610](https://github.com/ansys/pymechanical/pull/610))
 
 ### Dependencies
 - Bump `plotly` from 5.18.0 to 5.19.0 ([#605](https://github.com/ansys/pymechanical/pull/605))
+- Bump `pytest` from 8.0.0 to 8.0.1 ([#606](https://github.com/ansys/pymechanical/pull/606))
 
 ## [0.10.7](https://github.com/ansys/pymechanical/releases/tag/v0.10.7) - February 13 2024
 
