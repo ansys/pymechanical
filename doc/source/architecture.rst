@@ -190,7 +190,8 @@ provide the Mechanical API directly to Python.
 
 Another remote API
 ------------------
-Amother remote API for Mechanical is definitely possible to provide, so long as
+
+Another remote API for Mechanical is definitely possible to provide, so long as
 it is based on message passing or REST. In fact, Mechanical uses a REST API
 internally as part of its GUI. This is not the official Mechanical API and is
 not currently documented. But such an API is not an immediate goal of the
