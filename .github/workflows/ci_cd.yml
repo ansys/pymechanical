@@ -236,7 +236,7 @@ jobs:
   embedding-tests:
     name: Embedding testing and coverage
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
     needs: [style, revn-variations]
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
@@ -261,12 +261,6 @@ jobs:
           pip3 install --upgrade pip
           python --version
           pip3 --version
-
-      - name: Install dependencies
-        run: |
-          apt install -y lsb-release xvfb
-          pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
-          pip3 install --upgrade pip flit
 
       - name: Install packages for testing
         run: |
