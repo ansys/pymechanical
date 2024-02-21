@@ -271,7 +271,7 @@ ansys_inc/v232/ansys
 # needed for topo and smart tests
 !ansys_inc/v232/ansys/syslib/AnsMechSolverMesh/libComponentSystem.so
 
-# in the latest build the following are referred from 
+# in the latest build the following are referred from
 # ansys_inc/v232/aisol/lib/linx64
 # having + in the pattern produces the following error
 # error from sender: failed to match excludepatterns: syntax error in pattern

@@ -1,10 +1,9 @@
 .. _ref_examples:
 
-========
 Examples
 ========
 
-Here are examples using Mechanical with the ``ansys-mechanical-core`` library through 
+Here are examples using Mechanical with the ``ansys-mechanical-core`` library through
 an embedded instance or remote session.
 
 .. grid:: 2
@@ -30,5 +29,5 @@ an embedded instance or remote session.
       :text-align: center
       :margin: 2 2 0 0
 
-      Demonstrates the same model setup in both an embedded instance and remote session, 
+      Demonstrates the same model setup in both an embedded instance and remote session,
       as well as examples using a combination of embedded instances and remote sessions.

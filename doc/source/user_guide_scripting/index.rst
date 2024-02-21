@@ -1,10 +1,9 @@
 .. _ref_user_guide_scripting:
 
-====================
 Mechanical scripting
 ====================
-This section provides an overview of Mechanical scripting.
 
+This section provides an overview of Mechanical scripting.
 
 ..
    This toctreemust be a top-level index to get it to show up in
@@ -17,17 +16,18 @@ This section provides an overview of Mechanical scripting.
    threading
 
 Overview
-========
+--------
+
 You could already perform scripting of Mechanical with Python from inside
 Mechanical. PyMechanical leverages the same APIs but allows you to run your
 automation from outside Mechanical.
 
-For comprehensive information on these APIs, see the `Scripting in Mechanical Guide
-<https://ansyshelp.ansys.com/Views/Secured/corp/v231/en/act_script/act_script.html>`_ in the
+For comprehensive information on these APIs, see the `Scripting in Mechanical Guide`_ in the
 Ansys Help.
 
 Recording
-^^^^^^^^^
+---------
+
 Mechanical supports some level of recording. When you initiate an action from the user
 interface (UI), the UI determines what API to run, executes this API, and prints it in the **Mechanical Scripting
 View**. Examples of these actions are assigning selections to scoping, changing values in
@@ -37,7 +37,8 @@ a **Fixed Support** and a **Pressure** are added to the **Outline**.
 .. figure:: ../images/gmech_scripting_recording.gif
 
 Mechanical entities
-^^^^^^^^^^^^^^^^^^^
+-------------------
+
 Mechanical has an extensive set of entities that represent all the functionality provided
 by Mechanical. Here are descriptions of the entities at Mechanical's core:
 
@@ -67,12 +68,13 @@ tasks until after a block of commands are run. Here is an example:
 
 .. code:: python
 
-    with Transaction():
-        for obj in Tree:
-            obj.Name = obj.Name + " suffix"
+   with Transaction():
+       for obj in Tree:
+           obj.Name = obj.Name + " suffix"
 
 API entry points
-^^^^^^^^^^^^^^^^
+----------------
+
 When running scripts inside of Mechanical, you can access the APIs via these entry points:
 
 * ``ExtAPI``: Entry point for all APIs
@@ -85,6 +87,7 @@ You also have access to several types and namespaces that are included in the sc
 from those entry points.
 
 Additional resources
-^^^^^^^^^^^^^^^^^^^^
-The `ACT API Reference Guide <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/act_ref/act_ref.html>`_
+--------------------
+
+The `ACT API Reference Guide`_
 provides descriptions of the objects, methods, and properties for all namespaces.

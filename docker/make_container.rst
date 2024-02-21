@@ -23,7 +23,7 @@ Requirements
   provided you with an account.
 
 * These files are provided:
-  
+
   * `Dockerfile <https://github.com/ansys/pymechanical/tree/main/docker/231/Dockerfile>`_
   * `.dockerignore <https://github.com/ansys/pymechanical/tree/main/docker/231/.dockerignore>`_
 
@@ -59,9 +59,16 @@ install the minimal files by using:
 .. code:: bash
 
     sh /path-to-mechanical-installer \
-        -install_dir /path-to-install-mechanical/ \
-        -nochecks -mechapdl -silent
+        -silent -overwrite_preview -mechapdl -lsdyna \
+        -install_dir /path-to-install-mechanical/
 
+    # example
+    # sh /home/username/download/linx/INSTALL \
+    #    -silent -overwrite_preview -mechapdl -lsdyna \
+    #    -install_dir /install/ansys_inc/
+
+
+Use ``sudo`` if you do not have write permissions in the installation directory.
 The ``-mechapdl`` command installs Mechanical.
 
 Take note of where you are installing Ansys because the
@@ -84,13 +91,12 @@ which you should modify to adapt it to your needs.
     export ANS_VERSION=${ANS_MAJOR_VERSION}${ANS_MINOR_VERSION}
 
     export TAG=mechanical:${ANS_MAJOR_VERSION}.${ANS_MINOR_VERSION}
-    # example: if Mechanical v231 is installed under
-    # /install/ansys_inc/v231
+    # example: if Mechanical v231 is installed under /install/ansys_inc/v231
+
     # use /install for path_to_mechanical_installation
     export MECHANICAL_INSTALL_LOCATION=/path_to_mechanical_installation/
 
-    # example: if pymechanical is cloned under
-    # /some_location/pymechanical
+    # example: if pymechanical is cloned under /some_location/pymechanical
     # use /some_location for path-to-pymechanical
     export PYMECHANICAL_LOCATION=/path-to-pymechanical
 
@@ -98,9 +104,8 @@ which you should modify to adapt it to your needs.
     cd ${MECHANICAL_INSTALL_LOCATION}
 
     # Copy the Docker files
-    # 
-    cp ${PYMECHANICAL_LOCATION}/pymechanical/docker/{ANS_VERSION}/Dockerfile .
-    cp ${PYMECHANICAL_LOCATION}/pymechanical/docker/{ANS_VERSION}/.dockerignore .
+    cp ${PYMECHANICAL_LOCATION}/pymechanical/docker/${ANS_VERSION}/Dockerfile .
+    cp ${PYMECHANICAL_LOCATION}/pymechanical/docker/${ANS_VERSION}/.dockerignore .
 
     # Build Docker image
     sudo docker build  -t $TAG --build-arg VERSION=$ANS_VERSION .
@@ -121,7 +126,7 @@ Summary
 =======
 
 
-* **Step 1:** Download the latest Mechanical version from the Ansys Customer Portal 
+* **Step 1:** Download the latest Mechanical version from the Ansys Customer Portal
   (`Current Release <https://download.ansys.com/Current%20Release>`_).
 
 * **Step 2:** Install Mechanical in a known folder. You can reuse your local

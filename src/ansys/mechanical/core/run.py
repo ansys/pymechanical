@@ -1,4 +1,4 @@
-# Copyright (C) 2023 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -161,7 +161,7 @@ def cli(
 
     The following example demonstrates the main use of this tool:
 
-        $ ansys-mechanical -r 232 -g
+        $ ansys-mechanical -r 241 -g
 
         Starting Ansys Mechanical version 2023R2 in graphical mode...
     """
@@ -178,11 +178,16 @@ def cli(
             raise Exception("Cannot open in server mode with an input script.")
 
     if not revision:
-        exe, version = atp.find_mechanical()
+        exe = atp.get_mechanical_path()  # check for saved mechanical path
+        if exe:
+            version = atp.version_from_path("mechanical", exe)  # version is already int here
+        else:
+            exe, _version = atp.find_mechanical()
+            version = int(_version * 10)
     else:
-        exe, version = atp.find_mechanical(version=revision)
+        exe, _version = atp.find_mechanical(version=revision)
+        version = int(_version * 10)
 
-    version = int(version * 10)
     version_name = atp.SUPPORTED_ANSYS_VERSIONS[version]
 
     args = [exe, "-DSApplet"]

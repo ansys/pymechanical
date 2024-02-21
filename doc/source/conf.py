@@ -1,4 +1,5 @@
 """Sphinx documentation configuration file."""
+
 # Configuration file for the Sphinx documentation builder.
 #
 # This file only contains a selection of the most common options. For a full
@@ -11,10 +12,13 @@ from datetime import datetime
 import os
 import warnings
 
-from ansys_sphinx_theme import get_version_match, pyansys_logo_black
+from ansys_sphinx_theme import ansys_favicon, get_version_match, pyansys_logo_black
 from sphinx_gallery.sorting import FileNameSortKey
 
 import ansys.mechanical.core as pymechanical
+from ansys.mechanical.core.embedding.initializer import (
+    SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS,
+)
 
 # necessary when building the sphinx gallery
 pymechanical.BUILDING_GALLERY = True
@@ -99,7 +103,7 @@ numpydoc_validation_exclude = {  # set of regex
 }
 
 # Favicon
-html_favicon = "favicon.png"
+html_favicon = ansys_favicon
 
 # notfound.extension
 notfound_template = "404.rst"
@@ -107,7 +111,7 @@ notfound_urls_prefix = "/../"
 
 # static path
 html_static_path = ["_static"]
-
+templates_path = ["_templates"]
 # The suffix(es) of source filenames.
 source_suffix = ".rst"
 
@@ -137,6 +141,8 @@ rst_epilog = ""
 with open("links.rst") as f:
     rst_epilog += f.read()
 
+current_mechanical_version = next(iter(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS.keys()))
+rst_epilog = rst_epilog.replace("%%VERSION%%", f"v{current_mechanical_version}")
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"
 
@@ -171,7 +177,6 @@ sphinx_gallery_conf = {
     "thumbnail_size": (350, 350),
 }
 
-
 # -- Options for HTML output -------------------------------------------------
 html_short_title = html_title = "PyMechanical"
 html_theme = "ansys_sphinx_theme"
@@ -188,12 +193,12 @@ html_theme_options = {
         "version_match": get_version_match(version),
     },
     "check_switcher": False,
-    "navbar_end": ["version-switcher", "theme-switcher", "navbar-icon-links"],
     "github_url": "https://github.com/ansys/pymechanical",
     "show_prev_next": False,
     "show_breadcrumbs": True,
     "collapse_navigation": True,
     "use_edit_page_button": True,
+    "header_links_before_dropdown": 4,  # number of links before the dropdown menu
     "additional_breadcrumbs": [
         ("PyAnsys", "https://docs.pyansys.com/"),
     ],
@@ -204,8 +209,19 @@ html_theme_options = {
             "icon": "fa fa-comment fa-fw",
         },
     ],
+    "use_meilisearch": {
+        "api_key": os.getenv("MEILISEARCH_PUBLIC_API_KEY", ""),
+        "index_uids": {
+            f"pymechanical-v{get_version_match(version).replace('.', '-')}": "PyMechanical",
+        },
+    },
 }
 
+html_sidebars = {
+    "index": [
+        "cheatsheet_sidebar.html",
+    ],
+}
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
@@ -275,5 +291,13 @@ epub_exclude_files = ["search.html"]
 
 # -- Linkcheck config --------------------------------------------------------
 
-linkcheck_ignore = [r"https://github.com/ansys/pymechanical/pkgs/container/.*"]
+linkcheck_ignore = [
+    "https://github.com/ansys/pymechanical/pkgs/container/.*",
+    "gallery_examples/embedding_n_remote/embedding_remote.html",
+    "https://ansyshelp.ansys.com/*",
+    "https://ansysaccount.b2clogin.com/*",
+    "https://answers.microsoft.com/en-us/windows/forum/all/*",
+    "https://download.ansys.com/*",
+]
+
 linkcheck_anchors = False

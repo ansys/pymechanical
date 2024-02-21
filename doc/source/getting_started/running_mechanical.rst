@@ -1,8 +1,7 @@
 .. _using_standard_install:
 
-***********************************************
-Using PyMechanical from a standard installation
-***********************************************
+Launching PyMechanical
+======================
 
 The ``ansys-mechanical-core`` package requires either a local or
 remote instance of Mechanical to communicate with. This page describes
@@ -23,6 +22,7 @@ a reference:
 
 Launch a remote Mechanical session
 ----------------------------------
+
 You can use PyMechanical to launch a Mechanical session on the local machine
 Python is running on. Alternatively, you can run Mechanical's command line
 directly on any machine to start Mechanical in server mode and then use its
@@ -48,7 +48,6 @@ Launch Mechanical locally with this code:
     Product Version:231
     Software build date:Wednesday, August 10, 2022 4:28:15 PM
 
-
 Launch Mechanical from the command line
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -68,9 +67,9 @@ usage, type the following command:
 
         The following example demonstrates the main use of this tool:
 
-            $ ansys-mechanical -r 232 -g
+            $ ansys-mechanical -r 241 -g
 
-            Starting Ansys Mechanical version 2023R2 in graphical mode...
+            Starting Ansys Mechanical version 2024R1 in graphical mode...
 
     Options:
         -h, --help                 Show this message and exit.
@@ -101,7 +100,6 @@ usage, type the following command:
 
     ...
 
-
 You can launch Mechanical in server mode from the command line and then
 manually connect to the server. Use the `port` argument to select the port.
 
@@ -122,7 +120,6 @@ default port (``10000``), you would use this code to connect to it with this cod
     from ansys.mechanical.core import Mechanical
 
     mechanical = Mechanical()
-
 
 Now assume that a remote instance of Mechanical has been started in server mode. To connect to
 the computer on your local area network that is running Mechanical, you can use either
@@ -148,7 +145,6 @@ You would connect to it with this code:
 
     mechanical = Mechanical("myremotemachine", port=10000)
 
-
 Launching issues
 ----------------
 
@@ -172,7 +168,6 @@ for the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` me
     exec_loc = "C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe"
     mechanical = launch_mechanical(exec_loc)
 
-
 **On Linux**
 
 .. code:: python
@@ -181,7 +176,6 @@ for the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` me
 
     exec_loc = "/usr/ansys_inc/v231/aisol/.workbench"
     mechanical = launch_mechanical(exec_loc)
-
 
 If, when using the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>`
 method, Mechanical still fails to launch or hangs while launching, pass the
@@ -194,6 +188,7 @@ You can then use this output to debug why Mechanical isn't launching.
 
 Debug from the command line
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 You may need to run the ``launch`` command from the command line to debug why Mechanical is not launching.
 running the launch command from the command line.
 
@@ -210,7 +205,6 @@ a variety of issues, including:
   - Running behind a VPN
   - Missing dependencies
 
-
 Embed a Mechanical instance
 ---------------------------
 
@@ -220,6 +214,7 @@ Linux requires some additional environment variables.
 
 Python code
 ~~~~~~~~~~~
+
 .. code:: pycon
 
     >>> from ansys.mechanical.core import App
@@ -235,16 +230,13 @@ Additional information for Linux
 Starting with 2023 R2, it is possible to embed an instance of Mechanical on Linux.
 However, because of differences in how Mechanical works on Linux, you cannot simply
 run Python as usual. On Linux, certain environment variables must be set for the Python
-process before it starts. You can set up these environment variables using the ``.workbench_lite``
-script that is shipped with the Mechanical installation.
-
-Assume that Mechanical 2023 R2 is installed at ``/usr/ansys_inc``.
-You would run Python with this command:
+process before it starts. You can set up these environment variables using the ``mechanical-env``
+script that can be used after installing the ``ansys-mechanical-env`` package:
 
 .. code::
 
-    /usr/ansys_inc/v232/aisol/.workbench_lite python
-
+    pip install ansys-mechanical-env
+    mechanical-env python
 
 Licensing issues
 ----------------
@@ -258,9 +250,9 @@ of Ansys, you likely can access the
 section of the Ansys Help, where you can view or download the *Ansys, Inc. Licensing Guide* for
 comprehensive licensing information.
 
-
 VPN issues
 ----------
+
 Sometimes, Mechanical has issues starting when VPN software is running. For more information,
-access the `Mechanical Users Guide <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/wb_sim/ds_Home.html>`_
+access the `Mechanical Users Guide`_
 in the Ansys Help.

@@ -1,4 +1,4 @@
-# Copyright (C) 2023 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -41,6 +41,7 @@ __version__ = importlib_metadata.version("ansys-mechanical-core")
 
 # In descending order
 SUPPORTED_MECHANICAL_VERSIONS = {
+    241: "2024R1",
     232: "2023R2",
     231: "2023R1",
 }

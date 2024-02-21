@@ -1,8 +1,9 @@
-.. _ansys_tools_path_api:
+.. _ref_ansys_tools_path_api:
 
 Ansys path tools
 ================
-These methods on the ansys-tools-path module provide helper functions for configuration and discovery
+
+These methods on the ``ansys-tools-path`` module provide helper functions for configuration and discovery
 of the installation path of the Mechanical application.
 
 .. currentmodule:: ansys.tools.path

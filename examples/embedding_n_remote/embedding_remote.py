@@ -1,4 +1,4 @@
-# Copyright (C) 2023 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -61,7 +61,7 @@ try:
     path, version = find_mechanical()
     version = version_from_path("mechanical", path)
 except:
-    version = 232
+    version = 241
 
 app = mech.App(version=version)
 globals().update(mech.global_variables(app))

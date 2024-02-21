@@ -1,4 +1,4 @@
-# Copyright (C) 2023 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -327,7 +327,7 @@ def pytest_addoption(parser):
     mechanical_path = atp.get_mechanical_path(False)
 
     if mechanical_path == None:
-        parser.addoption("--ansys-version", default="232")
+        parser.addoption("--ansys-version", default="241")
     else:
         mechanical_version = atp.version_from_path("mechanical", mechanical_path)
         parser.addoption("--ansys-version", default=str(mechanical_version))
