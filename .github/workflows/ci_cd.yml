@@ -24,8 +24,8 @@ env:
   DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
   MAIN_PYTHON_VERSION: '3.10'
   # LATEST_STABLE_REVN and its Docker image are used in pull requests
-  LATEST_STABLE_REVN: '241'
-  LATEST_STABLE_DOCKER_IMAGE_VERSION: '24.1.0'
+  LATEST_STABLE_REVN: '242'
+  LATEST_STABLE_DOCKER_IMAGE_VERSION: '24.2.0'
   # DEV_REVN & its Docker image are used in scheduled or registry package runs
   DEV_REVN: '242'
   DEV_DOCKER_IMAGE_VERSION: '24.2.0'
