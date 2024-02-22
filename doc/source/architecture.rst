@@ -158,7 +158,7 @@ internet.
 Remote method invocation
 ------------------------
 
-In the 1990s, *Object Oriented Programming* (OOP) exploded in popularity.
+In the nineties, *Object Oriented Programming* (OOP) exploded in popularity.
 Among other things, OOP allows programmers to add abstractions on top of data
 in their code using objects. When done well, objects can reduce code complexity
 and makes large scale software easier to reason about. It was thought that even
@@ -190,13 +190,13 @@ APIs, PyMechanical does not provide that API in a remote fashion. This is why
 the remote session API is based on strings, while the embedded instance API can
 provide the Mechanical API directly to Python.
 
-Another remote API
-------------------
+A different remote interface
+----------------------------
 
-An alternative remote API for Mechanical is practical so long as it is based on
-message passing or REST. In fact, Mechanical uses a REST API internaly as part
-of its GUI. This is not the official Mechanical API and is not currently
-documented. An API like that is not an immediate goal of PyMechanical.
+An alternative remote API for Mechanical is practical so long as it is not
+using RMI. In fact, Mechanical uses a REST API internally as part of its GUI.
+This is not the official Mechanical API and is not currently documented. An API
+like that is not an immediate goal of PyMechanical.
 
 Using PyMechanical in a distributed system
 ------------------------------------------
