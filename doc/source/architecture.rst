@@ -149,11 +149,11 @@ resources are any uniquely identifiable entity.
 
 REST can scale because servers can make assumptions about the data it serves
 based on the verb and resource. For instance, if a GET is run on the resource
-"/a/b/c", and then no mutating verbs (PUT, UPDATE, DELETE, POST) are run on
-that or any child resource (such as "/a/b/c/d"), the server can reuse the
-result of the previous request rather than recompute the result. When using the
-HTTP protocol, this is called HTTP caching and is a fundamental property of the
-internet.
+named `"/a/b/c"`, and then no mutating verbs (PUT, UPDATE, DELETE, POST) are
+run on that or any child resource (such as `"/a/b/c/d"`), the server can reuse
+the result of the previous request rather than recompute the result. When using
+the HTTP protocol, this is called HTTP caching and is a fundamental property of
+the internet.
 
 Remote method invocation
 ------------------------
@@ -176,7 +176,7 @@ observed that it does not scale. As a practical example, recent versions of
 .NET do not implement the Remoting library, and COM/DCOM are not used in modern
 web stacks.
 
-For illuminating discussion of the problems with RMI, see `Microservices and
+For an illuminating discussion of the problems with RMI, see `Microservices and
 the First Law of Distributed Objects
 <https://martinfowler.com/articles/distributed-objects-microservices.html>`_ on
 Martin Fowler's website.
@@ -195,8 +195,8 @@ A different remote interface
 
 An alternative remote API for Mechanical is practical so long as it is not
 using RMI. In fact, Mechanical uses a REST API internally as part of its GUI.
-This is not the official Mechanical API and is not currently documented. An API
-like that is not an immediate goal of PyMechanical.
+This is not the official Mechanical API and is not currently documented. A new
+remote interface for Mechanical is not an immediate goal of PyMechanical.
 
 Using PyMechanical in a distributed system
 ------------------------------------------
