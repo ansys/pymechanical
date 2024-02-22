@@ -23,10 +23,10 @@ processing experience of Mechanical.
 
 Before discussing how Mechanical's API is implemented, we discuss a software
 design pattern known as the *command pattern*. This pattern can be used in many
-programming languages. A general description (using the Java programming
-language) can be found here in the *HowToDoInJava* newsletter:
-https://howtodoinjava.com/design-patterns/behavioral/command-pattern/. Our own
-brief explanation follows.
+programming languages. For a general description (using the Java programming
+language) of the command pattern, see `Command Design Pattern
+<https://howtodoinjava.com/design-patterns/behavioral/command-pattern/>` in the
+*HowToDoInJava* newsletter`. Our own brief explanation follows.
 
 Command pattern
 ---------------
@@ -119,8 +119,7 @@ idempotency, are not emphasized by classical software systems.
 
 Examples include email, multiplayer games, web apps, and high-performance
 computing, among other things. Historically, there are three major categories
-of remote APIs: Message passing, resource based, and Remote Method Invocation.
-
+of remote APIs: message passing, resource based, and remote method invocation.
 
 Message passing
 ---------------
@@ -149,7 +148,7 @@ Verbs include ``GET``, ``PUT``, ``UPDATE``, ``DELETE``, and ``POST``, while
 resources are any uniquely identifiable entity.
 
 REST can scale because servers can make assumptions about the data it serves
-based on the verb and resource. For instance, if a GET was done on the resource
+based on the verb and resource. For instance, if a GET is run on the resource
 "/a/b/c", and then no mutating verbs (PUT, UPDATE, DELETE, POST) are run on
 that or any child resource (such as "/a/b/c/d"), the server can reuse the
 result of the previous request rather than recompute the result. When using the
@@ -170,7 +169,7 @@ in the same way, regardless. To scale the system to be distributed over a
 network, some middleware would be responsible for load-balancing and allocating
 these objects remotely.
 
-This approach is known as Remote Method Invocation (RMI). RMI was widely
+This approach is known as *Remote Method Invocation* (RMI). RMI was widely
 implemented using CORBA, DCOM, Remoting (.NET), and Java RMI. However, this
 approach has fallen out of favor with the rise of the internet, as it was
 observed that it does not scale. As a practical example, recent versions of
