@@ -148,9 +148,9 @@ Verbs include ``GET``, ``PUT``, ``UPDATE``, ``DELETE``, and ``POST``, while
 resources are any uniquely identifiable entity.
 
 REST can scale because servers can make assumptions about the data it serves
-based on the verb and resource. For instance, if a GET is run on the resource
-named `"/a/b/c"`, and then no mutating verbs (PUT, UPDATE, DELETE, POST) are
-run on that or any child resource (such as `"/a/b/c/d"`), the server can reuse
+based on the verb and resource. For instance, if a ``GET`` is run on the
+resource `"a/b/c`, and then no mutating verbs (PUT, UPDATE, DELETE, POST) are
+run on that or any child resource (such as `/a/b/c/d`), the server can reuse
 the result of the previous request rather than recompute the result. When using
 the HTTP protocol, this is called HTTP caching and is a fundamental property of
 the internet.
