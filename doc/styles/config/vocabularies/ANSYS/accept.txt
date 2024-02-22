@@ -44,3 +44,6 @@ Addin
 Addins
 isort
 Codecov
+idempotency
+Martin
+Fowler

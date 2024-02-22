@@ -88,8 +88,8 @@ Background
 ----------
 
 PyMechanical contains two interfaces: a remote session and an embedded instance.
-For a discussion on the application architecture of Mechanical and why there are
-two python interfaces, see :ref:`ref_architecture`.
+For information on the application architecture of Mechanical and why there are
+two Python interfaces, see :ref:`ref_architecture`.
 
 Remote session
 ^^^^^^^^^^^^^^
