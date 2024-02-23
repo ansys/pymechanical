@@ -150,7 +150,7 @@ REST
 ----
 
 The design principles of REST are often credited as being responsible for the
-infinite scalibility of the internet. It can be thought of as a set of styles
+infinite scalability of the internet. It can be thought of as a set of styles
 or constraints that most web apps comply with or at least try to. Since REST
 is not an official standard, it can be implemented on any protocol. Since it
 was designed for HTTP, it is usually associated with it and its direct
@@ -158,7 +158,7 @@ descendants [#f7]_. However, the principles of REST can be applied on any
 protocol.
 
 Applications that conform to REST are said to provide RESTful APIs. For a more
-detailed desciption of rest, see `What is a REST API
+detailed description, see `What is a REST API
 <https://www.redhat.com/en/topics/api/what-is-a-rest-api>` on the *Red Hat
 Technology Topics* page.
 
