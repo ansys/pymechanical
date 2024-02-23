@@ -32,7 +32,7 @@ Command pattern
 ---------------
 
 Many interactive apps use the command pattern. It turns anything that the user
-does within the app into a command object, which is immediately executed.  This
+does within the app into a command object, which is immediately executed. This
 approach carries some additional benefits [#f4]_.
 
 More relevant to this discussion is how command patterns can be used to
