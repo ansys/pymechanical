@@ -26,14 +26,14 @@ design pattern known as the *command pattern*. This pattern can be used in many
 programming languages. For a general description (using the Java programming
 language) of the command pattern, see `Command Design Pattern
 <https://howtodoinjava.com/design-patterns/behavioral/command-pattern/>` in the
-*HowToDoInJava* newsletter`. Our own brief explanation follows.
+*HowToDoInJava* newsletter. Our own brief explanation follows.
 
 Command pattern
 ---------------
 
 Many interactive apps use the command pattern. It turns anything that the user
-does within the app turns into a command object, which is immediately executed.
-This approach carries some additional benefits [#f4]_.
+does within the app into a command object, which is immediately executed.  This
+approach carries some additional benefits [#f4]_.
 
 More relevant to this discussion is how command patterns can be used to
 implement automation APIs. If every action is a command, then that Command can
@@ -102,58 +102,65 @@ Distributed systems
 
 This section contains a very basic explanation of *distributed systems*. It is
 not meant be exhaustive and rigorous, but it instead introduces just the topics
-necessary to understand the choices made by the designers of PyMechanical.
+necessary as simply as possible to help you understand the choices made by the
+designers of PyMechanical.
 
 A distributed system is a software system that uses a network to distribute
 software across physical machines. With a distributed system, the individual
 pieces of that system do not share an address space and therefore cannot call
 functions of each other directly. Instead, they communicate with each other by
-sending messages in packets.
+sending messages to each other. Examples include email, multiplayer games, web
+apps, and high-performance computing, among other things.
 
 Distributed systems have unique characteristics when compared to classical
 software systems that share an address space. For instance, in a distributed
 system, any call can fail because of a problem with the network, and the caller
 can not always know whether a call has failed. For this reason, features of
-interest to distributed system designers, such as fault tolerance and
-idempotency, are not emphasized by classical software systems.
+interest to distributed system designers, such as fault tolerance, redundancy,
+and idempotency, are not emphasized by classical software systems.
 
-Examples include email, multiplayer games, web apps, and high-performance
-computing, among other things. Historically, there are three major categories
-of remote APIs: message passing, resource based, and remote method invocation.
+In a distributed system, any computer can theoretically talk to any other
+computer. However, it is useful to divide them conceptually into clients and
+servers. Clients send requests to servers. Servers are expected return a
+response to the client.
 
-Message passing
----------------
+There are protocols [#f5]_ that describe how information moves between
+computers. We begin with an explanation of remote procedure calls.
 
-Message passing is the original model of remote APIs, and in fact the other two
-categories are implemented using message passing underneath. RPCs are initiated
-by the client and sent to the server as a message, or a sequence of bytes.
-There must be some understanding on both sides of the channel as to what
-information is in these bytes. This is usually handled by a protocol (such as
-HTTP or TCP) and usually also a higher-level library (such as gRPC or zeroMQ)
-implemented using the protocol. The server may send back a series of messages
-to the client to indicate that a message was received, that it is executing,
-that it has executed, and with a response, if any. The protocol and library
-determine the expected sequence of messages, their ordering, and any failure
-handling.
+Remote procedure calls
+----------------------
 
-Resource-based APIs
--------------------
+When one computer invokes a procedure on another computer using a network, it
+is said to have done an RPC. Unlike a normal procedure call, it can be
+unreliable and orders of magnitude slower. There also needs to be a handshake
+so that both sides understand how to interpret the bytes that move on the wire
+between computers [#f6]_. This handshake can be negotiated byte-per-byte, but
+in practice, the internet protocols provide useful conventions and standards
+that have been tried and tested.
 
-Resource-based APIs were popularized by REST, and has been shown to be, for
-practical purposes, infinitely scalable. They are traditionally implemented
-using HTTP or HTTPS, but implementations can exist in any transport protocol.
+While standards are useful, it is not practical for every developer to craft
+packets to send over the wire by hand. Around the most popular conventions of
+the internet protocols are libraries and tooling in popular programming
+languages. These libraries and tooling can be opinionated in how RPCs can and
+should be written. Some offer low-level method invocation facilities, like gRPC
+and zeroMQ. Others take a view on how RPCs should be done. Two such views are
+*Representational State Transfer* (REST) and *Remote Method Invocation* (RMI).
 
-The fundamental concept behind REST is the separation of verbs and resources.
-Verbs include ``GET``, ``PUT``, ``UPDATE``, ``DELETE``, and ``POST``, while
-resources are any uniquely identifiable entity.
+REST
+----
 
-REST can scale because servers can make assumptions about the data it serves
-based on the verb and resource. For instance, if a ``GET`` is run on the
-resource `"a/b/c`, and then no mutating verbs (PUT, UPDATE, DELETE, POST) are
-run on that or any child resource (such as `/a/b/c/d`), the server can reuse
-the result of the previous request rather than recompute the result. When using
-the HTTP protocol, this is called HTTP caching and is a fundamental property of
-the internet.
+The design principles of REST are often credited as being responsible for the
+infinite scalibility of the internet. It can be thought of as a set of styles
+or constraints that most web apps comply with or at least try to. Since REST
+is not an official standard, it can be implemented on any protocol. Since it
+was designed for HTTP, it is usually associated with it and its direct
+descendants [#f7]_. However, the principles of REST can be applied on any
+protocol.
+
+Applications that conform to REST are said to provide RESTful APIs. For a more
+detailed desciption of rest, see `What is a REST API
+<https://www.redhat.com/en/topics/api/what-is-a-rest-api>` on the *Red Hat
+Technology Topics* page.
 
 Remote method invocation
 ------------------------
@@ -165,16 +172,15 @@ and makes large scale software easier to reason about. It was thought that even
 the difference between RPCs and calls made in a program's address space could
 be abstracted. In effect, the user of an object does not need to know whether
 an object exists remotely or locally. Operations on that object could be done
-in the same way, regardless. To scale the system to be distributed over a
-network, some middleware would be responsible for load-balancing and allocating
-these objects remotely.
+in the same way, regardless.
 
 This approach is known as *Remote Method Invocation* (RMI). RMI was widely
 implemented using CORBA, DCOM, Remoting (.NET), and Java RMI. However, this
 approach has fallen out of favor with the rise of the internet, as it was
-observed that it does not scale. As a practical example, recent versions of
-.NET do not implement the Remoting library, and COM/DCOM are not used in modern
-web stacks.
+observed that it does not scale in the same way that something like REST does.
+As it became less popular, tools and library support fell away. For instance,
+recent versions of .NET do not implement the Remoting library, and COM/DCOM are
+no longer taken seriously by web apps.
 
 For an illuminating discussion of the problems with RMI, see `Microservices and
 the First Law of Distributed Objects
@@ -214,3 +220,6 @@ Python.
 .. [#f2] The Python programming language is in fact only a specification of a language. CPython is the reference implementation developed by the creator of Python. There are others, including IronPython, PyPy, Cinder, and GraalPy.
 .. [#f3] IronPython is an implementation of the Python programming language using the DLR from .NET. It does not implement the Python/C API, which is why many Python packages cannot run within IronPython. It also currently only implements Python2.7.
 .. [#f4] *Undo* and *redo* are often implemented using a command pattern. They store all executed commands in a stack. Each command not only has the ability to execute, it also has the ability to undo itself. Undo and redo are then implemented by walking up and down the stack and executing the Command or its inverse function.
+.. [#f5] The Internet Protocol (IP) model is a layered description and specification that describes how information moves on the internet.
+.. [#f6] Actually, for normal procedure calls within an address space, there needs to be a similar handshake about how the inputs and arguments are passed. This is called a calling convention, and describes what to do with CPU registers.
+.. [#f7] HTTPS, HTTP/2, and HTTP/3.
