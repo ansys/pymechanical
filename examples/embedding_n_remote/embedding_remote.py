@@ -310,4 +310,3 @@ for result in results:
         print(os.listdir(project_directory))
 
 app.close()
-
