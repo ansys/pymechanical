@@ -134,9 +134,9 @@ dest_dir = "download"
 dest_dir = os.path.join(os.getcwd(), dest_dir)
 for file in list_files:
     downloaded = mechanical.download(file, target_dir=dest_dir)
-    if file.endswith(".txt"):
+    if file.endswith(".out"):
         print("contents of ", downloaded, " : ")
-        write_file_contents_to_console(downloaded[0], number_lines=20)
+        write_file_contents_to_console(downloaded[0], number_lines=-1)
 
 
 ###############################################################################
