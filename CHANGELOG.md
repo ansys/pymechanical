@@ -12,6 +12,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Fixed
 - Add logo for dark theme ([#601](https://github.com/ansys/pymechanical/pull/601))
 - Architecture doc ([#612](https://github.com/ansys/pymechanical/pull/612))
+- Minor updates to Architecture doc ([#618](https://github.com/ansys/pymechanical/pull/618))
 
 ### Changed
 - Update ``pre-commit`` ([#610](https://github.com/ansys/pymechanical/pull/610))
