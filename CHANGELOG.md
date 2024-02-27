@@ -11,13 +11,18 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Fixed
 - Add logo for dark theme ([#601](https://github.com/ansys/pymechanical/pull/601))
+- Architecture doc ([#612](https://github.com/ansys/pymechanical/pull/612))
 
 ### Changed
- - Update ``pre-commit`` ([#610](https://github.com/ansys/pymechanical/pull/610))
+- Update ``pre-commit`` ([#610](https://github.com/ansys/pymechanical/pull/610))
+- Update vale version to 3.1.0 ([#613](https://github.com/ansys/pymechanical/pull/613))
 
 ### Dependencies
+- Bump `ansys-sphinx-theme` from 0.13.4 to 0.14.0 ([#608](https://github.com/ansys/pymechanical/pull/608))
 - Bump `plotly` from 5.18.0 to 5.19.0 ([#605](https://github.com/ansys/pymechanical/pull/605))
 - Bump `pypandoc` from 1.12 to 1.13 ([#609](https://github.com/ansys/pymechanical/pull/609))
+- Bump `pytest` from 8.0.0 to 8.0.1 ([#606](https://github.com/ansys/pymechanical/pull/606))
+- Bump `matplotlib` from 3.8.2 to 3.8.3 ([#607](https://github.com/ansys/pymechanical/pull/607))
 
 ## [0.10.7](https://github.com/ansys/pymechanical/releases/tag/v0.10.7) - February 13 2024
 
