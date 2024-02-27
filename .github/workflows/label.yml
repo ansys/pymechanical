@@ -98,4 +98,4 @@ jobs:
     steps:
       - uses: ansys/actions/doc-changelog@feat/changelog-action
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
