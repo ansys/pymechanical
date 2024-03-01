@@ -445,14 +445,16 @@ jobs:
             unset PYMECHANICAL_START_INSTANCE
 
             output_file=doc_$1_output.txt
-            xvfb-run mechanical-env make -C doc $1 | tee $output_file || true
+            xvfb-run mechanical-env make -C doc 2>&1 $1 | tee $output_file
+            echo done running make
             validate_output $output_file
           }
 
           # Validate that the html or pdf build succeeded
           validate_output() {
+            echo "validating output of build"
             # $1 is the file we are checking
-            cat $1
+            # cat $1
             #
             # Check if "build succeeded" string is present in doc_build_output.txt
             #
