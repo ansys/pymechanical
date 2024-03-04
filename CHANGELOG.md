@@ -17,6 +17,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Changed
 - Update ``pre-commit`` ([#610](https://github.com/ansys/pymechanical/pull/610))
 - Update vale version to 3.1.0 ([#613](https://github.com/ansys/pymechanical/pull/613))
+- Update ``ansys-mechanical-env`` from 0.1.3 to 0.1.4 ([#625](https://github.com/ansys/pymechanical/pull/625))
 
 ### Dependencies
 - Bump `ansys-sphinx-theme` from 0.13.4 to 0.14.0 ([#608](https://github.com/ansys/pymechanical/pull/608))
