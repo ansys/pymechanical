@@ -38,3 +38,4 @@ def test_global_variables(embedded_app):
     assert "System" in globals_dict
     assert "Ansys" in globals_dict
     assert "Transaction" in globals_dict
+    assert "MechanicalEnums" in globals_dict
