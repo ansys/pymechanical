@@ -42,9 +42,11 @@ def global_variables(app: "ansys.mechanical.core.App", enums: bool = False) -> t
 
     clr.AddReference("System.Collections")
     clr.AddReference("Ansys.ACT.WB1")
+    clr.AddReference("Ansys.Mechanical.DataModel")
     # from Ansys.ACT.Mechanical import Transaction
     # When ansys-pythonnet issue #14 is fixed, uncomment above
     from Ansys.Core.Units import Quantity
+    from Ansys.Mechanical.DataModel import MechanicalEnums
 
     import System  # isort: skip
     import Ansys  # isort: skip
@@ -53,6 +55,7 @@ def global_variables(app: "ansys.mechanical.core.App", enums: bool = False) -> t
     vars["System"] = System
     vars["Ansys"] = Ansys
     vars["Transaction"] = Transaction
+    vars["MechanicalEnums"] = MechanicalEnums
 
     if enums:
         vars.update(get_all_enums())
