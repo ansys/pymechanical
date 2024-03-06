@@ -152,6 +152,8 @@ jobs:
 
           echo "stable_container=${{ env.DOCKER_PACKAGE }}:${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
 
+          cat $GITHUB_OUTPUT
+
   config-matrix:
     runs-on: ubuntu-latest
     needs: [revn-variations]
@@ -167,6 +169,8 @@ jobs:
           else
             echo "matrix={\"mechanical-version\":['${{ needs.revn-variations.outputs.test_docker_image_version }}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           fi
+
+          cat $GITHUB_OUTPUT
 
   tests:
     name: Testing and coverage - Mechanical ${{ matrix.mechanical-version }}
