@@ -5,9 +5,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 This document follows the conventions laid out in [Keep a CHANGELOG](https://keepachangelog.com/en/1.0.0).
 
-## [0.10.7](https://github.com/ansys/pymechanical/releases/tag/v0.10.7) - February 13 2024
-
-### Added
+## [0.10.8](https://github.com/ansys/pymechanical/releases/tag/v0.10.8) - March 06 2024
 
 ### Fixed
 - Add logo for dark theme ([#601](https://github.com/ansys/pymechanical/pull/601))
