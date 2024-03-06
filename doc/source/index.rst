@@ -1,4 +1,9 @@
-.. image:: /images/pymechanical-logo-light.png
+.. image:: /_static/logo/pymechanical-logo-light.png
+   :class: only-light
+   :alt: PyMechanical Logo
+
+.. image:: /_static/logo/pymechanical-logo-dark.png
+   :class: only-dark
    :alt: PyMechanical
 
 |pyansys| |pypi| |python| |GH-CI| |codecov| |MIT| |black|
@@ -83,6 +88,8 @@ Background
 ----------
 
 PyMechanical contains two interfaces: a remote session and an embedded instance.
+For information on the application architecture of Mechanical and why there are
+two Python interfaces, see :ref:`ref_architecture`.
 
 Remote session
 ^^^^^^^^^^^^^^
