@@ -14,6 +14,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Architecture doc ([#612](https://github.com/ansys/pymechanical/pull/612))
 - Put remote example before embedding example ([#621](https://github.com/ansys/pymechanical/pull/621))
 - Minor updates to Architecture doc ([#618](https://github.com/ansys/pymechanical/pull/618))
+- Add MechanicalEnums ([#626](https://github.com/ansys/pymechanical/pull/626))
 
 ### Changed
 - Update ``pre-commit`` ([#610](https://github.com/ansys/pymechanical/pull/610))
@@ -27,6 +28,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Bump `grpcio` from 1.60.1 to 1.62.0 ([#620](https://github.com/ansys/pymechanical/pull/620))
 - Bump `pandas` from 2.2.0 to 2.2.1 ([#619](https://github.com/ansys/pymechanical/pull/619))
 - Bump `matplotlib` from 3.8.2 to 3.8.3 ([#607](https://github.com/ansys/pymechanical/pull/607))
+- Bump `ansys-mechanical-env` from 0.1.3 to 0.1.4 ([#624](https://github.com/ansys/pymechanical/pull/624))
 
 ## [0.10.7](https://github.com/ansys/pymechanical/releases/tag/v0.10.7) - February 13 2024
 
