@@ -161,9 +161,11 @@ jobs:
       - id: set-matrix
         run: |
           # Configure matrix for "tests" job
-          # Run all mechanical versions for tags and nightly scheduled runs, otherwise run the test docker image version only
-          if ${{ github.event_name == 'push' }} && ${{ contains(github.ref, 'refs/tags') }} || ${{ github.event_name == 'schedule' }}; then
-            echo "matrix={\"mechanical-version\":['23.1.0', '23.2.0', '24.1.0', '24.2.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
+          # Run all stable mechanical versions release tags
+          # For nightly scheduled runs use pre-release (242)
+          # For pull requests and merges use latest stable version (241)
+          if ${{ github.event_name == 'push' }} && ${{ contains(github.ref, 'refs/tags') }}; then
+            echo "matrix={\"mechanical-version\":['23.1.0', '23.2.0', '24.1.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           else
             echo "matrix={\"mechanical-version\":['${{ needs.revn-variations.outputs.test_docker_image_version }}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           fi
@@ -392,7 +394,7 @@ jobs:
 
   doc-build:
     name: Documentation
-    runs-on: ubuntu-latest
+    runs-on: public-ubuntu-latest-8-cores
     container:
       image: ${{ needs.revn-variations.outputs.stable_container }}
       options: --entrypoint /bin/bash
