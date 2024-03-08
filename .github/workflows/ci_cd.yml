@@ -238,8 +238,8 @@ jobs:
 
   embedding-tests:
     name: Embedding testing and coverage
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+    runs-on: public-ubuntu-latest-8-cores
+    timeout-minutes: 15
     needs: [style, revn-variations]
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
@@ -316,6 +316,7 @@ jobs:
   launch-tests:
     name: Launch testing and coverage
     runs-on: public-ubuntu-latest-8-cores
+    timeout-minutes: 15
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
@@ -395,6 +396,7 @@ jobs:
   doc-build:
     name: Documentation
     runs-on: public-ubuntu-latest-8-cores
+    timeout-minutes: 15
     container:
       image: ${{ needs.revn-variations.outputs.stable_container }}
       options: --entrypoint /bin/bash
