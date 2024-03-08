@@ -50,7 +50,7 @@ Tracker = "https://github.com/ansys/pymechanical/issues"
 
 [project.optional-dependencies]
 tests = [
-    "pytest==8.0.1",
+    "pytest==7.4.4",
     "pytest-cov==4.1.0",
     "pytest-print==1.0.0",
 ]
