@@ -10,6 +10,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Added
 
 ### Fixed
+
 - Add logo for dark theme ([#601](https://github.com/ansys/pymechanical/pull/601))
 - Architecture doc ([#612](https://github.com/ansys/pymechanical/pull/612))
 - Put remote example before embedding example ([#621](https://github.com/ansys/pymechanical/pull/621))
@@ -17,6 +18,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Update Release action to use Stable version of Mechanical #628
 
 ### Changed
+
 - Update ``pre-commit`` ([#610](https://github.com/ansys/pymechanical/pull/610))
 - Update vale version to 3.1.0 ([#613](https://github.com/ansys/pymechanical/pull/613))
 

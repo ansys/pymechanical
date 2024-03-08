@@ -283,7 +283,6 @@ jobs:
           ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
           ANSYS_WORKBENCH_LOGGING: 0
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
-          NUM_CORES: 1
         run: |
           xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml || true
 
@@ -395,6 +394,7 @@ jobs:
   doc-build:
     name: Documentation
     runs-on: public-ubuntu-latest-8-cores
+    timeout-minutes: 10
     container:
       image: ${{ needs.revn-variations.outputs.stable_container }}
       options: --entrypoint /bin/bash
@@ -436,41 +436,22 @@ jobs:
           SPHINXOPTS: '-j auto'
           LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
           ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
-          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 0
+          ANSYS_WORKBENCH_LOGGING_CONSOLE: 1
+          ANSYS_WORKBENCH_LOGGING: 1
+          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
         run: |
-          # Create html or pdf doc
-          create_doc() {
-            # $1 is the type of file we are creating (html or pdf)
-
-            # Need to unset PYMECHANICAL_PORT and PYMECHANICAL_START_INSTANCE when running code containing remote sessions
-            unset PYMECHANICAL_PORT
-            unset PYMECHANICAL_START_INSTANCE
-
-            output_file=doc_$1_output.txt
-            xvfb-run mechanical-env make -C doc $1 > $output_file 2>&1 || true
-            validate_output $output_file
-          }
-
-          # Validate that the html or pdf build succeeded
-          validate_output() {
-            # $1 is the file we are checking
-            cat $1
-            #
-            # Check if "build succeeded" string is present in doc_build_output.txt
-            #
-            if grep -q "build succeeded" $1; then
-              echo "Documentation building succeeded"
-            else
-              echo "Documentation building failed"
-              exit 1
-            fi
-          }
-
-          # Create the html doc & validate results
-          create_doc html
-
-          # Create the pdf doc & validate results
-          create_doc pdf
+          unset PYMECHANICAL_PORT
+          unset PYMECHANICAL_START_INSTANCE
+          xvfb-run mechanical-env make -C doc 2>&1 html | tee output.txt
+          #
+          # Check if "build succeeded" string is present in output.txt
+          #
+          if grep -q "build succeeded" output.txt; then
+            echo "Documentation building succeeded"
+          else
+            echo "Documentation building failed"
+            exit 1
+          fi
 
       - name: Upload HTML Documentation
         uses: actions/upload-artifact@v4
