@@ -150,7 +150,7 @@ jobs:
             echo "test_docker_image_version=${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
           fi
           echo "stable_container=${{ env.DOCKER_PACKAGE }}:${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
-          echo $GITHUB_OUTPUT
+          cat $GITHUB_OUTPUT
 
   config-matrix:
     runs-on: ubuntu-latest
