@@ -146,168 +146,167 @@ for file in list_files:
 
 mechanical.exit()
 
-# ###############################################################################
-# # -----------------
-# # Embedded Instance
-# # -----------------
+###############################################################################
+# -----------------
+# Embedded Instance
+# -----------------
 
 
-# ###############################################################################
-# # Download the geometry file
-# # ~~~~~~~~~~~~~~~~~~~~~~~~~~
-# # Download Valve.pmdb.
+###############################################################################
+# Download the geometry file
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Download Valve.pmdb.
 
-# import os
+import os
 
-# from ansys.tools.path import find_mechanical, version_from_path
+from ansys.tools.path import find_mechanical, version_from_path
 
-# import ansys.mechanical.core as mech
-# from ansys.mechanical.core.examples import download_file
+import ansys.mechanical.core as mech
+from ansys.mechanical.core.examples import download_file
 
-# geometry_path = download_file("Valve.pmdb", "pymechanical", "embedding")
-# print(f"Downloaded the geometry file to: {geometry_path}")
-
-
-# ###############################################################################
-# # Embed Mechanical and set global variables
-# # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# # Find the mechanical installation path & version.
-# # Open an embedded instance of Mechanical and set global variables.
-
-# try:
-#     path, version = find_mechanical()
-#     version = version_from_path("mechanical", path)
-# except:
-#     version = 241
-
-# app = mech.App(version=version)
-# globals().update(mech.global_variables(app))
-# print(app)
+geometry_path = download_file("Valve.pmdb", "pymechanical", "embedding")
+print(f"Downloaded the geometry file to: {geometry_path}")
 
 
-# ###############################################################################
-# # Add Static Analysis
-# # ~~~~~~~~~~~~~~~~~~~
-# # Add static analysis to the Model.
+###############################################################################
+# Embed Mechanical and set global variables
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Find the mechanical installation path & version.
+# Open an embedded instance of Mechanical and set global variables.
 
-# analysis = Model.AddStaticStructuralAnalysis()
+try:
+    path, version = find_mechanical()
+    version = version_from_path("mechanical", path)
+except:
+    version = 241
 
-
-# ###############################################################################
-# # Import geometry
-# # ~~~~~~~~~~~~~~~
-
-# geometry_file = geometry_path
-# geometry_import = Model.GeometryImportGroup.AddGeometryImport()
-# geometry_import_format =
-# Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.Format.Automatic
-# geometry_import_preferences = Ansys.ACT.Mechanical.Utilities.GeometryImportPreferences()
-# geometry_import_preferences.ProcessNamedSelections = True
-# geometry_import.Import(geometry_file, geometry_import_format, geometry_import_preferences)
+app = mech.App(version=version)
+globals().update(mech.global_variables(app))
+print(app)
 
 
-# ###############################################################################
-# # Assign material
-# # ~~~~~~~~~~~~~~~
+###############################################################################
+# Add Static Analysis
+# ~~~~~~~~~~~~~~~~~~~
+# Add static analysis to the Model.
 
-# matAssignment = Model.Materials.AddMaterialAssignment()
-# tempSel = ExtAPI.SelectionManager.CreateSelectionInfo(
-#     Ansys.ACT.Interfaces.Common.SelectionTypeEnum.GeometryEntities
-# )
-# bodies = [
-#     body
-#     for body in ExtAPI.DataModel.Project.Model.Geometry.GetChildren(
-#         Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Body, True
-#     )
-# ]
-# geobodies = [body.GetGeoBody() for body in bodies]
-# ids = System.Collections.Generic.List[System.Int32]()
-# [ids.Add(item.Id) for item in geobodies]
-# tempSel.Ids = ids
-# matAssignment.Location = tempSel
-# matAssignment.Material = "Structural Steel"
+analysis = Model.AddStaticStructuralAnalysis()
 
 
-# ###############################################################################
-# # Define mesh settings
-# # ~~~~~~~~~~~~~~~~~~~~
+###############################################################################
+# Import geometry
+# ~~~~~~~~~~~~~~~
 
-# mesh = Model.Mesh
-# mesh.ElementSize = Quantity("25 [mm]")
-# mesh.GenerateMesh()
-
-
-# ###############################################################################
-# # Define boundary conditions
-# # ~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# fixedSupport = analysis.AddFixedSupport()
-# fixedSupport.Location = ExtAPI.DataModel.GetObjectsByName("NSFixedSupportFaces")[0]
-
-# frictionlessSupport = analysis.AddFrictionlessSupport()
-# frictionlessSupport.Location = ExtAPI.DataModel.GetObjectsByName("NSFrictionlessSupportFaces")[0]
-
-# pressure = analysis.AddPressure()
-# pressure.Location = ExtAPI.DataModel.GetObjectsByName("NSInsideFaces")[0]
-
-# inputs_quantities = [Quantity("0 [s]"), Quantity("1 [s]")]
-# output_quantities = [Quantity("0 [Pa]"), Quantity("15 [MPa]")]
-
-# inputs_quantities_2 = System.Collections.Generic.List[Ansys.Core.Units.Quantity]()
-# [inputs_quantities_2.Add(item) for item in inputs_quantities]
-
-# output_quantities_2 = System.Collections.Generic.List[Ansys.Core.Units.Quantity]()
-# [output_quantities_2.Add(item) for item in output_quantities]
-
-# pressure.Magnitude.Inputs[0].DiscreteValues = inputs_quantities_2
-# pressure.Magnitude.Output.DiscreteValues = output_quantities_2
+geometry_file = geometry_path
+geometry_import = Model.GeometryImportGroup.AddGeometryImport()
+geometry_import_format = Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.Format.Automatic
+geometry_import_preferences = Ansys.ACT.Mechanical.Utilities.GeometryImportPreferences()
+geometry_import_preferences.ProcessNamedSelections = True
+geometry_import.Import(geometry_file, geometry_import_format, geometry_import_preferences)
 
 
-# ###############################################################################
-# # Solve model
-# # ~~~~~~~~~~~
+###############################################################################
+# Assign material
+# ~~~~~~~~~~~~~~~
 
-# Model.Solve()
-
-
-# ###############################################################################
-# # Add results
-# # ~~~~~~~~~~~
-
-# solution = analysis.Solution
-# solution.AddTotalDeformation()
-# solution.AddEquivalentStress()
-# solution.EvaluateAllResults()
-
-
-# ###############################################################################
-# # Save model
-# # ~~~~~~~~~~
-
-# project_directory = ExtAPI.DataModel.Project.ProjectDirectory
-# print(f"project directory = {project_directory}")
-# ExtAPI.DataModel.Project.SaveAs(os.path.join(project_directory, "file.mechdb"))
+matAssignment = Model.Materials.AddMaterialAssignment()
+tempSel = ExtAPI.SelectionManager.CreateSelectionInfo(
+    Ansys.ACT.Interfaces.Common.SelectionTypeEnum.GeometryEntities
+)
+bodies = [
+    body
+    for body in ExtAPI.DataModel.Project.Model.Geometry.GetChildren(
+        Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Body, True
+    )
+]
+geobodies = [body.GetGeoBody() for body in bodies]
+ids = System.Collections.Generic.List[System.Int32]()
+[ids.Add(item.Id) for item in geobodies]
+tempSel.Ids = ids
+matAssignment.Location = tempSel
+matAssignment.Material = "Structural Steel"
 
 
-# ###############################################################################
-# # Export result values to a text file
-# # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+###############################################################################
+# Define mesh settings
+# ~~~~~~~~~~~~~~~~~~~~
 
-# fileExtension = r".txt"
-# results = solution.GetChildren(
-#     Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Result, True
-# )
+mesh = Model.Mesh
+mesh.ElementSize = Quantity("25 [mm]")
+mesh.GenerateMesh()
 
-# for result in results:
-#     fileName = str(result.Name)
-#     print(f"filename: {fileName}")
-#     path = os.path.join(project_directory, fileName + fileExtension)
-#     print(path)
-#     result.ExportToTextFile(f"{path}")
-#     print("Exported Text file Contents", path)
-#     try:
-#         write_file_contents_to_console(path, number_lines=20)
-#     except:
-#         print(os.listdir(project_directory))
 
-# app.close()
+###############################################################################
+# Define boundary conditions
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+fixedSupport = analysis.AddFixedSupport()
+fixedSupport.Location = ExtAPI.DataModel.GetObjectsByName("NSFixedSupportFaces")[0]
+
+frictionlessSupport = analysis.AddFrictionlessSupport()
+frictionlessSupport.Location = ExtAPI.DataModel.GetObjectsByName("NSFrictionlessSupportFaces")[0]
+
+pressure = analysis.AddPressure()
+pressure.Location = ExtAPI.DataModel.GetObjectsByName("NSInsideFaces")[0]
+
+inputs_quantities = [Quantity("0 [s]"), Quantity("1 [s]")]
+output_quantities = [Quantity("0 [Pa]"), Quantity("15 [MPa]")]
+
+inputs_quantities_2 = System.Collections.Generic.List[Ansys.Core.Units.Quantity]()
+[inputs_quantities_2.Add(item) for item in inputs_quantities]
+
+output_quantities_2 = System.Collections.Generic.List[Ansys.Core.Units.Quantity]()
+[output_quantities_2.Add(item) for item in output_quantities]
+
+pressure.Magnitude.Inputs[0].DiscreteValues = inputs_quantities_2
+pressure.Magnitude.Output.DiscreteValues = output_quantities_2
+
+
+###############################################################################
+# Solve model
+# ~~~~~~~~~~~
+
+Model.Solve()
+
+
+###############################################################################
+# Add results
+# ~~~~~~~~~~~
+
+solution = analysis.Solution
+solution.AddTotalDeformation()
+solution.AddEquivalentStress()
+solution.EvaluateAllResults()
+
+
+###############################################################################
+# Save model
+# ~~~~~~~~~~
+
+project_directory = ExtAPI.DataModel.Project.ProjectDirectory
+print(f"project directory = {project_directory}")
+ExtAPI.DataModel.Project.SaveAs(os.path.join(project_directory, "file.mechdb"))
+
+
+###############################################################################
+# Export result values to a text file
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+fileExtension = r".txt"
+results = solution.GetChildren(
+    Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Result, True
+)
+
+for result in results:
+    fileName = str(result.Name)
+    print(f"filename: {fileName}")
+    path = os.path.join(project_directory, fileName + fileExtension)
+    print(path)
+    result.ExportToTextFile(f"{path}")
+    print("Exported Text file Contents", path)
+    try:
+        write_file_contents_to_console(path, number_lines=20)
+    except:
+        print(os.listdir(project_directory))
+
+app.close()
