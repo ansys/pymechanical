@@ -309,4 +309,4 @@ for result in results:
     except:
         print(os.listdir(project_directory))
 
-app.close()
+app.exit()
