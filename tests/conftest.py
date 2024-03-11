@@ -346,3 +346,8 @@ def pytest_collection_modifyitems(config, items):
                     reason=f"Requires ansys-version greater than or equal to {revn[0]}."
                 )
                 item.add_marker(skip_versions)
+
+        # Skip on platforms other than Windows
+        if "windows_only" in item.keywords and sys.platform != "win32":
+            skip_except_windows = pytest.mark.skip(reason="Test requires Windows platform.")
+            item.add_marker(skip_except_windows)
