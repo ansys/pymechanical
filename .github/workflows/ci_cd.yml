@@ -442,7 +442,7 @@ jobs:
         run: |
           unset PYMECHANICAL_PORT
           unset PYMECHANICAL_START_INSTANCE
-          xvfb-run mechanical-env make -C doc 2>&1 html | tee output.txt
+          xvfb-run mechanical-env make -C doc html 2>&1 | tee output.txt || true
           #
           # Check if "build succeeded" string is present in output.txt
           #
