@@ -28,7 +28,7 @@ env:
   LATEST_STABLE_DOCKER_IMAGE_VERSION: '24.1.0'
   # DEV_REVN & its Docker image are used in scheduled or registry package runs
   DEV_REVN: '242'
-  DEV_DOCKER_IMAGE_VERSION: '24.2.0'
+  DEV_DOCKER_IMAGE_VERSION: '24.2_candidate'
   MEILISEARCH_API_KEY: ${{ secrets.MEILISEARCH_API_KEY }}
   MEILISEARCH_HOST_URL: ${{ vars.MEILISEARCH_HOST_URL }}
   MEILISEARCH_PUBLIC_API_KEY: ${{ secrets.MEILISEARCH_PUBLIC_API_KEY }}
@@ -134,12 +134,12 @@ jobs:
     steps:
       - id: save-versions
         run: |
-          echo "GitHub Event Name: ${{ github.event_name }}"
-          if ${{ github.event_name == 'pull_request' }}; then
+          if ${{ github.event_name == 'schedule' }}; then
+            # 242
             echo "test_revn=${{ env.DEV_REVN }}" >> $GITHUB_OUTPUT
-            # ghcr.io/ansys/mechanical:24.2.0
+            # ghcr.io/ansys/mechanical:24.2_candidate
             echo "test_container=${{ env.DOCKER_PACKAGE }}:${{ env.DEV_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
-            # 24.2.0
+            # 24.2_candidate
             echo "test_docker_image_version=${{ env.DEV_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
           else
             # 241
@@ -149,7 +149,9 @@ jobs:
             # 24.1.0
             echo "test_docker_image_version=${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
           fi
+
           echo "stable_container=${{ env.DOCKER_PACKAGE }}:${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
+
           cat $GITHUB_OUTPUT
 
   config-matrix:
@@ -169,6 +171,8 @@ jobs:
           else
             echo "matrix={\"mechanical-version\":['${{ needs.revn-variations.outputs.test_docker_image_version }}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           fi
+
+          cat $GITHUB_OUTPUT
 
   tests:
     name: Testing and coverage - Mechanical ${{ matrix.mechanical-version }}
