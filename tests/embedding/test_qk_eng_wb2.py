@@ -45,6 +45,7 @@ def get_assets_folder():
 
 
 @pytest.mark.embedding
+@pytest.mark.minimum_version(241)
 def test_qk_eng_wb2_005(printer, selection, embedded_app):
     """Buckling analysis.
 
@@ -274,7 +275,7 @@ def test_image_export(printer, selection, embedded_app):
 
     Testing offscreen image export
     """
-    globals().update(global_variables(embedded_app))
+    globals().update(global_variables(embedded_app, True))
     Model.AddStaticStructuralAnalysis()
     Model.AddEigenvalueBucklingAnalysis()
     Model.Analyses[1].InitialConditions[0].PreStressICEnvironment = Model.Analyses[0]
@@ -284,16 +285,12 @@ def test_image_export(printer, selection, embedded_app):
     geometry_import.Import(geometry_file)
 
     ExtAPI.Graphics.Camera.SetFit()
-    image_export_format = Ansys.Mechanical.DataModel.Enums.GraphicsImageExportFormat.PNG
+    image_export_format = GraphicsImageExportFormat.PNG
     settings_720p = Ansys.Mechanical.Graphics.GraphicsImageExportSettings()
-    settings_720p.Resolution = (
-        Ansys.Mechanical.DataModel.Enums.GraphicsResolutionType.EnhancedResolution
-    )
-    settings_720p.Background = Ansys.Mechanical.DataModel.Enums.GraphicsBackgroundType.White
+    settings_720p.Resolution = GraphicsResolutionType.EnhancedResolution
+    settings_720p.Background = GraphicsBackgroundType.White
     settings_720p.Width = 1280
-    # settings_720p.Capture = Ansys.Mechanical.DataModel.Enums.GraphicsCaptureType.ImageOnly
     settings_720p.Height = 720
-    settings_720p.CurrentGraphicsDisplay = False
     ExtAPI.Graphics.ExportImage(
         os.path.join(os.getcwd(), "geometry.png"), image_export_format, settings_720p
     )
