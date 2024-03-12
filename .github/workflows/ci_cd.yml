@@ -238,7 +238,7 @@ jobs:
 
   embedding-tests:
     name: Embedding testing and coverage
-    runs-on: public-ubuntu-latest-8-cores
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: [style, revn-variations]
     container:
