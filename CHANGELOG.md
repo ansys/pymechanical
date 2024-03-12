@@ -16,6 +16,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Put remote example before embedding example ([#621](https://github.com/ansys/pymechanical/pull/621))
 - Add MechanicalEnums ([#626](https://github.com/ansys/pymechanical/pull/626))
 - Update Release action to use Stable version of Mechanical ([#628](https://github.com/ansys/pymechanical/pull/628))
+- Update nightly run image version ([#636](https://github.com/ansys/pymechanical/pull/636))
 
 ### Changed
 - Update ``pre-commit`` ([#610](https://github.com/ansys/pymechanical/pull/610))
