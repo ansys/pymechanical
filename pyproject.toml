@@ -56,7 +56,8 @@ tests = [
 ]
 doc = [
     "Sphinx==7.2.6",
-    "ansys-sphinx-theme==0.14.0",
+    #"ansys-sphinx-theme==0.14.0",
+    "git+https://github.com/ansys/ansys-sphinx-theme.git@feat/add-cheatsheet",
     "grpcio==1.62.0",
     "imageio-ffmpeg==0.4.9",
     "imageio==2.34.0",
