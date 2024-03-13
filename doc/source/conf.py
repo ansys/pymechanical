@@ -223,11 +223,6 @@ html_theme_options = {
     },
 }
 
-# html_sidebars = {
-# "index": [
-# "cheatsheet_sidebar.html",
-# ],
-# }
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
