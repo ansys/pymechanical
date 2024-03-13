@@ -215,13 +215,14 @@ html_theme_options = {
             f"pymechanical-v{get_version_match(version).replace('.', '-')}": "PyMechanical",
         },
     },
+    "cheatsheet": {
+        "url": "https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.pdf",
+        "title": "PyMechanical cheatsheet",
+        "thumbnail": "https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.png",
+        "needs_download": True,
+    },
 }
 
-html_sidebars = {
-    "index": [
-        "cheatsheet_sidebar.html",
-    ],
-}
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
