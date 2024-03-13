@@ -57,10 +57,10 @@ tests = [
 doc = [
     "Sphinx==7.2.6",
     #"ansys-sphinx-theme==0.14.0",
-    "git+https://github.com/ansys/ansys-sphinx-theme.git@feat/add-cheatsheet",
+    "ansys-sphinx-theme @ git+https://github.com/ansys/ansys-sphinx-theme.git@feat/add-cheatsheet",
     "grpcio==1.62.0",
     "imageio-ffmpeg==0.4.9",
-    "imageio==2.34.0",
+    "imageio==2.34.0", 
     "jupyter_sphinx==0.5.3",
     "jupyterlab>=3.2.8",
     "matplotlib==3.8.3",
