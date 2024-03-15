@@ -15,24 +15,6 @@ on:
       - main
       - release/*
 
-env:
-  PYMECHANICAL_PORT: 10000  # default won't work on GitHub runners
-  PYMECHANICAL_START_INSTANCE: false
-  DOCKER_PACKAGE: ghcr.io/ansys/mechanical
-  DOCKER_MECH_CONTAINER_NAME: mechanical
-  PACKAGE_NAME: ansys-mechanical-core
-  DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
-  MAIN_PYTHON_VERSION: '3.10'
-  # LATEST_STABLE_REVN and its Docker image are used in pull requests
-  LATEST_STABLE_REVN: '241'
-  LATEST_STABLE_DOCKER_IMAGE_VERSION: '24.1.0'
-  # DEV_REVN & its Docker image are used in scheduled or registry package runs
-  DEV_REVN: '242'
-  DEV_DOCKER_IMAGE_VERSION: '24.2.0'
-  MEILISEARCH_API_KEY: ${{ secrets.MEILISEARCH_API_KEY }}
-  MEILISEARCH_HOST_URL: ${{ vars.MEILISEARCH_HOST_URL }}
-  MEILISEARCH_PUBLIC_API_KEY: ${{ secrets.MEILISEARCH_PUBLIC_API_KEY }}
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -83,12 +65,8 @@ jobs:
           . /env/bin/activate
           # Create html or pdf doc
           create_doc() {
-            # Need to unset PYMECHANICAL_PORT and PYMECHANICAL_START_INSTANCE when running code containing remote sessions
-            unset PYMECHANICAL_PORT
-            unset PYMECHANICAL_START_INSTANCE
-
             output_file=doc_$1_output.txt
-            tini -s xvfb-run mechanical-env make -C doc 2>&1 html | tee $output_file
+            xvfb-run mechanical-env make -C doc html > $output_file 2>&1 || true
             echo done running make
             validate_output $output_file
           }
@@ -96,11 +74,6 @@ jobs:
           # Validate that the html or pdf build succeeded
           validate_output() {
             echo "validating output of build"
-            # $1 is the file we are checking
-            # cat $1
-            #
-            # Check if "build succeeded" string is present in doc_build_output.txt
-            #
             if grep -q "build succeeded" $1; then
               echo "Documentation building succeeded"
             else
