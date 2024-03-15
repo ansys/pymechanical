@@ -57,13 +57,8 @@ jobs:
           apt install --reinstall ca-certificates
           apt install software-properties-common -y
           add-apt-repository ppa:deadsnakes/ppa -y
-          apt install -y python${{ env.MAIN_PYTHON_VERSION }}
-          apt install python${{ env.MAIN_PYTHON_VERSION }}-venv -y
-          python${{ env.MAIN_PYTHON_VERSION }} -m venv
-          ln -s /usr/bin/python${{ env.MAIN_PYTHON_VERSION }} /usr/bin/python
-          python -m ensurepip --default-pip
-          python --version
-          pip3 --version
+          apt install -y python3.10 python3.10-venv
+          python3.10 -m venv /env
 
       - name: Install system dependencies
         run: |
@@ -75,8 +70,8 @@ jobs:
 
       - name: Install Python requirements
         run: |
-          python -m pip install ansys-mechanical-env
-          pip3 install -e .[doc]
+          source /env/bin/activate
+          pip install -e .[doc]
 
       - name: Build docs
         env:
@@ -85,16 +80,15 @@ jobs:
           ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 0
         run: |
+          source /env/bin/activate
           # Create html or pdf doc
           create_doc() {
-            # $1 is the type of file we are creating (html or pdf)
-
             # Need to unset PYMECHANICAL_PORT and PYMECHANICAL_START_INSTANCE when running code containing remote sessions
             unset PYMECHANICAL_PORT
             unset PYMECHANICAL_START_INSTANCE
 
             output_file=doc_$1_output.txt
-            tini -s xvfb-run mechanical-env make -C doc 2>&1 $1 | tee $output_file
+            tini -s xvfb-run mechanical-env make -C doc 2>&1 html | tee $output_file
             echo done running make
             validate_output $output_file
           }
@@ -117,20 +111,3 @@ jobs:
 
           # Create the html doc & validate results
           create_doc html
-
-          # Create the pdf doc & validate results
-          create_doc pdf
-
-      - name: Upload HTML Documentation
-        uses: actions/upload-artifact@v4
-        with:
-          name: documentation-html
-          path: doc/_build/html
-          retention-days: 7
-
-      - name: Upload PDF Documentation
-        uses: actions/upload-artifact@v4
-        with:
-          name: documentation-pdf
-          path: doc/_build/latex/*.pdf
-          retention-days: 7
