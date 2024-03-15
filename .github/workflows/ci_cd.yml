@@ -70,7 +70,7 @@ jobs:
 
       - name: Install Python requirements
         run: |
-          source /env/bin/activate
+          . /env/bin/activate
           pip install -e .[doc]
 
       - name: Build docs
