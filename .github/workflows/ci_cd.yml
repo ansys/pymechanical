@@ -42,7 +42,7 @@ jobs:
     name: Documentation
     runs-on: public-ubuntu-latest-8-cores
     container:
-      image: ${{ needs.revn-variations.outputs.stable_container }}
+      image: ghcr.io/ansys/mechanical:24.1.0
       options: --entrypoint /bin/bash
     needs: []
 
