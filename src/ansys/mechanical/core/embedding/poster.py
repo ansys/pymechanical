@@ -20,39 +20,25 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Runtime initialize for pythonnet in embedding."""
+import typing
 
-import os
+class Poster():
+    """Class which can post a python callable function  to Mechanical's main thread."""
 
-from ansys.mechanical.core.embedding.logger import Logger
+    def __init__(self):
+        """Create a new instance of Poster."""
+        import clr
+        clr.AddReference("Ans.Common.WB1ManagedUtils")
+        import Ans
+        self._poster = Ans.Common.WB1ManagedUtils.TaskPoster
 
-def __register_container_codecs():
-    import Python.Runtime.Codecs as codecs
+    def post(self, callable: typing.Callable):
+        """Post the callable to Mechanical's main thread.
 
-    codecs.ListDecoder.Instance.Register()
-    codecs.SequenceDecoder.Instance.Register()
-    codecs.IterableDecoder.Instance.Register()
-
-
-def __register_function_codec():
-    import clr
-    clr.AddReference("Ansys.Mechanical.CPython")
-    import Ansys
-    Ansys.Mechanical.CPython.Codecs.FunctionCodec.Register()
-
-
-def initialize(version: int) -> None:
-    """Initialize the runtime.
-
-    Pythonnet is already initialized but we need to
-    do some special codec handling to make sure the
-    interop works well for Mechanical. These are
-    need to handle (among other things) list and other
-    container conversions between C# and python
-    """
-    Logger.info("Initialize pythonnet interop handling")
-    __register_container_codecs()
-    if version >= 242 or os.name == "nt":
-        # function codec is distributed with pymechanical on linux only
-        # at version 242 or later
-        __register_function_codec()
+        The main thread needs to be receiving posted messages
+        in order for this to work from a background thread. Use
+        the `sleep` routine from the `utils` module to make
+        Mechanical available to receive messages."""
+        import System
+        action = System.Action(callable)
+        self._poster.Post(action)

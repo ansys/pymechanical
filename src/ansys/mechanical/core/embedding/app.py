@@ -27,6 +27,7 @@ import os
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
+from ansys.mechanical.core.embedding.poster import Poster
 from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
 
 
@@ -125,8 +126,9 @@ class App:
             atexit.register(_cleanup_private_appdata, profile)
 
         self._app = _start_application(configuration, self._version, db_file)
-        runtime.initialize()
+        runtime.initialize(self._version)
         connect_warnings(self)
+        self._poster = None
 
         self._disposed = False
         atexit.register(_dispose_embedded_app, INSTANCES)
@@ -209,6 +211,13 @@ class App:
         args = None
         rets = None
         return self.script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
+
+    @property
+    def poster(self) -> Poster:
+        """Returns an instance of Poster."""
+        if self._poster == None:
+            self._poster = Poster()
+        return self._poster
 
     @property
     def DataModel(self):
