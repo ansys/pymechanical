@@ -29,7 +29,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Dependencies
 - Bump `ansys-sphinx-theme` from 0.13.4 to 0.14.0 ([#608](https://github.com/ansys/pymechanical/pull/608))
-- Bump `plotly` from 5.18.0 to 5.19.0 ([#605](https://github.com/ansys/pymechanical/pull/605))
+- Bump `plotly` from 5.18.0 to 5.20.0 ([#605](https://github.com/ansys/pymechanical/pull/605), [#644](https://github.com/ansys/pymechanical/pull/644))
 - Bump `pypandoc` from 1.12 to 1.13 ([#609](https://github.com/ansys/pymechanical/pull/609))
 - Bump `pytest` from 8.0.0 to 8.1.1 ([#606](https://github.com/ansys/pymechanical/pull/606), [#623](https://github.com/ansys/pymechanical/pull/623), [#634](https://github.com/ansys/pymechanical/pull/634))
 - Bump `grpcio` from 1.60.1 to 1.62.1 ([#620](https://github.com/ansys/pymechanical/pull/620), [#635](https://github.com/ansys/pymechanical/pull/635))
