@@ -8,28 +8,35 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ## [0.10.8](https://github.com/ansys/pymechanical/releases/tag/v0.10.8) - March 11 2024
 
 ### Added
+- add poster ([#642](https://github.com/ansys/pymechanical/pull/642))
 - Add LS Dyna unit test ([#584](https://github.com/ansys/pymechanical/pull/584))
 
 ### Fixed
 - Add logo for dark theme ([#601](https://github.com/ansys/pymechanical/pull/601))
 - Architecture doc ([#612](https://github.com/ansys/pymechanical/pull/612))
 - Put remote example before embedding example ([#621](https://github.com/ansys/pymechanical/pull/621))
+- Minor updates to Architecture doc ([#618](https://github.com/ansys/pymechanical/pull/618))
 - Add MechanicalEnums ([#626](https://github.com/ansys/pymechanical/pull/626))
 - Update Release action to use Stable version of Mechanical ([#628](https://github.com/ansys/pymechanical/pull/628))
+- Update nightly run image version ([#636](https://github.com/ansys/pymechanical/pull/636))
+- Update logo without slash ([#640](https://github.com/ansys/pymechanical/pull/640))
 
 ### Changed
 - Update ``pre-commit`` ([#610](https://github.com/ansys/pymechanical/pull/610))
 - Update vale version to 3.1.0 ([#613](https://github.com/ansys/pymechanical/pull/613))
+- Update timeout for actions ([#631](https://github.com/ansys/pymechanical/pull/631))
+- Update cheat sheet with ansys-sphinx-theme ([#638](https://github.com/ansys/pymechanical/pull/638))
 
 ### Dependencies
 - Bump `ansys-sphinx-theme` from 0.13.4 to 0.14.0 ([#608](https://github.com/ansys/pymechanical/pull/608))
-- Bump `plotly` from 5.18.0 to 5.19.0 ([#605](https://github.com/ansys/pymechanical/pull/605))
+- Bump `plotly` from 5.18.0 to 5.20.0 ([#605](https://github.com/ansys/pymechanical/pull/605), [#644](https://github.com/ansys/pymechanical/pull/644))
 - Bump `pypandoc` from 1.12 to 1.13 ([#609](https://github.com/ansys/pymechanical/pull/609))
-- Bump `pytest` from 8.0.0 to 8.0.2 ([#606](https://github.com/ansys/pymechanical/pull/606), [#623](https://github.com/ansys/pymechanical/pull/623))
-- Bump `grpcio` from 1.60.1 to 1.62.0 ([#620](https://github.com/ansys/pymechanical/pull/620))
+- Bump `pytest` from 8.0.0 to 8.1.1 ([#606](https://github.com/ansys/pymechanical/pull/606), [#623](https://github.com/ansys/pymechanical/pull/623), [#634](https://github.com/ansys/pymechanical/pull/634))
+- Bump `grpcio` from 1.60.1 to 1.62.1 ([#620](https://github.com/ansys/pymechanical/pull/620), [#635](https://github.com/ansys/pymechanical/pull/635))
 - Bump `pandas` from 2.2.0 to 2.2.1 ([#619](https://github.com/ansys/pymechanical/pull/619))
 - Bump `matplotlib` from 3.8.2 to 3.8.3 ([#607](https://github.com/ansys/pymechanical/pull/607))
 - Bump `ansys-mechanical-env` from 0.1.3 to 0.1.4 ([#624](https://github.com/ansys/pymechanical/pull/624))
+- Bump `pyvista` from 0.43.3 to 0.43.4 ([#643](https://github.com/ansys/pymechanical/pull/643))
 
 ## [0.10.7](https://github.com/ansys/pymechanical/releases/tag/v0.10.7) - February 13 2024
 

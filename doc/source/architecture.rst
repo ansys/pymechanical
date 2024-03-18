@@ -65,7 +65,7 @@ renaming an object.
 
     RenameCommand(id=100, name="New name")
 
-Instead, an API based on a data model, like mechanical's API, looks like this:
+Instead, an API based on a data model, like Mechanical's API, looks like this:
 
 .. code:: python
 
@@ -93,7 +93,7 @@ The embedded instance used by PyMechanical embeds an entire instance of the
 Mechanical app in-memory inside of a Python program. There is no additional
 running process associated with it. Mechanical's data model is directly
 available within Python, which means that the fully CRUD data model of the
-mechanical API can be used.
+Mechanical API can be used.
 
 
 
@@ -133,18 +133,18 @@ Remote procedure calls
 When one computer invokes a procedure on another computer using a network, it
 is said to have done an RPC. Unlike a normal procedure call, it can be
 unreliable and orders of magnitude slower. There also needs to be a handshake
-so that both sides understand how to interpret the bytes that move on the wire
-between computers [#f6]_. This handshake can be negotiated byte-per-byte, but
-in practice, the internet protocols provide useful conventions and standards
-that have been tried and tested.
+so that both sides understand how to interpret the bytes that move between
+computers [#f6]_. This handshake can be negotiated byte-per-byte, but in
+practice, the internet protocols provide useful conventions and standards that
+have been tried and tested.
 
 While standards are useful, it is not practical for every developer to craft
-packets to send over the wire by hand. Around the most popular conventions of
-the internet protocols are libraries and tooling in popular programming
-languages. These libraries and tooling can be opinionated in how RPCs can and
-should be written. Some offer low-level method invocation facilities, like gRPC
-and zeroMQ. Others take a view on how RPCs should be done. Two such views are
-*Representational State Transfer* (REST) and *Remote Method Invocation* (RMI).
+packets to send over the wire by hand. In many programming languages, libraries
+and tools wrap around the most popular conventions of internet protocols. These
+libraries and tools can be opinionated in how RPCs can and should be written.
+Some offer low-level method invocation facilities, like gRPC and zeroMQ. Others
+take a view on how RPCs should be done. Two such views are *Representational
+State Transfer* (REST) and *Remote Method Invocation* (RMI).
 
 REST
 ----

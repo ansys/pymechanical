@@ -50,14 +50,14 @@ Tracker = "https://github.com/ansys/pymechanical/issues"
 
 [project.optional-dependencies]
 tests = [
-    "pytest==8.0.2",
+    "pytest==8.1.1",
     "pytest-cov==4.1.0",
     "pytest-print==1.0.0",
 ]
 doc = [
     "Sphinx==7.2.6",
-    "ansys-sphinx-theme==0.14.0",
-    "grpcio==1.62.0",
+    "ansys-sphinx-theme==0.14.1",
+    "grpcio==1.62.1",
     "imageio-ffmpeg==0.4.9",
     "imageio==2.34.0",
     "jupyter_sphinx==0.5.3",
@@ -67,11 +67,11 @@ doc = [
     "numpydoc==1.6.0",
     "pandas==2.2.1",
     "panel==1.3.8",
-    "plotly==5.19.0",
+    "plotly==5.20.0",
     "pypandoc==1.13",
     "pytest-sphinx==0.6.0",
     "pythreejs==2.4.2",
-    "pyvista==0.43.3",
+    "pyvista==0.43.4",
     "sphinx-autobuild==2024.2.4",
     "sphinx-autodoc-typehints==2.0.0",
     "sphinx-copybutton==0.5.2",

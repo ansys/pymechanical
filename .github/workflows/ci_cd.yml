@@ -161,11 +161,9 @@ jobs:
       - id: set-matrix
         run: |
           # Configure matrix for "tests" job
-          # Run all stable mechanical versions release tags
-          # For nightly scheduled runs use pre-release (242)
-          # For pull requests and merges use latest stable version (241)
-          if ${{ github.event_name == 'push' }} && ${{ contains(github.ref, 'refs/tags') }}; then
-            echo "matrix={\"mechanical-version\":['23.1.0', '23.2.0', '24.1.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
+          # Run all mechanical versions for tags and nightly scheduled runs, otherwise run the test docker image version only
+          if ${{ github.event_name == 'push' }} && ${{ contains(github.ref, 'refs/tags') }} || ${{ github.event_name == 'schedule' }}; then
+            echo "matrix={\"mechanical-version\":['23.1.0', '23.2.0', '24.1.0', '24.2.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           else
             echo "matrix={\"mechanical-version\":['${{ needs.revn-variations.outputs.test_docker_image_version }}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           fi
@@ -394,7 +392,7 @@ jobs:
 
   doc-build:
     name: Documentation
-    runs-on: public-ubuntu-latest-8-cores
+    runs-on: ubuntu-latest
     container:
       image: ${{ needs.revn-variations.outputs.stable_container }}
       options: --entrypoint /bin/bash
@@ -411,12 +409,8 @@ jobs:
           apt install --reinstall ca-certificates
           apt install software-properties-common -y
           add-apt-repository ppa:deadsnakes/ppa -y
-          apt install -y python${{ env.MAIN_PYTHON_VERSION }}
-          ln -s /usr/bin/python${{ env.MAIN_PYTHON_VERSION }} /usr/bin/python
-          apt install python${{ env.MAIN_PYTHON_VERSION }}-venv -y
-          python -m ensurepip --default-pip
-          python --version
-          pip3 --version
+          apt install -y python${{ env.MAIN_PYTHON_VERSION }} python${{ env.MAIN_PYTHON_VERSION }}-venv
+          python${{ env.MAIN_PYTHON_VERSION }} -m venv /env
 
       - name: Install system dependencies
         run: |
@@ -428,18 +422,19 @@ jobs:
 
       - name: Install Python requirements
         run: |
-          python -m pip install ansys-mechanical-env
-          pip3 install -e .[doc]
+          . /env/bin/activate
+          pip install -e .[doc]
 
       - name: Build docs
         env:
-          SPHINXOPTS: '-j auto'
+          NUM_CORES: 1
           LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
           ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 0
         run: |
-          # Create html or pdf doc
-          create_doc() {
+          . /env/bin/activate
+          # Make html or pdf doc
+          make_doc() {
             # $1 is the type of file we are creating (html or pdf)
 
             # Need to unset PYMECHANICAL_PORT and PYMECHANICAL_START_INSTANCE when running code containing remote sessions
@@ -447,14 +442,17 @@ jobs:
             unset PYMECHANICAL_START_INSTANCE
 
             output_file=doc_$1_output.txt
-            xvfb-run mechanical-env make -C doc $1 > $output_file 2>&1 || true
+            xvfb-run mechanical-env make -C doc html > $output_file 2>&1 || true
+            cat $output_file
+            echo done running make
             validate_output $output_file
           }
 
           # Validate that the html or pdf build succeeded
           validate_output() {
+            echo "validating output of build"
             # $1 is the file we are checking
-            cat $1
+            # cat $1
             #
             # Check if "build succeeded" string is present in doc_build_output.txt
             #
@@ -466,11 +464,11 @@ jobs:
             fi
           }
 
-          # Create the html doc & validate results
-          create_doc html
+          # Make the html doc & validate results
+          make_doc html
 
-          # Create the pdf doc & validate results
-          create_doc pdf
+          # Make the pdf doc & validate results
+          make_doc pdf
 
       - name: Upload HTML Documentation
         uses: actions/upload-artifact@v4

@@ -130,9 +130,8 @@ def start_embedding_app(version, pytestconfig) -> datetime.timedelta:
     startup_time = (datetime.datetime.now() - start).total_seconds()
     num_cores = os.environ.get("NUM_CORES", None)
     if num_cores != None:
-        num_cores = int(num_cores)
         config = EMBEDDED_APP.ExtAPI.Application.SolveConfigurations["My Computer"]
-        config.SolveProcessSettings.MaxNumberOfCores = 2
+        config.SolveProcessSettings.MaxNumberOfCores = int(num_cores)
     return startup_time
 
 
