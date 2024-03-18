@@ -18,11 +18,13 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Add MechanicalEnums ([#626](https://github.com/ansys/pymechanical/pull/626))
 - Update Release action to use Stable version of Mechanical ([#628](https://github.com/ansys/pymechanical/pull/628))
 - Update nightly run image version ([#636](https://github.com/ansys/pymechanical/pull/636))
+- Update logo without slash ([#640](https://github.com/ansys/pymechanical/pull/640))
 
 ### Changed
 - Update ``pre-commit`` ([#610](https://github.com/ansys/pymechanical/pull/610))
 - Update vale version to 3.1.0 ([#613](https://github.com/ansys/pymechanical/pull/613))
 - Update timeout for actions ([#631](https://github.com/ansys/pymechanical/pull/631))
+- Update cheat sheet with ansys-sphinx-theme ([#638](https://github.com/ansys/pymechanical/pull/638))
 
 ### Dependencies
 - Bump `ansys-sphinx-theme` from 0.13.4 to 0.14.0 ([#608](https://github.com/ansys/pymechanical/pull/608))
