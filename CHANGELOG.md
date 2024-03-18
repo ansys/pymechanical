@@ -8,8 +8,9 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ## [Unreleased]()
 
 ### Added
-- add poster ([#642](https://github.com/ansys/pymechanical/pull/642))
+- Add poster ([#642](https://github.com/ansys/pymechanical/pull/642))
 - Add LS Dyna unit test ([#584](https://github.com/ansys/pymechanical/pull/584))
+- Block 32 bit python for embedding ([#647](https://github.com/ansys/pymechanical/pull/647))
 
 ### Fixed
 - Add logo for dark theme ([#601](https://github.com/ansys/pymechanical/pull/601))
