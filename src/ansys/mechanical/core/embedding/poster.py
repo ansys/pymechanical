@@ -20,11 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+"""Use the Poster class to post functions to Mechanical's main thread."""
+
 import typing
 
 
 class Poster:
-    """Class which can post a python callable function  to Mechanical's main thread."""
+    """Class which can post a python callable function to Mechanical's main thread."""
 
     def __init__(self):
         """Create a new instance of Poster."""
@@ -41,7 +43,8 @@ class Poster:
         The main thread needs to be receiving posted messages
         in order for this to work from a background thread. Use
         the `sleep` routine from the `utils` module to make
-        Mechanical available to receive messages."""
+        Mechanical available to receive messages.
+        """
         import System
 
         action = System.Action(callable)
