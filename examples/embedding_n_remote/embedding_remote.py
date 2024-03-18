@@ -159,8 +159,6 @@ mechanical.exit()
 
 import os
 
-from ansys.tools.path import find_mechanical, version_from_path
-
 import ansys.mechanical.core as mech
 from ansys.mechanical.core.examples import download_file
 
@@ -174,13 +172,7 @@ print(f"Downloaded the geometry file to: {geometry_path}")
 # Find the mechanical installation path & version.
 # Open an embedded instance of Mechanical and set global variables.
 
-try:
-    path, version = find_mechanical()
-    version = version_from_path("mechanical", path)
-except:
-    version = 241
-
-app = mech.App(version=version)
+app = mech.App()
 globals().update(mech.global_variables(app))
 print(app)
 
