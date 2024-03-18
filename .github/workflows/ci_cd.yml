@@ -60,14 +60,14 @@ jobs:
           SPHINXOPTS: '-j auto'
           LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
           ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
-          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 0
+          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 3
         run: |
           . /env/bin/activate
           # Generate html or pdf doc
           make_doc() {
             output_file=doc_$1_output.txt
-            xvfb-run mechanical-env make -C doc html > $output_file 2>&1 || true
-            cat $output_file
+            xvfb-run mechanical-env make -C doc html 2>&1 | tee $output_file
+            #cat $output_file
             echo done running make
             validate_output $output_file
           }
