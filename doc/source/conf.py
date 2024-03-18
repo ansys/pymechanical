@@ -19,9 +19,28 @@ import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core.embedding.initializer import (
     SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS,
 )
+from ansys.tools.path import find_mechanical, version_from_path
 
 # necessary when building the sphinx gallery
 pymechanical.BUILDING_GALLERY = True
+
+# Set the number of cores based on the env var if it is set
+# This is done so that the pipeline
+
+# TODO: The version number here is duplicated does not depend
+#       on the container version chosen by the pipeline!
+try:
+    path, version = find_mechanical()
+    version = version_from_path("mechanical", path)
+except:
+    version = 241
+
+EMBEDDED_APP = pymechanical.App(version=version)
+
+num_cores = os.environ.get("NUM_CORES", None)
+if num_cores != None:
+    config = EMBEDDED_APP.ExtAPI.Application.SolveConfigurations["My Computer"]
+    config.SolveProcessSettings.MaxNumberOfCores = int(num_cores)
 
 # suppress annoying matplotlib bug
 warnings.filterwarnings(
@@ -30,7 +49,6 @@ warnings.filterwarnings(
     message="Matplotlib is currently using agg, which is a non-GUI backend, "
     "so cannot show the figure.",
 )
-
 
 # -- Project information -----------------------------------------------------
 
