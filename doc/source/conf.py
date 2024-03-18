@@ -12,6 +12,7 @@ from datetime import datetime
 import os
 import warnings
 
+from ansys.tools.path import find_mechanical, version_from_path
 from ansys_sphinx_theme import ansys_favicon, get_version_match, pyansys_logo_black
 from sphinx_gallery.sorting import FileNameSortKey
 
@@ -19,7 +20,6 @@ import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core.embedding.initializer import (
     SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS,
 )
-from ansys.tools.path import find_mechanical, version_from_path
 
 # necessary when building the sphinx gallery
 pymechanical.BUILDING_GALLERY = True
