@@ -14,6 +14,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Add logo for dark theme ([#601](https://github.com/ansys/pymechanical/pull/601))
 - Architecture doc ([#612](https://github.com/ansys/pymechanical/pull/612))
 - Put remote example before embedding example ([#621](https://github.com/ansys/pymechanical/pull/621))
+- Minor updates to Architecture doc ([#618](https://github.com/ansys/pymechanical/pull/618))
 - Add MechanicalEnums ([#626](https://github.com/ansys/pymechanical/pull/626))
 - Update Release action to use Stable version of Mechanical ([#628](https://github.com/ansys/pymechanical/pull/628))
 - Update nightly run image version ([#636](https://github.com/ansys/pymechanical/pull/636))
