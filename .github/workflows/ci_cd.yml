@@ -28,7 +28,7 @@ env:
   LATEST_STABLE_DOCKER_IMAGE_VERSION: '24.1.0'
   # DEV_REVN & its Docker image are used in scheduled or registry package runs
   DEV_REVN: '242'
-  DEV_DOCKER_IMAGE_VERSION: '24.2.0'
+  DEV_DOCKER_IMAGE_VERSION: '24.2_candidate'
   MEILISEARCH_API_KEY: ${{ secrets.MEILISEARCH_API_KEY }}
   MEILISEARCH_HOST_URL: ${{ vars.MEILISEARCH_HOST_URL }}
   MEILISEARCH_PUBLIC_API_KEY: ${{ secrets.MEILISEARCH_PUBLIC_API_KEY }}
@@ -134,12 +134,12 @@ jobs:
     steps:
       - id: save-versions
         run: |
-          if ${{ github.event_name == 'schedule' }}; then  # || ${{ github.event.registry_package.package_version.container_metadata.tag.name == 'mechanical:24.2.0' }}; then
+          if ${{ github.event_name == 'schedule' }}; then
             # 242
             echo "test_revn=${{ env.DEV_REVN }}" >> $GITHUB_OUTPUT
-            # ghcr.io/ansys/mechanical:24.2.0
+            # ghcr.io/ansys/mechanical:24.2_candidate
             echo "test_container=${{ env.DOCKER_PACKAGE }}:${{ env.DEV_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
-            # 24.2.0
+            # 24.2_candidate
             echo "test_docker_image_version=${{ env.DEV_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
           else
             # 241
@@ -152,6 +152,8 @@ jobs:
 
           echo "stable_container=${{ env.DOCKER_PACKAGE }}:${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
 
+          cat $GITHUB_OUTPUT
+
   config-matrix:
     runs-on: ubuntu-latest
     needs: [revn-variations]
@@ -161,12 +163,16 @@ jobs:
       - id: set-matrix
         run: |
           # Configure matrix for "tests" job
-          # Run all mechanical versions for tags and nightly scheduled runs, otherwise run the test docker image version only
-          if ${{ github.event_name == 'push' }} && ${{ contains(github.ref, 'refs/tags') }} || ${{ github.event_name == 'schedule' }}; then
-            echo "matrix={\"mechanical-version\":['23.1.0', '23.2.0', '24.1.0', '24.2.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
+          # Run all stable mechanical versions release tags
+          # For nightly scheduled runs use pre-release (242)
+          # For pull requests and merges use latest stable version (241)
+          if ${{ github.event_name == 'push' }} && ${{ contains(github.ref, 'refs/tags') }}; then
+            echo "matrix={\"mechanical-version\":['23.1.0', '23.2.0', '24.1.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           else
             echo "matrix={\"mechanical-version\":['${{ needs.revn-variations.outputs.test_docker_image_version }}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           fi
+
+          cat $GITHUB_OUTPUT
 
   tests:
     name: Testing and coverage - Mechanical ${{ matrix.mechanical-version }}
@@ -237,7 +243,7 @@ jobs:
   embedding-tests:
     name: Embedding testing and coverage
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     needs: [style, revn-variations]
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
@@ -314,6 +320,7 @@ jobs:
   launch-tests:
     name: Launch testing and coverage
     runs-on: public-ubuntu-latest-8-cores
+    timeout-minutes: 15
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
@@ -393,6 +400,7 @@ jobs:
   doc-build:
     name: Documentation
     runs-on: public-ubuntu-latest-8-cores
+    timeout-minutes: 15
     container:
       image: ${{ needs.revn-variations.outputs.stable_container }}
       options: --entrypoint /bin/bash

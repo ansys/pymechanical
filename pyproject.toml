@@ -50,13 +50,13 @@ Tracker = "https://github.com/ansys/pymechanical/issues"
 
 [project.optional-dependencies]
 tests = [
-    "pytest==8.0.1",
+    "pytest==8.0.2",
     "pytest-cov==4.1.0",
     "pytest-print==1.0.0",
 ]
 doc = [
     "Sphinx==7.2.6",
-    "ansys-sphinx-theme==0.14.0",
+    "ansys-sphinx-theme==0.14.1",
     "grpcio==1.62.0",
     "imageio-ffmpeg==0.4.9",
     "imageio==2.34.0",
@@ -130,6 +130,7 @@ markers = [
     "python_env: tests that check for an appropriate python environment",
     "remote_session_launch: tests that launch Mechanical and work with gRPC server inside it",
     "remote_session_connect: tests that connect to Mechanical and work with gRPC server inside it",
-     "minimum_version(num): tests that run if ansys-version is greater than or equal to the minimum version provided",
+    "minimum_version(num): tests that run if ansys-version is greater than or equal to the minimum version provided",
+    "windows_only: tests that run if the testing platform is on Windows",
 ]
 xfail_strict = true
