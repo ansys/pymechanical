@@ -63,10 +63,11 @@ jobs:
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 0
         run: |
           . /env/bin/activate
-          # Create html or pdf doc
-          create_doc() {
+          # Generate html or pdf doc
+          make_doc() {
             output_file=doc_$1_output.txt
             xvfb-run mechanical-env make -C doc html > $output_file 2>&1 || true
+            cat $output_file
             echo done running make
             validate_output $output_file
           }
@@ -83,4 +84,5 @@ jobs:
           }
 
           # Create the html doc & validate results
-          create_doc html
+          echo "Generating html documentation"
+          make_doc html
