@@ -93,6 +93,54 @@ def test_nonblock_sleep(embedded_app):
 
 
 @pytest.mark.embedding
+def test_app_poster(embedded_app):
+    """The getters of app should be usable after a new().
+
+    The C# objects referred to by ExtAPI, Model, DataModel, and Tree
+    are reset on each call to app.new(), so storing them in
+    global variables will be broken.
+
+    To resolve this, we have to wrap those objects, and ensure
+    that they properly redirect the calls to the appropriate C#
+    object after a new()
+    """
+    version = embedded_app.version
+    if os.name != "nt" and version < 242:
+        """This test is effectively disabled for versions older than 242 on linux.
+
+        This is because the function coded is distributed with the C# library
+        Ansys.Mechanical.CPython.dll. That library only began to be shipping on
+        linux in 2024 R2.
+        """
+        return
+    poster = embedded_app.poster
+
+    def change_name_async(poster):
+        """Change_name_async will run a background thread
+
+        It will change the name of the project to "foo"
+        """
+
+        def change_name():
+            embedded_app.DataModel.Project.Name = "foo"
+
+        poster.post(change_name)
+
+    import threading
+
+    change_name_thread = threading.Thread(target=change_name_async, args=(poster,))
+    change_name_thread.start()
+
+    # The poster can't do anything unless the main thread is receiving
+    # messages. The `sleep` utility puts Mechanical's main thread to
+    # idle and only execute actions that have been posted to its main
+    # thread, e.g. `change_name` that was posted by the poster.
+    utils.sleep(400)
+    change_name_thread.join()
+    assert embedded_app.DataModel.Project.Name == "foo"
+
+
+@pytest.mark.embedding
 def test_app_getters_notstale(embedded_app):
     """The getters of app should be usable after a new().
 
