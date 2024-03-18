@@ -26,6 +26,7 @@ import os
 
 from ansys.mechanical.core.embedding.logger import Logger
 
+
 def __register_container_codecs():
     import Python.Runtime.Codecs as codecs
 
@@ -36,8 +37,10 @@ def __register_container_codecs():
 
 def __register_function_codec():
     import clr
+
     clr.AddReference("Ansys.Mechanical.CPython")
     import Ansys
+
     Ansys.Mechanical.CPython.Codecs.FunctionCodec.Register()
 
 

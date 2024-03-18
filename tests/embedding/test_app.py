@@ -92,7 +92,6 @@ def test_nonblock_sleep(embedded_app):
     assert (t2 - t1) >= 2
 
 
-
 @pytest.mark.embedding
 def test_app_poster(embedded_app):
     """The getters of app should be usable after a new().
@@ -107,7 +106,7 @@ def test_app_poster(embedded_app):
     """
     version = embedded_app.version
     if os.name != "nt" and version < 242:
-        """ This test is effectively disabled for versions older than 242 on linux.
+        """This test is effectively disabled for versions older than 242 on linux.
 
         This is because the function coded is distributed with the C# library
         Ansys.Mechanical.CPython.dll. That library only began to be shipping on
@@ -115,16 +114,20 @@ def test_app_poster(embedded_app):
         """
         return
     poster = embedded_app.poster
+
     def change_name_async(poster):
         """Change_name_async will run a background thread
 
         It will change the name of the project to "foo"
         """
+
         def change_name():
             embedded_app.DataModel.Project.Name = "foo"
+
         poster.post(change_name)
 
     import threading
+
     change_name_thread = threading.Thread(target=change_name_async, args=(poster,))
     change_name_thread.start()
 

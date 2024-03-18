@@ -22,14 +22,17 @@
 
 import typing
 
-class Poster():
+
+class Poster:
     """Class which can post a python callable function  to Mechanical's main thread."""
 
     def __init__(self):
         """Create a new instance of Poster."""
         import clr
+
         clr.AddReference("Ans.Common.WB1ManagedUtils")
         import Ans
+
         self._poster = Ans.Common.WB1ManagedUtils.TaskPoster
 
     def post(self, callable: typing.Callable):
@@ -40,5 +43,6 @@ class Poster():
         the `sleep` routine from the `utils` module to make
         Mechanical available to receive messages."""
         import System
+
         action = System.Action(callable)
         self._poster.Post(action)
