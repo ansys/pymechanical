@@ -141,7 +141,7 @@ for file in list_files:
 
 ###############################################################################
 # Exit remote session
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~
 # Close the Mechanical instance.
 
 mechanical.exit()
@@ -301,4 +301,9 @@ for result in results:
     except:
         print(os.listdir(project_directory))
 
-app.close()
+###############################################################################
+# Exit embedded session
+# ~~~~~~~~~~~~~~~~~~~~~
+# Close the Mechanical instance.
+
+app.exit()
