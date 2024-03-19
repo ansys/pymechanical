@@ -103,4 +103,21 @@ From a terminal, run this command:
 
     /usr/ansys_inc/v231/aisol/.workbench -DSApplet -AppModeMech -nosplash -notabctrl -script file.py
 
+.. note::
+   ``-nosplash`` and ``-notabctrl`` not needed for versions 23.2 or above
+
 On either Windows or Linux, add the command line argument `-b` to run the script in batch mode.
+
+**Using command line interface (cli)**
+
+This can also achieved with ``ansys-mechanical`` cli from the virtual environment where
+``ansys-mechanical-core`` has installed. Firstly activate the virtual environment
+and then use cli for running scripts. If multiple Mechanical versions are installed in
+the same system, then versions can be specified using ``-r`` flag.
+
+.. code::
+
+    ansys-mechanical -i file.py
+
+.. note::
+   use ``ansys-mechanical -h`` for more options.
