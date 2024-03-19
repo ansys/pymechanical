@@ -108,12 +108,12 @@ From a terminal, run this command:
 
 On either Windows or Linux, add the command line argument `-b` to run the script in batch mode.
 
-**Using command line interface (cli)**
+**Using command line interface (CLI)**
 
 This can also be achieved in both Windows and Linux with ``ansys-mechanical`` cli from the
-virtual environment where ``ansys-mechanical-core`` has installed. Firstly activate the virtual environment
-and then use cli for running scripts. If multiple Mechanical versions are installed in
-the same system, then versions can be specified using ``-r`` flag.
+virtual environment where ``ansys-mechanical-core`` has installed. Firstly, activate the virtual environment
+and, then use CLI for running scripts. If multiple Mechanical versions are installed in
+the same system, versions can be specified using ``-r`` flag.
 
 .. code::
 
