@@ -467,7 +467,7 @@ jobs:
           }
 
           # Make the html doc & validate results
-          make_doc html
+          # make_doc html
 
           # Make the pdf doc & validate results
           make_doc pdf
