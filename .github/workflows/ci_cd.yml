@@ -314,6 +314,7 @@ jobs:
   launch-tests:
     name: Launch testing and coverage
     runs-on: public-ubuntu-latest-8-cores
+    timeout-minutes: 10
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
@@ -393,6 +394,7 @@ jobs:
   doc-build:
     name: Documentation
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     container:
       image: ${{ needs.revn-variations.outputs.stable_container }}
       options: --entrypoint /bin/bash
@@ -442,7 +444,7 @@ jobs:
             unset PYMECHANICAL_START_INSTANCE
 
             output_file=doc_$1_output.txt
-            xvfb-run mechanical-env make -C doc html > $output_file 2>&1 || true
+            xvfb-run mechanical-env make -C doc $1 > $output_file 2>&1 || true
             cat $output_file
             echo done running make
             validate_output $output_file
