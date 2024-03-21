@@ -8,9 +8,21 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ## [Unreleased]()
 
 ### Added
+- Block 32 bit python for embedding ([#647](https://github.com/ansys/pymechanical/pull/647))
+
+### Fixed
+- Fixed make pdf action in doc build ([#652](https://github.com/ansys/pymechanical/pull/652))
+
+### Changed
+
+### Dependencies
+
+
+## [0.10.8](https://github.com/ansys/pymechanical/releases/tag/v0.10.8) - March 18 2024
+
+### Added
 - Add poster ([#642](https://github.com/ansys/pymechanical/pull/642))
 - Add LS Dyna unit test ([#584](https://github.com/ansys/pymechanical/pull/584))
-- Block 32 bit python for embedding ([#647](https://github.com/ansys/pymechanical/pull/647))
 
 ### Fixed
 - Add logo for dark theme ([#601](https://github.com/ansys/pymechanical/pull/601))
