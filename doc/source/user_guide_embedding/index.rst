@@ -81,43 +81,41 @@ The above code can be written as a Python file, such as "file.py" with only the 
   ns = DataModel.Project.Model.AddNamedSelection()
   ns.Name = "Jarvis"
 
-That python file does not contain the PyMechanical import statements, and can inside Mechanical using the command line
-
-**On Windows**
-
-Open a command prompt and run this command:
-
-.. code::
-
-    "C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe -DSApplet -AppModeMech -script file.py"
-
-.. note::
-   PowerShell users can run the preceding command without including the opening and
-   closing quotation marks.
-
-**On Linux**
-
-From a terminal, run this command:
-
-.. code::
-
-    /usr/ansys_inc/v231/aisol/.workbench -DSApplet -AppModeMech -nosplash -notabctrl -script file.py
-
-.. note::
-   ``-nosplash`` and ``-notabctrl`` not needed for versions 23.2 or above
-
-On either Windows or Linux, add the command line argument `-b` to run the script in batch mode.
+That python file does not contain the PyMechanical import statements
+can be accessed inside Mechanical using the command line.
 
 **Using command line interface (CLI)**
 
-This can also be achieved in both Windows and Linux with ``ansys-mechanical`` cli from the
+This can be achieved in both Windows and Linux with ``ansys-mechanical`` cli from the
 virtual environment where ``ansys-mechanical-core`` has installed. Firstly, activate the virtual environment
 and, then use CLI for running scripts. If multiple Mechanical versions are installed in
-the same system, versions can be specified using ``-r`` flag.
+the same system, versions can be specified using ``-r`` flag. Use ``-h`` for more information.
 
 .. code::
 
     ansys-mechanical -i file.py
 
 .. note::
-   use ``ansys-mechanical -h`` for more options.
+
+   Alternately user can use below commands with
+   command prompt and terminal in Windows and Linux systems respectively.
+
+   **On Windows**
+
+   .. code::
+
+      "C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe -DSApplet -AppModeMech -script file.py"
+
+   PowerShell users can run the preceding command without including the opening and
+   closing quotation marks.
+
+   **On Linux**
+
+   .. code::
+
+      /usr/ansys_inc/v231/aisol/.workbench -DSApplet -AppModeMech -nosplash -notabctrl -script file.py
+
+
+   ``-nosplash`` and ``-notabctrl`` not needed for versions 23.2 or above
+
+   On either Windows or Linux, add the command line argument ``-b`` to run the script in batch mode.
