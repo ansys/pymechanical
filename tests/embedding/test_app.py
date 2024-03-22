@@ -221,8 +221,8 @@ def test_normal_appdata(pytestconfig, rootdir):
 
     check = os.name == "nt"
     _run([sys.executable, embedded_py, version, "False", "Set"], None, check)
-    _run([sys.executable, embedded_py, version, "False", "Run"], None, check)
-    stdout, stderr = _run([sys.executable, embedded_py, version, "False", "Reset"], None, check)
+    stdout, stderr = _run([sys.executable, embedded_py, version, "False", "Run"], None, check)
+    _run([sys.executable, embedded_py, version, "False", "Reset"], None, check)
 
     stdout = stdout.decode()
     print(stdout)

@@ -59,8 +59,8 @@ async def _read_and_display(cmd, env):
                 display.write(line)  # display in terminal
                 # schedule to read the next line
                 tasks[asyncio.Task(stream.readline())] = buf, stream, display
-    # wait for the process to exit
 
+    # wait for the process to exit
     rc = await process.wait()
     return rc, b"".join(stdout), b"".join(stderr)
 
@@ -73,14 +73,11 @@ def _run(args, env, check=False):
         loop = asyncio.get_event_loop()
     try:
         rc, *output = loop.run_until_complete(_read_and_display(args, env))
-        print("Hello")
         if rc and check:
             sys.exit("child failed with '{}' exit code".format(rc))
-        print("goodbye")
     finally:
         if os.name == "nt":
             loop.close()
-    print("after run")
     return output
 
 
@@ -251,5 +248,6 @@ def cli(
         print(f"Serving on port {port}")
 
     _run(args, env)
+
     if private_appdata:
         profile.cleanup()
