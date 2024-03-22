@@ -1,7 +1,7 @@
 .. _ref_guide_wsl:
 
-Windows Subsystem for Linux
-===========================
+Windows Subsystem for Linux (WSL)
+=================================
 
 This page explains how you use a PyAnsys library, more specifically PyMechanical,
 in the Windows Subsystem for Linux (WSL). WSL is a compatibility layer for
