@@ -32,6 +32,7 @@ import pytest
 import ansys.mechanical.core.embedding.utils as utils
 from ansys.mechanical.core.run import _run
 
+
 @pytest.mark.embedding
 def test_app_repr(embedded_app):
     """Test repr of the Application class."""
