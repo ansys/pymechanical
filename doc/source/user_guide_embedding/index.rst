@@ -74,22 +74,23 @@ Mechanical's command line interface. For instance, the consider the following Py
   ns = DataModel.Project.Model.AddNamedSelection()
   ns.Name = "Jarvis"
 
-The above code can be written as a Python file, such as "file.py" with only the following content:
+The above code can be written as a Python file, such as ``file.py`` with only the following content:
 
 .. code:: python
 
   ns = DataModel.Project.Model.AddNamedSelection()
   ns.Name = "Jarvis"
 
-That python file does not contain the PyMechanical import statements
-can be accessed inside Mechanical using the command line.
+Because the file does not contain the PyMechanical import statements, you can run
+``file.py`` using the command line inside Mechanical.
 
 **Using command line interface (CLI)**
 
-This can be achieved in both Windows and Linux with ``ansys-mechanical`` cli from the
-virtual environment where ``ansys-mechanical-core`` has installed. Firstly, activate the virtual environment
-and, then use CLI for running scripts. If multiple Mechanical versions are installed in
-the same system, versions can be specified using ``-r`` flag. Use ``-h`` for more information.
+This can be achieved on both the Windows and Linux platforms using
+``ansys-mechanical`` cli from the virtual environment where ``ansys-mechanical-core``
+has been installed. Activate the virtual environment and then use CLI to run the scripts.
+If multiple Mechanical versions are installed in the same system,
+versions can be specified using ``-r`` flag. Use ``-h`` for more information.
 
 .. code::
 
