@@ -8,6 +8,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ## [Unreleased]()
 
 ### Added
+- Add usage of cli under embedding ([#650](https://github.com/ansys/pymechanical/pull/650))
 
 ### Fixed
 - Fixed make pdf action in doc build ([#652](https://github.com/ansys/pymechanical/pull/652))
