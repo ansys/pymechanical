@@ -78,6 +78,7 @@ def _run(args, env):
             sys.exit("child failed with '{}' exit code".format(rc))
     finally:
         loop.close()
+    return output
 
 
 @click.command()
@@ -247,6 +248,5 @@ def cli(
         print(f"Serving on port {port}")
 
     _run(args, env)
-
     if private_appdata:
         profile.cleanup()

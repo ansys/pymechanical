@@ -201,18 +201,9 @@ def test_private_appdata(pytestconfig, rootdir):
     version = pytestconfig.getoption("ansys_version")
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
-    # Set ShowTriad to False
-    p1 = subprocess.Popen(
-        [sys.executable, embedded_py, version, "True", "Set"], stdout=subprocess.PIPE
-    )
-    p1.communicate()
-
-    # Check ShowTriad is True for private_appdata embedded sessions
-    p2 = subprocess.Popen(
-        [sys.executable, embedded_py, version, "True", "Run"], stdout=subprocess.PIPE
-    )
-    stdout, stderr = p2.communicate()
-
+    from ansys.mechanical.core.run import _run
+    stdout, stderr = _run([sys.executable, embedded_py, version, "True", "Set"], None)
+    stdout, stderr = _run([sys.executable, embedded_py, version, "True", "Run"], None)
     assert "ShowTriad value is True" in stdout.decode()
 
 
