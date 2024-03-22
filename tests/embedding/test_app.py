@@ -204,8 +204,11 @@ def test_private_appdata(pytestconfig, rootdir):
 
     check = os.name == "nt"
 
+    print("running first program")
     _run([sys.executable, embedded_py, version, "True", "Set"], None, check)
+    print("running second program")
     stdout, _ = _run([sys.executable, embedded_py, version, "True", "Run"], None, check)
+    print("done running programs")
     stdout = stdout.decode()
     assert "ShowTriad value is True" in stdout
 
