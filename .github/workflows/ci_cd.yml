@@ -403,7 +403,7 @@ jobs:
             unset PYMECHANICAL_START_INSTANCE
 
             output_file=doc_$1_output.txt
-            xvfb-run mechanical-env make -C doc html > $output_file 2>&1 || true
+            xvfb-run mechanical-env make -C doc $1 > $output_file 2>&1 || true
             cat $output_file
             echo done running make
             validate_output $output_file
