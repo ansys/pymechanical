@@ -30,7 +30,7 @@ import time
 import pytest
 
 import ansys.mechanical.core.embedding.utils as utils
-
+from ansys.mechanical.core.run import _run
 
 @pytest.mark.embedding
 def test_app_repr(embedded_app):
@@ -201,8 +201,6 @@ def test_private_appdata(pytestconfig, rootdir):
     version = pytestconfig.getoption("ansys_version")
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
-    from ansys.mechanical.core.run import _run
-
     check = os.name == "nt"
 
     stdout, stderr = _run([sys.executable, embedded_py, version, "True", "Set"], None, check)
@@ -218,23 +216,10 @@ def test_normal_appdata(pytestconfig, rootdir):
 
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
-    # Set ShowTriad to False
-    p1 = subprocess.Popen(
-        [sys.executable, embedded_py, version, "False", "Set"], stdout=subprocess.PIPE
-    )
-    p1.communicate()
-
-    # Check ShowTriad is False for regular embedded session
-    p2 = subprocess.Popen(
-        [sys.executable, embedded_py, version, "False", "Run"], stdout=subprocess.PIPE
-    )
-    stdout, stderr = p2.communicate()
-
-    # Set ShowTriad back to True for regular embedded session
-    p3 = subprocess.Popen(
-        [sys.executable, embedded_py, version, "False", "Reset"], stdout=subprocess.PIPE
-    )
-    p3.communicate()
+    check = os.name == "nt"
+    stdout, stderr = _run([sys.executable, embedded_py, version, "False", "Set"], None, check)
+    stdout, stderr = _run([sys.executable, embedded_py, version, "False", "Run"], None, check)
+    stdout, stderr = _run([sys.executable, embedded_py, version, "False", "Reset"], None, check)
 
     # Assert ShowTriad was set to False for regular embedded session
     assert "ShowTriad value is False" in stdout.decode()

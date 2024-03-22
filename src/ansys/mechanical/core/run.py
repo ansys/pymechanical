@@ -73,10 +73,13 @@ def _run(args, env, check=False):
         loop = asyncio.get_event_loop()
     try:
         rc, *output = loop.run_until_complete(_read_and_display(args, env))
+        print("Hello")
         if rc and check:
             sys.exit("child failed with '{}' exit code".format(rc))
+        print("goodbye")
     finally:
         loop.close()
+    print("after run")
     return output
 
 
