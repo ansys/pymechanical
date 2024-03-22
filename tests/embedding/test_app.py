@@ -204,6 +204,7 @@ def test_private_appdata(pytestconfig, rootdir):
 
     check = os.name == "nt"
 
+    print("running first program")
     _run([sys.executable, embedded_py, version, "True", "Set"], None, check)
     stdout, _ = _run([sys.executable, embedded_py, version, "True", "Run"], None, check)
     stdout = stdout.decode()
