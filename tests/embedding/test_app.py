@@ -204,11 +204,11 @@ def test_private_appdata(pytestconfig, rootdir):
 
     check = os.name == "nt"
 
-    stdout, stderr = _run([sys.executable, embedded_py, version, "True", "Set"], None, check)
+    _run([sys.executable, embedded_py, version, "True", "Set"], None, check)
     stdout, stderr = _run([sys.executable, embedded_py, version, "True", "Run"], None, check)
     stdout = stdout.decode()
     print(stdout)
-    assert "ShowTriad value is True" in stdout.decode()
+    assert "ShowTriad value is True" in stdout
 
 
 @pytest.mark.embedding
@@ -220,14 +220,14 @@ def test_normal_appdata(pytestconfig, rootdir):
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
     check = os.name == "nt"
-    stdout, stderr = _run([sys.executable, embedded_py, version, "False", "Set"], None, check)
-    stdout, stderr = _run([sys.executable, embedded_py, version, "False", "Run"], None, check)
+    _run([sys.executable, embedded_py, version, "False", "Set"], None, check)
+    _run([sys.executable, embedded_py, version, "False", "Run"], None, check)
     stdout, stderr = _run([sys.executable, embedded_py, version, "False", "Reset"], None, check)
 
     stdout = stdout.decode()
     print(stdout)
     # Assert ShowTriad was set to False for regular embedded session
-    assert "ShowTriad value is False" in stdout.decode()
+    assert "ShowTriad value is False" in stdout
 
 
 @pytest.mark.embedding

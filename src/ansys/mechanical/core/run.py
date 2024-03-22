@@ -78,7 +78,8 @@ def _run(args, env, check=False):
             sys.exit("child failed with '{}' exit code".format(rc))
         print("goodbye")
     finally:
-        loop.close()
+        if os.name == "nt":
+            loop.close()
     print("after run")
     return output
 
