@@ -203,8 +203,10 @@ def test_private_appdata(pytestconfig, rootdir):
 
     from ansys.mechanical.core.run import _run
 
-    stdout, stderr = _run([sys.executable, embedded_py, version, "True", "Set"], None)
-    stdout, stderr = _run([sys.executable, embedded_py, version, "True", "Run"], None)
+    check = os.name == "nt"
+
+    stdout, stderr = _run([sys.executable, embedded_py, version, "True", "Set"], None, check)
+    stdout, stderr = _run([sys.executable, embedded_py, version, "True", "Run"], None, check)
     assert "ShowTriad value is True" in stdout.decode()
 
 

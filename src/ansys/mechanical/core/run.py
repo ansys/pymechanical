@@ -42,7 +42,6 @@ async def _read_and_display(cmd, env):
     """Read command's stdout and stderr and display them as they are processed."""
     # start process
     process = await asyncio.create_subprocess_exec(*cmd, stdout=PIPE, stderr=PIPE, env=env)
-    print('started process')
     # read child's stdout/stderr concurrently
     stdout, stderr = [], []  # stderr, stdout buffers
     tasks = {
@@ -60,15 +59,13 @@ async def _read_and_display(cmd, env):
                 display.write(line)  # display in terminal
                 # schedule to read the next line
                 tasks[asyncio.Task(stream.readline())] = buf, stream, display
-    print('tasks done')
     # wait for the process to exit
 
     rc = await process.wait()
-    print('process exited')
     return rc, b"".join(stdout), b"".join(stderr)
 
 
-def _run(args, env):
+def _run(args, env, check=False):
     if os.name == "nt":
         loop = asyncio.ProactorEventLoop()  # for subprocess' pipes on Windows
         asyncio.set_event_loop(loop)
@@ -76,7 +73,7 @@ def _run(args, env):
         loop = asyncio.get_event_loop()
     try:
         rc, *output = loop.run_until_complete(_read_and_display(args, env))
-        if rc:
+        if rc and check:
             sys.exit("child failed with '{}' exit code".format(rc))
     finally:
         loop.close()
