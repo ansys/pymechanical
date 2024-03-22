@@ -184,7 +184,7 @@ def test_warning_message(test_env, pytestconfig, rootdir):
         stderr=subprocess.PIPE,
         env=test_env.env,
     )
-    stdout, stderr = check_warning.communicate()
+    _, stderr = check_warning.communicate()
 
     # If UserWarning & pythonnet are in the stderr output, set warning to True.
     # Otherwise, set warning to False
@@ -205,9 +205,8 @@ def test_private_appdata(pytestconfig, rootdir):
     check = os.name == "nt"
 
     _run([sys.executable, embedded_py, version, "True", "Set"], None, check)
-    stdout, stderr = _run([sys.executable, embedded_py, version, "True", "Run"], None, check)
+    stdout, _ = _run([sys.executable, embedded_py, version, "True", "Run"], None, check)
     stdout = stdout.decode()
-    print(stdout)
     assert "ShowTriad value is True" in stdout
 
 
@@ -221,11 +220,10 @@ def test_normal_appdata(pytestconfig, rootdir):
 
     check = os.name == "nt"
     _run([sys.executable, embedded_py, version, "False", "Set"], None, check)
-    stdout, stderr = _run([sys.executable, embedded_py, version, "False", "Run"], None, check)
+    stdout, _ = _run([sys.executable, embedded_py, version, "False", "Run"], None, check)
     _run([sys.executable, embedded_py, version, "False", "Reset"], None, check)
 
     stdout = stdout.decode()
-    print(stdout)
     # Assert ShowTriad was set to False for regular embedded session
     assert "ShowTriad value is False" in stdout
 
