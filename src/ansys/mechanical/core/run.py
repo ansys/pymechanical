@@ -42,7 +42,7 @@ async def _read_and_display(cmd, env):
     """Read command's stdout and stderr and display them as they are processed."""
     # start process
     process = await asyncio.create_subprocess_exec(*cmd, stdout=PIPE, stderr=PIPE, env=env)
-    print('started process')
+    print("started process")
     # read child's stdout/stderr concurrently
     stdout, stderr = [], []  # stderr, stdout buffers
     tasks = {
@@ -60,11 +60,11 @@ async def _read_and_display(cmd, env):
                 display.write(line)  # display in terminal
                 # schedule to read the next line
                 tasks[asyncio.Task(stream.readline())] = buf, stream, display
-    print('tasks done')
+    print("tasks done")
     # wait for the process to exit
 
     rc = await process.wait()
-    print('process exited')
+    print("process exited")
     return rc, b"".join(stdout), b"".join(stderr)
 
 
