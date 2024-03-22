@@ -51,3 +51,4 @@ RPCs
 Remoting
 middleware
 REST
+cli
