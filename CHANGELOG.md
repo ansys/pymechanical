@@ -9,6 +9,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Added
 - Add usage of cli under embedding ([#650](https://github.com/ansys/pymechanical/pull/650))
+- Block 32 bit python for embedding ([#647](https://github.com/ansys/pymechanical/pull/647))
 
 ### Fixed
 - Fixed make pdf action in doc build ([#652](https://github.com/ansys/pymechanical/pull/652))
@@ -22,7 +23,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ## [0.10.8](https://github.com/ansys/pymechanical/releases/tag/v0.10.8) - March 18 2024
 
 ### Added
-- add poster ([#642](https://github.com/ansys/pymechanical/pull/642))
+- Add poster ([#642](https://github.com/ansys/pymechanical/pull/642))
 - Add LS Dyna unit test ([#584](https://github.com/ansys/pymechanical/pull/584))
 
 ### Fixed
