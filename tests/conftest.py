@@ -161,7 +161,9 @@ def mke_app_reset(request):
         terminal_reporter.write_line(f"starting test {request.function.__name__} - file new")
     EMBEDDED_APP.new()
 
+
 _CHECK_PROCESS_RETURN_CODE = os.name == "nt"
+
 
 @pytest.fixture()
 def run_subprocess():
@@ -170,6 +172,7 @@ def run_subprocess():
             check = _CHECK_PROCESS_RETURN_CODE
         stdout, stderr = _run(args, env, check)
         return stdout, stderr
+
     return func
 
 

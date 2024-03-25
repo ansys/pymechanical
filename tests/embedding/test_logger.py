@@ -30,6 +30,7 @@ import pytest
 
 def _get_env_without_logging_variables():
     """Get a copy of environment without logging variables."""
+
     def _unset_var(env, var) -> None:
         """remove `var` from `env` if it is present."""
         if var in env:
@@ -44,14 +45,16 @@ def _get_env_without_logging_variables():
     return env
 
 
-def _run_embedding_log_test_process(rootdir: str, run_subprocess, pytestconfig, testname: str, pass_expected: bool) -> typing.Tuple:
+def _run_embedding_log_test_process(
+    rootdir: str, run_subprocess, pytestconfig, testname: str, pass_expected: bool
+) -> typing.Tuple:
     """Runs the process and returns it after it finishes"""
     version = pytestconfig.getoption("ansys_version")
     embedded_py = os.path.join(rootdir, "tests", "scripts", "embedding_log_test.py")
     stdout, stderr = run_subprocess(
         [sys.executable, embedded_py, version, testname],
         _get_env_without_logging_variables(),
-        pass_expected
+        pass_expected,
     )
     return stdout, stderr
 
@@ -83,7 +86,9 @@ def _run_embedding_log_test(
 
     Returns the stderr
     """
-    stdout, stderr = _run_embedding_log_test_process(rootdir, run_subprocess, pytestconfig, testname, pass_expected)
+    stdout, stderr = _run_embedding_log_test_process(
+        rootdir, run_subprocess, pytestconfig, testname, pass_expected
+    )
     stdout = stdout.decode()
     stderr = stderr.decode()
     _assert_success(stdout, pass_expected)
@@ -93,12 +98,16 @@ def _run_embedding_log_test(
 @pytest.mark.embedding
 def test_logging_write_log_before_init(rootdir, run_subprocess, pytestconfig):
     """Test that an error is thrown when trying to log before initializing"""
-    stderr = _run_embedding_log_test(run_subprocess, rootdir, pytestconfig, "log_before_initialize", False)
+    stderr = _run_embedding_log_test(
+        run_subprocess, rootdir, pytestconfig, "log_before_initialize", False
+    )
     assert "Can't log to the embedding logger until Mechanical is initialized" in stderr
 
 
 @pytest.mark.embedding
-def test_logging_write_info_after_initialize_with_error_level(rootdir, run_subprocess, pytestconfig):
+def test_logging_write_info_after_initialize_with_error_level(
+    rootdir, run_subprocess, pytestconfig
+):
     """Test that no output is written when an info is logged when configured at the error level."""
     stderr = _run_embedding_log_test(
         run_subprocess, rootdir, pytestconfig, "log_info_after_initialize_with_error_level"
@@ -118,7 +127,9 @@ def test_addin_configuration(rootdir, run_subprocess, pytestconfig, addin_config
 
 
 @pytest.mark.embedding
-def test_logging_write_error_after_initialize_with_info_level(rootdir, run_subprocess, pytestconfig):
+def test_logging_write_error_after_initialize_with_info_level(
+    rootdir, run_subprocess, pytestconfig
+):
     """Test that output is written when an error is logged when configured at the info level."""
     stderr = _run_embedding_log_test(
         run_subprocess, rootdir, pytestconfig, "log_error_after_initialize_with_info_level"
@@ -129,7 +140,9 @@ def test_logging_write_error_after_initialize_with_info_level(rootdir, run_subpr
 @pytest.mark.embedding
 def test_logging_level_before_and_after_initialization(rootdir, run_subprocess, pytestconfig):
     """Test logging level API  before and after initialization."""
-    stdout, stderr = _run_embedding_log_test_process(rootdir, run_subprocess, pytestconfig, "log_check_can_log_message", True)
+    stdout, stderr = _run_embedding_log_test_process(
+        rootdir, run_subprocess, pytestconfig, "log_check_can_log_message", True
+    )
     stdout = stdout.decode()
     stderr = stderr.decode()
     _assert_success(stdout, True)
