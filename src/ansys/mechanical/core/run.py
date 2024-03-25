@@ -38,7 +38,7 @@ from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 # TODO - add timeout
 
 
-async def _read_and_display(cmd, env):
+async def _read_and_display(cmd, env, do_display: bool):
     """Read command's stdout and stderr and display them as they are processed."""
     # start process
     process = await asyncio.create_subprocess_exec(*cmd, stdout=PIPE, stderr=PIPE, env=env)
@@ -56,7 +56,8 @@ async def _read_and_display(cmd, env):
             line = future.result()
             if line:  # not EOF
                 buf.append(line)  # save for later
-                display.write(line)  # display in terminal
+                if do_display:
+                    display.write(line)  # display in terminal
                 # schedule to read the next line
                 tasks[asyncio.Task(stream.readline())] = buf, stream, display
 
@@ -66,7 +67,7 @@ async def _read_and_display(cmd, env):
     return rc, b"".join(stdout), b"".join(stderr)
 
 
-def _run(args, env, check=False):
+def _run(args, env, check=False, display=False):
     if os.name == "nt":
         loop = asyncio.ProactorEventLoop()  # for subprocess' pipes on Windows
         asyncio.set_event_loop(loop)
@@ -74,12 +75,10 @@ def _run(args, env, check=False):
         loop = asyncio.get_event_loop()
     try:
         print("running subprocess")
-        rc, *output = loop.run_until_complete(_read_and_display(args, env))
+        rc, *output = loop.run_until_complete(_read_and_display(args, env, display))
         if rc and check:
-            print("checking return code")
             sys.exit("child failed with '{}' exit code".format(rc))
     finally:
-        print("finally")
         if os.name == "nt":
             loop.close()
     return output
@@ -251,7 +250,7 @@ def cli(
         #        the user only sees the message when the server is ready.
         print(f"Serving on port {port}")
 
-    _run(args, env)
+    _run(args, env, False, True)
 
     if private_appdata:
         profile.cleanup()
