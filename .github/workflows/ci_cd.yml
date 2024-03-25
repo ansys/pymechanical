@@ -239,6 +239,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 9
     #needs: [style, revn-variations]
+    needs: [revn-variations]
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
