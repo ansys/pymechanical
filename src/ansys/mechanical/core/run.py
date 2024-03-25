@@ -56,7 +56,7 @@ async def _read_and_display(cmd, env, do_display: bool):
             line = future.result()
             if line:  # not EOF
                 buf.append(line)  # save for later
-                if do_display:
+                if 1 or do_display:
                     display.write(line)  # display in terminal
                 # schedule to read the next line
                 tasks[asyncio.Task(stream.readline())] = buf, stream, display
