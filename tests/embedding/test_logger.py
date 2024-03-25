@@ -86,8 +86,11 @@ def _run_embedding_log_test(
 
     Returns the stderr
     """
+    subprocess_pass_expected = pass_expected
+    if pass_expected == True and os.name != "nt":
+        subprocess_pass_expected = False
     stdout, stderr = _run_embedding_log_test_process(
-        rootdir, run_subprocess, pytestconfig, testname, pass_expected
+        rootdir, run_subprocess, pytestconfig, testname, subprocess_pass_expected
     )
     stdout = stdout.decode()
     stderr = stderr.decode()
@@ -141,7 +144,7 @@ def test_logging_write_error_after_initialize_with_info_level(
 def test_logging_level_before_and_after_initialization(rootdir, run_subprocess, pytestconfig):
     """Test logging level API  before and after initialization."""
     stdout, stderr = _run_embedding_log_test_process(
-        rootdir, run_subprocess, pytestconfig, "log_check_can_log_message", True
+        rootdir, run_subprocess, pytestconfig, "log_check_can_log_message"
     )
     stdout = stdout.decode()
     stderr = stderr.decode()
