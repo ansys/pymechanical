@@ -198,7 +198,6 @@ def test_private_appdata(pytestconfig, run_subprocess, rootdir):
     version = pytestconfig.getoption("ansys_version")
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
-    print("running first program")
     run_subprocess([sys.executable, embedded_py, version, "True", "Set"])
     stdout, _ = run_subprocess([sys.executable, embedded_py, version, "True", "Run"])
     stdout = stdout.decode()
