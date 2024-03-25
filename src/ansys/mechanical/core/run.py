@@ -56,12 +56,11 @@ async def _read_and_display(cmd, env, do_display: bool):
             line = future.result()
             if line:  # not EOF
                 buf.append(line)  # save for later
-                if 1 or do_display:
+                if do_display:
                     display.write(line)  # display in terminal
                 # schedule to read the next line
                 tasks[asyncio.Task(stream.readline())] = buf, stream, display
 
-    print("waiting for process to exit")
     # wait for the process to exit
     rc = await process.wait()
     return rc, b"".join(stdout), b"".join(stderr)
@@ -74,7 +73,6 @@ def _run(args, env, check=False, display=False):
     else:
         loop = asyncio.get_event_loop()
     try:
-        print("running subprocess")
         rc, *output = loop.run_until_complete(_read_and_display(args, env, display))
         if rc and check:
             sys.exit("child failed with '{}' exit code".format(rc))

@@ -238,8 +238,7 @@ jobs:
     name: Embedding testing and coverage
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    #needs: [style, revn-variations]
-    needs: [revn-variations]
+    needs: [style, revn-variations]
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
@@ -247,7 +246,6 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ['3.9', '3.10', '3.11', '3.12']
-        foobar: ['a', 'b', 'c']
 
     steps:
       - uses: actions/checkout@v4
