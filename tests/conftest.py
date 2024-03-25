@@ -167,7 +167,7 @@ _CHECK_PROCESS_RETURN_CODE = os.name == "nt"
 
 @pytest.fixture()
 def run_subprocess():
-    def func(args, env=None, check:bool=None):
+    def func(args, env=None, check: bool = None):
         if check is None:
             check = _CHECK_PROCESS_RETURN_CODE
         stdout, stderr = _run(args, env, check)
