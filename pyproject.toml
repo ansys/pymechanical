@@ -30,7 +30,7 @@ classifiers = [
 ]
 dependencies = [
     "ansys_api_mechanical==0.1.1",
-    "ansys-mechanical-env==0.1.4",
+    "ansys-mechanical-env==0.1.5",
     "ansys-platform-instancemanagement>=1.0.1",
     "ansys-pythonnet>=3.1.0rc2",
     "ansys-tools-path>=0.3.1",
