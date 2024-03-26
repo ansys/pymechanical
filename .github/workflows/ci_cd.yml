@@ -454,6 +454,8 @@ jobs:
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 0
         run: |
           . /env/bin/activate
+          unset PYMECHANICAL_PORT
+          unset PYMECHANICAL_START_INSTANCE
           xvfb-run make -C doc pdf > doc_pdf_output.txt 2>&1 || true
           cat doc_pdf_output.txt
           ls doc/_build/latex/
