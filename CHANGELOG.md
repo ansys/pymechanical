@@ -10,6 +10,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Added
 - Add usage of cli under embedding ([#650](https://github.com/ansys/pymechanical/pull/650))
 - Block 32 bit python for embedding ([#647](https://github.com/ansys/pymechanical/pull/647))
+- Add embedding_scripts marker ([#662](https://github.com/ansys/pymechanical/pull/662))
 
 ### Fixed
 - Fixed make pdf action in doc build ([#652](https://github.com/ansys/pymechanical/pull/652))
