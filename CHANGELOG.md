@@ -13,6 +13,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Fixed
 - Fixed make pdf action in doc build ([#652](https://github.com/ansys/pymechanical/pull/652))
+- Fix pdf generation
 
 ### Changed
 
