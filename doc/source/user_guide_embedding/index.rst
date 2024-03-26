@@ -7,7 +7,7 @@ This section provides an overview of how you use PyMechanical to embed
 an instance of Mechanical in Python.
 
 ..
-   This toctreemust be a top-level index to get it to show up in
+   This toctree must be a top-level index to get it to show up in
    pydata_sphinx_theme.
 
 .. toctree::
@@ -55,15 +55,15 @@ uses the same Addin configuration as standalone Mechanical. To customize Addins,
 Diagnosing problems with embedding
 ----------------------------------
 
-In some cases, debugging why the embedded Mechanical instance is not working requires additional logging.
+In some cases, debugging the embedded Mechanical instance will require additional logging.
 For information on how to configure logging, see :ref:`ref_embedding_user_guide_logging`.
 
 Running PyMechanical embedding scripts inside Mechanical with IronPython
 ------------------------------------------------------------------------
 
 If your PyMechanical embedding script does not use any other third-party Python package, such as `NumPy`,
-it is possible to adapt it so that it can run inside of Mechanical with IronPython with scripting inside
-Mechanical's command line interface. For instance, the consider the following PyMechanical code:
+it is possible to adapt it so that it can run inside of Mechanical with IronPython.
+The scripting occurs inside Mechanical's command line interface. For instance, consider the following PyMechanical code:
 
 .. code:: python
 
@@ -105,7 +105,7 @@ versions can be specified using ``-r`` flag. Use ``-h`` for more information.
 
    .. code::
 
-      "C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe -DSApplet -AppModeMech -script file.py"
+      "C:/Program Files/ANSYS Inc/v241/aisol/bin/winx64/AnsysWBU.exe -DSApplet -AppModeMech -script file.py"
 
    PowerShell users can run the preceding command without including the opening and
    closing quotation marks.
