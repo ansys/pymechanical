@@ -33,19 +33,6 @@ clean-except-examples:
 # customized to build the pdf rather than using latexpdf due to various issues
 # with our docs like GIFs being written as PNG.
 pdf:
-	@echo "Generating LaTeX files from documentation source..."
 	@$(SPHINXBUILD) -M latex "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
-	@echo "LaTeX files generated successfully."
-
-	@echo "Changing directory to LaTeX build directory..."
-	@cd $(BUILDDIR)/latex && \
-	echo "Current directory: $(PWD)" && \
-	echo "Listing files in directory:" && \
-	ls -l && \
-	echo "Running latexmk to compile LaTeX files..." && \
-	latexmk -r latexmkrc -pdf *.tex -interaction=nonstopmode || true
-	@echo "LaTeX compilation completed."
-
-	@echo "Checking for existence of PDF files..."
-	@(test -f $(BUILDDIR)/latex/*.pdf && echo "PDF files exist.") || (echo "No PDF files found."; exit 1)
-	@echo "PDF generation successful."
+	cd $(BUILDDIR)/latex && latexmk -r latexmkrc -pdf *.tex -interaction=nonstopmode || true
+	(test -f $(BUILDDIR)/latex/*.pdf && echo pdf exists) || exit 1
