@@ -253,26 +253,21 @@ jobs:
         run: |
           apt update
           apt install --reinstall ca-certificates
-          apt install software-properties-common -y
+          apt install lsb-release xvfb software-properties-common -y
           add-apt-repository ppa:deadsnakes/ppa -y
-          apt install python${{ matrix.python-version }} -y
-          ln -s /usr/bin/python${{ matrix.python-version }} /usr/bin/python
-          apt install python${{ matrix.python-version }}-venv -y
-          python -m ensurepip --default-pip
-          pip3 install --upgrade pip
-          python --version
-          pip3 --version
+          apt install -y python${{ env.MAIN_PYTHON_VERSION }} python${{ env.MAIN_PYTHON_VERSION }}-venv
+          python${{ env.MAIN_PYTHON_VERSION }} -m venv /env
 
       - name: Install dependencies
         run: |
-          apt install -y lsb-release xvfb
-          pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
-          pip3 install --upgrade pip flit
+          . /env/bin/activate
+          pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
+          pip install --upgrade pip flit
 
       - name: Install packages for testing
         run: |
-          python -m pip install ansys-mechanical-env
-          pip install .[tests]
+          . /env/bin/activate
+          pip install -e .[tests]
 
       - name: Unit Testing and coverage
         env:
@@ -282,7 +277,9 @@ jobs:
           ANSYS_WORKBENCH_LOGGING: 0
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
           NUM_CORES: 1
+          PYTHONUNBUFFERED: 1
         run: |
+          . /env/bin/activate
           xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml || true
 
       - name: Upload coverage results
