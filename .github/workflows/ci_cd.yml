@@ -267,7 +267,7 @@ jobs:
       - name: Install packages for testing
         run: |
           . /env/bin/activate
-          pip install .[tests]
+          pip install -e .[tests]
 
       - name: Unit Testing and coverage
         env:
