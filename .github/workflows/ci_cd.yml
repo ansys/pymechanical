@@ -425,7 +425,7 @@ jobs:
           . /env/bin/activate
           pip install -e .[doc]
 
-      - name: Build docs
+      - name: Build html
         env:
           NUM_CORES: 1
           LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
@@ -433,42 +433,41 @@ jobs:
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 0
         run: |
           . /env/bin/activate
-          # Make html or pdf doc
-          make_doc() {
-            # $1 is the type of file we are creating (html or pdf)
+          unset PYMECHANICAL_PORT
+          unset PYMECHANICAL_START_INSTANCE
+          xvfb-run mechanical-env make -C doc html > doc_html_output.txt 2>&1 || true
+          cat $output_file
+          echo done running make
 
-            # Need to unset PYMECHANICAL_PORT and PYMECHANICAL_START_INSTANCE when running code containing remote sessions
-            unset PYMECHANICAL_PORT
-            unset PYMECHANICAL_START_INSTANCE
+          echo "validating output of build"
+          if grep -q "build succeeded" doc_html_output.txt; then
+            echo "html building succeeded"
+          else
+            echo "html building failed"
+            exit 1
+          fi
 
-            output_file=doc_$1_output.txt
-            xvfb-run mechanical-env make -C doc $1 > $output_file 2>&1 || true
-            cat $output_file
-            echo done running make
-            validate_output $output_file
-          }
+      - name: Build pdf
+        env:
+          NUM_CORES: 1
+          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
+          ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
+          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 0
+        run: |
+          . /env/bin/activate
+          unset PYMECHANICAL_PORT
+          unset PYMECHANICAL_START_INSTANCE
+          xvfb-run mechanical-env make -C doc pdf > doc_pdf_output.txt 2>&1 || true
+          cat $output_file
+          echo done running make
 
-          # Validate that the html or pdf build succeeded
-          validate_output() {
-            echo "validating output of build"
-            # $1 is the file we are checking
-            # cat $1
-            #
-            # Check if "build succeeded" string is present in doc_build_output.txt
-            #
-            if grep -q "build succeeded" $1; then
-              echo "Documentation building succeeded"
-            else
-              echo "Documentation building failed"
-              exit 1
-            fi
-          }
-
-          # Make the html doc & validate results
-          make_doc html
-
-          # Make the pdf doc & validate results
-          make_doc pdf
+          echo "validating output of build"
+          if grep -q "build succeeded" doc_pdf_output.txt; then
+            echo "pdf building succeeded"
+          else
+            echo "pdf building failed"
+            exit 1
+          fi
 
       - name: Upload HTML Documentation
         uses: actions/upload-artifact@v4
