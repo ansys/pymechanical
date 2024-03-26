@@ -436,8 +436,7 @@ jobs:
           unset PYMECHANICAL_PORT
           unset PYMECHANICAL_START_INSTANCE
           xvfb-run mechanical-env make -C doc html > doc_html_output.txt 2>&1 || true
-          cat $output_file
-          echo done running make
+          cat doc_html_output.txt
 
           echo "validating output of build"
           if grep -q "build succeeded" doc_html_output.txt; then
@@ -458,8 +457,8 @@ jobs:
           unset PYMECHANICAL_PORT
           unset PYMECHANICAL_START_INSTANCE
           xvfb-run mechanical-env make -C doc pdf > doc_pdf_output.txt 2>&1 || true
-          cat $output_file
-          echo done running make
+          cat doc_pdf_output.txt
+          ls doc/_build/latex/
 
           echo "validating output of build"
           if grep -q "build succeeded" doc_pdf_output.txt; then
