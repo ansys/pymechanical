@@ -18,6 +18,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 
 ### Dependencies
 - Bump `ansys-mechanical-env` from 0.1.4 to 0.1.5 ([#658](https://github.com/ansys/pymechanical/pull/658))
+- Bump `pytest-cov` from 4.1.0 to 5.0.0 ([#657](https://github.com/ansys/pymechanical/pull/657))
 
 
 ## [0.10.8](https://github.com/ansys/pymechanical/releases/tag/v0.10.8) - March 18 2024
