@@ -12,7 +12,7 @@ from datetime import datetime
 import os
 import warnings
 
-from ansys.tools.path import find_mechanical, version_from_path
+# from ansys.tools.path import find_mechanical, version_from_path
 from ansys_sphinx_theme import ansys_favicon, get_version_match, pyansys_logo_black
 from sphinx_gallery.sorting import FileNameSortKey
 
@@ -29,18 +29,18 @@ pymechanical.BUILDING_GALLERY = True
 
 # TODO: The version number here is duplicated does not depend
 #       on the container version chosen by the pipeline!
-try:
-    path, version = find_mechanical()
-    version = version_from_path("mechanical", path)
-except:
-    version = 241
+# try:
+#     path, version = find_mechanical()
+#     version = version_from_path("mechanical", path)
+# except:
+#     version = 241
 
-EMBEDDED_APP = pymechanical.App(version=version)
+# EMBEDDED_APP = pymechanical.App(version=version)
 
-num_cores = os.environ.get("NUM_CORES", None)
-if num_cores != None:
-    config = EMBEDDED_APP.ExtAPI.Application.SolveConfigurations["My Computer"]
-    config.SolveProcessSettings.MaxNumberOfCores = int(num_cores)
+# num_cores = os.environ.get("NUM_CORES", None)
+# if num_cores != None:
+#     config = EMBEDDED_APP.ExtAPI.Application.SolveConfigurations["My Computer"]
+#     config.SolveProcessSettings.MaxNumberOfCores = int(num_cores)
 
 # suppress annoying matplotlib bug
 warnings.filterwarnings(

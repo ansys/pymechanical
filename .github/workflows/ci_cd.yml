@@ -454,7 +454,7 @@ jobs:
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 0
         run: |
           . /env/bin/activate
-          xvfb-run mechanical-env make -C doc pdf > doc_pdf_output.txt 2>&1 || true
+          xvfb-run make -C doc pdf > doc_pdf_output.txt 2>&1 || true
           cat doc_pdf_output.txt
           ls doc/_build/latex/
 
