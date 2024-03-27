@@ -177,8 +177,6 @@ def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
 
     # Run embedded instance in virtual env with pythonnet installed
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
-    print(embedded_py)
-    print(os.path.isfile(embedded_py))
     _, stderr = run_subprocess(
         [test_env.python, embedded_py, pytestconfig.getoption("ansys_version")]
     )

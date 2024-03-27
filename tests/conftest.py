@@ -79,9 +79,14 @@ def pytest_collection_modifyitems(config, items):
 
     # skip embedding tests unless the mark is specified
     skip_embedding = pytest.mark.skip(
-        reason="embedding not selected for pytest run (`pytest -m embedding`).  Skip by default"
+        reason="""embedding not selected for pytest run
+        (`pytest -m embedding` or `pytest -m embedding_scripts`).  Skip by default"""
     )
-    [item.add_marker(skip_embedding) for item in items if "embedding" in item.keywords]
+    [
+        item.add_marker(skip_embedding)
+        for item in items
+        if ("embedding" or "embedding_scripts") in item.keywords
+    ]
 
     # TODO - skip python_env tests unless the mark is specified. (The below doesn't work!)
     # skip_python_env = pytest.mark.skip(
