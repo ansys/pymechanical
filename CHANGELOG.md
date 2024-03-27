@@ -5,25 +5,9 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 This document follows the conventions laid out in [Keep a CHANGELOG](https://keepachangelog.com/en/1.0.0).
 
-## [Unreleased]()
+This project uses [towncrier](https://towncrier.readthedocs.io/) and the changes for the upcoming release can be found in <https://github.com/ansys/pymechanical/tree/main/doc/changelog.d/>.
 
-### Added
-- Add usage of cli under embedding ([#650](https://github.com/ansys/pymechanical/pull/650))
-- Block 32 bit python for embedding ([#647](https://github.com/ansys/pymechanical/pull/647))
-- Add embedding_scripts marker ([#662](https://github.com/ansys/pymechanical/pull/662))
-
-### Fixed
-- Fixed make pdf action in doc build ([#652](https://github.com/ansys/pymechanical/pull/652))
-- Use _run for better i/o in tests ([#655](https://github.com/ansys/pymechanical/pull/655))
-- Fix pdf action ([#664](https://github.com/ansys/pymechanical/pull/664))
-
-### Changed
-- Update ``pre-commit`` [#646](https://github.com/ansys/pymechanical/pull/646)
-
-### Dependencies
-- Bump `ansys-mechanical-env` from 0.1.4 to 0.1.5 ([#658](https://github.com/ansys/pymechanical/pull/658))
-- Bump `pytest-cov` from 4.1.0 to 5.0.0 ([#657](https://github.com/ansys/pymechanical/pull/657))
-
+<!-- towncrier release notes start -->
 
 ## [0.10.8](https://github.com/ansys/pymechanical/releases/tag/v0.10.8) - March 18 2024
 
