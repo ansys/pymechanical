@@ -88,8 +88,18 @@ def _get_default_version() -> int:
     return int_version
 
 
+def __check_python_interpreter_architecture():
+    """Embedding support only 64 bit architecture."""
+    import platform
+
+    if platform.architecture()[0] != "64bit":
+        raise Exception("Mechanical Embedding requires a 64-bit Python environment.")
+
+
 def initialize(version=None):
     """Initialize Mechanical embedding."""
+    __check_python_interpreter_architecture()  # blocks 32 bit python
+
     global INITIALIZED_VERSION
     if INITIALIZED_VERSION != None:
         assert INITIALIZED_VERSION == version
