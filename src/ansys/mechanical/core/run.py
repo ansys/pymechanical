@@ -62,7 +62,9 @@ async def _read_and_display(cmd, env, do_display: bool):
                 tasks[asyncio.Task(stream.readline())] = buf, stream, display
 
     # wait for the process to exit
+    print("waiting for process")
     rc = await process.wait()
+    print("done waiting")
     return rc, b"".join(stdout), b"".join(stderr)
 
 

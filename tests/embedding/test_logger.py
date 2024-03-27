@@ -98,7 +98,7 @@ def _run_embedding_log_test(
     return stderr
 
 
-@pytest.mark.embedding
+@pytest.mark.embedding_scripts
 def test_logging_write_log_before_init(rootdir, run_subprocess, pytestconfig):
     """Test that an error is thrown when trying to log before initializing"""
     stderr = _run_embedding_log_test(
@@ -107,7 +107,7 @@ def test_logging_write_log_before_init(rootdir, run_subprocess, pytestconfig):
     assert "Can't log to the embedding logger until Mechanical is initialized" in stderr
 
 
-@pytest.mark.embedding
+@pytest.mark.embedding_scripts
 def test_logging_write_info_after_initialize_with_error_level(
     rootdir, run_subprocess, pytestconfig
 ):
@@ -119,7 +119,7 @@ def test_logging_write_info_after_initialize_with_error_level(
 
 
 @pytest.mark.parametrize("addin_configuration", ["Mechanical", "WorkBench"])
-@pytest.mark.embedding
+@pytest.mark.embedding_scripts
 @pytest.mark.minimum_version(241)
 def test_addin_configuration(rootdir, run_subprocess, pytestconfig, addin_configuration):
     """Test that mechanical can start with both the Mechanical and WorkBench configuration."""
@@ -129,7 +129,7 @@ def test_addin_configuration(rootdir, run_subprocess, pytestconfig, addin_config
     assert f"{addin_configuration} configuration!" in stderr
 
 
-@pytest.mark.embedding
+@pytest.mark.embedding_scripts
 def test_logging_write_error_after_initialize_with_info_level(
     rootdir, run_subprocess, pytestconfig
 ):
@@ -140,7 +140,7 @@ def test_logging_write_error_after_initialize_with_info_level(
     assert "Will no one rid me of this turbulent priest?" in stderr
 
 
-@pytest.mark.embedding
+@pytest.mark.embedding_scripts
 def test_logging_level_before_and_after_initialization(rootdir, run_subprocess, pytestconfig):
     """Test logging level API  before and after initialization."""
     stdout, stderr = _run_embedding_log_test_process(
