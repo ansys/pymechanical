@@ -41,7 +41,6 @@ This project uses [towncrier](https://towncrier.readthedocs.io/) and the changes
 - Bump `matplotlib` from 3.8.2 to 3.8.3 ([#607](https://github.com/ansys/pymechanical/pull/607))
 - Bump `ansys-mechanical-env` from 0.1.3 to 0.1.4 ([#624](https://github.com/ansys/pymechanical/pull/624))
 - Bump `pyvista` from 0.43.3 to 0.43.4 ([#643](https://github.com/ansys/pymechanical/pull/643))
-- Bump `tj-actions/changed-files` from 42 to 43 ([#645](https://github.com/ansys/pymechanical/pull/645))
 
 ## [0.10.7](https://github.com/ansys/pymechanical/releases/tag/v0.10.7) - February 13 2024
 
