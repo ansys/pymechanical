@@ -80,45 +80,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
           # use-python-cache: false
 
-  changelog-check:
-    name: Changelog Update Check
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.CHANGELOG_TOKEN }}
-
-      - uses: dangoslen/dependabot-changelog-helper@v3
-        if: ${{ github.actor == 'dependabot[bot]' }}
-        with:
-          activationLabel: 'dependabot'
-          changelogPath: './CHANGELOG.md'
-
-      - uses: stefanzweifel/git-auto-commit-action@v5
-        if: ${{ github.actor == 'dependabot[bot]' }}
-        with:
-          commit_message: "Updated Changelog"
-
-      - name: Get all doc files that have changed
-        id: changed-files-yaml
-        uses: tj-actions/changed-files@v42
-        with:
-          files_yaml: |
-            doc:
-              - 'CHANGELOG.md'
-
-      - name: Check Changelog Edited
-        run: |
-          if [[ "${{ steps.changed-files-yaml.outputs.doc_all_changed_files }}" == "CHANGELOG.md" ]]; then
-              echo "CHANGELOG.md was updated."
-          elif [[ "${{ github.actor }}" == "dependabot[bot]" ]]; then
-              echo "CHANGELOG.md was autoupdated... Workflow will trigger."
-          else
-              echo "Please update CHANGELOG.md before merging the pull request."
-              exit 1
-          fi
-
   revn-variations:
     name: Save variations of revn
     runs-on: ubuntu-latest
