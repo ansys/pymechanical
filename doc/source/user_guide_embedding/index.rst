@@ -98,7 +98,7 @@ versions can be specified using ``-r`` flag. Use ``-h`` for more information.
 
 .. note::
 
-   Alternately user can use the following commands in the command of the Windows platform and the terminal
+   Alternately user can use the following commands in the command prompt of Windows and the terminal
    for Linux systems.
 
    **On Windows**
