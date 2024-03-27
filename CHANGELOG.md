@@ -14,8 +14,10 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Fixed
 - Fixed make pdf action in doc build ([#652](https://github.com/ansys/pymechanical/pull/652))
 - Use _run for better i/o in tests ([#655](https://github.com/ansys/pymechanical/pull/655))
+- Fix pdf action ([#664](https://github.com/ansys/pymechanical/pull/664))
 
 ### Changed
+- Update ``pre-commit`` [#646](https://github.com/ansys/pymechanical/pull/646)
 
 ### Dependencies
 - Bump `ansys-mechanical-env` from 0.1.4 to 0.1.5 ([#658](https://github.com/ansys/pymechanical/pull/658))
