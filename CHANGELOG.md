@@ -17,6 +17,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 - Fix pdf action ([#664](https://github.com/ansys/pymechanical/pull/664))
 
 ### Changed
+- Update ``pre-commit`` [#646](https://github.com/ansys/pymechanical/pull/646)
 
 ### Dependencies
 - Bump `ansys-mechanical-env` from 0.1.4 to 0.1.5 ([#658](https://github.com/ansys/pymechanical/pull/658))
