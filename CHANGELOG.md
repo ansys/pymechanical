@@ -14,6 +14,7 @@ This document follows the conventions laid out in [Keep a CHANGELOG](https://kee
 ### Fixed
 - Fixed make pdf action in doc build ([#652](https://github.com/ansys/pymechanical/pull/652))
 - Use _run for better i/o in tests ([#655](https://github.com/ansys/pymechanical/pull/655))
+- Fix pdf action ([#664](https://github.com/ansys/pymechanical/pull/664))
 
 ### Changed
 
