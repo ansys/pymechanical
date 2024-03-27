@@ -161,11 +161,10 @@ def test_app_getters_notstale(embedded_app):
     assert model.Name != "b"
 
 
-@pytest.mark.embedding
+@pytest.mark.embedding_scripts
 @pytest.mark.python_env
 def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
     """Test Python.NET warning of the embedded instance using a test-scoped Python environment."""
-
     # Install pymechanical
     subprocess.check_call(
         [test_env.python, "-m", "pip", "install", "-e", "."],
@@ -194,7 +193,6 @@ def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
 @pytest.mark.python_env
 def test_private_appdata(pytestconfig, run_subprocess, rootdir):
     """Test embedded instance does not save ShowTriad using a test-scoped Python environment."""
-
     version = pytestconfig.getoption("ansys_version")
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
