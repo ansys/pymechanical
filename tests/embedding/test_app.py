@@ -177,9 +177,15 @@ def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
 
     # Run embedded instance in virtual env with pythonnet installed
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
-    _, stderr = run_subprocess(
-        [test_env.python, embedded_py, pytestconfig.getoption("ansys_version")]
+    # _, stderr = run_subprocess(
+    #     [test_env.python, embedded_py, pytestconfig.getoption("ansys_version")]
+    # )
+    check_warning = subprocess.Popen(
+        [test_env.python, embedded_py, pytestconfig.getoption("ansys_version")],
+        stderr=subprocess.PIPE,
+        env=test_env.env,
     )
+    stdout, stderr = check_warning.communicate()
 
     # If UserWarning & pythonnet are in the stderr output, set warning to True.
     # Otherwise, set warning to False
