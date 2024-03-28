@@ -186,6 +186,8 @@ def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
         env=test_env.env,
     )
     stdout, stderr = check_warning.communicate()
+    print("printing stderr decoded:")
+    print(stderr.decode())
 
     # If UserWarning & pythonnet are in the stderr output, set warning to True.
     # Otherwise, set warning to False
