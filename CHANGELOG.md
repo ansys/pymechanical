@@ -9,6 +9,33 @@ This project uses [towncrier](https://towncrier.readthedocs.io/) and the changes
 
 <!-- towncrier release notes start -->
 
+## [0.10.9](https://github.com/ansys/pymechanical/releases/tag/v0.10.9) - 2024-03-27
+
+
+### Added
+
+- Block 32 bit python for embedding [#647](https://github.com/ansys/pymechanical/pull/647)
+- Add usage of cli under embedding [#650](https://github.com/ansys/pymechanical/pull/650)
+- Add changelog action [#653](https://github.com/ansys/pymechanical/pull/653)
+
+
+### Fixed
+
+- Fixed make pdf action in doc build [#652](https://github.com/ansys/pymechanical/pull/652)
+- Use _run for better i/o in tests [#655](https://github.com/ansys/pymechanical/pull/655)
+- Fix pdf action [#664](https://github.com/ansys/pymechanical/pull/664)
+
+
+### Dependencies
+
+- Bump `pytest-cov` from 4.1.0 to 5.0.0 [#657](https://github.com/ansys/pymechanical/pull/657)
+- Bump `ansys-mechanical-env` from 0.1.4 to 0.1.5 [#658](https://github.com/ansys/pymechanical/pull/658)
+
+
+### Miscellaneous
+
+- DOC: Improve documentation for the embedded instances. [#663](https://github.com/ansys/pymechanical/pull/663)
+
 ## [0.10.8](https://github.com/ansys/pymechanical/releases/tag/v0.10.8) - March 18 2024
 
 ### Added
