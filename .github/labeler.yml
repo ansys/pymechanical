@@ -1,12 +1,15 @@
 documentation:
 - changed-files:
   - any-glob-to-any-file: ['doc/**/*', 'examples/**/*']
+
 maintenance:
 - changed-files:
-  - any-glob-to-any-file: ['.github/**/*', 'codecov.yml', '.flake8', '.coveragerc', '.codespellrc', '.pre-commit-config.yaml', 'pytest.ini', 'tox.ini']
+  - any-glob-to-any-file: ['.github/**/*', 'codecov.yml', '.flake8', '.coveragerc', '.codespellrc', '.pre-commit-config.yaml', 'tox.ini']
+
 dependencies:
 - changed-files:
-  - any-glob-to-any-file: ['pyproject.toml', 'requirements/*']
-CI/CD:
+  - any-glob-to-any-file: ['pyproject.toml']
+
+ci/cd:
 - changed-files:
-  - any-glob-to-any-file: ['.github/**/*', '.ci/**/*', 'docker/**/*']
+  - any-glob-to-any-file: ['.github/**/*', 'docker/**/*']
