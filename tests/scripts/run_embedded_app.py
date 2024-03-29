@@ -53,7 +53,8 @@ def print_showtriad(version, appdata_option):
 if __name__ == "__main__":
     version = int(sys.argv[1])
     if len(sys.argv) == 2:
-        launch_app(version, False)
+        app = launch_app(version, False)
+        app.close()
         sys.exit(0)
 
     appdata_option = sys.argv[2]

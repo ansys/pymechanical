@@ -172,16 +172,17 @@ def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
         cwd=rootdir,
         env=test_env.env,
     )
-
+    print("Pymechanical installed")
     # Install pythonnet
     subprocess.check_call([test_env.python, "-m", "pip", "install", "pythonnet"], env=test_env.env)
+    print("pythonnet installed")
 
     # Run embedded instance in virtual env with pythonnet installed
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
     _, stderr = run_subprocess(
         [test_env.python, embedded_py, pytestconfig.getoption("ansys_version")]
     )
-
+    print("script run completed")
     # If UserWarning & pythonnet are in the stderr output, set warning to True.
     # Otherwise, set warning to False
     warning = True if "UserWarning" and "pythonnet" in stderr.decode() else False
@@ -199,7 +200,9 @@ def test_private_appdata(pytestconfig, run_subprocess, rootdir):
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
     run_subprocess([sys.executable, embedded_py, version, "True", "Set"])
+    print("True Set")
     stdout, _ = run_subprocess([sys.executable, embedded_py, version, "True", "Run"])
+    print("True Run")
     stdout = stdout.decode()
     assert "ShowTriad value is True" in stdout
 
@@ -213,8 +216,11 @@ def test_normal_appdata(pytestconfig, run_subprocess, rootdir):
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
     run_subprocess([sys.executable, embedded_py, version, "False", "Set"])
+    print("False Set")
     stdout, _ = run_subprocess([sys.executable, embedded_py, version, "False", "Run"])
+    print("False Run")
     run_subprocess([sys.executable, embedded_py, version, "False", "Reset"])
+    print("False Reset")
 
     stdout = stdout.decode()
     # Assert ShowTriad was set to False for regular embedded session
