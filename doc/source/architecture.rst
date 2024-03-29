@@ -25,7 +25,7 @@ Before discussing how Mechanical's API is implemented, we discuss a software
 design pattern known as the *command pattern*. This pattern can be used in many
 programming languages. For a general description (using the Java programming
 language) of the command pattern, see `Command Design Pattern
-<https://howtodoinjava.com/design-patterns/behavioral/command-pattern/>` in the
+<https://howtodoinjava.com/design-patterns/behavioral/command-pattern/>`_ in the
 *HowToDoInJava* newsletter. Our own brief explanation follows.
 
 Command pattern
@@ -139,7 +139,7 @@ practice, the internet protocols provide useful conventions and standards that
 have been tried and tested.
 
 While standards are useful, it is not practical for every developer to craft
-packets to send over the wire by hand. In many programming languages, libraries
+packets to send over the wire by hand. In many programming languages, libraries,
 and tools wrap around the most popular conventions of internet protocols. These
 libraries and tools can be opinionated in how RPCs can and should be written.
 Some offer low-level method invocation facilities, like gRPC and zeroMQ. Others
@@ -178,7 +178,7 @@ This approach is known as *Remote Method Invocation* (RMI). RMI was widely
 implemented using CORBA, DCOM, Remoting (.NET), and Java RMI. However, this
 approach has fallen out of favor with the rise of the internet, as it was
 observed that it does not scale in the same way that something like REST does.
-As it became less popular, tools and library support fell away. For instance,
+As it became less popular, tools, and library support fell away. For instance,
 recent versions of .NET do not implement the Remoting library, and COM/DCOM are
 no longer taken seriously by web apps.
 
