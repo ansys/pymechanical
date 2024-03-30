@@ -147,7 +147,9 @@ def embedded_app(pytestconfig, request):
     if terminal_reporter is not None:
         terminal_reporter.write_line(f"\t{startup_time}\tStarting Mechanical")
     yield EMBEDDED_APP
-    EMBEDDED_APP._dispose()
+    if EMBEDDED_APP is not None:
+        EMBEDDED_APP._dispose()
+        EMBEDDED_APP = None
 
 
 @pytest.fixture(autouse=True)
@@ -160,6 +162,7 @@ def mke_app_reset(request):
     if terminal_reporter is not None:
         terminal_reporter.write_line(f"starting test {request.function.__name__} - file new")
     EMBEDDED_APP.new()
+    print("new app")
 
 
 _CHECK_PROCESS_RETURN_CODE = os.name == "nt"
