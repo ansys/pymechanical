@@ -21,17 +21,16 @@
 # SOFTWARE.
 
 """Launch embedded instance."""
-# import logging
+import logging
 import sys
 
 import ansys.mechanical.core as pymechanical
-
-# from ansys.mechanical.core.embedding.logger import Configuration
+from ansys.mechanical.core.embedding.logger import Configuration
 
 
 def launch_app(version, private_appdata):
     """Launch embedded instance of app."""
-    # Configuration.configure(level=logging.DEBUG, to_stdout=True, base_directory=None)
+    Configuration.configure(level=logging.DEBUG, to_stdout=True, base_directory=None)
     app = pymechanical.App(version=version, private_appdata=private_appdata)
     return app
 

@@ -172,10 +172,8 @@ def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
         cwd=rootdir,
         env=test_env.env,
     )
-    print("Pymechanical installed")
     # Install pythonnet
     subprocess.check_call([test_env.python, "-m", "pip", "install", "pythonnet"], env=test_env.env)
-    print("pythonnet installed")
 
     # Run embedded instance in virtual env with pythonnet installed
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
