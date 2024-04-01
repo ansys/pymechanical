@@ -5,7 +5,7 @@ Libraries
 
 .. note::
 
-    This is an experimental feature. Some of these libraries will not work.
+    This is an experimental feature. Some of these libraries may not work.
 
 Most of Mechanical's scripting APIs are implemented in C#. However, there are a small number
 of Python modules that are distributed with the installation of Mechanical that can be used
