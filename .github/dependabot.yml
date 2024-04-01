@@ -1,13 +1,58 @@
 version: 2
 updates:
+
   - package-ecosystem: "pip" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+    assignees:
+      - "ansys/pymechanical-maintainers"
+    commit-message:
+      prefix: "MAINT"
     labels:
       - "maintenance"
       - "dependencies"
       - "dependabot"
+    groups:
+      core:
+        patterns:
+          - "*ansys*"
+          - "appdirs"
+          - "click"
+          - "clr-loader"
+          - "grpcio"
+          - "protobuf"
+          - "tqdm"
+        exclude-patterns:
+          - "*sphinx*"
+        update-types:
+        - "minor"
+        - "patch"
+      tests:
+        patterns:
+          - "pytest*"
+        exclude-patterns:
+          - "*sphinx*"
+        update-types:
+        - "minor"
+        - "patch"
+      doc:
+        patterns:
+          - "*sphinx*"
+          - "grpcio"
+          - "imageio*"
+          - "jupyter*"
+          - "matplotlib"
+          - "numpy*"
+          - "pandas"
+          - "panel"
+          - "plotly"
+          - "pypandoc"
+          - "pythreejs"
+          - "pyvista"
+        update-types:
+        - "minor"
+        - "patch"
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -17,3 +62,12 @@ updates:
       - "maintenance"
       - "dependencies"
       - "dependabot"
+    commit-message:
+      prefix: "MAINT"
+    groups:
+       actions:
+          patterns:
+            - "*"
+          update-types:
+          - "minor"
+          - "patch"
