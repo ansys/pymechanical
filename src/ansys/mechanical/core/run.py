@@ -66,7 +66,7 @@ async def _read_and_display(cmd, env, do_display: bool):
     return rc, b"".join(stdout), b"".join(stderr)
 
 
-def _run(args, env, check=False, display=False):
+def _run(args, env, check=False, display=True):
     if os.name == "nt":
         loop = asyncio.ProactorEventLoop()  # for subprocess' pipes on Windows
         asyncio.set_event_loop(loop)
