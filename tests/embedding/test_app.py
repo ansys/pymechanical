@@ -39,6 +39,7 @@ def test_app_repr(embedded_app):
     assert app_repr_lines[0].startswith("Ansys Mechanical")
     assert app_repr_lines[1].startswith("Product Version")
     assert app_repr_lines[2].startswith("Software build date:")
+    # adding comment
 
 
 @pytest.mark.embedding
