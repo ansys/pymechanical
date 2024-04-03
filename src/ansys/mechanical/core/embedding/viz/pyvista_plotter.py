@@ -26,10 +26,9 @@ import clr
 
 clr.AddReference("Ansys.Mechanical.DataModel")
 clr.AddReference("Ansys.ACT.Interfaces")
+import Ansys
 import numpy as np
 import pyvista as pv
-
-import Ansys
 
 from .utils import bgr_to_rgb_tuple
 
