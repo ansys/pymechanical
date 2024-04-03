@@ -207,6 +207,11 @@ html_theme_options = {
             "url": "https://github.com/ansys/pymechanical/discussions",
             "icon": "fa fa-comment fa-fw",
         },
+        {
+            "name": "Download documentation in PDF",
+            "url": f"https://{cname}/version/{get_version_match(version)}/_static/assets/download/ansys-mechanical-core.pdf",  # noqa: E501
+            "icon": "fa fa-file-pdf fa-fw",
+        },
     ],
     "use_meilisearch": {
         "api_key": os.getenv("MEILISEARCH_PUBLIC_API_KEY", ""),
