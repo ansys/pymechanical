@@ -212,7 +212,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Set up python and pip
         run: |
-          sudo apt update
+          apt update
           apt install --reinstall ca-certificates
           apt install lsb-release xvfb software-properties-common -y
           add-apt-repository ppa:deadsnakes/ppa -y
