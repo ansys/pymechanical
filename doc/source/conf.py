@@ -249,6 +249,18 @@ latex_documents = [
     ),
 ]
 
+# -- Options for simplepdf output --------------------------------------------
+simplepdf_vars = {
+    "primary": "#FFB71B",
+    "secondary": "#3972A1",
+    "cover": "#ffffff",
+    "white": "#ffffff",
+    "links": "FA2323",
+    "cover-bg": "url(cover-bg.jpg) no-repeat center",
+    "cover-overlay": "rgba(200, 146, 17, 0.5)",
+    "top-left-content": "counter(page)",
+    "bottom-center-content": '"Custom footer content"',
+}
 
 # -- Options for manual page output ------------------------------------------
 
