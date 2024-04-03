@@ -38,14 +38,14 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # style:
-  #   name: Code style
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: PyAnsys code style checks
-  #       uses: ansys/actions/code-style@v5
-  #       with:
-  #         python-version: ${{ env.MAIN_PYTHON_VERSION }}
+  style:
+    name: Code style
+    runs-on: ubuntu-latest
+    steps:
+      - name: PyAnsys code style checks
+        uses: ansys/actions/code-style@v5
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
   # doc-style:
   #   name: Documentation Style Check
@@ -199,7 +199,7 @@ jobs:
     name: Embedding testing and coverage
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # needs: [style, revn-variations]
+    needs: [style, revn-variations]
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
