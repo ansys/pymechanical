@@ -440,9 +440,8 @@ jobs:
 
       - name: Add simple pdf to downloads
         run: |
-          ls -a ./doc/_build/simplepdf/
-          # mkdir -p ./doc/_build/html/_static/download
-          # cp ./doc/_build/simplepdf/ansys-mechanical-core.pdf ./doc/_build/html/_static/download/
+          mkdir -p ./doc/_build/html/_static/download
+          cp ./doc/_build/simplepdf/ansys.mechanical.core.pdf ./doc/_build/html/_static/download/
 
       - name: Upload PDF Documentation
         uses: actions/upload-artifact@v4

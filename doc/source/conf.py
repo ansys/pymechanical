@@ -209,7 +209,7 @@ html_theme_options = {
         },
         {
             "name": "Download documentation in PDF",
-            "url": f"https://{cname}/version/{get_version_match(version)}/_static/assets/download/ansys-mechanical-core.pdf",  # noqa: E501
+            "url": f"https://{cname}/version/{get_version_match(version)}/_static/download/ansys.mechanical.core.pdf",  # noqa: E501
             "icon": "fa fa-file-pdf fa-fw",
         },
     ],
