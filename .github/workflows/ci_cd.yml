@@ -428,6 +428,9 @@ jobs:
           # Make the pdf doc & validate results
           make_doc pdf
 
+          # Make simple pdf
+          make_doc simplepdf
+
       - name: Upload HTML Documentation
         uses: actions/upload-artifact@v4
         with:
@@ -435,11 +438,23 @@ jobs:
           path: doc/_build/html
           retention-days: 7
 
+      - name: Add simple pdf to downloads
+        run: |
+          mkdir -p ./doc/_build/html/_static/download
+          cp ./doc/_build/simplepdf/ansys-mechanical-core.pdf ./doc/_build/html/_static/download/
+
       - name: Upload PDF Documentation
         uses: actions/upload-artifact@v4
         with:
           name: documentation-pdf
           path: doc/_build/latex/*.pdf
+          retention-days: 7
+
+      - name: Upload simple PDF Documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation-pdf
+          path: doc/_build/simplepdf/*.pdf
           retention-days: 7
 
   coverage:
