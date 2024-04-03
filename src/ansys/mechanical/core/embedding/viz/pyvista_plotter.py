@@ -32,7 +32,6 @@ import Ansys  # isort: skip
 import numpy as np
 import pyvista as pv
 
-
 from .utils import bgr_to_rgb_tuple
 
 

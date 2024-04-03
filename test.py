@@ -1,4 +1,3 @@
-
 import ansys.mechanical.core as mech
 
 project_file = r"C:\Users\mkoubaa\Desktop\sanderson.mechdat"
