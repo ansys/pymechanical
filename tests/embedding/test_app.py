@@ -163,8 +163,9 @@ def test_app_getters_notstale(embedded_app):
 
 @pytest.mark.embedding_scripts
 @pytest.mark.python_env
-def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
+def test_warning_message(test_env, pytestconfig, rootdir):
     """Test Python.NET warning of the embedded instance using a test-scoped Python environment."""
+
     # Install pymechanical
     subprocess.check_call(
         [test_env.python, "-m", "pip", "install", "-e", "."],
@@ -177,17 +178,12 @@ def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
 
     # Run embedded instance in virtual env with pythonnet installed
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
-    # _, stderr = run_subprocess(
-    #     [test_env.python, embedded_py, pytestconfig.getoption("ansys_version")]
-    # )
     check_warning = subprocess.Popen(
         [test_env.python, embedded_py, pytestconfig.getoption("ansys_version")],
         stderr=subprocess.PIPE,
         env=test_env.env,
     )
     stdout, stderr = check_warning.communicate()
-    print("printing stderr decoded:")
-    print(stderr.decode())
 
     # If UserWarning & pythonnet are in the stderr output, set warning to True.
     # Otherwise, set warning to False
@@ -199,32 +195,55 @@ def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
 
 @pytest.mark.embedding_scripts
 @pytest.mark.python_env
-def test_private_appdata(pytestconfig, run_subprocess, rootdir):
+def test_private_appdata(pytestconfig, rootdir):
     """Test embedded instance does not save ShowTriad using a test-scoped Python environment."""
+
     version = pytestconfig.getoption("ansys_version")
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
-    run_subprocess([sys.executable, embedded_py, version, "True", "Set"])
-    stdout, _ = run_subprocess([sys.executable, embedded_py, version, "True", "Run"])
-    stdout = stdout.decode()
-    assert "ShowTriad value is True" in stdout
+    # Set ShowTriad to False
+    p1 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "True", "Set"], stdout=subprocess.PIPE
+    )
+    p1.communicate()
+
+    # Check ShowTriad is True for private_appdata embedded sessions
+    p2 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "True", "Run"], stdout=subprocess.PIPE
+    )
+    stdout, stderr = p2.communicate()
+
+    assert "ShowTriad value is True" in stdout.decode()
 
 
 @pytest.mark.embedding_scripts
 @pytest.mark.python_env
-def test_normal_appdata(pytestconfig, run_subprocess, rootdir):
+def test_normal_appdata(pytestconfig, rootdir):
     """Test embedded instance saves ShowTriad value using a test-scoped Python environment."""
     version = pytestconfig.getoption("ansys_version")
 
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
-    run_subprocess([sys.executable, embedded_py, version, "False", "Set"])
-    stdout, _ = run_subprocess([sys.executable, embedded_py, version, "False", "Run"])
-    run_subprocess([sys.executable, embedded_py, version, "False", "Reset"])
+    # Set ShowTriad to False
+    p1 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "False", "Set"], stdout=subprocess.PIPE
+    )
+    p1.communicate()
 
-    stdout = stdout.decode()
+    # Check ShowTriad is False for regular embedded session
+    p2 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "False", "Run"], stdout=subprocess.PIPE
+    )
+    stdout, stderr = p2.communicate()
+
+    # Set ShowTriad back to True for regular embedded session
+    p3 = subprocess.Popen(
+        [sys.executable, embedded_py, version, "False", "Reset"], stdout=subprocess.PIPE
+    )
+    p3.communicate()
+
     # Assert ShowTriad was set to False for regular embedded session
-    assert "ShowTriad value is False" in stdout
+    assert "ShowTriad value is False" in stdout.decode()
 
 
 @pytest.mark.embedding
