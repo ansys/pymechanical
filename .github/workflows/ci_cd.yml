@@ -210,13 +210,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Set up python and pip
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+      - name: Set up python venv
         run: |
-          sudo apt update
-          apt install --reinstall ca-certificates
-          apt install lsb-release xvfb software-properties-common -y
-          add-apt-repository ppa:deadsnakes/ppa -y
-          apt install -y python${{ env.MAIN_PYTHON_VERSION }} python${{ env.MAIN_PYTHON_VERSION }}-venv
+          apt install python${{ env.MAIN_PYTHON_VERSION }}-venv
           python${{ env.MAIN_PYTHON_VERSION }} -m venv /env
 
       - name: Install dependencies
