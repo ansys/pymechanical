@@ -453,7 +453,7 @@ jobs:
       - name: Upload simple PDF Documentation
         uses: actions/upload-artifact@v4
         with:
-          name: documentation-pdf
+          name: documentation-simplepdf
           path: doc/_build/simplepdf/*.pdf
           retention-days: 7
 
