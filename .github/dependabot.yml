@@ -6,7 +6,7 @@ updates:
     schedule:
       interval: "weekly"
     assignees:
-      - "ansys/pymechanical-maintainers"
+      - "pyansys-ci-bot"
     commit-message:
       prefix: "MAINT"
     labels:
@@ -58,6 +58,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    assignees:
+      - "pyansys-ci-bot"
     labels:
       - "maintenance"
       - "dependencies"
