@@ -233,6 +233,10 @@ class App:
             )
             return
 
+        if self.version < 242:
+            warnings.warn("Plotting is only supported with version 2024R2 and later!")
+            return
+
         from ansys.mechanical.core.embedding.viz.pyvista_plotter import plot_model
 
         plot_model(self)
