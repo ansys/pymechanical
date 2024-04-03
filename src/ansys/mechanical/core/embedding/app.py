@@ -23,12 +23,21 @@
 """Main application class for embedded Mechanical."""
 import atexit
 import os
+import warnings
 
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 from ansys.mechanical.core.embedding.poster import Poster
 from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
+
+try:
+    import pyvista  # noqa: F401
+
+    HAS_PYVISTA = True
+except:
+
+    HAS_PYVISTA = False
 
 
 def _get_default_addin_configuration() -> AddinConfiguration:
@@ -211,6 +220,22 @@ class App:
         args = None
         rets = None
         return self.script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
+
+    def plot(self) -> None:
+        """Visualize the model in 3d.
+
+        Requires installation using the viz option. E.g.
+        pip install ansys-mechanical-core[viz]
+        """
+        if not HAS_PYVISTA:
+            warnings.warn(
+                "Installation of viz option required! Use pip install ansys-mechanical-core[viz]"
+            )
+            return
+
+        from ansys.mechanical.core.embedding.viz.pyvista_plotter import plot_model
+
+        plot_model(self)
 
     @property
     def poster(self) -> Poster:
