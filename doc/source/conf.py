@@ -12,7 +12,7 @@ from datetime import datetime
 import os
 import warnings
 
-from ansys_sphinx_theme import ansys_favicon, get_version_match, pyansys_logo_black
+from ansys_sphinx_theme import ansys_favicon, get_version_match, pyansys_logo_black, ansys_logo_white, ansys_logo_white_cropped, latex, watermark
 from sphinx_gallery.sorting import FileNameSortKey
 
 import ansys.mechanical.core as pymechanical
@@ -181,7 +181,7 @@ html_short_title = html_title = "PyMechanical"
 html_theme = "ansys_sphinx_theme"
 html_logo = pyansys_logo_black
 html_context = {
-    "github_user": "pyansys",
+    "github_user": "ansys",
     "github_repo": "pymechanical",
     "github_version": "main",
     "doc_path": "doc/source",
@@ -232,9 +232,9 @@ html_theme_options = {
 # Output file base name for HTML help builder.
 htmlhelp_basename = "pymechanicaldoc"
 
-
+latex_additional_files = [watermark, ansys_logo_white, ansys_logo_white_cropped]
 # -- Options for LaTeX output ------------------------------------------------
-latex_elements = {}
+latex_elements = {"preamble": latex.generate_preamble(html_title)}
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
