@@ -272,6 +272,7 @@ jobs:
   launch-tests:
     name: Launch testing and coverage
     runs-on: public-ubuntu-latest-8-cores
+    timeout-minutes: 15
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
