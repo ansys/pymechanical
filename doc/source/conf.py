@@ -12,7 +12,15 @@ from datetime import datetime
 import os
 import warnings
 
-from ansys_sphinx_theme import ansys_favicon, get_version_match, pyansys_logo_black, ansys_logo_white, ansys_logo_white_cropped, latex, watermark
+from ansys_sphinx_theme import (
+    ansys_favicon,
+    ansys_logo_white,
+    ansys_logo_white_cropped,
+    get_version_match,
+    latex,
+    pyansys_logo_black,
+    watermark,
+)
 from sphinx_gallery.sorting import FileNameSortKey
 
 import ansys.mechanical.core as pymechanical
