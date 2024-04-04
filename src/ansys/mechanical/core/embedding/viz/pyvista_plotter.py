@@ -38,7 +38,7 @@ from .utils import bgr_to_rgb_tuple
 def _transform_to_pyvista(transform):
     np_transform = np.array([transform[i] for i in range(16)]).reshape(4, 4)
     # There's a bug in mechanical, the scenegraph wrappers use theMatrix4D
-    # type, which puts the tranformations in the transposed location relative
+    # type, which puts the transformations in the transposed location relative
     # to pyvista. But they use the same matrix layout as pyvista, so that
     # doesn't conform to the expectations of Matrix4D. When it is fixed there,
     # the below line has to be uncommented
