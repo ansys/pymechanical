@@ -56,7 +56,7 @@ tests = [
 ]
 doc = [
     "Sphinx==7.2.6",
-    "ansys-sphinx-theme==0.15.0",
+    "ansys-sphinx-theme==0.15.1",
     "grpcio==1.62.1",
     "imageio-ffmpeg==0.4.9",
     "imageio==2.34.0",
@@ -80,6 +80,9 @@ doc = [
     "sphinx-notfound-page==1.0.0",
     "sphinxcontrib-websupport==1.2.7",
     "sphinxemoji==0.3.1",
+]
+viz = [
+    "pyvista>=0.39.1"
 ]
 
 [project.scripts]
