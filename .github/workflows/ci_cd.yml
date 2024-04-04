@@ -272,6 +272,7 @@ jobs:
   launch-tests:
     name: Launch testing and coverage
     runs-on: public-ubuntu-latest-8-cores
+    timeout-minutes: 15
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
@@ -318,19 +319,17 @@ jobs:
         run: |
           unset PYMECHANICAL_PORT
           unset PYMECHANICAL_START_INSTANCE
-          pytest -m remote_session_launch > pytest_output.txt || true
-          cat pytest_output.txt
-          #
-          # Check if failure occurred
-          #
-          output=$(grep -c "FAILURES" pytest_output.txt || true)
-          if [ $output -eq 0 ]; then
-            echo "Pytest execution succeeded"
-            exit 0
-          else
-            echo "Pytest execution failed"
-            exit 1
-          fi
+          pytest -m remote_session_launch -s --junitxml launch_test_results${{ matrix.python-version }}.xml || true
+
+      - name: Publish Launch Test Report
+        uses: mikepenz/action-junit-report@v4
+        if: always()
+        with:
+          report_paths: '**/launch_test_results*.xml'
+          check_name: Launch Test Report ${{ matrix.python-version }}
+          detailed_summary: true
+          include_passed: true
+          fail_on_failure: true
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v4
