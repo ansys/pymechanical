@@ -14,7 +14,7 @@ set LINKCHECKDIR=\%BUILDDIR%\linkcheck
 if "%1" == "" goto help
 if "%1" == "clean" goto clean
 if "%1" == "pdf" goto pdf
-if "%1" == "simple-pdf" goto simple-pdf
+@REM if "%1" == "simple-pdf" goto simple-pdf
 if "%1" == "linkcheck" goto linkcheck
 
 %SPHINXBUILD% >NUL 2>NUL
@@ -38,17 +38,17 @@ rmdir /s /q %BUILDDIR% > /NUL 2>&1
 for /d /r %SOURCEDIR% %%d in (_autosummary) do @if exist "%%d" rmdir /s /q "%%d"
 goto end
 
-:pdf
-%SPHINXBUILD% -M latex %SOURCEDIR% %BUILDDIR% %SPHINXOPTS% %O%
-cd "%BUILDDIR%\latex"
-for %%f in (*.tex) do (
-pdflatex "%%f" --interaction=nonstopmode)
-if NOT EXIST ansys-mechanical-core.pdf (
-	Echo "no pdf generated!"
-	exit /b 1)
-Echo "pdf generated!"
+@REM :pdf
+@REM %SPHINXBUILD% -M latex %SOURCEDIR% %BUILDDIR% %SPHINXOPTS% %O%
+@REM cd "%BUILDDIR%\latex"
+@REM for %%f in (*.tex) do (
+@REM pdflatex "%%f" --interaction=nonstopmode)
+@REM if NOT EXIST ansys-mechanical-core.pdf (
+@REM 	Echo "no pdf generated!"
+@REM 	exit /b 1)
+@REM Echo "pdf generated!"
 
-:simple-pdf
+:pdf
 %SPHINXBUILD% -M simplepdf %SOURCEDIR% %BUILDDIR% %SPHINXOPTS% %O%
 cd "%BUILDDIR%\simplepdf"
 if NOT EXIST ansys-mechanical-core.pdf (
