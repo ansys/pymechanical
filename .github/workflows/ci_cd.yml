@@ -216,8 +216,8 @@ jobs:
           apt install --reinstall ca-certificates
           apt install lsb-release xvfb software-properties-common -y
           add-apt-repository ppa:deadsnakes/ppa -y
-          apt install -y python${{ env.MAIN_PYTHON_VERSION }} python${{ env.MAIN_PYTHON_VERSION }}-venv
-          python${{ env.MAIN_PYTHON_VERSION }} -m venv /env
+          apt install -y python${{ matrix.python-version }} python${{ matrix.python-version }}-venv
+          python${{ matrix.python-version }} -m venv /env
 
       - name: Install dependencies
         run: |
