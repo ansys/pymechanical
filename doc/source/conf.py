@@ -251,16 +251,18 @@ latex_documents = [
 
 # -- Options for simplepdf output --------------------------------------------
 simplepdf_vars = {
-    "primary": "#FFB71B",
+    "primary": "#000000",
+    "primary_opaque:": "#4D5352",
     "secondary": "#3972A1",
     "cover": "#ffffff",
     "white": "#ffffff",
-    "links": "FA2323",
+    "links": "1E6DDC",
     "cover-bg": "url(cover-bg.jpg) no-repeat center",
     "cover-overlay": "rgba(200, 146, 17, 0.5)",
     "top-left-content": "counter(page)",
-    "bottom-center-content": '"Custom footer content"',
+    "bottom-center-content": '"(c) ANSYS, Inc. All rights reserved"',
 }
+
 
 # -- Options for manual page output ------------------------------------------
 
