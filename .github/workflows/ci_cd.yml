@@ -355,6 +355,10 @@ jobs:
       image: ${{ needs.revn-variations.outputs.stable_container }}
       options: --entrypoint /bin/bash
     needs: [style, doc-style, revn-variations]
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12']
 
     steps:
 
@@ -367,8 +371,8 @@ jobs:
           apt install --reinstall ca-certificates
           apt install software-properties-common -y
           add-apt-repository ppa:deadsnakes/ppa -y
-          apt install -y python${{ env.MAIN_PYTHON_VERSION }} python${{ env.MAIN_PYTHON_VERSION }}-venv
-          python${{ env.MAIN_PYTHON_VERSION }} -m venv /env
+          apt install -y python${{ matrix.python-version }} python${{ matrix.python-version }}-venv
+          python${{ matrix.python-versionn }} -m venv /env
 
       - name: Install system dependencies
         run: |
