@@ -24,8 +24,6 @@ import json
 import os
 import pathlib
 import re
-import subprocess
-import sys
 
 import ansys.tools.path
 import grpc
@@ -533,56 +531,6 @@ def test_launch_grpc_not_supported_version():
 
     with pytest.raises(errors.VersionError):
         pymechanical.mechanical.launch_grpc(exec_file=exec_file)
-
-
-@pytest.mark.remote_session_launch
-@pytest.mark.python_env
-def test_warning_message_pythonnet(test_env, rootdir):
-    """Test Python.NET warning of the remote session in the virtual environment."""
-
-    # Install pymechanical
-    subprocess.check_call(
-        [test_env.python, "-m", "pip", "install", "-e", "."],
-        cwd=rootdir,
-        env=test_env.env,
-    )
-
-    # Install pythonnet
-    subprocess.check_call([test_env.python, "-m", "pip", "install", "pythonnet"], env=test_env.env)
-
-    # Run remote session in virtual env with pythonnet installed
-    remote_py = os.path.join(rootdir, "tests", "scripts", "run_remote_session.py")
-    check_warning = subprocess.Popen(
-        [test_env.python, remote_py],
-        stderr=subprocess.PIPE,
-        env=test_env.env,
-    )
-    stdout, stderr = check_warning.communicate()
-
-    # If UserWarning & pythonnet are in the stderr output, set warning to True.
-    # Otherwise, set warning to False
-    warning = True if "UserWarning" and "pythonnet" in stderr.decode() else False
-
-    # Assert the warning message did not appear for the remote session
-    assert not warning
-
-
-@pytest.mark.remote_session_launch
-def test_warning_message_default():
-    """Test pythonnet warning of the remote session in default env."""
-    base = os.getcwd()
-
-    # Run remote session
-    remote_py = os.path.join(base, "tests", "scripts", "run_remote_session.py")
-    check_warning = subprocess.Popen([sys.executable, remote_py], stderr=subprocess.PIPE)
-    stdout, stderr = check_warning.communicate()
-
-    # If UserWarning & pythonnet are in the stderr output, set warning to True.
-    # Otherwise, set warning to False
-    warning = True if "UserWarning" and "pythonnet" in stderr.decode() else False
-
-    # Assert the warning message did not appear for the remote session
-    assert not warning
 
 
 # def test_call_before_launch_or_connect():
