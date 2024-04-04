@@ -81,6 +81,9 @@ doc = [
     "sphinxcontrib-websupport==1.2.7",
     "sphinxemoji==0.3.1",
 ]
+viz = [
+    "pyvista>=0.39.1"
+]
 
 [project.scripts]
 ansys-mechanical = "ansys.mechanical.core.run:cli"
