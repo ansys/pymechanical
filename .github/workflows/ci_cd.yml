@@ -132,7 +132,7 @@ jobs:
   remote-connect:
     name: Remote connect test and coverage - Mechanical ${{ matrix.mech-version.mechanical-version }}
     runs-on: public-ubuntu-latest-8-cores
-    needs: [smoke-tests, revn-variations, config-matrix]
+    needs: [revn-variations, config-matrix]
     continue-on-error: ${{ matrix.mech-version.experimental }}
     strategy:
       fail-fast: false
@@ -226,7 +226,7 @@ jobs:
     name: Embedding testing and coverage
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [style, revn-variations]
+    needs: [revn-variations, config-matrix]
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
@@ -303,7 +303,7 @@ jobs:
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
-    needs: [ smoke-tests, revn-variations]
+    needs: [revn-variations, config-matrix]
     strategy:
       fail-fast: false
       matrix:
