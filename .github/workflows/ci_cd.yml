@@ -547,7 +547,7 @@ jobs:
 
   package:
     name: Package library
-    needs: [remote-connect, embedding-tests, doc-build]
+    needs: [remote-connect, embedding-tests, launch-tests, doc-build, coverage]
     runs-on: ubuntu-latest
     steps:
       - name: Build library source and wheel artifacts
