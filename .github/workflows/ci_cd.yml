@@ -132,7 +132,7 @@ jobs:
   remote-connect:
     name: Remote connect testing and coverage - Mechanical ${{ matrix.mechanical-version }}
     runs-on: public-ubuntu-latest-8-cores
-    needs: [smoke-tests, revn-variations, config-matrix]
+    needs: [revn-variations, config-matrix]
     continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
@@ -165,8 +165,8 @@ jobs:
 
       - name: Create and activate virtual environment
         run: |
-          python -m venv venv
-          . .venv/bin/activate
+          python -m venv .venv
+          source .venv/bin/activate
 
       - name: Install dependencies
         run: |
@@ -224,7 +224,7 @@ jobs:
     name: Embedding testing and coverage
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [revn-variations, config-matrix]
+    needs: [revn-variations]
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
@@ -301,7 +301,7 @@ jobs:
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
-    needs: [revn-variations, config-matrix]
+    needs: [revn-variations]
     strategy:
       fail-fast: false
       matrix:
