@@ -312,7 +312,7 @@ def mechanical_pool():
     if not pymechanical.mechanical.get_start_instance():
         return None
 
-    path, version = atp.find_mechanical()
+    path = atp.get_mechanical_path()
 
     exec_file = path
     instances_count = 2
