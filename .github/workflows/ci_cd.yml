@@ -132,7 +132,7 @@ jobs:
   remote-connect:
     name: Remote connect testing and coverage - Mechanical ${{ matrix.mechanical-version }}
     runs-on: public-ubuntu-latest-8-cores
-    needs: [smoke-tests, revn-variations, config-matrix]
+    needs: [style, revn-variations, config-matrix]
     continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
@@ -158,7 +158,7 @@ jobs:
         uses: ansys/actions/tests-pytest@v5
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
-          pytest-markers: 'remote_session_connect'
+          pytest-markers: '-m remote_session_connect'
           pytest-extra-args: '-s --junitxml remote_results${{ env.MAIN_PYTHON_VERSION}}.xml'
 
       - name: Publish Test Report
@@ -285,7 +285,7 @@ jobs:
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
-    needs: [ smoke-tests, revn-variations]
+    needs: [ style, revn-variations]
     strategy:
       fail-fast: false
       matrix:
