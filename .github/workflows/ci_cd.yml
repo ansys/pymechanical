@@ -130,15 +130,13 @@ jobs:
           fi
 
   remote-connect:
-    name: Remote connect test and coverage - Mechanical ${{ matrix.mech-version.mechanical-version }}
+    name: Remote connect testing and coverage - Mechanical ${{ matrix.mechanical-version }}
     runs-on: public-ubuntu-latest-8-cores
-    needs: [revn-variations, config-matrix]
-    continue-on-error: ${{ matrix.mech-version.experimental }}
+    needs: [smoke-tests, revn-variations, config-matrix]
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
-      matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12']
-        mech-version: ${{ fromJSON(needs.config-matrix.outputs.matrix) }}
+      matrix: ${{ fromJSON(needs.config-matrix.outputs.matrix) }}
 
     steps:
       - name: Login in Github Container registry
@@ -151,7 +149,7 @@ jobs:
       - name: Pull, launch, and validate Mechanical service
         env:
           LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
-          MECHANICAL_IMAGE: ${{ env.DOCKER_PACKAGE }}:${{ matrix.mech-version.mechanical-version }}
+          MECHANICAL_IMAGE: ${{ env.DOCKER_PACKAGE }}:${{ matrix.mechanical-version }}
         run: |
           docker pull ${{ env.MECHANICAL_IMAGE }}
           docker run --restart always --name ${{ env.DOCKER_MECH_CONTAINER_NAME }} -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }} > log.txt &
@@ -162,8 +160,8 @@ jobs:
       - name: "Set up Python"
         uses: ansys/actions/_setup-python@v5.1
         with:
-          python-version: ${{ matrix.python-version }}
-          use-cache: ${{ matrix.python-version }}
+          python-version: ${{ env.MAIN_PYTHON_VERSION}}
+          use-cache: false
 
       - name: Create and activate virtual environment
         run: |
@@ -177,21 +175,21 @@ jobs:
 
       - name: Remote connect test
         run: |
-          pytest -m remote_session_connect -s --junitxml remote_results${{ matrix.python-version }}.xml --cov=ansys.mechanical --cov-report html:.cov/html|| true
+          pytest -m remote_session_connect -s --junitxml remote_results${{ env.MAIN_PYTHON_VERSION}}.xml --cov=ansys.mechanical --cov-report html:.cov/html|| true
 
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v4
         if: always()
         with:
           report_paths: '**/remote_results*.xml'
-          check_name: Remote Connect Report ${{ matrix.python-version }}
+          check_name: Remote Connect Report ${{ env.MAIN_PYTHON_VERSION}}
           detailed_summary: true
           include_passed: true
           fail_on_failure: true
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v4
-        if: matrix.mech-version.mechanical-version == env.LATEST_STABLE_DOCKER_IMAGE_VERSION
+        if: matrix.mechanical-version == env.LATEST_STABLE_DOCKER_IMAGE_VERSION
         with:
           name: coverage-tests
           path: .cov
@@ -199,7 +197,7 @@ jobs:
 
       - name: Upload coverage results (as .coverage)
         uses: actions/upload-artifact@v4
-        if: matrix.mech-version.mechanical-version == env.LATEST_STABLE_DOCKER_IMAGE_VERSION
+        if: matrix.mechanical-version == env.LATEST_STABLE_DOCKER_IMAGE_VERSION
 
         with:
           name: coverage-file-tests
@@ -209,17 +207,17 @@ jobs:
       - name: Get Mechanical container logs
         if: always()
         run: |
-          docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > mechanical_tests_log-${{ matrix.mech-version.mechanical-version }}.txt 2>&1
+          docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > mechanical_tests_log-${{ matrix.mechanical-version }}.txt 2>&1
           echo CONTAINER LOGS OUTPUT
-          cat mechanical_tests_log-${{ matrix.mech-version.mechanical-version }}.txt
+          cat mechanical_tests_log-${{ matrix.mechanical-version }}.txt
           echo CPU info
           lscpu
 
       - name: Upload container logs
         uses: actions/upload-artifact@v4
         with:
-          name: mechanical_tests_log-${{ matrix.mech-version.mechanical-version }}
-          path: mechanical_tests_log-${{ matrix.mech-version.mechanical-version }}.txt
+          name: mechanical_tests_log-${{ matrix.mechanical-version }}
+          path: mechanical_tests_log-${{ matrix.mechanical-version }}.txt
           retention-days: 7
 
   embedding-tests:
