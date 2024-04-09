@@ -1,5 +1,3 @@
-ignore:
-
 comment:
   layout: "diff"
   behavior: default
