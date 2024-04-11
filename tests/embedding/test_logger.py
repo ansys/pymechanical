@@ -149,3 +149,14 @@ def test_logging_level_before_and_after_initialization(rootdir, run_subprocess, 
     stdout = stdout.decode()
     stderr = stderr.decode()
     _assert_success(stdout, True)
+
+
+@pytest.mark.embedding
+def test_logging_all_level_after_initialization(rootdir, run_subprocess, pytestconfig):
+    """Test logging all levels after initialization."""
+    stdout, stderr = _run_embedding_log_test_process(
+        rootdir, run_subprocess, pytestconfig, "log_all_level"
+    )
+    stdout = stdout.decode()
+    stderr = stderr.decode()
+    _assert_success(stdout, True)
