@@ -58,7 +58,8 @@ def __workaround_material_server(version: int) -> None:
     A REST server is used as a backend for the material model GUI.
     In 2024 R1, this GUI is used even in batch mode. The server
     starts by default on a background thread, which may lead to
-    a race condition on shutdown."""
+    a race condition on shutdown.
+    """
     # TODO - remove 242 when that is fixed
     if version in [241, 242]:
         os.environ["ENGRDATA_SERVER_SERIAL"] = "1"
