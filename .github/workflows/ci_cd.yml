@@ -208,7 +208,7 @@ jobs:
     name: Embedding testing and coverage
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [style, revn-variations]
+    needs: [smoke-tests, revn-variations]
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
@@ -265,6 +265,80 @@ jobs:
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
           name: coverage-file-tests-embedding
+          path: .coverage
+          retention-days: 7
+
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v4
+        if: always()
+        with:
+          report_paths: '**/test_results*.xml'
+          check_name: Test Report ${{ matrix.python-version }}
+          detailed_summary: true
+          include_passed: true
+          fail_on_failure: true
+
+  embedding-scripts-tests:
+    name: Embedding scripts testing and coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [smoke-tests, revn-variations]
+    container:
+      image: ${{ needs.revn-variations.outputs.test_container }}
+      options: --entrypoint /bin/bash
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up python and pip
+        run: |
+          apt update
+          apt install --reinstall ca-certificates
+          apt install lsb-release xvfb software-properties-common -y
+          add-apt-repository ppa:deadsnakes/ppa -y
+          apt install -y python${{ matrix.python-version }} python${{ matrix.python-version }}-venv
+          python${{ matrix.python-version }} -m venv /env
+
+      - name: Install dependencies
+        run: |
+          . /env/bin/activate
+          pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
+          pip install --upgrade pip flit
+
+      - name: Install packages for testing
+        run: |
+          . /env/bin/activate
+          pip install -e .[tests]
+
+      - name: Embedding scripts unit testing and coverage
+        env:
+          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
+          ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
+          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
+          ANSYS_WORKBENCH_LOGGING: 0
+          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
+          NUM_CORES: 1
+          PYTHONUNBUFFERED: 1
+        run: |
+          . /env/bin/activate
+          mechanical-env pytest -m embedding_scripts -s --junitxml test_results_embedding_scripts${{ matrix.python-version }}.xml
+
+      - name: Upload coverage results
+        uses: actions/upload-artifact@v4
+        if: env.MAIN_PYTHON_VERSION == matrix.python-version
+        with:
+          name: coverage-tests-embedding-scripts
+          path: .cov
+          retention-days: 7
+
+      - name: Upload coverage results (as .coverage)
+        uses: actions/upload-artifact@v4
+        if: env.MAIN_PYTHON_VERSION == matrix.python-version
+        with:
+          name: coverage-file-tests-embedding-scripts
           path: .coverage
           retention-days: 7
 
@@ -455,7 +529,7 @@ jobs:
 
   coverage:
     name: Merging coverage
-    needs: [remote-connect, embedding-tests, launch-tests]
+    needs: [remote-connect, embedding-tests, embedding-scripts-tests, launch-tests]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -479,6 +553,11 @@ jobs:
         with:
           name: coverage-file-tests-embedding
           path: cov-dir/embedding
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: coverage-file-tests-embedding-scripts
+          path: cov-dir/embedding-scripts
 
       - uses: actions/download-artifact@v4
         with:
@@ -539,7 +618,7 @@ jobs:
 
   package:
     name: Package library
-    needs: [smoke-tests, remote-connect, embedding-tests, doc-build]
+    needs: [smoke-tests, remote-connect, embedding-tests, embedding-scripts-tests, doc-build]
     runs-on: ubuntu-latest
     steps:
       - name: Build library source and wheel artifacts

@@ -130,6 +130,7 @@ testpaths = [
 ]
 markers = [
     "embedding: tests that embed Mechanical in the python process",
+    "embedding_scripts: embedding tests that use subprocess",
     "python_env: tests that check for an appropriate python environment",
     "remote_session_launch: tests that launch Mechanical and work with gRPC server inside it",
     "remote_session_connect: tests that connect to Mechanical and work with gRPC server inside it",
