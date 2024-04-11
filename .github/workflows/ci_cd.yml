@@ -529,6 +529,13 @@ jobs:
           name: combined-coverage-results
           path: .coverage-combined
           retention-days: 7
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        with:
+          files: .coverage-combined/xml
+
 
   package:
     name: Package library
