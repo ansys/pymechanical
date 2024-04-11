@@ -40,7 +40,6 @@ from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 
 async def _read_and_display(cmd, env, do_display: bool):
     """Read command's stdout and stderr and display them as they are processed."""
-    print("entering read and display")
     # start process
     process = await asyncio.create_subprocess_exec(*cmd, stdout=PIPE, stderr=PIPE, env=env)
     # read child's stdout/stderr concurrently
@@ -49,7 +48,6 @@ async def _read_and_display(cmd, env, do_display: bool):
         asyncio.Task(process.stdout.readline()): (stdout, process.stdout, sys.stdout.buffer),
         asyncio.Task(process.stderr.readline()): (stderr, process.stderr, sys.stderr.buffer),
     }
-    print("above while tasks")
     while tasks:
         done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
         assert done
@@ -64,13 +62,11 @@ async def _read_and_display(cmd, env, do_display: bool):
                 tasks[asyncio.Task(stream.readline())] = buf, stream, display
 
     # wait for the process to exit
-    print("waiting for process")
     rc = await process.wait()
-    print("done waiting")
     return rc, b"".join(stdout), b"".join(stderr)
 
 
-def _run(args, env, check=False, display=True):  # False):
+def _run(args, env, check=False, display=False):
     if os.name == "nt":
         loop = asyncio.ProactorEventLoop()  # for subprocess' pipes on Windows
         asyncio.set_event_loop(loop)
