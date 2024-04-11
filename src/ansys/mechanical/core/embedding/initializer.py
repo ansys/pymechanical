@@ -36,7 +36,7 @@ INITIALIZED_VERSION = None
 SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS = {241: "2024R1", 232: "2023R2", 231: "2023R1"}
 
 
-def __add_sys_path(version) -> str:
+def __add_sys_path(version: int) -> str:
     install_path = Path(os.environ[f"AWP_ROOT{version}"])
     platform_string = "winx64" if os.name == "nt" else "linx64"
     bin_path = install_path / "aisol" / "bin" / platform_string
@@ -50,6 +50,19 @@ def __disable_sec() -> None:
     DCS/REP in the future instead of RSM.
     """
     os.environ["ANSYS_MECHANICAL_EMBEDDING_NO_SEC"] = "1"
+
+
+def __workaround_material_server(version: int) -> None:
+    """Workaround material server bug in 2024 R1.
+
+    A REST server is used as a backend for the material model GUI.
+    In 2024 R1, this GUI is used even in batch mode. The server
+    starts by default on a background thread, which may lead to
+    a race condition on shutdown.
+    """
+    # TODO - remove 242 when that is fixed
+    if version in [241, 242]:
+        os.environ["ENGRDATA_SERVER_SERIAL"] = "1"
 
 
 def _get_default_linux_version() -> int:
@@ -96,7 +109,7 @@ def __check_python_interpreter_architecture():
         raise Exception("Mechanical Embedding requires a 64-bit Python environment.")
 
 
-def initialize(version=None):
+def initialize(version: int = None):
     """Initialize Mechanical embedding."""
     __check_python_interpreter_architecture()  # blocks 32 bit python
 
@@ -111,6 +124,8 @@ def initialize(version=None):
     INITIALIZED_VERSION = version
 
     __disable_sec()
+
+    __workaround_material_server(version)
 
     # need to add system path in order to import the assembly with the resolver
     __add_sys_path(version)
