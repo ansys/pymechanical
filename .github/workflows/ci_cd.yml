@@ -281,7 +281,7 @@ jobs:
           detailed_summary: true
           include_passed: true
           fail_on_failure: true
-  
+
   launch-tests:
     name: Launch testing and coverage
     runs-on: public-ubuntu-latest-8-cores
