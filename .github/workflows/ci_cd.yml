@@ -321,7 +321,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
-          name: coverage-tests-embedding
+          name: coverage-tests-embedding-scripts
           path: .cov
           retention-days: 7
 
@@ -329,7 +329,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
-          name: coverage-file-tests-embedding
+          name: coverage-file-tests-embedding-scripts
           path: .coverage
           retention-days: 7
 
@@ -520,7 +520,7 @@ jobs:
 
   coverage:
     name: Merging coverage
-    needs: [tests, embedding-tests, launch-tests]
+    needs: [tests, embedding-tests, embedding-scripts-tests, launch-tests]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -544,6 +544,11 @@ jobs:
         with:
           name: coverage-file-tests-embedding
           path: cov-dir/embedding
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: coverage-file-tests-embedding-scripts
+          path: cov-dir/embedding-scripts
 
       - uses: actions/download-artifact@v4
         with:
@@ -604,7 +609,7 @@ jobs:
 
   package:
     name: Package library
-    needs: [tests, embedding-tests, doc-build]
+    needs: [tests, embedding-tests, embedding-scripts-tests, doc-build]
     runs-on: ubuntu-latest
     steps:
       - name: Build library source and wheel artifacts
