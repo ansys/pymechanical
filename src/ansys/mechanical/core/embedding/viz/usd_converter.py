@@ -108,16 +108,14 @@ def to_usd_stage(app: "ansys.mechanical.core.embedding.App", name: str) -> None:
     """Convert mechanical scene to usd stage."""
     stage = Usd.Stage.CreateNew(name)
 
-    root_prim = UsdGeom.Xform.Define(stage, "/root")  # "/hello"
-    # stage.SetDefaultPrim(root_prim)
+    root_prim = UsdGeom.Xform.Define(stage, "/root")
 
     category = Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Body
     bodies = app.DataModel.GetObjectsByType(category)
     for body in bodies:
         scenegraph_node = Ansys.ACT.Mechanical.Tools.ScenegraphHelpers.GetScenegraph(body)
-        _convert_transform_node(
-            scenegraph_node, stage, f"/root/body{body.ObjectId}", bgr_to_rgb_tuple(body.Color)
-        )
+        body_path = root_prim.GetPath().AppendPath(f"body{body.ObjectId}")
+        _convert_transform_node(scenegraph_node, stage, body_path, bgr_to_rgb_tuple(body.Color))
 
     return stage
 
