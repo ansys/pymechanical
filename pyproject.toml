@@ -116,7 +116,7 @@ output = ".cov/coverage.xml"
 
 [tool.pytest.ini_options]
 minversion = "7.1"
-addopts = """-ra -s -m remote_session_connect --durations=0 --cov=ansys.mechanical --cov-report html:.cov/html \
+addopts = """-ra -s --durations=0 --cov=ansys.mechanical --cov-report html:.cov/html \
  --cov-report xml:.cov/xml --cov-report term -vv --print --print-relative-time"""
 # addopts = """-ra -s -m remote_session_launch --durations=0 --cov=ansys.mechanical --cov-report html:.cov/html \
 # --cov-report xml:.cov/xml --cov-report term -vv --print --print-relative-time"""
@@ -130,6 +130,7 @@ testpaths = [
 ]
 markers = [
     "embedding: tests that embed Mechanical in the python process",
+    "embedding_scripts: embedding tests that use subprocess",
     "python_env: tests that check for an appropriate python environment",
     "remote_session_launch: tests that launch Mechanical and work with gRPC server inside it",
     "remote_session_connect: tests that connect to Mechanical and work with gRPC server inside it",
