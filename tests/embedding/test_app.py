@@ -26,10 +26,12 @@ import subprocess
 import sys
 from tempfile import NamedTemporaryFile
 import time
+from unittest.mock import patch
 
 import pytest
 
 import ansys.mechanical.core.embedding.utils as utils
+from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
 
 
 @pytest.mark.embedding
@@ -47,6 +49,22 @@ def test_deprecation_warning(embedded_app):
     struct = embedded_app.Model.AddStaticStructuralAnalysis()
     with pytest.warns(UserWarning):
         struct.SystemID
+    with pytest.warns(UserWarning):
+        struct.DataObjectByName("Solution")
+    harmonic = embedded_app.Model.AddHarmonicResponseAnalysis()
+    harmonic_analysis_settings = harmonic.AnalysisSettings
+
+    import clr
+
+    clr.AddReference("Ansys.Mechanical.DataModel")
+    from Ansys.Mechanical.DataModel.Enums import HarmonicVariationalTechnology
+
+    with pytest.warns(UserWarning):
+        harmonic_analysis_settings.VariationalTechnology = HarmonicVariationalTechnology.Yes
+
+    with patch.object(embedded_app, "_version", 232):
+        assert connect_warnings(embedded_app) is None
+        assert disconnect_warnings(embedded_app) is None
 
 
 @pytest.mark.embedding

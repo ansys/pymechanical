@@ -453,6 +453,7 @@ def test_change_default_mechanical_path():
         version = ansys.tools.path.version_from_path("mechanical", path)
 
         pymechanical.change_default_mechanical_path(path)
+        assert pymechanical.mechanical.check_valid_mechanical() is True
 
         path_new = ansys.tools.path.get_mechanical_path()
         version_new = ansys.tools.path.version_from_path("mechanical", path)
