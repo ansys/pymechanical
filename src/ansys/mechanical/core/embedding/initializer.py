@@ -24,6 +24,7 @@
 from importlib.metadata import distribution
 import os
 from pathlib import Path
+import platform
 import sys
 import warnings
 
@@ -103,15 +104,27 @@ def _get_default_version() -> int:
 
 def __check_python_interpreter_architecture():
     """Embedding support only 64 bit architecture."""
-    import platform
-
     if platform.architecture()[0] != "64bit":
         raise Exception("Mechanical Embedding requires a 64-bit Python environment.")
+
+
+def __check_for_mechanical_env():
+    """Embedding in linux platform must use mechanical-env."""
+    if platform.system() == "Linux" and os.environ.get("PYMECHANICAL_EMBEDDING") != "TRUE":
+        raise Exception(
+            "Mechanical Embedding requires to use `mechanical-env` in Linux."
+            "For instructions, please refer to: "
+            "https://mechanical.docs.pyansys.com/version/stable/"
+            "getting_started/running_mechanical.html#embed-a-mechanical-instance"
+        )
 
 
 def initialize(version: int = None):
     """Initialize Mechanical embedding."""
     __check_python_interpreter_architecture()  # blocks 32 bit python
+
+    # checks for mechanical-env is used for embedding in Linux
+    __check_for_mechanical_env()
 
     global INITIALIZED_VERSION
     if INITIALIZED_VERSION != None:
