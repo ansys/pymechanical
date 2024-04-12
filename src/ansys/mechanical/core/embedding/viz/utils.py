@@ -23,6 +23,8 @@
 """Common plotting utilities."""
 import typing
 
+import numpy as np
+
 
 def bgr_to_rgb_tuple(bgr_int: int) -> typing.Tuple[int, int, int]:
     """Convert bgr integer to rgb tuple."""
@@ -30,3 +32,30 @@ def bgr_to_rgb_tuple(bgr_int: int) -> typing.Tuple[int, int, int]:
     g = (bgr_int >> 8) & 255
     b = (bgr_int >> 16) & 255
     return r, g, b
+
+
+def _reshape_3cols(arr: np.array, name: str = "array"):
+    """Reshapes the given array into 3 columns.
+
+    Precondition - the array's length must be divisible by 3.
+    """
+    err = f"{name} must be of the form (x0,y0,z0,x1,y1,z1,...,xn,yn,zn).\
+        Given {name} are not divisible by 3!"
+    assert arr.size % 3 == 0, err
+    numrows = int(arr.size / 3)
+    numcols = 3
+    arr = np.reshape(arr, (numrows, numcols))
+    return arr
+
+
+def get_nodes_and_coords(tri_tessellation: "Ansys.Mechanical.Scenegraph.TriTessellationNode"):
+    """Extract the nodes and coordinates from the TriTessellationNode.
+
+    The TriTessellationNode contains "Coordinates" and "Indices"
+    that are flat arrays. This function converts them to numpy arrays
+    """
+    np_coordinates = _reshape_3cols(
+        np.array(tri_tessellation.Coordinates, dtype=np.double), "coordinates"
+    )
+    np_indices = _reshape_3cols(np.array(tri_tessellation.Indices, dtype=np.int32), "indices")
+    return np_coordinates, np_indices

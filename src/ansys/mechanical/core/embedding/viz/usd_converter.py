@@ -25,7 +25,6 @@
 import typing
 
 import clr
-import numpy as np
 from pxr import Gf, Usd, UsdGeom
 
 clr.AddReference("Ansys.Mechanical.DataModel")
@@ -33,10 +32,11 @@ clr.AddReference("Ansys.ACT.Interfaces")
 
 import Ansys  # isort: skip
 
-from .utils import bgr_to_rgb_tuple
+from .utils import bgr_to_rgb_tuple, get_nodes_and_coords
 
 
-def _transform_to_rotation_quat(transform) -> Gf.Quatf:
+def _transform_to_rotation_quat(transform: "Ansys.ACT.Math.Matrix4D") -> Gf.Quatf:
+    """Convert the Transformation matrix to a single-precision quaternion."""
     transforms = [transform[i] for i in range(16)]
     m = Gf.Matrix4d()
     m.SetRow(0, transforms[0:4])
@@ -54,32 +54,15 @@ def _transform_to_rotation_quat(transform) -> Gf.Quatf:
     return quatf
 
 
-def _reshape_3cols(arr: np.array, name: str):
-    err = f"{name} must be of the form (x0,y0,z0,x1,y1,z1,...,xn,yn,zn).\
-        Given {name} are not divisible by 3!"
-    assert arr.size % 3 == 0, err
-    numrows = int(arr.size / 3)
-    numcols = 3
-    arr = np.reshape(arr, (numrows, numcols))
-    return arr
-
-
-def _get_nodes_and_coords(tri_tessellation):
-    np_coordinates = _reshape_3cols(
-        np.array(tri_tessellation.Coordinates, dtype=np.double), "coordinates"
-    )
-    np_indices = _reshape_3cols(np.array(tri_tessellation.Indices, dtype=np.int32), "indices")
-    return np_coordinates, np_indices
-
-
 def _convert_tri_tessellation_node(
     node: "Ansys.Mechanical.Scenegraph.TriTessellationNode",
     stage: Usd.Stage,
     path: str,
     rgb: typing.Tuple[int, int, int],
 ) -> Usd.Prim:
+    """Convert a mechanical TriTessellationNode node into a Usd Mesh prim."""
     mesh_prim = UsdGeom.Mesh.Define(stage, path)
-    np_coordinates, np_indices = _get_nodes_and_coords(node)
+    np_coordinates, np_indices = get_nodes_and_coords(node)
     mesh_prim.CreatePointsAttr(np_coordinates)
     mesh_prim.CreateFaceVertexCountsAttr([3] * len(np_indices))
     mesh_prim.CreateFaceVertexIndicesAttr(np_indices)
@@ -94,6 +77,7 @@ def _convert_transform_node(
     path: str,
     rgb: typing.Tuple[int, int, int],
 ) -> Usd.Prim:
+    """Convert a mechanical transform node into a Usd Xform prim."""
     prim = UsdGeom.Xform.Define(stage, path)
     prim.AddOrientOp().Set(_transform_to_rotation_quat(node.Transform))
     child_node = node.Child

@@ -32,10 +32,11 @@ import Ansys  # isort: skip
 import numpy as np
 import pyvista as pv
 
-from .utils import bgr_to_rgb_tuple
+from .utils import bgr_to_rgb_tuple, get_nodes_and_coords
 
 
-def _transform_to_pyvista(transform):
+def _transform_to_pyvista(transform: "Ansys.ACT.Math.Matrix4D"):
+    """Convert the Transformation matrix to a numpy array."""
     np_transform = np.array([transform[i] for i in range(16)]).reshape(4, 4)
     # There's a bug in mechanical, the scenegraph wrappers use theMatrix4D
     # type, which puts the transformations in the transposed location relative
@@ -47,21 +48,13 @@ def _transform_to_pyvista(transform):
     return np_transform
 
 
-def _reshape_3cols(arr: np.array, name: str):
-    err = f"{name} must be of the form (x0,y0,z0,x1,y1,z1,...,xn,yn,zn).\
-        Given {name} are not divisible by 3!"
-    assert arr.size % 3 == 0, err
-    numrows = int(arr.size / 3)
-    numcols = 3
-    arr = np.reshape(arr, (numrows, numcols))
-    return arr
+def _get_nodes_and_coords(tri_tessellation: "Ansys.Mechanical.Scenegraph.TriTessellationNode"):
+    """Get the nodes and indices of the TriTessellationNode.
 
-
-def _get_nodes_and_coords(tri_tessellation):
-    np_coordinates = _reshape_3cols(
-        np.array(tri_tessellation.Coordinates, dtype=np.double), "coordinates"
-    )
-    np_indices = _reshape_3cols(np.array(tri_tessellation.Indices, dtype=np.int32), "indices")
+    pyvista format expects a number of vertices per facet which is always 3
+    from this kind of node.
+    """
+    np_coordinates, np_indices = get_nodes_and_coords(tri_tessellation)
     np_indices = np.insert(np_indices, 0, 3, axis=1)
     return np_coordinates, np_indices
 
