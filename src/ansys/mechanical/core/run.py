@@ -27,6 +27,7 @@ from asyncio.subprocess import PIPE
 import os
 import sys
 import typing
+from typing import Optional
 import warnings
 
 import ansys.tools.path as atp
@@ -36,6 +37,56 @@ from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 
 # TODO - add logging options (reuse env var based logging initialization)
 # TODO - add timeout
+
+
+def __version_resolve(revision: Optional[int]):
+    """Resolve finding different Mechanical versions.
+
+    Returns Mechanical version and location
+
+    Steps:
+    1. Checks for saved version path in config.txt using get_mechanical_path()
+    2. If saved version path and requested do not match, find requested version path in system
+    3. If no saved version path in config.txt, then find mechanical path in system
+
+    """
+    if revision is None:
+        print("Finding Mechanical path ...")
+    else:
+        print(f"Finding Mechanical path for [{revision}] ...")
+
+    # TODO if get_mechanical_path supports getting version path from config file
+    # currently get_mechanical_path reads config file only if version arg is None
+    # exe = atp.get_mechanical_path() if revision is None else atp.get_mechanical_path(revision)
+    exe = atp.get_mechanical_path()  # gets path from saved
+    if exe:
+        _version = atp.version_from_path("mechanical", exe)
+        if revision and _version != revision:
+            print(
+                f"Saved Mechanical version [{_version}] does not match with requested [{revision}]"
+            )
+            print(f"Finding requested Mechanical version [{revision}] ...")
+            exe, _version = atp.find_mechanical(version=revision)
+    else:
+        exe, _version = atp.find_mechanical(version=revision)
+
+    # find_mechanical returns empty string if not able to find Mechanical in system or saved path
+    if _version != "":
+        print(f"Mechanical [{_version}] found at [{exe}]")
+    else:
+        print("Save Mechanical path using ``save-ansys-path`` if not installed in default location")
+        if revision is not None:
+            raise Exception(
+                f"Cannot find requested Mechanical [{revision}] in system or saved path."
+            )
+        else:
+            raise Exception("Cannot find requested Mechanical in system or saved path.")
+
+    # TODO find_mechanical and version_from_path returns different format
+    # making this coherent as 241 int will be less confusing
+    int_version = int(str(_version).replace(".", ""))
+
+    return int_version, exe
 
 
 async def _read_and_display(cmd, env, do_display: bool):
@@ -179,16 +230,7 @@ def cli(
         if input_script:
             raise Exception("Cannot open in server mode with an input script.")
 
-    if not revision:
-        exe = atp.get_mechanical_path()  # check for saved mechanical path
-        if exe:
-            version = atp.version_from_path("mechanical", exe)  # version is already int here
-        else:
-            exe, _version = atp.find_mechanical()
-            version = int(_version * 10)
-    else:
-        exe, _version = atp.find_mechanical(version=revision)
-        version = int(_version * 10)
+    version, exe = __version_resolve(revision)
 
     version_name = atp.SUPPORTED_ANSYS_VERSIONS[version]
 
