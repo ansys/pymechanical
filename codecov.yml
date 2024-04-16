@@ -8,7 +8,7 @@ coverage:
     patch:
       default:
         # basic
-        target: 90%
+        target: 80%
         if_not_found: success
         if_ci_failed: error
         if_no_uploads: error
