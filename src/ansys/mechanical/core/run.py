@@ -179,16 +179,8 @@ def cli(
         if input_script:
             raise Exception("Cannot open in server mode with an input script.")
 
-    if not revision:
-        exe = atp.get_mechanical_path()  # check for saved mechanical path
-        if exe:
-            version = atp.version_from_path("mechanical", exe)  # version is already int here
-        else:
-            exe, _version = atp.find_mechanical()
-            version = int(_version * 10)
-    else:
-        exe, _version = atp.find_mechanical(version=revision)
-        version = int(_version * 10)
+    exe = atp.get_mechanical_path(allow_input=False, version=revision)
+    version = atp.version_from_path("mechanical", exe)
 
     version_name = atp.SUPPORTED_ANSYS_VERSIONS[version]
 
