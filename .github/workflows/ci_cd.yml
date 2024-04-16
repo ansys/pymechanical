@@ -58,15 +58,16 @@ jobs:
           vale-version: "3.3.0"
 
   check-vulnerabilities:
-    name: "Check library vulnerabilities (default mode - only on main)"
-    if: github.ref == 'refs/heads/main'
+    name: "Check library vulnerabilities (development mode)"
+    if: github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - name: "Check library vulnerabilities with default mode"
+      - name: "Check library vulnerabilities with development mode"
         uses: ansys/actions/check-vulnerabilities@v5.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           python-package-name: 'ansys-mechanical-core'
+          dev-mode: true
 
   smoke-tests:
     name: Build and Smoke tests
