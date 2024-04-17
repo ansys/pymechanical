@@ -35,7 +35,9 @@ import Ansys  # isort: skip
 from .utils import bgr_to_rgb_tuple, get_nodes_and_coords
 
 
-def _transform_to_rotation_translation(transform: "Ansys.ACT.Math.Matrix4D") -> typing.Tuple[Gf.Quatf, Gf.Vec3f]:
+def _transform_to_rotation_translation(
+    transform: "Ansys.ACT.Math.Matrix4D",
+) -> typing.Tuple[Gf.Quatf, Gf.Vec3f]:
     """Convert the Transformation matrix to a single-precision quaternion."""
     transforms = [transform[i] for i in range(16)]
     m = Gf.Matrix4d()
