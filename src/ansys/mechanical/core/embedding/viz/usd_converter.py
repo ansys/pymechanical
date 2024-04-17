@@ -35,7 +35,7 @@ import Ansys  # isort: skip
 from .utils import bgr_to_rgb_tuple, get_nodes_and_coords
 
 
-def _transform_to_rotation_quat(transform: "Ansys.ACT.Math.Matrix4D") -> Gf.Quatf:
+def _transform_to_rotation_translation(transform: "Ansys.ACT.Math.Matrix4D") -> typing.Tuple[Gf.Quatf, Gf.Vec3f]:
     """Convert the Transformation matrix to a single-precision quaternion."""
     transforms = [transform[i] for i in range(16)]
     m = Gf.Matrix4d()
@@ -44,14 +44,14 @@ def _transform_to_rotation_quat(transform: "Ansys.ACT.Math.Matrix4D") -> Gf.Quat
     m.SetRow(2, transforms[8:12])
     m.SetRow(3, transforms[12:16])
 
-    # TODO: m = m.GetTranspose() # if/when needed?
-
     # Get quaternion from transformation matrix
     quatd: Gf.Quatd = m.ExtractRotationQuat()
 
-    # Convert to single precision
-    quatf = Gf.Quatf(quatd)
-    return quatf
+    # Get translation from transformation matrix
+    transd: Gf.Vec3d = m.ExtractTranslation()
+
+    # Return as single precision
+    return Gf.Quatf(quatd), Gf.Vec3f(transd)
 
 
 def _convert_tri_tessellation_node(
@@ -79,7 +79,9 @@ def _convert_transform_node(
 ) -> Usd.Prim:
     """Convert a mechanical transform node into a Usd Xform prim."""
     prim = UsdGeom.Xform.Define(stage, path)
-    prim.AddOrientOp().Set(_transform_to_rotation_quat(node.Transform))
+    rotation, translation = _transform_to_rotation_translation(node.Transform)
+    prim.AddOrientOp().Set(rotation)
+    prim.AddTranslateOp().Set(translation)
     child_node = node.Child
     if isinstance(child_node, Ansys.Mechanical.Scenegraph.TriTessellationNode):
         _convert_tri_tessellation_node(

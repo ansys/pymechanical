@@ -44,7 +44,7 @@ def _transform_to_pyvista(transform: "Ansys.ACT.Math.Matrix4D"):
     # doesn't conform to the expectations of Matrix4D. When it is fixed there,
     # the below line has to be uncommented
 
-    # np_transform = np_transform.transpose()
+    np_transform = np_transform.transpose()
     return np_transform
 
 
