@@ -141,6 +141,7 @@ markers = [
 xfail_strict = true
 
 [tool.towncrier]
+package = "ansys.mechanical.core"
 directory = "doc/changelog.d"
 filename = "CHANGELOG.md"
 start_string = "<!-- towncrier release notes start -->\n"
