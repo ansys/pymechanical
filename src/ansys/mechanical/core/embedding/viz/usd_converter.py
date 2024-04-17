@@ -85,10 +85,9 @@ def _convert_transform_node(
     prim.AddOrientOp().Set(rotation)
     prim.AddTranslateOp().Set(translation)
     child_node = node.Child
+    child_path = prim.GetPath().AppendPath("TriTessellation")
     if isinstance(child_node, Ansys.Mechanical.Scenegraph.TriTessellationNode):
-        _convert_tri_tessellation_node(
-            node.Child, stage, prim.GetPath().AppendPath("TriTessellation"), rgb
-        )
+        _convert_tri_tessellation_node(child_node, stage, child_path, rgb)
     return prim
 
 

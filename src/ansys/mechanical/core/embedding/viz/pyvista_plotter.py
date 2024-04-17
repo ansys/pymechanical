@@ -38,12 +38,8 @@ from .utils import bgr_to_rgb_tuple, get_nodes_and_coords
 def _transform_to_pyvista(transform: "Ansys.ACT.Math.Matrix4D"):
     """Convert the Transformation matrix to a numpy array."""
     np_transform = np.array([transform[i] for i in range(16)]).reshape(4, 4)
-    # There's a bug in mechanical, the scenegraph wrappers use theMatrix4D
-    # type, which puts the transformations in the transposed location relative
-    # to pyvista. But they use the same matrix layout as pyvista, so that
-    # doesn't conform to the expectations of Matrix4D. When it is fixed there,
-    # the below line has to be uncommented
 
+    # The mechanical scenegraph transform node is the transpose of the pyvista transform matrix
     np_transform = np_transform.transpose()
     return np_transform
 
