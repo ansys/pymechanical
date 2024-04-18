@@ -26,7 +26,7 @@ env:
   DEV_REVN: 242
   DEV_MAJOR_REV: 24
   DEV_MINOR_REV: 2
-  DEV_DOCKER_IMAGE_VERSION: '24.2.0_candidate'
+  DEV_DOCKER_IMAGE_VERSION: '24.2_candidate'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -47,7 +47,7 @@ jobs:
         run: |
             echo "major=${{ env.DEV_MAJOR_REV }}" >> $GITHUB_OUTPUT
             echo "minor=${{ env.DEV_MINOR_REV }}" >> $GITHUB_OUTPUT
-            echo "dev_docker_image_version=ghcr.io/ansys/mechanical:${{ env.DEV_DOCKER_IMAGE_VERSION }} >> $GITHUB_OUTPUT
+            echo "dev_docker_image_version=ghcr.io/ansys/mechanical:${{ env.DEV_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
 
       - name: Login in Github Container registry
         uses: docker/login-action@v3
@@ -59,7 +59,7 @@ jobs:
       - name: Pull, launch & display info
         id: capture_info
         run: |
-          IMAGE_NAME=${{ needs.saving-image-versions.outputs.dev_docker_image_version }}
+          IMAGE_NAME=${{ steps.save-versions.outputs.dev_docker_image_version }}
           docker pull $IMAGE_NAME
           BUILD_DATE=$(docker run --rm --entrypoint head $IMAGE_NAME -n 1 /install/ansys_inc/v${{ env.DEV_REVN }}/aisol/CommonFiles/builddate.txt)
           PUSHED_AT=$(docker inspect --format='{{.Created}}' $IMAGE_NAME)
