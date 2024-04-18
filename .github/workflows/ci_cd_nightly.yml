@@ -61,7 +61,7 @@ jobs:
         run: |
           IMAGE_NAME=${{ needs.saving-image-versions.outputs.dev_docker_image_version }}
           docker pull $IMAGE_NAME
-          BUILD_DATE=$(docker run --rm --entrypoint head $IMAGE_NAME -n 1 /install/ansys_inc/v${{ DEV_REVN }}/aisol/CommonFiles/builddate.txt)
+          BUILD_DATE=$(docker run --rm --entrypoint head $IMAGE_NAME -n 1 /install/ansys_inc/v${{ env.DEV_REVN }}/aisol/CommonFiles/builddate.txt)
           PUSHED_AT=$(docker inspect --format='{{.Created}}' $IMAGE_NAME)
           echo "docker_info=$IMAGE_NAME was pushed at: $PUSHED_AT" >> $GITHUB_OUTPUT
           echo "::group::Docker Info"
