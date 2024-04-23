@@ -24,6 +24,7 @@
 from importlib.metadata import distribution
 import os
 from pathlib import Path
+import platform
 import sys
 import warnings
 
@@ -36,7 +37,7 @@ INITIALIZED_VERSION = None
 SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS = {241: "2024R1", 232: "2023R2", 231: "2023R1"}
 
 
-def __add_sys_path(version) -> str:
+def __add_sys_path(version: int) -> str:
     install_path = Path(os.environ[f"AWP_ROOT{version}"])
     platform_string = "winx64" if os.name == "nt" else "linx64"
     bin_path = install_path / "aisol" / "bin" / platform_string
@@ -50,6 +51,19 @@ def __disable_sec() -> None:
     DCS/REP in the future instead of RSM.
     """
     os.environ["ANSYS_MECHANICAL_EMBEDDING_NO_SEC"] = "1"
+
+
+def __workaround_material_server(version: int) -> None:
+    """Workaround material server bug in 2024 R1.
+
+    A REST server is used as a backend for the material model GUI.
+    In 2024 R1, this GUI is used even in batch mode. The server
+    starts by default on a background thread, which may lead to
+    a race condition on shutdown.
+    """
+    # TODO - remove 242 when that is fixed
+    if version in [241, 242]:
+        os.environ["ENGRDATA_SERVER_SERIAL"] = "1"
 
 
 def _get_default_linux_version() -> int:
@@ -90,15 +104,26 @@ def _get_default_version() -> int:
 
 def __check_python_interpreter_architecture():
     """Embedding support only 64 bit architecture."""
-    import platform
-
     if platform.architecture()[0] != "64bit":
         raise Exception("Mechanical Embedding requires a 64-bit Python environment.")
 
 
-def initialize(version=None):
+def __check_for_mechanical_env():
+    """Embedding in linux platform must use mechanical-env."""
+    if platform.system() == "Linux" and os.environ.get("PYMECHANICAL_EMBEDDING") != "TRUE":
+        raise Exception(
+            "On linux, embedding an instance of the Mechanical process using"
+            "the App class requires running python inside of a Mechanical environment."
+            "Use the `mechanical-env` script to do this. For more information, refer to:"
+            "https://mechanical.docs.pyansys.com/version/stable/"
+            "getting_started/running_mechanical.html#embed-a-mechanical-instance"
+        )
+
+
+def initialize(version: int = None):
     """Initialize Mechanical embedding."""
     __check_python_interpreter_architecture()  # blocks 32 bit python
+    __check_for_mechanical_env()  # checks for mechanical-env in linux embedding
 
     global INITIALIZED_VERSION
     if INITIALIZED_VERSION != None:
@@ -111,6 +136,8 @@ def initialize(version=None):
     INITIALIZED_VERSION = version
 
     __disable_sec()
+
+    __workaround_material_server(version)
 
     # need to add system path in order to import the assembly with the resolver
     __add_sys_path(version)

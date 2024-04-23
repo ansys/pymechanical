@@ -20,34 +20,4 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Miscellaneous utilities."""
-import ctypes
-import os
-
-
-def sleep(ms: int) -> None:
-    """Non-blocking sleep for `ms` milliseconds.
-
-    Mechanical should still work during the sleep.
-    """
-    import clr
-
-    clr.AddReference("Ans.Common.WB1ManagedUtils")
-    import Ansys
-
-    Ansys.Common.WB1ManagedUtils.TestHelper().Wait(ms)
-
-
-def load_library_windows(library: str) -> int:  # pragma: no cover
-    """Load a library into the python process on windows."""
-    if os.name != "nt":
-        return 0
-
-    try:
-        LOAD_WITH_ALTERED_SEARCH_PATH = 8
-        dll = ctypes.CDLL(
-            library, use_errno=True, use_last_error=True, winmode=LOAD_WITH_ALTERED_SEARCH_PATH
-        )
-        return dll._handle
-    except:
-        return 0
+"""Namespace module for embedding visualization."""

@@ -20,34 +20,28 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Miscellaneous utilities."""
-import ctypes
+"""Testing app libraries"""
+
 import os
+import sys
+
+from ansys.tools.path.path import _get_unified_install_base_for_version
+import pytest
+
+from ansys.mechanical.core.embedding import add_mechanical_python_libraries
 
 
-def sleep(ms: int) -> None:
-    """Non-blocking sleep for `ms` milliseconds.
+@pytest.mark.embedding
+def test_app_library(embedded_app):
+    """Loads one of the libraries and calls a method."""
+    add_mechanical_python_libraries(embedded_app.version)
+    install, _ = _get_unified_install_base_for_version(embedded_app.version)
+    location = os.path.join(install, "Addins", "ACT", "libraries", "Mechanical")
+    assert location in sys.path
 
-    Mechanical should still work during the sleep.
-    """
-    import clr
+    # import mechanical library and test a method
 
-    clr.AddReference("Ans.Common.WB1ManagedUtils")
-    import Ansys
+    from mechanical import AnalysisTypeName
 
-    Ansys.Common.WB1ManagedUtils.TestHelper().Wait(ms)
-
-
-def load_library_windows(library: str) -> int:  # pragma: no cover
-    """Load a library into the python process on windows."""
-    if os.name != "nt":
-        return 0
-
-    try:
-        LOAD_WITH_ALTERED_SEARCH_PATH = 8
-        dll = ctypes.CDLL(
-            library, use_errno=True, use_last_error=True, winmode=LOAD_WITH_ALTERED_SEARCH_PATH
-        )
-        return dll._handle
-    except:
-        return 0
+    analysis_name = AnalysisTypeName(0)
+    assert analysis_name == "Static"
