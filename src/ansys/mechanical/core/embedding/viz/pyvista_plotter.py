@@ -55,10 +55,9 @@ def _get_nodes_and_coords(tri_tessellation: "Ansys.Mechanical.Scenegraph.TriTess
     return np_coordinates, np_indices
 
 
-def plot_model(app):
-    """Plot the model."""
+def to_pyvista_plotter(app: "ansys.mechanical.core.embedding.App"):
+    """Convert the app's geometry to a pyvista plotter instance."""
     plotter = pv.Plotter()
-
     for body in app.DataModel.GetObjectsByType(
         Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Body
     ):
@@ -68,5 +67,9 @@ def plot_model(app):
         polydata = pv.PolyData(np_coordinates, np_indices).transform(pv_transform)
         color = pv.Color(bgr_to_rgb_tuple(body.Color))
         plotter.add_mesh(polydata, color=color, smooth_shading=True)
+    return plotter
 
+def plot_model(app: "ansys.mechanical.core.embedding.App"):
+    """Plot the model."""
+    plotter = to_pyvista_plotter(app)
     plotter.show()
