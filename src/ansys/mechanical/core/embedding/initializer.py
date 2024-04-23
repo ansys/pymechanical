@@ -61,8 +61,7 @@ def __workaround_material_server(version: int) -> None:
     starts by default on a background thread, which may lead to
     a race condition on shutdown.
     """
-    # TODO - remove 242 when that is fixed
-    if version in [241, 242]:
+    if version in [241]:
         os.environ["ENGRDATA_SERVER_SERIAL"] = "1"
 
 
