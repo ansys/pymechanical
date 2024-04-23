@@ -69,6 +69,7 @@ def to_pyvista_plotter(app: "ansys.mechanical.core.embedding.App"):
         plotter.add_mesh(polydata, color=color, smooth_shading=True)
     return plotter
 
+
 def plot_model(app: "ansys.mechanical.core.embedding.App"):
     """Plot the model."""
     plotter = to_pyvista_plotter(app)
