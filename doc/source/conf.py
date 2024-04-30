@@ -216,7 +216,7 @@ html_theme_options = {
     },
     "cheatsheet": {
         "url": "https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.pdf",
-        "title": "PyMechanical cheatsheet",
+        "title": "PyMechanical cheat sheet",
         "thumbnail": "https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.png",
         "needs_download": True,
     },
