@@ -44,8 +44,10 @@ class Poster:
         in order for this to work from a background thread. Use
         the `sleep` routine from the `utils` module to make
         Mechanical available to receive messages.
+
+        Returns the result of `callable` if any.
         """
         import System
 
-        action = System.Action(callable)
-        self._poster.Post(action)
+        func = System.Func[System.Object](callable)
+        return self._poster.Get[System.Object](func)
