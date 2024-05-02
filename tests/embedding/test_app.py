@@ -115,15 +115,21 @@ def test_app_poster(embedded_app):
         return
     poster = embedded_app.poster
 
+    name = []
+
     def change_name_async(poster):
         """Change_name_async will run a background thread
 
         It will change the name of the project to "foo"
         """
 
+        def get_name():
+            return embedded_app.DataModel.Project.Name
+
         def change_name():
             embedded_app.DataModel.Project.Name = "foo"
 
+        name.append(poster.post(get_name))
         poster.post(change_name)
 
     import threading
@@ -137,6 +143,8 @@ def test_app_poster(embedded_app):
     # thread, e.g. `change_name` that was posted by the poster.
     utils.sleep(400)
     change_name_thread.join()
+    assert len(name) == 1
+    assert name[0] == "Project"
     assert embedded_app.DataModel.Project.Name == "foo"
 
 
