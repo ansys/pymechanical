@@ -38,13 +38,9 @@ from .utils import bgr_to_rgb_tuple, get_nodes_and_coords
 def _transform_to_pyvista(transform: "Ansys.ACT.Math.Matrix4D"):
     """Convert the Transformation matrix to a numpy array."""
     np_transform = np.array([transform[i] for i in range(16)]).reshape(4, 4)
-    # There's a bug in mechanical, the scenegraph wrappers use theMatrix4D
-    # type, which puts the transformations in the transposed location relative
-    # to pyvista. But they use the same matrix layout as pyvista, so that
-    # doesn't conform to the expectations of Matrix4D. When it is fixed there,
-    # the below line has to be uncommented
 
-    # np_transform = np_transform.transpose()
+    # The mechanical scenegraph transform node is the transpose of the pyvista transform matrix
+    np_transform = np_transform.transpose()
     return np_transform
 
 
@@ -59,10 +55,9 @@ def _get_nodes_and_coords(tri_tessellation: "Ansys.Mechanical.Scenegraph.TriTess
     return np_coordinates, np_indices
 
 
-def plot_model(app):
-    """Plot the model."""
+def to_pyvista_plotter(app: "ansys.mechanical.core.embedding.App"):
+    """Convert the app's geometry to a pyvista plotter instance."""
     plotter = pv.Plotter()
-
     for body in app.DataModel.GetObjectsByType(
         Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Body
     ):
@@ -72,5 +67,10 @@ def plot_model(app):
         polydata = pv.PolyData(np_coordinates, np_indices).transform(pv_transform)
         color = pv.Color(bgr_to_rgb_tuple(body.Color))
         plotter.add_mesh(polydata, color=color, smooth_shading=True)
+    return plotter
 
+
+def plot_model(app: "ansys.mechanical.core.embedding.App"):
+    """Plot the model."""
+    plotter = to_pyvista_plotter(app)
     plotter.show()

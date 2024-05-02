@@ -9,6 +9,59 @@ This project uses [towncrier](https://towncrier.readthedocs.io/) and the changes
 
 <!-- towncrier release notes start -->
 
+## [0.10.10](https://github.com/ansys/pymechanical/releases/tag/v0.10.10) - 2024-04-23
+
+
+### Added
+
+- Add embedding_scripts marker [#662](https://github.com/ansys/pymechanical/pull/662)
+- FEAT: Group dependabot alerts [#666](https://github.com/ansys/pymechanical/pull/666)
+- add windows library loader util [#672](https://github.com/ansys/pymechanical/pull/672)
+- Feat: Add reports for remote connect tests [#690](https://github.com/ansys/pymechanical/pull/690)
+- Feat: Add link check [#693](https://github.com/ansys/pymechanical/pull/693)
+- Feat: Add app libraries test [#696](https://github.com/ansys/pymechanical/pull/696)
+- Feat: Update `get_mechanical_path` [#707](https://github.com/ansys/pymechanical/pull/707)
+- Feat: `mechanical-env` check before running embedding [#708](https://github.com/ansys/pymechanical/pull/708)
+- feat: set up doc-deploy-changelog action [#710](https://github.com/ansys/pymechanical/pull/710)
+
+
+### Changed
+
+- Doc: fix docs and vale warning [#656](https://github.com/ansys/pymechanical/pull/656)
+- Maint: post release change log update 10.9 [#665](https://github.com/ansys/pymechanical/pull/665)
+- Maint: Auto approve and merge dependabot PR [#674](https://github.com/ansys/pymechanical/pull/674)
+- [pre-commit.ci] pre-commit autoupdate [#691](https://github.com/ansys/pymechanical/pull/691), [#706](https://github.com/ansys/pymechanical/pull/706)
+- Maint: Add code cov report [#692](https://github.com/ansys/pymechanical/pull/692)
+- Maint: Modify nightly run [#712](https://github.com/ansys/pymechanical/pull/712)
+
+
+### Fixed
+
+- Fix: Assign ci bot for dependabot PR [#677](https://github.com/ansys/pymechanical/pull/677)
+- Fix: Add matrix python in embedding test [#681](https://github.com/ansys/pymechanical/pull/681)
+- Fix: Remove warning message test for remote session launch [#682](https://github.com/ansys/pymechanical/pull/682)
+- fix transformation matrix [#683](https://github.com/ansys/pymechanical/pull/683)
+- Fix: Modify retrieving path of Mechanical in tests [#688](https://github.com/ansys/pymechanical/pull/688)
+- work around instability in 2024R1 [#695](https://github.com/ansys/pymechanical/pull/695)
+
+
+### Dependencies
+
+- MAINT: Bump the doc group with 2 updates [#668](https://github.com/ansys/pymechanical/pull/668), [#673](https://github.com/ansys/pymechanical/pull/673)
+- MAINT: Bump the doc group with 1 update [#678](https://github.com/ansys/pymechanical/pull/678)
+- first version of 3d visualization with pyvista [#680](https://github.com/ansys/pymechanical/pull/680)
+- MAINT: Bump the doc group with 3 updates [#689](https://github.com/ansys/pymechanical/pull/689)
+- add open-usd exporter [#701](https://github.com/ansys/pymechanical/pull/701)
+- MAINT: Bump the doc group with 5 updates [#705](https://github.com/ansys/pymechanical/pull/705), [#715](https://github.com/ansys/pymechanical/pull/715)
+- MAINT: Bump grpcio from 1.62.1 to 1.62.2 in the core group [#713](https://github.com/ansys/pymechanical/pull/713)
+- MAINT: Bump ansys/actions from 5 to 6 [#714](https://github.com/ansys/pymechanical/pull/714)
+
+
+### Miscellaneous
+
+- cleanup [#702](https://github.com/ansys/pymechanical/pull/702)
+- update graphics based on backend changes [#711](https://github.com/ansys/pymechanical/pull/711)
+
 ## [0.10.9](https://github.com/ansys/pymechanical/releases/tag/v0.10.9) - 2024-03-27
 
 
