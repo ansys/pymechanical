@@ -72,7 +72,7 @@ def test_image_animation(printer, selection, embedded_app):
     settings_720p.Height = 720
     image_formats = ["PNG", "JPG", "BMP"]
     for image_format in image_formats:
-        printer(f"{animation_format} image export")
+        printer(f"{image_format} image export")
         image_export_format = getattr(
             Ansys.Mechanical.DataModel.Enums.GraphicsImageExportFormat, image_format
         )
