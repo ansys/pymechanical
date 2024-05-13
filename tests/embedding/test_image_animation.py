@@ -63,19 +63,28 @@ def test_image_animation(printer, selection, embedded_app):
     STAT_STRUC.Solution.Solve(True)
     assert STAT_STRUC.Solution.ObjectState == ObjectState.Solved
 
-    printer("Image export")
     Tree.Activate([DIR_DEF_STAT_STRUC])
     ExtAPI.Graphics.Camera.SetFit()
-    image_export_format = GraphicsImageExportFormat.PNG
     settings_720p = Ansys.Mechanical.Graphics.GraphicsImageExportSettings()
     settings_720p.Resolution = GraphicsResolutionType.EnhancedResolution
     settings_720p.Background = GraphicsBackgroundType.White
     settings_720p.Width = 1280
     settings_720p.Height = 720
-    image_file = os.path.join(os.getcwd(), "geometry.png")
-    ExtAPI.Graphics.ExportImage(image_file, image_export_format, settings_720p)
-    assert os.path.isfile(image_file)
-    os.remove(image_file)
+    image_formats = ["PNG", "JPG", "BMP"]
+    for image_format in image_formats:
+        printer(f"{animation_format} image export")
+        image_export_format = getattr(
+            Ansys.Mechanical.DataModel.Enums.GraphicsImageExportFormat, image_format
+        )
+        image_file = os.path.join(os.getcwd(), f"image.{image_export_format}")
+        ExtAPI.Graphics.ExportImage(image_file, image_export_format, settings_720p)
+        assert os.path.isfile(image_file)
+        with open(image_file, "rb") as file:
+            try:
+                file.read()
+            except Exception as e:
+                assert False, f"Failed to read file {image_file}: {e}"
+        os.remove(image_file)
 
     animation_formats = ["GIF", "AVI", "MP4", "WMV"]
     settings_720p = Ansys.Mechanical.Graphics.AnimationExportSettings()
