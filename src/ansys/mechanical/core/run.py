@@ -33,7 +33,8 @@ import ansys.tools.path as atp
 import click
 
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
-from ansys.mechanical.core.feature_flags import get_feature_flag_names, get_command_line_arguments
+from ansys.mechanical.core.feature_flags import get_command_line_arguments, get_feature_flag_names
+
 # TODO - add logging options (reuse env var based logging initialization)
 # TODO - add timeout
 
@@ -106,7 +107,7 @@ def _run(args, env, check=False, display=False):
     "--features",
     type=str,
     default=None,
-    help=f"Beta feature flags to set, as a semicolon delimited list. Options: {get_feature_flag_names()}"
+    help=f"Beta feature flags to set, as a semicolon delimited list. Options: {get_feature_flag_names()}",
 )
 @click.option(
     "-i",

@@ -33,7 +33,7 @@ class FeatureFlags:
 
 def get_feature_flag_names() -> typing.List[str]:
     """Get the available feature flags."""
-    return [x for x in dir(FeatureFlags) if '_' not in x]
+    return [x for x in dir(FeatureFlags) if "_" not in x]
 
 
 def _get_flag_arg(flagname: str) -> str:
