@@ -107,7 +107,8 @@ def _run(args, env, check=False, display=False):
     "--features",
     type=str,
     default=None,
-    help=f"Beta feature flags to set, as a semicolon delimited list. Options: {get_feature_flag_names()}",
+    help=f"Beta feature flags to set, as a semicolon delimited list.\
+ Options: {get_feature_flag_names()}",
 )
 @click.option(
     "-i",

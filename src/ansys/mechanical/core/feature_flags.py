@@ -27,6 +27,8 @@ import warnings
 
 
 class FeatureFlags:
+    """Supported feature flag names."""
+
     ThermalShells = "Mechanical.ThermalShells"
     MultistageHarmonic = "Mechanical.MultistageHarmonic"
 
@@ -45,5 +47,5 @@ def _get_flag_arg(flagname: str) -> str:
 
 
 def get_command_line_arguments(flags: typing.List[str]):
-    """Get the command line arguments as an array for the given flags"""
+    """Get the command line arguments as an array for the given flags."""
     return ["-featureflags", ";".join([_get_flag_arg(flag) for flag in flags])]
