@@ -33,7 +33,7 @@ import ansys.tools.path as atp
 import click
 
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
-
+from ansys.mechanical.core.feature_flags import get_feature_flag_names, get_command_line_arguments
 # TODO - add logging options (reuse env var based logging initialization)
 # TODO - add timeout
 
@@ -103,6 +103,12 @@ def _run(args, env, check=False, display=False):
     help="Start mechanical in server mode with the given port number",
 )
 @click.option(
+    "--features",
+    type=str,
+    default=None,
+    help=f"Beta feature flags to set, as a semicolon delimited list. Options: {get_feature_flag_names()}"
+)
+@click.option(
     "-i",
     "--input-script",
     default=None,
@@ -156,6 +162,7 @@ def cli(
     show_welcome_screen: bool,
     private_appdata: bool,
     exit: bool,
+    features: str,
 ):
     """CLI tool to run mechanical.
 
@@ -239,6 +246,9 @@ def cli(
         #        when logging is off.. Ideally we let Mechanical write it, so
         #        the user only sees the message when the server is ready.
         print(f"Serving on port {port}")
+
+    if features is not None:
+        args.extend(get_command_line_arguments(features))
 
     _run(args, env, False, True)
 
