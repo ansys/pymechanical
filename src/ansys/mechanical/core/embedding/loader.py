@@ -40,7 +40,7 @@ def __get_mono(assembly_dir, config_dir):
     return mono
 
 
-def _set_mono_trace():
+def _set_mono_trace():  # pragma: no cover
     if "ANS_MONO_TRACE" in os.environ:
         os.environ["MONO_LOG_LEVEL"] = "message"
         os.environ["MONO_LOG_MASK"] = "all"
