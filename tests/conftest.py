@@ -239,7 +239,6 @@ def graphics_test_mechdb_file():
     """Download mechdb files for graphics export test."""
     mechdb_file = download_file("graphics_test.mechdb", "pymechanical", "test_files")
     yield mechdb_file
-    os.remove(mechdb_file)
 
 
 def launch_mechanical_instance(cleanup_on_exit=False):
