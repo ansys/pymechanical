@@ -29,71 +29,56 @@ import pytest
 try:
     from ansys.mechanical.core import global_variables
 except:
-    # No embedding - this import breaks test collection
     global_variables = {}
 
-from ansys.mechanical.core.examples import delete_downloads, download_file
+
+def _is_readable(filepath: str):
+    try:
+        with open(filepath, "rb") as file:
+            file.read()
+    except Exception as e:
+        assert False, f"Failed to read file {filepath}: {e}"
+    finally:
+        os.remove(filepath)
 
 
 @pytest.mark.embedding
-@pytest.mark.parametrize("image_formats", ["PNG", "JPG", "BMP"])
-def test_image_export(printer, embedded_app, image_formats):
+@pytest.mark.parametrize("image_format", ["PNG", "JPG", "BMP"])
+def test_graphics_export_image(printer, embedded_app, image_format, graphics_test_mechdb_file):
     """Tests to check image export."""
-    printer(f"{image_formats} export")
+    printer(f"{image_format} export")
     globals().update(global_variables(embedded_app, True))
-    mechdb_file = download_file("graphics_test.mechdb", "pymechanical", "test_files")
-    embedded_app.open(mechdb_file)
+    embedded_app.open(graphics_test_mechdb_file)
     image_settings = Ansys.Mechanical.Graphics.GraphicsImageExportSettings()
-    image_format = getattr(
-        Ansys.Mechanical.DataModel.Enums.GraphicsImageExportFormat, image_formats
-    )
+    image_format = getattr(GraphicsImageExportFormat, image_format)
     image_settings.Resolution = GraphicsResolutionType.EnhancedResolution
     image_settings.Background = GraphicsBackgroundType.White
     image_settings.Width = 1280
     image_settings.Height = 720
-
-    STAT_STRUC = Model.Analyses[0]
-    STAT_STRUC_SOLN = STAT_STRUC.Solution
-    DEF = STAT_STRUC_SOLN.Children[1]
-    Tree.Activate([DEF])
+    dir_deformation = DataModel.GetObjectsByType(DataModelObjectCategory.DeformationResult)[0]
+    Tree.Activate([dir_deformation])
     ExtAPI.Graphics.Camera.SetFit()
     image_file = os.path.join(os.getcwd(), f"image.{image_format}")
     ExtAPI.Graphics.ExportImage(image_file, image_format, image_settings)
-    with open(image_file, "rb") as file:
-        try:
-            file.read()
-        except Exception as e:
-            assert False, f"Failed to read file {image_file}: {e}"
-    os.remove(image_file)
-    delete_downloads()
+    _is_readable(image_file)
 
 
 @pytest.mark.embedding
-@pytest.mark.parametrize("animation_formats", ["GIF", "AVI", "MP4", "WMV"])
-def test_animation_export(printer, embedded_app, animation_formats):
+@pytest.mark.parametrize("animation_format", ["GIF", "AVI", "MP4", "WMV"])
+def test_graphics_export_animation(
+    printer, embedded_app, animation_format, graphics_test_mechdb_file
+):
     """Tests to check animation export."""
-    printer(f"{animation_formats} export")
+    printer(f"{animation_format} export")
     globals().update(global_variables(embedded_app, True))
-    mechdb_file = download_file("graphics_test.mechdb", "pymechanical", "test_files")
-    embedded_app.open(mechdb_file)
+    embedded_app.open(graphics_test_mechdb_file)
     animation_settings = Ansys.Mechanical.Graphics.AnimationExportSettings()
-    animation_format = getattr(
-        Ansys.Mechanical.DataModel.Enums.GraphicsAnimationExportFormat, animation_formats
-    )
+    animation_format = getattr(GraphicsAnimationExportFormat, animation_format)
     animation_settings.Width = 1280
     animation_settings.Height = 720
-
-    STAT_STRUC = Model.Analyses[0]
-    STAT_STRUC_SOLN = STAT_STRUC.Solution
-    DEF = STAT_STRUC_SOLN.Children[1]
-    Tree.Activate([DEF])
+    dir_deformation = DataModel.GetObjectsByType(DataModelObjectCategory.DeformationResult)[0]
+    Tree.Activate([dir_deformation])
     ExtAPI.Graphics.Camera.SetFit()
     animation_file = os.path.join(os.getcwd(), f"animation.{animation_format}")
-    DEF.ExportAnimation(animation_file, animation_format, animation_settings)
-    with open(animation_file, "rb") as file:
-        try:
-            file.read()
-        except Exception as e:
-            assert False, f"Failed to read file {animation_file}: {e}"
-    os.remove(animation_file)
-    delete_downloads()
+    dir_deformation.ExportAnimation(animation_file, animation_format, animation_settings)
+    _is_readable(animation_file)
