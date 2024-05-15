@@ -36,6 +36,7 @@ from ansys.mechanical.core import LocalMechanicalPool
 from ansys.mechanical.core._version import SUPPORTED_MECHANICAL_VERSIONS
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.errors import MechanicalExitedError
+from ansys.mechanical.core.examples import download_file
 from ansys.mechanical.core.misc import get_mechanical_bin
 from ansys.mechanical.core.run import _run
 
@@ -231,6 +232,13 @@ def test_env():
     # print(f"\ndeleting virtual environment in {venv_dir}")
     shutil.rmtree(venv_dir)
     # print(f"deleted virtual environment in {venv_dir}\n")
+
+
+@pytest.fixture(scope="session")
+def graphics_test_mechdb_file():
+    """Download mechdb files for graphics export test."""
+    mechdb_file = download_file("graphics_test.mechdb", "pymechanical", "test_files")
+    yield mechdb_file
 
 
 def launch_mechanical_instance(cleanup_on_exit=False):

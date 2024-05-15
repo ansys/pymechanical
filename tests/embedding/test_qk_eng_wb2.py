@@ -267,31 +267,3 @@ def test_qk_eng_wb2_007(printer, selection, embedded_app):
         ), "Minimum Safety Factor For Fatigue Tool 2"
 
     _innertest()
-
-
-@pytest.mark.embedding
-def test_image_export(printer, selection, embedded_app):
-    """Image export.
-
-    Testing offscreen image export
-    """
-    globals().update(global_variables(embedded_app, True))
-    Model.AddStaticStructuralAnalysis()
-    Model.AddEigenvalueBucklingAnalysis()
-    Model.Analyses[1].InitialConditions[0].PreStressICEnvironment = Model.Analyses[0]
-    geometry_file = os.path.join(get_assets_folder(), "Eng157.x_t")
-    printer(f"Setting up test - attaching geometry {geometry_file}")
-    geometry_import = Model.GeometryImportGroup.AddGeometryImport()
-    geometry_import.Import(geometry_file)
-
-    ExtAPI.Graphics.Camera.SetFit()
-    image_export_format = GraphicsImageExportFormat.PNG
-    settings_720p = Ansys.Mechanical.Graphics.GraphicsImageExportSettings()
-    settings_720p.Resolution = GraphicsResolutionType.EnhancedResolution
-    settings_720p.Background = GraphicsBackgroundType.White
-    settings_720p.Width = 1280
-    settings_720p.Height = 720
-    ExtAPI.Graphics.ExportImage(
-        os.path.join(os.getcwd(), "geometry.png"), image_export_format, settings_720p
-    )
-    assert os.path.isfile(os.path.join(os.getcwd(), "geometry.png"))
