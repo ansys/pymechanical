@@ -22,18 +22,21 @@
 
 """clr_loader for pymechanical embedding. This loads the CLR on both windows and linux."""
 import os
+import warnings
 
 
 def __get_mono(assembly_dir, config_dir):
     import clr_loader
 
     libmono = os.path.join(assembly_dir, "libmonosgen-2.0.so")
-    mono = clr_loader.get_mono(
-        set_signal_chaining=True,
-        libmono=libmono,  # TODO: find_mono is broken on clr-loader v0.2.6
-        assembly_dir=assembly_dir,
-        config_dir=config_dir,
-    )
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        mono = clr_loader.get_mono(
+            set_signal_chaining=True,
+            libmono=libmono,  # TODO: find_mono is broken on clr-loader v0.2.6
+            assembly_dir=assembly_dir,
+            config_dir=config_dir,
+        )
     return mono
 
 
