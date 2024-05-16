@@ -36,6 +36,7 @@ from ansys.mechanical.core import LocalMechanicalPool
 from ansys.mechanical.core._version import SUPPORTED_MECHANICAL_VERSIONS
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.errors import MechanicalExitedError
+from ansys.mechanical.core.examples import download_file
 from ansys.mechanical.core.misc import get_mechanical_bin
 from ansys.mechanical.core.run import _run
 
@@ -79,9 +80,14 @@ def pytest_collection_modifyitems(config, items):
 
     # skip embedding tests unless the mark is specified
     skip_embedding = pytest.mark.skip(
-        reason="embedding not selected for pytest run (`pytest -m embedding`).  Skip by default"
+        reason="""embedding not selected for pytest run
+        (`pytest -m embedding` or `pytest -m embedding_scripts`).  Skip by default"""
     )
-    [item.add_marker(skip_embedding) for item in items if "embedding" in item.keywords]
+    [
+        item.add_marker(skip_embedding)
+        for item in items
+        if ("embedding" or "embedding_scripts") in item.keywords
+    ]
 
     # TODO - skip python_env tests unless the mark is specified. (The below doesn't work!)
     # skip_python_env = pytest.mark.skip(
@@ -228,6 +234,13 @@ def test_env():
     # print(f"deleted virtual environment in {venv_dir}\n")
 
 
+@pytest.fixture(scope="session")
+def graphics_test_mechdb_file():
+    """Download mechdb files for graphics export test."""
+    mechdb_file = download_file("graphics_test.mechdb", "pymechanical", "test_files")
+    yield mechdb_file
+
+
 def launch_mechanical_instance(cleanup_on_exit=False):
     print("launching mechanical instance")
     return pymechanical.launch_mechanical(
@@ -312,7 +325,7 @@ def mechanical_pool():
     if not pymechanical.mechanical.get_start_instance():
         return None
 
-    path, version = atp.find_mechanical()
+    path = atp.get_mechanical_path()
 
     exec_file = path
     instances_count = 2

@@ -28,7 +28,7 @@ env:
   LATEST_STABLE_DOCKER_IMAGE_VERSION: '24.1.0'
   # DEV_REVN & its Docker image are used in scheduled or registry package runs
   DEV_REVN: '242'
-  DEV_DOCKER_IMAGE_VERSION: '24.2.0'
+  DEV_DOCKER_IMAGE_VERSION: '24.2_candidate'
   MEILISEARCH_API_KEY: ${{ secrets.MEILISEARCH_API_KEY }}
   MEILISEARCH_HOST_URL: ${{ vars.MEILISEARCH_HOST_URL }}
   MEILISEARCH_PUBLIC_API_KEY: ${{ secrets.MEILISEARCH_PUBLIC_API_KEY }}
@@ -38,12 +38,24 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  update-changelog:
+    name: "Update CHANGELOG for new tag"
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: ansys/actions/doc-deploy-changelog@v6
+        with:
+          token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+
   style:
     name: Code style
     runs-on: ubuntu-latest
     steps:
       - name: PyAnsys code style checks
-        uses: ansys/actions/code-style@v5
+        uses: ansys/actions/code-style@v6
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
@@ -52,7 +64,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: PyAnsys documentation style checks
-        uses: ansys/actions/doc-style@v5
+        uses: ansys/actions/doc-style@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           vale-version: "3.3.0"
@@ -73,7 +85,7 @@ jobs:
             os: macos-latest
     steps:
       - name: Build wheelhouse and perform smoke test
-        uses: ansys/actions/build-wheelhouse@v5
+        uses: ansys/actions/build-wheelhouse@v6
         with:
           library-name: ${{ env.PACKAGE_NAME }}
           operating-system: ${{ matrix.os }}
@@ -95,12 +107,12 @@ jobs:
     steps:
       - id: save-versions
         run: |
-          if ${{ github.event_name == 'schedule' }}; then  # || ${{ github.event.registry_package.package_version.container_metadata.tag.name == 'mechanical:24.2.0' }}; then
+          if ${{ github.event_name == 'schedule' }}; then
             # 242
             echo "test_revn=${{ env.DEV_REVN }}" >> $GITHUB_OUTPUT
-            # ghcr.io/ansys/mechanical:24.2.0
+            # ghcr.io/ansys/mechanical:24.2_candidate
             echo "test_container=${{ env.DOCKER_PACKAGE }}:${{ env.DEV_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
-            # 24.2.0
+            # 24.2_candidate
             echo "test_docker_image_version=${{ env.DEV_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
           else
             # 241
@@ -121,10 +133,11 @@ jobs:
     steps:
       - id: set-matrix
         run: |
-          # Configure matrix for "tests" job
-          # Run all mechanical versions for tags and nightly scheduled runs, otherwise run the test docker image version only
-          if ${{ github.event_name == 'push' }} && ${{ contains(github.ref, 'refs/tags') }} || ${{ github.event_name == 'schedule' }}; then
-            echo "matrix={\"mechanical-version\":['23.1.0', '23.2.0', '24.1.0', '24.2.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
+          # Run all stable mechanical versions release tags
+          # For nightly scheduled runs use pre-release (242_candidate)
+          # For pull requests and merges use latest stable version (241)
+          if ${{ github.event_name == 'push' }} && ${{ contains(github.ref, 'refs/tags') }}; then
+            echo "matrix={\"mechanical-version\":['23.1.0', '23.2.0', '24.1.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           else
             echo "matrix={\"mechanical-version\":['${{ needs.revn-variations.outputs.test_docker_image_version }}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           fi
@@ -456,6 +469,13 @@ jobs:
           name: documentation-simplepdf
           path: doc/_build/simplepdf/*.pdf
           retention-days: 7
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        with:
+          files: .coverage-combined/xml
+
 
   # coverage:
   #   name: Merging coverage

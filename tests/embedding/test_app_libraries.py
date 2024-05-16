@@ -20,34 +20,28 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Use the Poster class to post functions to Mechanical's main thread."""
+"""Testing app libraries"""
 
-import typing
+import os
+import sys
+
+from ansys.tools.path.path import _get_unified_install_base_for_version
+import pytest
+
+from ansys.mechanical.core.embedding import add_mechanical_python_libraries
 
 
-class Poster:
-    """Class which can post a python callable function to Mechanical's main thread."""
+@pytest.mark.embedding
+def test_app_library(embedded_app):
+    """Loads one of the libraries and calls a method."""
+    add_mechanical_python_libraries(embedded_app.version)
+    install, _ = _get_unified_install_base_for_version(embedded_app.version)
+    location = os.path.join(install, "Addins", "ACT", "libraries", "Mechanical")
+    assert location in sys.path
 
-    def __init__(self):
-        """Create a new instance of Poster."""
-        import clr
+    # import mechanical library and test a method
 
-        clr.AddReference("Ans.Common.WB1ManagedUtils")
-        import Ans
+    from mechanical import AnalysisTypeName
 
-        self._poster = Ans.Common.WB1ManagedUtils.TaskPoster
-
-    def post(self, callable: typing.Callable):
-        """Post the callable to Mechanical's main thread.
-
-        The main thread needs to be receiving posted messages
-        in order for this to work from a background thread. Use
-        the `sleep` routine from the `utils` module to make
-        Mechanical available to receive messages.
-
-        Returns the result of `callable` if any.
-        """
-        import System
-
-        func = System.Func[System.Object](callable)
-        return self._poster.Get[System.Object](func)
+    analysis_name = AnalysisTypeName(0)
+    assert analysis_name == "Static"

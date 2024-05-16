@@ -29,8 +29,8 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "ansys_api_mechanical==0.1.1",
-    "ansys-mechanical-env==0.1.5",
+    "ansys-api-mechanical==0.1.2",
+    "ansys-mechanical-env==0.1.6",
     "ansys-platform-instancemanagement>=1.0.1",
     "ansys-pythonnet>=3.1.0rc2",
     "ansys-tools-path>=0.3.1",
@@ -38,7 +38,7 @@ dependencies = [
     "click>=8.1.3", # for CLI interface
     "clr-loader==0.2.6",
     "grpcio>=1.30.0",
-    "protobuf>=3.12.2",
+    "protobuf>=3.12.2,<6",
     "tqdm>=4.45.0",
 ]
 
@@ -50,37 +50,41 @@ Tracker = "https://github.com/ansys/pymechanical/issues"
 
 [project.optional-dependencies]
 tests = [
-    "pytest==8.1.1",
+    "pytest==8.2.0",
     "pytest-cov==5.0.0",
     "pytest-print==1.0.0",
 ]
 doc = [
-    "Sphinx==7.2.6",
-    "ansys-sphinx-theme==0.15.1",
-    "grpcio==1.62.1",
+    "sphinx==7.3.7",
+    "ansys-sphinx-theme==0.15.2",
+    "grpcio==1.63.0",
     "imageio-ffmpeg==0.4.9",
-    "imageio==2.34.0",
+    "imageio==2.34.1",
     "jupyter_sphinx==0.5.3",
     "jupyterlab>=3.2.8",
-    "matplotlib==3.8.3",
+    "matplotlib==3.8.4",
     "numpy==1.26.4",
     "numpydoc==1.7.0",
-    "pandas==2.2.1",
-    "panel==1.4.0",
-    "plotly==5.20.0",
+    "pandas==2.2.2",
+    "panel==1.4.2",
+    "plotly==5.22.0",
     "pypandoc==1.13",
-    "pytest-sphinx==0.6.2",
+    "pytest-sphinx==0.6.3",
     "pythreejs==2.4.2",
-    "pyvista==0.43.4",
-    "sphinx-autobuild==2024.2.4",
-    "sphinx-autodoc-typehints==2.0.0",
+    "pyvista==0.43.7",
+    "sphinx-autobuild==2024.4.16",
+    "sphinx-autodoc-typehints==2.1.0",
     "sphinx-copybutton==0.5.2",
     "sphinx_design==0.5.0",
-    "sphinx-gallery==0.15.0",
+    "sphinx-gallery==0.16.0",
     "sphinx-notfound-page==1.0.0",
     "sphinxcontrib-websupport==1.2.7",
     "sphinxemoji==0.3.1",
     "sphinx-simplepdf==1.6.0"
+]
+viz = [
+    "pyvista>=0.39.1",
+    "usd-core==24.3",
 ]
 
 [project.scripts]
@@ -114,7 +118,7 @@ output = ".cov/coverage.xml"
 
 [tool.pytest.ini_options]
 minversion = "7.1"
-addopts = """-ra -s -m remote_session_connect --durations=0 --cov=ansys.mechanical --cov-report html:.cov/html \
+addopts = """-ra -s --durations=0 --cov=ansys.mechanical --cov-report html:.cov/html \
  --cov-report xml:.cov/xml --cov-report term -vv --print --print-relative-time"""
 # addopts = """-ra -s -m remote_session_launch --durations=0 --cov=ansys.mechanical --cov-report html:.cov/html \
 # --cov-report xml:.cov/xml --cov-report term -vv --print --print-relative-time"""
@@ -128,6 +132,7 @@ testpaths = [
 ]
 markers = [
     "embedding: tests that embed Mechanical in the python process",
+    "embedding_scripts: embedding tests that use subprocess",
     "python_env: tests that check for an appropriate python environment",
     "remote_session_launch: tests that launch Mechanical and work with gRPC server inside it",
     "remote_session_connect: tests that connect to Mechanical and work with gRPC server inside it",
@@ -137,6 +142,7 @@ markers = [
 xfail_strict = true
 
 [tool.towncrier]
+package = "ansys.mechanical.core"
 directory = "doc/changelog.d"
 filename = "CHANGELOG.md"
 start_string = "<!-- towncrier release notes start -->\n"
