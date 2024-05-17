@@ -52,7 +52,8 @@ def test_cli_graphical(disable_cli):
 @pytest.mark.cli
 def test_cli_appdata(disable_cli):
     _, env = _cli_impl(exe="AnsysWBU.exe", version=241, private_appdata=True)
-    assert os.environ["TEMP"] != env["TEMP"]
+    var_to_compare = "TEMP" if os.name == "nt" else "HOME"
+    assert os.environ[var_to_compare] != env[var_to_compare]
 
 
 @pytest.mark.cli
