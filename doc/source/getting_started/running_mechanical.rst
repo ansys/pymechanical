@@ -81,6 +81,9 @@ usage, type the following command:
                                     port number
         -i, --input-script TEXT    Name of the input Python script. Cannot be mixed
                                     with -p
+        --features TEXT            Beta feature flags to set, as a semicolon
+                                    delimited list. Options: ['MultistageHarmonic',
+                                    'ThermalShells']
         --exit                     Exit the application after running an input
                                     script. You can only use this command with
                                     --input-script argument (-i). The command

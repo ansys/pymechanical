@@ -31,14 +31,17 @@ import warnings
 class UniqueUserProfile:
     """Create Unique User Profile (for AppData)."""
 
-    def __init__(self, profile_name):
+    def __init__(self, profile_name: str, dry_run: bool = False):
         """Initialize UniqueUserProfile class."""
         self._default_profile = os.path.expanduser("~")
         self._location = os.path.join(self._default_profile, "PyMechanical-AppData", profile_name)
+        self._dry_run = dry_run
         self.initialize()
 
     def initialize(self) -> None:
         """Initialize the new profile location."""
+        if self._dry_run:
+            return
         if self.exists():
             self.cleanup()
         self.mkdirs()
@@ -46,6 +49,8 @@ class UniqueUserProfile:
 
     def cleanup(self) -> None:
         """Cleanup unique user profile."""
+        if self._dry_run:
+            return
         text = "The `private_appdata` option was used, but the following files were not removed: "
         message = []
 
