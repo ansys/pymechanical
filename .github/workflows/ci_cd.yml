@@ -376,6 +376,56 @@ jobs:
           include_passed: true
           fail_on_failure: true
 
+  cli-tests:
+    name: ansys-mechanical cli testing and coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+
+      - name: Install library, with test extra
+        run: python -m pip install .[tests]
+
+      - name: Unit testing
+        run: |
+          python -m pytest -m cli-s --junitxml test_results_cli${{ matrix.python-version }}.xml
+
+      - name: Upload coverage results
+        uses: actions/upload-artifact@v4
+        if: env.MAIN_PYTHON_VERSION == matrix.python-version
+        with:
+          name: coverage-tests-embedding-scripts
+          path: .cov
+          retention-days: 7
+
+      - name: Upload coverage results (as .coverage)
+        uses: actions/upload-artifact@v4
+        if: env.MAIN_PYTHON_VERSION == matrix.python-version
+        with:
+          name: coverage-file-tests-embedding-scripts
+          path: .coverage
+          retention-days: 7
+
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v4
+        if: always()
+        with:
+          report_paths: '**/test_results_cli*.xml'
+          check_name: CLI Test Report ${{ matrix.python-version }}
+          detailed_summary: true
+          include_passed: true
+          fail_on_failure: true
+
+
   launch-tests:
     name: Launch testing and coverage
     runs-on: public-ubuntu-latest-8-cores
