@@ -38,7 +38,7 @@ from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.errors import MechanicalExitedError
 from ansys.mechanical.core.examples import download_file
 from ansys.mechanical.core.misc import get_mechanical_bin
-from ansys.mechanical.core.run import _run
+import ansys.mechanical.core.run
 
 # to run tests with multiple markers
 # pytest -q --collect-only -m "remote_session_launch"
@@ -176,7 +176,7 @@ def run_subprocess():
     def func(args, env=None, check: bool = None):
         if check is None:
             check = _CHECK_PROCESS_RETURN_CODE
-        stdout, stderr = _run(args, env, check)
+        stdout, stderr = ansys.mechanical.core.run._run(args, env, check)
         return stdout, stderr
 
     return func
@@ -187,6 +187,13 @@ def rootdir():
     """Return the root directory of the local clone of the PyMechanical GitHub repository."""
     base = pathlib.Path(__file__).parent
     yield base.parent
+
+
+@pytest.fixture()
+def disable_cli():
+    ansys.mechanical.core.run.DRY_RUN = True
+    yield
+    ansys.mechanical.core.run.DRY_RUN = False
 
 
 @pytest.fixture()
