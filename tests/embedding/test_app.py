@@ -47,6 +47,9 @@ def test_deprecation_warning(embedded_app):
     struct = embedded_app.Model.AddStaticStructuralAnalysis()
     with pytest.warns(UserWarning):
         struct.SystemID
+    harmonic_acoustic = embedded_app.Model.AddHarmonicAcousticAnalysis()
+    with pytest.warns(UserWarning):
+        harmonic_acoustic.AnalysisSettings.MultipleRPMs = True
 
 
 @pytest.mark.embedding
