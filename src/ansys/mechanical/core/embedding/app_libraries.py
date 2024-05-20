@@ -51,11 +51,9 @@ can be imported with the `import` statement.
 import os
 import sys
 
-from ansys.tools.path.path import _get_unified_install_base_for_version
 
-
-def add_mechanical_python_libraries(version: int):
+def add_mechanical_python_libraries(app: "ansys.mechanical.core.App"):
     """Add the Mechanical libraries path to sys.path."""
-    install, _ = _get_unified_install_base_for_version(version)
-    location = os.path.join(install, "Addins", "ACT", "libraries", "Mechanical")
+    installdir = os.environ[f"AWP_ROOT{app.version}"]
+    location = os.path.join(installdir, "Addins", "ACT", "libraries", "Mechanical")
     sys.path.append(location)

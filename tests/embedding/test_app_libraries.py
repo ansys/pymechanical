@@ -25,7 +25,6 @@
 import os
 import sys
 
-from ansys.tools.path.path import _get_unified_install_base_for_version
 import pytest
 
 from ansys.mechanical.core.embedding import add_mechanical_python_libraries
@@ -34,10 +33,10 @@ from ansys.mechanical.core.embedding import add_mechanical_python_libraries
 @pytest.mark.embedding
 def test_app_library(embedded_app):
     """Loads one of the libraries and calls a method."""
-    add_mechanical_python_libraries(embedded_app.version)
-    install, _ = _get_unified_install_base_for_version(embedded_app.version)
-    location = os.path.join(install, "Addins", "ACT", "libraries", "Mechanical")
-    assert location in sys.path
+    add_mechanical_python_libraries(embedded_app)
+    app_installdir = os.environ[f"AWP_ROOT{embedded_app.version}"]
+    app_library_location = os.path.join(app_installdir, "Addins", "ACT", "libraries", "Mechanical")
+    assert app_library_location in sys.path
 
     # import mechanical library and test a method
 
