@@ -28,5 +28,5 @@ To use the above function, run the following:
 
    app = App(version=241)
 
-   add_mechanical_python_libraries(241)
+   add_mechanical_python_libraries(app)
    import materials  # This is materials.py that's shipped with Mechanical v241
