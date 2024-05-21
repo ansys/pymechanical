@@ -62,8 +62,8 @@ def add_mechanical_python_libraries(app_or_version):
     installdir = []
     if isinstance(app_or_version, int):
         warnings.warn(
-            "Passing version to add_mechanical_python_libraries() is obsolete."
-            "Please pass a App() instead.",
+            "Passing version to add_mechanical_python_libraries() is deprecated."
+            "Please pass an instance of App() instead.",
             DeprecationWarning,
             stacklevel=2,
         )
