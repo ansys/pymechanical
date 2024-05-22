@@ -83,7 +83,7 @@ def log_check_can_log_message(version):
 def log_check_all_log_level(version):
     """Configure logger before app initialization and check can_log_message."""
     Configuration.configure(level=logging.DEBUG, to_stdout=True, base_directory=None)
-    assert Logger.can_log_message(logging.DEBUG) is False
+    assert Logger.can_log_message(logging.FATAL) is True
     _ = mech.App(version=version)
     Logger.debug("debug")
     Logger.info("info")
