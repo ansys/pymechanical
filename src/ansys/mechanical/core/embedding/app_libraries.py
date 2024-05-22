@@ -50,12 +50,31 @@ can be imported with the `import` statement.
 
 import os
 import sys
+import warnings
 
-from ansys.tools.path.path import _get_unified_install_base_for_version
+from ansys.tools.path import get_mechanical_path
+
+from ansys.mechanical.core.embedding.app import App
 
 
-def add_mechanical_python_libraries(version: int):
+def add_mechanical_python_libraries(app_or_version):
     """Add the Mechanical libraries path to sys.path."""
-    install, _ = _get_unified_install_base_for_version(version)
-    location = os.path.join(install, "Addins", "ACT", "libraries", "Mechanical")
+    installdir = []
+    if isinstance(app_or_version, int):
+        warnings.warn(
+            "Passing version to add_mechanical_python_libraries() is deprecated."
+            "Please pass an instance of App() instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        exe = get_mechanical_path(allow_input=False, version=app_or_version)
+        while os.path.basename(exe) != f"v{app_or_version}":
+            exe = os.path.dirname(exe)
+        installdir.append(exe)
+    elif isinstance(app_or_version, App):
+        installdir.append(os.environ[f"AWP_ROOT{app_or_version.version}"])
+    else:
+        raise ValueError(f"Invalid input: expected an integer (version) or an instance of App().")
+
+    location = os.path.join(installdir[0], "Addins", "ACT", "libraries", "Mechanical")
     sys.path.append(location)

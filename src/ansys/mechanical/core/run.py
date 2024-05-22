@@ -33,6 +33,9 @@ import ansys.tools.path as atp
 import click
 
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
+from ansys.mechanical.core.feature_flags import get_command_line_arguments, get_feature_flag_names
+
+DRY_RUN = False
 
 # TODO - add logging options (reuse env var based logging initialization)
 # TODO - add timeout
@@ -82,6 +85,101 @@ def _run(args, env, check=False, display=False):
     return output
 
 
+def _cli_impl(
+    project_file: str = None,
+    port: int = 0,
+    debug: bool = False,
+    input_script: str = None,
+    exe: str = None,
+    version: int = None,
+    graphical: bool = False,
+    show_welcome_screen: bool = False,
+    private_appdata: bool = False,
+    exit: bool = False,
+    features: str = None,
+):
+    if project_file and input_script:
+        raise Exception("Cannot open a project file *and* run a script.")
+
+    if (not graphical) and project_file:
+        raise Exception("Cannot open a project file in batch mode.")
+
+    if port:
+        if project_file:
+            raise Exception("Cannot open in server mode with a project file.")
+        if input_script:
+            raise Exception("Cannot open in server mode with an input script.")
+
+    args = [exe, "-DSApplet"]
+    if (not graphical) or (not show_welcome_screen):
+        args.append("-AppModeMech")
+
+    if version < 232:
+        args.append("-nosplash")
+        args.append("-notabctrl")
+
+    if not graphical:
+        args.append("-b")
+
+    env: typing.Dict[str, str] = os.environ.copy()
+    if debug:
+        env["WBDEBUG_STOP"] = "1"
+
+    if port:
+        args.append("-grpc")
+        args.append(str(port))
+
+    if project_file:
+        args.append("-file")
+        args.append(project_file)
+
+    if input_script:
+        args.append("-script")
+        args.append(input_script)
+
+    if (not graphical) and input_script:
+        exit = True
+        if version < 241:
+            warnings.warn(
+                "Please ensure ExtAPI.Application.Close() is at the end of your script. "
+                "Without this command, Batch mode will not terminate.",
+                stacklevel=2,
+            )
+
+    if exit and input_script and version >= 241:
+        args.append("-x")
+
+    profile: UniqueUserProfile = None
+    if private_appdata:
+        new_profile_name = f"Mechanical-{os.getpid()}"
+        profile = UniqueUserProfile(new_profile_name, DRY_RUN)
+        profile.update_environment(env)
+
+    if not DRY_RUN:
+        version_name = atp.SUPPORTED_ANSYS_VERSIONS[version]
+        if graphical:
+            mode = "Graphical"
+        else:
+            mode = "Batch"
+        print(f"Starting Ansys Mechanical version {version_name} in {mode} mode...")
+        if port:
+            # TODO - Mechanical doesn't write anything to the stdout in grpc mode
+            #        when logging is off.. Ideally we let Mechanical write it, so
+            #        the user only sees the message when the server is ready.
+            print(f"Serving on port {port}")
+
+    if features is not None:
+        args.extend(get_command_line_arguments(features.split(";")))
+
+    if DRY_RUN:
+        return args, env
+    else:
+        _run(args, env, False, True)
+
+    if private_appdata:
+        profile.cleanup()
+
+
 @click.command()
 @click.help_option("--help", "-h")
 @click.option(
@@ -101,6 +199,13 @@ def _run(args, env, check=False, display=False):
     "--port",
     type=int,
     help="Start mechanical in server mode with the given port number",
+)
+@click.option(
+    "--features",
+    type=str,
+    default=None,
+    help=f"Beta feature flags to set, as a semicolon delimited list.\
+ Options: {get_feature_flag_names()}",
 )
 @click.option(
     "-i",
@@ -156,6 +261,7 @@ def cli(
     show_welcome_screen: bool,
     private_appdata: bool,
     exit: bool,
+    features: str,
 ):
     """CLI tool to run mechanical.
 
@@ -167,80 +273,19 @@ def cli(
 
         Starting Ansys Mechanical version 2023R2 in graphical mode...
     """
-    if project_file and input_script:
-        raise Exception("Cannot open a project file *and* run a script.")
-
-    if (not graphical) and project_file:
-        raise Exception("Cannot open a project file in batch mode.")
-
-    if port:
-        if project_file:
-            raise Exception("Cannot open in server mode with a project file.")
-        if input_script:
-            raise Exception("Cannot open in server mode with an input script.")
-
     exe = atp.get_mechanical_path(allow_input=False, version=revision)
     version = atp.version_from_path("mechanical", exe)
 
-    version_name = atp.SUPPORTED_ANSYS_VERSIONS[version]
-
-    args = [exe, "-DSApplet"]
-    if (not graphical) or (not show_welcome_screen):
-        args.append("-AppModeMech")
-
-    if version < 232:
-        args.append("-nosplash")
-        args.append("-notabctrl")
-
-    if graphical:
-        mode = "Graphical"
-    else:
-        mode = "Batch"
-        args.append("-b")
-
-    if debug:
-        os.environ["WBDEBUG_STOP"] = "1"
-
-    if port:
-        args.append("-grpc")
-        args.append(str(port))
-
-    if project_file:
-        args.append("-file")
-        args.append(project_file)
-
-    if input_script:
-        args.append("-script")
-        args.append(input_script)
-
-    if (not graphical) and input_script:
-        exit = True
-        if version < 241:
-            warnings.warn(
-                "Please ensure ExtAPI.Application.Close() is at the end of your script. "
-                "Without this command, Batch mode will not terminate.",
-                stacklevel=2,
-            )
-
-    if exit and input_script and version >= 241:
-        args.append("-x")
-
-    profile: UniqueUserProfile = None
-    env: typing.Dict[str, str] = None
-    if private_appdata:
-        env = os.environ.copy()
-        new_profile_name = f"Mechanical-{os.getpid()}"
-        profile = UniqueUserProfile(new_profile_name)
-        profile.update_environment(env)
-
-    print(f"Starting Ansys Mechanical version {version_name} in {mode} mode...")
-    if port:
-        # TODO - Mechanical doesn't write anything to the stdout in grpc mode
-        #        when logging is off.. Ideally we let Mechanical write it, so
-        #        the user only sees the message when the server is ready.
-        print(f"Serving on port {port}")
-
-    _run(args, env, False, True)
-
-    if private_appdata:
-        profile.cleanup()
+    return _cli_impl(
+        project_file,
+        port,
+        debug,
+        input_script,
+        exe,
+        version,
+        graphical,
+        show_welcome_screen,
+        private_appdata,
+        exit,
+        features,
+    )

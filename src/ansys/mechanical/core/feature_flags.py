@@ -20,34 +20,32 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Use the Poster class to post functions to Mechanical's main thread."""
+"""Mechanical beta feature flags."""
 
 import typing
+import warnings
 
 
-class Poster:
-    """Class which can post a python callable function to Mechanical's main thread."""
+class FeatureFlags:
+    """Supported feature flag names."""
 
-    def __init__(self):
-        """Create a new instance of Poster."""
-        import clr
+    ThermalShells = "Mechanical.ThermalShells"
+    MultistageHarmonic = "Mechanical.MultistageHarmonic"
 
-        clr.AddReference("Ans.Common.WB1ManagedUtils")
-        import Ans
 
-        self._poster = Ans.Common.WB1ManagedUtils.TaskPoster
+def get_feature_flag_names() -> typing.List[str]:
+    """Get the available feature flags."""
+    return [x for x in dir(FeatureFlags) if "_" not in x]
 
-    def post(self, callable: typing.Callable):
-        """Post the callable to Mechanical's main thread.
 
-        The main thread needs to be receiving posted messages
-        in order for this to work from a background thread. Use
-        the `sleep` routine from the `utils` module to make
-        Mechanical available to receive messages.
+def _get_flag_arg(flagname: str) -> str:
+    """Get the command line name for a given feature flag."""
+    if hasattr(FeatureFlags, flagname):
+        return getattr(FeatureFlags, flagname)
+    warnings.warn(f"Using undocumented feature flag {flagname}")
+    return flagname
 
-        Returns the result of `callable` if any.
-        """
-        import System
 
-        func = System.Func[System.Object](callable)
-        return self._poster.Get[System.Object](func)
+def get_command_line_arguments(flags: typing.List[str]):
+    """Get the command line arguments as an array for the given flags."""
+    return ["-featureflags", ";".join([_get_flag_arg(flag) for flag in flags])]

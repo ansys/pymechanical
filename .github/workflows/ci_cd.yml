@@ -167,6 +167,20 @@ jobs:
           docker run --restart always --name ${{ env.DOCKER_MECH_CONTAINER_NAME }} -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }} > log.txt &
           grep -q 'WB Initialize Done' <(timeout 60 tail -f log.txt)
 
+      - name: Display info
+        id: capture_info
+        run: |
+          IMAGE_NAME=${{ env.DOCKER_PACKAGE }}:${{ matrix.mechanical-version }}
+          BUILD_DATE=$(docker run --rm --entrypoint head $IMAGE_NAME -n 1 /install/ansys_inc/v${{ needs.revn-variations.outputs.test_revn }}/aisol/CommonFiles/builddate.txt)
+          PUSHED_AT=$(docker inspect --format='{{.Created}}' $IMAGE_NAME)
+          echo "docker_info=$IMAGE_NAME was pushed at: $PUSHED_AT" >> $GITHUB_OUTPUT
+          echo "::group::Docker Info"
+          echo "docker_info=$PUSHED_AT" >> $GITHUB_OUTPUT
+          echo "build_info=$BUILD_DATE" >> $GITHUB_OUTPUT
+          echo "$IMAGE_NAME pushed at $PUSHED_AT"
+          echo "Build date : $BUILD_DATE"
+          echo "::endgroup::"
+
       - name: Testing
         uses: ansys/actions/tests-pytest@v6
         with:
@@ -186,7 +200,6 @@ jobs:
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v4
-        if: matrix.mechanical-version == env.LATEST_STABLE_DOCKER_IMAGE_VERSION
         with:
           name: coverage-tests
           path: .cov
@@ -194,8 +207,6 @@ jobs:
 
       - name: Upload coverage results (as .coverage)
         uses: actions/upload-artifact@v4
-        if: matrix.mechanical-version == env.LATEST_STABLE_DOCKER_IMAGE_VERSION
-
         with:
           name: coverage-file-tests
           path: .coverage
@@ -338,6 +349,7 @@ jobs:
         run: |
           . /env/bin/activate
           mechanical-env pytest -m embedding_scripts -s --junitxml test_results_embedding_scripts${{ matrix.python-version }}.xml
+          pytest -m cli -s --junitxml test_results_cli_scripts${{ matrix.python-version }}.xml
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v4
@@ -588,6 +600,7 @@ jobs:
       - name: Move files to common location
         run: |
           mv cov-dir/embedding/.coverage .coverage.Embedding
+          mv cov-dir/embedding-scripts/.coverage .coverage.EmbeddingScripts
           mv cov-dir/launch/.coverage .coverage.Launch
           mv cov-dir/normal/.coverage .coverage.Normal
           rm -rf cov-dir
