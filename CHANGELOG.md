@@ -9,6 +9,50 @@ This project uses [towncrier](https://towncrier.readthedocs.io/) and the changes
 
 <!-- towncrier release notes start -->
 
+## [0.10.11](https://github.com/ansys/pymechanical/releases/tag/v0.10.11) - 2024-05-22
+
+
+### Added
+
+- feat: Add tests for animation exports [#729](https://github.com/ansys/pymechanical/pull/729)
+- add feature flags to ansys-mechanical cli [#735](https://github.com/ansys/pymechanical/pull/735)
+- feat: Add test for deprecation warning [#739](https://github.com/ansys/pymechanical/pull/739)
+
+
+### Changed
+
+- chore: update CHANGELOG for v0.10.10 [#716](https://github.com/ansys/pymechanical/pull/716)
+- Maint: Display image info [#717](https://github.com/ansys/pymechanical/pull/717)
+- [pre-commit.ci] pre-commit autoupdate [#726](https://github.com/ansys/pymechanical/pull/726)
+- set mono trace env vars before loading mono [#734](https://github.com/ansys/pymechanical/pull/734)
+
+
+### Fixed
+
+- fix: merging coverage step in ci_cd [#720](https://github.com/ansys/pymechanical/pull/720)
+- fix: Publish coverage for remote connect [#721](https://github.com/ansys/pymechanical/pull/721)
+- fix: Restrict `protobuf` <6 [#722](https://github.com/ansys/pymechanical/pull/722)
+- Fix: add return for poster [#727](https://github.com/ansys/pymechanical/pull/727)
+- fix: cli test are not getting coverage [#737](https://github.com/ansys/pymechanical/pull/737)
+- fix: adding mechanical libraries [#740](https://github.com/ansys/pymechanical/pull/740)
+
+
+### Dependencies
+
+- MAINT: Bump pytest from 8.1.1 to 8.2.0 in the tests group [#724](https://github.com/ansys/pymechanical/pull/724)
+- MAINT: Bump the doc group with 3 updates [#725](https://github.com/ansys/pymechanical/pull/725), [#743](https://github.com/ansys/pymechanical/pull/743)
+- MAINT: Bump grpcio from 1.62.2 to 1.63.0 in the core group [#731](https://github.com/ansys/pymechanical/pull/731)
+- MAINT: Bump the doc group with 2 updates [#732](https://github.com/ansys/pymechanical/pull/732)
+- MAINT: Bump grpcio from 1.63.0 to 1.64.0 in the core group [#741](https://github.com/ansys/pymechanical/pull/741)
+- MAINT: Bump pytest from 8.2.0 to 8.2.1 in the tests group [#742](https://github.com/ansys/pymechanical/pull/742)
+
+
+### Miscellaneous
+
+- Split pyvista into two methods and remove the stability workaround for 242 [#718](https://github.com/ansys/pymechanical/pull/718)
+- Update conf.py [#723](https://github.com/ansys/pymechanical/pull/723)
+- catch the mono version warning [#733](https://github.com/ansys/pymechanical/pull/733)
+
 ## [0.10.10](https://github.com/ansys/pymechanical/releases/tag/v0.10.10) - 2024-04-23
 
 
