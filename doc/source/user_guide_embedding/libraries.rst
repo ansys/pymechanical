@@ -33,4 +33,4 @@ To use the above function, run the following:
 
 .. warning::
 
-    Using version as argument to ``add_mechanical_python_libraries()``is deprecated.
+    Using version as argument to ``add_mechanical_python_libraries()`` is deprecated.

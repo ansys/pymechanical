@@ -62,3 +62,7 @@ def test_app_library(embedded_app):
 
     sys.path.remove(location)
     assert location not in sys.path
+
+    # Test value error
+    with pytest.raises(ValueError):
+        add_mechanical_python_libraries(embedded_app.Model)
