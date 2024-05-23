@@ -80,6 +80,18 @@ def log_check_can_log_message(version):
     assert Logger.can_log_message(logging.FATAL) is True
 
 
+def log_check_all_log_level(version):
+    """Configure logger before app initialization and check can_log_message."""
+    Configuration.configure(level=logging.DEBUG, to_stdout=True, base_directory=None)
+    assert Logger.can_log_message(logging.FATAL) is True
+    _ = mech.App(version=version)
+    Logger.debug("debug")
+    Logger.info("info")
+    Logger.warning("warning")
+    Logger.error("error")
+    Logger.fatal("fatal")
+
+
 if __name__ == "__main__":
     version = sys.argv[1]
     test_name = sys.argv[2]
@@ -90,6 +102,7 @@ if __name__ == "__main__":
         "log_check_can_log_message": log_check_can_log_message,
         "log_configuration_Mechanical": log_configuration_mechanical,
         "log_configuration_WorkBench": log_configuration_workbench,
+        "log_check_all_log_level": log_check_all_log_level,
     }
     tests[test_name](int(version))
     print("@@success@@")
