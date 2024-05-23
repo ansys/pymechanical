@@ -201,6 +201,7 @@ jobs:
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v4
+        if: matrix.mechanical-version == needs.revn-variations.outputs.test_docker_image_version
         with:
           name: coverage-tests
           path: .cov
@@ -208,6 +209,7 @@ jobs:
 
       - name: Upload coverage results (as .coverage)
         uses: actions/upload-artifact@v4
+        if: matrix.mechanical-version == needs.revn-variations.outputs.test_docker_image_version
         with:
           name: coverage-file-tests
           path: .coverage
