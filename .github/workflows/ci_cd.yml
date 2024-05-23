@@ -168,6 +168,7 @@ jobs:
           grep -q 'WB Initialize Done' <(timeout 60 tail -f log.txt)
 
       - name: Display info
+        if: github.event_name == 'schedule'
         id: capture_info
         run: |
           IMAGE_NAME=${{ env.DOCKER_PACKAGE }}:${{ matrix.mechanical-version }}
@@ -200,6 +201,7 @@ jobs:
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v4
+        if: matrix.mechanical-version == needs.revn-variations.outputs.test_docker_image_version
         with:
           name: coverage-tests
           path: .cov
@@ -207,6 +209,7 @@ jobs:
 
       - name: Upload coverage results (as .coverage)
         uses: actions/upload-artifact@v4
+        if: matrix.mechanical-version == needs.revn-variations.outputs.test_docker_image_version
         with:
           name: coverage-file-tests
           path: .coverage
