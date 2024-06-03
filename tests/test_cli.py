@@ -29,7 +29,7 @@ from ansys.mechanical.core.run import _cli_impl
 
 @pytest.mark.cli
 def test_cli_default(disable_cli):
-    args, env = _cli_impl(exe="AnsysWBU.exe", version=241)
+    args, env = _cli_impl(exe="AnsysWBU.exe", version=241, port=11)
     assert os.environ == env
     assert "-AppModeMech" in args
     assert "-b" in args
@@ -39,7 +39,7 @@ def test_cli_default(disable_cli):
 
 @pytest.mark.cli
 def test_cli_debug(disable_cli):
-    _, env = _cli_impl(exe="AnsysWBU.exe", version=241, debug=True)
+    _, env = _cli_impl(exe="AnsysWBU.exe", version=241, debug=True, port=11)
     assert "WBDEBUG_STOP" in env
 
 
@@ -51,7 +51,7 @@ def test_cli_graphical(disable_cli):
 
 @pytest.mark.cli
 def test_cli_appdata(disable_cli):
-    _, env = _cli_impl(exe="AnsysWBU.exe", version=241, private_appdata=True)
+    _, env = _cli_impl(exe="AnsysWBU.exe", version=241, private_appdata=True, port=11)
     var_to_compare = "TEMP" if os.name == "nt" else "HOME"
     assert os.environ[var_to_compare] != env[var_to_compare]
 
@@ -86,7 +86,7 @@ def test_cli_appmode(disable_cli):
 
 @pytest.mark.cli
 def test_cli_232(disable_cli):
-    args, _ = _cli_impl(exe="AnsysWBU.exe", version=231)
+    args, _ = _cli_impl(exe="AnsysWBU.exe", version=231, port=11)
     assert "-nosplash" in args
     assert "-notabctrl" in args
 
@@ -115,21 +115,20 @@ def test_cli_script(disable_cli):
 @pytest.mark.cli
 def test_cli_features(disable_cli):
     with pytest.warns(UserWarning):
-        args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, features="a;b;c")
+        args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, features="a;b;c", port=11)
         assert "-featureflags" in args
         assert "a;b;c" in args
-    args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, features="MultistageHarmonic")
+    args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, features="MultistageHarmonic", port=11)
     assert "Mechanical.MultistageHarmonic" in args
 
 
 @pytest.mark.cli
 def test_cli_exit(disable_cli):
-
     # Regardless of version, `exit` does nothing on its own
-    args, _ = _cli_impl(exe="AnsysWBU.exe", version=232, exit=True)
+    args, _ = _cli_impl(exe="AnsysWBU.exe", version=232, exit=True, port=11)
     assert "-x" not in args
 
-    args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, exit=True)
+    args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, exit=True, port=11)
     assert "-x" not in args
 
     # On versions earlier than 2024R1, `exit` throws a warning but does nothing
@@ -152,3 +151,28 @@ def test_cli_exit(disable_cli):
     # In batch mode, exit can not be disabled
     args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, exit=False, input_script="foo.py")
     assert "-x" in args
+
+
+@pytest.mark.cli
+def test_cli_batch_required_args(disable_cli):
+    # ansys-mechanical -r 241 => exception
+    with pytest.raises(Exception):
+        _cli_impl(exe="AnsysWBU.exe", version=241)
+
+    # ansys-mechanical -r 241 -g => no exception
+    try:
+        _cli_impl(exe="AnsysWBU.exe", version=241, graphical=True)
+    except Exception as e:
+        assert False, f"cli raised an exception: {e}"
+
+    # ansys-mechanical -r 241 -i input.py => no exception
+    try:
+        _cli_impl(exe="AnsysWBU.exe", version=241, input_script="input.py")
+    except Exception as e:
+        assert False, f"cli raised an exception: {e}"
+
+    # ansys-mechanical -r 241 -port 11 => no exception
+    try:
+        _cli_impl(exe="AnsysWBU.exe", version=241, port=11)
+    except Exception as e:
+        assert False, f"cli raised an exception: {e}"

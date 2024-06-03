@@ -110,6 +110,10 @@ def _cli_impl(
         if input_script:
             raise Exception("Cannot open in server mode with an input script.")
 
+    # If the input_script and port are missing in batch mode, raise an exception
+    if (not graphical) and (input_script is None) and (not port):
+        raise Exception("An input script, -i, or port, --port, are required in batch mode.")
+
     args = [exe, "-DSApplet"]
     if (not graphical) or (not show_welcome_screen):
         args.append("-AppModeMech")
