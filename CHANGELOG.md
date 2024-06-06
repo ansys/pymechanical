@@ -6,7 +6,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
 This document follows the conventions laid out in [Keep a CHANGELOG](https://keepachangelog.com/en/1.0.0).
 
 This project uses [towncrier](https://towncrier.readthedocs.io/) and the changes for the upcoming release
-can be found in this [repository file](doc/changelog.d/changelog.rst).
+can be found in this [repository file](doc/source/changelog.rst).
 
 ## [0.10.11](https://github.com/ansys/pymechanical/releases/tag/v0.10.11) - 2024-05-23
 
