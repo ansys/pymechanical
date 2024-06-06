@@ -12,11 +12,11 @@ These class and methods provide embedding capability of Mechanical
 
 
    App
+   global_variables
+   Transaction
+   poster.Poster
    logger.Logger
    add_mechanical_python_libraries
-   Transaction
-   global_variables
-   poster.Poster
    warnings.connectwarnings
    utils.sleep
 
