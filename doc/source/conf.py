@@ -224,7 +224,7 @@ html_theme_options = {
     "ansys_sphinx_theme_autoapi": {
         "project": project,
     },
-    "navigation_depth": 10
+    "navigation_depth": 10,
 }
 
 # -- Options for HTMLHelp output ---------------------------------------------
