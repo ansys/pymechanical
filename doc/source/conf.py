@@ -301,3 +301,11 @@ linkcheck_ignore = [
 ]
 
 linkcheck_anchors = False
+
+# If we are on a release, we have to ignore the "release" URLs, since it is not
+# available until the release is published.
+switcher_version = get_version_match(version)
+if switcher_version != "dev":
+    linkcheck_ignore.append(
+        f"https://github.com/ansys/pymechanical/releases/tag/v{pymechanical.__version__}"
+    )
