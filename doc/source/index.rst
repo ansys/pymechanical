@@ -47,6 +47,7 @@
    user_guide_session/index
    user_guide_embedding/index
    user_guide_scripting/index
+   architecture
    api/index
    contributing
 

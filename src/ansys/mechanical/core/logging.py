@@ -138,30 +138,42 @@ import weakref
 
 # Default configuration
 LOG_LEVEL = logging.DEBUG
+"""Default log level configuration."""
 FILE_NAME = "pymechanical.log"
+"""Default file name."""
 
 # For convenience
 DEBUG = logging.DEBUG
+"""Constant for logging.DEBUG."""
 INFO = logging.INFO
+"""Constant for logging.INFO."""
 WARN = logging.WARN
+"""Constant for logging.WARN."""
 ERROR = logging.ERROR
+"""Constant for logging.ERROR."""
 CRITICAL = logging.CRITICAL
+"""Constant for logging.CRITICAL."""
 
 # Formatting
-
 STDOUT_MSG_FORMAT = "%(levelname)s - %(instance_name)s -  %(module)s - %(funcName)s - %(message)s"
+"""Standard output message format."""
 
 FILE_MSG_FORMAT = STDOUT_MSG_FORMAT
+"""File message format."""
 
 DEFAULT_STDOUT_HEADER = """
 LEVEL - INSTANCE NAME - MODULE - FUNCTION - MESSAGE
 """
+"""Default standard output header."""
+
 DEFAULT_FILE_HEADER = DEFAULT_STDOUT_HEADER
+"""Default file header."""
 
 NEW_SESSION_HEADER = f"""
 ===============================================================================
        NEW SESSION - {datetime.now().strftime("%m/%d/%Y, %H:%M:%S")}
 ==============================================================================="""
+"""Default new session header containing date and time."""
 
 string_to_loglevel = {
     "DEBUG": logging.DEBUG,

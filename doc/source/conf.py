@@ -37,7 +37,7 @@ project = "ansys.mechanical.core"
 copyright = f"(c) {datetime.now().year} ANSYS, Inc. All rights reserved"
 author = "ANSYS Inc."
 release = version = pymechanical.__version__
-cname = os.getenv("DOCUMENTATION_CNAME", default="nocname.com")
+cname = os.getenv("DOCUMENTATION_CNAME", default="mechanical.docs.pyansys.com")
 
 
 # Add any Sphinx extension module names here, as strings. They can be
@@ -46,6 +46,7 @@ cname = os.getenv("DOCUMENTATION_CNAME", default="nocname.com")
 # -- General configuration ---------------------------------------------------
 # Sphinx extensions
 extensions = [
+    "ansys_sphinx_theme.extension.autoapi",
     "jupyter_sphinx",
     "notfound.extension",
     "numpydoc",
@@ -72,7 +73,7 @@ intersphinx_mapping = {
     "pypim": ("https://pypim.docs.pyansys.com/version/dev/", None),
 }
 
-suppress_warnings = ["label.*"]
+suppress_warnings = ["label.*", "autoapi.python_import_resolution", "design.grid", "config.cache"]
 # supress_warnings = ["ref.option"]
 
 
@@ -84,7 +85,7 @@ numpydoc_validate = True
 numpydoc_validation_checks = {
     "GL06",  # Found unknown section
     "GL07",  # Sections are in the wrong order.
-    "GL08",  # The object does not have a docstring
+    # "GL08",  # The object does not have a docstring
     "GL09",  # Deprecation warning should precede extended summary
     "GL10",  # reST directives {directives} must be followed by two colons
     "SS01",  # No summary found
@@ -220,6 +221,10 @@ html_theme_options = {
         "thumbnail": "https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.png",
         "needs_download": True,
     },
+    "ansys_sphinx_theme_autoapi": {
+        "project": project,
+    },
+    "navigation_depth": 10
 }
 
 # -- Options for HTMLHelp output ---------------------------------------------

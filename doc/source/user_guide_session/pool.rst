@@ -81,8 +81,3 @@ each instance of Mechanical over a set of input files.
      'result7',
      'result8',
      'result9']
-
-API reference
--------------
-
-For more information, see :ref:`ref_pool_api`.

@@ -63,15 +63,19 @@ try:
     from tqdm import tqdm
 
     _HAS_TQDM = True
+    """Whether or not tqdm is installed."""
 except ModuleNotFoundError:  # pragma: no cover
     _HAS_TQDM = False
 
 # Default 256 MB message length
 MAX_MESSAGE_LENGTH = int(os.environ.get("PYMECHANICAL_MAX_MESSAGE_LENGTH", 256 * 1024**2))
+"""Default message length."""
 
 # Chunk sizes for streaming and file streaming
 DEFAULT_CHUNK_SIZE = 256 * 1024  # 256 kB
+"""Default chunk size."""
 DEFAULT_FILE_CHUNK_SIZE = 1024 * 1024  # 1MB
+"""Default file chunk size."""
 
 
 def setup_logger(loglevel="INFO", log_file=True, mechanical_instance=None):
@@ -112,9 +116,13 @@ def suppress_logging(func):
 
 
 LOCALHOST = "127.0.0.1"
+"""Localhost address."""
+
 MECHANICAL_DEFAULT_PORT = 10000
+"""Default Mechanical port."""
 
 GALLERY_INSTANCE = [None]
+"""List of gallery instances."""
 
 
 def _cleanup_gallery_instance():  # pragma: no cover
