@@ -9,8 +9,6 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
-.. vale on
-
 `0.10.11 <https://github.com/ansys/pymechanical/releases/tag/v0.10.11>`__ - 2024-05-23
 ======================================================================================
 
@@ -922,3 +920,5 @@ Fixed
 ===================================================================================
 
 First public release of PyMechanical
+
+.. vale on
