@@ -100,6 +100,10 @@ line_length = 100
 
 src_paths = ["doc", "src", "tests"]
 
+# ========================================================
+# Pytest and Coverage Configuration
+# ========================================================
+
 [tool.coverage.run]
 relative_files = true
 source = ["ansys.mechanical"]
@@ -139,6 +143,10 @@ markers = [
 ]
 xfail_strict = true
 
+# ========================================================
+# Towncrier Configuration
+# ========================================================
+
 [tool.towncrier]
 package = "ansys.mechanical.core"
 directory = "doc/changelog.d"
@@ -174,9 +182,17 @@ directory = "miscellaneous"
 name = "Miscellaneous"
 showcontent = true
 
+# ========================================================
+# Flake8 Configuration
+# ========================================================
+
 [tool.flake8]
 exclude = ["venv", "__init__.py", "doc/_build", ".venv"]
-select = ["W191", "W291", "W293", "W391", "E115", "E117", "E122", "E124", "E125", "E225", "E231", "E301", "E303", "E501", "F401", "F403"]
+select = [
+    "W191", "W291", "W293", "W391", "E115", "E117",
+    "E122", "E124", "E125", "E225", "E231", "E301",
+    "E303", "E501", "F401", "F403"
+]
 count = true
 max-complexity = 10
 max-line-length = 100
