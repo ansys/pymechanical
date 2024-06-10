@@ -63,7 +63,6 @@ repos:
   - id: debug-statements
   - id: check-yaml
   - id: trailing-whitespace
-  - id: no-commit-to-branch
   - id: check-added-large-files
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
