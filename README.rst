@@ -17,7 +17,7 @@
    :alt: Python
 
 .. |codecov| image:: https://codecov.io/gh/ansys/pymechanical/branch/main/graph/badge.svg
-   :target: https://codecov.io/gh/ansys/ansys-mechanical-core
+   :target: https://app.codecov.io/gh/ansys/pymechanical
    :alt: Codecov
 
 .. |GH-CI| image:: https://github.com/ansys/pymechanical/actions/workflows/ci_cd.yml/badge.svg
@@ -32,9 +32,13 @@
    :target: https://github.com/psf/black
    :alt: Black
 
+.. |pre-commit| image:: https://results.pre-commit.ci/badge/github/ansys/pymechanical/main.svg?style=flat
+   :target: https://results.pre-commit.ci/latest/github/ansys/pymechanical/main
+   :alt: pre-commit
 
 Overview
 --------
+
 PyMechanical brings Ansys Mechanical to Python. It enables your Python programs to use
 Mechanical within Python's ecosystem. It includes the ability to:
 
@@ -44,6 +48,7 @@ Mechanical within Python's ecosystem. It includes the ability to:
 
 Install the package
 -------------------
+
 Install PyMechanical using `pip` with::
 
    pip install ansys-mechanical-core
@@ -121,7 +126,7 @@ Documentation and issues
 ------------------------
 
 Documentation for the latest stable release of PyMechanical is hosted at `PyMechanical documentation
-<https://mechanical.docs.pyansys.com/version/stable/>`_.
+<https://mechanical.docs.pyansys.com/>`_.
 
 In the upper right corner of the documentation's title bar, there is an option for switching from
 viewing the documentation for the latest stable release to viewing the documentation for the
@@ -145,14 +150,3 @@ Testing and development
 If you would like to test or contribute to the development of PyMechanical, see
 `Contribute <https://mechanical.docs.pyansys.com/version/stable/contributing.html>`_ in
 the PyMechanical documentation.
-
-.. LINKS AND REFERENCES
-.. _black: https://github.com/psf/black
-.. _flake8: https://flake8.pycqa.org/en/latest/
-.. _isort: https://github.com/PyCQA/isort
-.. _pip: https://pypi.org/project/pip/
-.. _pre-commit: https://pre-commit.com/
-.. _PyAnsys Developer's Guide: https://dev.docs.pyansys.com/
-.. _pytest: https://docs.pytest.org/en/stable/
-.. _Sphinx: https://www.sphinx-doc.org/en/master/
-.. _tox: https://tox.wiki/

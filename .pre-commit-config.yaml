@@ -1,5 +1,10 @@
 repos:
 
+- repo: https://github.com/pre-commit-ci/pre-commit-ci-config
+  rev: v1.6.1
+  hooks:
+  -   id: check-pre-commit-ci-config
+
 - repo: https://github.com/psf/black
   rev: 24.4.2  # IF VERSION CHANGES --> MODIFY "blacken-docs" MANUALLY AS WELL!!
   hooks:
@@ -20,6 +25,7 @@ repos:
   rev: 7.0.0
   hooks:
   - id: flake8
+    additional_dependencies: [flake8-pyproject]
 
 - repo: https://github.com/codespell-project/codespell
   rev: v2.3.0
@@ -57,5 +63,12 @@ repos:
   - id: debug-statements
   - id: check-yaml
   - id: trailing-whitespace
+  - id: no-commit-to-branch
+  - id: check-added-large-files
+
+- repo: https://github.com/python-jsonschema/check-jsonschema
+  rev: 0.28.4
+  hooks:
+    - id: check-github-workflows
 
 exclude: '^tests/embedding/assets/.*$|^tests/parts/.*$'

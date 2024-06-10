@@ -10,12 +10,9 @@ description = "A python wrapper for Ansys Mechanical"
 readme = "README.rst"
 requires-python = ">=3.9,<4.0"
 license = {file = "LICENSE"}
-authors = [
-    {name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"},
-]
-maintainers = [
-    {name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"},
-]
+authors = [{name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"}]
+maintainers = [{name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"}]
+keywords = ["pymechanical", "mechanical", "ansys", "pyansys",]
 
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -43,10 +40,11 @@ dependencies = [
 ]
 
 [project.urls]
-Documentation = "https://mechanical.docs.pyansys.com"
-Source = "https://github.com/ansys/pymechanical"
 Homepage = "https://github.com/ansys/pymechanical"
-Tracker = "https://github.com/ansys/pymechanical/issues"
+Documentation = "https://mechanical.docs.pyansys.com"
+Repository = "https://github.com/ansys/pymechanical"
+Issues  = "https://github.com/ansys/pymechanical/issues"
+Changelog = "https://mechanical.docs.pyansys.com/version/stable/changelog.html"
 
 [project.optional-dependencies]
 tests = [
@@ -102,6 +100,10 @@ line_length = 100
 
 src_paths = ["doc", "src", "tests"]
 
+# ========================================================
+# Pytest and Coverage Configuration
+# ========================================================
+
 [tool.coverage.run]
 relative_files = true
 source = ["ansys.mechanical"]
@@ -141,6 +143,10 @@ markers = [
 ]
 xfail_strict = true
 
+# ========================================================
+# Towncrier Configuration
+# ========================================================
+
 [tool.towncrier]
 package = "ansys.mechanical.core"
 directory = "doc/changelog.d"
@@ -175,3 +181,77 @@ showcontent = true
 directory = "miscellaneous"
 name = "Miscellaneous"
 showcontent = true
+
+# ========================================================
+# Flake8 Configuration
+# ========================================================
+
+[tool.flake8]
+exclude = ["venv", "__init__.py", "doc/_build", ".venv"]
+select = [
+    "W191", "W291", "W293", "W391", "E115", "E117",
+    "E122", "E124", "E125", "E225", "E231", "E301",
+    "E303", "E501", "F401", "F403"
+]
+count = true
+max-complexity = 10
+max-line-length = 100
+statistics = true
+
+# ========================================================
+# Tox Configuration
+# ========================================================
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+description = Default tox environments list
+envlist =
+    style,{py38,py39,py310,py311}{,-coverage},doc
+passenv =  AWP_ROOT
+skip_missing_interpreters = true
+isolated_build = true
+isolated_build_env = build
+
+[gh-actions]
+description = The tox environment to be executed in gh-actions for a given python version
+python =
+    3.9: style,py39-coverage,doc
+    3.10: style,py310-coverage,doc
+    3.11: style,py311-coverage,doc
+    3.12: style,py311-coverage,doc
+
+[testenv]
+description = Checks for project unit tests and coverage (if desired)
+basepython =
+    py39: python3.9
+    py310: python3.10
+    py311: python3.11
+    py312: python3.12
+    py: python3
+    {style,reformat,doc,build}: python3
+passenv = *
+setenv =
+    PYTHONUNBUFFERED = yes
+    coverage: PYTEST_EXTRA_ARGS = --cov=ansys.mechanical --cov-report=term --cov-report=xml:.cov/coverage.xml --cov-report=html:.cov/html
+extras = tests
+commands =
+    pytest {env:PYTEST_MARKERS:} {env:PYTEST_EXTRA_ARGS:} {posargs:-vv}
+
+[testenv:style]
+description = Checks project code style
+passenv = *
+skip_install = true
+deps =
+    pre-commit
+commands =
+    pre-commit install
+    pre-commit run --all-files --show-diff-on-failure
+
+[testenv:doc]
+description = Check if documentation generates properly
+passenv = *
+extras = doc
+commands =
+    sphinx-build -d "{toxworkdir}/doc_doctree" doc/source "{toxinidir}/doc/_build/html" --color -vW -bhtml
+"""
