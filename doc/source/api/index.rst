@@ -10,6 +10,7 @@ This section describes PyMechanical classes, functions, and attributes.
    :maxdepth: 2
    :hidden:
 
+   embedding
    helper
    pool
    logging
@@ -17,6 +18,7 @@ This section describes PyMechanical classes, functions, and attributes.
    path
 
 .. toctree::
+- :ref:`ref_embedding`
 - :ref:`ref_launcher_api`
 - :ref:`ref_pool_api`
 - :ref:`ref_logger_api`

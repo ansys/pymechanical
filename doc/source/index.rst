@@ -49,6 +49,7 @@
    user_guide_scripting/index
    api/index
    contributing
+   changelog
 
 Introduction
 ------------

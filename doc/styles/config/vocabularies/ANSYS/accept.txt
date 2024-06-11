@@ -40,7 +40,7 @@ enum
 config
 pessimizations
 mutexes
-Addin
+addin
 Addins
 isort
 Codecov
@@ -54,3 +54,5 @@ REST
 cli
 VPN
 ACT
+globaly
+ans

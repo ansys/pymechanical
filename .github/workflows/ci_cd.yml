@@ -168,6 +168,7 @@ jobs:
           grep -q 'WB Initialize Done' <(timeout 60 tail -f log.txt)
 
       - name: Display info
+        if: github.event_name == 'schedule'
         id: capture_info
         run: |
           IMAGE_NAME=${{ env.DOCKER_PACKAGE }}:${{ matrix.mechanical-version }}
@@ -200,6 +201,7 @@ jobs:
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v4
+        if: matrix.mechanical-version == needs.revn-variations.outputs.test_docker_image_version
         with:
           name: coverage-tests
           path: .cov
@@ -207,6 +209,7 @@ jobs:
 
       - name: Upload coverage results (as .coverage)
         uses: actions/upload-artifact@v4
+        if: matrix.mechanical-version == needs.revn-variations.outputs.test_docker_image_version
         with:
           name: coverage-file-tests
           path: .coverage
@@ -348,7 +351,8 @@ jobs:
           PYTHONUNBUFFERED: 1
         run: |
           . /env/bin/activate
-          mechanical-env pytest -m embedding_scripts -m cli -s --junitxml test_results_embedding_scripts${{ matrix.python-version }}.xml
+          mechanical-env pytest -m embedding_scripts -s --junitxml test_results_embedding_scripts${{ matrix.python-version }}.xml
+          pytest -m cli -s --junitxml test_results_cli_scripts${{ matrix.python-version }}.xml
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v4
@@ -599,6 +603,7 @@ jobs:
       - name: Move files to common location
         run: |
           mv cov-dir/embedding/.coverage .coverage.Embedding
+          mv cov-dir/embedding-scripts/.coverage .coverage.EmbeddingScripts
           mv cov-dir/launch/.coverage .coverage.Launch
           mv cov-dir/normal/.coverage .coverage.Normal
           rm -rf cov-dir
