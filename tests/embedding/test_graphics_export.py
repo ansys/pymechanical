@@ -26,6 +26,7 @@ import os
 
 import pytest
 
+
 def _is_readable(filepath: str):
     try:
         with open(filepath, "rb") as file:

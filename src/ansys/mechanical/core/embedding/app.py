@@ -23,14 +23,14 @@
 """Main application class for embedded Mechanical."""
 import atexit
 import os
-import warnings
 import typing
+import warnings
 
+from ansys.mechanical.core import global_variables
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 from ansys.mechanical.core.embedding.poster import Poster
-from ansys.mechanical.core import global_variables
 from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
 
 try:
@@ -203,7 +203,9 @@ class App:
         else:
             self.ExtAPI.Application.Exit()
 
-    def update_globals(self, globals_dict: typing.Dict[str, typing.Any], enums: bool = True) -> None:
+    def update_globals(
+        self, globals_dict: typing.Dict[str, typing.Any], enums: bool = True
+    ) -> None:
         """Use to update globals variables.
 
         When scripting inside Mechanical, the Mechanical UI will automatically
@@ -215,7 +217,6 @@ class App:
         the `enums` argument to False.
         """
         globals_dict.update(global_variables(self, enums))
-
 
     def execute_script(self, script: str) -> typing.Any:
         """Execute the given script with the internal IronPython engine."""
