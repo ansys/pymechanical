@@ -26,12 +26,6 @@ import os
 
 import pytest
 
-try:
-    from ansys.mechanical.core import global_variables
-except:
-    global_variables = {}
-
-
 def _is_readable(filepath: str):
     try:
         with open(filepath, "rb") as file:
@@ -47,7 +41,7 @@ def _is_readable(filepath: str):
 def test_graphics_export_image(printer, embedded_app, image_format, graphics_test_mechdb_file):
     """Tests to check image export."""
     printer(f"{image_format} export")
-    globals().update(global_variables(embedded_app, True))
+    embedded_app.update_globals(globals())
     embedded_app.open(graphics_test_mechdb_file)
     image_settings = Ansys.Mechanical.Graphics.GraphicsImageExportSettings()
     image_format = getattr(GraphicsImageExportFormat, image_format)
@@ -70,7 +64,7 @@ def test_graphics_export_animation(
 ):
     """Tests to check animation export."""
     printer(f"{animation_format} export")
-    globals().update(global_variables(embedded_app, True))
+    embedded_app.update_globals(globals())
     embedded_app.open(graphics_test_mechdb_file)
     animation_settings = Ansys.Mechanical.Graphics.AnimationExportSettings()
     animation_format = getattr(GraphicsAnimationExportFormat, animation_format)
