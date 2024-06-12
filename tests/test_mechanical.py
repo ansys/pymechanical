@@ -352,7 +352,7 @@ def verify_download(mechanical, tmpdir, file_name, chunk_size):
     print(directory)
 
     current_working_directory = os.getcwd()
-    file_path = os.path.join(current_working_directory, "tests", "parts", file_name)
+    file_path = os.path.join(current_working_directory, "tests", "assets", file_name)
     mechanical.upload(
         file_name=file_path, file_location_destination=directory, chunk_size=1024 * 1024
     )
