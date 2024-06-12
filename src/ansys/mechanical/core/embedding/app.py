@@ -26,10 +26,10 @@ import os
 import typing
 import warnings
 
-from ansys.mechanical.core.embedding.imports import global_variables
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
+from ansys.mechanical.core.embedding.imports import global_variables
 from ansys.mechanical.core.embedding.poster import Poster
 from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
 
