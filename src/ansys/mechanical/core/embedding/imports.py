@@ -24,6 +24,15 @@
 import typing
 
 
+def global_entry_points(app: "ansys.mechanical.core.App") -> typing.Dict:
+    """Return the global entry points of the application."""
+    vars = {}
+    vars["ExtAPI"] = app.ExtAPI
+    vars["DataModel"] = app.DataModel
+    vars["Model"] = app.DataModel.Project.Model
+    vars["Tree"] = app.DataModel.Tree
+    return vars
+
 def global_variables(app: "ansys.mechanical.core.App", enums: bool = False) -> typing.Dict:
     """Return the Mechanical scripting global variables as a dict.
 
@@ -33,11 +42,7 @@ def global_variables(app: "ansys.mechanical.core.App", enums: bool = False) -> t
 
     To also import all the enums, set the parameter enums to true.
     """
-    vars = {}
-    vars["ExtAPI"] = app.ExtAPI
-    vars["DataModel"] = app.DataModel
-    vars["Model"] = app.DataModel.Project.Model
-    vars["Tree"] = app.DataModel.Tree
+    vars = global_entry_points(app)
     import clr  # isort: skip
 
     clr.AddReference("System.Collections")

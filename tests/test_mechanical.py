@@ -118,13 +118,12 @@ def test_run_python_script_from_file_error(mechanical):
 
 @pytest.mark.remote_session_connect
 @pytest.mark.parametrize("file_name", [r"hsec.x_t"])
-def test_upload(mechanical, file_name):
+def test_upload(mechanical, file_name, assets):
     mechanical.run_python_script("ExtAPI.DataModel.Project.New()")
     directory = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
     print(directory)
 
-    current_working_directory = os.getcwd()
-    file_path = os.path.join(current_working_directory, "tests", "parts", file_name)
+    file_path = os.path.join(assets, file_name)
     mechanical.upload(
         file_name=file_path, file_location_destination=directory, chunk_size=1024 * 1024
     )
@@ -146,9 +145,8 @@ def test_upload(mechanical, file_name):
 # change the chunk_size for that
 # ideally this will be 64*1024, 1024*1024, etc.
 @pytest.mark.parametrize("chunk_size", [10, 50, 100])
-def test_upload_with_different_chunk_size(mechanical, chunk_size):
-    current_working_directory = os.getcwd()
-    file_path = os.path.join(current_working_directory, "tests", "parts", "hsec.x_t")
+def test_upload_with_different_chunk_size(mechanical, chunk_size, assets):
+    file_path = os.path.join(assets, "hsec.x_t")
     mechanical.run_python_script("ExtAPI.DataModel.Project.New()")
     directory = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
     mechanical.upload(

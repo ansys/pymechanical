@@ -62,9 +62,7 @@ def test_app_save_open(embedded_app, tmp_path: pytest.TempPathFactory):
         embedded_app.save()
 
     embedded_app.DataModel.Project.Name = "PROJECT 1"
-    tmpfile = NamedTemporaryFile()
-    tmpname = tmpfile.name
-    project_file = os.path.join(tmp_path, f"{tmpname}.mechdat")
+    project_file = os.path.join(tmp_path, f"{NamedTemporaryFile().name}.mechdat")
     embedded_app.save_as(project_file)
     embedded_app.new()
     embedded_app.open(project_file)
@@ -78,6 +76,16 @@ def test_app_save_open(embedded_app, tmp_path: pytest.TempPathFactory):
 
 
 @pytest.mark.embedding
+def test_app_update_globals_after_open(embedded_app, assets):
+    """Test save and open of the Application class."""
+    embedded_app.update_globals(globals())
+    # unless the global "Model" has been redirected to point to the new model from the project file
+    # this will throw an exception
+    embedded_app.new()
+    embedded_app.open(os.path.join(assets, "cube-hole.mechdb"))
+    Model.AddNamedSelection()
+
+@pytest.mark.embedding
 def test_app_version(embedded_app):
     """Test version of the Application class."""
     version = embedded_app.version
@@ -89,9 +97,9 @@ def test_app_version(embedded_app):
 def test_nonblock_sleep(embedded_app):
     """Test non-blocking sleep."""
     t1 = time.time()
-    utils.sleep(2000)
+    utils.sleep(1000)
     t2 = time.time()
-    assert (t2 - t1) >= 2
+    assert (t2 - t1) >= 1
 
 
 @pytest.mark.embedding

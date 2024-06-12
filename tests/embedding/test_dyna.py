@@ -26,12 +26,9 @@ import os
 
 import pytest
 
-from .test_qk_eng_wb2 import get_assets_folder
-
-
 @pytest.mark.embedding
 @pytest.mark.windows_only
-def test_lsdyna(printer, embedded_app):
+def test_lsdyna(printer, embedded_app, assets):
     """
     Unit test for LSDyna.
 
@@ -43,7 +40,7 @@ def test_lsdyna(printer, embedded_app):
     embedded_app.update_globals(globals())
     printer("Setting up test - LSDyna system")
     Model.AddLSDynaAnalysis()
-    geometry_file = os.path.join(get_assets_folder(), "Eng157.x_t")
+    geometry_file = os.path.join(assets, "Eng157.x_t")
     printer(f"Setting up test - attaching geometry {geometry_file}")
     geometry_import = Model.GeometryImportGroup.AddGeometryImport()
     geometry_import.Import(geometry_file)
