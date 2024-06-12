@@ -188,7 +188,7 @@ def enable_distributed_solve(mechanical):
 
 def solve_and_return_results(mechanical):
     current_working_directory = os.getcwd()
-    file_path = os.path.join(current_working_directory, "tests", "parts", "hsec.x_t")
+    file_path = os.path.join(current_working_directory, "tests", "assets", "hsec.x_t")
 
     mechanical.clear()
     directory = mechanical.project_directory
