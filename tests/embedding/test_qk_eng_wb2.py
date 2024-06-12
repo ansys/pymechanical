@@ -23,26 +23,15 @@
 """Migration from QK_ENG_WB2 tests."""
 
 import os
-import pathlib
 
 import pytest
 
 from ansys.mechanical.core.embedding import shims
 
-ROOT_FOLDER = pathlib.Path(__file__).parent
-
-
-def get_assets_folder():
-    """Return the test assets folder.
-
-    TODO - share this with the mechanical remote tests.
-    """
-    return ROOT_FOLDER / "assets"
-
 
 @pytest.mark.embedding
 @pytest.mark.minimum_version(241)
-def test_qk_eng_wb2_005(printer, selection, embedded_app):
+def test_qk_eng_wb2_005(printer, selection, embedded_app, assets):
     """Buckling analysis.
 
     From Mechanical/QK_ENG_WB2/QK_ENG_WB2_005
@@ -52,7 +41,7 @@ def test_qk_eng_wb2_005(printer, selection, embedded_app):
     Model.AddStaticStructuralAnalysis()
     Model.AddEigenvalueBucklingAnalysis()
     Model.Analyses[1].InitialConditions[0].PreStressICEnvironment = Model.Analyses[0]
-    geometry_file = os.path.join(get_assets_folder(), "Eng157.x_t")
+    geometry_file = os.path.join(assets, "Eng157.x_t")
     printer(f"Setting up test - attaching geometry {geometry_file}")
     geometry_import = Model.GeometryImportGroup.AddGeometryImport()
     geometry_import.Import(geometry_file)
@@ -121,7 +110,7 @@ def test_qk_eng_wb2_005(printer, selection, embedded_app):
 
 
 @pytest.mark.embedding
-def test_qk_eng_wb2_007(printer, selection, embedded_app):
+def test_qk_eng_wb2_007(printer, selection, embedded_app, assets):
     """Fatigue.
 
     From Mechanical/QK_ENG_WB2/QK_ENG_WB2_007
@@ -130,11 +119,11 @@ def test_qk_eng_wb2_007(printer, selection, embedded_app):
     printer("Setting up test - adding two static structural systems")
     Model.AddStaticStructuralAnalysis()
     Model.AddStaticStructuralAnalysis()
-    geometry_file = os.path.join(get_assets_folder(), "longbar.sat")
+    geometry_file = os.path.join(assets, "longbar.sat")
     printer(f"Setting up test - attaching geometry {geometry_file}")
     geometry_import = Model.GeometryImportGroup.AddGeometryImport()
     geometry_import.Import(geometry_file)
-    material_file = os.path.join(get_assets_folder(), "eng200_material.xml")
+    material_file = os.path.join(assets, "eng200_material.xml")
     printer(f"Setting up test - import materials {material_file}")
     shims.import_materials(embedded_app, material_file)
 
