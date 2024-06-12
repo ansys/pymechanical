@@ -50,6 +50,7 @@
    kil/index
    api/index
    contributing
+   changelog
 
 Introduction
 ------------
