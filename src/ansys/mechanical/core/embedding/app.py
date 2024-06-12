@@ -23,11 +23,13 @@
 """Main application class for embedded Mechanical."""
 import atexit
 import os
+import typing
 import warnings
 
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
+from ansys.mechanical.core.embedding.imports import global_variables
 from ansys.mechanical.core.embedding.poster import Poster
 from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
 
@@ -201,7 +203,22 @@ class App:
         else:
             self.ExtAPI.Application.Exit()
 
-    def execute_script(self, script: str):
+    def update_globals(
+        self, globals_dict: typing.Dict[str, typing.Any], enums: bool = True
+    ) -> None:
+        """Use to update globals variables.
+
+        When scripting inside Mechanical, the Mechanical UI will automatically
+        set global variables in python. PyMechanical can not do that automatically,
+        but this method can be used.
+        `app.update_globals(globals())`
+
+        By default, all enums will be imported too. To avoid including enums, set
+        the `enums` argument to False.
+        """
+        globals_dict.update(global_variables(self, enums))
+
+    def execute_script(self, script: str) -> typing.Any:
         """Execute the given script with the internal IronPython engine."""
         SCRIPT_SCOPE = "pymechanical-internal"
         if not hasattr(self, "script_engine"):

@@ -20,18 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Migration from QK_ENG_WB2 tests"""
+"""Migration from QK_ENG_WB2 tests."""
+
 import os
 import pathlib
 
 import pytest
 
-try:
-    from ansys.mechanical.core import global_variables
-    from ansys.mechanical.core.embedding import shims
-except:
-    # No embedding - this import breaks test collection
-    global_variables = {}
+from ansys.mechanical.core.embedding import shims
 
 ROOT_FOLDER = pathlib.Path(__file__).parent
 
@@ -51,7 +47,7 @@ def test_qk_eng_wb2_005(printer, selection, embedded_app):
 
     From Mechanical/QK_ENG_WB2/QK_ENG_WB2_005
     """
-    globals().update(global_variables(embedded_app, True))
+    embedded_app.update_globals(globals())
     printer("Setting up test - adding linked static structural + buckling analysis system")
     Model.AddStaticStructuralAnalysis()
     Model.AddEigenvalueBucklingAnalysis()
@@ -130,7 +126,7 @@ def test_qk_eng_wb2_007(printer, selection, embedded_app):
 
     From Mechanical/QK_ENG_WB2/QK_ENG_WB2_007
     """
-    globals().update(global_variables(embedded_app, True))
+    embedded_app.update_globals(globals())
     printer("Setting up test - adding two static structural systems")
     Model.AddStaticStructuralAnalysis()
     Model.AddStaticStructuralAnalysis()

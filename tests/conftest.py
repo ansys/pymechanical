@@ -98,13 +98,11 @@ def pytest_collection_modifyitems(config, items):
 
 @pytest.fixture()
 def selection(embedded_app):
-    from ansys.mechanical.core import global_variables
-
-    globals().update(global_variables(embedded_app))
+    # embedded_app.update_globals(globals())
 
     class Selection:
         def __init__(self):
-            self._mgr = ExtAPI.SelectionManager
+            self._mgr = embedded_app.ExtAPI.SelectionManager
 
         def UpdateSelection(self, api, input, type):
             new_selection = self._mgr.CreateSelectionInfo(type)
