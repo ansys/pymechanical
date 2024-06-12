@@ -33,6 +33,7 @@ def global_entry_points(app: "ansys.mechanical.core.App") -> typing.Dict:
     vars["Tree"] = app.DataModel.Tree
     return vars
 
+
 def global_variables(app: "ansys.mechanical.core.App", enums: bool = False) -> typing.Dict:
     """Return the Mechanical scripting global variables as a dict.
 

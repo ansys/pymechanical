@@ -28,6 +28,7 @@ import pytest
 
 from ansys.mechanical.core.embedding import shims
 
+
 @pytest.mark.embedding
 @pytest.mark.minimum_version(241)
 def test_qk_eng_wb2_005(printer, selection, embedded_app, assets):

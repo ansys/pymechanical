@@ -85,6 +85,7 @@ def test_app_update_globals_after_open(embedded_app, assets):
     embedded_app.open(os.path.join(assets, "cube-hole.mechdb"))
     Model.AddNamedSelection()
 
+
 @pytest.mark.embedding
 def test_app_version(embedded_app):
     """Test version of the Application class."""

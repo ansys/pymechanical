@@ -26,6 +26,7 @@ import os
 
 import pytest
 
+
 @pytest.mark.embedding
 @pytest.mark.windows_only
 def test_lsdyna(printer, embedded_app, assets):

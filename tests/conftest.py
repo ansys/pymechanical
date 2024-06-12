@@ -109,6 +109,7 @@ def selection(embedded_app):
 
     yield Selection()
 
+
 @pytest.fixture()
 def assets():
     """Return the test assets folder.
@@ -117,6 +118,7 @@ def assets():
     """
     ROOT_FOLDER = pathlib.Path(__file__).parent
     return ROOT_FOLDER / "assets"
+
 
 def ensure_embedding() -> None:
     from ansys.mechanical.core import HAS_EMBEDDING
