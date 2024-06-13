@@ -67,10 +67,10 @@ The scripting occurs inside Mechanical's command line interface. For instance, c
 
 .. code:: python
 
-  from ansys.mechanical.core import App, global_variables
+  from ansys.mechanical.core import App
 
   app = App()
-  globals().update(global_variables(app))
+  app.update_globals(globals())
   ns = DataModel.Project.Model.AddNamedSelection()
   ns.Name = "Jarvis"
 

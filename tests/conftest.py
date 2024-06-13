@@ -98,13 +98,9 @@ def pytest_collection_modifyitems(config, items):
 
 @pytest.fixture()
 def selection(embedded_app):
-    from ansys.mechanical.core import global_variables
-
-    globals().update(global_variables(embedded_app))
-
     class Selection:
         def __init__(self):
-            self._mgr = ExtAPI.SelectionManager
+            self._mgr = embedded_app.ExtAPI.SelectionManager
 
         def UpdateSelection(self, api, input, type):
             new_selection = self._mgr.CreateSelectionInfo(type)
@@ -112,6 +108,16 @@ def selection(embedded_app):
             self._mgr.NewSelection(new_selection)
 
     yield Selection()
+
+
+@pytest.fixture()
+def assets():
+    """Return the test assets folder.
+
+    TODO - share this with the mechanical remote tests.
+    """
+    ROOT_FOLDER = pathlib.Path(__file__).parent
+    return ROOT_FOLDER / "assets"
 
 
 def ensure_embedding() -> None:

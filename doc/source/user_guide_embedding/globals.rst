@@ -16,18 +16,18 @@ following code:
 
 .. code:: python
 
-   from ansys.mechanical.core import App, global_variables
+   from ansys.mechanical.core import App
 
    app = App()
    # The following line extracts the global API entry points and merges them into your global
    # Python global variables.
-   globals().update(global_variables(app))
+   app.update_globals(globals())
 
 Some enum types are available when scripting inside of mechanical, such as ``SelectionTypeEnum``
-or ``LoadDefineBy``. Because these number in the thousands, by default, these enums are not
-included in these global variables. To include enums, set the second argument of
-``global_variables`` to True.
+or ``LoadDefineBy``. Because these number in the thousands, by default, these enums are
+included in these global variables. To avoid including them, set the second argument of
+``update_globals`` to False.
 
 .. code:: python
 
-   globals().update(global_variables(app, True))
+   app.update_globals(globals(), False)

@@ -173,7 +173,7 @@ print(f"Downloaded the geometry file to: {geometry_path}")
 # Open an embedded instance of Mechanical and set global variables.
 
 app = mech.App()
-globals().update(mech.global_variables(app))
+app.update_globals(globals())
 print(app)
 
 
