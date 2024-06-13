@@ -227,8 +227,6 @@ html_theme_options = {
     "navigation_depth": 10,
 }
 
-autoapi_template_dir = "_autoapi_templates"
-
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
