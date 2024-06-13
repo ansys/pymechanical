@@ -227,6 +227,8 @@ html_theme_options = {
     "navigation_depth": 10,
 }
 
+autoapi_template_dir = "_autoapi_templates"
+
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
@@ -303,6 +305,7 @@ linkcheck_ignore = [
     "https://ansysaccount.b2clogin.com/*",
     "https://answers.microsoft.com/en-us/windows/forum/all/*",
     "https://download.ansys.com/*",
+    "https://mechanical.docs.pyansys.com/version/stable/api/*",  # Remove this after release 0.10.12
 ]
 
 linkcheck_anchors = False

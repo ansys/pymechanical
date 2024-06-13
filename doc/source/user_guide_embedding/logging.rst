@@ -8,7 +8,7 @@ enabled by setting environment variables before starting Mechanical. With PyMech
 it is possible to configure logging at any time, whether it is before or after creating
 the embedded application, using the same Python API.
 
-Use the :class:`Configuration <ansys.mechanical.core.embedding.logger.Configuration>` class to
+Use the `Configuration <https://mechanical.docs.pyansys.com/version/stable/api/ansys/mechanical/core/embedding/logger/Configuration.html>`_ class to
 configure logging to the standard output for all warning messages and above (which are error and fatal messages).
 For example:
 
@@ -22,7 +22,7 @@ For example:
     _ = mech.App()
 
 After the embedded application has been created, you can write messages to the same
-log using the :class:`Logger <ansys.mechanical.core.embedding.logger.Logger>` class like this:
+log using the `Logger <https://mechanical.docs.pyansys.com/version/stable/api/ansys/mechanical/core/embedding/logger/Logger.html>` class like this:
 
 .. code:: python
 

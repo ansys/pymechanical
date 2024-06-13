@@ -6,7 +6,7 @@ Most of the time, PyMechanical can determine this location automatically. Howeve
 if you have a non-standard installation, you must provide this location.
 
 To test and set up your installation of PyMechanical, run the
-:func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>`
+`launch_mechanical() <https://mechanical.docs.pyansys.com/version/stable/api/ansys/mechanical/core/mechanical/index.html#mechanical.launch_mechanical>`_
 method:
 
 .. code:: python
@@ -80,4 +80,4 @@ You can use the ``additional_switches`` keyword argument to specify additional a
 API reference
 ~~~~~~~~~~~~~
 For more information on controlling how Mechanical launches locally, see the
-:func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` method.
+`launch_mechanical()`_ method.
