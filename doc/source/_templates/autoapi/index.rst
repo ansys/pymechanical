@@ -1,3 +1,5 @@
+.. vale off
+
 API reference
 =============
 
@@ -14,3 +16,5 @@ to interact with them programmatically. See the API reference for ``ansys-tools-
    <span class="nf nf-md-package"></span> {{ page.name }}<{{ page.include_path }}>
    {% endif %}
    {% endfor %}
+
+.. vale on

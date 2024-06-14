@@ -21,12 +21,12 @@ solvers can be integrated into Mechanical and can take advantage of the
 powerful meshing, generic CAD reader, and the intuitive pre- and post-
 processing experience of Mechanical.
 
-Before discussing how Mechanical's API is implemented, we discuss a software
-design pattern known as the *command pattern*. This pattern can be used in many
+Before discussing how Mechanical's API is implemented, the software design
+pattern known as the *command pattern* is explored. This pattern can be used in many
 programming languages. For a general description (using the Java programming
 language) of the command pattern, see `Command Design Pattern
 <https://howtodoinjava.com/design-patterns/behavioral/command-pattern/>`_ in the
-*HowToDoInJava* newsletter. Our own brief explanation follows.
+*HowToDoInJava* newsletter.
 
 Command pattern
 ---------------
@@ -125,7 +125,7 @@ servers. Clients send requests to servers. Servers are expected return a
 response to the client.
 
 There are protocols [#f5]_ that describe how information moves between
-computers. We begin with an explanation of remote procedure calls.
+computers. The next section begins with an explanation of remote procedure calls.
 
 Remote procedure calls
 ----------------------
