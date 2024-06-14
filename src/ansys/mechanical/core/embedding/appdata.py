@@ -37,15 +37,21 @@ class UniqueUserProfile:
         self._location = os.path.join(self._default_profile, "PyMechanical-AppData", profile_name)
         self._dry_run = dry_run
         self.initialize()
-
-    def initialize(self) -> None:
-        """Initialize the new profile location."""
+        
+    def initialize(self, copy_profiles=True) -> None:
+        """Initialize the new profile location.
+        
+        Args:
+            copy_profiles (bool): If False, the copy_profiles method will be skipped.
+        """
         if self._dry_run:
             return
         if self.exists():
             self.cleanup()
         self.mkdirs()
-        self.copy_profiles()
+        if copy_profiles:
+            self.copy_profiles()
+
 
     def cleanup(self) -> None:
         """Cleanup unique user profile."""
