@@ -1,3 +1,5 @@
+.. vale off
+
 {# ------------------------- Begin macros definition ----------------------- #}
 
 {% macro tab_item_from_objects_list(objects_list, title="") -%}
@@ -250,3 +252,5 @@ Module detail
 {% endif %}
 
 {# ---------------------- End module detail description -------------------- #}
+
+.. vale on
