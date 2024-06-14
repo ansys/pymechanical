@@ -221,9 +221,7 @@ html_theme_options = {
         "thumbnail": "https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.png",
         "needs_download": True,
     },
-    "ansys_sphinx_theme_autoapi": {
-        "project": project,
-    },
+    "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
     "navigation_depth": 10,
 }
 
