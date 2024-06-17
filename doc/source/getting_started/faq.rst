@@ -93,8 +93,8 @@ The way that you clear all data from Mechanical in PyMechanical depends on if
 Mechanical is a remote session or embedded.
 
 - If Mechanical is a remote session, use either the
-  `Mechanical.clear() <https://mechanical.docs.pyansys.com/version/stable/api/ansys/mechanical/core/mechanical/Mechanical.html#Mechanical.clear>`_
+  `Mechanical.clear() <../api/ansys/mechanical/core/mechanical/Mechanical.html#Mechanical.clear>`_
   method or exit and restart Mechanical.
 - If Mechanical is embedded, use the
-  `app.new() <https://mechanical.docs.pyansys.com/version/stable/api/ansys/mechanical/core/embedding/app/App.html#App.new>`_
+  `app.new() <../api/ansys/mechanical/core/embedding/app/App.html#App.new>`_
   method.

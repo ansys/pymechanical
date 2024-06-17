@@ -32,7 +32,7 @@ Launch Mechanical on the local machine using Python
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When Mechanical is installed locally on your machine, you can use the
-`launch_mechanical() <https://mechanical.docs.pyansys.com/version/stable/api/ansys/mechanical/core/mechanical/index.html#mechanical.launch_mechanical>`_
+`launch_mechanical() <../api/ansys/mechanical/core/mechanical/index.html#mechanical.launch_mechanical>`_
 method to launch and automatically connect to Mechanical. While this method provides the
 easiest and fastest way to launch Mechanical, it only works with a local Mechanical installation.
 

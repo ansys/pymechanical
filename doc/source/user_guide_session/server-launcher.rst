@@ -6,7 +6,7 @@ Most of the time, PyMechanical can determine this location automatically. Howeve
 if you have a non-standard installation, you must provide this location.
 
 To test and set up your installation of PyMechanical, run the
-`launch_mechanical() <https://mechanical.docs.pyansys.com/version/stable/api/ansys/mechanical/core/mechanical/index.html#mechanical.launch_mechanical>`_
+`launch_mechanical() <../api/ansys/mechanical/core/mechanical/index.html#mechanical.launch_mechanical>`_
 method:
 
 .. code:: python
@@ -43,8 +43,8 @@ version of Mechanical, run the following:
     new_path = "C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe"
     pymechanical.change_default_mechanical_path(new_path)
 
-For more information, see the `change_default_mechanical_path() <https://mechanical.docs.pyansys.com/version/stable/api/_autosummary/ansys.tools.path.change_default_mechanical_path.html#ansys.tools.path.change_default_mechanical_path>`_
-and `find_mechanical() <https://mechanical.docs.pyansys.com/version/stable/api/_autosummary/ansys.tools.path.find_mechanical.html#ansys.tools.path.find_mechanical>`_ methods.
+For more information, see the `change_default_mechanical_path() <../api/_autosummary/ansys.tools.path.change_default_mechanical_path.html#ansys.tools.path.change_default_mechanical_path>`_
+and `find_mechanical() <../api/_autosummary/ansys.tools.path.find_mechanical.html#ansys.tools.path.find_mechanical>`_ methods.
 
 Additionally, you can use the ``exec_file`` keyword argument to specify the location of the
 Mechanical executable file.

@@ -22,7 +22,7 @@ an instance of Mechanical in Python.
 Overview
 --------
 
-The `App <https://mechanical.docs.pyansys.com/version/stable/api/ansys/mechanical/core/embedding/app/App.html>`_ class provides
+The `App <../api/ansys/mechanical/core/embedding/app/App.html>`_ class provides
 a Mechanical instance:
 
 .. code:: python

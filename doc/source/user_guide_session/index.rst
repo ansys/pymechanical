@@ -21,8 +21,8 @@ to a remote Mechanical session.
 Overview
 --------
 
-The `launch_mechanical() <https://mechanical.docs.pyansys.com/version/stable/api/ansys/mechanical/core/mechanical/index.html#mechanical.launch_mechanical>`_ method
-creates an instance of the `Mechanical <https://mechanical.docs.pyansys.com/version/stable/api/ansys/mechanical/core/mechanical/Mechanical.html>`_
+The `launch_mechanical() <../api/ansys/mechanical/core/mechanical/index.html#mechanical.launch_mechanical>`_ method
+creates an instance of the `Mechanical <../api/ansys/mechanical/core/mechanical/Mechanical.html>`_
 class in the background and sends commands to it as a service. Because errors and warnings
 are processed Pythonically, you can develop a script in real time without worrying about
 whether the script runs correctly when deployed in batch mode.

@@ -1,9 +1,9 @@
 Create a pool of Mechanical servers
 ===================================
 
-The `LocalMechanicalPool <https://mechanical.docs.pyansys.com/version/stable/api/ansys/mechanical/core/pool/LocalMechanicalPool.html>`_
+The `LocalMechanicalPool <../api/ansys/mechanical/core/pool/LocalMechanicalPool.html>`_
 class simplifies creating and connecting to multiple servers of the
-`Mechanical <https://mechanical.docs.pyansys.com/version/stable/api/ansys/mechanical/core/mechanical/Mechanical.html>`_ class for batch
+`Mechanical <../api/ansys/mechanical/core/mechanical/Mechanical.html>`_ class for batch
 processing. You can use this class for batch processing a set of input files or
 other batch-related processes.
 
@@ -40,7 +40,7 @@ Run a set of input files
 ------------------------
 
 You can use the pool to run a set of pre-generated input files using the
-`run_batch() <https://mechanical.docs.pyansys.com/version/stable/api/ansys/mechanical/core/pool/LocalMechanicalPool.html#LocalMechanicalPool.run_batch>`_ method.
+`run_batch() <../api/ansys/mechanical/core/pool/LocalMechanicalPool.html#LocalMechanicalPool.run_batch>`_ method.
 
 For example, you can run the first set of 20 verification files with this code:
 
@@ -57,7 +57,7 @@ Run a user-defined function
 
 While the previous example uses the `run_batch()`_
 method to run a set of inputs files, you can also use the
-`map() <https://mechanical.docs.pyansys.com/version/stable/api/ansys/mechanical/core/pool/LocalMechanicalPool.html#LocalMechanicalPool.map>`_ method to run a custom user-defined function on
+`map() <../api/ansys/mechanical/core/pool/LocalMechanicalPool.html#LocalMechanicalPool.map>`_ method to run a custom user-defined function on
 each instance of Mechanical over a set of input files.
 
 .. code:: pycon

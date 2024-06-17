@@ -76,9 +76,9 @@ This package is required to use PyMechanical.
 
 If you install Ansys in a directory other than the default or typical location,
 you can save this directory path using the
-`save_mechanical_path <https://mechanical.docs.pyansys.com/version/stable/api/_autosummary/ansys.tools.path.save_mechanical_path.html#ansys.tools.path.save_mechanical_path>`_
+`save_mechanical_path <../api/_autosummary/ansys.tools.path.save_mechanical_path.html#ansys.tools.path.save_mechanical_path>`_
 function. Then use
-`get_mechanical_path <https://mechanical.docs.pyansys.com/version/stable/api/_autosummary/ansys.tools.path.get_mechanical_path.html#ansys.tools.path.get_mechanical_path>`_
+`get_mechanical_path <../api/_autosummary/ansys.tools.path.get_mechanical_path.html#ansys.tools.path.get_mechanical_path>`_
 and ``version_from_path`` functions to verify the path and version.
 
 .. code:: pycon
