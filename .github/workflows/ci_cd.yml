@@ -4,10 +4,14 @@ on:
   pull_request:
   workflow_dispatch:
     inputs:
-      test-version:
-        description: 'docker image version tag, 24.1.0, 24.2.0, etc'
-        required: false
-        default: '0'
+      revn:
+        type: choice
+        options:
+        - '251'
+        - '242'
+        - '241'
+        description: 'The Mechanical revision number to run tests on.'
+        default: '241' #must match env/LATEST_STABLE_REVN
   schedule:
     - cron: '00 22 * * *'  # UTC time, may start 5-15 mins later than scheduled time
   # registry_package:
@@ -114,26 +118,21 @@ jobs:
     steps:
       - id: save-versions
         run: |
-          if  "$INPUT_TEST_VERSION" != "0" ; then
-            echo "test_revn=$INPUT_TEST_VERSION" >> $GITHUB_OUTPUT
-            # ghcr.io/ansys/mechanical:INPUT_TEST_VERSION
-            echo "test_container=${{ env.DOCKER_PACKAGE }}:$INPUT_TEST_VERSION" >> $GITHUB_OUTPUT
-            # INPUT_TEST_VERSION
-            echo "test_docker_image_version=$INPUT_TEST_VERSION" >> $GITHUB_OUTPUT
-          elif ${{ github.event_name == 'schedule' }}; then
+          if ${{ github.event_name == 'schedule' }}; then
             # 242
-            echo "test_revn=${{ env.DEV_REVN }}" >> $GITHUB_OUTPUT
+            echo "test_revn=${{ inputs.mech_revn }}" >> $GITHUB_OUTPUT
             # ghcr.io/ansys/mechanical:24.2_candidate
             echo "test_container=${{ env.DOCKER_PACKAGE }}:${{ env.DEV_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
             # 24.2_candidate
             echo "test_docker_image_version=${{ env.DEV_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
           else
-            # 241
+            mech_revn = "${{inputs.revn}}"
+            mech_image_version = "${mech_revn:0:2}.${mech_revn:2}.0"
             echo "test_revn=${{ env.LATEST_STABLE_REVN }}" >> $GITHUB_OUTPUT
             # ghcr.io/ansys/mechanical:24.1.0
-            echo "test_container=${{ env.DOCKER_PACKAGE }}:${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
+            echo "test_container=${{ env.DOCKER_PACKAGE }}:$mech_image_version" >> $GITHUB_OUTPUT
             # 24.1.0
-            echo "test_docker_image_version=${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
+            echo "test_docker_image_version=$mech_image_version" >> $GITHUB_OUTPUT
           fi
 
           echo "stable_container=${{ env.DOCKER_PACKAGE }}:${{ env.LATEST_STABLE_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
@@ -322,7 +321,7 @@ jobs:
     name: Embedding scripts testing and coverage
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [smoke-tests, revn-variations]
+    needs: [revn-variations]
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
