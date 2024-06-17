@@ -37,6 +37,7 @@ try:
     import pyvista  # noqa: F401
 
     HAS_PYVISTA = True
+    """Whether or not PyVista exists."""
 except:
 
     HAS_PYVISTA = False
@@ -48,6 +49,7 @@ def _get_default_addin_configuration() -> AddinConfiguration:
 
 
 INSTANCES = []
+"""List of instances."""
 
 
 def _dispose_embedded_app(instances):  # pragma: nocover

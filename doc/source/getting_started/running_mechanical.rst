@@ -32,9 +32,9 @@ Launch Mechanical on the local machine using Python
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When Mechanical is installed locally on your machine, you can use the
-:func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` method to launch and automatically connect to
-Mechanical. While this method provides the easiest and fastest way to launch Mechanical, it only works with a local
-Mechanical installation.
+`launch_mechanical() <../api/ansys/mechanical/core/mechanical/index.html#mechanical.launch_mechanical>`_
+method to launch and automatically connect to Mechanical. While this method provides the
+easiest and fastest way to launch Mechanical, it only works with a local Mechanical installation.
 
 Launch Mechanical locally with this code:
 
@@ -49,7 +49,7 @@ Launch Mechanical locally with this code:
     Software build date:Wednesday, August 10, 2022 4:28:15 PM
 
 Launch Mechanical from the command line
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The `ansys-mechanical` utility is installed automatically with PyMechanical,
 and can be used to run Mechanical from the command line. To obtain help on
@@ -160,7 +160,7 @@ Manually set the location of the executable file
 If you have a non-standard installation of Mechanical, PyMechanical might
 not be able to find your installation. In this case, you should manually
 set the location of your Mechanical executable file as the first parameter
-for the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` method.
+for the `launch_mechanical()`_ method.
 
 **On Windows**
 
@@ -180,7 +180,7 @@ for the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` me
     exec_loc = "/usr/ansys_inc/v231/aisol/.workbench"
     mechanical = launch_mechanical(exec_loc)
 
-If, when using the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>`
+If, when using the `launch_mechanical()`_
 method, Mechanical still fails to launch or hangs while launching, pass the
 ``verbose_mechanical=True`` parameter. This prints the output of Mechanical in the Python console.
 You can then use this output to debug why Mechanical isn't launching.

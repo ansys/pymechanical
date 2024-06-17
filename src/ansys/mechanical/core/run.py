@@ -36,6 +36,7 @@ from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 from ansys.mechanical.core.feature_flags import get_command_line_arguments, get_feature_flag_names
 
 DRY_RUN = False
+"""Dry run constant."""
 
 # TODO - add logging options (reuse env var based logging initialization)
 # TODO - add timeout
