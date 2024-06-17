@@ -3,6 +3,11 @@ name: GitHub CI
 on:
   pull_request:
   workflow_dispatch:
+    inputs:
+      test-version:
+        description: 'Test version'
+        required: false
+        default: '1'
   schedule:
     - cron: '00 22 * * *'  # UTC time, may start 5-15 mins later than scheduled time
   # registry_package:
@@ -14,6 +19,8 @@ on:
     branches:
       - main
       - release/*
+
+
 
 env:
   PYMECHANICAL_PORT: 10000  # default won't work on GitHub runners
