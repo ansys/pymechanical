@@ -176,13 +176,18 @@ def mke_app_reset(request):
 
 _CHECK_PROCESS_RETURN_CODE = os.name == "nt"
 
+# set to true if you want to see all the subprocess stdout/stderr
+_PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE = False
+
 
 @pytest.fixture()
 def run_subprocess():
     def func(args, env=None, check: bool = None):
         if check is None:
             check = _CHECK_PROCESS_RETURN_CODE
-        stdout, stderr = ansys.mechanical.core.run._run(args, env, check)
+        stdout, stderr = ansys.mechanical.core.run._run(
+            args, env, check, _PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE
+        )
         return stdout, stderr
 
     return func
