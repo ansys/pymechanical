@@ -3,7 +3,7 @@
 Known issue and limitations
 ===========================
 
-Note the following known issues and limitations. Certain features may not be fully compatible across different versions of Mechanical and PyMechanical. 
+Note the following known issues and limitations. Certain features may not be fully compatible across different versions of Mechanical and PyMechanical.
 Some features may not be fully compatible across different versions of Mechanical and PyMechanical.
 Ansys recommends that you always use the latest version to achieve the best results.
 
