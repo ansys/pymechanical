@@ -126,8 +126,8 @@ jobs:
             # 24.2_candidate
             echo "test_docker_image_version=${{ env.DEV_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
           else
-            mech_revn = "${{inputs.revn}}"
-            mech_image_version = "${mech_revn:0:2}.${mech_revn:2}.0"
+            export mech_revn="${{inputs.revn}}"
+            export mech_image_version="${mech_revn:0:2}.${mech_revn:2}.0"
             echo "test_revn=${{ env.LATEST_STABLE_REVN }}" >> $GITHUB_OUTPUT
             # ghcr.io/ansys/mechanical:24.1.0
             echo "test_container=${{ env.DOCKER_PACKAGE }}:$mech_image_version" >> $GITHUB_OUTPUT
