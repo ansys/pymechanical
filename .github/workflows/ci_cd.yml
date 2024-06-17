@@ -123,7 +123,7 @@ jobs:
             # 24.2_candidate
             echo "test_docker_image_version=${{ env.DEV_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
           else
-            if ${{inputs.revn}}; then
+            if [[ -z "${{inputs.revn}}" ]]; then
               export mech_revn=241
             else
               export mech_revn=${{inputs.revn}}
