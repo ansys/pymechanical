@@ -23,11 +23,13 @@
 """Main application class for embedded Mechanical."""
 import atexit
 import os
+import typing
 import warnings
 
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
+from ansys.mechanical.core.embedding.imports import global_entry_points, global_variables
 from ansys.mechanical.core.embedding.poster import Poster
 from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
 
@@ -142,6 +144,8 @@ class App:
         self._disposed = False
         atexit.register(_dispose_embedded_app, INSTANCES)
         INSTANCES.append(self)
+        self._updated_scopes: typing.List[typing.Dict[str, typing.Any]] = []
+        self._subscribe()
 
     def __repr__(self):
         """Get the product info."""
@@ -165,6 +169,7 @@ class App:
     def _dispose(self):
         if self._disposed:
             return
+        self._unsubscribe()
         disconnect_warnings(self)
         self._app.Dispose()
         self._disposed = True
@@ -196,12 +201,13 @@ class App:
 
     def exit(self):
         """Exit the application."""
+        self._unsubscribe()
         if self.version < 241:
             self.ExtAPI.Application.Close()
         else:
             self.ExtAPI.Application.Exit()
 
-    def execute_script(self, script: str):
+    def execute_script(self, script: str) -> typing.Any:
         """Execute the given script with the internal IronPython engine."""
         SCRIPT_SCOPE = "pymechanical-internal"
         if not hasattr(self, "script_engine"):
@@ -279,3 +285,41 @@ class App:
     def version(self):
         """Returns the version of the app."""
         return self._version
+
+    def _subscribe(self):
+        self._subscribed = True
+        self.ExtAPI.Application.EventSource.OnAfterNew += self._on_after_new
+        self.ExtAPI.Application.EventSource.OnAfterDatabaseLoad += self._on_after_open
+
+    def _unsubscribe(self):
+        if not self._subscribed:
+            return
+        self._subscribed = False
+        self.ExtAPI.Application.EventSource.OnAfterNew -= self._on_after_new
+        self.ExtAPI.Application.EventSource.OnAfterDatabaseLoad -= self._on_after_open
+
+    def _on_after_open(self, sender, args) -> None:
+        self._update_all_globals()
+
+    def _on_after_new(self, sender, args) -> None:
+        self._update_all_globals()
+
+    def update_globals(
+        self, globals_dict: typing.Dict[str, typing.Any], enums: bool = True
+    ) -> None:
+        """Use to update globals variables.
+
+        When scripting inside Mechanical, the Mechanical UI will automatically
+        set global variables in python. PyMechanical can not do that automatically,
+        but this method can be used.
+        `app.update_globals(globals())`
+
+        By default, all enums will be imported too. To avoid including enums, set
+        the `enums` argument to False.
+        """
+        self._updated_scopes.append(globals_dict)
+        globals_dict.update(global_variables(self, enums))
+
+    def _update_all_globals(self) -> None:
+        for scope in self._updated_scopes:
+            scope.update(global_entry_points(self))

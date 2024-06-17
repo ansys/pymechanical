@@ -23,7 +23,7 @@ To use the above function, run the following:
 .. code:: python
 
 
-   from ansys.mechanical.core import App, global_variables
+   from ansys.mechanical.core import App
    from ansys.mechanical.core.embedding import add_mechanical_python_libraries
 
    app = App(version=241)
