@@ -5,9 +5,9 @@ on:
   workflow_dispatch:
     inputs:
       test-version:
-        description: 'Test version'
+        description: 'docker image version tag, 24.1.0, 24.2.0, etc'
         required: false
-        default: '1'
+        default: '0'
   schedule:
     - cron: '00 22 * * *'  # UTC time, may start 5-15 mins later than scheduled time
   # registry_package:
@@ -114,7 +114,13 @@ jobs:
     steps:
       - id: save-versions
         run: |
-          if ${{ github.event_name == 'schedule' }}; then
+          if  "$INPUT_TEST_VERSION" != "0" ; then
+            echo "test_revn=$INPUT_TEST_VERSION" >> $GITHUB_OUTPUT
+            # ghcr.io/ansys/mechanical:INPUT_TEST_VERSION
+            echo "test_container=${{ env.DOCKER_PACKAGE }}:$INPUT_TEST_VERSION" >> $GITHUB_OUTPUT
+            # INPUT_TEST_VERSION
+            echo "test_docker_image_version=$INPUT_TEST_VERSION" >> $GITHUB_OUTPUT
+          elif ${{ github.event_name == 'schedule' }}; then
             # 242
             echo "test_revn=${{ env.DEV_REVN }}" >> $GITHUB_OUTPUT
             # ghcr.io/ansys/mechanical:24.2_candidate
