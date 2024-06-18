@@ -22,7 +22,7 @@ an instance of Mechanical in Python.
 Overview
 --------
 
-The :class:`Application <ansys.mechanical.core.embedding.Application>` class provides
+The `App <../api/ansys/mechanical/core/embedding/app/App.html>`_ class provides
 a Mechanical instance:
 
 .. code:: python
@@ -32,8 +32,8 @@ a Mechanical instance:
    app = App()
    ns = app.DataModel.Project.Model.AddNamedSelection()
 
-The :class:`Application <ansys.mechanical.core.embedding.Application>` class has access
-to the global scripting entry points that are available from built-in Mechanical scripting:
+The `App`_ class has access to the global scripting entry points that are
+available from built-in Mechanical scripting:
 
 * ExtAPI: ``Application.ExtAPI``
 * DataModel: ``Application.DataModel``
@@ -48,7 +48,7 @@ namespaces, and types, see :ref:`ref_embedding_user_guide_globals`.
 Additional configuration
 ------------------------
 
-By default, an instance of the :class:`Application <ansys.mechanical.core.embedding.Application>` class
+By default, an instance of the `App`_ class
 uses the same Addin configuration as standalone Mechanical. To customize Addins, see
 :ref:`ref_embedding_user_guide_addin_configuration`.
 
@@ -67,10 +67,10 @@ The scripting occurs inside Mechanical's command line interface. For instance, c
 
 .. code:: python
 
-  from ansys.mechanical.core import App, global_variables
+  from ansys.mechanical.core import App
 
   app = App()
-  globals().update(global_variables(app))
+  app.update_globals(globals())
   ns = DataModel.Project.Model.AddNamedSelection()
   ns.Name = "Jarvis"
 

@@ -1,0 +1,14 @@
+comment:
+  layout: "diff"
+  behavior: default
+
+coverage:
+  status:
+    project: false
+    patch:
+      default:
+        # basic
+        target: 90%
+        if_not_found: success
+        if_ci_failed: success
+        if_no_uploads: error

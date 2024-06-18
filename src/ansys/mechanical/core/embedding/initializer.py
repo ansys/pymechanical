@@ -34,7 +34,10 @@ from ansys.mechanical.core.embedding.loader import load_clr
 from ansys.mechanical.core.embedding.resolver import resolve
 
 INITIALIZED_VERSION = None
+"""Constant for the initialized version."""
+
 SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS = {241: "2024R1", 232: "2023R2", 231: "2023R1"}
+"""Supported Mechanical embedding versions on Windows."""
 
 
 def __add_sys_path(version: int) -> str:
@@ -42,15 +45,6 @@ def __add_sys_path(version: int) -> str:
     platform_string = "winx64" if os.name == "nt" else "linx64"
     bin_path = install_path / "aisol" / "bin" / platform_string
     sys.path.append(str(bin_path.resolve()))
-
-
-def __disable_sec() -> None:
-    """SEC is part of RSM and is unstable with embedding.
-
-    I'm not going to debug why that is since we are planning to support
-    DCS/REP in the future instead of RSM.
-    """
-    os.environ["ANSYS_MECHANICAL_EMBEDDING_NO_SEC"] = "1"
 
 
 def __workaround_material_server(version: int) -> None:
@@ -133,8 +127,6 @@ def initialize(version: int = None):
         version = _get_default_version()
 
     INITIALIZED_VERSION = version
-
-    __disable_sec()
 
     __workaround_material_server(version)
 
