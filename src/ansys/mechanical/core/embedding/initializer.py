@@ -34,7 +34,10 @@ from ansys.mechanical.core.embedding.loader import load_clr
 from ansys.mechanical.core.embedding.resolver import resolve
 
 INITIALIZED_VERSION = None
+"""Constant for the initialized version."""
+
 SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS = {241: "2024R1", 232: "2023R2", 231: "2023R1"}
+"""Supported Mechanical embedding versions on Windows."""
 
 
 def __add_sys_path(version: int) -> str:

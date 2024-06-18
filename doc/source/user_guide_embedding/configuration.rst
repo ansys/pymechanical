@@ -5,9 +5,9 @@ Addin configuration
 
 There are some configuration options that are respected when loading an embedded instance
 of Mechanical into python.
-The class :class:`Configuration <ansys.mechanical.core.embedding.AddinConfiguration>` can be
+The class `Configuration <../api/ansys/mechanical/core/embedding/addins/AddinConfiguration.html#ansys.mechanical.core.embedding.addins.AddinConfiguration>`_ can be
 used to set up Addin configuration. This configuration can be supplied to the constructor
-of the class :class:`Configuration <ansys.mechanical.core.embedding.Application>`.
+of the class `App <../api/ansys/mechanical/core/embedding/app/App.html>`_.
 
 For example, to load an instance of Mechanical using the "Mechanical" configuration name and
 without loading any ACT Addins:

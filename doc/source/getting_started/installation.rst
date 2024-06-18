@@ -75,9 +75,11 @@ This package is required to use PyMechanical.
    ('/usr/ansys_inc/v231/aisol/.workbench', 23.1) # Linux
 
 If you install Ansys in a directory other than the default or typical location,
-you can save this directory path using the ``save_mechanical_path`` function. Then use
-``get_mechanical_path`` and ``version_from_path`` functions to verify the path and version.
-For more details, refer to the :ref:`ref_ansys_tools_path_api`.
+you can save this directory path using the
+`save_mechanical_path <../api/_autosummary/ansys.tools.path.save_mechanical_path.html#ansys.tools.path.save_mechanical_path>`_
+function. Then use
+`get_mechanical_path <../api/_autosummary/ansys.tools.path.get_mechanical_path.html#ansys.tools.path.get_mechanical_path>`_
+and ``version_from_path`` functions to verify the path and version.
 
 .. code:: pycon
 
@@ -108,8 +110,7 @@ Verify your installation by starting a remote session of Mechanical from Python:
     Software build date:Wednesday, August 10, 2022 4:28:15 PM
 
 If you see a response from the server, you can begin using Mechanical
-as a service. For information on the PyMechanical interface, see
-:ref:`ref_mechanical_user_guide`.
+as a service.
 
 Verify an embedded instance
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -139,3 +140,6 @@ Inside of Python, use the following commands to load an embedded instance:
    Product Version:232
    Software build date: 05/30/2023 15:25:53
 
+.. LINKS AND REFERENCES
+.. _ansys_tools_path_api: https://github.com/psf/black
+.. _flake8: https://flake8.pycqa.org/en/latest/
