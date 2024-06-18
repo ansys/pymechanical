@@ -322,7 +322,7 @@ jobs:
     name: Embedding scripts testing and coverage
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [revn-variations]
+    needs: [smoke-tests, revn-variations]
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
