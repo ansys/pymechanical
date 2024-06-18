@@ -1,6 +1,6 @@
 .. _ref_ansys_tools_path_api:
 
-Ansys path tools
+Ansys tools path
 ================
 
 These methods on the ``ansys-tools-path`` module provide helper functions for configuration and discovery
