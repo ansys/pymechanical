@@ -16,4 +16,3 @@ of the installation path of the Mechanical application.
    get_mechanical_path
    change_default_mechanical_path
    save_mechanical_path
-

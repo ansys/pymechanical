@@ -37,6 +37,7 @@ try:
     import pyvista  # noqa: F401
 
     HAS_PYVISTA = True
+    """Whether or not PyVista exists."""
 except:
 
     HAS_PYVISTA = False
@@ -48,6 +49,7 @@ def _get_default_addin_configuration() -> AddinConfiguration:
 
 
 INSTANCES = []
+"""List of instances."""
 
 
 def _dispose_embedded_app(instances):  # pragma: nocover
@@ -287,9 +289,14 @@ class App:
         return self._version
 
     def _subscribe(self):
-        self._subscribed = True
-        self.ExtAPI.Application.EventSource.OnAfterNew += self._on_after_new
-        self.ExtAPI.Application.EventSource.OnAfterDatabaseLoad += self._on_after_open
+        try:
+            # This will throw an error when using pythonnet because
+            # EventSource isn't defined on the IApplication interface
+            self.ExtAPI.Application.EventSource.OnAfterNew += self._on_after_new
+            self.ExtAPI.Application.EventSource.OnAfterDatabaseLoad += self._on_after_open
+            self._subscribed = True
+        except:
+            self._subscribed = False
 
     def _unsubscribe(self):
         if not self._subscribed:
