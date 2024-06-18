@@ -4,8 +4,7 @@ API reference
 =============
 
 This section describes {{ project_name }} endpoints, their capabilities, and how
-to interact with them programmatically. See the API reference for ``ansys-tools-path``
-`here <path.html>`_.
+to interact with them programmatically.
 
 .. toctree::
    :titlesonly:
@@ -16,5 +15,8 @@ to interact with them programmatically. See the API reference for ``ansys-tools-
    <span class="nf nf-md-package"></span> {{ page.name }}<{{ page.include_path }}>
    {% endif %}
    {% endfor %}
+
+Additionally, see the API references for ``ansys-tools-path`` `here <path.html>`_ .
+
 
 .. vale on
