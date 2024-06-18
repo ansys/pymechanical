@@ -104,6 +104,19 @@ def test_nonblock_sleep(embedded_app):
 
 
 @pytest.mark.embedding
+def test_app_print_tree(embedded_app, capsys):
+    """Test printing hierarchical tree of Mechanical ExtAPI object"""
+    embedded_app.update_globals(globals())
+    embedded_app.print_tree(DataModel.Project)
+    captured = capsys.readouterr()
+    printed_output = captured.out.strip()
+    assert "├── Project" in printed_output
+
+    with pytest.raises(AttributeError):
+        embedded_app.print_tree(DataModel)
+
+
+@pytest.mark.embedding
 def test_app_poster(embedded_app):
     """The getters of app should be usable after a new().
 

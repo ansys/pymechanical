@@ -249,6 +249,56 @@ class App:
 
         plot_model(self)
 
+    def print_tree(self, node, indentation=""):
+        """
+        Recursively prints a tree structure starting from the given node.
+
+        Each object in the tree is expected to have the following attributes:
+         - Name: The name of the object.
+         - Suppressed : Print as suppressed, if object is suppressed.
+         - Children: Checks if object have children.
+           Each child node is expected to have the all these attributes.
+
+        Parameters
+        ----------
+        node: ExtAPI object
+            The starting object of the tree.
+
+        Raises
+        ------
+        AttributeError
+            If the node does not have the required attributes.
+
+        Examples
+        --------
+        >>> import ansys.mechanical.core as mech
+        >>> app = mech.App()
+        >>> app.update_globals(globals())
+        >>> app.print_tree(DataModel.Project)
+        ... ├── Project
+        ... |  ├── Model
+        ... |  |  ├── Geometry Imports
+        ... |  |  ├── Geometry
+        ... |  |  ├── Materials
+        ... |  |  ├── Coordinate Systems
+        ... |  |  |  ├── Global Coordinate System
+        ... |  |  ├── Remote Points
+        ... |  |  ├── Mesh
+
+        Prints a hierarchical tree representation of the Mechanical project structure.
+        """
+        if not hasattr(node, "Name"):
+            raise AttributeError("Object must have a 'Name' attribute")
+
+        if hasattr(node, "Suppressed") and node.Suppressed is True:
+            print(f"{indentation}├── {node.Name} (Suppressed)")
+        else:
+            print(f"{indentation}├── {node.Name}")
+
+        if hasattr(node, "Children") and node.Children is not None and node.Children.Count > 0:
+            for child in node.Children:
+                self.print_tree(child, indentation + "|  ")
+
     @property
     def poster(self) -> Poster:
         """Returns an instance of Poster."""
