@@ -53,7 +53,7 @@ def __disable_sec() -> None:
     I'm not going to debug why that is since we are planning to support
     DCS/REP in the future instead of RSM.
     """
-    os.environ["ANSYS_MECHANICAL_EMBEDDING_NO_SEC"] = "1"
+    os.environ["ANSYS_MECHANICAL_EMBEDDING_NO_SEC"] = "0"
 
 
 def __workaround_material_server(version: int) -> None:
