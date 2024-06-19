@@ -402,6 +402,6 @@ class App:
 
         >>> app.print_tree(DataModel.Project, 1)
         ... ├── Project
-        ... ... truncating after 2 line
+        ... ... truncating after 1 lines
         """
         self._print_tree(node, max_lines, lines_count, indentation)
