@@ -33,12 +33,12 @@ repos:
   - id: codespell
     args: ["--ignore-words", "doc/styles/config/vocabularies/ANSYS/accept.txt", "-w"]
 
-- repo: https://github.com/ansys/pre-commit-hooks
-  rev: v0.3.1
-  hooks:
-  - id: add-license-headers
-    args:
-    - --start_year=2022
+# - repo: https://github.com/ansys/pre-commit-hooks
+#   rev: v0.3.1
+#   hooks:
+#   - id: add-license-headers
+#     args:
+#     - --start_year=2022
 
 - repo: https://github.com/pycqa/pydocstyle
   rev: 6.3.0

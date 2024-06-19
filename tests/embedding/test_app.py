@@ -112,10 +112,14 @@ def test_app_print_tree(embedded_app, capsys, assets):
     geometry_import.Import(geometry_file)
     allbodies = Model.GetChildren(DataModelObjectCategory.Body, True)
     allbodies[0].Suppressed = True
-    embedded_app.print_tree(DataModel.Project)
+    embedded_app.print_tree(DataModel.Project, 1)
     captured = capsys.readouterr()
     printed_output = captured.out.strip()
-    assert "├── Project" in printed_output
+    assert "Project" in printed_output
+    embedded_app.print_tree(DataModel.Project, 2)
+    captured = capsys.readouterr()
+    printed_output = captured.out.strip()
+    assert "Model" in printed_output
 
     with pytest.raises(AttributeError):
         embedded_app.print_tree(DataModel)
