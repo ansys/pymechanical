@@ -331,8 +331,18 @@ class App:
         for scope in self._updated_scopes:
             scope.update(global_entry_points(self))
 
-    def _print_tree(self, node, max_lines=80, lines_count=0, indentation=""):
+    def _print_tree(self, node, max_lines, lines_count, indentation):
+        """Recursively print till provided maximum lines limit.
+
+        Parameters
+        ----------
+        lines_count: int, optional
+            The current count of lines printed. Default is 0.
+        indentation: str, optional
+            The indentation string used for printing the tree structure. Default is "".
+        """
         if lines_count >= max_lines and max_lines != -1:
+            print(f"... truncating after {max_lines} lines")
             return lines_count
 
         if not hasattr(node, "Name"):
@@ -354,7 +364,7 @@ class App:
 
     def print_tree(self, node, max_lines=80, lines_count=0, indentation=""):
         """
-        Recursively prints a tree structure starting from the given node.
+        Print the hierarchical tree representation of the Mechanical project structure.
 
         Each object in the tree is expected to have the following attributes:
          - Name: The name of the object.
@@ -368,10 +378,6 @@ class App:
             The starting object of the tree.
         max_lines: int, optional
             The maximum number of lines to print. Default is 80. If set to -1, no limit is applied.
-        lines_count: int, optional
-            The current count of lines printed. Default is 0.
-        indentation: str, optional
-            The indentation string used for printing the tree structure. Default is "".
 
         Raises
         ------
@@ -396,7 +402,6 @@ class App:
 
         >>> app.print_tree(DataModel.Project, 1)
         ... ├── Project
-
-        Prints a hierarchical tree representation of the Mechanical project structure.
+        ... ... truncating after 2 line
         """
         self._print_tree(node, max_lines, lines_count, indentation)
