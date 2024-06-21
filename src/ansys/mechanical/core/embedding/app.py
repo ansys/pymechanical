@@ -121,13 +121,13 @@ class App:
 
         if BUILDING_GALLERY:
             if len(INSTANCES) != 0:
-                self._app = INSTANCES[0]
-                self._app.new()
-                self._version = self._app.version
-                self._disposed = True
+                instance: App = INSTANCES[0]
+                instance._share(self)
+                if db_file != None:
+                    self.open(db_file)
                 return
         if len(INSTANCES) > 0:
-            raise Exception("Cannot have more than one embedded mechanical instance")
+            raise Exception("Cannot have more than one embedded mechanical instance!")
         version = kwargs.get("version")
         self._version = initializer.initialize(version)
         configuration = kwargs.get("config", _get_default_addin_configuration())
@@ -287,6 +287,37 @@ class App:
     def version(self):
         """Returns the version of the app."""
         return self._version
+
+    def _share(self, other) -> None:
+        """Shares the state of self with other.
+
+        Other is another instance of App.
+        This is used when the BUILDING_GALLERY flag is on.
+        In that mode, multiple instance of App are used, but
+        they all point to the same underlying application
+        object. Because of that, special care needs to be
+        taken to properly share the state. Other will be
+        a "weak reference", which doesn't own anything."""
+
+        # the other app is not expecting to have a project
+        # already loaded
+        self._app.new()
+
+        # set up the type hint (typing.Self is python3.11+)
+        other: App = other
+
+        # copy `self` state to other.
+        other._app = self._app
+        other._version = self._version
+        other._poster = self._poster
+        other._updated_scopes = self._updated_scopes
+
+        # all events will be handled by the original App instance
+        other._subscribed = False
+
+        # finally, set the other disposed flag to be true
+        # so that the shutdown sequence isn't duplicated
+        other._disposed = True
 
     def _subscribe(self):
         try:
