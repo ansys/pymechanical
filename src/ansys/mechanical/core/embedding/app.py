@@ -123,8 +123,6 @@ class App:
             if len(INSTANCES) != 0:
                 self._app = INSTANCES[0]
                 self._app.new()
-                self._version = self._app.version
-                self._disposed = True
                 return
         if len(INSTANCES) > 0:
             raise Exception("Cannot have more than one embedded mechanical instance")
@@ -334,6 +332,12 @@ class App:
     def _print_tree(self, node, max_lines, lines_count, indentation):
         """Recursively print till provided maximum lines limit.
 
+        Each object in the tree is expected to have the following attributes:
+         - Name: The name of the object.
+         - Suppressed : Print as suppressed, if object is suppressed.
+         - Children: Checks if object have children.
+           Each child node is expected to have the all these attributes.
+
         Parameters
         ----------
         lines_count: int, optional
@@ -365,12 +369,6 @@ class App:
     def print_tree(self, node, max_lines=80, lines_count=0, indentation=""):
         """
         Print the hierarchical tree representation of the Mechanical project structure.
-
-        Each object in the tree is expected to have the following attributes:
-         - Name: The name of the object.
-         - Suppressed : Print as suppressed, if object is suppressed.
-         - Children: Checks if object have children.
-           Each child node is expected to have the all these attributes.
 
         Parameters
         ----------
