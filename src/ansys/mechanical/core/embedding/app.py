@@ -301,7 +301,7 @@ class App:
 
         # the other app is not expecting to have a project
         # already loaded
-        self._app.new()
+        self.new()
 
         # set up the type hint (typing.Self is python3.11+)
         other: App = other
