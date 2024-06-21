@@ -297,8 +297,8 @@ class App:
         they all point to the same underlying application
         object. Because of that, special care needs to be
         taken to properly share the state. Other will be
-        a "weak reference", which doesn't own anything."""
-
+        a "weak reference", which doesn't own anything.
+        """
         # the other app is not expecting to have a project
         # already loaded
         self.new()
