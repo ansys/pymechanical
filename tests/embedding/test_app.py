@@ -104,6 +104,28 @@ def test_nonblock_sleep(embedded_app):
 
 
 @pytest.mark.embedding
+def test_app_print_tree(embedded_app, capsys, assets):
+    """Test printing hierarchical tree of Mechanical ExtAPI object"""
+    embedded_app.update_globals(globals())
+    geometry_file = os.path.join(assets, "Eng157.x_t")
+    geometry_import = Model.GeometryImportGroup.AddGeometryImport()
+    geometry_import.Import(geometry_file)
+    allbodies = Model.GetChildren(DataModelObjectCategory.Body, True)
+    allbodies[0].Suppressed = True
+    embedded_app.print_tree(DataModel.Project, 1)
+    captured = capsys.readouterr()
+    printed_output = captured.out.strip()
+    assert "Project" in printed_output
+    embedded_app.print_tree(DataModel.Project, 2)
+    captured = capsys.readouterr()
+    printed_output = captured.out.strip()
+    assert "Model" in printed_output
+
+    with pytest.raises(AttributeError):
+        embedded_app.print_tree(DataModel)
+
+
+@pytest.mark.embedding
 def test_app_poster(embedded_app):
     """The getters of app should be usable after a new().
 

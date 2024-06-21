@@ -9,6 +9,53 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.0 <https://github.com/ansys/pymechanical/releases/tag/v0.11.0>`_ - 2024-06-18
+===================================================================================
+
+
+Added
+^^^^^
+
+- feat: raise an exception if port or input script aren't provided in batch mode `#753 <https://github.com/ansys/pymechanical/pull/753>`_
+- feat: use changelog.rst instead of CHANGELOG.md for release notes `#757 <https://github.com/ansys/pymechanical/pull/757>`_
+- Doc: Add embedding api references `#758 <https://github.com/ansys/pymechanical/pull/758>`_
+- feat: implement autoapi `#761 <https://github.com/ansys/pymechanical/pull/761>`_
+
+
+Changed
+^^^^^^^
+
+- chore: update CHANGELOG for v0.10.11 `#749 <https://github.com/ansys/pymechanical/pull/749>`_
+- MAINT: Delete the apt-get lists after installing packages `#750 <https://github.com/ansys/pymechanical/pull/750>`_
+- [pre-commit.ci] pre-commit autoupdate `#774 <https://github.com/ansys/pymechanical/pull/774>`_
+
+
+Fixed
+^^^^^
+
+- FIX: Modify pre-commit hook `#763 <https://github.com/ansys/pymechanical/pull/763>`_
+- fix lifetime issue `#768 <https://github.com/ansys/pymechanical/pull/768>`_
+- fix pythonnet issue `#772 <https://github.com/ansys/pymechanical/pull/772>`_
+- Fix: Remove disable sec check `#776 <https://github.com/ansys/pymechanical/pull/776>`_
+
+
+Dependencies
+^^^^^^^^^^^^
+
+- MAINT: Bump the doc group with 4 updates `#751 <https://github.com/ansys/pymechanical/pull/751>`_
+- [pre-commit.ci] pre-commit autoupdate `#752 <https://github.com/ansys/pymechanical/pull/752>`_
+- MAINT: Bump the doc group with 3 updates `#755 <https://github.com/ansys/pymechanical/pull/755>`_
+- MAINT: Update files as per pyansys standards `#762 <https://github.com/ansys/pymechanical/pull/762>`_
+- MAINT: Bump grpcio from 1.64.0 to 1.64.1 in the core group `#764 <https://github.com/ansys/pymechanical/pull/764>`_
+- MAINT: Bump pytest from 8.2.1 to 8.2.2 in the tests group `#765 <https://github.com/ansys/pymechanical/pull/765>`_
+- MAINT: Bump the doc group with 2 updates `#766 <https://github.com/ansys/pymechanical/pull/766>`_
+
+
+Miscellaneous
+^^^^^^^^^^^^^
+
+- add method to update globals `#767 <https://github.com/ansys/pymechanical/pull/767>`_
+
 `0.10.11 <https://github.com/ansys/pymechanical/releases/tag/v0.10.11>`__ - 2024-05-23
 ======================================================================================
 
