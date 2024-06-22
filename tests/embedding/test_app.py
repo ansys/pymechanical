@@ -202,6 +202,26 @@ def test_app_getters_notstale(embedded_app):
     assert model.Name != "b"
 
 
+@pytest.mark.embedding
+def test_building_gallery(embedded_app):
+    """Test for checking building gallery .
+
+    When building gallery each example files create
+    an instance of app. When BUILDING GALLERY flag is enabled,
+    only one instance is kept.
+    """
+    import ansys.mechanical.core as mech
+
+    _version = embedded_app.version
+    embedded_app.update_globals(globals())
+    embedded_app.new()
+    with pytest.raises(Exception):
+        embedded_app2 = mech.App(version=_version)
+    mech.BUILDING_GALLERY = True
+    embedded_app3 = mech.App(version=_version)
+    embedded_app3.update_globals(globals())
+
+
 @pytest.mark.embedding_scripts
 @pytest.mark.python_env
 def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
