@@ -9,6 +9,28 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.1 <https://github.com/ansys/pymechanical/releases/tag/v0.11.1>`_ - 2024-06-21
+===================================================================================
+
+Added
+^^^^^
+
+- FEAT: Add an App method to print project tree for embedding scenario `#779 <https://github.com/ansys/pymechanical/pull/779>`_
+
+
+Changed
+^^^^^^^
+
+- Test specific version `#771 <https://github.com/ansys/pymechanical/pull/771>`_
+- chore: update CHANGELOG for v0.11.0 `#777 <https://github.com/ansys/pymechanical/pull/777>`_
+- chore: bump add-license-headers version to 0.3.2 `#782 <https://github.com/ansys/pymechanical/pull/782>`_
+
+
+Fixed
+^^^^^
+
+- fix sharing app instances, clarify contract `#784 <https://github.com/ansys/pymechanical/pull/784>`_
+
 `0.11.0 <https://github.com/ansys/pymechanical/releases/tag/v0.11.0>`_ - 2024-06-18
 ===================================================================================
 
