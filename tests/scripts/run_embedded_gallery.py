@@ -38,14 +38,22 @@ if __name__ == "__main__":
     version = int(sys.argv[1])
     build_gallery_flag = sys.argv[2]
 
-    app1 = launch_app(version)
 
     if build_gallery_flag == "True":
-        pymechanical.BUILDING_GALLERY = True
+        app1 = pymechanical.App(version=version)
+        app1.update_globals(globals())
+
+        pymechanical.BUILDING_GALLERY = build_gallery_flag
+
         # Creates another app
-        app2 = launch_app(version)
-        app2.update_globals(globals())
-        print("Successfully created another app instance")
+        app2 = pymechanical.App(version=version)
+        try:
+           app2.update_globals(globals())
+        except AttributeError:
+            print("atribute error")
+        finally:
+            print("updated globals")
+
     elif build_gallery_flag == "False":
         try:
             app2 = launch_app(version)

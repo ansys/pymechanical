@@ -272,9 +272,7 @@ def test_building_gallery(test_env, pytestconfig, run_subprocess, rootdir):
     version = pytestconfig.getoption("ansys_version")
 
     embedded_gallery_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_gallery.py")
-    subprocess.check_call([test_env.python, "-m", "pip", "install", "uv"], env=test_env.env)
-    subprocess.check_call([test_env.python, "-m", "uv", "pip", "install", "ansys-mechanical-core==0.10.11"], env=test_env.env)
-    # subprocess.check_call([test_env.python, "-m", "pip", "install", "ansys-mechanical-core==0.10.11"], env=test_env.env)
+    subprocess.check_call([test_env.python, "-m", "pip", "install", "ansys-mechanical-core==0.11.0"], env=test_env.env)
     stdout, _ = run_subprocess([sys.executable, embedded_gallery_py, version, "True"])
     print(stdout)
     # run_subprocess([sys.executable, embedded_gallery_py, version, "True"])
