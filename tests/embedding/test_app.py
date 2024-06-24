@@ -206,9 +206,8 @@ def test_app_getters_notstale(embedded_app):
 def test_building_gallery(embedded_app):
     """Test for checking building gallery .
 
-    When building gallery each example files create
-    an instance of app. When BUILDING GALLERY flag is enabled,
-    only one instance is kept.
+    When building the gallery, each example file creates an instance of the app.
+    When the BUILDING_GALLERY flag is enabled, only one instance is kept.
     """
     import ansys.mechanical.core as mech
 
