@@ -177,7 +177,7 @@ def mke_app_reset(request):
 _CHECK_PROCESS_RETURN_CODE = os.name == "nt"
 
 # set to true if you want to see all the subprocess stdout/stderr
-_PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE = False
+_PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE = True
 
 
 @pytest.fixture()

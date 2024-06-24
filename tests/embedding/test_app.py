@@ -202,25 +202,6 @@ def test_app_getters_notstale(embedded_app):
     assert model.Name != "b"
 
 
-@pytest.mark.embedding
-def test_building_gallery(embedded_app):
-    """Test for checking building gallery .
-
-    When building the gallery, each example file creates an instance of the app.
-    When the BUILDING_GALLERY flag is enabled, only one instance is kept.
-    """
-    import ansys.mechanical.core as mech
-
-    _version = embedded_app.version
-    embedded_app.update_globals(globals())
-    embedded_app.new()
-    with pytest.raises(Exception):
-        embedded_app2 = mech.App(version=_version)
-    mech.BUILDING_GALLERY = True
-    embedded_app3 = mech.App(version=_version)
-    embedded_app3.update_globals(globals())
-
-
 @pytest.mark.embedding_scripts
 @pytest.mark.python_env
 def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
@@ -279,6 +260,42 @@ def test_normal_appdata(pytestconfig, run_subprocess, rootdir):
     stdout = stdout.decode()
     # Assert ShowTriad was set to False for regular embedded session
     assert "ShowTriad value is False" in stdout
+
+@pytest.mark.embedding_scripts
+@pytest.mark.python_env
+def test_building_gallery(test_env, pytestconfig, run_subprocess, rootdir):
+    """Test for checking building gallery .
+
+    When building the gallery, each example file creates an instance of the app.
+    When the BUILDING_GALLERY flag is enabled, only one instance is kept.
+    """
+    version = pytestconfig.getoption("ansys_version")
+
+    embedded_gallery_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_gallery.py")
+    subprocess.check_call([test_env.python, "-m", "pip", "install", "uv"], env=test_env.env)
+    subprocess.check_call([test_env.python, "-m", "uv", "pip", "install", "ansys-mechanical-core==0.10.11"], env=test_env.env)
+    # subprocess.check_call([test_env.python, "-m", "pip", "install", "ansys-mechanical-core==0.10.11"], env=test_env.env)
+    stdout, _ = run_subprocess([sys.executable, embedded_gallery_py, version, "True"])
+    print(stdout)
+    # run_subprocess([sys.executable, embedded_gallery_py, version, "True"])
+    # stdout, _ = run_subprocess([sys.executable, embedded_gallery_py, version, "False"])
+    # # run_subprocess([sys.executable, embedded_gallery_py, version, "False", "Reset"])
+
+    # stdout = stdout.decode()
+    # # Assert ShowTriad was set to False for regular embedded session
+    # assert "Cannot have more than one embedded mechanical instance!" in stdout
+
+    # # Install pymechanical
+    # subprocess.check_call(
+    #     [test_env.python, "-m", "pip", "install", "-e", "."],
+    #     cwd=rootdir,
+    #     env=test_env.env,
+    # )
+
+    # subprocess.check_call([test_env.python, "-m", "pip", "install", "pythonnet"], env=test_env.env)
+
+
+
 
 
 @pytest.mark.embedding
