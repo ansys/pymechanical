@@ -268,13 +268,18 @@ class App:
 
     @property
     def Tree(self):
-        """Return the ExtAPI object."""
+        """Return the Tree object."""
         return GetterWrapper(self._app, lambda app: app.DataModel.Tree)
 
     @property
     def Model(self):
-        """Return the ExtAPI object."""
+        """Return the Model object."""
         return GetterWrapper(self._app, lambda app: app.DataModel.Project.Model)
+
+    @property
+    def Graphics(self):
+        """Return the Graphics object."""
+        return GetterWrapper(self._app, lambda app: app.ExtAPI.Graphics)
 
     @property
     def readonly(self):
