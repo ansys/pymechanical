@@ -262,6 +262,32 @@ def test_normal_appdata(pytestconfig, run_subprocess, rootdir):
     assert "ShowTriad value is False" in stdout
 
 
+@pytest.mark.embedding_scripts
+def test_building_gallery(pytestconfig, run_subprocess, rootdir):
+    """Test for building gallery check.
+
+    When building the gallery, each example file creates another instance of the app.
+    When the BUILDING_GALLERY flag is enabled, only one instance is kept.
+    This is to test the bug fixed in https://github.com/ansys/pymechanical/pull/784
+    and will fail on PyMechanical version 0.11.0
+    """
+    version = pytestconfig.getoption("ansys_version")
+
+    embedded_gallery_py = os.path.join(rootdir, "tests", "scripts", "build_gallery_test.py")
+
+    _, stderr = run_subprocess([sys.executable, embedded_gallery_py, version, "False"], None, False)
+    stderr = stderr.decode()
+
+    # Assert Exception
+    assert "Cannot have more than one embedded mechanical instance" in stderr
+
+    stdout, _ = run_subprocess([sys.executable, embedded_gallery_py, version, "True"])
+    stdout = stdout.decode()
+
+    # Assert stdout after launching multiple instances
+    assert "Multiple App launched with building gallery flag on" in stdout
+
+
 @pytest.mark.embedding
 def test_rm_lockfile(embedded_app, tmp_path: pytest.TempPathFactory):
     """Test lock file is removed on close of embedded application."""
