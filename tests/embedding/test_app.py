@@ -275,15 +275,16 @@ def test_building_gallery(pytestconfig, run_subprocess, rootdir):
 
     embedded_gallery_py = os.path.join(rootdir, "tests", "scripts", "build_gallery_test.py")
 
-    stdout, _ = run_subprocess([sys.executable, embedded_gallery_py, version, "False"])
-    stdout = stdout.decode()
+    _, stderr = run_subprocess([sys.executable, embedded_gallery_py, version, "False"], None, False)
+    stderr = stderr.decode()
+
     # Assert Exception
-    assert "Cannot have more than one embedded mechanical instance" in stdout
+    assert "Cannot have more than one embedded mechanical instance" in stderr
 
     stdout, _ = run_subprocess([sys.executable, embedded_gallery_py, version, "True"])
     stdout = stdout.decode()
 
-    # Assert stdout afte launching multiple app
+    # Assert stdout after launching multiple instances
     assert "Multiple App launched with building gallery flag on" in stdout
 
 

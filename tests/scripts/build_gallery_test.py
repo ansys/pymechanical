@@ -47,7 +47,4 @@ if __name__ == "__main__":
         print("Multiple App launched with building gallery flag on")
 
     elif build_gallery_flag == "False":
-        try:
-            app2 = launch_app(version)
-        except Exception as e:
-            print(e)
+        app2 = launch_app(version)
