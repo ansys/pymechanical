@@ -263,7 +263,6 @@ def test_normal_appdata(pytestconfig, run_subprocess, rootdir):
 
 
 @pytest.mark.embedding_scripts
-@pytest.mark.python_env
 def test_building_gallery(pytestconfig, run_subprocess, rootdir):
     """Test for building gallery check.
 
@@ -284,7 +283,7 @@ def test_building_gallery(pytestconfig, run_subprocess, rootdir):
     stdout, _ = run_subprocess([sys.executable, embedded_gallery_py, version, "True"])
     stdout = stdout.decode()
 
-    # Assert Exception
+    # Assert stdout afte launching multiple app
     assert "Multiple App launched with building gallery flag on" in stdout
 
 
