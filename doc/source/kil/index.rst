@@ -39,7 +39,7 @@ Ansys recommends that you always use the latest version to achieve the best resu
 Support
 =======
 
-If you encounter any issues or limitations that hinder your work, please reach out to our support team immediately.
+If you encounter any issues or limitations that hinder your work, please contact our support team immediately.
 We are committed to providing timely assistance to ensure your projects run smoothly.
 
 Contact Us:
