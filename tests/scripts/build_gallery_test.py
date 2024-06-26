@@ -44,7 +44,6 @@ if __name__ == "__main__":
         pymechanical.BUILDING_GALLERY = True
 
         app2 = launch_app(version)
-        app3 = launch_app(version)
         print("Multiple App launched with building gallery flag on")
 
     elif build_gallery_flag == "False":
