@@ -20,11 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Launch embedded instance."""
-# import logging
+"""Launch embedded instance with build gallery flag."""
 import sys
 
 import ansys.mechanical.core as pymechanical
+
 
 def launch_app(version):
     """Launch embedded instance of app."""
@@ -37,22 +37,18 @@ def launch_app(version):
 if __name__ == "__main__":
     version = int(sys.argv[1])
     build_gallery_flag = sys.argv[2]
-
+    app1 = launch_app(version)
 
     if build_gallery_flag == "True":
-        app1 = pymechanical.App(version=version)
-        app1.update_globals(globals())
 
-        pymechanical.BUILDING_GALLERY = build_gallery_flag
+        pymechanical.BUILDING_GALLERY = True
 
-        # Creates another app
-        app2 = pymechanical.App(version=version)
         try:
-           app2.update_globals(globals())
-        except AttributeError:
-            print("atribute error")
-        finally:
-            print("updated globals")
+            app2 = launch_app(version)
+            app3 = launch_app(version)
+            print("Multiple App launched with building gallery flag on")
+        except Exception as e:
+            print(e)
 
     elif build_gallery_flag == "False":
         try:

@@ -261,39 +261,31 @@ def test_normal_appdata(pytestconfig, run_subprocess, rootdir):
     # Assert ShowTriad was set to False for regular embedded session
     assert "ShowTriad value is False" in stdout
 
+
 @pytest.mark.embedding_scripts
 @pytest.mark.python_env
-def test_building_gallery(test_env, pytestconfig, run_subprocess, rootdir):
-    """Test for checking building gallery .
+def test_building_gallery(pytestconfig, run_subprocess, rootdir):
+    """Test for building gallery check.
 
-    When building the gallery, each example file creates an instance of the app.
+    When building the gallery, each example file creates another instance of the app.
     When the BUILDING_GALLERY flag is enabled, only one instance is kept.
+    This is to test the bug fixed in https://github.com/ansys/pymechanical/pull/784
+    and will fail on PyMechanical version 0.11.0
     """
     version = pytestconfig.getoption("ansys_version")
 
-    embedded_gallery_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_gallery.py")
-    subprocess.check_call([test_env.python, "-m", "pip", "install", "ansys-mechanical-core==0.11.0"], env=test_env.env)
+    embedded_gallery_py = os.path.join(rootdir, "tests", "scripts", "build_gallery_test.py")
+
+    stdout, _ = run_subprocess([sys.executable, embedded_gallery_py, version, "False"])
+    stdout = stdout.decode()
+    # Assert Exception
+    assert "Cannot have more than one embedded mechanical instance" in stdout
+
     stdout, _ = run_subprocess([sys.executable, embedded_gallery_py, version, "True"])
-    print(stdout)
-    # run_subprocess([sys.executable, embedded_gallery_py, version, "True"])
-    # stdout, _ = run_subprocess([sys.executable, embedded_gallery_py, version, "False"])
-    # # run_subprocess([sys.executable, embedded_gallery_py, version, "False", "Reset"])
+    stdout = stdout.decode()
 
-    # stdout = stdout.decode()
-    # # Assert ShowTriad was set to False for regular embedded session
-    # assert "Cannot have more than one embedded mechanical instance!" in stdout
-
-    # # Install pymechanical
-    # subprocess.check_call(
-    #     [test_env.python, "-m", "pip", "install", "-e", "."],
-    #     cwd=rootdir,
-    #     env=test_env.env,
-    # )
-
-    # subprocess.check_call([test_env.python, "-m", "pip", "install", "pythonnet"], env=test_env.env)
-
-
-
+    # Assert Exception
+    assert "Multiple App launched with building gallery flag on" in stdout
 
 
 @pytest.mark.embedding
