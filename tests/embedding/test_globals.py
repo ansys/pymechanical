@@ -34,12 +34,18 @@ def test_global_variables(embedded_app):
         "DataModel",
         "Model",
         "Tree",
+        "Graphics",
         "Quantity",
         "System",
         "Ansys",
         "Transaction",
         "MechanicalEnums",
         "DataModelObjectCategory",
+        "Point",
+        "SectionPlane",
+        "Point2D",
+        "Point3D",
+        "Vector3D",
     ]
     globals_dict = global_variables(embedded_app, True)
     for attribute in attributes:
