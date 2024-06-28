@@ -21,12 +21,11 @@ solvers can be integrated into Mechanical and can take advantage of the
 powerful meshing, generic CAD reader, and the intuitive pre- and post-
 processing experience of Mechanical.
 
-Before discussing how Mechanical's API is implemented, the software design
-pattern known as the *command pattern* is explored. This pattern can be used in many
-programming languages. For a general description (using the Java programming
-language) of the command pattern, see `Command Design Pattern
-<https://howtodoinjava.com/design-patterns/behavioral/command-pattern/>`_ in the
-*HowToDoInJava* newsletter.
+Before discussing how you implement Mechanical's API, let’s first look at the software design
+pattern known as the *command pattern*. You can use this pattern with many programming languages.
+For a general description (using the Java programming language) of the command pattern, see
+`Command Design Pattern <https://howtodoinjava.com/design-patterns/behavioral/command-pattern/>`_
+in the *HowToDoInJava* newsletter.
 
 Command pattern
 ---------------
