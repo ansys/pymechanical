@@ -232,7 +232,10 @@ def _cli_impl(
 @click.option(
     "--script-args",
     default=None,
-    help="Arguments to pass into the --input-script, -i. Can only be used with -i.",
+    help='Arguments to pass into the --input-script, -i. \
+Write the arguments as a string, with each argument \
+separated by a comma. For example, --script-args "arg1,arg2" \
+This can only be used with the --input-script argument.',
 )
 @click.option(
     "--exit",

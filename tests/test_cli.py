@@ -118,11 +118,11 @@ def test_cli_scriptargs(disable_cli):
         exe="AnsysWBU.exe",
         version=241,
         input_script="foo.py",
-        script_args="arg1, arg2, arg3",
+        script_args="arg1,arg2,arg3",
         graphical=True,
     )
     assert "-ScriptArgs" in args
-    assert '"arg1, arg2, arg3"' in args
+    assert '"arg1,arg2,arg3"' in args
     assert "-script" in args
     assert "foo.py" in args
 
