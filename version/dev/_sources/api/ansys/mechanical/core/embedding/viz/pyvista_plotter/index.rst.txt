@@ -1,0 +1,129 @@
+.. vale off
+
+
+
+
+
+
+
+The ``pyvista_plotter.py`` module
+=================================
+
+.. py:module:: ansys.mechanical.core.embedding.viz.pyvista_plotter
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: pyvista_plotter
+.. tab-set::
+
+
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~to_pyvista_plotter`
+            - Convert the app's geometry to a pyvista plotter instance.
+
+
+          * - :py:obj:`~plot_model`
+            - Plot the model.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+PyVista plotter.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:function:: to_pyvista_plotter(app: ansys.mechanical.core.embedding.App)
+
+   
+   Convert the app's geometry to a pyvista plotter instance.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: plot_model(app: ansys.mechanical.core.embedding.App)
+
+   
+   Plot the model.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+.. vale on

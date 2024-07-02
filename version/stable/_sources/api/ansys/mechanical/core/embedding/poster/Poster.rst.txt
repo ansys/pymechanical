@@ -1,0 +1,99 @@
+.. vale off
+
+
+
+:class:`Poster`
+===============
+
+.. py:class:: ansys.mechanical.core.embedding.poster.Poster
+
+   
+   Class which can post a python callable function to Mechanical's main thread.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: Poster
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~post`
+            - Post the callable to Mechanical's main thread.
+
+
+
+
+
+
+
+
+Import detail
+-------------
+
+    from ansys.mechanical.core.embedding.poster import Poster
+
+
+
+
+
+Method detail
+-------------
+.. py:method:: post(callable: Callable)
+
+   
+   Post the callable to Mechanical's main thread.
+
+   The main thread needs to be receiving posted messages
+   in order for this to work from a background thread. Use
+   the `sleep` routine from the `utils` module to make
+   Mechanical available to receive messages.
+
+   Returns the result of `callable` if any.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. vale on

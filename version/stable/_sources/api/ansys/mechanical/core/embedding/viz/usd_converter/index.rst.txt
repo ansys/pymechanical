@@ -1,0 +1,129 @@
+.. vale off
+
+
+
+
+
+
+
+The ``usd_converter.py`` module
+===============================
+
+.. py:module:: ansys.mechanical.core.embedding.viz.usd_converter
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: usd_converter
+.. tab-set::
+
+
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~to_usd_stage`
+            - Convert mechanical scene to usd stage.
+
+
+          * - :py:obj:`~to_usd_file`
+            - Export mechanical scene to usd file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Converter to OpenUSD.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:function:: to_usd_stage(app: ansys.mechanical.core.embedding.App, name: str) -> None
+
+   
+   Convert mechanical scene to usd stage.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: to_usd_file(app, path: str) -> None
+
+   
+   Export mechanical scene to usd file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+.. vale on
