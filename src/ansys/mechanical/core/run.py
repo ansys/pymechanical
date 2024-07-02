@@ -115,6 +115,10 @@ def _cli_impl(
     if not input_script and script_args:
         raise Exception("Cannot add script arguments without an input script.")
 
+    if script_args:
+        if '"' in script_args:
+            raise Exception("Cannot have double quotes in the arguments.")
+
     # If the input_script and port are missing in batch mode, raise an exception
     if (not graphical) and (input_script is None) and (not port):
         raise Exception("An input script, -i, or port, --port, are required in batch mode.")
@@ -148,10 +152,7 @@ def _cli_impl(
 
     if script_args:
         args.append("-ScriptArgs")
-        if '"' in script_args:
-            args.append(f"'{script_args}'")
-        else:
-            args.append(f'"{script_args}"')
+        args.append(f'"{script_args}"')
 
     if (not graphical) and input_script:
         exit = True
