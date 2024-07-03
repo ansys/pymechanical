@@ -83,6 +83,10 @@ viz = [
     "pyvista>=0.39.1",
     "usd-core==24.3",
 ]
+server = [
+    "rpyc",
+    "toolz"
+]
 
 [project.scripts]
 ansys-mechanical = "ansys.mechanical.core.run:cli"

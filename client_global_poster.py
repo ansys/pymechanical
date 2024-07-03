@@ -5,12 +5,10 @@ import mod
 #import server_methods as mod
 
 if __name__ == "__main__":
-
     # Connect to the server
     c1 = rpyc.connect("localhost", 18861)
 
     server: mod = c1.root
-
     server.get_project_name()
 
     # Access and invoke exposed attributes and methods
