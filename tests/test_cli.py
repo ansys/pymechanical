@@ -128,6 +128,17 @@ def test_cli_scriptargs(disable_cli):
 
 
 @pytest.mark.cli
+def test_cli_scriptargs_no_script(disable_cli):
+    with pytest.raises(Exception):
+        _cli_impl(
+            exe="AnsysWBU.exe",
+            version=241,
+            script_args="arg1,arg2,arg3",
+            graphical=True,
+        )
+
+
+@pytest.mark.cli
 def test_cli_scriptargs_singlequote(disable_cli):
     args, _ = _cli_impl(
         exe="AnsysWBU.exe",
