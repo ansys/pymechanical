@@ -117,7 +117,9 @@ def _cli_impl(
 
     if script_args:
         if '"' in script_args:
-            raise Exception("Cannot have double quotes in the --script-args string.")
+            raise Exception(
+                "Cannot have double quotes around individual arguments in the --script-args string."
+            )
 
     # If the input_script and port are missing in batch mode, raise an exception
     if (not graphical) and (input_script is None) and (not port):
