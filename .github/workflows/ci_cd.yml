@@ -175,7 +175,6 @@ jobs:
 
       - name: Pull, launch, and validate Mechanical service
         env:
-          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
           MECHANICAL_IMAGE: ${{ env.DOCKER_PACKAGE }}:${{ matrix.mechanical-version }}
         run: |
           docker pull ${{ env.MECHANICAL_IMAGE }}
