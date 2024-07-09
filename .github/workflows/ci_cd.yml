@@ -40,6 +40,8 @@ env:
   MEILISEARCH_API_KEY: ${{ secrets.MEILISEARCH_API_KEY }}
   MEILISEARCH_HOST_URL: ${{ vars.MEILISEARCH_HOST_URL }}
   MEILISEARCH_PUBLIC_API_KEY: ${{ secrets.MEILISEARCH_PUBLIC_API_KEY }}
+  LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
+  ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -281,8 +283,6 @@ jobs:
 
       - name: Unit Testing and coverage
         env:
-          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
-          ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
           ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
           ANSYS_WORKBENCH_LOGGING: 0
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
@@ -355,8 +355,6 @@ jobs:
 
       - name: Embedding scripts unit testing and coverage
         env:
-          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
-          ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
           ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
           ANSYS_WORKBENCH_LOGGING: 0
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
@@ -437,8 +435,6 @@ jobs:
 
       - name: Unit Testing and coverage
         env:
-          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
-          ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
           ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
         run: |
           unset PYMECHANICAL_PORT
@@ -509,8 +505,6 @@ jobs:
       - name: Build docs
         env:
           NUM_CORES: 1
-          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
-          ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 0
         run: |
           . /env/bin/activate
