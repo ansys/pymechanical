@@ -47,8 +47,8 @@ def get_mechanical_bin(release_version):
     Parameters
     ----------
     release_version: str
-        Mechanical version using the three-digit format. For example, ``"231"`` for
-        2023 R1.
+        Mechanical version using the three-digit format. For example, ``"242"`` for
+        2024 R2.
     """
     if is_windows():  # pragma: no cover
         program_files = os.getenv("PROGRAMFILES", os.path.join("c:\\", "Program Files"))

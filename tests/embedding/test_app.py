@@ -91,7 +91,7 @@ def test_app_version(embedded_app):
     """Test version of the Application class."""
     version = embedded_app.version
     assert type(version) is int
-    assert version >= 231
+    assert version >= 232
 
 
 @pytest.mark.embedding
