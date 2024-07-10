@@ -112,7 +112,7 @@ Using an embedded instance of Mechanical as a Python object
 
 PyMechanical also supports directly embedding an instance of Mechanical as a Python object.
 In this mode, there is no externally running instance of Mechanical. This feature is supported
-on Windows and on Linux for version 2023 R2
+on Windows and Linux for version 2023 R2
 and later. Here is an example:
 
 .. code:: python
