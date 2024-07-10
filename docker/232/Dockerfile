@@ -60,8 +60,9 @@ RUN apt-get update && apt-get install -y \
     tini \
     ca-certificates \
     libgomp1 \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
+    libgomp1 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copying files
 WORKDIR /install/
