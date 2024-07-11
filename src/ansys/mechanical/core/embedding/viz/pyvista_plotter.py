@@ -64,7 +64,7 @@ def _get_nodes_and_coords(node: "Ansys.Mechanical.Scenegraph.Node"):
         return _get_tri_nodes_and_coords(node)
 
     # TODO - support line tessellation node. See issue #809
-    #if isinstance(node, Ansys.Mechanical.Scenegraph.LineTessellationNode):
+    # if isinstance(node, Ansys.Mechanical.Scenegraph.LineTessellationNode):
     return None, None
 
 

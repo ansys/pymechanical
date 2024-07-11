@@ -74,9 +74,7 @@ def _convert_tri_tessellation_node(
 
 
 def _create_prim_with_transform(
-    stage: Usd.Stage,
-    path: str,
-    node: "Ansys.Mechanical.Scenegraph.TransformNode"
+    stage: Usd.Stage, path: str, node: "Ansys.Mechanical.Scenegraph.TransformNode"
 ) -> Usd.Prim:
     """Create an empty Usd Xform prim based on a mechanical transform node."""
     prim = UsdGeom.Xform.Define(stage, path)
