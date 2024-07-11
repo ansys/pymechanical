@@ -44,7 +44,7 @@ def _transform_to_pyvista(transform: "Ansys.ACT.Math.Matrix4D"):
     return np_transform
 
 
-def _get_nodes_and_coords(tri_tessellation: "Ansys.Mechanical.Scenegraph.TriTessellationNode"):
+def _get_tri_nodes_and_coords(tri_tessellation: "Ansys.Mechanical.Scenegraph.TriTessellationNode"):
     """Get the nodes and indices of the TriTessellationNode.
 
     pyvista format expects a number of vertices per facet which is always 3
@@ -55,6 +55,19 @@ def _get_nodes_and_coords(tri_tessellation: "Ansys.Mechanical.Scenegraph.TriTess
     return np_coordinates, np_indices
 
 
+def _get_nodes_and_coords(node: "Ansys.Mechanical.Scenegraph.Node"):
+    """Get the nodes and indices of the Scenegraph node.
+
+    Currently only supported for tri tessellation nodes
+    """
+    if isinstance(node, Ansys.Mechanical.Scenegraph.TriTessellationNode):
+        return _get_tri_nodes_and_coords(node)
+
+    # TODO - support line tessellation node. See issue #809
+    #if isinstance(node, Ansys.Mechanical.Scenegraph.LineTessellationNode):
+    return None, None
+
+
 def to_pyvista_plotter(app: "ansys.mechanical.core.embedding.App"):
     """Convert the app's geometry to a pyvista plotter instance."""
     plotter = pv.Plotter()
@@ -63,6 +76,8 @@ def to_pyvista_plotter(app: "ansys.mechanical.core.embedding.App"):
     ):
         scenegraph_node = Ansys.ACT.Mechanical.Tools.ScenegraphHelpers.GetScenegraph(body)
         np_coordinates, np_indices = _get_nodes_and_coords(scenegraph_node.Child)
+        if np_coordinates is None or np_indices is None:
+            continue
         pv_transform = _transform_to_pyvista(scenegraph_node.Transform)
         polydata = pv.PolyData(np_coordinates, np_indices).transform(pv_transform)
         color = pv.Color(bgr_to_rgb_tuple(body.Color))

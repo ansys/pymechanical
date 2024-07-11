@@ -73,22 +73,34 @@ def _convert_tri_tessellation_node(
     return mesh_prim
 
 
+def _create_prim_with_transform(
+    stage: Usd.Stage,
+    path: str,
+    node: "Ansys.Mechanical.Scenegraph.TransformNode"
+) -> Usd.Prim:
+    """Create an empty Usd Xform prim based on a mechanical transform node."""
+    prim = UsdGeom.Xform.Define(stage, path)
+    rotation, translation = _transform_to_rotation_translation(node.Transform)
+    prim.AddOrientOp().Set(rotation)
+    prim.AddTranslateOp().Set(translation)
+    return prim
+
+
 def _convert_transform_node(
     node: "Ansys.Mechanical.Scenegraph.TransformNode",
     stage: Usd.Stage,
     path: str,
     rgb: typing.Tuple[int, int, int],
-) -> Usd.Prim:
-    """Convert a mechanical transform node into a Usd Xform prim."""
-    prim = UsdGeom.Xform.Define(stage, path)
-    rotation, translation = _transform_to_rotation_translation(node.Transform)
-    prim.AddOrientOp().Set(rotation)
-    prim.AddTranslateOp().Set(translation)
+) -> None:
+    """Add a Usd prim to the stage based on the given mechanical transform node.
+
+    Currently only supports transforms that contain a single tri tessellation node.
+    """
     child_node = node.Child
-    child_path = prim.GetPath().AppendPath("TriTessellation")
     if isinstance(child_node, Ansys.Mechanical.Scenegraph.TriTessellationNode):
+        prim = _create_prim_with_transform(stage, path, node)
+        child_path = prim.GetPath().AppendPath("TriTessellation")
         _convert_tri_tessellation_node(child_node, stage, child_path, rgb)
-    return prim
 
 
 def to_usd_stage(app: "ansys.mechanical.core.embedding.App", name: str) -> None:
