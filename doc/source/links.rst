@@ -15,4 +15,4 @@
 .. _Mechanical Users Guide: https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/%%VERSION%%/en/wb_sim/ds_Home.html
 .. _Chapter 6: https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/%%VERSION%%/en/installation/unix_silent.html
 .. _Chapter 7: https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/%%VERSION%%/en/installation/win_silent.html
-.. _ACT API Reference Guide: https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/%%VERSION%%/en/act_ref/act_ref.html
+.. _ACT API Reference Guide: https://developer.ansys.com/docs/mechanical-scripting-interface-2024-r1/index.md
