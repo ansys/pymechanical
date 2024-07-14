@@ -59,8 +59,9 @@ RUN apt-get update && apt-get install -y \
     xvfb \
     tini \
     ca-certificates \
-    libgomp1
-
+    libgomp1 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 # Copying files
 WORKDIR /install/
 
