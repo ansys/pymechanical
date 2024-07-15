@@ -84,7 +84,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: [style]
     strategy:
-      max-parallel: 4
+      max-parallel: 12
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
@@ -400,7 +400,7 @@ jobs:
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
-    needs: [ style, revn-variations]
+    needs: [ smoke-tests, revn-variations]
     strategy:
       max-parallel: 4
       fail-fast: false
