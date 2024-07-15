@@ -84,6 +84,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: [style]
     strategy:
+      max-parallel: 4
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
@@ -254,6 +255,7 @@ jobs:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
     strategy:
+      max-parallel: 4
       fail-fast: false
       matrix:
         python-version: ['3.9', '3.10', '3.11', '3.12']
@@ -326,6 +328,7 @@ jobs:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
     strategy:
+      max-parallel: 4
       fail-fast: false
       matrix:
         python-version: ['3.9', '3.10', '3.11', '3.12']
@@ -399,6 +402,7 @@ jobs:
       options: --entrypoint /bin/bash
     needs: [ style, revn-variations]
     strategy:
+      max-parallel: 4
       fail-fast: false
       matrix:
         python-version: ['3.9', '3.10', '3.11', '3.12']
