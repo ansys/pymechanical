@@ -1,16 +1,12 @@
-# Contributors
+# Contribute
 
-## Project Lead
+Overall guidance on contributing to a PyAnsys library appears in the
+[Contributing] topic in the *PyAnsys developer's guide*. Ensure that you
+are thoroughly familiar with this guide before attempting to contribute to
+PyMechanical.
 
-* [Sam Sangili](https://github.com/samigithub2022)
-* [Mohamed Koubaa](https://github.com/koubaa)
+The following contribution information is specific to PyMechanical.
 
-## Individual Contributors
+[Contributing]: https://dev.docs.pyansys.com/how-to/contributing.html
 
-* [Alexander Kaszynski](https://github.com/akaszynski)
-* [Dipin Nair](https://github.com/dipinknair)
-* [Kathy Pippert](https://github.com/PipKat)
-* [Kerry McAdams](https://github.com/klmcadams)
-* [Maxime Rey](https://github.com/MaxJPRey)
-* [Revathy Venugopal](https://github.com/Revathyvenugopal162)
-* [Roberto Pastor](https://github.com/RobPasMue)
+<!-- Begin content specific to your library here. -->
