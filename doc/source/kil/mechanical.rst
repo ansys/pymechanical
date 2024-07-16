@@ -19,7 +19,7 @@ Known issues and limitations
 - Section planes can not be added through batch mode.
 - Mechanical is not thread safe.
 - Spaceclaim geometry (.scdocx) can not be imported on Linux platform.
-- On Linux based platforms Ansys Motion and LSDYNA analysis support are limited.
+- On Linux based platforms, Ansys Motion and LSDYNA analysis support are limited.
 
 
 24R1
