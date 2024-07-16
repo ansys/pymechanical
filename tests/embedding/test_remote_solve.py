@@ -20,33 +20,29 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Embedding tests for global variables associated with Mechanical"""
-import pytest
+"""RSM test."""
 
-from ansys.mechanical.core import global_variables
+import pytest
 
 
 @pytest.mark.embedding
-def test_global_variables(embedded_app):
-    """Test the global variables."""
-    attributes = [
-        "ExtAPI",
-        "DataModel",
-        "Model",
-        "Tree",
-        "Graphics",
-        "Quantity",
-        "System",
-        "Ansys",
-        "Transaction",
-        "MechanicalEnums",
-        "DataModelObjectCategory",
-        "Point",
-        "SectionPlane",
-        "Point2D",
-        "Point3D",
-        "Vector3D",
-    ]
-    globals_dict = global_variables(embedded_app, True)
-    for attribute in attributes:
-        assert attribute in globals_dict
+@pytest.mark.windows_only
+def test_remote_solve(printer, embedded_app, graphics_test_mechdb_file):
+    """Test to check My Computer Background solve"""
+    printer(embedded_app)
+    embedded_app.update_globals(globals())
+    embedded_app.open(graphics_test_mechdb_file)
+    solution = Model.Analyses[0].Solution
+    solution.ClearGeneratedData()
+    assert str(solution.Status) == "SolveRequired"
+
+    printer(f"Test My Computer Solve")
+    solution.Solve(True, "My Computer")
+    assert str(solution.Status) == "Done"
+    solution.ClearGeneratedData()
+    assert str(solution.Status) == "SolveRequired"
+
+    printer(f"Test My Computer Background Solve")
+    solution.Solve(True, "My Computer, Background")
+    solution.GetResults()
+    assert str(solution.Status) == "Done"

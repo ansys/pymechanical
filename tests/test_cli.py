@@ -113,6 +113,59 @@ def test_cli_script(disable_cli):
 
 
 @pytest.mark.cli
+def test_cli_scriptargs(disable_cli):
+    args, _ = _cli_impl(
+        exe="AnsysWBU.exe",
+        version=241,
+        input_script="foo.py",
+        script_args="arg1,arg2,arg3",
+        graphical=True,
+    )
+    assert "-ScriptArgs" in args
+    assert '"arg1,arg2,arg3"' in args
+    assert "-script" in args
+    assert "foo.py" in args
+
+
+@pytest.mark.cli
+def test_cli_scriptargs_no_script(disable_cli):
+    with pytest.raises(Exception):
+        _cli_impl(
+            exe="AnsysWBU.exe",
+            version=241,
+            script_args="arg1,arg2,arg3",
+            graphical=True,
+        )
+
+
+@pytest.mark.cli
+def test_cli_scriptargs_singlequote(disable_cli):
+    args, _ = _cli_impl(
+        exe="AnsysWBU.exe",
+        version=241,
+        input_script="foo.py",
+        script_args="arg1,arg2,'arg3'",
+        graphical=True,
+    )
+    assert "-ScriptArgs" in args
+    assert "\"arg1,arg2,'arg3'\"" in args
+    assert "-script" in args
+    assert "foo.py" in args
+
+
+@pytest.mark.cli
+def test_cli_scriptargs_doublequote(disable_cli):
+    with pytest.raises(Exception):
+        _cli_impl(
+            exe="AnsysWBU.exe",
+            version=241,
+            input_script="foo.py",
+            script_args='arg1,"arg2",arg3',
+            graphical=True,
+        )
+
+
+@pytest.mark.cli
 def test_cli_features(disable_cli):
     with pytest.warns(UserWarning):
         args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, features="a;b;c", port=11)

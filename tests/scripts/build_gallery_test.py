@@ -20,33 +20,31 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Embedding tests for global variables associated with Mechanical"""
-import pytest
+"""Launch embedded instance with build gallery flag."""
+import sys
 
-from ansys.mechanical.core import global_variables
+import ansys.mechanical.core as pymechanical
 
 
-@pytest.mark.embedding
-def test_global_variables(embedded_app):
-    """Test the global variables."""
-    attributes = [
-        "ExtAPI",
-        "DataModel",
-        "Model",
-        "Tree",
-        "Graphics",
-        "Quantity",
-        "System",
-        "Ansys",
-        "Transaction",
-        "MechanicalEnums",
-        "DataModelObjectCategory",
-        "Point",
-        "SectionPlane",
-        "Point2D",
-        "Point3D",
-        "Vector3D",
-    ]
-    globals_dict = global_variables(embedded_app, True)
-    for attribute in attributes:
-        assert attribute in globals_dict
+def launch_app(version):
+    """Launch embedded instance of app."""
+    # Configuration.configure(level=logging.DEBUG, to_stdout=True, base_directory=None)
+    app = pymechanical.App(version=version)
+    app.update_globals(globals())
+    return app
+
+
+if __name__ == "__main__":
+    version = int(sys.argv[1])
+    build_gallery_flag = sys.argv[2]
+    app1 = launch_app(version)
+
+    if build_gallery_flag == "True":
+
+        pymechanical.BUILDING_GALLERY = True
+
+        app2 = launch_app(version)
+        print("Multiple App launched with building gallery flag on")
+
+    elif build_gallery_flag == "False":
+        app2 = launch_app(version)

@@ -121,13 +121,13 @@ class App:
 
         if BUILDING_GALLERY:
             if len(INSTANCES) != 0:
-                self._app = INSTANCES[0]
-                self._app.new()
-                self._version = self._app.version
-                self._disposed = True
+                instance: App = INSTANCES[0]
+                instance._share(self)
+                if db_file != None:
+                    self.open(db_file)
                 return
         if len(INSTANCES) > 0:
-            raise Exception("Cannot have more than one embedded mechanical instance")
+            raise Exception("Cannot have more than one embedded mechanical instance!")
         version = kwargs.get("version")
         self._version = initializer.initialize(version)
         configuration = kwargs.get("config", _get_default_addin_configuration())
@@ -268,13 +268,18 @@ class App:
 
     @property
     def Tree(self):
-        """Return the ExtAPI object."""
+        """Return the Tree object."""
         return GetterWrapper(self._app, lambda app: app.DataModel.Tree)
 
     @property
     def Model(self):
-        """Return the ExtAPI object."""
+        """Return the Model object."""
         return GetterWrapper(self._app, lambda app: app.DataModel.Project.Model)
+
+    @property
+    def Graphics(self):
+        """Return the Graphics object."""
+        return GetterWrapper(self._app, lambda app: app.ExtAPI.Graphics)
 
     @property
     def readonly(self):
@@ -287,6 +292,37 @@ class App:
     def version(self):
         """Returns the version of the app."""
         return self._version
+
+    def _share(self, other) -> None:
+        """Shares the state of self with other.
+
+        Other is another instance of App.
+        This is used when the BUILDING_GALLERY flag is on.
+        In that mode, multiple instance of App are used, but
+        they all point to the same underlying application
+        object. Because of that, special care needs to be
+        taken to properly share the state. Other will be
+        a "weak reference", which doesn't own anything.
+        """
+        # the other app is not expecting to have a project
+        # already loaded
+        self.new()
+
+        # set up the type hint (typing.Self is python3.11+)
+        other: App = other
+
+        # copy `self` state to other.
+        other._app = self._app
+        other._version = self._version
+        other._poster = self._poster
+        other._updated_scopes = self._updated_scopes
+
+        # all events will be handled by the original App instance
+        other._subscribed = False
+
+        # finally, set the other disposed flag to be true
+        # so that the shutdown sequence isn't duplicated
+        other._disposed = True
 
     def _subscribe(self):
         try:
@@ -330,3 +366,92 @@ class App:
     def _update_all_globals(self) -> None:
         for scope in self._updated_scopes:
             scope.update(global_entry_points(self))
+
+    def _print_tree(self, node, max_lines, lines_count, indentation):
+        """Recursively print till provided maximum lines limit.
+
+        Each object in the tree is expected to have the following attributes:
+         - Name: The name of the object.
+         - Suppressed : Print as suppressed, if object is suppressed.
+         - Children: Checks if object have children.
+           Each child node is expected to have the all these attributes.
+
+        Parameters
+        ----------
+        lines_count: int, optional
+            The current count of lines printed. Default is 0.
+        indentation: str, optional
+            The indentation string used for printing the tree structure. Default is "".
+        """
+        if lines_count >= max_lines and max_lines != -1:
+            print(f"... truncating after {max_lines} lines")
+            return lines_count
+
+        if not hasattr(node, "Name"):
+            raise AttributeError("Object must have a 'Name' attribute")
+
+        node_name = node.Name
+        if hasattr(node, "Suppressed") and node.Suppressed is True:
+            node_name += " (Suppressed)"
+        print(f"{indentation}├── {node_name}")
+        lines_count += 1
+
+        if lines_count >= max_lines and max_lines != -1:
+            print(f"... truncating after {max_lines} lines")
+            return lines_count
+
+        if hasattr(node, "Children") and node.Children is not None and node.Children.Count > 0:
+            for child in node.Children:
+                lines_count = self._print_tree(child, max_lines, lines_count, indentation + "|  ")
+                if lines_count >= max_lines and max_lines != -1:
+                    break
+
+        return lines_count
+
+    def print_tree(self, node=None, max_lines=80, lines_count=0, indentation=""):
+        """
+        Print the hierarchical tree representation of the Mechanical project structure.
+
+        Parameters
+        ----------
+        node: DataModel object, optional
+            The starting object of the tree.
+        max_lines: int, optional
+            The maximum number of lines to print. Default is 80. If set to -1, no limit is applied.
+
+        Raises
+        ------
+        AttributeError
+            If the node does not have the required attributes.
+
+        Examples
+        --------
+        >>> import ansys.mechanical.core as mech
+        >>> app = mech.App()
+        >>> app.update_globals(globals())
+        >>> app.print_tree()
+        ... ├── Project
+        ... |  ├── Model
+        ... |  |  ├── Geometry Imports
+        ... |  |  ├── Geometry
+        ... |  |  ├── Materials
+        ... |  |  ├── Coordinate Systems
+        ... |  |  |  ├── Global Coordinate System
+        ... |  |  ├── Remote Points
+        ... |  |  ├── Mesh
+
+        >>> app.print_tree(Model, 3)
+        ... ├── Model
+        ... |  ├── Geometry Imports
+        ... |  ├── Geometry
+        ... ... truncating after 3 lines
+
+        >>> app.print_tree(max_lines=2)
+        ... ├── Project
+        ... |  ├── Model
+        ... ... truncating after 2 lines
+        """
+        if node is None:
+            node = self.DataModel.Project
+
+        self._print_tree(node, max_lines, lines_count, indentation)

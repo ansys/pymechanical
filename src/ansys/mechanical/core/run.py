@@ -91,6 +91,7 @@ def _cli_impl(
     port: int = 0,
     debug: bool = False,
     input_script: str = None,
+    script_args: str = None,
     exe: str = None,
     version: int = None,
     graphical: bool = False,
@@ -110,6 +111,15 @@ def _cli_impl(
             raise Exception("Cannot open in server mode with a project file.")
         if input_script:
             raise Exception("Cannot open in server mode with an input script.")
+
+    if not input_script and script_args:
+        raise Exception("Cannot add script arguments without an input script.")
+
+    if script_args:
+        if '"' in script_args:
+            raise Exception(
+                "Cannot have double quotes around individual arguments in the --script-args string."
+            )
 
     # If the input_script and port are missing in batch mode, raise an exception
     if (not graphical) and (input_script is None) and (not port):
@@ -141,6 +151,10 @@ def _cli_impl(
     if input_script:
         args.append("-script")
         args.append(input_script)
+
+    if script_args:
+        args.append("-ScriptArgs")
+        args.append(f'"{script_args}"')
 
     if (not graphical) and input_script:
         exit = True
@@ -219,6 +233,14 @@ def _cli_impl(
     help="Name of the input Python script. Cannot be mixed with -p",
 )
 @click.option(
+    "--script-args",
+    default=None,
+    help='Arguments to pass into the --input-script, -i. \
+Write the arguments as a string, with each argument \
+separated by a comma. For example, --script-args "arg1,arg2" \
+This can only be used with the --input-script argument.',
+)
+@click.option(
     "--exit",
     is_flag=True,
     default=None,
@@ -261,6 +283,7 @@ def cli(
     port: int,
     debug: bool,
     input_script: str,
+    script_args: str,
     revision: int,
     graphical: bool,
     show_welcome_screen: bool,
@@ -286,6 +309,7 @@ def cli(
         port,
         debug,
         input_script,
+        script_args,
         exe,
         version,
         graphical,
