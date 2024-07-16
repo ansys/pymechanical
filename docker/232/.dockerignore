@@ -25,9 +25,6 @@ ansys_inc/v232/aisol/BladeModeler
 ansys_inc/v232/aisol/FEModeler
 
 ansys_inc/v232/aisol/dll/linx64/libans.blademodeler.ndfutilitiescom.so
-# needed for topo and smart tests
-# ansys_inc/v232/aisol/dll/linx64/libans.blademodeler.dmaddincom.so
-# ansys_inc/v232/aisol/dll/linx64/ans.blademodeler.dmaddincom.rsb
 ansys_inc/v232/aisol/dll/linx64/libans.blademodeler.bg41objectscom.so
 ansys_inc/v232/aisol/dll/linx64/ans.blademodeler.bg41objectscom.rsb
 ansys_inc/v232/aisol/dll/linx64/libans.blademodeler.tgproxycom.so
@@ -35,67 +32,20 @@ ansys_inc/v232/aisol/dll/linx64/ans.blademodeler.tgproxycom.rsb
 ansys_inc/v232/aisol/dll/linx64/libans.blademodeler.objectscom.so
 ansys_inc/v232/aisol/dll/linx64/ans.blademodeler.objectscom.rsb
 
-# needed for topo and smart tests
-# ansys_inc/v232/aisol/dll/linx64/libans.addins.parameshcom.so
-# ansys_inc/v232/aisol/dll/linx64/ans.addins.parameshcom.rsb
 ansys_inc/v232/aisol/dll/linx64/libans.addins.parameshkernelcom.so
 ansys_inc/v232/aisol/dll/linx64/ans.addins.parameshkernelcom.rsb
 ansys_inc/v232/aisol/dll/linx64/libans.addins.parameshobjectscom.so
 ansys_inc/v232/aisol/dll/linx64/ans.addins.parameshobjectscom.rsb
-
-# needed for topo and smart tests
-# ansys_inc/v232/aisol/dll/linx64/libans.addins.parameshutilitiescom.so
-# ansys_inc/v232/aisol/dll/linx64/ans.addins.parameshutilitiescom.rsb
-
-# Ans.Common.ManagedEntry loading depends on this
-# ansys_inc/v232/aisol/bin/linx64/Ans.AQWA.RemoteItf.dll
-# ansys_inc/v232/aisol/bin/linx64/Ans.AQWA.RemoteLib.dll
-
 ansys_inc/v232/Additive
-
-# not available on linux
-# ansys_inc/v232/AddPrint
 
 ansys_inc/v232/commonfiles/CAD/Hoops
 
 ansys_inc/v232/commonfiles/CAD/Spatial
 
-# needed for mapdl
-# having + in the pattern produces the following error
-# error from sender: failed to match excludepatterns: syntax error in pattern
-# let us not ignore this folder in the mechanical images
-# ansys_inc/v232/commonfiles/AAS
-# !ansys_inc/v232/commonfiles/AAS/bin/linx64/libACE.so
-# !ansys_inc/v232/commonfiles/AAS/bin/linx64/libACE.so.7.0.2
-# !ansys_inc/v232/commonfiles/AAS/bin/linx64/libACEXML.so
-# !ansys_inc/v232/commonfiles/AAS/bin/linx64/libACEXML.so.7.0.2
-# !ansys_inc/v232/commonfiles/AAS/bin/linx64/libACEXML_Parser.so
-# !ansys_inc/v232/commonfiles/AAS/bin/linx64/libACEXML_Parser.so.7.0.2
-# !ansys_inc/v232/commonfiles/AAS/bin/linx64/libMapdlExceptionClient.so
-# !ansys_inc/v232/commonfiles/AAS/bin/linx64/libstdc++.so
-# !ansys_inc/v232/commonfiles/AAS/bin/linx64/libstdc++.so.6
-# !ansys_inc/v232/commonfiles/AAS/bin/linx64/libstdc++.so.6.0.25
-# !ansys_inc/v232/commonfiles/AAS/bin/linx64/libTAO.so
-# !ansys_inc/v232/commonfiles/AAS/bin/linx64/libTAO.so.3.0.2
-# !ansys_inc/v232/commonfiles/AAS/bin/linx64/libTAO_AnyTypeCode.so
-# !ansys_inc/v232/commonfiles/AAS/bin/linx64/libTAO_AnyTypeCode.so.3.0.2
-# !ansys_inc/v232/commonfiles/AAS/bin/linx64/libTAO_BiDirGIOP.so
-# !ansys_inc/v232/commonfiles/AAS/bin/linx64/libTAO_BiDirGIOP.so.3.0.2
-# !ansys_inc/v232/commonfiles/AAS/bin/linx64/libTAO_CodecFactory.so
-# !ansys_inc/v232/commonfiles/AAS/bin/linx64/libTAO_CodecFactory.so.3.0.2
-# !ansys_inc/v232/commonfiles/AAS/bin/linx64/libTAO_PI.so
-# !ansys_inc/v232/commonfiles/AAS/bin/linx64/libTAO_PI.so.3.0.2
-# !ansys_inc/v232/commonfiles/AAS/bin/linx64/libTAO_PortableServer.so
-# !ansys_inc/v232/commonfiles/AAS/bin/linx64/libTAO_PortableServer.so.3.0.2
-
 ansys_inc/v232/commonfiles/CPython
 !ansys_inc/v232/commonfiles/CPython/3_10
 
-# needed for mapdl
-# ansys_inc/v232/commonfiles/AMD
 ansys_inc/v232/commonfiles/SystemCoupling
-
-# needed for mapdl
 ansys_inc/v232/commonfiles/Tcl
 !ansys_inc/v232/commonfiles/Tcl/lib/linx64/libjpeg.so
 !ansys_inc/v232/commonfiles/Tcl/lib/linx64/libpng.so
@@ -103,7 +53,6 @@ ansys_inc/v232/commonfiles/Tcl
 !ansys_inc/v232/commonfiles/Tcl/lib/linx64/libz.so
 
 ansys_inc/v232/commonfiles/CFX
-# needed for topo and smart tests
 !ansys_inc/v232/commonfiles/CFX/lib/linux-amd64/libans.cue.di.so
 !ansys_inc/v232/commonfiles/CFX/lib/linux-amd64/libgfortran.so.5
 !ansys_inc/v232/commonfiles/CFX/lib/linux-amd64/libquadmath.so.0
@@ -116,14 +65,7 @@ ansys_inc/v232/commonfiles/Textures
 ansys_inc/v232/commonfiles/tools
 
 ansys_inc/v232/dcs
-# needed for topo and smart tests
 !ansys_inc/v232/dcs/nginx/auth_web/assets/favicon.ico
-
-# not available on linux
-# ansys_inc/v232/DistortionCompensation
-
-# trace mapping workflows need Electronics
-# ansys_inc/v232/Electronics
 
 ansys_inc/v232/Framework
 !ansys_inc/v232/Framework/bin
@@ -134,46 +76,25 @@ ansys_inc/v232/meshing
 
 ansys_inc/v232/RSM
 
-# not available in linux
-# ansys_inc/v232/scdm
-
-#ansys_inc/v232/Subscription
-
 ansys_inc/v232/SystemCoupling
-
-# we'll need this because of mono
-# ansys_inc/v232/Tools
 
 ansys_inc/v232/ProductConfig.sh
 ansys_inc/v232/ans_uninstall232
 
-# mapdl dependencies
-# ansys_inc/v232/aisol/lib/linx64/libcares.so.2
-# ansys_inc/v232/aisol/lib/linx64/libgcc_s.so.1
-# ansys_inc/v232/aisol/lib/linx64/libprotobuf.so.3.10.1.0
 ansys_inc/v232/ansys
 !ansys_inc/v232/ansys/syslib/ubuntu/libXp.so
 !ansys_inc/v232/ansys/syslib/ubuntu/libXp.so.6
 !ansys_inc/v232/ansys/syslib/ubuntu/libXp.so.6.2.0
-#upf needed for mechanical usage
 !ansys_inc/v232/ansys/bin/ansupf
 !ansys_inc/v232/ansys/bin/ansupf232
-
-# mpi is needed for mechanical usage
 !ansys_inc/v232/ansys/bin/mpitest
 !ansys_inc/v232/ansys/bin/mpitest232
-
-# amd files are needed
-# !ansys_inc/v232/ansys/lib/linx64/gpu
 !ansys_inc/v232/ansys/lib/linx64/blas
 
-#include only what's needed for mapdl - using reduce_mapdl.py
 !ansys_inc/v232/aisol/lib/linx64/libgcc_s.so.1
 !ansys_inc/v232/aisol/lib/linx64/libaddress_sorting.so
 !ansys_inc/v232/aisol/lib/linx64/libgpr.so
 !ansys_inc/v232/aisol/lib/linx64/libgrpc.so
-# file name with ++ has some issues in the docker ignore file
-#!ansys_inc/v232/aisol/lib/linx64/libgrpc++.so
 !ansys_inc/v232/ansys/apdl
 !ansys_inc/v232/ansys/apdl/start.ans
 !ansys_inc/v232/ansys/bin/ansset.ini
@@ -185,7 +106,6 @@ ansys_inc/v232/ansys
 !ansys_inc/v232/ansys/bin/ansysdis232
 !ansys_inc/v232/ansys/bin/linx64/ansys.e
 
-# needed for topo and smart tests
 !ansys_inc/v232/ansys/bin/linx64/AnsMechSolverMesh_f.e
 !ansys_inc/v232/ansys/bin/linx64/RunQMorph_f.e
 
@@ -196,10 +116,6 @@ ansys_inc/v232/ansys
 !ansys_inc/v232/ansys/gui/en-us/UIDL/UIFUNC1.GRN
 !ansys_inc/v232/ansys/gui/en-us/UIDL/UIFUNC2.GRN
 !ansys_inc/v232/ansys/gui/en-us/UIDL/UIMENU.GRN
-# we don't ignore the ansys_inc/v232/ansys/lib/linx64/blas
-# !ansys_inc/v232/ansys/lib/linx64/blas/intel/libansBLAS.so
-
-# needed for topo and smart tests
 !ansys_inc/v232/ansys/lib/analytics/model_031323/sparse_A_min_max.txt
 !ansys_inc/v232/ansys/lib/analytics/model_031323/sparse_A_param_a.txt
 !ansys_inc/v232/ansys/lib/analytics/model_031323/sparse_A_param_b.txt
@@ -268,25 +184,7 @@ ansys_inc/v232/ansys
 !ansys_inc/v232/ansys/syslib/AnsGil/libgmp.so.10
 !ansys_inc/v232/ansys/syslib/AnsGil/libgmp.so.10.3.2
 
-# needed for topo and smart tests
 !ansys_inc/v232/ansys/syslib/AnsMechSolverMesh/libComponentSystem.so
-
-# in the latest build the following are referred from
-# ansys_inc/v232/aisol/lib/linx64
-# having + in the pattern produces the following error
-# error from sender: failed to match excludepatterns: syntax error in pattern
-# let us not ignore this folder
-# !ansys_inc/v232/ansys/syslib/ansGRPC/libaddress_sorting.so
-# !ansys_inc/v232/ansys/syslib/ansGRPC/libcares.so
-# !ansys_inc/v232/ansys/syslib/ansGRPC/libcares.so.2
-# !ansys_inc/v232/ansys/syslib/ansGRPC/libcares.so.2.4.1
-# !ansys_inc/v232/ansys/syslib/ansGRPC/libgpr.so
-# !ansys_inc/v232/ansys/syslib/ansGRPC/libgrpc.so
-# !ansys_inc/v232/ansys/syslib/ansGRPC/libgrpc++.so
-# !ansys_inc//v232/ansys/syslib/ansGRPC/libGrpcKernel.so
-# !ansys_inc//v232/ansys/syslib/ansGRPC/libGrpcMapdl.so
-# !ansys_inc//v232/ansys/syslib/ansGRPC/libprotobuf.so
-# !ansys_inc//v232/ansys/syslib/ansGRPC/libprotobuf.so.3.10.1.0
 !ansys_inc/v232/ansys/syslib/ansGRPC
 !ansys_inc/v232/ansys/syslib/boost/libboost_atomic.so
 !ansys_inc/v232/ansys/syslib/boost/libboost_atomic.so.1
@@ -384,10 +282,6 @@ ansys_inc/v232/commonfiles/Tcl
 !ansys_inc/v232/commonfiles/Tcl/lib/linx64/libpng.so
 !ansys_inc/v232/commonfiles/Tcl/lib/linx64/libtiff.so
 
-# we include the full licensing client
-#ansys_inc/v232/licensingclient/linx64/ansyscl
-#ansys_inc/v232/licensingclient/linx64/ansysli_util
-
 ansys_inc/v232/tp/hdf5/1_10_5
 !ansys_inc/v232/tp/hdf5/1_10_5/linx64/lib/libhdf5_cpp-gcc820-1_10_5.so
 !ansys_inc/v232/tp/hdf5/1_10_5/linx64/lib/libhdf5_cpp-gcc820-1_10_5.so.103
@@ -413,7 +307,6 @@ ansys_inc/v232/tp/IntelCompiler/2019.3.199
 !ansys_inc/v232/tp/IntelCompiler/2019.3.199/linx64/lib/intel64/libcilkrts.so
 !ansys_inc/v232/tp/IntelCompiler/2019.3.199/linx64/lib/intel64/libcilkrts.so.5
 
-# needed for topo and smart tests
 !ansys_inc/v232/tp/IntelCompiler/2019.3.199/linx64/lib/intel64/libifcore.so
 !ansys_inc/v232/tp/IntelCompiler/2019.3.199/linx64/lib/intel64/libifcore.so.5
 
@@ -440,7 +333,6 @@ ansys_inc/v232/tp/IntelMKL/2020.0.166
 !ansys_inc/v232/tp/IntelMKL/2020.0.166/linx64/lib/intel64/libmkl_intel_thread.so
 !ansys_inc/v232/tp/IntelMKL/2020.0.166/linx64/lib/intel64/libmkl_scalapack_lp64.so
 
-# needed for topo and smart tests
 !ansys_inc/v232/tp/IntelMKL/2020.0.166/linx64/lib/intel64/libmkl_sequential.so
 
 !ansys_inc/v232/tp/IntelMKL/2020.0.166/linx64/lib/intel64/libmkl_vml_avx512.so
@@ -449,7 +341,6 @@ ansys_inc/v232/tp/IntelMKL/2020.0.166
 ansys_inc/v232/tp/qt
 !ansys_inc/v232/tp/qt/5.9.6
 
-# mesh dependency
 !ansys_inc/v232/tp/IntelMKL/2020.0.166/linx64/lib/intel64/libmkl_gnu_thread.so
 
 ansys_inc/install.err
