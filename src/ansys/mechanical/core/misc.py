@@ -109,7 +109,7 @@ def check_valid_port(port, lower_bound=1000, high_bound=60000):
     """Check if the port is valid.
 
     Parameters
-    ---------
+    ----------
     port : int
         Port to check.
     lower_bound : int, optional

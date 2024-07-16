@@ -4,8 +4,8 @@ Known issue and limitations
 ===========================
 
 Note the following known issues and limitations. Certain features may not be fully compatible across different versions of Mechanical and PyMechanical.
-Some features may not be fully compatible across different versions of Mechanical and PyMechanical.
-Ansys recommends that you always use the latest version to achieve the best results.
+Some features may not be fully compatible across different versions of **Mechanical** and **PyMechanical**.
+Ansys recommends that you always use the latest version of both to achieve the best results.
 
 ..
    This toctree must be a top-level index to get it to show up in
@@ -43,3 +43,5 @@ If you encounter any issues or limitations that hinder your work, please contact
 We are committed to providing timely assistance to ensure your projects run smoothly.
 
 Contact Us:
+Mechanical #TODO
+pymechanical #TODO

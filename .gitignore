@@ -197,7 +197,10 @@ doc/source/examples/gallery_examples/*/*.rst
 doc/source/examples/gallery_examples/*/*.pickle
 doc/source/examples/gallery_examples/**/*.png
 doc/source/sg_execution_times.rst
+doc/source/api/ansys/
+doc/source/api/index.rst
 
+examples/embedding_n_remote/
 # pymechanical-specific
 mylocal.ip
 pymechanical_log.txt
