@@ -6,13 +6,14 @@ PyMechanical
 Known issues and limitations
 ----------------------------
 
-We suggest to use latest stable version of PyMechanical. Issues and limitations for previous versions are not
-captured here. If you find any other, please create an issue `here <pymechanical_issue_>`_
+We suggest to use latest stable version of PyMechanical.
+Any issues and limitations for previous versions are not currently documented.
+If you find any other, please create an issue `here <pymechanical_issue_>`_
 
 v0.11.x
 ^^^^^^^^
-- Remote solve ( My Computer Background) is only available in Windows platform with Embedding method
-- ``App.plot()`` visualization feature is available only for geometry. Mesh or Results are not available
-  to plot but can be exported as images or animation.
-- Enabling beta option using PyMechanical is not supported. User has to enable this in either Workbench or
-  Standalone Mechanical
+- Remote solve (**My Computer Background**) is only available in Windows platform with embedding method
+- ``App.plot()`` visualization feature is available only for geometry. You cannot plot mesh or results
+  but you can export the plots for this data as images or an animation.
+- PyMechanical does not support the use of beta features.
+  You can enable these features from either Workbench or Mechanical.

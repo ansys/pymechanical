@@ -3,8 +3,7 @@
 Known issue and limitations
 ===========================
 
-Note the following known issues and limitations. Certain features may not be fully compatible across different versions of Mechanical and PyMechanical.
-Some features may not be fully compatible across different versions of **Mechanical** and **PyMechanical**.
+Note the following known issues and limitations. Some features may not be fully compatible across different versions of **Mechanical** and **PyMechanical**.
 Ansys recommends that you always use the latest version of both to achieve the best results.
 
 ..
@@ -42,6 +41,5 @@ Support
 If you encounter any issues or limitations that hinder your work, please contact our support team immediately.
 We are committed to providing timely assistance to ensure your projects run smoothly.
 
-Contact Us:
-Mechanical #TODO
-pymechanical #TODO
+- Mechanical : `Customer portal <https://support.ansys.com/>`_
+- PyMechanical : Create issue in github or contact `pyansys team <pyansys_support_>`_
