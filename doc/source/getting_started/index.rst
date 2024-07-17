@@ -47,7 +47,7 @@ Getting started
 
         Frequently asked questions and answers.
 
-    .. grid-item-card:: :fas:`fa-solid fa-clipboard-question` Known issues and limitations
+    .. grid-item-card:: :fas:`fa-solid fa-bug` Known issues and limitations
         :link: ../kil/index
         :link-type: doc
         :text-align: center

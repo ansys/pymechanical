@@ -106,7 +106,7 @@ usage, type the following command:
 You can launch Mechanical in server mode from the command line and then
 manually connect to the server. Use the `port` argument to select the port.
 
-..code::
+.. code::
 
     ansys-mechanical --port 10000
 
