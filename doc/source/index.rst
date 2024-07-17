@@ -55,28 +55,19 @@
 Introduction
 ------------
 
-PyMechanical is part of the larger `PyAnsys <pyansys_>`_
-effort to facilitate the use of Ansys technologies directly from
-Python. Its primary package, ``ansys-mechanical-core``, provides
-scripting of Ansys Mechanical through Python.
-
-With PyMechanical, you can integrate the simulation capabilities
-of the Mechanical multiphysics solver directly into novel apps.
+PyMechanical is part of the broader `PyAnsys <pyansys_>`_ initiative,
+enabling the use of Ansys technologies directly from Python.
+This allows users to integrate the `Mechanical <Ansys Mechanical_>`_ multiphysics solver
+into custom applications.
 The ``ansys-mechanical-core`` package presents a Python-friendly
-interface to drive the software that facilitates the use of Mechanical
-scripting commands.
+interface to drive the software that facilitates the use of
+:ref:`ref_user_guide_scripting` commands.
 
-With PyMechanical, you can accomplish tasks like these:
+Install the latest package from `PyPi <https://pypi.org/project/ansys-mechanical-core/>`_ with command:
 
-- Accelerate the preparation of your simulations.
-- Combine the expressiveness of general-purpose Python code to control
-  the flow in your input decks with methods that drive the solver.
-- Explore proof-of-concept studies or capture knowledge using interactive
-  Jupyter notebooks.
-- Tap the solver as the physics engine in your next AI app.
+.. code::
 
-Contributions to this open source library are welcome. For more information,
-see :ref:`ref_contributing`.
+   pip install ansys-mechanical-core
 
 Mechanical scripting
 --------------------
@@ -98,11 +89,8 @@ Remote session
 
 PyMechanical's  remote session is based on `gRPC <https://grpc.io/>`_.
 Mechanical runs as a server, ready to respond to any clients.
-
-PyMechanical provides a client to connect to a Mechanical server and make API
-calls to this server.
-
-For information on using a remote session, see
+PyMechanical provides a client to connect and make API
+calls to this Mechanical server. For information on using a remote session, see
 :ref:`ref_user_guide_session`.
 
 Embedded instance
@@ -114,25 +102,15 @@ PyMechanical's embedded instance is based on `Python.NET <http://pythonnet.githu
 Rather than starting a new process for Mechanical, a Mechanical object (which is
 implemented in .NET) is directly loaded into Python memory using Python.NET. From
 there, Mechanical's entire data model is available for use from Python code.
+For information on using an embedded instance, see :ref:`ref_user_guide_embedding`.
 
 .. vale on
-
-For information on using an embedded instance, see :ref:`ref_user_guide_embedding`.
 
 Documentation and issues
 ------------------------
 
-Documentation for the latest stable release of PyMechanical is hosted at `PyMechanical documentation
-<https://mechanical.docs.pyansys.com/version/stable/>`_.
-
-In the upper right corner of the documentation's title bar, there is an option for switching from
-viewing the documentation for the latest stable release to viewing the documentation for the
-development version or previously released versions.
-
-You can also `view <https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.png>`_ or
-`download <https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.pdf>`_ the
-PyMechanical cheat sheet. This one-page reference provides syntax rules and commands
-for using PyMechanical.
+In the top right corner of the title bar, you can switch between the latest stable release,
+development version, and previous versions of the documentation.
 
 On the `PyMechanical Issues <https://github.com/ansys/pymechanical/issues>`_ page,
 you can create issues to report bugs and request new features. On the `PyMechanical Discussions
@@ -140,3 +118,6 @@ you can create issues to report bugs and request new features. On the `PyMechani
 page on the Ansys Developer portal, you can post questions, share ideas, and get community feedback.
 
 To reach the project support team, email `pyansys.core@ansys.com <pyansys.core@ansys.com>`_.
+
+Contributions to this open source library are welcome. For more information,
+see :ref:`ref_contributing`.

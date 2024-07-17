@@ -246,7 +246,7 @@ def check_valid_mechanical():
     if mechanical_path == None:
         return False
     mechanical_version = atp.version_from_path("mechanical", mechanical_path)
-    return not (mechanical_version < 231 and os.name != "posix")
+    return not (mechanical_version < 232 and os.name != "posix")
 
 
 def change_default_mechanical_path(exe_loc):
@@ -1913,8 +1913,8 @@ def launch_grpc(
 
     """
     # verify version
-    if atp.version_from_path("mechanical", exec_file) < 231:
-        raise VersionError("The Mechanical gRPC interface requires Mechanical 2023 R1 or later.")
+    if atp.version_from_path("mechanical", exec_file) < 232:
+        raise VersionError("The Mechanical gRPC interface requires Mechanical 2023 R2 or later.")
 
     # get the next available port
     local_ports = pymechanical.LOCAL_PORTS
