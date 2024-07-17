@@ -1,7 +1,7 @@
 .. _ref_known_issues_and_limitation:
 
-Known issue and limitations
-===========================
+Known issues and limitations
+============================
 
 Note the following known issues and limitations. Some features may not be fully compatible across different versions of **Mechanical** and **PyMechanical**.
 Ansys recommends that you always use the latest version of both to achieve the best results.
