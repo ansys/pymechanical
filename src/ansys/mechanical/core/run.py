@@ -91,6 +91,7 @@ def _cli_impl(
     port: int = 0,
     debug: bool = False,
     input_script: str = None,
+    script_args: str = None,
     exe: str = None,
     version: int = None,
     graphical: bool = False,
@@ -110,6 +111,15 @@ def _cli_impl(
             raise Exception("Cannot open in server mode with a project file.")
         if input_script:
             raise Exception("Cannot open in server mode with an input script.")
+
+    if not input_script and script_args:
+        raise Exception("Cannot add script arguments without an input script.")
+
+    if script_args:
+        if '"' in script_args:
+            raise Exception(
+                "Cannot have double quotes around individual arguments in the --script-args string."
+            )
 
     # If the input_script and port are missing in batch mode, raise an exception
     if (not graphical) and (input_script is None) and (not port):
@@ -141,6 +151,10 @@ def _cli_impl(
     if input_script:
         args.append("-script")
         args.append(input_script)
+
+    if script_args:
+        args.append("-ScriptArgs")
+        args.append(f'"{script_args}"')
 
     if (not graphical) and input_script:
         exit = True
@@ -219,6 +233,14 @@ def _cli_impl(
     help="Name of the input Python script. Cannot be mixed with -p",
 )
 @click.option(
+    "--script-args",
+    default=None,
+    help='Arguments to pass into the --input-script, -i. \
+Write the arguments as a string, with each argument \
+separated by a comma. For example, --script-args "arg1,arg2" \
+This can only be used with the --input-script argument.',
+)
+@click.option(
     "--exit",
     is_flag=True,
     default=None,
@@ -246,7 +268,7 @@ The ``exit`` command is only supported in version 2024 R1 or later.",
     "--revision",
     default=None,
     type=int,
-    help='Ansys Revision number, e.g. "241" or "232". If none is specified\
+    help='Ansys Revision number, e.g. "242" or "241". If none is specified\
 , uses the default from ansys-tools-path',
 )
 @click.option(
@@ -261,6 +283,7 @@ def cli(
     port: int,
     debug: bool,
     input_script: str,
+    script_args: str,
     revision: int,
     graphical: bool,
     show_welcome_screen: bool,
@@ -274,9 +297,9 @@ def cli(
 
     The following example demonstrates the main use of this tool:
 
-        $ ansys-mechanical -r 241 -g
+        $ ansys-mechanical -r 242 -g
 
-        Starting Ansys Mechanical version 2023R2 in graphical mode...
+        Starting Ansys Mechanical version 2024R2 in graphical mode...
     """
     exe = atp.get_mechanical_path(allow_input=False, version=revision)
     version = atp.version_from_path("mechanical", exe)
@@ -286,6 +309,7 @@ def cli(
         port,
         debug,
         input_script,
+        script_args,
         exe,
         version,
         graphical,

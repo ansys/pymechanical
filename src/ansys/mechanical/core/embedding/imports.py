@@ -40,7 +40,8 @@ def global_variables(app: "ansys.mechanical.core.App", enums: bool = False) -> t
 
     It can be used to add all of these as global variables in python
     with this command:
-        `globals().update(global_variables(embedded_app))`
+
+    ``globals().update(global_variables(embedded_app))``
 
     To also import all the enums, set the parameter enums to true.
     """

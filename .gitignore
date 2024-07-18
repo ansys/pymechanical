@@ -197,6 +197,7 @@ doc/source/examples/gallery_examples/*/*.rst
 doc/source/examples/gallery_examples/*/*.pickle
 doc/source/examples/gallery_examples/**/*.png
 doc/source/sg_execution_times.rst
+
 # Ignore everything in the doc/source/api/ directory
 doc/source/api/*
 # This file is for the ansys-tools-path

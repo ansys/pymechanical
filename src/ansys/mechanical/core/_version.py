@@ -40,8 +40,8 @@ except ModuleNotFoundError:  # pragma: no cover
 __version__ = importlib_metadata.version("ansys-mechanical-core")
 
 SUPPORTED_MECHANICAL_VERSIONS = {
+    242: "2024R2",
     241: "2024R1",
     232: "2023R2",
-    231: "2023R1",
 }
 """Supported mechanical versions in descending order."""
