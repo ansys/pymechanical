@@ -57,7 +57,7 @@ Introduction
 
 PyMechanical is part of the broader `PyAnsys <pyansys_>`_ initiative,
 enabling the use of Ansys technologies directly from Python.
-This allows users to integrate the `Mechanical <Ansys Mechanical_>`_ multiphysics solver
+This allows users to integrate the Mechanical multiphysics solver
 into custom applications.
 The ``ansys-mechanical-core`` package presents a Python-friendly
 interface to drive the software that facilitates the use of
