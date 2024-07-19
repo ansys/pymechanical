@@ -9,6 +9,54 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.2 <https://github.com/ansys/pymechanical/releases/tag/v0.11.2>`_ - 2024-07-19
+===================================================================================
+
+Added
+^^^^^
+
+- FEAT: Add known issues and limitation section `#760 <https://github.com/ansys/pymechanical/pull/760>`_
+- FEAT: Add test for building gallery `#787 <https://github.com/ansys/pymechanical/pull/787>`_
+- FEAT: Add graphics and globals `#790 <https://github.com/ansys/pymechanical/pull/790>`_
+- feat: add --script-args argument to ansys-mechanical `#802 <https://github.com/ansys/pymechanical/pull/802>`_
+- FEAT: Update print_tree method `#804 <https://github.com/ansys/pymechanical/pull/804>`_
+
+
+Changed
+^^^^^^^
+
+- chore: update CHANGELOG for v0.11.1 `#786 <https://github.com/ansys/pymechanical/pull/786>`_
+- [pre-commit.ci] pre-commit autoupdate `#789 <https://github.com/ansys/pymechanical/pull/789>`_, `#801 <https://github.com/ansys/pymechanical/pull/801>`_, `#819 <https://github.com/ansys/pymechanical/pull/819>`_
+- MAINT: Update nightly runs for 251 `#803 <https://github.com/ansys/pymechanical/pull/803>`_
+- MAINT: Refactor CICD `#806 <https://github.com/ansys/pymechanical/pull/806>`_
+- MAINT: Update for 24R2 `#810 <https://github.com/ansys/pymechanical/pull/810>`_
+- MAINT: update for docker files 24R2 `#811 <https://github.com/ansys/pymechanical/pull/811>`_
+- Update ACT API Reference Guide link `#815 <https://github.com/ansys/pymechanical/pull/815>`_
+
+
+Fixed
+^^^^^
+
+- Fix sentence in architecture file `#800 <https://github.com/ansys/pymechanical/pull/800>`_
+
+
+Dependencies
+^^^^^^^^^^^^
+
+- MAINT: Bump numpy from 1.26.4 to 2.0.0 `#773 <https://github.com/ansys/pymechanical/pull/773>`_
+- MAINT: Bump the doc group with 4 updates `#788 <https://github.com/ansys/pymechanical/pull/788>`_
+- MAINT: Bump the doc group with 2 updates `#805 <https://github.com/ansys/pymechanical/pull/805>`_
+- MAINT: Update dev version of pymechanical `#814 <https://github.com/ansys/pymechanical/pull/814>`_
+- MAINT: Bump sphinx from 7.3.7 to 7.4.4 in the doc group `#818 <https://github.com/ansys/pymechanical/pull/818>`_
+- MAINT: Update pymech-env `#821 <https://github.com/ansys/pymechanical/pull/821>`_
+
+
+Miscellaneous
+^^^^^^^^^^^^^
+
+- docs: update architecture.rst `#796 <https://github.com/ansys/pymechanical/pull/796>`_
+- fix exception when plotting a model with any line bodies `#812 <https://github.com/ansys/pymechanical/pull/812>`_
+
 `0.11.1 <https://github.com/ansys/pymechanical/releases/tag/v0.11.1>`_ - 2024-06-21
 ===================================================================================
 
