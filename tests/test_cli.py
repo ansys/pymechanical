@@ -85,7 +85,7 @@ def test_cli_appmode(disable_cli):
 
 
 @pytest.mark.cli
-def test_cli_232(disable_cli):
+def test_cli_231(disable_cli):
     args, _ = _cli_impl(exe="AnsysWBU.exe", version=231, port=11)
     assert "-nosplash" in args
     assert "-notabctrl" in args

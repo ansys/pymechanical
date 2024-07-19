@@ -170,7 +170,7 @@ class LocalMechanicalPool:
         self._spawn_kwargs = kwargs
         self._remote = False
 
-        # verify that mechanical is 2023R1 or newer
+        # verify that mechanical is 2023R2 or newer
         exec_file = None
         if "exec_file" in kwargs:
             exec_file = kwargs["exec_file"]
@@ -191,8 +191,8 @@ class LocalMechanicalPool:
                     )
 
         if not self._remote:  # pragma: no cover
-            if version_from_path("mechanical", exec_file) < 231:
-                raise VersionError("A local Mechanical pool requires Mechanical 2023 R1 or later.")
+            if version_from_path("mechanical", exec_file) < 232:
+                raise VersionError("A local Mechanical pool requires Mechanical 2023 R2 or later.")
 
         ports = None
 
