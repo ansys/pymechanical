@@ -31,6 +31,7 @@ def global_entry_points(app: "ansys.mechanical.core.App") -> typing.Dict:
     vars["DataModel"] = app.DataModel
     vars["Model"] = app.DataModel.Project.Model
     vars["Tree"] = app.DataModel.Tree
+    vars["Graphics"] = app.ExtAPI.Graphics
     return vars
 
 
@@ -39,7 +40,8 @@ def global_variables(app: "ansys.mechanical.core.App", enums: bool = False) -> t
 
     It can be used to add all of these as global variables in python
     with this command:
-        `globals().update(global_variables(embedded_app))`
+
+    ``globals().update(global_variables(embedded_app))``
 
     To also import all the enums, set the parameter enums to true.
     """
@@ -51,8 +53,11 @@ def global_variables(app: "ansys.mechanical.core.App", enums: bool = False) -> t
     clr.AddReference("Ansys.Mechanical.DataModel")
     # from Ansys.ACT.Mechanical import Transaction
     # When ansys-pythonnet issue #14 is fixed, uncomment above
+    from Ansys.ACT.Core.Math import Point2D, Point3D
+    from Ansys.ACT.Math import Vector3D
     from Ansys.Core.Units import Quantity
     from Ansys.Mechanical.DataModel import MechanicalEnums
+    from Ansys.Mechanical.Graphics import Point, SectionPlane
 
     import System  # isort: skip
     import Ansys  # isort: skip
@@ -62,6 +67,13 @@ def global_variables(app: "ansys.mechanical.core.App", enums: bool = False) -> t
     vars["Ansys"] = Ansys
     vars["Transaction"] = Transaction
     vars["MechanicalEnums"] = MechanicalEnums
+    # Graphics
+    vars["Point"] = Point
+    vars["SectionPlane"] = SectionPlane
+    # Math
+    vars["Point2D"] = Point2D
+    vars["Point3D"] = Point3D
+    vars["Vector3D"] = Vector3D
 
     if enums:
         vars.update(get_all_enums())

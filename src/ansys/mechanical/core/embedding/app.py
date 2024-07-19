@@ -268,13 +268,18 @@ class App:
 
     @property
     def Tree(self):
-        """Return the ExtAPI object."""
+        """Return the Tree object."""
         return GetterWrapper(self._app, lambda app: app.DataModel.Tree)
 
     @property
     def Model(self):
-        """Return the ExtAPI object."""
+        """Return the Model object."""
         return GetterWrapper(self._app, lambda app: app.DataModel.Project.Model)
+
+    @property
+    def Graphics(self):
+        """Return the Graphics object."""
+        return GetterWrapper(self._app, lambda app: app.ExtAPI.Graphics)
 
     @property
     def readonly(self):
@@ -365,6 +370,12 @@ class App:
     def _print_tree(self, node, max_lines, lines_count, indentation):
         """Recursively print till provided maximum lines limit.
 
+        Each object in the tree is expected to have the following attributes:
+         - Name: The name of the object.
+         - Suppressed : Print as suppressed, if object is suppressed.
+         - Children: Checks if object have children.
+           Each child node is expected to have the all these attributes.
+
         Parameters
         ----------
         lines_count: int, optional
@@ -382,30 +393,28 @@ class App:
         node_name = node.Name
         if hasattr(node, "Suppressed") and node.Suppressed is True:
             node_name += " (Suppressed)"
-        print(f"{indentation}├── {node.Name}")
+        print(f"{indentation}├── {node_name}")
         lines_count += 1
+
+        if lines_count >= max_lines and max_lines != -1:
+            print(f"... truncating after {max_lines} lines")
+            return lines_count
 
         if hasattr(node, "Children") and node.Children is not None and node.Children.Count > 0:
             for child in node.Children:
-                _lines_count = self._print_tree(child, max_lines, lines_count, indentation + "|  ")
-                if _lines_count >= max_lines and max_lines != -1:
+                lines_count = self._print_tree(child, max_lines, lines_count, indentation + "|  ")
+                if lines_count >= max_lines and max_lines != -1:
                     break
 
         return lines_count
 
-    def print_tree(self, node, max_lines=80, lines_count=0, indentation=""):
+    def print_tree(self, node=None, max_lines=80, lines_count=0, indentation=""):
         """
         Print the hierarchical tree representation of the Mechanical project structure.
 
-        Each object in the tree is expected to have the following attributes:
-         - Name: The name of the object.
-         - Suppressed : Print as suppressed, if object is suppressed.
-         - Children: Checks if object have children.
-           Each child node is expected to have the all these attributes.
-
         Parameters
         ----------
-        node: ExtAPI object
+        node: DataModel object, optional
             The starting object of the tree.
         max_lines: int, optional
             The maximum number of lines to print. Default is 80. If set to -1, no limit is applied.
@@ -420,7 +429,7 @@ class App:
         >>> import ansys.mechanical.core as mech
         >>> app = mech.App()
         >>> app.update_globals(globals())
-        >>> app.print_tree(DataModel.Project)
+        >>> app.print_tree()
         ... ├── Project
         ... |  ├── Model
         ... |  |  ├── Geometry Imports
@@ -431,8 +440,18 @@ class App:
         ... |  |  ├── Remote Points
         ... |  |  ├── Mesh
 
-        >>> app.print_tree(DataModel.Project, 1)
+        >>> app.print_tree(Model, 3)
+        ... ├── Model
+        ... |  ├── Geometry Imports
+        ... |  ├── Geometry
+        ... ... truncating after 3 lines
+
+        >>> app.print_tree(max_lines=2)
         ... ├── Project
-        ... ... truncating after 1 lines
+        ... |  ├── Model
+        ... ... truncating after 2 lines
         """
+        if node is None:
+            node = self.DataModel.Project
+
         self._print_tree(node, max_lines, lines_count, indentation)

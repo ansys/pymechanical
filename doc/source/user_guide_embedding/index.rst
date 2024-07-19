@@ -105,7 +105,7 @@ versions can be specified using ``-r`` flag. Use ``-h`` for more information.
 
    .. code::
 
-      "C:/Program Files/ANSYS Inc/v241/aisol/bin/winx64/AnsysWBU.exe -DSApplet -AppModeMech -script file.py"
+      "C:/Program Files/ANSYS Inc/v242/aisol/bin/winx64/AnsysWBU.exe -DSApplet -AppModeMech -script file.py"
 
    PowerShell users can run the preceding command without including the opening and
    closing quotation marks.

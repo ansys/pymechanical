@@ -36,7 +36,7 @@ from ansys.mechanical.core.embedding.resolver import resolve
 INITIALIZED_VERSION = None
 """Constant for the initialized version."""
 
-SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS = {241: "2024R1", 232: "2023R2", 231: "2023R1"}
+SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS = {242: "2024R2", 241: "2024R1", 232: "2023R2"}
 """Supported Mechanical embedding versions on Windows."""
 
 
@@ -70,7 +70,7 @@ def _get_default_linux_version() -> int:
     does not provide a version, the ``find_mechanical()`` function from the ``ansys-tools-path``
     package is used to find a version of Mechanical.
     """
-    supported_versions = [232, 241]
+    supported_versions = [232, 241, 242]
     awp_roots = {ver: os.environ.get(f"AWP_ROOT{ver}", "") for ver in supported_versions}
     installed_versions = {
         ver: path for ver, path in awp_roots.items() if path and os.path.isdir(path)

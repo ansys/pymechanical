@@ -45,8 +45,8 @@ Launch Mechanical locally with this code:
     >>> mechanical
 
     Ansys Mechanical [Ansys Mechanical Enterprise]
-    Product Version:231
-    Software build date:Wednesday, August 10, 2022 4:28:15 PM
+    Product Version:242
+    Software build date: 06/03/2024 14:47:58
 
 Launch Mechanical from the command line
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,7 +67,7 @@ usage, type the following command:
 
         The following example demonstrates the main use of this tool:
 
-            $ ansys-mechanical -r 241 -g
+            $ ansys-mechanical -r 242 -g
 
             Starting Ansys Mechanical version 2024R1 in graphical mode...
 
@@ -96,7 +96,7 @@ usage, type the following command:
                                     application when in graphical mode.
         --debug                    Show a debug dialog window at the start of the
                                     process.
-        -r, --revision INTEGER     Ansys Revision number, e.g. "241" or "232". If
+        -r, --revision INTEGER     Ansys Revision number, e.g. "242" or "241". If
                                     none is specified, uses the default from ansys-
                                     tools-path
         -g, --graphical            Graphical mode
@@ -168,7 +168,7 @@ for the `launch_mechanical()`_ method.
 
     from ansys.mechanical.core import launch_mechanical
 
-    exec_loc = "C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe"
+    exec_loc = "C:/Program Files/ANSYS Inc/v242/aisol/bin/winx64/AnsysWBU.exe"
     mechanical = launch_mechanical(exec_loc)
 
 **On Linux**
@@ -177,7 +177,7 @@ for the `launch_mechanical()`_ method.
 
     from ansys.mechanical.core import launch_mechanical
 
-    exec_loc = "/usr/ansys_inc/v231/aisol/.workbench"
+    exec_loc = "/usr/ansys_inc/v242/aisol/.workbench"
     mechanical = launch_mechanical(exec_loc)
 
 If, when using the `launch_mechanical()`_
@@ -224,8 +224,8 @@ Python code
     >>> mechanical = App()
     >>> mechanical
     Ansys Mechanical [Ansys Mechanical Enterprise]
-    Product Version:231
-    Software build date:Wednesday, August 10, 2022 4:28:15 PM
+    Product Version:242
+    Software build date: 06/03/2024 14:47:58
 
 Additional information for Linux
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

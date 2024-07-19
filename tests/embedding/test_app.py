@@ -91,7 +91,7 @@ def test_app_version(embedded_app):
     """Test version of the Application class."""
     version = embedded_app.version
     assert type(version) is int
-    assert version >= 231
+    assert version >= 232
 
 
 @pytest.mark.embedding
@@ -112,14 +112,17 @@ def test_app_print_tree(embedded_app, capsys, assets):
     geometry_import.Import(geometry_file)
     allbodies = Model.GetChildren(DataModelObjectCategory.Body, True)
     allbodies[0].Suppressed = True
-    embedded_app.print_tree(DataModel.Project, 1)
+    embedded_app.print_tree()
     captured = capsys.readouterr()
     printed_output = captured.out.strip()
     assert "Project" in printed_output
-    embedded_app.print_tree(DataModel.Project, 2)
+    assert "Suppressed" in printed_output
+
+    embedded_app.print_tree(max_lines=2)
     captured = capsys.readouterr()
     printed_output = captured.out.strip()
     assert "Model" in printed_output
+    assert "truncating after" in printed_output
 
     with pytest.raises(AttributeError):
         embedded_app.print_tree(DataModel)
@@ -260,6 +263,32 @@ def test_normal_appdata(pytestconfig, run_subprocess, rootdir):
     stdout = stdout.decode()
     # Assert ShowTriad was set to False for regular embedded session
     assert "ShowTriad value is False" in stdout
+
+
+@pytest.mark.embedding_scripts
+def test_building_gallery(pytestconfig, run_subprocess, rootdir):
+    """Test for building gallery check.
+
+    When building the gallery, each example file creates another instance of the app.
+    When the BUILDING_GALLERY flag is enabled, only one instance is kept.
+    This is to test the bug fixed in https://github.com/ansys/pymechanical/pull/784
+    and will fail on PyMechanical version 0.11.0
+    """
+    version = pytestconfig.getoption("ansys_version")
+
+    embedded_gallery_py = os.path.join(rootdir, "tests", "scripts", "build_gallery_test.py")
+
+    _, stderr = run_subprocess([sys.executable, embedded_gallery_py, version, "False"], None, False)
+    stderr = stderr.decode()
+
+    # Assert Exception
+    assert "Cannot have more than one embedded mechanical instance" in stderr
+
+    stdout, _ = run_subprocess([sys.executable, embedded_gallery_py, version, "True"])
+    stdout = stdout.decode()
+
+    # Assert stdout after launching multiple instances
+    assert "Multiple App launched with building gallery flag on" in stdout
 
 
 @pytest.mark.embedding
