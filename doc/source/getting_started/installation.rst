@@ -3,13 +3,11 @@
 Installation guide
 ==================
 
-To run PyMechanical, you must have a licensed copy of Ansys Mechanical
-installed locally. The version installed dictates the interface and
-features that are available to you.
-
-PyMechanical is compatible with Mechanical 2023 R1 and later on Windows
-and Linux. For more information please refer to  :ref:`ref_versioning` documentation.
-Later releases provide significantly better support and features.
+To use PyMechanical, a licensed copy of Ansys Mechanical must be installed locally.
+The installed version determines the available interface and features.
+PyMechanical is compatible with Mechanical **2023 R2** and later on Windows
+and Linux. If you face any issues while setting up or using PyMechanical,
+please go though :ref:`FAQs <faq>` and :ref:`known issues and limitations <ref_known_issues_and_limitation>` sections.
 
 Install the package
 -------------------
@@ -120,8 +118,7 @@ Verify your installation by loading an embedded instance of Mechanical in Python
 .. note::
    If you are running on Linux, you must set some environment variables for
    embedding of Mechanical in Python to work. A script that sets these variables is
-   available to install using pip:
-   ``pip install ansys-mechanical-env``
+   shipped with ``ansys-mechanical-env`` which is part of PyMechanical
 
 To use the script, prepend it to any invocation of Python:
 
