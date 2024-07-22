@@ -20,7 +20,7 @@ Known issues and limitations
 - Mechanical is not thread safe.
 - Spaceclaim geometry (.scdocx) can not be imported on Linux platform.
 - On Linux based platforms, Ansys Motion and LSDYNA analysis support are limited.
-
+- Mechanical crashes on shutdown in Linux with Embedding (`#85 <https://github.com/ansys/pymechanical/issues/85>`_).
 
 24R1
 ^^^^
