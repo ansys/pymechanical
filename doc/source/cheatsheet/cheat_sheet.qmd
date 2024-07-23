@@ -1,0 +1,206 @@
+---
+title: PyMechanical cheatsheet demo example
+format: cheat_sheet-pdf
+version: 0.1.0
+footer: Getting started with PyMechanical
+footerlinks:
+  - urls: 'https://mechanical.docs.pyansys.com/version/stable/'
+    text: Pymechanical documentation
+  - urls: 'https://mechanical.docs.pyansys.com/version/stable/getting_started/index.html'
+    text: Pymechanical documentation - Getting started
+execute:
+    # output: false
+    eval: false
+
+latex-clean: true
+latex-output-dir: ./../../_build/
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: Python 3 (ipykernel)
+    language: python
+    name: python3
+---
+
+# Launch Pymechanical
+
+Launch a Pymechanical instance locally and exit it:
+
+```{python}
+# Launch an instance
+from ansys.mechanical.core import launch_mechanical
+mechanical = launch_mechanical()
+# Exit the instance
+mechanical.exit()
+```
+
+Specify a job name, number of processors, and working directory:
+
+```{python}
+#| eval: false
+jname = 'user_jobname'
+path = '<path of directory>'
+mechanical = launch_mechanical(
+	nproc=2, run_location=path, jobname=jname)
+```
+
+Connect to an existing instance of mechanical at IP address 192.168.1.30 and port 50001:
+
+```{python}
+#| eval: false
+mechanical = launch_mechanical(start_instance=False,
+    ip='192.168.1.30', port=50001)
+```
+
+Create and exit a pool of instances:
+
+```{python}
+#| echo: false
+from ansys.mechanical.core import launch_mechanical
+mechanical = launch_mechanical()
+```
+
+```{python}
+#| eval: false
+# Create a pool of 10 instances
+from ansys.mechanical.core import mechanicalPool
+pool = mechanicalPool(10)
+# Exit the pool
+pool.exit()
+```
+
+# Pymechanical commands
+
+Pymechanical commands are Python statements that act as a wrapper for APDL commands.
+
+For example, *ESEL, s, type, 1* is translated as:
+
+```{python}
+mechanical.esel('s', 'type', vmin=1)
+```
+
+Commands that start with * or / have these characters removed:
+
+```{python}
+#| eval: false
+mechanical.prep7()	        # /PREP7
+mechanical.get()	        # *GET
+```
+
+In cases where removing * or / causes conflicts with other commands, a prefix "slash" or "star" is added:
+
+```{python}
+#| eval: false
+mechanical.solu()		# SOLU
+mechanical.slashsolu()	# /SOLU
+
+mechanical.vget()		# VGET
+mechanical.starvget()	# *VGET
+```
+
+Convert an existing APDL script to Pymechanical format:
+
+```{python}
+#| eval: false
+inputfile = 'ansys_inputfile.inp'
+pyscript = 'pyscript.py'
+mechanical.convert_script(inputfile, pyscript)
+```
+
+# mechanical class
+
+Load a table from Python to mechanical:
+
+```{python}
+#| eval: false
+mechanical.load_table(name="abc", array=create_5d_array)
+```
+
+Access from or write parameters to the mechanical database:
+
+```{python}
+#| eval: false
+# Save a parameter to a NumPy array
+nparray = mechanical.parameters['displ_load']
+# Create a parameter from a NumPy array
+mechanical.parameters['exp_disp'] = nparray
+```
+
+Access information using ``*GET`` and ``*VGET`` and store it in NumPy arrays:
+
+```{python}
+# Run *GET command and return a Python value
+mechanical.get_value(entity='NODE', item1='COUNT')
+
+# Run *VGET command and return a Python array
+mechanical.get_array(entity='NODE', item1='NLIST')
+```
+
+# Mesh class
+Store the finite element mesh as a VTK *UnstructuredGrid* data object:
+
+```{python}
+#| eval: false
+grid = mechanical.mesh.grid
+```
+
+Save element and node numbers to Python arrays:
+
+```{python}
+# Get an array of the nodal coordinates
+nodes = mechanical.mesh.nodes
+
+# Save node numbers of selected nodes to an array
+node_num = mechanical.mesh.nnum
+# Save node numbers of all nodes to an array
+node_num_all = mechanical.mesh.nnum_all
+
+# Get element numbers of currently
+# selected elements
+elem_num = mechanical.mesh.enum
+# Get all element numbers, including
+# those not selected
+elem_num_all = mechanical.mesh.enum_all
+```
+
+# Post-processing class
+The *post_processing* class is used for plotting and saving results to NumPy arrays.
+
+```{python}
+#| eval: false
+from ansys.mechanical.core import post_processing
+mechanical.post1()
+mechanical.set(1, 2)
+# Plot the nodal equivalent stress
+mechanical.post_processing.plot_nodal_eqv_stress()
+# Save nodal equivalent stresses to a Python array
+nod_eqv_stress = post_processing.nodal_eqv_stress()
+# Plot contour legend using dictionary
+mechanical.allsel()
+sbar_kwargs = {"color": "black",
+               "title": "Equivalent Stress (psi)",
+	       "vertical": False,
+	       "n_labels": 6}
+post_processing.plot_nodal_eqv_stress(
+    cpos='xy', background='white',
+    edge_color='black', show_edges=True,
+    scalar bar_args=sbar_kwargs, n_colors=9)
+```
+
+
+## References from PyMechanical documentation
+
+- [Getting started](https://mechanical.docs.pyansys.com/version/stable/getting_started/index.html)
+- [mechanical commands](https://mechanical.docs.pyansys.com/version/stable/mechanical_commands/index.html)
+- [API reference](https://mechanical.docs.pyansys.com/version/stable/api/index.html)
+
+
+```{python}
+#| echo: false
+mechanical.exit()
+```
