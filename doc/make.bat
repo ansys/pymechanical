@@ -34,7 +34,7 @@ if errorlevel 9009 (
 goto end
 
 :html-noplot
-%SPHINXBUILD% -D plot_gallery=0 -b html %SOURCEDIR% %BUILDDIR% %SPHINXOPTS% %O%
+%SPHINXBUILD% -D plot_gallery=0 -b html %SOURCEDIR% %BUILDDIR%/html %SPHINXOPTS% %O%
 goto end
 
 :clean
