@@ -12,6 +12,7 @@ set BUILDDIR=_build
 set LINKCHECKDIR=\%BUILDDIR%\linkcheck
 
 if "%1" == "" goto help
+if "%1" == "html-noplot" goto html-noplot
 if "%1" == "clean" goto clean
 if "%1" == "pdf" goto pdf
 if "%1" == "linkcheck" goto linkcheck
@@ -30,6 +31,10 @@ if errorlevel 9009 (
 )
 
 %SPHINXBUILD% -M %1 %SOURCEDIR% %BUILDDIR% %SPHINXOPTS% %O%
+goto end
+
+:html-noplot
+%SPHINXBUILD% -D plot_gallery=0 -b html %SOURCEDIR% %BUILDDIR% %SPHINXOPTS% %O%
 goto end
 
 :clean
@@ -57,4 +62,3 @@ goto end
 
 :end
 popd
-
