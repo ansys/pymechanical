@@ -53,7 +53,7 @@ Launch Mechanical with this code:
 .. code::
 
     LICENSE_SERVER=1055@XXX.XXX.XXX.XXX
-    VERSION=v23.1.0
+    VERSION=v24.2.0
 
     IMAGE=ghcr.io/ansys/pymechanical/mechanical:$VERSION
     docker run -e ANSYSLMD_LICENSE_FILE=$LICENSE_SERVER -p ip:10000:10000 $IMAGE
@@ -93,8 +93,8 @@ Verify your connection with this code:
 
     >>> mechanical
     Ansys Mechanical [Ansys Mechanical Enterprise]
-    Product Version:231
-    Software build date:Wednesday, August 10, 2022 4:28:15 PM
+    Product Version:242
+    Software build date: 06/03/2024 14:47:58
 
 Additional considerations
 -------------------------

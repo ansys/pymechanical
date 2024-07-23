@@ -69,7 +69,7 @@ for rver in valid_rver:
 # minimum version on linux.
 # Override this if running on CI/CD and PYMAPDL_PORT has been specified
 ON_CI = "PYMECHANICAL_START_INSTANCE" in os.environ and "PYMECHANICAL_PORT" in os.environ
-HAS_GRPC = int(rver) >= 231 or ON_CI
+HAS_GRPC = int(rver) >= 232 or ON_CI
 
 
 def pytest_collection_modifyitems(config, items):
@@ -372,7 +372,7 @@ def pytest_addoption(parser):
     mechanical_path = atp.get_mechanical_path(False)
 
     if mechanical_path == None:
-        parser.addoption("--ansys-version", default="241")
+        parser.addoption("--ansys-version", default="242")
     else:
         mechanical_version = atp.version_from_path("mechanical", mechanical_path)
         parser.addoption("--ansys-version", default=str(mechanical_version))

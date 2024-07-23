@@ -85,7 +85,7 @@ def test_cli_appmode(disable_cli):
 
 
 @pytest.mark.cli
-def test_cli_232(disable_cli):
+def test_cli_231(disable_cli):
     args, _ = _cli_impl(exe="AnsysWBU.exe", version=231, port=11)
     assert "-nosplash" in args
     assert "-notabctrl" in args
@@ -110,6 +110,59 @@ def test_cli_script(disable_cli):
     args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, input_script="foo.py", graphical=True)
     assert "-script" in args
     assert "foo.py" in args
+
+
+@pytest.mark.cli
+def test_cli_scriptargs(disable_cli):
+    args, _ = _cli_impl(
+        exe="AnsysWBU.exe",
+        version=241,
+        input_script="foo.py",
+        script_args="arg1,arg2,arg3",
+        graphical=True,
+    )
+    assert "-ScriptArgs" in args
+    assert '"arg1,arg2,arg3"' in args
+    assert "-script" in args
+    assert "foo.py" in args
+
+
+@pytest.mark.cli
+def test_cli_scriptargs_no_script(disable_cli):
+    with pytest.raises(Exception):
+        _cli_impl(
+            exe="AnsysWBU.exe",
+            version=241,
+            script_args="arg1,arg2,arg3",
+            graphical=True,
+        )
+
+
+@pytest.mark.cli
+def test_cli_scriptargs_singlequote(disable_cli):
+    args, _ = _cli_impl(
+        exe="AnsysWBU.exe",
+        version=241,
+        input_script="foo.py",
+        script_args="arg1,arg2,'arg3'",
+        graphical=True,
+    )
+    assert "-ScriptArgs" in args
+    assert "\"arg1,arg2,'arg3'\"" in args
+    assert "-script" in args
+    assert "foo.py" in args
+
+
+@pytest.mark.cli
+def test_cli_scriptargs_doublequote(disable_cli):
+    with pytest.raises(Exception):
+        _cli_impl(
+            exe="AnsysWBU.exe",
+            version=241,
+            input_script="foo.py",
+            script_args='arg1,"arg2",arg3',
+            graphical=True,
+        )
 
 
 @pytest.mark.cli

@@ -105,7 +105,7 @@ versions can be specified using ``-r`` flag. Use ``-h`` for more information.
 
    .. code::
 
-      "C:/Program Files/ANSYS Inc/v241/aisol/bin/winx64/AnsysWBU.exe -DSApplet -AppModeMech -script file.py"
+      "C:/Program Files/ANSYS Inc/v242/aisol/bin/winx64/AnsysWBU.exe -DSApplet -AppModeMech -script file.py"
 
    PowerShell users can run the preceding command without including the opening and
    closing quotation marks.
@@ -114,9 +114,6 @@ versions can be specified using ``-r`` flag. Use ``-h`` for more information.
 
    .. code::
 
-      /usr/ansys_inc/v231/aisol/.workbench -DSApplet -AppModeMech -nosplash -notabctrl -script file.py
-
-
-   ``-nosplash`` and ``-notabctrl`` not needed for versions 23.2 or above
+      /usr/ansys_inc/v242/aisol/.workbench -DSApplet -AppModeMech -script file.py
 
    On either Windows or Linux, add the command line argument ``-b`` to run the script in batch mode.

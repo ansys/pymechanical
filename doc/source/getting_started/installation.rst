@@ -3,13 +3,11 @@
 Installation guide
 ==================
 
-To run PyMechanical, you must have a licensed copy of Ansys Mechanical
-installed locally. The version installed dictates the interface and
-features that are available to you.
-
-PyMechanical is compatible with Mechanical 2023 R1 and later on Windows
-and Linux. For more information please refer to  :ref:`ref_versioning` documentation.
-Later releases provide significantly better support and features.
+To use PyMechanical, a licensed copy of Ansys Mechanical must be installed locally.
+The installed version determines the available interface and features.
+PyMechanical is compatible with Mechanical **2023 R2** and later on Windows
+and Linux. If you face any issues while setting up or using PyMechanical,
+please go though :ref:`FAQs <faq>` and :ref:`known issues and limitations <ref_known_issues_and_limitation>` sections.
 
 Install the package
 -------------------
@@ -69,10 +67,10 @@ This package is required to use PyMechanical.
 
    or
 
-   >>> find_mechanical(version=231)  # for specific version
+   >>> find_mechanical(version=242)  # for specific version
 
-   ('C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe', 23.1)  # windows
-   ('/usr/ansys_inc/v231/aisol/.workbench', 23.1) # Linux
+   ('C:/Program Files/ANSYS Inc/v242/aisol/bin/winx64/AnsysWBU.exe', 24.2)  # windows
+   ('/usr/ansys_inc/v242/aisol/.workbench', 24.2) # Linux
 
 If you install Ansys in a directory other than the default or typical location,
 you can save this directory path using the
@@ -84,15 +82,15 @@ and ``version_from_path`` functions to verify the path and version.
 .. code:: pycon
 
    >>> from ansys.tools.path import save_mechanical_path, find_mechanical
-   >>> save_mechanical_path("home/username/ansys_inc/v231/aisol/.workbench")
+   >>> save_mechanical_path("home/username/ansys_inc/v242/aisol/.workbench")
    >>> path = get_mechanical_path()
    >>> print(path)
 
-   /home/username/ansys_inc/v231/aisol/.workbench
+   /home/username/ansys_inc/v242/aisol/.workbench
 
    >>> version = version_from_path("mechanical", path)
 
-   231
+   242
 
 Verify a remote session
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -106,8 +104,8 @@ Verify your installation by starting a remote session of Mechanical from Python:
     >>> mechanical
 
     Ansys Mechanical [Ansys Mechanical Enterprise]
-    Product Version:231
-    Software build date:Wednesday, August 10, 2022 4:28:15 PM
+    Product Version:242
+    Software build date: 06/03/2024 14:47:58
 
 If you see a response from the server, you can begin using Mechanical
 as a service.
@@ -120,8 +118,7 @@ Verify your installation by loading an embedded instance of Mechanical in Python
 .. note::
    If you are running on Linux, you must set some environment variables for
    embedding of Mechanical in Python to work. A script that sets these variables is
-   available to install using pip:
-   ``pip install ansys-mechanical-env``
+   shipped with ``ansys-mechanical-env`` which is part of PyMechanical
 
 To use the script, prepend it to any invocation of Python:
 
@@ -137,8 +134,8 @@ Inside of Python, use the following commands to load an embedded instance:
    >>> app = App()
    >>> print(app)
    Ansys Mechanical [Ansys Mechanical Enterprise]
-   Product Version:232
-   Software build date: 05/30/2023 15:25:53
+   Product Version:242
+   Software build date: 06/03/2024 14:47:58
 
 .. LINKS AND REFERENCES
 .. _ansys_tools_path_api: https://github.com/psf/black

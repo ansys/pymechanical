@@ -37,8 +37,5 @@ def resolve(version):
     import Ansys  # isort: skip
 
     assembly_resolver = Ansys.Mechanical.Embedding.AssemblyResolver
-    if version == 231:  # pragma: no cover
-        resolve_handler = assembly_resolver.WindowsResolveEventHandler
-    else:
-        resolve_handler = assembly_resolver.MechanicalResolveEventHandler
+    resolve_handler = assembly_resolver.MechanicalResolveEventHandler
     System.AppDomain.CurrentDomain.AssemblyResolve += resolve_handler

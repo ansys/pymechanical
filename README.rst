@@ -70,14 +70,14 @@ Getting started
 
 PyMechanical uses the built-in scripting capabilities of Mechanical. For information on the
 scripting APIs available, see the `Scripting in Mechanical Guide
-<https://ansyshelp.ansys.com/Views/Secured/corp/v241/en/act_script/act_script.html>`_ in the
+<https://ansyshelp.ansys.com/Views/Secured/corp/v242/en/act_script/act_script.html>`_ in the
 Ansys Help.
 
 Configuring the mechanical installation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 On a Windows system, the environment variable ``AWP_ROOT<ver>`` is configured when Mechanical is
-installed, where ``<ver>`` is the Mechanical release number, such as ``231`` for release 2023 R1.
+installed, where ``<ver>`` is the Mechanical release number, such as ``242`` for release 2024 R2.
 PyMechanical automatically uses this environment variable (or variables if there are multiple
 installations of different versions) to locate the latest Mechanical installation. On a Linux
 system, you must configure the ``AWP_ROOT<ver>`` environment variable to point to the
@@ -112,15 +112,15 @@ Using an embedded instance of Mechanical as a Python object
 
 PyMechanical also supports directly embedding an instance of Mechanical as a Python object.
 In this mode, there is no externally running instance of Mechanical. This feature is supported
-on Windows for version 2023 R1 and later, and on Linux for version 2023 R2
-and later. Here is an example:
+on Windows and Linux for version 2023 R2 and later. Here is an example:
 
 .. code:: python
 
    import ansys.mechanical.core as pymechanical
 
    app = pymechanical.App()
-   project_dir = app.ExtAPI.DataModel.Project.ProjectDirectory
+   app.update_globals(globals())
+   project_dir = DataModel.Project.ProjectDirectory
 
 Documentation and issues
 ------------------------

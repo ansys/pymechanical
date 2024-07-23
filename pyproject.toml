@@ -5,7 +5,7 @@ build-backend = "flit_core.buildapi"
 [project]
 # Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
 name = "ansys-mechanical-core"
-version = "0.11.dev0"
+version = "0.12.dev0"
 description = "A python wrapper for Ansys Mechanical"
 readme = "README.rst"
 requires-python = ">=3.9,<4.0"
@@ -27,7 +27,7 @@ classifiers = [
 ]
 dependencies = [
     "ansys-api-mechanical==0.1.2",
-    "ansys-mechanical-env==0.1.6",
+    "ansys-mechanical-env==0.1.7",
     "ansys-platform-instancemanagement>=1.0.1",
     "ansys-pythonnet>=3.1.0rc2",
     "ansys-tools-path>=0.3.1",
@@ -48,20 +48,20 @@ Changelog = "https://mechanical.docs.pyansys.com/version/stable/changelog.html"
 
 [project.optional-dependencies]
 tests = [
-    "pytest==8.2.2",
+    "pytest==8.3.1",
     "pytest-cov==5.0.0",
     "pytest-print==1.0.0",
 ]
 doc = [
-    "sphinx==7.3.7",
+    "sphinx==7.4.7",
     "ansys-sphinx-theme[autoapi]==0.16.6",
-    "grpcio==1.64.1",
+    "grpcio==1.65.1",
     "imageio-ffmpeg==0.5.1",
     "imageio==2.34.2",
     "jupyter_sphinx==0.5.3",
     "jupyterlab>=3.2.8",
-    "matplotlib==3.9.0",
-    "numpy==2.0.0",
+    "matplotlib==3.9.1",
+    "numpy==2.0.1",
     "numpydoc==1.7.0",
     "pandas==2.2.2",
     "panel==1.4.4",
@@ -69,12 +69,12 @@ doc = [
     "pypandoc==1.13",
     "pytest-sphinx==0.6.3",
     "pythreejs==2.4.2",
-    "pyvista==0.43.10",
+    "pyvista>=0.39.1",
     "sphinx-autobuild==2024.4.16",
-    "sphinx-autodoc-typehints==2.2.2",
+    "sphinx-autodoc-typehints==2.2.3",
     "sphinx-copybutton==0.5.2",
     "sphinx_design==0.6.0",
-    "sphinx-gallery==0.16.0",
+    "sphinx-gallery==0.17.0",
     "sphinx-notfound-page==1.0.2",
     "sphinxcontrib-websupport==1.2.7",
     "sphinxemoji==0.3.1",
