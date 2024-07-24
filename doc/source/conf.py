@@ -1,3 +1,4 @@
+
 """Sphinx documentation configuration file."""
 
 # Configuration file for the Sphinx documentation builder.
@@ -216,10 +217,9 @@ html_theme_options = {
         },
     },
     "cheatsheet": {
-        "url": "https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.pdf",
+        "file": "cheatsheet/cheatsheet.qmd",
         "title": "PyMechanical cheat sheet",
         "thumbnail": "https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.png",
-        "needs_download": True,
     },
     "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
     "navigation_depth": 10,
