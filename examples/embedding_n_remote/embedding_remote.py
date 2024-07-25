@@ -42,7 +42,7 @@ a remote session and then demonstrates how to use an embedding instance.
 # script file.
 
 
-import os 
+import os
 
 from ansys.mechanical.core import launch_mechanical
 from ansys.mechanical.core.examples import download_file
