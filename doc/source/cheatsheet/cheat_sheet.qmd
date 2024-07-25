@@ -1,5 +1,5 @@
 ---
-title: PyMechanical cheatsheet demo example
+title: PyMechanical cheatsheet test pdf
 format: cheat_sheet-pdf
 version: 0.1.0
 footer: Getting started with PyMechanical
@@ -13,7 +13,6 @@ execute:
     eval: false
 
 latex-clean: true
-latex-output-dir: ./../../_build/
 jupyter:
   jupytext:
     text_representation:
