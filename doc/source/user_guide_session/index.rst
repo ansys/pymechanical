@@ -36,6 +36,22 @@ Here is how you use the `launch_mechanical()`_ method to launch Mechanical from 
 
     mechanical = launch_mechanical()
 
+If multiple versions of product are installed, then you can use ``exec_file`` argument
+to chose the product to launch.
+
+.. code:: python
+
+    exec_file_path = "C:/Program Files/ANSYS Inc/v242/aisol/bin/win64/AnsysWBU.exe"
+    mechanical = launch_mechanical(
+        exec_file=exec_file_path, batch=False, cleanup_on_exit=False
+    )
+
+If ``batch`` option is set ``True`` the Mechanical launches without GUI. The ``cleanup_on_exit``
+option decides whether product exits at then end of the PyMechanical script or not.
+
+.. note::
+   ``version`` argument is used only if PyPIM is configured. In all general cases, use ``exec_file``
+
 When Mechanical is active, you can send commands to it as a genuine
 Python class. For example, you can send a Python script:
 
