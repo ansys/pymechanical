@@ -401,8 +401,3 @@ def pytest_collection_modifyitems(config, items):
         if "linux_only" in item.keywords and "lin" not in sys.platform:
             skip_except_linux = pytest.mark.skip(reason="Test requires Linux platform.")
             item.add_marker(skip_except_linux)
-
-        # Skip if not running inside docker image
-        if "docker_only" in item.keywords and not os.path.exists("/.dockerenv"):
-            skip_except_docker = pytest.mark.skip(reason="Test requires Mechanical docker image.")
-            item.add_marker(skip_except_docker)

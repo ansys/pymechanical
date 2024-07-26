@@ -29,6 +29,13 @@ import pytest
 from ansys.mechanical.core.embedding import shims
 
 
+def is_on_docker():
+    """check if running in docker image."""
+    if os.path.exists("/.dockerenv"):
+        return True
+    return False
+
+
 @pytest.mark.embedding
 @pytest.mark.minimum_version(241)
 def test_qk_eng_wb2_005(printer, selection, embedded_app, assets):
@@ -109,8 +116,7 @@ def test_qk_eng_wb2_005(printer, selection, embedded_app, assets):
     _innertest()
 
 
-@pytest.mark.docker_only
-@pytest.mark.xfail  # TODO : remove when docker image fix happens
+@pytest.mark.xfail(is_on_docker(), reason="Docker image issue - TODO: remove when fixed")
 @pytest.mark.embedding
 def test_qk_eng_wb2_007(printer, selection, embedded_app, assets):
     """Fatigue.
