@@ -37,7 +37,7 @@ Here is how you use the `launch_mechanical()`_ method to launch Mechanical from 
     mechanical = launch_mechanical()
 
 If multiple versions of product are installed, then you can use ``exec_file`` argument
-to chose the product to launch.
+to select the version of the product to launch.
 
 .. code:: python
 
@@ -50,9 +50,9 @@ If ``batch`` option is set ``True`` the Mechanical launches without GUI. The ``c
 option decides whether product exits at then end of the PyMechanical script or not.
 
 .. note::
-   ``version`` argument is used only if PyPIM is configured. In all general cases, use ``exec_file``
+   ``version`` argument is used only if PyPIM is configured. For general cases, use ``exec_file``
 
-When Mechanical is active, you can send commands to it as a genuine
+You can send genuine Python class commands to the application when Mechanical is active.
 Python class. For example, you can send a Python script:
 
 .. code:: python
