@@ -47,7 +47,7 @@ to select the version of the product to launch.
     )
 
 If ``batch`` option is set ``True`` the Mechanical launches without GUI. The ``cleanup_on_exit``
-option decides whether product exits at then end of the PyMechanical script or not.
+option decides whether product exits at the end of the PyMechanical script or not.
 
 .. note::
    ``version`` argument is used only if PyPIM is configured. For general cases, use ``exec_file``
