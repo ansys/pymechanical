@@ -139,6 +139,7 @@ markers = [
     "remote_session_connect: tests that connect to Mechanical and work with gRPC server inside it",
     "minimum_version(num): tests that run if ansys-version is greater than or equal to the minimum version provided",
     "windows_only: tests that run if the testing platform is on Windows",
+    "linux_only: tests that run if the testing platform is on Linux",
     "cli: tests for the Command Line Interface",
 ]
 xfail_strict = true
@@ -207,7 +208,7 @@ legacy_tox_ini = """
 [tox]
 description = Default tox environments list
 envlist =
-    style,{py38,py39,py310,py311}{,-coverage},doc
+    style,{py39,py310,py311,py312}{,-coverage},doc
 passenv =  AWP_ROOT
 skip_missing_interpreters = true
 isolated_build = true
