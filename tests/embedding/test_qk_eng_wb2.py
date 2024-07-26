@@ -30,8 +30,8 @@ from ansys.mechanical.core.embedding import shims
 
 
 def is_on_docker():
-    """check if running in docker image."""
-    if os.path.exists("/.dockerenv"):
+    """check if running in docker image 25R1."""
+    if os.path.exists("/.dockerenv") and "AWP_ROOT251" in os.environ:
         return True
     return False
 
@@ -116,7 +116,7 @@ def test_qk_eng_wb2_005(printer, selection, embedded_app, assets):
     _innertest()
 
 
-@pytest.mark.xfail(is_on_docker(), reason="Fails only on docker image")
+@pytest.mark.xfail(is_on_docker(), reason="Fails only on docker 251 image")
 @pytest.mark.embedding
 def test_qk_eng_wb2_007(printer, selection, embedded_app, assets):
     """Fatigue.
