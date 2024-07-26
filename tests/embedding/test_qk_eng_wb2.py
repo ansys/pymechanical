@@ -109,7 +109,7 @@ def test_qk_eng_wb2_005(printer, selection, embedded_app, assets):
     _innertest()
 
 
-@pytest.mark.linux_only
+@pytest.mark.docker_only
 @pytest.mark.xfail  # TODO : remove when docker image fix happens
 @pytest.mark.embedding
 def test_qk_eng_wb2_007(printer, selection, embedded_app, assets):
