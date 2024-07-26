@@ -116,7 +116,7 @@ def test_qk_eng_wb2_005(printer, selection, embedded_app, assets):
     _innertest()
 
 
-@pytest.mark.xfail(is_on_docker(), reason="Docker image issue - TODO: remove when fixed")
+@pytest.mark.xfail(condition=is_on_docker(), reason="docker")
 @pytest.mark.embedding
 def test_qk_eng_wb2_007(printer, selection, embedded_app, assets):
     """Fatigue.
