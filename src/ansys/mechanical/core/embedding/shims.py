@@ -33,10 +33,9 @@ def import_materials(
 ) -> None:
     """Import material from matml file."""
     warnings.warn(
-        "Use Model.Materials.Import() to import materials",
+        "Use of this function is deprecated. Use Model.Materials.Import() directly.",
         DeprecationWarning,
         stacklevel=2,
     )
-    material_file = material_file.replace("\\", "\\\\")
-    script = 'DS.Tree.Projects.Item(1).LoadEngrDataLibraryFromFile("' + material_file + '");'
-    app.ExtAPI.Application.ScriptByName("jscript").ExecuteCommand(script)
+    materials = app.DataModel.Project.Model.Materials
+    materials.Import(material_file)
