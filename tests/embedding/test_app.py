@@ -303,8 +303,12 @@ def test_shims_import_material(embedded_app, assets):
 
 
 @pytest.mark.embedding
-def test_app_version(embedded_app):
-    """Test version of the Application class."""
-    version = embedded_app.version
-    assert type(version) is int
-    assert version >= 232
+def test_rm_lockfile(embedded_app, tmp_path: pytest.TempPathFactory):
+    """Test lock file is removed on close of embedded application."""
+    mechdat_path = os.path.join(tmp_path, "test.mechdat")
+    embedded_app.save(mechdat_path)
+    embedded_app.close()
+
+    lockfile_path = os.path.join(embedded_app.DataModel.Project.ProjectDirectory, ".mech_lock")
+    # Assert lock file path does not exist
+    assert not os.path.exists(lockfile_path)
