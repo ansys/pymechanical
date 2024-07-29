@@ -345,6 +345,7 @@ linkcheck_ignore = [
     "https://answers.microsoft.com/en-us/windows/forum/all/*",
     "https://download.ansys.com/*",
     "https://support.ansys.com/*",
+    "https://discuss.ansys.com/*",
     "../api/*",  # Remove this after release 0.10.12
     "path.html",
 ]

@@ -69,7 +69,7 @@ for rver in valid_rver:
 # minimum version on linux.
 # Override this if running on CI/CD and PYMAPDL_PORT has been specified
 ON_CI = "PYMECHANICAL_START_INSTANCE" in os.environ and "PYMECHANICAL_PORT" in os.environ
-HAS_GRPC = int(rver) >= 231 or ON_CI
+HAS_GRPC = int(rver) >= 232 or ON_CI
 
 
 def pytest_collection_modifyitems(config, items):
@@ -396,3 +396,8 @@ def pytest_collection_modifyitems(config, items):
         if "windows_only" in item.keywords and sys.platform != "win32":
             skip_except_windows = pytest.mark.skip(reason="Test requires Windows platform.")
             item.add_marker(skip_except_windows)
+
+        # Skip on platforms other than Linux
+        if "linux_only" in item.keywords and "lin" not in sys.platform:
+            skip_except_linux = pytest.mark.skip(reason="Test requires Linux platform.")
+            item.add_marker(skip_except_linux)

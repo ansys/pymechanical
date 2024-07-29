@@ -119,7 +119,8 @@ on Windows and Linux for version 2023 R2 and later. Here is an example:
    import ansys.mechanical.core as pymechanical
 
    app = pymechanical.App()
-   project_dir = app.ExtAPI.DataModel.Project.ProjectDirectory
+   app.update_globals(globals())
+   project_dir = DataModel.Project.ProjectDirectory
 
 Documentation and issues
 ------------------------

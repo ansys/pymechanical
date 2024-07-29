@@ -41,5 +41,5 @@ Support
 If you encounter any issues or limitations that hinder your work, please contact our support team immediately.
 We are committed to providing timely assistance to ensure your projects run smoothly.
 
-- Mechanical : `Customer portal <https://support.ansys.com/>`_
+- Mechanical : `Discussion forum <https://discuss.ansys.com/categories/structures>`_
 - PyMechanical : Create issue in github or contact `pyansys team <pyansys_support_>`_
