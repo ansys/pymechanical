@@ -39,7 +39,7 @@
   color: 5319e7
 
 - name: ci/cd
-  description: Involves the github actions workflow
+  description: Involves the GitHub workflow files
   color: b5f226
 
 - name: future
