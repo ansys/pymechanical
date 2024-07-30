@@ -292,6 +292,17 @@ def test_building_gallery(pytestconfig, run_subprocess, rootdir):
 
 
 @pytest.mark.embedding
+def test_shims_import_material(embedded_app, assets):
+    """Test deprecation warning for shims import material."""
+    from ansys.mechanical.core.embedding import shims
+
+    embedded_app.update_globals(globals())
+    material_file = os.path.join(assets, "eng200_material.xml")
+    with pytest.warns(DeprecationWarning):
+        shims.import_materials(embedded_app, material_file)
+
+
+@pytest.mark.embedding
 def test_rm_lockfile(embedded_app, tmp_path: pytest.TempPathFactory):
     """Test lock file is removed on close of embedded application."""
     mechdat_path = os.path.join(tmp_path, "test.mechdat")
