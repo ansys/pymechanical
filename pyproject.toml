@@ -81,7 +81,7 @@ doc = [
 ]
 viz = [
     "pyvista>=0.39.1",
-    "usd-core==24.3",
+    "usd-core==24.8",
 ]
 
 [project.scripts]
