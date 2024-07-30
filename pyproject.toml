@@ -48,7 +48,7 @@ Changelog = "https://mechanical.docs.pyansys.com/version/stable/changelog.html"
 
 [project.optional-dependencies]
 tests = [
-    "pytest==8.3.1",
+    "pytest==8.3.2",
     "pytest-cov==5.0.0",
     "pytest-print==1.0.0",
 ]
@@ -76,7 +76,7 @@ doc = [
     "sphinx_design==0.6.0",
     "sphinx-gallery==0.17.0",
     "sphinx-notfound-page==1.0.2",
-    "sphinxcontrib-websupport==1.2.7",
+    "sphinxcontrib-websupport==2.0.0",
     "sphinxemoji==0.3.1",
 ]
 viz = [
