@@ -500,8 +500,9 @@ jobs:
         uses: quarto-dev/quarto-actions/setup@v2
         with:
           tinytex: true
-        run: |
-          quarto --version
+
+      - name: Test quarto installation
+        run: quarto --version
 
       - name: Install Python requirements
         run: |
