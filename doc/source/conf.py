@@ -61,7 +61,6 @@ extensions = [
     "sphinx_design",
     "sphinx_gallery.gen_gallery",
     "sphinxemoji.sphinxemoji",
-    "sphinx_jinja",
 ]
 
 # Intersphinx mapping
@@ -155,18 +154,16 @@ todo_include_todos = False
 copybutton_prompt_text = r">>> ?|\.\.\. "
 copybutton_prompt_is_regexp = True
 
-build_examples = os.environ.get("BUILD_EXAMPLES", "1") == "1"
-
 # -- Sphinx Gallery Options ---------------------------------------------------
 sphinx_gallery_conf = {
     # convert rst to md for ipynb
     "pypandoc": True,
     # path to your examples scripts
-    "examples_dirs": ["../../examples/"] if build_examples else [],
+    "examples_dirs": ["../../examples/"],
     # path where to save gallery generated examples
-    "gallery_dirs": ["examples/gallery_examples"] if build_examples else [],
+    "gallery_dirs": ["examples/gallery_examples"],
     # Pattern to search for example files
-    "filename_pattern": r"\.py" if build_examples else r"$^",
+    "filename_pattern": r"\.py",
     # Remove the "Download all examples" button from the top level gallery
     "download_all_examples": False,
     # Sort gallery example by file name instead of number of lines (default)
@@ -218,8 +215,10 @@ html_theme_options = {
         },
     },
     "cheatsheet": {
-        "file": "cheatsheet/cheat_sheet.qmd",
+        "url": "https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.pdf",
         "title": "PyMechanical cheat sheet",
+        "thumbnail": "https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.png",
+        "needs_download": True,
     },
     "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
     "navigation_depth": 10,
@@ -317,10 +316,3 @@ if switcher_version != "dev":
     linkcheck_ignore.append(
         f"https://github.com/ansys/pymechanical/releases/tag/v{pymechanical.__version__}"
     )
-
-# # -- Declare the Jinja context -----------------------------------------------
-jinja_contexts = {
-    "main_toctree": {
-        "build_examples": build_examples,
-    },
-}
