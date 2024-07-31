@@ -215,10 +215,8 @@ html_theme_options = {
         },
     },
     "cheatsheet": {
-        "url": "https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.pdf",
+        "file": "cheatsheet/cheat_sheet.qmd",
         "title": "PyMechanical cheat sheet",
-        "thumbnail": "https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.png",
-        "needs_download": True,
     },
     "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
     "navigation_depth": 10,
