@@ -1,8 +1,8 @@
 ---
-title: PyMechanical cheatsheet test pdf
+title: Pymechanical cheat sheet demo 1
 format: cheat_sheet-pdf
-version: 0.1.0
-footer: Getting started with PyMechanical
+version: 0.11.0
+footer: Getting started with Pymechanical
 footerlinks:
   - urls: 'https://mechanical.docs.pyansys.com/version/stable/'
     text: Pymechanical documentation
@@ -190,9 +190,7 @@ post_processing.plot_nodal_eqv_stress(
     edge_color='black', show_edges=True,
     scalar bar_args=sbar_kwargs, n_colors=9)
 ```
-
-
-## References from PyMechanical documentation
+## References from Pymechanical documentation
 
 - [Getting started](https://mechanical.docs.pyansys.com/version/stable/getting_started/index.html)
 - [mechanical commands](https://mechanical.docs.pyansys.com/version/stable/mechanical_commands/index.html)

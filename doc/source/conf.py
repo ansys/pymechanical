@@ -183,7 +183,6 @@ sphinx_gallery_conf = {
 # -- Options for HTML output -------------------------------------------------
 html_short_title = html_title = "PyMechanical"
 html_theme = "ansys_sphinx_theme"
-html_logo = pyansys_logo_black
 html_context = {
     "github_user": "pyansys",
     "github_repo": "pymechanical",
@@ -224,6 +223,7 @@ html_theme_options = {
     },
     "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
     "navigation_depth": 10,
+    "logo" :"pyansys"
 }
 
 # -- Options for HTMLHelp output ---------------------------------------------
