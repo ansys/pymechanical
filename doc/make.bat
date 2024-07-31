@@ -10,7 +10,6 @@ if "%SPHINXBUILD%" == "" (
 set SOURCEDIR=source
 set BUILDDIR=_build
 set LINKCHECKDIR=\%BUILDDIR%\linkcheck
-set BUILD_EXAMPLES=1
 
 if "%1" == "" goto help
 if "%1" == "html-noplot" goto html-noplot
