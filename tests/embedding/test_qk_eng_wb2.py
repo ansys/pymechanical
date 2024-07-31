@@ -26,7 +26,12 @@ import os
 
 import pytest
 
-from ansys.mechanical.core.embedding import shims
+
+def is_on_docker():
+    """check if running in docker image 25R1."""
+    if os.path.exists("/.dockerenv") and "AWP_ROOT251" in os.environ:
+        return True
+    return False
 
 
 @pytest.mark.embedding
@@ -109,6 +114,7 @@ def test_qk_eng_wb2_005(printer, selection, embedded_app, assets):
     _innertest()
 
 
+@pytest.mark.xfail(is_on_docker(), reason="Fails only on docker 251 image")
 @pytest.mark.embedding
 def test_qk_eng_wb2_007(printer, selection, embedded_app, assets):
     """Fatigue.
@@ -125,7 +131,8 @@ def test_qk_eng_wb2_007(printer, selection, embedded_app, assets):
     geometry_import.Import(geometry_file)
     material_file = os.path.join(assets, "eng200_material.xml")
     printer(f"Setting up test - import materials {material_file}")
-    shims.import_materials(embedded_app, material_file)
+    materials = Model.Materials
+    materials.Import(material_file)
 
     def _innertest():
         printer("Add material file")

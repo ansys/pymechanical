@@ -48,7 +48,7 @@ Changelog = "https://mechanical.docs.pyansys.com/version/stable/changelog.html"
 
 [project.optional-dependencies]
 tests = [
-    "pytest==8.3.1",
+    "pytest==8.3.2",
     "pytest-cov==5.0.0",
     "pytest-print==1.0.0",
 ]
@@ -65,7 +65,7 @@ doc = [
     "numpydoc==1.7.0",
     "pandas==2.2.2",
     "panel==1.4.4",
-    "plotly==5.22.0",
+    "plotly==5.23.0",
     "pypandoc==1.13",
     "pytest-sphinx==0.6.3",
     "pythreejs==2.4.2",
@@ -76,12 +76,12 @@ doc = [
     "sphinx_design==0.6.0",
     "sphinx-gallery==0.17.0",
     "sphinx-notfound-page==1.0.2",
-    "sphinxcontrib-websupport==1.2.7",
+    "sphinxcontrib-websupport==2.0.0",
     "sphinxemoji==0.3.1",
 ]
 viz = [
     "pyvista>=0.39.1",
-    "usd-core==24.3",
+    "usd-core==24.8",
 ]
 
 [project.scripts]
@@ -139,6 +139,7 @@ markers = [
     "remote_session_connect: tests that connect to Mechanical and work with gRPC server inside it",
     "minimum_version(num): tests that run if ansys-version is greater than or equal to the minimum version provided",
     "windows_only: tests that run if the testing platform is on Windows",
+    "linux_only: tests that run if the testing platform is on Linux",
     "cli: tests for the Command Line Interface",
 ]
 xfail_strict = true
@@ -207,7 +208,7 @@ legacy_tox_ini = """
 [tox]
 description = Default tox environments list
 envlist =
-    style,{py38,py39,py310,py311}{,-coverage},doc
+    style,{py39,py310,py311,py312}{,-coverage},doc
 passenv =  AWP_ROOT
 skip_missing_interpreters = true
 isolated_build = true
