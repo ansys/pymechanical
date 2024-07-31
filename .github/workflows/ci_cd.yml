@@ -494,12 +494,14 @@ jobs:
           apt install -y sudo curl lsb-release
           apt install -y zip pandoc libgl1-mesa-glx mesa-utils xvfb texlive-latex-extra latexmk nodejs npm graphviz
           apt install -y tini
+          # Download and install GitHub CLI
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /usr/share/keyrings/githubcli-archive-keyring.gpg > /dev/null
+          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+          apt install -y gh
           npm install -g @mermaid-js/mermaid-cli
 
       - name: Install quarto to build cheatsheet
         uses: quarto-dev/quarto-actions/setup@v2
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tinytex: true
 
