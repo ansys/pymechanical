@@ -496,6 +496,13 @@ jobs:
           apt install -y tini
           npm install -g @mermaid-js/mermaid-cli
 
+      - name: Install quarto to build cheatsheet
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          tinytex: true
+        run: |
+          quarto --version
+
       - name: Install Python requirements
         run: |
           . /env/bin/activate
