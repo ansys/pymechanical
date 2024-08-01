@@ -230,7 +230,7 @@ class App:
         return self.script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
 
     def plotter(self) -> None:
-        """Reuturns ansys.tools.visualization_interface Plotter object."""
+        """Returns ``ansys.tools.visualization_interface.Plotter`` object."""
         if not HAS_ANSYS_VIZ:
             warnings.warn(
                 "Installation of viz option required! Use pip install ansys-mechanical-core[viz]"
