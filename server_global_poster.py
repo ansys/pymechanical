@@ -13,34 +13,26 @@ class remote_method:
     def __init__(self, func):
         self._func = func
     def __call__(self, *args, **kwargs):
-        print(f"calling from decorator! self:{self}, args:{args}, kwargs:{kwargs}")
         return self._func(*args, **kwargs)
     def __call_method__(self, instance, *args, **kwargs):
-        print(f"calling method from decorator! self:{instance}")
         return self._func(instance, *args, **kwargs)
-    def __get__(self, instance, owner):
+    def __get__(self, obj, objtype):
         from functools import partial
-        func = partial(self.__call_method__, instance)
+        func = partial(self.__call_method__, obj)
         func._is_remote = True
         func.__name__ = self._func.__name__
-        func._owner = owner
-        print(f"function owner: {owner}")
-        print(f"function instance: {instance}")
+        func._owner = obj
         return func
 
-def get_remote_methods_of_type(objtype) -> typing.Generator[typing.Tuple[str, typing.Callable], None, None]:
-    for methodname in dir(objtype):
+def get_remote_methods(obj) -> typing.Generator[typing.Tuple[str, typing.Callable], None, None]:
+    for methodname in dir(obj):
         if methodname.startswith("__"):
             continue
-        method = getattr(objtype, methodname)
+        method = getattr(obj, methodname)
         if not callable(method):
             continue
         if hasattr(method, "_is_remote") and method._is_remote is True:
             yield methodname, method
-
-def get_remote_methods(obj) -> typing.Generator[typing.Tuple[str, typing.Callable], None, None]:
-    objtype = type(obj)
-    return get_remote_methods_of_type(objtype)
 
 class MechanicalService(rpyc.Service):
     def __init__(self, app, poster, functions=[], impl=None):
@@ -59,7 +51,6 @@ class MechanicalService(rpyc.Service):
         for methodname, method in get_remote_methods(impl):
             print(f"installing {methodname} of {impl}")
             self._install_method(method)
-        print("done installing methods")
 
     def on_connect(self, conn):
         print("Client connected")
@@ -68,24 +59,11 @@ class MechanicalService(rpyc.Service):
     def on_disconnect(self, conn):
         print("Client disconnected")
 
-    def _curry_method(self, method, methodname, realmethodname):
-        wrapped = getattr(self, methodname)
-        curried_method = toolz.curry(wrapped)
-        print(f"curried_method type: {type(curried_method)}")
-
+    def _curry_method(self, method, realmethodname):
         def posted(*args):
-            print("posted!")
             def curried():
-                print("curried!")
                 original_method = getattr(method._owner, realmethodname)
-                result1=original_method(method._owner, *args)
-                print(f"result without currying!: {result1}")
-
-                print(method._owner)
-                print(method)
-                print(f"method type: {type(method)}")
-                result = curried_method(method._owner, *args)
-                print(f"result of posted: {result}")
+                result=original_method(*args)
                 return result
             return self._poster.post(curried)
 
@@ -94,7 +72,6 @@ class MechanicalService(rpyc.Service):
     def _curry_function(self, methodname):
         wrapped = getattr(self, methodname)
         curried_method = toolz.curry(wrapped)
-        #print(type(curried_method))
 
         def posted(*args):
             def curried():
@@ -110,15 +87,11 @@ class MechanicalService(rpyc.Service):
 
         def inner_method(*args):
             result = method(*args)
-            print(f"result {result}")
             return result
 
         def exposed_method(*args):
-            print("getting curried method")
-            f = self._curry_method(method, inner_name, method.__name__)
-            print("calling curried method")
+            f = self._curry_method(method, method.__name__)
             result = f(*args)
-            print(f"called curried method: {result}")
             return result
 
         setattr(self, inner_name, inner_method)

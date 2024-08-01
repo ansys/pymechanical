@@ -9,8 +9,8 @@ if __name__ == "__main__":
     c1 = rpyc.connect("localhost", 18861)
 
     server: mod = c1.root
-    server.get_project_name()
 
+    print("connected to server")
     # Access and invoke exposed attributes and methods
     print("Project Name (Client 1):", server.get_project_name())
     print("Model Name (Client 1):", server.get_model_name())
@@ -26,7 +26,7 @@ if __name__ == "__main__":
     print("before changing project name")
     server.change_project_name("bar")
     print("Project Name (Client 2):", server.get_project_name())
-    # print("Project Name (Client 2):", server.get_model_name())
+    print("Project Name (Client 2):", server.get_model_name())
 
     # Close the connection
     c2.close()
