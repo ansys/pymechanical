@@ -70,7 +70,7 @@ def _get_nodes_and_coords(node: "Ansys.Mechanical.Scenegraph.Node"):
 
 
 def to_plotter(app: "ansys.mechanical.core.embedding.App"):
-    """Convert the app's geometry to a pyvista plotter instance."""
+    """Convert the app's geometry to an ``ansys.tools.visualization_interface.Plotter`` instance."""
     plotter = Plotter()
     for body in app.DataModel.GetObjectsByType(
         Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Body
