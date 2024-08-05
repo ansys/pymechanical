@@ -76,7 +76,7 @@ def _run_background_app_test(
 
 @pytest.mark.embedding_scripts
 def test_background_app_multiple_instances(rootdir, run_subprocess, pytestconfig):
-    """Test that multiple instances of background app can be used."""
+    """Multiple instances of background app can be used."""
     stderr = _run_background_app_test(
         run_subprocess, rootdir, pytestconfig, "multiple_instances", True
     )
@@ -88,7 +88,7 @@ def test_background_app_multiple_instances(rootdir, run_subprocess, pytestconfig
 
 @pytest.mark.embedding_scripts
 def test_background_app_use_stopped(rootdir, run_subprocess, pytestconfig):
-    """Test that multiple instances of background app cannot be used after an instance is stopped."""
+    """Multiple instances of background app cannot be used after an instance is stopped."""
     stderr = _run_background_app_test(
         run_subprocess, rootdir, pytestconfig, "test_background_app_use_stopped", False
     )
@@ -97,7 +97,7 @@ def test_background_app_use_stopped(rootdir, run_subprocess, pytestconfig):
 
 @pytest.mark.embedding_scripts
 def test_background_app_initialize_stopped(rootdir, run_subprocess, pytestconfig):
-    """Test that multiple instances of background app cannot be used after an instance is stopped."""
+    """Multiple instances of background app cannot be used after an instance is stopped."""
     stderr = _run_background_app_test(
         run_subprocess, rootdir, pytestconfig, "test_background_app_initialize_stopped", False
     )
