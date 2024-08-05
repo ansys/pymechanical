@@ -26,178 +26,189 @@ jupyter:
     name: python3
 ---
 
-# Launch Pymechanical
+# [Remote Session] Launch Pymechanical
 
-Launch a Pymechanical instance locally and exit it:
-
+Launch and connect to a PyMechanical Remote session
 ```{python}
+#| eval: false
 # Launch an instance
 from ansys.mechanical.core import launch_mechanical
 mechanical = launch_mechanical()
-# Exit the instance
-mechanical.exit()
 ```
 
-Specify a job name, number of processors, and working directory:
-
+Launch Mechanical from a local or remote terminal
 ```{python}
 #| eval: false
-jname = 'user_jobname'
-path = '<path of directory>'
+ansys-mechanical -r 242 --port 10000 -g
+```
+
+Manually connect to this Mechanical session from a local client:
+```{python}
+#| eval: false
+import ansys.mechanical.core as pymechanical
+# Connect locally
+mechanical = pymechanical.Mechanical(port=10000)
+          # Or
+# Remotely, specifying the IP address or hostname
+mechanical = pymechanical.Mechanical(
+  "192.168.0.1", port=10000
+  )
+```
+
+# Launch by version
+Verify the license and version of Mechanical that is used:
+```{python}
+#| eval: false
+print(mechanical)
+```
+Launch a specific version of Mechanical:
+```{python}
+#| eval: false
+from ansys.mechanical.core import find_mechanical
+wb_exe = find_mechanical(242)[0]
+# 'Ansys Inc\\....\\winx64\\AnsysWBU.exe'
 mechanical = launch_mechanical(
-	nproc=2, run_location=path, jobname=jname)
+  exec_file=wb_exe, verbose_mechanical=True,
+  batch=True
+  )
+print(mechanical)
 ```
 
-Connect to an existing instance of mechanical at IP address 192.168.1.30 and port 50001:
+# Launch the Mechanical UI
+```{python}
+#| eval: false
+mechanical = pymechanical.launch_mechanical(
+  batch=False
+  )
+```
+
+# Send commands to mechanical
+Run a single command:
+```{python}
+#| eval: false
+result1 = mechanical.run_python_script("2+3")
+result2 = mechanical.run_python_script(
+    "DataModel.Project.ProjectDirectory"
+)
+mechanical.run_python_script(
+    "Model.AddStaticStructuralAnalysis()"
+)
+```
+Evaluate a block of commands:
+```{python}
+#| eval: false
+# Import a material
+commands = """
+cu_mat_file_path = r'D:\Workdir\copper.xml'.replace("\\", "\\\\")
+materials = Model.Materials
+materials.Import(cu_mat__file_path)
+"""
+mechanical.run_python_script(commands)
+```
+Execute a Python script:
+```{python}
+#| eval: false
+mechanical.run_python_script_from_file(file_path)
+```
+
+Import a Mechanical file and print the count of bodies:
+```{python}
+#| eval: false
+file = r"D:\\Workdir\\bracket.mechdb"
+command = f'ExtAPI.DataModel.Project.Open("{file}")'
+mechanical.run_python_script(command)
+mechanical.run_python_script(
+  "allbodies=Model.GetChildren(
+  DataModelObjectCategory.Body,True)")
+mechanical.run_python_script("allbodies.Count")
+```
+Perform project-specific operations:
+```{python}
+#| eval: false
+
+# Get the project directory
+mechanical.project_directory
+# List the files in the working directory.
+mechanical.list_files()
+# Save
+mechanical.run_python_script(
+"ExtAPI.DataModel.Project.Save(r'D:\\Workdir')")
+# Log in two ways:
+mechanical._log.info("This is a useful message.")
+mechanical.log_message("INFO", "info message")
+# Exit
+mechanical.exit(force=True)
+```
+
+# [Embedded Instance] Start PyMechanical
+Create a PyMechanical embedded instance
+```{python}
+#| eval: false
+from ansys.mechanical.core import App
+app = App(version=242)
+print(app)
+```
+Extract and merge global API entry points:
+```{python}
+#| eval: false
+
+# Extract the global API entry points from Mechanical
+# Merge them into your Python global variables
+app.update_globals(globals())
+```
+
+Access entry points from Python:
+```{python}
+#| eval: false
+
+ExtAPI # Application.ExtAPI
+DataModel # Application.DataModel
+Model # Application.DataModel.Project.Model
+Tree # Application.DataModel.Tree
+Graphics # Application.ExtAPI.Graphics
+```
+Import a file and print the count of bodies
+```{python}
+#| eval: false
+
+file = r"D:\\Workdir\\bracket.mechdb"
+app.open(file)
+app.update_globals(globals())
+allbodies = Model.GetChildren(
+  DataModelObjectCategory.Body, True)
+print(allbodies.Count)
+```
+Turn on warning logging:
+```{python}
+#| eval: false
+
+import logging
+from ansys.mechanical.core import App
+from ansys.mechanical.core.embedding.logger import (
+  Configuration,
+  Logger)
+Configuration.configure(level=logging.WARNING,
+to_stdout=True)
+app = App(version=242)
+Logger.error("message")
+```
+
 
 ```{python}
 #| eval: false
-mechanical = launch_mechanical(start_instance=False,
-    ip='192.168.1.30', port=50001)
-```
-
-Create and exit a pool of instances:
-
-```{python}
-#| echo: false
-from ansys.mechanical.core import launch_mechanical
-mechanical = launch_mechanical()
 ```
 
 ```{python}
 #| eval: false
-# Create a pool of 10 instances
-from ansys.mechanical.core import mechanicalPool
-pool = mechanicalPool(10)
-# Exit the pool
-pool.exit()
 ```
-
-# Pymechanical commands
-
-Pymechanical commands are Python statements that act as a wrapper for APDL commands.
-
-For example, *ESEL, s, type, 1* is translated as:
-
-```{python}
-mechanical.esel('s', 'type', vmin=1)
-```
-
-Commands that start with * or / have these characters removed:
 
 ```{python}
 #| eval: false
-mechanical.prep7()	        # /PREP7
-mechanical.get()	        # *GET
 ```
 
-In cases where removing * or / causes conflicts with other commands, a prefix "slash" or "star" is added:
-
-```{python}
-#| eval: false
-mechanical.solu()		# SOLU
-mechanical.slashsolu()	# /SOLU
-
-mechanical.vget()		# VGET
-mechanical.starvget()	# *VGET
-```
-
-Convert an existing APDL script to Pymechanical format:
-
-```{python}
-#| eval: false
-inputfile = 'ansys_inputfile.inp'
-pyscript = 'pyscript.py'
-mechanical.convert_script(inputfile, pyscript)
-```
-
-# mechanical class
-
-Load a table from Python to mechanical:
-
-```{python}
-#| eval: false
-mechanical.load_table(name="abc", array=create_5d_array)
-```
-
-Access from or write parameters to the mechanical database:
-
-```{python}
-#| eval: false
-# Save a parameter to a NumPy array
-nparray = mechanical.parameters['displ_load']
-# Create a parameter from a NumPy array
-mechanical.parameters['exp_disp'] = nparray
-```
-
-Access information using ``*GET`` and ``*VGET`` and store it in NumPy arrays:
-
-```{python}
-# Run *GET command and return a Python value
-mechanical.get_value(entity='NODE', item1='COUNT')
-
-# Run *VGET command and return a Python array
-mechanical.get_array(entity='NODE', item1='NLIST')
-```
-
-# Mesh class
-Store the finite element mesh as a VTK *UnstructuredGrid* data object:
-
-```{python}
-#| eval: false
-grid = mechanical.mesh.grid
-```
-
-Save element and node numbers to Python arrays:
-
-```{python}
-# Get an array of the nodal coordinates
-nodes = mechanical.mesh.nodes
-
-# Save node numbers of selected nodes to an array
-node_num = mechanical.mesh.nnum
-# Save node numbers of all nodes to an array
-node_num_all = mechanical.mesh.nnum_all
-
-# Get element numbers of currently
-# selected elements
-elem_num = mechanical.mesh.enum
-# Get all element numbers, including
-# those not selected
-elem_num_all = mechanical.mesh.enum_all
-```
-
-# Post-processing class
-The *post_processing* class is used for plotting and saving results to NumPy arrays.
-
-```{python}
-#| eval: false
-from ansys.mechanical.core import post_processing
-mechanical.post1()
-mechanical.set(1, 2)
-# Plot the nodal equivalent stress
-mechanical.post_processing.plot_nodal_eqv_stress()
-# Save nodal equivalent stresses to a Python array
-nod_eqv_stress = post_processing.nodal_eqv_stress()
-# Plot contour legend using dictionary
-mechanical.allsel()
-sbar_kwargs = {"color": "black",
-               "title": "Equivalent Stress (psi)",
-	       "vertical": False,
-	       "n_labels": 6}
-post_processing.plot_nodal_eqv_stress(
-    cpos='xy', background='white',
-    edge_color='black', show_edges=True,
-    scalar bar_args=sbar_kwargs, n_colors=9)
-```
 ## References from Pymechanical documentation
 
 - [Getting started](https://mechanical.docs.pyansys.com/version/stable/getting_started/index.html)
-- [mechanical commands](https://mechanical.docs.pyansys.com/version/stable/mechanical_commands/index.html)
+- [Examples](https://mechanical.docs.pyansys.com/version/stable/mechanical_commands/index.html)
 - [API reference](https://mechanical.docs.pyansys.com/version/stable/api/index.html)
-
-
-```{python}
-#| echo: false
-mechanical.exit()
-```
+- [Mechanical Scripting](https://mechanical.docs.pyansys.com/version/stable/api/index.html)
