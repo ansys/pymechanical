@@ -9,6 +9,61 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.4 <https://github.com/ansys/pymechanical/releases/tag/v0.11.4>`_ - 2024-08-06
+===================================================================================
+
+Added
+^^^^^
+
+- DOC: Update known issues and limitations `#829 <https://github.com/ansys/pymechanical/pull/829>`_
+- Feat: Add option for generating docs without examples `#830 <https://github.com/ansys/pymechanical/pull/830>`_
+- Feat: Integrate ansys visualization tool `#846 <https://github.com/ansys/pymechanical/pull/846>`_
+
+
+Changed
+^^^^^^^
+
+- chore: update CHANGELOG for v0.11.3 `#824 <https://github.com/ansys/pymechanical/pull/824>`_
+- Maint: Update new labels `#836 <https://github.com/ansys/pymechanical/pull/836>`_
+- MAINT: Update ``shims.material_import`` `#837 <https://github.com/ansys/pymechanical/pull/837>`_
+- [pre-commit.ci] pre-commit autoupdate `#844 <https://github.com/ansys/pymechanical/pull/844>`_
+
+
+Fixed
+^^^^^
+
+- Maint: Update qk_07 test `#833 <https://github.com/ansys/pymechanical/pull/833>`_
+- Maint: Update qk07 `#848 <https://github.com/ansys/pymechanical/pull/848>`_
+- use "OnWorkbenchReady" to update globals `#854 <https://github.com/ansys/pymechanical/pull/854>`_
+- fix: underline issue with changelog.rst section generation `#855 <https://github.com/ansys/pymechanical/pull/855>`_
+
+
+Dependencies
+^^^^^^^^^^^^
+
+- MAINT: Bump grpcio from 1.64.1 to 1.65.1 in the core group `#826 <https://github.com/ansys/pymechanical/pull/826>`_
+- MAINT: Bump pytest from 8.2.2 to 8.3.1 in the tests group `#827 <https://github.com/ansys/pymechanical/pull/827>`_
+- MAINT: Bump the doc group with 4 updates `#828 <https://github.com/ansys/pymechanical/pull/828>`_
+- MAINT: Bump pytest from 8.3.1 to 8.3.2 in the tests group `#838 <https://github.com/ansys/pymechanical/pull/838>`_
+- MAINT: Bump plotly from 5.22.0 to 5.23.0 in the doc group `#839 <https://github.com/ansys/pymechanical/pull/839>`_
+- MAINT: Bump usd-core from 24.3 to 24.8 `#841 <https://github.com/ansys/pymechanical/pull/841>`_
+- MAINT: Bump sphinxcontrib-websupport from 1.2.7 to 2.0.0 `#842 <https://github.com/ansys/pymechanical/pull/842>`_
+
+
+Miscellaneous
+^^^^^^^^^^^^^
+
+- DOC: Add documentation for ``launch_mechanical`` `#831 <https://github.com/ansys/pymechanical/pull/831>`_
+
+
+Documentation
+^^^^^^^^^^^^^
+
+- add background app class `#849 <https://github.com/ansys/pymechanical/pull/849>`_
+- MAINT: Bump grpcio from 1.65.1 to 1.65.4 in the core group `#850 <https://github.com/ansys/pymechanical/pull/850>`_
+- Maint: Update qk5 `#852 <https://github.com/ansys/pymechanical/pull/852>`_
+- [pre-commit.ci] pre-commit autoupdate `#853 <https://github.com/ansys/pymechanical/pull/853>`_
+
 `0.11.3 <https://github.com/ansys/pymechanical/releases/tag/v0.11.3>`_ - 2024-07-19
 ===================================================================================
 
