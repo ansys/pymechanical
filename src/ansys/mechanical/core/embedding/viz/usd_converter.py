@@ -89,7 +89,6 @@ def _convert_transform_node(
     Currently only supports transforms that contain a single tri tessellation node.
     """
     import clr
-
     clr.AddReference("Ansys.Mechanical.DataModel")
     clr.AddReference("Ansys.ACT.Interfaces")
 
@@ -105,7 +104,6 @@ def _convert_transform_node(
 def load_into_usd_stage(app: "ansys.mechanical.core.embedding.App", stage: Usd.Stage) -> None:
     """Load mechanical scene into usd stage `stage`."""
     import clr
-
     clr.AddReference("Ansys.Mechanical.DataModel")
     clr.AddReference("Ansys.ACT.Interfaces")
 
