@@ -26,28 +26,24 @@ import os
 
 import pytest
 
-from ansys.mechanical.core.embedding import shims
-
-
-def is_on_docker():
-    """check if running in docker image 25R1."""
-    if os.path.exists("/.dockerenv") and "AWP_ROOT251" in os.environ:
-        return True
-    return False
-
 
 @pytest.mark.embedding
-@pytest.mark.minimum_version(241)
-def test_qk_eng_wb2_005(printer, selection, embedded_app, assets):
+def test_qk_eng_wb2_005(printer, embedded_app, assets):
     """Buckling analysis.
 
-    From Mechanical/QK_ENG_WB2/QK_ENG_WB2_005
+    From STAND_MECH:BATCH/QK_ENG/QK_ENG_005
     """
     embedded_app.update_globals(globals())
+
     printer("Setting up test - adding linked static structural + buckling analysis system")
-    Model.AddStaticStructuralAnalysis()
-    Model.AddEigenvalueBucklingAnalysis()
-    Model.Analyses[1].InitialConditions[0].PreStressICEnvironment = Model.Analyses[0]
+    STAT_STRUC = Model.AddStaticStructuralAnalysis()
+    STAT_STRUC_SOLN = STAT_STRUC.Solution
+    BUCK = Model.AddEigenvalueBucklingAnalysis()
+    BUCK_SOLN = BUCK.Solution
+    BUCK_ANA_SETTING = BUCK.AnalysisSettings
+    PRE_STRS_ENV = BUCK.Children[0]
+    PRE_STRS_ENV.PreStressICEnvironment = STAT_STRUC
+
     geometry_file = os.path.join(assets, "Eng157.x_t")
     printer(f"Setting up test - attaching geometry {geometry_file}")
     geometry_import = Model.GeometryImportGroup.AddGeometryImport()
@@ -57,27 +53,59 @@ def test_qk_eng_wb2_005(printer, selection, embedded_app, assets):
     def _innertest():
         printer("Setup units")
         ExtAPI.Application.ActiveUnitSystem = MechanicalUnitSystem.StandardBIN
+
+        printer("Create Named Selections")
+        FACE1 = Model.AddNamedSelection()
+        FACE1.Name = "Face1"
+        FACE1.ScopingMethod = GeometryDefineByType.Worksheet
+        GEN_CRT = FACE1.GenerationCriteria
+        CRT1 = Ansys.ACT.Automation.Mechanical.NamedSelectionCriterion()
+        CRT1.Active = True
+        CRT1.Action = SelectionActionType.Add
+        CRT1.EntityType = SelectionType.GeoFace
+        CRT1.Criterion = SelectionCriterionType.LocationZ
+        CRT1.Operator = SelectionOperatorType.Equal
+        CRT1.Value = Quantity("0 [in]")
+        GEN_CRT.Add(CRT1)
+        FACE1.Activate()
+        FACE1.Generate()
+
+        FACE2 = Model.AddNamedSelection()
+        FACE2.Name = "Face2"
+        FACE2.ScopingMethod = GeometryDefineByType.Worksheet
+        GEN_CRT = FACE2.GenerationCriteria
+        CRT1 = Ansys.ACT.Automation.Mechanical.NamedSelectionCriterion()
+        CRT1.Active = True
+        CRT1.Action = SelectionActionType.Add
+        CRT1.EntityType = SelectionType.GeoFace
+        CRT1.Criterion = SelectionCriterionType.LocationZ
+        CRT1.Operator = SelectionOperatorType.Equal
+        CRT1.Value = Quantity("100 [in]")
+        GEN_CRT.Add(CRT1)
+        FACE2.Activate()
+        FACE2.Generate()
+
+        printer("Apply loads")
         MODEL = Model
         MODEL.Geometry.ElementControl = ElementControl.Manual
-        STAT_STRUC = MODEL.Analyses[0]
-        printer("Apply loads")
-        selection.UpdateSelection(ExtAPI, [26], SelectionTypeEnum.GeometryEntities)
+
         FIX_SUP = STAT_STRUC.AddFixedSupport()
-        selection.UpdateSelection(ExtAPI, [25], SelectionTypeEnum.GeometryEntities)
+        FIX_SUP.Location = FACE1
+
         FRC = STAT_STRUC.AddForce()
+        FRC.Location = FACE2
         FRC.DefineBy = LoadDefineBy.Components
         FRC.ZComponent.Output.SetDiscreteValue(0, Quantity("-1 [lbf]"))
-        ExtAPI.SelectionManager.ClearSelection()
+
         printer("Insert Static Structural results and Solve")
         DIR_DEF01_STAT_STRUC = STAT_STRUC.Solution.AddDirectionalDeformation()
-        STAT_STRUC.Solution.Solve(True)
-        assert STAT_STRUC.Solution.ObjectState == ObjectState.Solved
+        STAT_STRUC_SOLN.Solve(True)
 
         printer("Setup Linear Buckling analysis")
-        BUCK = MODEL.Analyses[1]
-        BUCK.AnalysisSettings.MaximumModesToFind = 6
-        BUCK.AnalysisSettings.Stress = True
-        BUCK.AnalysisSettings.Strain = True
+        BUCK_ANA_SETTING.MaximumModesToFind = 6
+        BUCK_ANA_SETTING.Stress = True
+        BUCK_ANA_SETTING.Strain = True
+
         printer("Add Buckling Results")
         TOT_DEF01_BUCK = BUCK.Solution.AddTotalDeformation()
         TOT_DEF01_BUCK.Mode = 1
@@ -93,13 +121,14 @@ def test_qk_eng_wb2_005(printer, selection, embedded_app, assets):
         TOT_DEF06_BUCK.Mode = 6
         EQV_STRS_BUCK = BUCK.Solution.AddEquivalentStress()
         EQV_STRS_BUCK.Mode = 6
+
         BUCK.Solution.Solve(True)
         assert BUCK.Solution.ObjectState == ObjectState.Solved
 
         printer("Clean and Solve")
-        embedded_app.execute_script("ExtAPI.DataModel.Project.Model.ClearGeneratedData()")
+        embedded_app.DataModel.Project.ClearGeneratedData()
         assert BUCK.Solution.ObjectState != ObjectState.Solved
-        # embedded_app.DataModel.Project.ClearGeneratedData()
+
         MODEL.Solve(True)
         printer("Validate Results")
         TOT_DEF01_BUCK.Activate()
@@ -116,24 +145,30 @@ def test_qk_eng_wb2_005(printer, selection, embedded_app, assets):
     _innertest()
 
 
-@pytest.mark.xfail(is_on_docker(), reason="Fails only on docker 251 image")
 @pytest.mark.embedding
-def test_qk_eng_wb2_007(printer, selection, embedded_app, assets):
+def test_qk_eng_wb2_007(printer, embedded_app, assets):
     """Fatigue.
 
-    From Mechanical/QK_ENG_WB2/QK_ENG_WB2_007
+    From STAND_MECH:BATCH/QK_ENG/QK_ENG_007
     """
     embedded_app.update_globals(globals())
-    printer("Setting up test - adding two static structural systems")
-    Model.AddStaticStructuralAnalysis()
-    Model.AddStaticStructuralAnalysis()
-    geometry_file = os.path.join(assets, "longbar.sat")
+    printer(embedded_app)
+    printer("Set units system to MKS")
+    ExtAPI.Application.ActiveUnitSystem = MechanicalUnitSystem.StandardMKS
+
+    geometry_file = os.path.join(assets, "longbar_sat_m.x_t")
     printer(f"Setting up test - attaching geometry {geometry_file}")
     geometry_import = Model.GeometryImportGroup.AddGeometryImport()
     geometry_import.Import(geometry_file)
+
+    printer("Setting up test - adding two static structural systems")
+    Model.AddStaticStructuralAnalysis()
+    Model.AddStaticStructuralAnalysis()
+
     material_file = os.path.join(assets, "eng200_material.xml")
     printer(f"Setting up test - import materials {material_file}")
-    shims.import_materials(embedded_app, material_file)
+    materials = Model.Materials
+    materials.Import(material_file)
 
     def _innertest():
         printer("Add material file")
@@ -141,24 +176,64 @@ def test_qk_eng_wb2_007(printer, selection, embedded_app, assets):
         MODEL.RefreshMaterials()
         MODEL.Geometry.Children[0].Material = "eng200_material"
 
+        GEOM = Model.Geometry
+        MSH = Model.Mesh
+
+        PART_1 = [
+            i
+            for i in GEOM.GetChildren[Ansys.ACT.Automation.Mechanical.Body](True)
+            if i.Name == "Part 1"
+        ][0]
+
+        printer("Create named selection")
+        NS1 = ExtAPI.DataModel.Project.Model.AddNamedSelection()
+        NS1.Name = "Face1"
+        NS1.ScopingMethod = GeometryDefineByType.Worksheet
+
+        GEN_CRT = NS1.GenerationCriteria
+        CRT1 = Ansys.ACT.Automation.Mechanical.NamedSelectionCriterion()
+        CRT1.Active = True
+        CRT1.Action = SelectionActionType.Add
+        CRT1.EntityType = SelectionType.GeoFace
+        CRT1.Criterion = SelectionCriterionType.LocationZ
+        CRT1.Operator = SelectionOperatorType.Equal
+        CRT1.Value = Quantity("0 [m]")
+        GEN_CRT.Add(CRT1)
+
+        NS1.Activate()
+        NS1.Generate()
+
+        NS2 = ExtAPI.DataModel.Project.Model.AddNamedSelection()
+        NS2.Name = "Face2"
+        NS2.ScopingMethod = GeometryDefineByType.Worksheet
+
+        GEN_CRT = NS2.GenerationCriteria
+        CRT1 = Ansys.ACT.Automation.Mechanical.NamedSelectionCriterion()
+        CRT1.Active = True
+        CRT1.Action = SelectionActionType.Add
+        CRT1.EntityType = SelectionType.GeoFace
+        CRT1.Criterion = SelectionCriterionType.LocationZ
+        CRT1.Operator = SelectionOperatorType.Equal
+        CRT1.Value = Quantity("20 [m]")
+
+        GEN_CRT.Add(CRT1)
+        NS2.Activate()
+        NS2.Generate()
+
         printer("Setup Mesh")
         MSH = MODEL.Mesh
         MSH.Resolution = 4
 
         printer("Apply loads")
         STAT_STRUC1 = MODEL.Analyses[0]
-
-        selection.UpdateSelection(ExtAPI, [29], SelectionTypeEnum.GeometryEntities)
         FIX_SUP = STAT_STRUC1.AddFixedSupport()
+        FIX_SUP.Location = NS1
 
         ExtAPI.SelectionManager.ClearSelection()
-        selection.UpdateSelection(ExtAPI, [28], SelectionTypeEnum.GeometryEntities)
         FRC = STAT_STRUC1.AddForce()
         FRC.DefineBy = LoadDefineBy.Components
-        values = System.Collections.Generic.List[Quantity]()
-        values.Add(Quantity("0 [N]"))
-        values.Add(Quantity("1000000000 [N]"))
-        FRC.YComponent.Output.DiscreteValues = values
+        FRC.YComponent.Output.DiscreteValues = [Quantity("0 [N]"), Quantity("1000000000 [N]")]
+        FRC.Location = NS2
 
         printer("Add Results and Solve")
         SOLN_STAT_STRUC1 = STAT_STRUC1.Solution
@@ -172,17 +247,14 @@ def test_qk_eng_wb2_007(printer, selection, embedded_app, assets):
         STAT_STRUC2 = MODEL.Analyses[1]
 
         ExtAPI.SelectionManager.ClearSelection()
-        selection.UpdateSelection(ExtAPI, [29], SelectionTypeEnum.GeometryEntities)
         FIX_SUP2 = STAT_STRUC2.AddFixedSupport()
+        FIX_SUP2.Location = NS1
 
         ExtAPI.SelectionManager.ClearSelection()
-        selection.UpdateSelection(ExtAPI, [28], SelectionTypeEnum.GeometryEntities)
         FRC2 = STAT_STRUC2.AddForce()
         FRC2.DefineBy = LoadDefineBy.Components
-        values = System.Collections.Generic.List[Quantity]()
-        values.Add(Quantity("0 [N]"))
-        values.Add(Quantity("1000000000 [N]"))
-        FRC2.XComponent.Output.DiscreteValues = values
+        FRC2.XComponent.Output.DiscreteValues = [Quantity("0 [N]"), Quantity("1000000000 [N]")]
+        FRC2.Location = NS2
 
         printer("Add Results and Solve")
         SOLN_STAT_STRUC2 = STAT_STRUC2.Solution
@@ -191,12 +263,12 @@ def test_qk_eng_wb2_007(printer, selection, embedded_app, assets):
         SHEAR_STRS1_STAT_STRUC2.ShearOrientation = ShearOrientationType.YZPlane
         SHEAR_STRS2_STAT_STRUC2 = SOLN_STAT_STRUC2.AddShearStress()  # XZ stress
         SHEAR_STRS2_STAT_STRUC1.ShearOrientation = ShearOrientationType.XZPlane
+
         SOLN_STAT_STRUC2.Solve(True)
 
         ExtAPI.SelectionManager.ClearSelection()
         printer("Insert Solution Combination 1")
         SOLN_COMB = MODEL.AddSolutionCombination()
-        SOLN_COMB.Activate()
 
         printer("Insert Solution Combination2")
         SOLN_COMB.Definition.AddBaseCase()

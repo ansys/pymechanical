@@ -34,13 +34,13 @@ from ansys.mechanical.core.embedding.poster import Poster
 from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
 
 try:
-    import pyvista  # noqa: F401
+    import ansys.tools.visualization_interface  # noqa: F401
 
-    HAS_PYVISTA = True
+    HAS_ANSYS_VIZ = True
     """Whether or not PyVista exists."""
 except:
 
-    HAS_PYVISTA = False
+    HAS_ANSYS_VIZ = False
 
 
 def _get_default_addin_configuration() -> AddinConfiguration:
@@ -229,13 +229,9 @@ class App:
         rets = None
         return self.script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
 
-    def plot(self) -> None:
-        """Visualize the model in 3d.
-
-        Requires installation using the viz option. E.g.
-        pip install ansys-mechanical-core[viz]
-        """
-        if not HAS_PYVISTA:
+    def plotter(self) -> None:
+        """Return ``ansys.tools.visualization_interface.Plotter`` object."""
+        if not HAS_ANSYS_VIZ:
             warnings.warn(
                 "Installation of viz option required! Use pip install ansys-mechanical-core[viz]"
             )
@@ -245,9 +241,20 @@ class App:
             warnings.warn("Plotting is only supported with version 2024R2 and later!")
             return
 
-        from ansys.mechanical.core.embedding.viz.pyvista_plotter import plot_model
+        # TODO Check if anything loaded inside app or else show warning and return
 
-        plot_model(self)
+        from ansys.mechanical.core.embedding.viz.embedding_plotter import to_plotter
+
+        return to_plotter(self)
+
+    def plot(self) -> None:
+        """Visualize the model in 3d.
+
+        Requires installation using the viz option. E.g.
+        pip install ansys-mechanical-core[viz]
+        """
+        _plotter = self.plotter()
+        return _plotter.show()
 
     @property
     def poster(self) -> Poster:
@@ -328,8 +335,7 @@ class App:
         try:
             # This will throw an error when using pythonnet because
             # EventSource isn't defined on the IApplication interface
-            self.ExtAPI.Application.EventSource.OnAfterNew += self._on_after_new
-            self.ExtAPI.Application.EventSource.OnAfterDatabaseLoad += self._on_after_open
+            self.ExtAPI.Application.EventSource.OnWorkbenchReady += self._on_workbench_ready
             self._subscribed = True
         except:
             self._subscribed = False
@@ -338,13 +344,9 @@ class App:
         if not self._subscribed:
             return
         self._subscribed = False
-        self.ExtAPI.Application.EventSource.OnAfterNew -= self._on_after_new
-        self.ExtAPI.Application.EventSource.OnAfterDatabaseLoad -= self._on_after_open
+        self.ExtAPI.Application.EventSource.OnWorkbenchReady -= self._on_workbench_ready
 
-    def _on_after_open(self, sender, args) -> None:
-        self._update_all_globals()
-
-    def _on_after_new(self, sender, args) -> None:
+    def _on_workbench_ready(self, sender, args) -> None:
         self._update_all_globals()
 
     def update_globals(
