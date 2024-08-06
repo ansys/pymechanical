@@ -47,7 +47,7 @@ def _get_env_without_logging_variables():
 
 def _run_embedding_log_test_process(
     rootdir: str, run_subprocess, pytestconfig, testname: str, pass_expected: bool = None
-) -> typing.Tuple:
+) -> typing.Tuple[bytes, bytes]:
     """Runs the process and returns it after it finishes"""
     version = pytestconfig.getoption("ansys_version")
     embedded_py = os.path.join(rootdir, "tests", "scripts", "embedding_log_test.py")
