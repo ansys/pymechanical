@@ -335,8 +335,7 @@ class App:
         try:
             # This will throw an error when using pythonnet because
             # EventSource isn't defined on the IApplication interface
-            self.ExtAPI.Application.EventSource.OnAfterNew += self._on_after_new
-            self.ExtAPI.Application.EventSource.OnAfterDatabaseLoad += self._on_after_open
+            self.ExtAPI.Application.EventSource.OnWorkbenchReady += self._on_workbench_ready
             self._subscribed = True
         except:
             self._subscribed = False
@@ -345,13 +344,9 @@ class App:
         if not self._subscribed:
             return
         self._subscribed = False
-        self.ExtAPI.Application.EventSource.OnAfterNew -= self._on_after_new
-        self.ExtAPI.Application.EventSource.OnAfterDatabaseLoad -= self._on_after_open
+        self.ExtAPI.Application.EventSource.OnWorkbenchReady -= self._on_workbench_ready
 
-    def _on_after_open(self, sender, args) -> None:
-        self._update_all_globals()
-
-    def _on_after_new(self, sender, args) -> None:
+    def _on_workbench_ready(self, sender, args) -> None:
         self._update_all_globals()
 
     def update_globals(
