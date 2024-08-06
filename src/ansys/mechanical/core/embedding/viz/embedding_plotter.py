@@ -29,6 +29,7 @@ clr.AddReference("Ansys.ACT.Interfaces")
 
 import Ansys  # isort: skip
 
+from ansys.tools.visualization_interface import Plotter
 import numpy as np
 import pyvista as pv
 
@@ -68,9 +69,9 @@ def _get_nodes_and_coords(node: "Ansys.Mechanical.Scenegraph.Node"):
     return None, None
 
 
-def to_pyvista_plotter(app: "ansys.mechanical.core.embedding.App"):
-    """Convert the app's geometry to a pyvista plotter instance."""
-    plotter = pv.Plotter()
+def to_plotter(app: "ansys.mechanical.core.embedding.App"):
+    """Convert the app's geometry to an ``ansys.tools.visualization_interface.Plotter`` instance."""
+    plotter = Plotter()
     for body in app.DataModel.GetObjectsByType(
         Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Body
     ):
@@ -81,11 +82,5 @@ def to_pyvista_plotter(app: "ansys.mechanical.core.embedding.App"):
         pv_transform = _transform_to_pyvista(scenegraph_node.Transform)
         polydata = pv.PolyData(np_coordinates, np_indices).transform(pv_transform)
         color = pv.Color(bgr_to_rgb_tuple(body.Color))
-        plotter.add_mesh(polydata, color=color, smooth_shading=True)
+        plotter.plot(polydata, color=color, smooth_shading=True)
     return plotter
-
-
-def plot_model(app: "ansys.mechanical.core.embedding.App"):
-    """Plot the model."""
-    plotter = to_pyvista_plotter(app)
-    plotter.show()

@@ -396,3 +396,8 @@ def pytest_collection_modifyitems(config, items):
         if "windows_only" in item.keywords and sys.platform != "win32":
             skip_except_windows = pytest.mark.skip(reason="Test requires Windows platform.")
             item.add_marker(skip_except_windows)
+
+        # Skip on platforms other than Linux
+        if "linux_only" in item.keywords and "lin" not in sys.platform:
+            skip_except_linux = pytest.mark.skip(reason="Test requires Linux platform.")
+            item.add_marker(skip_except_linux)
