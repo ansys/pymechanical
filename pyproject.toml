@@ -48,14 +48,14 @@ Changelog = "https://mechanical.docs.pyansys.com/version/stable/changelog.html"
 
 [project.optional-dependencies]
 tests = [
-    "pytest==8.3.1",
+    "pytest==8.3.2",
     "pytest-cov==5.0.0",
     "pytest-print==1.0.0",
 ]
 doc = [
     "sphinx==8.0.0",
     "ansys-sphinx-theme[autoapi]==0.16.6",
-    "grpcio==1.65.1",
+    "grpcio==1.65.4",
     "imageio-ffmpeg==0.5.1",
     "imageio==2.34.2",
     "jupyter_sphinx==0.5.3",
@@ -65,7 +65,7 @@ doc = [
     "numpydoc==1.7.0",
     "pandas==2.2.2",
     "panel==1.4.4",
-    "plotly==5.22.0",
+    "plotly==5.23.0",
     "pypandoc==1.13",
     "pytest-sphinx==0.6.3",
     "pythreejs==2.4.2",
@@ -76,12 +76,12 @@ doc = [
     "sphinx_design==0.6.0",
     "sphinx-gallery==0.17.0",
     "sphinx-notfound-page==1.0.2",
-    "sphinxcontrib-websupport==1.2.7",
+    "sphinxcontrib-websupport==2.0.0",
     "sphinxemoji==0.3.1",
 ]
 viz = [
-    "pyvista>=0.39.1",
-    "usd-core==24.3",
+    "ansys-tools-visualization-interface>=0.2.6",
+    "usd-core==24.8",
 ]
 
 [project.scripts]
@@ -153,7 +153,6 @@ package = "ansys.mechanical.core"
 directory = "doc/changelog.d"
 filename = "doc/source/changelog.rst"
 start_string = ".. towncrier release notes start\n"
-underlines = ["", "", ""]
 template = "doc/changelog.d/changelog_template.jinja"
 title_format = "`{version} <https://github.com/ansys/pymechanical/releases/tag/v{version}>`_ - {project_date}"
 issue_format = "`#{issue} <https://github.com/ansys/pymechanical/pull/{issue}>`_"
@@ -256,3 +255,17 @@ extras = doc
 commands =
     sphinx-build -d "{toxworkdir}/doc_doctree" doc/source "{toxinidir}/doc/_build/html" --color -vW -bhtml
 """
+[[tool.towncrier.type]]
+directory = "documentation"
+name = "Documentation"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "maintenance"
+name = "Maintenance"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "test"
+name = "Test"
+showcontent = true
