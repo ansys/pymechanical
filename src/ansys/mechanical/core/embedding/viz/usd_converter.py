@@ -24,13 +24,7 @@
 
 import typing
 
-import clr
 from pxr import Gf, Usd, UsdGeom
-
-clr.AddReference("Ansys.Mechanical.DataModel")
-clr.AddReference("Ansys.ACT.Interfaces")
-
-import Ansys  # isort: skip
 
 from .utils import bgr_to_rgb_tuple, get_nodes_and_coords
 
@@ -94,6 +88,12 @@ def _convert_transform_node(
 
     Currently only supports transforms that contain a single tri tessellation node.
     """
+    import clr
+    clr.AddReference("Ansys.Mechanical.DataModel")
+    clr.AddReference("Ansys.ACT.Interfaces")
+
+    import Ansys  # isort: skip
+
     child_node = node.Child
     if isinstance(child_node, Ansys.Mechanical.Scenegraph.TriTessellationNode):
         prim = _create_prim_with_transform(stage, path, node)
@@ -101,9 +101,13 @@ def _convert_transform_node(
         _convert_tri_tessellation_node(child_node, stage, child_path, rgb)
 
 
-def to_usd_stage(app: "ansys.mechanical.core.embedding.App", name: str) -> None:
-    """Convert mechanical scene to usd stage."""
-    stage = Usd.Stage.CreateNew(name)
+def load_into_usd_stage(app: "ansys.mechanical.core.embedding.App", stage: Usd.Stage) -> None:
+    """Load mechanical scene into usd stage `stage`."""
+    import clr
+    clr.AddReference("Ansys.Mechanical.DataModel")
+    clr.AddReference("Ansys.ACT.Interfaces")
+
+    import Ansys  # isort: skip
 
     root_prim = UsdGeom.Xform.Define(stage, "/root")
 
@@ -114,6 +118,11 @@ def to_usd_stage(app: "ansys.mechanical.core.embedding.App", name: str) -> None:
         body_path = root_prim.GetPath().AppendPath(f"body{body.ObjectId}")
         _convert_transform_node(scenegraph_node, stage, body_path, bgr_to_rgb_tuple(body.Color))
 
+
+def to_usd_stage(app: "ansys.mechanical.core.embedding.App", name: str) -> Usd.Stage:
+    """Convert mechanical scene to new usd stage and return it."""
+    stage = Usd.Stage.CreateNew(name)
+    load_into_usd_stage(app, stage)
     return stage
 
 
