@@ -494,6 +494,7 @@ jobs:
           apt install -y sudo curl lsb-release
           apt install -y zip pandoc libgl1-mesa-glx mesa-utils xvfb texlive-latex-extra latexmk nodejs npm graphviz
           apt install -y tini
+          apt install poppler-utils -y
           npm install -g @mermaid-js/mermaid-cli
 
       - name: Install gh cli
