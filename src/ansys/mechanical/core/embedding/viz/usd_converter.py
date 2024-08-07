@@ -122,11 +122,10 @@ def _convert_attribute_node(
     _convert_transform_node(child_node, stage, path, bgr_to_rgb_tuple(color))
 
 
-def load_into_usd_stage(app: "ansys.mechanical.core.embedding.App", stage: Usd.Stage) -> None:
+def load_into_usd_stage(scene: "Ansys.Mechanical.Scenegraph.GroupNode", stage: Usd.Stage) -> None:
     """Load mechanical scene into usd stage `stage`."""
     root_prim = UsdGeom.Xform.Define(stage, "/root")
 
-    scene = get_scene(app)
     for child in scene.Children:
         child: "Ansys.Mechanical.Scenegraph.AttributeNode" = child
         child_path = root_prim.GetPath().AppendPath(child.Tag)
@@ -136,7 +135,8 @@ def load_into_usd_stage(app: "ansys.mechanical.core.embedding.App", stage: Usd.S
 def to_usd_stage(app: "ansys.mechanical.core.embedding.App", name: str) -> Usd.Stage:
     """Convert mechanical scene to new usd stage and return it."""
     stage = Usd.Stage.CreateNew(name)
-    load_into_usd_stage(app, stage)
+    scene = get_scene(app)
+    load_into_usd_stage(scene, stage)
     return stage
 
 
