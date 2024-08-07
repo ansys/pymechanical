@@ -37,8 +37,6 @@ dependencies = [
     "grpcio>=1.30.0",
     "protobuf>=3.12.2,<6",
     "tqdm>=4.45.0",
-    "rpyc==6.0.0",
-    "toolz==0.12.1",
 ]
 
 [project.urls]
@@ -84,6 +82,10 @@ doc = [
 viz = [
     "ansys-tools-visualization-interface>=0.2.6",
     "usd-core==24.8",
+]
+rpyc = [
+    "rpyc==6.0.0",
+    "toolz==0.12.1",
 ]
 
 [project.scripts]
