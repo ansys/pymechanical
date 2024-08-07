@@ -116,6 +116,7 @@ def _convert_attribute_node(
     clr.AddReference("Ansys.ACT.Interfaces")
 
     import Ansys  # isort: skip
+
     child_node = node.Child
     color = node.Property(Ansys.Mechanical.Scenegraph.ScenegraphIntAttributes.Color)
     _convert_transform_node(child_node, stage, path, bgr_to_rgb_tuple(color))
