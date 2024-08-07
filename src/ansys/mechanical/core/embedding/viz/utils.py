@@ -64,7 +64,7 @@ def get_nodes_and_coords(tri_tessellation: "Ansys.Mechanical.Scenegraph.TriTesse
 def get_scene(
     app: "ansys.mechanical.core.embedding.App",
 ) -> "Ansys.Mechanical.Scenegraph.GroupNode":
-    """Get the scene of the model"""
+    """Get the scene of the model."""
     import clr
 
     clr.AddReference("Ansys.Mechanical.DataModel")

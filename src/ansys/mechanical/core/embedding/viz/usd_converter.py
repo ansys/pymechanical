@@ -109,7 +109,8 @@ def _convert_attribute_node(
 ) -> None:
     """Add a Usd Prim of the child node with the given attributes node.
 
-    Currently only supports color attributes"""
+    Currently only supports color attributes.
+    """
     import clr
 
     clr.AddReference("Ansys.Mechanical.DataModel")
