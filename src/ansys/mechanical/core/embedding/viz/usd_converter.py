@@ -89,6 +89,7 @@ def _convert_transform_node(
     Currently only supports transforms that contain a single tri tessellation node.
     """
     import clr
+
     clr.AddReference("Ansys.Mechanical.DataModel")
     clr.AddReference("Ansys.ACT.Interfaces")
 
@@ -101,22 +102,63 @@ def _convert_transform_node(
         _convert_tri_tessellation_node(child_node, stage, child_path, rgb)
 
 
-def load_into_usd_stage(app: "ansys.mechanical.core.embedding.App", stage: Usd.Stage) -> None:
-    """Load mechanical scene into usd stage `stage`."""
+def _convert_attribute_node(
+    node: "Ansys.Mechanical.Scenegraph.AttributeNode",
+    stage: Usd.Stage,
+    path: str,
+) -> None:
+    """Add a Usd Prim of the child node with the given attributes node.
+
+    Currently only supports color attributes"""
     import clr
+
     clr.AddReference("Ansys.Mechanical.DataModel")
     clr.AddReference("Ansys.ACT.Interfaces")
 
     import Ansys  # isort: skip
+    child_node = node.Child
+    color = node.Property(Ansys.Mechanical.Scenegraph.ScenegraphIntAttributes.Color)
+    _convert_transform_node(child_node, stage, path, bgr_to_rgb_tuple(color))
 
-    root_prim = UsdGeom.Xform.Define(stage, "/root")
+
+def get_scene(
+    app: "ansys.mechanical.core.embedding.App",
+) -> "Ansys.Mechanical.Scenegraph.GroupNode":
+    """Get the scene of the model"""
+    import clr
+
+    clr.AddReference("Ansys.Mechanical.DataModel")
+    clr.AddReference("Ansys.Mechanical.Scenegraph")
+    clr.AddReference("Ansys.ACT.Interfaces")
+
+    import Ansys  # isort: skip
 
     category = Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Body
-    bodies = app.DataModel.GetObjectsByType(category)
-    for body in bodies:
+    group_node = Ansys.Mechanical.Scenegraph.Builders.GroupNodeBuilder()
+    for body in app.DataModel.GetObjectsByType(category):
         scenegraph_node = Ansys.ACT.Mechanical.Tools.ScenegraphHelpers.GetScenegraph(body)
-        body_path = root_prim.GetPath().AppendPath(f"body{body.ObjectId}")
-        _convert_transform_node(scenegraph_node, stage, body_path, bgr_to_rgb_tuple(body.Color))
+        # wrap the body node in an attribute node using the body color
+        attribute_node_builder = Ansys.Mechanical.Scenegraph.Builders.AttributeNodeBuilder()
+        attribute_node = (
+            attribute_node_builder.Tag(f"body{body.ObjectId}")
+            .Child(scenegraph_node)
+            # set the color, body.Color is a BGR uint bitfield
+            .Property(Ansys.Mechanical.Scenegraph.ScenegraphIntAttributes.Color, body.Color)
+            .Build()
+        )
+        group_node.AddChild(attribute_node)
+    return group_node.Build()
+
+
+def load_into_usd_stage(app: "ansys.mechanical.core.embedding.App", stage: Usd.Stage) -> None:
+    """Load mechanical scene into usd stage `stage`."""
+    root_prim = UsdGeom.Xform.Define(stage, "/root")
+
+    scene = get_scene(app)
+    for child in scene.Children:
+        child: "Ansys.Mechanical.Scenegraph.AttributeNode" = child
+        child_path = root_prim.GetPath().AppendPath(child.Tag)
+        _convert_attribute_node(child, stage, child_path)
 
 
 def to_usd_stage(app: "ansys.mechanical.core.embedding.App", name: str) -> Usd.Stage:
