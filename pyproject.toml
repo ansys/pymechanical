@@ -37,6 +37,8 @@ dependencies = [
     "grpcio>=1.30.0",
     "protobuf>=3.12.2,<6",
     "tqdm>=4.45.0",
+    "rpyc==6.0.0",
+    "toolz==0.12.1",
 ]
 
 [project.urls]
