@@ -59,3 +59,32 @@ def get_nodes_and_coords(tri_tessellation: "Ansys.Mechanical.Scenegraph.TriTesse
     )
     np_indices = _reshape_3cols(np.array(tri_tessellation.Indices, dtype=np.int32), "indices")
     return np_coordinates, np_indices
+
+
+def get_scene(
+    app: "ansys.mechanical.core.embedding.App",
+) -> "Ansys.Mechanical.Scenegraph.GroupNode":
+    """Get the scene of the model"""
+    import clr
+
+    clr.AddReference("Ansys.Mechanical.DataModel")
+    clr.AddReference("Ansys.Mechanical.Scenegraph")
+    clr.AddReference("Ansys.ACT.Interfaces")
+
+    import Ansys  # isort: skip
+
+    category = Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Body
+    group_node = Ansys.Mechanical.Scenegraph.Builders.GroupNodeBuilder()
+    for body in app.DataModel.GetObjectsByType(category):
+        scenegraph_node = Ansys.ACT.Mechanical.Tools.ScenegraphHelpers.GetScenegraph(body)
+        # wrap the body node in an attribute node using the body color
+        attribute_node_builder = Ansys.Mechanical.Scenegraph.Builders.AttributeNodeBuilder()
+        attribute_node = (
+            attribute_node_builder.Tag(f"body{body.ObjectId}")
+            .Child(scenegraph_node)
+            # set the color, body.Color is a BGR uint bitfield
+            .Property(Ansys.Mechanical.Scenegraph.ScenegraphIntAttributes.Color, body.Color)
+            .Build()
+        )
+        group_node.AddChild(attribute_node)
+    return group_node.Build()
