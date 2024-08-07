@@ -55,7 +55,7 @@ tests = [
 doc = [
     "sphinx==7.4.7",
     "ansys-sphinx-theme[autoapi]@git+https://github.com/ansys/ansys-sphinx-theme@feat/update-cheatsheet-option",
-    "grpcio==1.65.1",
+    "grpcio==1.65.4",
     "imageio-ffmpeg==0.5.1",
     "imageio==2.34.2",
     "jupyter_sphinx==0.5.3",
@@ -153,7 +153,6 @@ package = "ansys.mechanical.core"
 directory = "doc/changelog.d"
 filename = "doc/source/changelog.rst"
 start_string = ".. towncrier release notes start\n"
-underlines = ["", "", ""]
 template = "doc/changelog.d/changelog_template.jinja"
 title_format = "`{version} <https://github.com/ansys/pymechanical/releases/tag/v{version}>`_ - {project_date}"
 issue_format = "`#{issue} <https://github.com/ansys/pymechanical/pull/{issue}>`_"
