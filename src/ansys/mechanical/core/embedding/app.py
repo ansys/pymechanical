@@ -254,10 +254,6 @@ class App:
         pip install ansys-mechanical-core[viz]
         """
         _plotter = self.plotter()
-
-        if _plotter is None:
-            return
-
         return _plotter.show()
 
     @property
