@@ -223,7 +223,6 @@ html_theme_options = {
     # },
     "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
     "navigation_depth": 10,
-    "logo": "pyansys",
 }
 
 # -- Options for HTMLHelp output ---------------------------------------------
