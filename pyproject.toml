@@ -53,8 +53,8 @@ tests = [
     "pytest-print==1.0.0",
 ]
 doc = [
-    "sphinx==7.4.7",
-    "ansys-sphinx-theme[autoapi]==0.16.6",
+    "sphinx==8.0.2",
+    "ansys-sphinx-theme[autoapi]==1.0.3",
     "grpcio==1.65.4",
     "imageio-ffmpeg==0.5.1",
     "imageio==2.34.2",
@@ -73,7 +73,7 @@ doc = [
     "sphinx-autobuild==2024.4.16",
     "sphinx-autodoc-typehints==2.2.3",
     "sphinx-copybutton==0.5.2",
-    "sphinx_design==0.6.0",
+    "sphinx_design==0.6.1",
     "sphinx-gallery==0.17.0",
     "sphinx-notfound-page==1.0.2",
     "sphinxcontrib-websupport==2.0.0",
