@@ -83,7 +83,7 @@ viz = [
     "ansys-tools-visualization-interface>=0.2.6",
     "usd-core==24.8",
 ]
-rpyc = [
+rpc = [
     "rpyc==6.0.0",
     "toolz==0.12.1",
 ]

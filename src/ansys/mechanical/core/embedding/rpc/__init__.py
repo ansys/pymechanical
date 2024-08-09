@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Rpyc and Mechanical service implementation."""
+"""RPC and Mechanical service implementation."""
 from .server import Server
 from .service import MechanicalService
 from .utils import get_remote_methods, remote_method
