@@ -231,7 +231,10 @@ html_theme_options = {
 # Output file base name for HTML help builder.
 htmlhelp_basename = "pymechanicaldoc"
 
-html_sidebars = {'changelog': [], 'examples/index': [],}
+html_sidebars = {
+    "changelog": [],
+    "examples/index": [],
+}
 # -- Options for LaTeX output ------------------------------------------------
 latex_elements = {}
 
