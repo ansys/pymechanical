@@ -26,7 +26,7 @@ import typing
 
 from pxr import Gf, Usd, UsdGeom
 
-from .utils import bgr_to_rgb_tuple, get_nodes_and_coords
+from .utils import bgr_to_rgb_tuple, get_nodes_and_coords, get_scene
 
 
 def _transform_to_rotation_translation(
@@ -102,8 +102,15 @@ def _convert_transform_node(
         _convert_tri_tessellation_node(child_node, stage, child_path, rgb)
 
 
-def load_into_usd_stage(app: "ansys.mechanical.core.embedding.App", stage: Usd.Stage) -> None:
-    """Load mechanical scene into usd stage `stage`."""
+def _convert_attribute_node(
+    node: "Ansys.Mechanical.Scenegraph.AttributeNode",
+    stage: Usd.Stage,
+    path: str,
+) -> None:
+    """Add a Usd Prim of the child node with the given attributes node.
+
+    Currently only supports color attributes.
+    """
     import clr
 
     clr.AddReference("Ansys.Mechanical.DataModel")
@@ -111,20 +118,26 @@ def load_into_usd_stage(app: "ansys.mechanical.core.embedding.App", stage: Usd.S
 
     import Ansys  # isort: skip
 
+    child_node = node.Child
+    color = node.Property(Ansys.Mechanical.Scenegraph.ScenegraphIntAttributes.Color)
+    _convert_transform_node(child_node, stage, path, bgr_to_rgb_tuple(color))
+
+
+def load_into_usd_stage(scene: "Ansys.Mechanical.Scenegraph.GroupNode", stage: Usd.Stage) -> None:
+    """Load mechanical scene into usd stage `stage`."""
     root_prim = UsdGeom.Xform.Define(stage, "/root")
 
-    category = Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Body
-    bodies = app.DataModel.GetObjectsByType(category)
-    for body in bodies:
-        scenegraph_node = Ansys.ACT.Mechanical.Tools.ScenegraphHelpers.GetScenegraph(body)
-        body_path = root_prim.GetPath().AppendPath(f"body{body.ObjectId}")
-        _convert_transform_node(scenegraph_node, stage, body_path, bgr_to_rgb_tuple(body.Color))
+    for child in scene.Children:
+        child: "Ansys.Mechanical.Scenegraph.AttributeNode" = child
+        child_path = root_prim.GetPath().AppendPath(child.Tag)
+        _convert_attribute_node(child, stage, child_path)
 
 
 def to_usd_stage(app: "ansys.mechanical.core.embedding.App", name: str) -> Usd.Stage:
     """Convert mechanical scene to new usd stage and return it."""
     stage = Usd.Stage.CreateNew(name)
-    load_into_usd_stage(app, stage)
+    scene = get_scene(app)
+    load_into_usd_stage(scene, stage)
     return stage
 
 

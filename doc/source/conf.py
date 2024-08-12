@@ -187,6 +187,7 @@ html_context = {
     "doc_path": "doc/source",
 }
 html_theme_options = {
+    "logo": "pyansys",
     "switcher": {
         "json_url": f"https://{cname}/versions.json",
         "version_match": get_version_match(version),
@@ -228,7 +229,11 @@ html_theme_options = {
 # Output file base name for HTML help builder.
 htmlhelp_basename = "pymechanicaldoc"
 
-
+html_sidebars = {
+    "changelog": [],
+    "examples/index": [],
+    "contributing": [],
+}
 # -- Options for LaTeX output ------------------------------------------------
 latex_elements = {}
 
