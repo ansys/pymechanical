@@ -34,10 +34,9 @@ jupyter:
     name: python3
 ---
 
-# Connect to remote session of Mechanical using python
+# Connect to Mechanical Remote session
 
-
-## Launch and connect to a PyMechanical Remote session
+## Launch and connect to session
 ```{python}
 #| eval: false
 # Launch an instance
@@ -114,7 +113,7 @@ mechanical.run_python_script(commands)
 #| eval: false
 mechanical.run_python_script_from_file(file_path)
 ```
-Import a Mechanical file and print the count of bodies:
+## Import a Mechanical file and print the count of bodies:
 ```{python}
 #| eval: false
 file = r"D:\\Workdir\\bracket.mechdb"
@@ -126,7 +125,7 @@ allbodies = Model.GetChildren(
 """)
 mechanical.run_python_script("allbodies.Count")
 ```
-Perform project-specific operations:
+## Perform project-specific operations:
 ```{python}
 #| eval: false
 
@@ -144,10 +143,10 @@ mechanical.log_message("INFO", "info message")
 mechanical.exit(force=True)
 ```
 
-# Load an embedded instance of Mechanical using python
+# Load a Mechanical embedded instance
 
 
-## Start a PyMechanical embedded instance
+## Start an instance of App
 ```{python}
 #| eval: false
 from ansys.mechanical.core import App
