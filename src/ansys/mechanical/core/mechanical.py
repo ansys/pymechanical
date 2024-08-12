@@ -43,6 +43,7 @@ import grpc
 
 import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core import LOG
+from ansys.mechanical.core.embedding.rpc.utils import remote_method
 from ansys.mechanical.core.errors import (
     MechanicalExitedError,
     MechanicalRuntimeError,
@@ -907,6 +908,7 @@ class Mechanical(object):
             f"'DEBUG','INFO', 'WARNING', 'ERROR', and 'CRITICAL'."
         )
 
+    @remote_method
     def run_python_script(
         self, script_block: str, enable_logging=False, log_level="WARNING", progress_interval=2000
     ):

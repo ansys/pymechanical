@@ -60,7 +60,11 @@ class Server:
             continue
         print("done initializing mechanical")
 
-        self._impl = impl(self._app)
+        if impl is None:
+            self._impl = None
+        else:
+            self._impl = impl(self._app)
+
         my_service = self._service(self._app, self._poster, self._methods, self._impl)
         self._server = ThreadedServer(my_service, port=self._port)
 

@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """RPC and Mechanical service implementation."""
+from .client import Client
 from .server import Server
 from .service import MechanicalService
 from .utils import get_remote_methods, remote_method
