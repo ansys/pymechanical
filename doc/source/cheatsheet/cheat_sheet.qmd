@@ -1,13 +1,21 @@
 ---
-title: Pymechanical cheat sheet demo 1
+title: PyMechanical cheat sheet
 format: cheat_sheet-pdf
 version: 0.11.0
-footer: Getting started with Pymechanical
+footer: PyMechanical
 footerlinks:
   - urls: 'https://mechanical.docs.pyansys.com/version/stable/'
-    text: Pymechanical documentation
+    text: Documentation
   - urls: 'https://mechanical.docs.pyansys.com/version/stable/getting_started/index.html'
-    text: Pymechanical documentation - Getting started
+    text: Getting started
+  - urls: 'https://mechanical.docs.pyansys.com/version/stable/examples/index.html'
+    text: Examples
+  - urls: 'https://mechanical.docs.pyansys.com/version/stable/user_guide_scripting/index.html'
+    text: Mechanical scripting
+  - urls: 'https://mechanical.docs.pyansys.com/version/stable/api/index.html'
+    text: API reference
+  - urls: 'https://mechanical.docs.pyansys.com/version/stable/kil/index.html'
+    text: Known issues and limitations
 execute:
     # output: false
     eval: false
@@ -26,36 +34,22 @@ jupyter:
     name: python3
 ---
 
-# [Remote Session] Launch Pymechanical
+# Connect to remote session of Mechanical using python
 
-Launch and connect to a PyMechanical Remote session
+
+## Launch and connect to a PyMechanical Remote session
 ```{python}
 #| eval: false
 # Launch an instance
 from ansys.mechanical.core import launch_mechanical
 mechanical = launch_mechanical()
 ```
-
-Launch Mechanical from a local or remote terminal
+## Launch Mechanical UI
 ```{python}
 #| eval: false
-ansys-mechanical -r 242 --port 10000 -g
+mechanical = launch_mechanical(batch=False)
 ```
-
-Manually connect to this Mechanical session from a local client:
-```{python}
-#| eval: false
-import ansys.mechanical.core as pymechanical
-# Connect locally
-mechanical = pymechanical.Mechanical(port=10000)
-          # Or
-# Remotely, specifying the IP address or hostname
-mechanical = pymechanical.Mechanical(
-  "192.168.0.1", port=10000
-  )
-```
-
-# Launch by version
+## Launch by version
 Verify the license and version of Mechanical that is used:
 ```{python}
 #| eval: false
@@ -73,16 +67,24 @@ mechanical = launch_mechanical(
   )
 print(mechanical)
 ```
-
-# Launch the Mechanical UI
+## Launch Mechanical using cli
 ```{python}
 #| eval: false
-mechanical = pymechanical.launch_mechanical(
-  batch=False
+ansys-mechanical -r 242 --port 10000 -g
+```
+## Manually connect to this Mechanical session
+```{python}
+#| eval: false
+import ansys.mechanical.core as pymechanical
+# Connect locally
+mechanical = pymechanical.Mechanical(port=10000)
+          # Or
+# Remotely, specifying the IP address or hostname
+mechanical = pymechanical.Mechanical(
+  "192.168.0.1", port=10000
   )
 ```
-
-# Send commands to mechanical
+## Send commands to mechanical
 Run a single command:
 ```{python}
 #| eval: false
@@ -99,27 +101,29 @@ Evaluate a block of commands:
 #| eval: false
 # Import a material
 commands = """
-cu_mat_file_path = r'D:\Workdir\copper.xml'.replace("\\", "\\\\")
+cu_mat_file_path = (
+    r'D:\Workdir\copper.xml'.replace("\\", "\\\\")
+)
 materials = Model.Materials
 materials.Import(cu_mat__file_path)
 """
 mechanical.run_python_script(commands)
 ```
-Execute a Python script:
+## Execute a Python script:
 ```{python}
 #| eval: false
 mechanical.run_python_script_from_file(file_path)
 ```
-
 Import a Mechanical file and print the count of bodies:
 ```{python}
 #| eval: false
 file = r"D:\\Workdir\\bracket.mechdb"
-command = f'ExtAPI.DataModel.Project.Open("{file}")'
+command = f'DataModel.Project.Open("{file}")'
 mechanical.run_python_script(command)
-mechanical.run_python_script(
-  "allbodies=Model.GetChildren(
-  DataModelObjectCategory.Body,True)")
+mechanical.run_python_script("""
+allbodies = Model.GetChildren(
+    DataModelObjectCategory.Body, True)
+""")
 mechanical.run_python_script("allbodies.Count")
 ```
 Perform project-specific operations:
@@ -140,8 +144,10 @@ mechanical.log_message("INFO", "info message")
 mechanical.exit(force=True)
 ```
 
-# [Embedded Instance] Start PyMechanical
-Create a PyMechanical embedded instance
+# Load an embedded instance of Mechanical using python
+
+
+## Start a PyMechanical embedded instance
 ```{python}
 #| eval: false
 from ansys.mechanical.core import App
@@ -152,11 +158,10 @@ Extract and merge global API entry points:
 ```{python}
 #| eval: false
 
-# Extract the global API entry points from Mechanical
+# Extract global API entry points from Mechanical
 # Merge them into your Python global variables
 app.update_globals(globals())
 ```
-
 Access entry points from Python:
 ```{python}
 #| eval: false
@@ -178,37 +183,33 @@ allbodies = Model.GetChildren(
   DataModelObjectCategory.Body, True)
 print(allbodies.Count)
 ```
-Turn on warning logging:
+## Turn on warning logging:
 ```{python}
 #| eval: false
 
 import logging
 from ansys.mechanical.core import App
-from ansys.mechanical.core.embedding.logger import (
-  Configuration,
-  Logger)
+from ansys.mechanical.core.embedding.logger
+import Configuration,Logger
 Configuration.configure(level=logging.WARNING,
 to_stdout=True)
 app = App(version=242)
-Logger.error("message")
+Logger.error("Test Error Message")
 ```
-
+## Visualize geometry in 3D:
+```{python}
+#| eval: false
+# requires Mechanical version >= 24R2
+app.plot()
+```
+## Print project structure as tree:
+```{python}
+#| eval: false
+app.print_tree()
+# print only 20 lines
+app.print_tree(max_lines=20)
+```
 
 ```{python}
 #| eval: false
 ```
-
-```{python}
-#| eval: false
-```
-
-```{python}
-#| eval: false
-```
-
-## References from Pymechanical documentation
-
-- [Getting started](https://mechanical.docs.pyansys.com/version/stable/getting_started/index.html)
-- [Examples](https://mechanical.docs.pyansys.com/version/stable/mechanical_commands/index.html)
-- [API reference](https://mechanical.docs.pyansys.com/version/stable/api/index.html)
-- [Mechanical Scripting](https://mechanical.docs.pyansys.com/version/stable/api/index.html)
