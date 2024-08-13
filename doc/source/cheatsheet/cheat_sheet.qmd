@@ -1,7 +1,7 @@
 ---
 title: PyMechanical cheat sheet
 format: cheat_sheet-pdf
-version: 0.11.0
+version: main
 footer: PyMechanical
 footerlinks:
   - urls: 'https://mechanical.docs.pyansys.com/version/stable/'
