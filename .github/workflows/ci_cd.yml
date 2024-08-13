@@ -514,11 +514,6 @@ jobs:
           apt install ./quarto*linux-amd64.deb
           quarto install tool tinytex --log-level warning
 
-      # - name: Install quarto to build cheatsheet
-      #   uses: quarto-dev/quarto-actions/setup@v2
-      #   with:
-      #     tinytex: true
-
       - name: Test quarto installation
         run: quarto --version
 
@@ -565,7 +560,7 @@ jobs:
           }
 
           # Make the html doc & validate results
-          make_doc html-noplot
+          make_doc html
 
           # Make the pdf doc & validate results
           make_doc pdf
