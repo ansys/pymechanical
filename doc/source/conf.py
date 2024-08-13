@@ -318,3 +318,17 @@ if switcher_version != "dev":
     linkcheck_ignore.append(
         f"https://github.com/ansys/pymechanical/releases/tag/v{pymechanical.__version__}"
     )
+
+
+def replace_version_in_qmd(file_path, version):
+    """Update the version in cheatsheet."""
+    with open(file_path, "r") as file:
+        content = file.read()
+
+    content = content.replace("version: main", f"version: {version}")
+
+    with open(file_path, "w") as file:
+        file.write(content)
+
+
+replace_version_in_qmd("cheatsheet/cheat_sheet.qmd", version)
