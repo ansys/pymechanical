@@ -78,7 +78,7 @@ import ansys.mechanical.core as pymechanical
 # Connect locally
 mechanical = pymechanical.Mechanical(port=10000)
           # Or
-# Connect remotely, specifying the IP address or hostname
+# Connect remotely, to the IP address or hostname
 mechanical = pymechanical.Mechanical(
   "192.168.0.1", port=10000
   )
