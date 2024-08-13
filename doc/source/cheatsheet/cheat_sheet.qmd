@@ -66,24 +66,24 @@ mechanical = launch_mechanical(
   )
 print(mechanical)
 ```
-## Launch Mechanical using cli
+## Launch Mechanical using the CLI
 ```{python}
 #| eval: false
 ansys-mechanical -r 242 --port 10000 -g
 ```
-## Manually connect to this Mechanical session
+## Manually connect to the Mechanical session
 ```{python}
 #| eval: false
 import ansys.mechanical.core as pymechanical
 # Connect locally
 mechanical = pymechanical.Mechanical(port=10000)
           # Or
-# Remotely, specifying the IP address or hostname
+# Connect remotely, specifying the IP address or hostname
 mechanical = pymechanical.Mechanical(
   "192.168.0.1", port=10000
   )
 ```
-## Send commands to mechanical
+## Send commands to Mechanical
 Run a single command:
 ```{python}
 #| eval: false
