@@ -233,6 +233,9 @@ html_sidebars = {
     "examples/index": [],
     "contributing": [],
 }
+
+html_show_sourcelink = False
+
 # -- Options for LaTeX output ------------------------------------------------
 latex_elements = {}
 
