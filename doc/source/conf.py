@@ -215,12 +215,10 @@ html_theme_options = {
             f"pymechanical-v{get_version_match(version).replace('.', '-')}": "PyMechanical",
         },
     },
-    # "cheatsheet": {
-    #     "url": "https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.pdf",
-    #     "title": "PyMechanical cheat sheet",
-    #     "thumbnail": "https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.png",
-    #     "needs_download": True,
-    # },
+    "cheatsheet": {
+        "file": "cheatsheet/cheat_sheet.qmd",
+        "title": "PyMechanical cheat sheet",
+    },
     "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
     "navigation_depth": 10,
 }
@@ -320,3 +318,17 @@ if switcher_version != "dev":
     linkcheck_ignore.append(
         f"https://github.com/ansys/pymechanical/releases/tag/v{pymechanical.__version__}"
     )
+
+
+def replace_version_in_qmd(file_path, version):
+    """Update the version in cheatsheet."""
+    with open(file_path, "r") as file:
+        content = file.read()
+
+    content = content.replace("version: main", f"version: {version}")
+
+    with open(file_path, "w") as file:
+        file.write(content)
+
+
+replace_version_in_qmd("cheatsheet/cheat_sheet.qmd", version)
