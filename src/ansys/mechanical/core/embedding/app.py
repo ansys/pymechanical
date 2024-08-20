@@ -23,6 +23,8 @@
 """Main application class for embedded Mechanical."""
 import atexit
 import os
+import subprocess
+from tempfile import NamedTemporaryFile
 import typing
 import warnings
 
@@ -184,6 +186,10 @@ class App:
         """Save the project."""
         if path is not None:
             self.DataModel.Project.Save(path)
+            mechdat_file = NamedTemporaryFile()  # delete=False
+            subprocess.Popen(
+                ["ansys-mechanical", "--project-file", mechdat_file.name, "--graphical"]
+            )
         else:
             self.DataModel.Project.Save()
 
