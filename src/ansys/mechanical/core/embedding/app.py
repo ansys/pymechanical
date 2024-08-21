@@ -23,8 +23,10 @@
 """Main application class for embedded Mechanical."""
 import atexit
 import os
-import subprocess
-from tempfile import NamedTemporaryFile
+
+# import shutil
+# import subprocess
+# from tempfile import NamedTemporaryFile
 import typing
 import warnings
 
@@ -34,6 +36,8 @@ from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 from ansys.mechanical.core.embedding.imports import global_entry_points, global_variables
 from ansys.mechanical.core.embedding.poster import Poster
 from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
+
+# from ansys.mechanical.core.run import _run
 
 try:
     import ansys.tools.visualization_interface  # noqa: F401
@@ -185,13 +189,22 @@ class App:
     def save(self, path=None):
         """Save the project."""
         if path is not None:
+            # Save the file to the path
             self.DataModel.Project.Save(path)
-            mechdat_file = NamedTemporaryFile()  # delete=False
-            subprocess.Popen(
-                ["ansys-mechanical", "--project-file", mechdat_file.name, "--graphical"]
-            )
         else:
             self.DataModel.Project.Save()
+
+    # get loc of current project
+    # call save as
+    # copy all files
+    # this will be an expensive function
+    # make launch gui function
+    # save copy function?
+
+    # Copy mechdat file to NamedTemporaryFile
+    # mechdat_file = NamedTemporaryFile() # delete=False
+    # shutil.copyfile(path, mechdat_file.name)
+    # subprocess.Popen(["ansys-mechanical", "--project-file", mechdat_file.name, "--graphical"])
 
     def save_as(self, path):
         """Save the project as."""
