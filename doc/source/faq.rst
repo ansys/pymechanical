@@ -94,3 +94,58 @@ This section provides answers to frequently asked questions.
     - If Mechanical is embedded, use the
       `app.new() <../api/ansys/mechanical/core/embedding/app/App.html#App.new>`_
       method.
+
+.. dropdown:: How to check if license is active with PyMechanical ?
+
+    Mechanical product related information can be printed with remote and embedding mode as given below
+
+    .. tab-set::
+
+        .. tab-item:: Remote
+
+            .. code-block:: python
+
+                import ansys.mechanical.core as pymechanical
+
+                mechanical = pymechanical.launch_mechanical()
+                print(mechanical)
+
+        .. tab-item:: Embedding
+
+            .. code-block:: python
+
+                import ansys.mechanical.core as pymechanical
+
+                app = pymechanical.App()
+                print(app)
+
+    The output from above shows what license is being used inside [] right to Ansys Mechanical . If the PyMechanical
+    is unable to grab any license then it will be left blank
+
+    .. code-block:: shell
+
+        Ansys Mechanical [Ansys Mechanical Enterprise]
+        Product Version:242
+        Software build date: 06/03/2024 09:35:09
+
+
+
+.. dropdown:: How to fix mechanical-env error in Linux ?
+
+    To use embedded instance in Linux, mechanical-env should be called before starting python shell or running python script.
+    Example usage is given below
+
+    .. code-block:: shell
+
+        $ mechanical-env python
+        >>> import ansys.mechanical.core as mech
+        >>> app=mech.App(version=42)
+
+    or
+
+    .. code-block:: shell
+
+        $ mechanical-env python pymechanical-test.py
+
+
+

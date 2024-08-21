@@ -14,7 +14,7 @@ interface to drive the software that facilitates the use of
 
 .. grid:: 1 2 2 2
 
-    .. grid-item-card:: :fas:`fa-regular fa-screwdriver-wrench` Background
+    .. grid-item-card:: Background
         :padding: 2 2 2 2
         :link: ../architecture
         :link-type: doc
@@ -22,16 +22,7 @@ interface to drive the software that facilitates the use of
 
         Information on the application architecture of Mechanical and why there are two Python interfaces.
 
-    .. grid-item-card:: :fas:`fa-regular fa-screwdriver-wrench` Mechanical Scripting
-        :padding: 2 2 2 2
-        :link: ../user_guide_scripting/index
-        :link-type: doc
-        :text-align: left
-
-        PyMechanical uses the same Mechanical scripting APIs,
-        allowing automation from outside Mechanical.
-
-    .. grid-item-card:: :fas:`fa-regular fa-screwdriver-wrench` Installation guide
+    .. grid-item-card:: Installation guide
         :padding: 2 2 2 2
         :link: installation
         :link-type: doc
@@ -39,7 +30,7 @@ interface to drive the software that facilitates the use of
 
         How to install and verify PyMechanical.
 
-    .. grid-item-card:: :fas:`fa-solid fa-gears` Launching PyMechanical
+    .. grid-item-card:: Launching PyMechanical
         :padding: 2 2 2 2
         :link: running_mechanical
         :link-type: doc
@@ -47,7 +38,7 @@ interface to drive the software that facilitates the use of
 
         Steps to run PyMechanical.
 
-    .. grid-item-card:: :fab:`fa-brands fa-docker` Docker setup
+    .. grid-item-card:: Docker setup
         :padding: 2 2 2 2
         :link: docker
         :link-type: doc
@@ -55,7 +46,7 @@ interface to drive the software that facilitates the use of
 
         How to create mechanical docker images.
 
-    .. grid-item-card:: :fab:`fa-brands fa-ubuntu` WSL
+    .. grid-item-card:: WSL
         :padding: 2 2 2 2
         :link: wsl
         :link-type: doc
@@ -69,9 +60,8 @@ interface to drive the software that facilitates the use of
    :hidden:
    :maxdepth: 2
 
+   ../architecture
    installation
    running_mechanical
    docker
    wsl
-   ../kil/index
-   faq
