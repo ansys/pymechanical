@@ -5,9 +5,8 @@ Getting started
 
 PyMechanical is part of the broader `PyAnsys <pyansys_>`_ initiative,
 enabling the use of Ansys technologies directly from Python.
-This allows users to integrate the Mechanical multiphysics solver
-into custom applications.
-The ``ansys-mechanical-core`` package presents a Python-friendly
+It allows users to integrate the Mechanical multiphysics solver
+into custom applications via ``ansys-mechanical-core``, which provides a Python-friendly
 interface to drive the software that facilitates the use of
 :ref:`ref_user_guide_scripting` commands.
 
@@ -28,7 +27,7 @@ interface to drive the software that facilitates the use of
         :link-type: doc
         :text-align: left
 
-        How to install and verify PyMechanical.
+        Instructions to install and verify PyMechanical.
 
     .. grid-item-card:: Launching PyMechanical
         :padding: 2 2 2 2
@@ -44,15 +43,15 @@ interface to drive the software that facilitates the use of
         :link-type: doc
         :text-align: left
 
-        How to create mechanical docker images.
+        How to create Mechanical docker images.
 
-    .. grid-item-card:: WSL
+    .. grid-item-card:: Windows Subsystem for Linux (WSL)
         :padding: 2 2 2 2
         :link: wsl
         :link-type: doc
         :text-align: left
 
-        Installing PyMechanical on Linux via WSL.
+        Using PyMechanical with Windows Subsystem for Linux.
 
 
 

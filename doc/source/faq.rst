@@ -6,6 +6,7 @@ Frequently asked questions
 This section provides answers to frequently asked questions.
 
 .. dropdown:: How do you report issues?
+    :animate: fade-in-slide-down
 
     You can report issues with PyMechanical, such as bugs, feature requests,
     and documentation errors, on the PyMechanical repository's `Issues
@@ -16,6 +17,7 @@ This section provides answers to frequently asked questions.
     `Discussions <https://github.com/ansys/pymechanical/discussions>`_ page.
 
 .. dropdown:: How is PyMechanical positioned with respect to other related Ansys tools?
+    :animate: fade-in-slide-down
 
     When you want to automate or extend Ansys Mechanical, you should
     consider these tools:
@@ -28,8 +30,7 @@ This section provides answers to frequently asked questions.
     for batch mode. You can use the first two tools from either Ansys Workbench or from
     standalone Mechanical.
 
-    ACT in Mechanical
-    ^^^^^^^^^^^^^^^^^
+    **ACT in Mechanical**
 
     In Mechanical, ACT is a customization framework. When specific features are missing,
     you can add them using ACT. Of course, some of those missing features might be
@@ -37,8 +38,7 @@ This section provides answers to frequently asked questions.
     capabilities, such as extensions to Mechanical's data model, the ability to connect
     to callbacks, and even integrations of external solvers.
 
-    Scripting in Mechanical
-    ^^^^^^^^^^^^^^^^^^^^^^^
+    **Scripting in Mechanical**
 
     The Python scripting capability in Mechanical was born out of the same development
     that brought ACT to Mechanical. This tool provides the same APIs as those used for
@@ -48,8 +48,7 @@ This section provides answers to frequently asked questions.
     provides script recording, autocomplete, and a snippet library. However, it is possible
     to use this tool in batch mode without the Mechanical user interface.
 
-    PyMechanical
-    ^^^^^^^^^^^^
+    **PyMechanical**
 
     PyMechanical allows you to write Python scripts outside of Mechanical, with tight
     integration with other open source modules and Ansys products. With this tool, you
@@ -57,6 +56,7 @@ This section provides answers to frequently asked questions.
     no dependency on opening the Mechanical user interface.
 
 .. dropdown:: What is the relationship with Ansys Workbench?
+    :animate: fade-in-slide-down
 
     Ansys Workbench is a no-code environment to set up analysis systems that can be linked
     together. It is part of the Ansys family of software tools for process automation and design
@@ -71,9 +71,10 @@ This section provides answers to frequently asked questions.
     the hood.
 
 .. dropdown:: How do you restart a script?
+    :animate: fade-in-slide-down
 
     If you have trouble terminating a simulation, you do not have to close Python, reopen it, and
-    clear all previous data such as the mesh using this code:
+    clear all previous data, such as the mesh, using this code:
 
     .. code:: python
 
@@ -82,7 +83,7 @@ This section provides answers to frequently asked questions.
         sys.modules[__name__].__dict__.clear()
 
     Simply exiting Python should clear the solution within Python. This is because
-    stopping the original process means that nothing should be in present in
+    stopping the original process means that nothing should be present in
     a new process.
 
     The way that you clear all data from Mechanical in PyMechanical depends on if
@@ -95,9 +96,10 @@ This section provides answers to frequently asked questions.
       `app.new() <../api/ansys/mechanical/core/embedding/app/App.html#App.new>`_
       method.
 
-.. dropdown:: How to check if license is active with PyMechanical ?
+.. dropdown:: How do you check if a license is active with PyMechanical?
+    :animate: fade-in-slide-down
 
-    Mechanical product related information can be printed with remote and embedding mode as given below
+    Information about Mechanical can be printed with remote and embedding mode:
 
     .. tab-set::
 
@@ -119,21 +121,36 @@ This section provides answers to frequently asked questions.
                 app = pymechanical.App()
                 print(app)
 
-    The output from above shows what license is being used inside [] right to Ansys Mechanical . If the PyMechanical
-    is unable to grab any license then it will be left blank
+    The output from the above code will indicate the license being used inside the brackets, next to *Ansys Mechanical*.
+    If PyMechanical is unable to retrieve any license, the field will be left blank.
 
-    .. code-block:: shell
+    .. tab-set::
 
-        Ansys Mechanical [Ansys Mechanical Enterprise]
-        Product Version:242
-        Software build date: 06/03/2024 09:35:09
+        .. tab-item:: With License
+
+            .. code-block:: shell
+
+                Ansys Mechanical [Ansys Mechanical Enterprise]
+                Product Version:242
+                Software build date: 06/03/2024 09:35:09
+
+        .. tab-item:: Without License
+
+            .. code-block:: shell
+
+                Ansys Mechanical []
+                Product Version:242
+                Software build date: 06/03/2024 09:35:09
+
+    Alternatively, once the ``app`` is created ``readonly`` method can be used to see if license is active.
+    If license is not checked out then it is in read only mode.
 
 
+.. dropdown:: Why do I get ``mechanical-env`` exception in Linux?
+    :animate: fade-in-slide-down
 
-.. dropdown:: How to fix mechanical-env error in Linux ?
-
-    To use embedded instance in Linux, mechanical-env should be called before starting python shell or running python script.
-    Example usage is given below
+    To use the embedded instance on Linux, ``mechanical-env`` should be invoked before
+    starting the Python shell or running a Python script.
 
     .. code-block:: shell
 
@@ -145,7 +162,7 @@ This section provides answers to frequently asked questions.
 
     .. code-block:: shell
 
-        $ mechanical-env python pymechanical-test.py
+        $ mechanical-env python test.py
 
 
 

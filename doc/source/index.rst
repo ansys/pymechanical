@@ -3,14 +3,16 @@
    :class: only-light
    :alt: PyMechanical Logo
    :width: 580px
+   :align: center
 
 .. image:: /_static/logo/pymechanical-logo-dark.png
    :class: only-dark
    :alt: PyMechanical
    :width: 580px
+   :align: center
 
 
-Provides a Python API to interact with `Ansys Mechanical`_ from **23R2** and later.
+Python API to interact with `Ansys Mechanical`_ (FEA software for structural engineering) from **2023R2** and later versions.
 
 .. grid:: 3
 
@@ -23,16 +25,16 @@ Provides a Python API to interact with `Ansys Mechanical`_ from **23R2** and lat
         Learn how to install and use PyMechanical. Explains architecture
         and background.
 
-        :bdg-primary-line:`install` :bdg-primary-line:`architecture` :bdg-primary-line:`docker`
+        :bdg-primary-line:`Install` :bdg-primary-line:`Architecture` :bdg-primary-line:`Docker`
 
     .. grid-item-card:: Examples :fa:`scroll`
         :padding: 2 2 2 2
-        :link: example/index
+        :link: examples/index
         :link-type: doc
 
         Dive into examples created using PyMechanical.
 
-        :bdg-primary-line:`basic` :bdg-primary-line:`technology-showcase` :bdg-primary-line:`tips`
+        :bdg-primary-line:`Basic` :bdg-primary-line:`Technology-showcase` :bdg-primary-line:`Tips`
 
     .. grid-item-card:: API reference :fa:`book-bookmark`
         :padding: 2 2 2 2
@@ -41,8 +43,7 @@ Provides a Python API to interact with `Ansys Mechanical`_ from **23R2** and lat
 
         Understand PyMechanical API endpoints and their capabilities
 
-        :bdg-primary-line:`ansys.mechanical.core`
-
+        :bdg-primary-line:`Classes` :bdg-primary-line:`Methods` :bdg-primary-line:`Error handling`
 
     .. grid-item-card:: Embedding instance :fa:`window-maximize`
         :padding: 2 2 2 2
@@ -70,7 +71,7 @@ Provides a Python API to interact with `Ansys Mechanical`_ from **23R2** and lat
 
         Overview of Mechanical scripting.
 
-        :bdg-primary-line:`ACT` :bdg-primary-line:`threading`
+        :bdg-primary-line:`ACT` :bdg-primary-line:`Threading`
 
     .. grid-item-card:: FAQs :fa:`fa-solid fa-circle-question`
         :padding: 2 2 2 2
@@ -78,6 +79,8 @@ Provides a Python API to interact with `Ansys Mechanical`_ from **23R2** and lat
         :link-type: doc
 
         Frequently asked questions and their answers.
+
+        :bdg-primary-line:`How` :bdg-primary-line:`Why` :bdg-primary-line:`What`
 
     .. grid-item-card:: Known issues and limitations :fa:`fa-solid fa-bug`
         :padding: 2 2 2 2
@@ -96,6 +99,7 @@ Provides a Python API to interact with `Ansys Mechanical`_ from **23R2** and lat
         Learn how to contribute to the PyMechanical codebase
         or documentation.
 
+        :bdg-primary-line:`Test` :bdg-primary-line:`Documentation` :bdg-primary-line:`Issues`
 
 .. toctree::
    :hidden:
