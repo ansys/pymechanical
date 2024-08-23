@@ -37,6 +37,7 @@
    :alt: Black
 
 
+Python API to interact with `Ansys Mechanical`_ (FEA software for structural engineering) from **2023R2** and later versions.
 
 .. toctree::
    :hidden:

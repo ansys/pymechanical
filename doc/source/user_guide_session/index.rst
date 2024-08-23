@@ -21,7 +21,7 @@ to a remote Mechanical session.
 Overview
 --------
 
-The :func:`launch_mechanical()<ansys.mechanical.core.mechanical.launch_mechanical>` method
+The `launch_mechanical() <../api/ansys/mechanical/core/mechanical/index.html#mechanical.launch_mechanical>`_ method
 creates an instance of the `Mechanical <../api/ansys/mechanical/core/mechanical/Mechanical.html>`_
 class in the background and sends commands to it as a service. Because errors and warnings
 are processed Pythonically, you can develop a script in real time without worrying about
