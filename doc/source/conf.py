@@ -296,13 +296,6 @@ epub_exclude_files = ["search.html"]
 
 # -- Linkcheck config --------------------------------------------------------
 
-linkcheck_request_headers = {
-    r"https://www.ansys.com/": {
-        "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux i686; "
-        "rv:24.0) Gecko/20100101 Firefox/24.0"
-    }
-}
-
 linkcheck_ignore = [
     "https://github.com/ansys/pymechanical/pkgs/container/.*",
     "gallery_examples/embedding_n_remote/embedding_remote.html",
@@ -315,6 +308,8 @@ linkcheck_ignore = [
     "../api/*",  # Remove this after release 0.10.12
     "path.html",
 ]
+
+user_agent = """curl https://www.ansys.com -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.3"""  # noqa: E501
 
 linkcheck_anchors = False
 
