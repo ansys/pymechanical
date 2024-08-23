@@ -12,8 +12,7 @@ from datetime import datetime
 import os
 import warnings
 
-from ansys_sphinx_theme import ansys_favicon, get_version_match, pyansys_logo_black
-import requests
+from ansys_sphinx_theme import ansys_favicon, get_version_match
 from sphinx_gallery.sorting import FileNameSortKey
 
 import ansys.mechanical.core as pymechanical
@@ -223,7 +222,6 @@ sphinx_gallery_conf = {
 # -- Options for HTML output -------------------------------------------------
 html_short_title = html_title = "PyMechanical"
 html_theme = "ansys_sphinx_theme"
-html_logo = pyansys_logo_black
 html_context = {
     "github_user": "pyansys",
     "github_repo": "pymechanical",
@@ -231,6 +229,7 @@ html_context = {
     "doc_path": "doc/source",
 }
 html_theme_options = {
+    "logo": "pyansys",
     "switcher": {
         "json_url": f"https://{cname}/versions.json",
         "version_match": get_version_match(version),
@@ -241,7 +240,7 @@ html_theme_options = {
     "show_breadcrumbs": True,
     "collapse_navigation": True,
     "use_edit_page_button": True,
-    "header_links_before_dropdown": 4,  # number of links before the dropdown menu
+    "header_links_before_dropdown": 5,  # number of links before the dropdown menu
     "additional_breadcrumbs": [
         ("PyAnsys", "https://docs.pyansys.com/"),
     ],
@@ -259,10 +258,8 @@ html_theme_options = {
         },
     },
     "cheatsheet": {
-        "url": "https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.pdf",
+        "file": "cheatsheet/cheat_sheet.qmd",
         "title": "PyMechanical cheat sheet",
-        "thumbnail": "https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.png",
-        "needs_download": True,
     },
     "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
     "navigation_depth": 10,
@@ -273,7 +270,11 @@ html_theme_options = {
 # Output file base name for HTML help builder.
 htmlhelp_basename = "pymechanicaldoc"
 
-
+html_sidebars = {
+    "changelog": [],
+    "examples/index": [],
+    "contributing": [],
+}
 # -- Options for LaTeX output ------------------------------------------------
 latex_elements = {}
 
@@ -359,3 +360,17 @@ if switcher_version != "dev":
     linkcheck_ignore.append(
         f"https://github.com/ansys/pymechanical/releases/tag/v{pymechanical.__version__}"
     )
+
+
+def replace_version_in_qmd(file_path, version):
+    """Update the version in cheatsheet."""
+    with open(file_path, "r") as file:
+        content = file.read()
+
+    content = content.replace("version: main", f"version: {version}")
+
+    with open(file_path, "w") as file:
+        file.write(content)
+
+
+replace_version_in_qmd("cheatsheet/cheat_sheet.qmd", version)

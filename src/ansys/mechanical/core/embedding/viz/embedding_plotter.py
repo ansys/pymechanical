@@ -72,6 +72,8 @@ def _get_nodes_and_coords(node: "Ansys.Mechanical.Scenegraph.Node"):
 def to_plotter(app: "ansys.mechanical.core.embedding.App"):
     """Convert the app's geometry to an ``ansys.tools.visualization_interface.Plotter`` instance."""
     plotter = Plotter()
+
+    # TODO - use get_scene from utils instead of looping over bodies directly here.
     for body in app.DataModel.GetObjectsByType(
         Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Body
     ):
