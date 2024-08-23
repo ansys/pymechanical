@@ -296,6 +296,13 @@ epub_exclude_files = ["search.html"]
 
 # -- Linkcheck config --------------------------------------------------------
 
+linkcheck_request_headers = {
+    r"https://www.ansys.com/": {
+        "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux i686; "
+        "rv:24.0) Gecko/20100101 Firefox/24.0"
+    }
+}
+
 linkcheck_ignore = [
     "https://github.com/ansys/pymechanical/pkgs/container/.*",
     "gallery_examples/embedding_n_remote/embedding_remote.html",
@@ -312,7 +319,7 @@ linkcheck_ignore = [
 linkcheck_anchors = False
 
 # user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.2420.81"  # noqa: E501
-user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Edg/123.0.2420.81"  # noqa: E501
+# user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Edg/123.0.2420.81"  # noqa: E501
 # If we are on a release, we have to ignore the "release" URLs, since it is not
 # available until the release is published.
 switcher_version = get_version_match(version)
