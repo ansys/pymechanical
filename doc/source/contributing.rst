@@ -55,7 +55,8 @@ Test PyMechanical
 -----------------
 
 PyMechanical uses `PyTest`_ and `tox`_ for unit testing. Prior to running the tests,
-you must run this command to install the test dependencies::
+ensure Mechanical is installed on your system with a valid license and the test
+dependencies are installed. Run this command to install the test dependencies::
 
   pip install -e .[tests]
 
