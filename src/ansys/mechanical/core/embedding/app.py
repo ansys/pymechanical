@@ -25,10 +25,6 @@ import atexit
 import os
 from subprocess import Popen
 import tempfile
-
-# import shutil
-# import subprocess
-# from tempfile import NamedTemporaryFile
 import typing
 import warnings
 
@@ -38,8 +34,6 @@ from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 from ansys.mechanical.core.embedding.imports import global_entry_points, global_variables
 from ansys.mechanical.core.embedding.poster import Poster
 from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
-
-# from ansys.mechanical.core.run import _run
 
 try:
     import ansys.tools.visualization_interface  # noqa: F401
@@ -191,7 +185,6 @@ class App:
     def save(self, path=None):
         """Save the project."""
         if path is not None:
-            # Save the file to the path
             self.DataModel.Project.Save(path)
         else:
             self.DataModel.Project.Save()
