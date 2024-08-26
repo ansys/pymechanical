@@ -23,6 +23,8 @@
 """Main application class for embedded Mechanical."""
 import atexit
 import os
+from subprocess import Popen
+import tempfile
 
 # import shutil
 # import subprocess
@@ -194,21 +196,34 @@ class App:
         else:
             self.DataModel.Project.Save()
 
-    # get loc of current project
-    # call save as
-    # copy all files
-    # this will be an expensive function
-    # make launch gui function
-    # save copy function?
-
-    # Copy mechdat file to NamedTemporaryFile
-    # mechdat_file = NamedTemporaryFile() # delete=False
-    # shutil.copyfile(path, mechdat_file.name)
-    # subprocess.Popen(["ansys-mechanical", "--project-file", mechdat_file.name, "--graphical"])
-
     def save_as(self, path):
         """Save the project as."""
         self.DataModel.Project.SaveAs(path)
+
+    def launch_gui(self):
+        """Launch the GUI."""
+        # Get the project directory
+        project_directory = self.DataModel.Project.ProjectDirectory
+        # Create a temporary file
+        named_temp_file = tempfile.NamedTemporaryFile()
+        # Create the entire mechdb file path
+        temp_mechdb = os.path.join(project_directory, f"{named_temp_file.name}.mechdb")
+        # Call SaveAs - SaveAs copies the entire directory
+        self.DataModel.Project.SaveAs(
+            os.path.join(project_directory, f"{named_temp_file.name}.mechdb")
+        )
+        # Launch the temporary mechdb file in GUI mode
+        Popen(
+            [
+                "ansys-mechanical",
+                "--project-file",
+                temp_mechdb,
+                "--graphical",
+                "--revision",
+                str(self.version),
+            ]
+        )
+        print(f"Done launching Ansys Mechanical {str(self.version)}...")
 
     def new(self):
         """Clear to a new application."""
