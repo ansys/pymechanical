@@ -11,14 +11,12 @@ an embedded instance or remote session.
    .. grid-item-card:: Embedding Examples
       :padding: 2 2 2 2
       :link: https://embedding.examples.mechanical.docs.pyansys.com/examples/index.html
-      :text-align: center
 
       Uses PyMechanical to embed an instance of Mechanical directly within Python as a Python object.
 
    .. grid-item-card:: Remote Session Examples
       :padding: 2 2 2 2
       :link: https://examples.mechanical.docs.pyansys.com/examples/index.html
-      :text-align: center
 
       Uses PyMechanical as a client to a remote Mechanical instance.
 
@@ -27,7 +25,6 @@ an embedded instance or remote session.
    .. grid-item-card:: Embedding Instance & Remote Session Example
       :padding: 2 2 2 2
       :link: gallery_examples/embedding_n_remote/embedding_remote.html
-      :text-align: center
 
       Demonstrates the same model setup in both an embedded instance and remote session,
       as well as examples using a combination of embedded instances and remote sessions.

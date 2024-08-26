@@ -155,10 +155,21 @@ This way, it's not possible for you to push code that fails the style checks::
 
   $ pre-commit install
   $ git commit -am "added my cool feature"
+  check pre-commit.ci config...............................................Passed
   black....................................................................Passed
+  blacken-docs.............................................................Passed
   isort....................................................................Passed
   flake8...................................................................Passed
   codespell................................................................Passed
+  Add License Headers......................................................Passed
+  Ansys Technical Review...................................................Passed
+  pydocstyle...............................................................Passed
+  check for merge conflicts................................................Passed
+  debug statements (python)................................................Passed
+  check yaml...............................................................Passed
+  trim trailing whitespace.................................................Passed
+  check for added large files..............................................Passed
+  Validate GitHub Workflows................................................Passed
 
 Documentation
 -------------
@@ -201,8 +212,8 @@ Use the `PyMechanical Issues <https://github.com/ansys/pymechanical/issues>`_
 page to submit questions, report bugs, and request new features. When possible,
 use these templates:
 
-* Bug report
-* Feature request
+* `Bug report <https://github.com/ansys/pymechanical/issues/new?assignees=&labels=bug&projects=&template=bug.yml&title=Bug+located+in+...>`_
+* `Feature request <https://github.com/ansys/pymechanical/issues/new?assignees=&labels=enhancement&projects=&template=feature.yml&title=Add+...>`_
 
 If your issue does not fit into one of these template categories, create your own issue.
 

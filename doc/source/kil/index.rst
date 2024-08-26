@@ -24,14 +24,12 @@ Ansys recommends that you always use the latest version of both to achieve the b
     .. grid-item-card:: :fas:`fa-solid fa-gears` Mechanical
         :link: mechanical
         :link-type: doc
-        :text-align: center
 
         Known issues and limitations of Standalone Mechanical
 
     .. grid-item-card:: :fab:`fa-brands fa-python` PyMechanical
         :link: pymechanical
         :link-type: doc
-        :text-align: center
 
         Known issues and limitations of PyMechanical
 

@@ -312,3 +312,15 @@ def test_rm_lockfile(embedded_app, tmp_path: pytest.TempPathFactory):
     lockfile_path = os.path.join(embedded_app.DataModel.Project.ProjectDirectory, ".mech_lock")
     # Assert lock file path does not exist
     assert not os.path.exists(lockfile_path)
+
+
+@pytest.mark.embedding
+def test_gui_on_save(embedded_app, tmp_path: pytest.TempPathFactory):
+    """Test lock file is removed on close of embedded application."""
+    mechdat_path = os.path.join(tmp_path, "test.mechdat")
+    embedded_app.save(mechdat_path)
+    embedded_app.close()
+
+    # lockfile_path = os.path.join(embedded_app.DataModel.Project.ProjectDirectory, ".mech_lock")
+    # Assert lock file path does not exist
+    assert False
