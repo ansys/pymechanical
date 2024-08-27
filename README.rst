@@ -49,7 +49,7 @@ Mechanical within Python's ecosystem. It includes the ability to:
 Install the package
 -------------------
 
-Install PyMechanical using `pip` with::
+Install PyMechanical using ``pip`` with::
 
    pip install ansys-mechanical-core
 

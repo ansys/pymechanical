@@ -116,15 +116,16 @@ Verify an embedded instance
 Verify your installation by loading an embedded instance of Mechanical in Python.
 
 .. note::
+
    If you are running on Linux, you must set some environment variables for
    embedding of Mechanical in Python to work. A script that sets these variables is
    shipped with ``ansys-mechanical-env`` which is part of PyMechanical
 
-To use the script, prepend it to any invocation of Python:
+   To use the script, prepend it to any invocation of Python:
 
-.. code::
+   .. code:: shell
 
-    mechanical-env python
+      $ mechanical-env python
 
 Inside of Python, use the following commands to load an embedded instance:
 
