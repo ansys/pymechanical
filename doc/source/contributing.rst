@@ -16,67 +16,52 @@ Clone the repository and install project dependencies
 To clone and install the latest PyMechanical release in development mode, run
 these commands:
 
+Clone the repository and create a virtual environment :
+
+.. code::
+
+  # Clone the repository
+  git clone https://github.com/ansys/pymechanical
+  cd pymechanical
+
+  # Create a virtual environment
+  python -m venv .venv
+
+Activate the virtual environment:
+
 .. tab-set::
 
     .. tab-item:: Windows
 
        .. code::
 
-          # Clone the repository
-          git clone https://github.com/ansys/pymechanical
-          cd pymechanical
-
-          # Create a virtual environment
-          python -m venv .venv
-
           # Activate the virtual environment
           .venv\Scripts\activate.bat
-
-          # Install build system tools
-          python -m pip install --upgrade pip tox flit twine
-
-          # Install the project, documentation, and test dependencies in editable mode
-          python -m pip install -e .[doc,tests]
 
     .. tab-item:: PowerShell
 
        .. code::
 
-          # Clone the repository
-          git clone https://github.com/ansys/pymechanical
-          cd pymechanical
-
-          # Create a virtual environment
-          python -m venv .venv
-
           # Activate the virtual environment
           .venv\Scripts\Activate.ps1
-
-          # Install build system tools
-          python -m pip install --upgrade pip tox flit twine
-
-          # Install the project, documentation, and test dependencies in editable mode
-          python -m pip install -e .[doc,tests]
 
     .. tab-item:: Linux/UNIX
 
        .. code::
 
-          # Clone the repository
-          git clone https://github.com/ansys/pymechanical
-          cd pymechanical
-
-          # Create a virtual environment
-          python -m venv .venv
-
           # Activate the virtual environment
           source .venv/bin/activate
 
-          # Install build system tools
-          python -m pip install --upgrade pip tox flit twine
+Install the project, documentation, and test dependencies:
 
-          # Install the project, documentation, and test dependencies in editable mode
-          python -m pip install -e .[doc,tests]
+.. code::
+
+  # Install build system tools
+  python -m pip install --upgrade pip tox flit twine
+
+  # Install the project, documentation, and test dependencies in editable mode
+  python -m pip install -e .[doc,tests]
+
 
 Test PyMechanical
 -----------------
