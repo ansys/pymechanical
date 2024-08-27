@@ -14,6 +14,7 @@ to a remote Mechanical session.
    :maxdepth: 1
    :hidden:
 
+   self
    server-launcher
    mechanical
    pool
