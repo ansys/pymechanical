@@ -8,7 +8,7 @@ updates:
     assignees:
       - "pyansys-ci-bot"
     commit-message:
-      prefix: "MAINT"
+      prefix: "CHORE"
     labels:
       - "maintenance"
       - "dependencies"
@@ -65,7 +65,7 @@ updates:
       - "dependencies"
       - "dependabot"
     commit-message:
-      prefix: "MAINT"
+      prefix: "CHORE"
     groups:
        actions:
           patterns:

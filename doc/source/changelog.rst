@@ -16,26 +16,31 @@ Added
 ^^^^^
 
 - FEAT: Update cheat sheet with quarto `#845 <https://github.com/ansys/pymechanical/pull/845>`_
+- Feat: add a layer to load into an existing stage `#857 <https://github.com/ansys/pymechanical/pull/857>`_
 
 
 Fixed
 ^^^^^
 
-- Feat: add a layer to load into an existing stage `#857 <https://github.com/ansys/pymechanical/pull/857>`_
 - Refactor usd export `#858 <https://github.com/ansys/pymechanical/pull/858>`_
+- FIX: App plot None check `#860 <https://github.com/ansys/pymechanical/pull/860>`_
 
 
 Documentation
 ^^^^^^^^^^^^^
 
 - chore: update CHANGELOG for v0.11.4 `#856 <https://github.com/ansys/pymechanical/pull/856>`_
-- FIX: App plot None check `#860 <https://github.com/ansys/pymechanical/pull/860>`_
+- MAINT: Cheat sheet `#871 <https://github.com/ansys/pymechanical/pull/871>`_
+
+Dependencies
+^^^^^^^^^^^^
+
+
 - MAINT: update ansys-sphinx-theme `#863 <https://github.com/ansys/pymechanical/pull/863>`_
 - MAINT: Bump the doc group across 1 directory with 4 updates `#866 <https://github.com/ansys/pymechanical/pull/866>`_
 - MAINT: Bump ansys/actions from 6 to 7 `#868 <https://github.com/ansys/pymechanical/pull/868>`_
 - MAINT: Bump matplotlib from 3.9.1 to 3.9.1.post1 `#869 <https://github.com/ansys/pymechanical/pull/869>`_
 - [pre-commit.ci] pre-commit autoupdate `#870 <https://github.com/ansys/pymechanical/pull/870>`_
-- MAINT: Cheat sheet `#871 <https://github.com/ansys/pymechanical/pull/871>`_
 
 `0.11.4 <https://github.com/ansys/pymechanical/releases/tag/v0.11.4>`_ - 2024-08-06
 ===================================================================================

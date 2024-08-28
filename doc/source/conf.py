@@ -198,7 +198,7 @@ html_theme_options = {
     "show_breadcrumbs": True,
     "collapse_navigation": True,
     "use_edit_page_button": True,
-    "header_links_before_dropdown": 5,  # number of links before the dropdown menu
+    "header_links_before_dropdown": 7,  # number of links before the dropdown menu
     "additional_breadcrumbs": [
         ("PyAnsys", "https://docs.pyansys.com/"),
     ],
@@ -233,6 +233,9 @@ html_sidebars = {
     "examples/index": [],
     "contributing": [],
 }
+
+html_show_sourcelink = False
+
 # -- Options for LaTeX output ------------------------------------------------
 latex_elements = {}
 
@@ -305,6 +308,7 @@ linkcheck_ignore = [
     "https://download.ansys.com/*",
     "https://support.ansys.com/*",
     "https://discuss.ansys.com/*",
+    "https://www.ansys.com/*",
     "../api/*",  # Remove this after release 0.10.12
     "path.html",
 ]
