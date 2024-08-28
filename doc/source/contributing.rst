@@ -16,7 +16,7 @@ Clone the repository and install project dependencies
 To clone and install the latest PyMechanical release in development mode, run
 these commands:
 
-Clone the repository and create a virtual environment :
+Clone the repository and create a virtual environment:
 
 .. code::
 
@@ -35,24 +35,21 @@ Activate the virtual environment:
 
        .. code::
 
-          # Activate the virtual environment
           .venv\Scripts\activate.bat
 
     .. tab-item:: PowerShell
 
        .. code::
 
-          # Activate the virtual environment
           .venv\Scripts\Activate.ps1
 
     .. tab-item:: Linux/UNIX
 
        .. code::
 
-          # Activate the virtual environment
           source .venv/bin/activate
 
-Install the project, documentation, and test dependencies:
+Install tools and dependencies:
 
 .. code::
 
