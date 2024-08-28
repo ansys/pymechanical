@@ -1,5 +1,6 @@
-.. image:: https://raw.githubusercontent.com/ansys/pymechanical/main/doc/source/_static/logo/pymechanical-logo-light.png
+.. image:: https://raw.githubusercontent.com/ansys/pymechanical/main/doc/source/_static/logo/pymechanical-logo.png
    :alt: PyMechanical logo
+   :width: 580px
 
 
 |pyansys| |pypi| |python| |GH-CI| |codecov| |MIT| |black|

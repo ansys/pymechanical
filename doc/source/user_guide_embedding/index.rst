@@ -14,6 +14,7 @@ an instance of Mechanical in Python.
    :maxdepth: 1
    :hidden:
 
+   self
    configuration
    globals
    logging

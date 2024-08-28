@@ -1,13 +1,16 @@
 
+:thispagetitle: PyMechanical
+
+
 .. image:: /_static/logo/pymechanical-logo-light.png
    :class: only-light
-   :alt: PyMechanical Logo
+   :alt: PyMechanical Logo Light
    :width: 580px
    :align: center
 
 .. image:: /_static/logo/pymechanical-logo-dark.png
    :class: only-dark
-   :alt: PyMechanical
+   :alt: PyMechanical Logo Dark
    :width: 580px
    :align: center
 
@@ -101,6 +104,7 @@ Python API to interact with `Ansys Mechanical`_ (FEA software for structural eng
 
         :bdg-primary-line:`Test` :bdg-primary-line:`Documentation` :bdg-primary-line:`Issues`
 
+
 .. toctree::
    :hidden:
    :maxdepth: 3
@@ -111,7 +115,7 @@ Python API to interact with `Ansys Mechanical`_ (FEA software for structural eng
    user_guide_embedding/index
    user_guide_scripting/index
    api/index
+   contributing
    kil/index
    faq
-   contributing
    changelog

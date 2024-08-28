@@ -16,40 +16,49 @@ Clone the repository and install project dependencies
 To clone and install the latest PyMechanical release in development mode, run
 these commands:
 
+Clone the repository and create a virtual environment:
+
 .. code::
 
-    # Clone the repository
-    git clone https://github.com/ansys/pymechanical
-    cd pymechanical
+  # Clone the repository
+  git clone https://github.com/ansys/pymechanical
+  cd pymechanical
 
-    # Create a virtual environment
-    python -m venv .venv
+  # Create a virtual environment
+  python -m venv .venv
 
-    # Activate the virtual environment depending on the operating system
-    # Windows
-    .venv\Scripts\activate.bat
+Activate the virtual environment:
 
-    # PowerShell
-    .venv\Scripts\Activate.ps1
+.. tab-set::
 
-    # Linux/UNIX
-    source .venv/bin/activate
+    .. tab-item:: Windows
 
-    # Install build system tools
-    python -m pip install --upgrade pip tox flit twine
+       .. code::
 
-    # Install the project in editable mode using one of the following commands:
-    # Install the project dependencies only
-    python -m pip install -e .
+          .venv\Scripts\activate.bat
 
-    # Install the project and test dependencies
-    python -m pip install -e .[tests]
+    .. tab-item:: PowerShell
 
-    # Install the project and documentation dependencies
-    python -m pip install -e .[doc]
+       .. code::
 
-    # Install the project, test, and documentation dependencies
-    python -m pip install -e .[tests,doc]
+          .venv\Scripts\Activate.ps1
+
+    .. tab-item:: Linux/UNIX
+
+       .. code::
+
+          source .venv/bin/activate
+
+Install tools and dependencies:
+
+.. code::
+
+  # Install build system tools
+  python -m pip install --upgrade pip tox flit twine
+
+  # Install the project, documentation, and test dependencies in editable mode
+  python -m pip install -e .[doc,tests]
+
 
 Test PyMechanical
 -----------------
@@ -212,8 +221,11 @@ Use the `PyMechanical Issues <https://github.com/ansys/pymechanical/issues>`_
 page to submit questions, report bugs, and request new features. When possible,
 use these templates:
 
-* `Bug report <https://github.com/ansys/pymechanical/issues/new?assignees=&labels=bug&projects=&template=bug.yml&title=Bug+located+in+...>`_
-* `Feature request <https://github.com/ansys/pymechanical/issues/new?assignees=&labels=enhancement&projects=&template=feature.yml&title=Add+...>`_
+* `File a bug report <https://github.com/ansys/pymechanical/issues/new?assignees=&labels=bug&projects=&template=bug.yml&title=Bug+located+in+...>`_
+* `File a documentation issue <https://github.com/ansys/pymechanical/issues/new?assignees=&labels=documentation&projects=&template=documentation.yml&title=Modify+...>`_
+* `Request a feature <https://github.com/ansys/pymechanical/issues/new?assignees=&labels=enhancement&projects=&template=feature.yml&title=Add+...>`_
+* `Add an example <https://github.com/ansys/pymechanical/issues/new?assignees=&labels=example&projects=&template=examples.yml&title=Example+proposal%3A+...>`_
+* `Post all other issues <https://github.com/ansys/pymechanical/issues/new>`_
 
 If your issue does not fit into one of these template categories, create your own issue.
 

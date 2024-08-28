@@ -13,14 +13,6 @@ interface to drive the software that facilitates the use of
 
 .. grid:: 1 2 2 2
 
-    .. grid-item-card:: Background
-        :padding: 2 2 2 2
-        :link: ../architecture
-        :link-type: doc
-        :text-align: left
-
-        Information on the application architecture of Mechanical and why there are two Python interfaces.
-
     .. grid-item-card:: Installation guide
         :padding: 2 2 2 2
         :link: installation
@@ -51,16 +43,22 @@ interface to drive the software that facilitates the use of
         :link-type: doc
         :text-align: left
 
-        Using PyMechanical with Windows Subsystem for Linux.
+        Installing PyMechanical on Linux via WSL.
 
 
+Background
+----------
+
+PyMechanical contains two interfaces: a remote session and an embedded instance.
+For information on the application architecture of Mechanical and why there are
+two Python interfaces, see :ref:`ref_architecture`.
 
 .. toctree::
    :hidden:
    :maxdepth: 2
 
-   ../architecture
    installation
    running_mechanical
    docker
    wsl
+   ../architecture
