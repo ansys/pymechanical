@@ -198,7 +198,7 @@ html_theme_options = {
     "show_breadcrumbs": True,
     "collapse_navigation": True,
     "use_edit_page_button": True,
-    "header_links_before_dropdown": 7,  # number of links before the dropdown menu
+    "header_links_before_dropdown": 5,  # number of links before the dropdown menu
     "additional_breadcrumbs": [
         ("PyAnsys", "https://docs.pyansys.com/"),
     ],
