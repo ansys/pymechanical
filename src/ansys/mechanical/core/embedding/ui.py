@@ -88,8 +88,10 @@ side-effect/bug:
 
 """
 
+
 def _is_saved(app: "ansys.mechanical.core.embedding.App"):
     return True
+
 
 def launch_ui(app: "ansys.mechanical.core.embedding.App"):
     """Launch the Mechanical UI.
@@ -116,9 +118,7 @@ def launch_ui(app: "ansys.mechanical.core.embedding.App"):
     # Create the entire mechdb file path
     temp_mechdb = os.path.join(project_directory, f"{named_temp_file.name}.mechdb")
     # Call SaveAs - SaveAs copies the entire directory
-    app.DataModel.Project.SaveAs(
-        os.path.join(project_directory, f"{named_temp_file.name}.mechdb")
-    )
+    app.DataModel.Project.SaveAs(os.path.join(project_directory, f"{named_temp_file.name}.mechdb"))
     # Launch the temporary mechdb file in GUI mode
     Popen(
         [

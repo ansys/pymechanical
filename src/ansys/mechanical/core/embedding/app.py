@@ -31,8 +31,8 @@ from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 from ansys.mechanical.core.embedding.imports import global_entry_points, global_variables
 from ansys.mechanical.core.embedding.poster import Poster
-from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
 from ansys.mechanical.core.embedding.ui import launch_ui
+from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
 
 try:
     import ansys.tools.visualization_interface  # noqa: F401
