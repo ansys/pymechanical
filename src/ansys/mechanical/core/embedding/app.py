@@ -228,10 +228,11 @@ class App:
         args = None
         rets = None
         script_result = self.script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
+        error_msg = f"Failed to execute the script"
         if script_result is None:
-            error_msg = f"Failed to execute the script"
-            if script_result.Error is not None:
-                error_msg += f": {script_result.Error.Message}"
+            raise Exception(error_msg)
+        if script_result.Error is not None:
+            error_msg += f": {script_result.Error.Message}"
             raise Exception(error_msg)
         return str(script_result.Value)
 

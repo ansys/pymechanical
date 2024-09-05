@@ -312,3 +312,14 @@ def test_rm_lockfile(embedded_app, tmp_path: pytest.TempPathFactory):
     lockfile_path = os.path.join(embedded_app.DataModel.Project.ProjectDirectory, ".mech_lock")
     # Assert lock file path does not exist
     assert not os.path.exists(lockfile_path)
+
+
+@pytest.mark.embedding
+def test_app_execute_script(embedded_app):
+    """Test execute_script method."""
+    embedded_app.update_globals(globals())
+    result = embedded_app.execute_script("2+3")
+    assert result == "5"
+    with pytest.raises(Exception):
+        # This will throw an exception since no module named test available
+        embedded_app.execute_script("import test")
