@@ -234,7 +234,7 @@ class App:
         if script_result.Error is not None:
             error_msg += f": {script_result.Error.Message}"
             raise Exception(error_msg)
-        return str(script_result.Value)
+        return script_result.Value
 
     def plotter(self) -> None:
         """Return ``ansys.tools.visualization_interface.Plotter`` object."""
