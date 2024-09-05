@@ -23,8 +23,6 @@
 """Main application class for embedded Mechanical."""
 import atexit
 import os
-from subprocess import Popen
-import tempfile
 import typing
 import warnings
 
@@ -34,6 +32,7 @@ from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 from ansys.mechanical.core.embedding.imports import global_entry_points, global_variables
 from ansys.mechanical.core.embedding.poster import Poster
 from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
+from ansys.mechanical.core.embedding.ui import launch_ui
 
 try:
     import ansys.tools.visualization_interface  # noqa: F401
@@ -195,28 +194,7 @@ class App:
 
     def launch_gui(self):
         """Launch the GUI."""
-        # Get the project directory
-        project_directory = self.DataModel.Project.ProjectDirectory
-        # Create a temporary file
-        named_temp_file = tempfile.NamedTemporaryFile()
-        # Create the entire mechdb file path
-        temp_mechdb = os.path.join(project_directory, f"{named_temp_file.name}.mechdb")
-        # Call SaveAs - SaveAs copies the entire directory
-        self.DataModel.Project.SaveAs(
-            os.path.join(project_directory, f"{named_temp_file.name}.mechdb")
-        )
-        # Launch the temporary mechdb file in GUI mode
-        Popen(
-            [
-                "ansys-mechanical",
-                "--project-file",
-                temp_mechdb,
-                "--graphical",
-                "--revision",
-                str(self.version),
-            ]
-        )
-        print(f"Done launching Ansys Mechanical {str(self.version)}...")
+        launch_ui(self)
 
     def new(self):
         """Clear to a new application."""
