@@ -217,6 +217,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: matrix.mechanical-version == needs.revn-variations.outputs.test_docker_image_version
         with:
+          include-hidden-files: true
           name: coverage-tests
           path: .cov
           retention-days: 7
@@ -225,6 +226,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: matrix.mechanical-version == needs.revn-variations.outputs.test_docker_image_version
         with:
+          include-hidden-files: true
           name: coverage-file-tests
           path: .coverage
           retention-days: 7
@@ -295,6 +297,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
+          include-hidden-files: true
           name: coverage-tests-embedding
           path: .cov
           retention-days: 7
@@ -303,6 +306,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
+          include-hidden-files: true
           name: coverage-file-tests-embedding
           path: .coverage
           retention-days: 7
@@ -368,6 +372,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
+          include-hidden-files: true
           name: coverage-tests-embedding-scripts
           path: .cov
           retention-days: 7
@@ -376,6 +381,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
+          include-hidden-files: true
           name: coverage-file-tests-embedding-scripts
           path: .coverage
           retention-days: 7
@@ -454,6 +460,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
+          include-hidden-files: true
           name: coverage-tests-remote-session-launch
           path: .cov
           retention-days: 7
@@ -462,6 +469,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
+          include-hidden-files: true
           name: coverage-file-tests-remote-session-launch
           path: .coverage
           retention-days: 7
@@ -661,9 +669,11 @@ jobs:
       - name: Upload combined coverage results
         uses: actions/upload-artifact@v4
         with:
+          include-hidden-files: true
           name: combined-coverage-results
           path: .coverage-combined
           retention-days: 7
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         env:
