@@ -234,12 +234,11 @@ Starting with 2023 R2, it is possible to embed an instance of Mechanical on Linu
 However, because of differences in how Mechanical works on Linux, you cannot simply
 run Python as usual. On Linux, certain environment variables must be set for the Python
 process before it starts. You can set up these environment variables using the ``mechanical-env``
-script that can be used after installing the ``ansys-mechanical-env`` package:
+script which is part of PyMechanical
 
-.. code::
+.. code:: shell
 
-    pip install ansys-mechanical-env
-    mechanical-env python
+   $ mechanical-env python
 
 Licensing issues
 ----------------

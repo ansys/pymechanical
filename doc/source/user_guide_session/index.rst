@@ -1,7 +1,7 @@
 .. _ref_user_guide_session:
 
-Remote sessions
-===============
+Remote session
+==============
 
 This section  provides an overview of how you use PyMechanical as a client
 to a remote Mechanical session.
@@ -14,6 +14,7 @@ to a remote Mechanical session.
    :maxdepth: 1
    :hidden:
 
+   self
    server-launcher
    mechanical
    pool

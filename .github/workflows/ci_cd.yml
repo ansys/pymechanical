@@ -56,7 +56,7 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: ansys/actions/doc-deploy-changelog@v6
+      - uses: ansys/actions/doc-deploy-changelog@v7
         with:
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
 
@@ -65,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: PyAnsys code style checks
-        uses: ansys/actions/code-style@v6
+        uses: ansys/actions/code-style@v7
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
@@ -74,7 +74,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: PyAnsys documentation style checks
-        uses: ansys/actions/doc-style@v6
+        uses: ansys/actions/doc-style@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           vale-version: "3.3.0"
@@ -95,7 +95,7 @@ jobs:
             os: macos-latest
     steps:
       - name: Build wheelhouse and perform smoke test
-        uses: ansys/actions/build-wheelhouse@v6
+        uses: ansys/actions/build-wheelhouse@v7
         with:
           library-name: ${{ env.PACKAGE_NAME }}
           operating-system: ${{ matrix.os }}
@@ -197,7 +197,7 @@ jobs:
           echo "::endgroup::"
 
       - name: Testing
-        uses: ansys/actions/tests-pytest@v6
+        uses: ansys/actions/tests-pytest@v7
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           pytest-markers: '-m remote_session_connect'
@@ -217,6 +217,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: matrix.mechanical-version == needs.revn-variations.outputs.test_docker_image_version
         with:
+          include-hidden-files: true
           name: coverage-tests
           path: .cov
           retention-days: 7
@@ -225,6 +226,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: matrix.mechanical-version == needs.revn-variations.outputs.test_docker_image_version
         with:
+          include-hidden-files: true
           name: coverage-file-tests
           path: .coverage
           retention-days: 7
@@ -295,6 +297,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
+          include-hidden-files: true
           name: coverage-tests-embedding
           path: .cov
           retention-days: 7
@@ -303,6 +306,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
+          include-hidden-files: true
           name: coverage-file-tests-embedding
           path: .coverage
           retention-days: 7
@@ -368,6 +372,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
+          include-hidden-files: true
           name: coverage-tests-embedding-scripts
           path: .cov
           retention-days: 7
@@ -376,6 +381,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
+          include-hidden-files: true
           name: coverage-file-tests-embedding-scripts
           path: .coverage
           retention-days: 7
@@ -454,6 +460,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
+          include-hidden-files: true
           name: coverage-tests-remote-session-launch
           path: .cov
           retention-days: 7
@@ -462,6 +469,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
+          include-hidden-files: true
           name: coverage-file-tests-remote-session-launch
           path: .coverage
           retention-days: 7
@@ -494,7 +502,28 @@ jobs:
           apt install -y sudo curl lsb-release
           apt install -y zip pandoc libgl1-mesa-glx mesa-utils xvfb texlive-latex-extra latexmk nodejs npm graphviz
           apt install -y tini
+          apt install poppler-utils -y
           npm install -g @mermaid-js/mermaid-cli
+
+      - name: Install gh cli
+        run: |
+          (type -p wget >/dev/null || (apt update && apt-get install wget -y)) \
+          && mkdir -p -m 755 /etc/apt/keyrings \
+          && wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+          && chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+          && apt update \
+          && apt install gh -y
+
+      - name: Install quarto to build cheatsheet
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
+          gh release download --repo github.com/quarto-dev/quarto-cli --pattern *linux-amd64.deb
+          apt install ./quarto*linux-amd64.deb
+          quarto install tool tinytex --log-level warning
+
+      - name: Test quarto installation
+        run: quarto --version
 
       - name: Install Python requirements
         run: |
@@ -640,9 +669,11 @@ jobs:
       - name: Upload combined coverage results
         uses: actions/upload-artifact@v4
         with:
+          include-hidden-files: true
           name: combined-coverage-results
           path: .coverage-combined
           retention-days: 7
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         env:
@@ -657,7 +688,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build library source and wheel artifacts
-        uses: ansys/actions/build-library@v6
+        uses: ansys/actions/build-library@v7
         with:
           library-name: ${{ env.PACKAGE_NAME }}
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
@@ -669,14 +700,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Release to the public PyPI repository
-        uses: ansys/actions/release-pypi-public@v6
+        uses: ansys/actions/release-pypi-public@v7
         with:
           library-name: ${{ env.PACKAGE_NAME }}
           twine-username: "__token__"
           twine-token: ${{ secrets.PYPI_TOKEN }}
 
       - name: Release to GitHub
-        uses: ansys/actions/release-github@v6
+        uses: ansys/actions/release-github@v7
         with:
           library-name: ${{ env.PACKAGE_NAME }}
 
@@ -687,7 +718,7 @@ jobs:
     needs: [package]
     steps:
       - name: Deploy the latest documentation
-        uses: ansys/actions/doc-deploy-dev@v6
+        uses: ansys/actions/doc-deploy-dev@v7
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -699,7 +730,7 @@ jobs:
     needs: upload_dev_docs
     steps:
       - name: "Deploy the latest documentation index"
-        uses: ansys/actions/doc-deploy-index@v6
+        uses: ansys/actions/doc-deploy-index@v7
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}/version/dev
           index-name: pymechanical-vdev
@@ -714,7 +745,7 @@ jobs:
     needs: [release]
     steps:
       - name: Deploy the stable documentation
-        uses: ansys/actions/doc-deploy-stable@v6
+        uses: ansys/actions/doc-deploy-stable@v7
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -740,7 +771,7 @@ jobs:
           echo "VERSION_MEILI=$VERSION_MEILI" >> $GITHUB_ENV
 
       - name: "Deploy the latest documentation index"
-        uses: ansys/actions/doc-deploy-index@v6
+        uses: ansys/actions/doc-deploy-index@v7
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}/version/${{ env.VERSION }}
           index-name: pymechanical-v${{ env.VERSION_MEILI }}

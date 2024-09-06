@@ -22,3 +22,4 @@
 .. _ACT API Reference Guide: https://developer.ansys.com/docs/mechanical-scripting-interface/api/ansys/mechanical/stubs/v241/index.md #TODO this should be update to 241 when 24r2 api ref gets released
 .. _Mechanical API known issues and limitations: https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/%%VERSION%%/en/act_script/mech_apis_KIL.html?q=known%20issues
 .. _ACT known issues and limitations: https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/%%VERSION%%/en/act_dev/act_dev_knownissues.html
+.. _Ansys Mechanical: https://www.ansys.com/products/structures/ansys-mechanical
