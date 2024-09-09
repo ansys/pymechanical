@@ -52,7 +52,6 @@ REST
 RPCs
 spaceclaim
 stdout
-thispagetitle
 venv
 VPN
 Windows
