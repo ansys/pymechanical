@@ -103,12 +103,7 @@ class UILauncher():
     def save(self, app):
         app.save()
 
-class MockLauncher():
-    def __init__(self):
-        self.ops = []
 
-    def save(self, app):
-        self.ops.append("save")
 
 def _launch_ui(app, launcher):
     # all the implemation below goes here
@@ -116,6 +111,14 @@ def _launch_ui(app, launcher):
 
 def test_launch_ui(app):
     # there are also python frameworks for fake/mock objects...
+    # if its one test it can go in the test, if its multiple it can be defined in the test_---.py file
+    # or in a fixture in conftest
+    class MockLauncher():
+        def __init__(self):
+            self.ops = []
+
+        def save(self, app):
+            self.ops.append("save")
     m = MockLauncher()
     _launch_ui(app, m)
     assert m.ops[0] == "save"
