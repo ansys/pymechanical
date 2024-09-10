@@ -326,4 +326,5 @@ def test_launch_gui(embedded_app, tmp_path: pytest.TempPathFactory, capfd):
     embedded_app.close()
 
     out, err = capfd.readouterr()
+    print(out)
     assert f"Done launching Ansys Mechanical {version}" in out

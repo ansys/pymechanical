@@ -114,6 +114,7 @@ def launch_ui(app: "ansys.mechanical.core.embedding.App"):
         # list all files / find mechdb file in project_directory
         # find a command that lists active mechdb file
         level_above_projdir = pathlib.Path(project_directory).parent
+        print(level_above_projdir)
         mechdb_list = glob.glob(f"{level_above_projdir}/*.mechdb")
         if len(mechdb_list) > 1:
             print("multiple mechdb files found")
@@ -124,15 +125,16 @@ def launch_ui(app: "ansys.mechanical.core.embedding.App"):
         # Get the directory the mechdb_file is in and the name of the file
         dirname, basename = os.path.split(mechdb_file)
         # Create a named temporary file
-        temp_file = (
-            tempfile.NamedTemporaryFile()
-        )  # (dir=dirname, suffix=".mechdb", delete=True) # mode='w', delete=False)
-        # Get the name of the temporary file
-        temp_file_basename = os.path.basename(temp_file.name)
-        # print(f"temp_file name: {temp_file_basename}")
+        # temp_file = tempfile.NamedTemporaryFile()
+        # # Get the name of the temporary file
+        # temp_file_basename = os.path.basename(temp_file.name)
+        # # print(f"temp_file name: {temp_file_basename}")
+        # # Use the name of the temporary file to create a mechdb file
+        # temp_file_name = os.path.join(dirname, f"{temp_file_basename}.mechdb")
 
-        # Use the name of the temporary file to create a mechdb file
-        temp_file_name = os.path.join(dirname, f"{temp_file_basename}.mechdb")
+        temp_file_name = tempfile.NamedTemporaryFile(
+            dir=dirname, suffix=".mechdb", delete=True
+        ).name
 
         # Save app with name of temporary file
         app.save_as(temp_file_name)
