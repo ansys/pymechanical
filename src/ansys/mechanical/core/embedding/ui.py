@@ -99,12 +99,36 @@ def _is_saved(app: "ansys.mechanical.core.embedding.App"):
     return True
 
 
-def launch_ui(app: "ansys.mechanical.core.embedding.App"):
+class UILauncher():
+    def save(self, app):
+        app.save()
+
+class MockLauncher():
+    def __init__(self):
+        self.ops = []
+
+    def save(self, app):
+        self.ops.append("save")
+
+def _launch_ui(app, launcher):
+    # all the implemation below goes here
+    pass
+
+def test_launch_ui(app):
+    # there are also python frameworks for fake/mock objects...
+    m = MockLauncher()
+    _launch_ui(app, m)
+    assert m.ops[0] == "save"
+
+def launch_ui(app: "ansys.mechanical.core.embedding.App", testing: bool = False) -> Popen:
     """Launch the Mechanical UI.
 
     Precondition: Mechanical has to have already been saved
     Side effect: If Mechanical has ever been saved, it overwrites that save.
     """
+    # not testing
+    _launch_ui(UILauncher())
+
     if not _is_saved(app):
         raise Exception("The App must have already been saved before using launch_ui!")
     else:
@@ -141,13 +165,20 @@ def launch_ui(app: "ansys.mechanical.core.embedding.App"):
         ).name
 
         # Save app with name of temporary file
+        # file a bug about adding an option overwrite=True to `save_as`
         app.save_as(temp_file_name)
 
         # Open the mechdb of the saved session
         app.open(mechdb_file)
 
+        # another option for testing:
+        # if testing:
+            # don't put --graphical in the args
+            # return the process object
+            # the test code can wait for the process to exit...
+            # maybe work around the command line parsing of ansys-mechanical
         # Run ansys-mechanical on the save.mechdb in the temporary location
-        Popen(
+        p = Popen(
             [
                 "ansys-mechanical",
                 "--project-file",
@@ -156,6 +187,19 @@ def launch_ui(app: "ansys.mechanical.core.embedding.App"):
                 "--revision",
                 str(app.version),
             ]
+            , env= os.environ.copy() # with some env var for DRY_RUN
         )
 
-    print(f"Done launching Ansys Mechanical {str(app.version)}...")
+        # Problem: the mechdb started above will not automatically get cleaned up
+        # option 1 - its the users problem, just tell them with a print
+        print("Opened a new mechanical session based on ... {mechdb_file}. PyMechanical will not delete after use.")
+        # option 2 - try to delete it (maybe this can be an opt-in, an argument to launch_ui??)
+        #            by starting a background process that waits until the process exits and automatically cleans it up.
+        #            like `Popen(f"python /path/to/cleanup-gui.py {p.pid}")`
+        # option 3 - use a canonical name /tmp/some_name/file.mechdb and overwrite it each time launch_ui is run
+        #            so that worst case only one extra mechdb is not cleaned up. The downside is that you can't use launch_ui
+        #            in parallel but who would even do that? You can throw an exception if that mechdb file is open by another
+        #            process at the beginning of this function...
+        print(f"Done launching Ansys Mechanical {str(app.version)}...")
+        return p
+
