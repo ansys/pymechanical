@@ -319,8 +319,9 @@ def test_launch_gui(embedded_app, tmp_path: pytest.TempPathFactory, capfd):
     """Test lock file is removed on close of embedded application."""
     version = str(embedded_app.version)
 
-    mechdat_path = os.path.join(tmp_path, "test.mechdat")
-    embedded_app.save(mechdat_path)
+    project_directory = embedded_app.DataModel.Project.ProjectDirectory
+    mechdb_path = os.path.join(tmp_path, "test.mechdb")
+    embedded_app.save(mechdb_path)
     embedded_app.launch_gui()
     embedded_app.close()
 

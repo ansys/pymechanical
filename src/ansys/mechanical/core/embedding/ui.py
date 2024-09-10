@@ -22,7 +22,9 @@
 
 """Run Mechanical UI from python."""
 
+import glob
 import os
+import pathlib
 from subprocess import Popen
 import tempfile
 
@@ -99,35 +101,55 @@ def launch_ui(app: "ansys.mechanical.core.embedding.App"):
     Precondition: Mechanical has to have already been saved
     Side effect: If Mechanical has ever been saved, it overwrites that save.
     """
-
     if not _is_saved(app):
         raise Exception("The App must have already been saved before using launch_ui!")
+    else:
+        # Save the app
+        app.save()
 
-    """
-    A save()
-    B identify the mechdb of the saved session
-    C save_as() to a save.mechdb
-    D open() the mechdb from A
-    E run ansys-mechanical -g on save.mechdb from C
-    """
+        # Identify the mechdb of the saved session
+        project_directory = app.DataModel.Project.ProjectDirectory
+        # print(project_directory)
 
-    # Get the project directory
-    project_directory = app.DataModel.Project.ProjectDirectory
-    # Create a temporary file
-    named_temp_file = tempfile.NamedTemporaryFile()
-    # Create the entire mechdb file path
-    temp_mechdb = os.path.join(project_directory, f"{named_temp_file.name}.mechdb")
-    # Call SaveAs - SaveAs copies the entire directory
-    app.DataModel.Project.SaveAs(os.path.join(project_directory, f"{named_temp_file.name}.mechdb"))
-    # Launch the temporary mechdb file in GUI mode
-    Popen(
-        [
-            "ansys-mechanical",
-            "--project-file",
-            temp_mechdb,
-            "--graphical",
-            "--revision",
-            str(app.version),
-        ]
-    )
+        # list all files / find mechdb file in project_directory
+        # find a command that lists active mechdb file
+        level_above_projdir = pathlib.Path(project_directory).parent
+        mechdb_list = glob.glob(f"{level_above_projdir}/*.mechdb")
+        if len(mechdb_list) > 1:
+            print("multiple mechdb files found")
+
+        mechdb_file = mechdb_list[0]
+        # print(f"mechdb file: {mechdb_file}")
+
+        # Get the directory the mechdb_file is in and the name of the file
+        dirname, basename = os.path.split(mechdb_file)
+        # Create a named temporary file
+        temp_file = (
+            tempfile.NamedTemporaryFile()
+        )  # (dir=dirname, suffix=".mechdb", delete=True) # mode='w', delete=False)
+        # Get the name of the temporary file
+        temp_file_basename = os.path.basename(temp_file.name)
+        # print(f"temp_file name: {temp_file_basename}")
+
+        # Use the name of the temporary file to create a mechdb file
+        temp_file_name = os.path.join(dirname, f"{temp_file_basename}.mechdb")
+
+        # Save app with name of temporary file
+        app.save_as(temp_file_name)
+
+        # Open the mechdb of the saved session
+        app.open(mechdb_file)
+
+        # Run ansys-mechanical on the save.mechdb in the temporary location
+        Popen(
+            [
+                "ansys-mechanical",
+                "--project-file",
+                temp_file_name,
+                "--graphical",
+                "--revision",
+                str(app.version),
+            ]
+        )
+
     print(f"Done launching Ansys Mechanical {str(app.version)}...")
