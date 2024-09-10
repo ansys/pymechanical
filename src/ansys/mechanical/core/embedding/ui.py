@@ -92,6 +92,10 @@ side-effect/bug:
 
 
 def _is_saved(app: "ansys.mechanical.core.embedding.App"):
+    try:
+        app.save()
+    except:
+        raise Exception("The App must have already been saved before using launch_ui!")
     return True
 
 
