@@ -29,6 +29,7 @@ import time
 
 import pytest
 
+from ansys.mechanical.core.embedding.ui import _launch_ui
 import ansys.mechanical.core.embedding.utils as utils
 
 
@@ -315,32 +316,61 @@ def test_rm_lockfile(embedded_app, tmp_path: pytest.TempPathFactory):
 
 
 @pytest.mark.embedding
-def test_launch_gui(embedded_app, tmp_path: pytest.TempPathFactory, capfd):
-    """Test lock file is removed on close of embedded application."""
-    version = str(embedded_app.version)
+def test_launch_ui(embedded_app, tmp_path: pytest.TempPathFactory):
+    """Test the _launch_ui function with a mock launcher."""
 
-    project_directory = embedded_app.DataModel.Project.ProjectDirectory
+    class MockLauncher:
+        """Mock Launcher to test launch_gui functionality."""
+
+        def __init__(self):
+            """Initialize the MockLauncher class."""
+            self.ops = []
+
+        def save_original(self, app):
+            """Save the active mechdb file."""
+            self.ops.append("save")
+
+        def save_temp_copy(self, app):
+            """Save a new mechdb file with a temporary name."""
+            # Identify the mechdb of the saved session from save_original()
+            self.ops.append("get_saved_session")
+
+            # Get name of NamedTemporaryFile
+            self.ops.append("get_name_temp_file")
+
+            # Save app with name of temporary file
+            self.ops.append("save_as")
+
+            return "", ""
+
+        def open_original(self, app, mechdb_file):
+            """Open the original mechdb file from save_original()."""
+            self.ops.append("open_orig_mechdb")
+
+        def graphically_launch_temp(self, app, mechdb_file, temp_file):
+            """Launch the GUI for the mechdb file with a temporary name from save_temp_copy()."""
+            self.ops.append("launch_temp_mechdb")
+
+            return []
+
+    # Create an instance of the MockLauncher object
+    m = MockLauncher()
+
+    # Check that _launch_ui raises an Exception when it hasn't been saved yet
+    with pytest.raises(Exception):
+        _launch_ui(embedded_app, m)
+
     mechdb_path = os.path.join(tmp_path, "test.mechdb")
+    # Save a test.mechdb file
     embedded_app.save(mechdb_path)
-    embedded_app.launch_gui()
+    # Launch the UI with the mock class
+    _launch_ui(embedded_app, False, m)
+    # Close the embedded_app
     embedded_app.close()
 
-    out, err = capfd.readouterr()
-    print(out)
-    assert f"Done launching Ansys Mechanical {version}" in out
-
-
-# def test_launch_ui(app):
-#     # there are also python frameworks for fake/mock objects...
-#     # if its one test it can go in the test,
-#     # if its multiple it can be defined in the test_---.py file
-#     # or in a fixture in conftest
-#     class MockLauncher():
-#         def __init__(self):
-#             self.ops = []
-
-#         def save(self, app):
-#             self.ops.append("save")
-#     m = MockLauncher()
-#     _launch_ui(app, m)
-#     assert m.ops[0] == "save"
+    assert m.ops[0] == "save"
+    assert m.ops[1] == "get_saved_session"
+    assert m.ops[2] == "get_name_temp_file"
+    assert m.ops[3] == "save_as"
+    assert m.ops[4] == "open_orig_mechdb"
+    assert m.ops[5] == "launch_temp_mechdb"

@@ -20,89 +20,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Run Mechanical UI from python."""
+"""Run Mechanical UI from Python."""
 
+import atexit
 import os
 from pathlib import Path
 from subprocess import Popen
+import sys
 import tempfile
 import typing
 
-"""
-If Mechanical has ever been saved, then we are allowed to use `app.save()`,
-otherwise, we have to use `app.save_as()` and pass a temp file path which
-will have to be cleaned up later...
-
-Mechanical can be in one of three states:
-1. not-saved
-2. saved|dirty
-3. saved|not-dirty
-
-#1
-Example:
-    app = App()
-    ...
-    app.launch_gui()
-
-A save_as() to save1.mechdb
-B save_as() to save2.mechdb
-C open() the mechdb from A
-D run ansys-mechanical -g on save2.mechdb
-
-** side-effect: not-saved => saved|not-dirty
-
-#2
-Example:
-    app.save_as("/path/to/file.mechdb")
-    app.project_file =>
-        "/path/to/file.mechdb"
-    ...
-    app.launch_gui()
-    app.project_file =>
-        "/path/to/save2.mechdb"
-
-A save()
-B identify the mechdb of the saved session
-C save_as() to a save.mechdb
-D open() the mechdb from A
-E run ansys-mechanical -g on save.mechdb from C
-
-** side-effect: saved|dirty => saved|not-dirty
-
-#3
-Example:
-    app.save_as("/path/to/some/file.mechdb")
-    app.launch_gui()
-
-
-A save()
-B identify the mechdb of the saved session
-C save_as() into a save.mechdb
-D open() the mechdb saved session (from A)
-E run ansys-mechanical -g on that temp path (B)
-** side-effect: no side effect
-
-side-effect of all:
-    If we are either in a dirty state or have never been saved, we went to a save|not-dirty state
-
-side-effect/bug:
-    There is now a mechdb in the temp folder that is leaked.
-
-"""
-
-
-def _is_saved(app: "ansys.mechanical.core.embedding.App"):
-    try:
-        app.save()
-    except:
-        raise Exception("The App must have already been saved before using launch_ui!")
-    return True
-
 
 class UILauncher:
-    """Launch the GUI on a temporary mechdb file."""
+    """Launch the GUI using a temporary mechdb file."""
 
-    def save_original(self, app) -> None:
+    def save_original(self, app: "ansys.mechanical.core.embedding.App") -> None:
         """Save the active mechdb file.
 
         Parameters
@@ -112,7 +44,9 @@ class UILauncher:
         """
         app.save()
 
-    def save_temp_copy(self, app) -> typing.Union[Path, Path]:
+    def save_temp_copy(
+        self, app: "ansys.mechanical.core.embedding.App"
+    ) -> typing.Union[Path, Path]:
         """Save a new mechdb file with a temporary name.
 
         Parameters
@@ -123,6 +57,7 @@ class UILauncher:
         # Identify the mechdb of the saved session from save_original()
         project_directory = Path(app.DataModel.Project.ProjectDirectory)
         project_directory_parent = project_directory.parent
+        print(project_directory_parent)
         mechdb_file = os.path.join(
             project_directory_parent, f"{project_directory.parts[-1].split('_')[0]}.mechdb"
         )
@@ -137,7 +72,7 @@ class UILauncher:
 
         return mechdb_file, temp_file_name
 
-    def open_original(self, app, mechdb_file) -> None:
+    def open_original(self, app: "ansys.mechanical.core.embedding.App", mechdb_file: Path) -> None:
         """Open the original mechdb file from save_original().
 
         Parameters
@@ -149,7 +84,9 @@ class UILauncher:
         """
         app.open(mechdb_file)
 
-    def graphically_launch_temp(self, app, mechdb_file, temp_file) -> Popen:
+    def graphically_launch_temp(
+        self, app: "ansys.mechanical.core.embedding.App", mechdb_file: Path, temp_file: Path
+    ) -> Popen:
         """Launch the GUI for the mechdb file with a temporary name from save_temp_copy().
 
         Parameters
@@ -174,55 +111,75 @@ class UILauncher:
                 "--graphical",
                 "--revision",
                 str(app.version),
-            ]
-            # , env= os.environ.copy() # with some env var for DRY_RUN
+            ],
         )
-
-        # Problem: the mechdb started above will not automatically get cleaned up
-        # option 1 - its the users problem, just tell them with a print
-        print(
-            f"""Opened a new mechanical session based on ... {mechdb_file}. \
-            PyMechanical will not delete after use."""
-        )
-        # option 2 - try to delete it (maybe this can be an opt-in, an argument to launch_ui??)
-        #            by starting a background process that waits until the process exits and
-        #            automatically cleans it up like
-        #            `Popen(f"python /path/to/cleanup-gui.py {p.pid}")`
-        # option 3 - use a canonical name /tmp/some_name/file.mechdb and overwrite it each time
-        #            launch_ui is run so that worst case only one extra mechdb is not cleaned up.
-        #            The downside is that you can't use launch_ui in parallel but who would even
-        #            do that? You can throw an exception if that mechdb file is open by another
-        #            process at the beginning of this function...
-        print(f"Done launching Ansys Mechanical {str(app.version)}...")
 
         return p
 
-
-# class MockLauncher:
-#     def __init__(self):
-#         self.ops = []
-
-#     def save(self, app):
-#         self.ops.append("save")
+    def _cleanup_gui(self, process, temp_mechdb_path):
+        cleanup_script = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cleanup_gui.py")
+        Popen([sys.executable, cleanup_script, str(process.pid), temp_mechdb_path])
 
 
-def _launch_ui(app, launcher):
-    # all the implemation below goes here
-    if not _is_saved(app):
+def _is_saved(app: "ansys.mechanical.core.embedding.App") -> bool:
+    """Check if the mechdb file has been saved and raise an exception if not.
+
+    Parameters
+    ----------
+    app: ansys.mechanical.core.embedding.app.App
+        A Mechanical embedding application.
+    """
+    try:
+        app.save()
+    except:
         raise Exception("The App must have already been saved before using launch_ui!")
-    else:
+    return True
+
+
+def _launch_ui(
+    app: "ansys.mechanical.core.embedding.App", delete_tmp_on_close: bool, launcher: UILauncher
+) -> None:
+    """Launch the Mechanical UI if the mechdb file has been saved.
+
+    Parameters
+    ----------
+    app: ansys.mechanical.core.embedding.app.App
+        A Mechanical embedding application.
+    delete_tmp_on_close: bool
+        Whether to delete the temporary mechdb file when the GUI is closed.
+        By default, this is ``True``.
+    launcher: UILauncher
+        Launch the GUI using a temporary mechdb file.
+    """
+    if _is_saved(app):
         launcher.save_original(app)
         mechdb_file, temp_file = launcher.save_temp_copy(app)
         launcher.open_original(app, mechdb_file)
         p = launcher.graphically_launch_temp(app, mechdb_file, temp_file)
-        return p
+
+        # If the user wants the temporary file to be deleted
+        if delete_tmp_on_close:
+            atexit.register(launcher._cleanup_gui, p, temp_file)
+        else:
+            # Let the user know that the mechdb started above will not automatically get cleaned up
+            print(
+                f"""Opened a new mechanical session based on {mechdb_file} named {temp_file}.
+PyMechanical will not delete it after use."""
+            )
 
 
-def launch_ui(app: "ansys.mechanical.core.embedding.App", testing: bool = False) -> Popen:
+def launch_ui(app: "ansys.mechanical.core.embedding.App", delete_tmp_on_close: bool = True) -> None:
     """Launch the Mechanical UI.
 
     Precondition: Mechanical has to have already been saved
     Side effect: If Mechanical has ever been saved, it overwrites that save.
+
+    Parameters
+    ----------
+    app: ansys.mechanical.core.embedding.app.App
+        A Mechanical embedding application.
+    delete_tmp_on_close: bool
+        Whether to delete the temporary mechdb file when the GUI is closed.
+        By default, this is ``True``.
     """
-    if not testing:
-        _launch_ui(app, UILauncher())
+    _launch_ui(app, delete_tmp_on_close, UILauncher())
