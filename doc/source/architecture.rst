@@ -158,7 +158,7 @@ protocol.
 
 Applications that conform to REST are said to provide RESTful APIs. For a more
 detailed description, see `What is a REST API
-<https://www.redhat.com/en/topics/api/what-is-a-rest-api>` on the *Red Hat
+<https://www.redhat.com/en/topics/api/what-is-a-rest-api>`_ on the *Red Hat
 Technology Topics* page.
 
 Remote method invocation

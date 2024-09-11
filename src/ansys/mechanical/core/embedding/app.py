@@ -232,7 +232,14 @@ class App:
         light_mode = True
         args = None
         rets = None
-        return self.script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
+        script_result = self.script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
+        error_msg = f"Failed to execute the script"
+        if script_result is None:
+            raise Exception(error_msg)
+        if script_result.Error is not None:
+            error_msg += f": {script_result.Error.Message}"
+            raise Exception(error_msg)
+        return script_result.Value
 
     def plotter(self) -> None:
         """Return ``ansys.tools.visualization_interface.Plotter`` object."""

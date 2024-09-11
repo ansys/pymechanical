@@ -316,6 +316,17 @@ def test_rm_lockfile(embedded_app, tmp_path: pytest.TempPathFactory):
 
 
 @pytest.mark.embedding
+def test_app_execute_script(embedded_app):
+    """Test execute_script method."""
+    embedded_app.update_globals(globals())
+    result = embedded_app.execute_script("2+3")
+    assert result == 5
+    with pytest.raises(Exception):
+        # This will throw an exception since no module named test available
+        embedded_app.execute_script("import test")
+
+
+@pytest.mark.embedding
 def test_launch_ui(embedded_app, tmp_path: pytest.TempPathFactory):
     """Test the _launch_ui function with a mock launcher."""
 
