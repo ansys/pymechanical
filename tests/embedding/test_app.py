@@ -224,7 +224,7 @@ def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
 
     # Run embedded instance in virtual env with pythonnet installed
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
-    _, stderr = run_subprocess(
+    process, stdout, stderr = run_subprocess(
         [test_env.python, embedded_py, pytestconfig.getoption("ansys_version")]
     )
 
@@ -245,7 +245,7 @@ def test_private_appdata(pytestconfig, run_subprocess, rootdir):
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
     run_subprocess([sys.executable, embedded_py, version, "True", "Set"])
-    stdout, _ = run_subprocess([sys.executable, embedded_py, version, "True", "Run"])
+    process, stdout, stderr = run_subprocess([sys.executable, embedded_py, version, "True", "Run"])
     stdout = stdout.decode()
     assert "ShowTriad value is True" in stdout
 
@@ -259,7 +259,7 @@ def test_normal_appdata(pytestconfig, run_subprocess, rootdir):
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
     run_subprocess([sys.executable, embedded_py, version, "False", "Set"])
-    stdout, _ = run_subprocess([sys.executable, embedded_py, version, "False", "Run"])
+    process, stdout, stderr = run_subprocess([sys.executable, embedded_py, version, "False", "Run"])
     run_subprocess([sys.executable, embedded_py, version, "False", "Reset"])
 
     stdout = stdout.decode()
@@ -280,13 +280,15 @@ def test_building_gallery(pytestconfig, run_subprocess, rootdir):
 
     embedded_gallery_py = os.path.join(rootdir, "tests", "scripts", "build_gallery_test.py")
 
-    _, stderr = run_subprocess([sys.executable, embedded_gallery_py, version, "False"], None, False)
+    process, stdout, stderr = run_subprocess(
+        [sys.executable, embedded_gallery_py, version, "False"], None, False
+    )
     stderr = stderr.decode()
 
     # Assert Exception
     assert "Cannot have more than one embedded mechanical instance" in stderr
 
-    stdout, _ = run_subprocess([sys.executable, embedded_gallery_py, version, "True"])
+    process, stdout, stderr = run_subprocess([sys.executable, embedded_gallery_py, version, "True"])
     stdout = stdout.decode()
 
     # Assert stdout after launching multiple instances
