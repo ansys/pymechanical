@@ -51,10 +51,15 @@ def cleanup_gui(pid, temp_mechdb) -> None:
     shutil.rmtree(temp_folder_path)
 
 
-if __name__ == "__main__":
+def main():
+    """Get the process ID and temporary file path to monitor and delete files after use."""
     # Convert the process id (pid) argument into an integer
     pid = int(sys.argv[1])
     # Convert the temporary mechdb path into a Path
     temp_mechdb_path = Path(sys.argv[2])
     # Remove the temporary mechdb file when the GUI is closed
     cleanup_gui(pid, temp_mechdb_path)
+
+
+if __name__ == "__main__":  # pragma: no cover
+    main()

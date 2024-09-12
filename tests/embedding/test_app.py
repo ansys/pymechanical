@@ -29,7 +29,7 @@ import time
 
 import pytest
 
-from ansys.mechanical.core.embedding.cleanup_gui import cleanup_gui
+from ansys.mechanical.core.embedding.cleanup_gui import main as cleanup_gui_main
 from ansys.mechanical.core.embedding.ui import _launch_ui
 import ansys.mechanical.core.embedding.utils as utils
 
@@ -392,13 +392,22 @@ def test_launch_ui(embedded_app, tmp_path: pytest.TempPathFactory):
 
 @pytest.mark.embedding
 def test_launch_gui(embedded_app, tmp_path: pytest.TempPathFactory, capfd):
-    """Test lock file is removed on close of embedded application."""
+    """Test the GUI is launched for an embedded app."""
     mechdb_path = os.path.join(tmp_path, "test.mechdb")
     embedded_app.save(mechdb_path)
     embedded_app.launch_gui(delete_tmp_on_close=False)
     embedded_app.close()
     out, err = capfd.readouterr()
     assert f"Opened a new mechanical session based on {mechdb_path}" in out
+
+
+@pytest.mark.embedding
+def test_launch_gui_exception(embedded_app, tmp_path: pytest.TempPathFactory, capfd):
+    """Test an exception is raised when the embedded_app has not been saved yet."""
+    # Assert that an exception is raised
+    with pytest.raises(Exception):
+        embedded_app.launch_gui(delete_tmp_on_close=False)
+    embedded_app.close()
 
 
 @pytest.mark.embedding_scripts
@@ -417,10 +426,11 @@ def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory, run_subprocess):
     assert temp_folder.exists()
 
     # Run process
-    process, stdout, stderr = run_subprocess(["sleep", "1"])
+    process, stdout, stderr = run_subprocess(["sleep", "3"])
 
     # Remove the temporary file and folder
-    cleanup_gui(process.pid, temp_file)
+    sys.argv[1:] = [process.pid, temp_file]
+    cleanup_gui_main()
 
     # Assert the file and folder do not exist
     assert not temp_file.exists()

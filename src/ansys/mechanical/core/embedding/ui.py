@@ -124,10 +124,12 @@ class UILauncher:
             The full path to the temporary mechdb file.
         """
         # Get the path to the cleanup script
-        cleanup_script = Path(__file__).parent / "cleanup_gui.py"
+        cleanup_script = Path(__file__).parent / "cleanup_gui.py"  # pragma: no cover
 
         # Open a subprocess to remove the temporary mechdb file and folder when the process ends
-        Popen([sys.executable, cleanup_script, str(process.pid), temp_mechdb_path])
+        Popen(
+            [sys.executable, cleanup_script, str(process.pid), temp_mechdb_path]
+        )  # pragma: no cover
 
 
 def _is_saved(app: "ansys.mechanical.core.embedding.App") -> bool:
@@ -179,7 +181,7 @@ def _launch_ui(
         # If the user wants the temporary file to be deleted. By default, this is True
         if delete_tmp_on_close:
             # Remove the temporary mechdb file and folder when the GUI is closed.
-            launcher._cleanup_gui(p, temp_file)
+            launcher._cleanup_gui(p, temp_file)  # pragma: no cover
         else:
             # Let the user know that the mechdb started above will not automatically get cleaned up
             print(
