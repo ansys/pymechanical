@@ -389,8 +389,8 @@ def test_launch_ui(embedded_app, tmp_path: pytest.TempPathFactory):
     assert m.ops[5] == "launch_temp_mechdb"
 
 
-@pytest.mark.embedding
-def test_tempfile_cleanup(embedded_app, tmp_path: pytest.TempPathFactory):
+@pytest.mark.embedding_scripts
+def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory):
     """Test cleanup function to remove the temporary mechdb file and folder."""
     temp_file = tmp_path / "tempfiletest.mechdb"
     temp_folder = tmp_path / "tempfiletest_Mech_Files"
