@@ -405,7 +405,7 @@ def test_tempfile_cleanup(embedded_app, tmp_path: pytest.TempPathFactory):
     assert temp_folder.exists()
 
     # Run process
-    process = Popen(["sleep", "5"])
+    process = Popen(["sleep", "1"])
 
     # Remove the temporary file and folder
     cleanup_gui(process.pid, temp_file)
