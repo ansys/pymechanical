@@ -68,14 +68,14 @@ class UILauncher:
 
         return mechdb_file, temp_file_name
 
-    def open_original(self, app: "ansys.mechanical.core.embedding.App", mechdb_file: Path) -> None:
+    def open_original(self, app: "ansys.mechanical.core.embedding.App", mechdb_file: str) -> None:
         """Open the original mechdb file from save_original().
 
         Parameters
         ----------
         app: ansys.mechanical.core.embedding.app.App
             A Mechanical embedding application.
-        mechdb_file: pathlib.Path
+        mechdb_file: str
             The full path to the active mechdb file.
         """
         app.open(mechdb_file)
@@ -172,7 +172,7 @@ def _launch_ui(
         # Save a new mechdb file with a temporary name.
         mechdb_file, temp_file = launcher.save_temp_copy(app)
         # Open the original mechdb file from save_original().
-        launcher.open_original(app, mechdb_file)
+        launcher.open_original(app, str(mechdb_file))
         # Launch the GUI for the mechdb file with a temporary name from save_temp_copy().
         p = launcher.graphically_launch_temp(app, mechdb_file, temp_file)
 
