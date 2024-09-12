@@ -398,7 +398,7 @@ def test_launch_gui(embedded_app, tmp_path: pytest.TempPathFactory, capfd):
     embedded_app.launch_gui(delete_tmp_on_close=False)
     embedded_app.close()
     out, err = capfd.readouterr()
-    assert f"Opened a new mechanical session based on {mechdb_path}." in out
+    assert f"Opened a new mechanical session based on {mechdb_path}" in out
 
 
 @pytest.mark.embedding_scripts
