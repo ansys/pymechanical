@@ -19,10 +19,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
 """Run Mechanical UI from Python."""
 
-import os
 from pathlib import Path
 from subprocess import Popen
 import sys
@@ -56,9 +54,8 @@ class UILauncher:
         # Identify the mechdb of the saved session from save_original()
         project_directory = Path(app.DataModel.Project.ProjectDirectory)
         project_directory_parent = project_directory.parent
-        print(project_directory_parent)
-        mechdb_file = os.path.join(
-            project_directory_parent, f"{project_directory.parts[-1].split('_')[0]}.mechdb"
+        mechdb_file = (
+            project_directory_parent / f"{project_directory.parts[-1].split('_')[0]}.mechdb"
         )
 
         # Get name of NamedTemporaryFile
@@ -102,6 +99,7 @@ class UILauncher:
         subprocess.Popen
             The subprocess that launches the GUI for the temporary mechdb file.
         """
+        # The subprocess that uses ansys-mechanical to launch the GUI of the temporary mechdb file
         p = Popen(
             [
                 "ansys-mechanical",
@@ -115,8 +113,20 @@ class UILauncher:
 
         return p
 
-    def _cleanup_gui(self, process, temp_mechdb_path):
-        cleanup_script = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cleanup_gui.py")
+    def _cleanup_gui(self, process: Popen, temp_mechdb_path: Path) -> None:
+        """Remove the temporary mechdb file and folder when the GUI is closed.
+
+        Parameters
+        ----------
+        process: subprocess.Popen
+            The subprocess that launched the GUI of the temporary mechdb file.
+        temp_mechdb_path: pathlib.Path
+            The full path to the temporary mechdb file.
+        """
+        # Get the path to the cleanup script
+        cleanup_script = Path(__file__).parent / "cleanup_gui.py"
+
+        # Open a subprocess to remove the temporary mechdb file and folder when the process ends
         Popen([sys.executable, cleanup_script, str(process.pid), temp_mechdb_path])
 
 
@@ -127,6 +137,12 @@ def _is_saved(app: "ansys.mechanical.core.embedding.App") -> bool:
     ----------
     app: ansys.mechanical.core.embedding.app.App
         A Mechanical embedding application.
+
+    Returns
+    -------
+    bool
+        ``True`` when the embedded app has been saved.
+        ``False`` when the embedded app has not been saved.
     """
     try:
         app.save()
@@ -151,13 +167,18 @@ def _launch_ui(
         Launch the GUI using a temporary mechdb file.
     """
     if _is_saved(app):
+        # Save the active mechdb file.
         launcher.save_original(app)
+        # Save a new mechdb file with a temporary name.
         mechdb_file, temp_file = launcher.save_temp_copy(app)
+        # Open the original mechdb file from save_original().
         launcher.open_original(app, mechdb_file)
+        # Launch the GUI for the mechdb file with a temporary name from save_temp_copy().
         p = launcher.graphically_launch_temp(app, mechdb_file, temp_file)
 
-        # If the user wants the temporary file to be deleted
+        # If the user wants the temporary file to be deleted. By default, this is True
         if delete_tmp_on_close:
+            # Remove the temporary mechdb file and folder when the GUI is closed.
             launcher._cleanup_gui(p, temp_file)
         else:
             # Let the user know that the mechdb started above will not automatically get cleaned up
