@@ -393,15 +393,12 @@ def test_launch_ui(embedded_app, tmp_path: pytest.TempPathFactory):
 @pytest.mark.embedding
 def test_launch_gui(embedded_app, tmp_path: pytest.TempPathFactory, capfd):
     """Test lock file is removed on close of embedded application."""
-    # version = str(embedded_app.version)
-    # full_version = f"20{version[0:2]}R{version[-1]}"
     mechdb_path = os.path.join(tmp_path, "test.mechdb")
     embedded_app.save(mechdb_path)
     embedded_app.launch_gui(delete_tmp_on_close=False)
     embedded_app.close()
     out, err = capfd.readouterr()
-    # print(out)
-    assert f"Opened a new Mechanical session based on {mechdb_path}." in out
+    assert f"Opened a new mechanical session based on {mechdb_path}." in out
 
 
 @pytest.mark.embedding_scripts
