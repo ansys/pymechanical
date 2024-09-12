@@ -22,7 +22,6 @@
 
 """Run Mechanical UI from Python."""
 
-import atexit
 import os
 from pathlib import Path
 from subprocess import Popen
@@ -159,7 +158,7 @@ def _launch_ui(
 
         # If the user wants the temporary file to be deleted
         if delete_tmp_on_close:
-            atexit.register(launcher._cleanup_gui, p, temp_file)
+            launcher._cleanup_gui(p, temp_file)
         else:
             # Let the user know that the mechdb started above will not automatically get cleaned up
             print(

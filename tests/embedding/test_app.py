@@ -23,12 +23,14 @@
 """Miscellaneous embedding tests"""
 import os
 import subprocess
+from subprocess import Popen
 import sys
 from tempfile import NamedTemporaryFile
 import time
 
 import pytest
 
+from ansys.mechanical.core.embedding.cleanup_gui import cleanup_gui
 from ansys.mechanical.core.embedding.ui import _launch_ui
 import ansys.mechanical.core.embedding.utils as utils
 
@@ -374,3 +376,29 @@ def test_launch_ui(embedded_app, tmp_path: pytest.TempPathFactory):
     assert m.ops[3] == "save_as"
     assert m.ops[4] == "open_orig_mechdb"
     assert m.ops[5] == "launch_temp_mechdb"
+
+
+@pytest.mark.embedding
+def test_tempfile_cleanup(embedded_app, tmp_path: pytest.TempPathFactory):
+    """Test cleanup function to remove the temporary mechdb file and folder."""
+    temp_file = tmp_path / "tempfiletest.mechdb"
+    temp_folder = tmp_path / "tempfiletest_Mech_Files"
+
+    # Make temporary file
+    temp_file.touch()
+    # Make temporary folder
+    temp_folder.mkdir()
+
+    # Assert the file and folder exist
+    assert temp_file.exists()
+    assert temp_folder.exists()
+
+    # Run process
+    process = Popen(["sleep", "5"])
+
+    # Remove the temporary file and folder
+    cleanup_gui(process.pid, temp_file)
+
+    # Assert the file and folder do not exist
+    assert not temp_file.exists()
+    assert not temp_folder.exists()

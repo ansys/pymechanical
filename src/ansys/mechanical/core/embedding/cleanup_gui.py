@@ -21,7 +21,7 @@
 # SOFTWARE.
 """Clean up temporary mechdb files after GUI is closed."""
 
-from pathlib import Path, PurePath
+from pathlib import Path
 import shutil
 import sys
 import time
@@ -44,14 +44,10 @@ def cleanup_gui(pid, temp_mechdb) -> None:
         time.sleep(1)
 
     # Delete the temporary mechdb file once the GUI is closed
-    Path.unlink(temp_mechdb)
+    temp_mechdb.unlink()
 
     # Delete the temporary mechdb Mech_Files folder
-    dirname = PurePath(temp_mechdb).parent
-    basename = PurePath(temp_mechdb).name
-    pd_index = basename.index(".")
-    temp_folder = f"{basename[0:pd_index]}_Mech_Files"
-    temp_folder_path = PurePath.joinpath(dirname, temp_folder)
+    temp_folder_path = temp_mechdb.parent / f"{temp_mechdb.name.split('.')[0]}_Mech_Files"
     shutil.rmtree(temp_folder_path)
 
 
