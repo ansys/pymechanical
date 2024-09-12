@@ -23,7 +23,6 @@
 """Miscellaneous embedding tests"""
 import os
 import subprocess
-from subprocess import Popen
 import sys
 from tempfile import NamedTemporaryFile
 import time
@@ -390,7 +389,7 @@ def test_launch_ui(embedded_app, tmp_path: pytest.TempPathFactory):
 
 
 @pytest.mark.embedding_scripts
-def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory):
+def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory, run_subprocess):
     """Test cleanup function to remove the temporary mechdb file and folder."""
     temp_file = tmp_path / "tempfiletest.mechdb"
     temp_folder = tmp_path / "tempfiletest_Mech_Files"
@@ -405,7 +404,7 @@ def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory):
     assert temp_folder.exists()
 
     # Run process
-    process = Popen(["sleep", "1"])
+    process, stdout, stderr = run_subprocess(["sleep", "1"])
 
     # Remove the temporary file and folder
     cleanup_gui(process.pid, temp_file)
