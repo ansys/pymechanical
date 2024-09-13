@@ -85,16 +85,14 @@ class UILauncher:
         app.open(mechdb_file)
 
     def graphically_launch_temp(
-        self, app: "ansys.mechanical.core.embedding.App", mechdb_file: Path, temp_file: Path
-    ) -> Popen:
+        self, app: "ansys.mechanical.core.embedding.App", temp_file: Path
+    ) -> Popen | str:
         """Launch the GUI for the mechdb file with a temporary name from save_temp_copy().
 
         Parameters
         ----------
         app: ansys.mechanical.core.embedding.app.App
             A Mechanical embedding application.
-        mechdb_file: pathlib.Path
-            The full path to the active mechdb file.
         temp_file: pathlib.Path
             The full path to the temporary mechdb file.
 
@@ -104,18 +102,22 @@ class UILauncher:
             The subprocess that launches the GUI for the temporary mechdb file.
         """
         # The subprocess that uses ansys-mechanical to launch the GUI of the temporary mechdb file
-        p = Popen(
-            [
-                "ansys-mechanical",
-                "--project-file",
-                temp_file,
-                "--graphical",
-                "--revision",
-                str(app.version),
-            ],
-        )
+        if not self._dry_run:
+            process = Popen(
+                [
+                    "ansys-mechanical",
+                    "--project-file",
+                    temp_file,
+                    "--graphical",
+                    "--revision",
+                    str(app.version),
+                ],
+            )
 
-        return p
+            return process
+        else:
+            return f"ansys-mechanical --project-file {temp_file} --graphical \
+--revision {str(app.version)}"
 
     def _cleanup_gui(self, process: Popen, temp_mechdb_path: Path) -> None:
         """Remove the temporary mechdb file and folder when the GUI is closed.
@@ -181,12 +183,17 @@ def _launch_ui(
         # Open the original mechdb file from save_original().
         launcher.open_original(app, str(mechdb_file))
         # Launch the GUI for the mechdb file with a temporary name from save_temp_copy().
-        p = launcher.graphically_launch_temp(app, mechdb_file, temp_file)
+        process = launcher.graphically_launch_temp(app, temp_file)
 
-        # If the user wants the temporary file to be deleted. By default, this is True
-        if delete_tmp_on_close:
+        # If it's a dry run and graphically_launch_temp returned a string, print the string
+        if isinstance(process, str):
+            print(process)
+
+        # If the user wants the temporary file to be deleted and graphically_launch_temp
+        # returned a process. By default, this is True
+        if delete_tmp_on_close and not isinstance(process, str):
             # Remove the temporary mechdb file and folder when the GUI is closed.
-            launcher._cleanup_gui(p, temp_file)  # pragma: no cover
+            launcher._cleanup_gui(process, temp_file)  # pragma: no cover
         else:
             # Let the user know that the mechdb started above will not automatically get cleaned up
             print(
@@ -212,5 +219,7 @@ def launch_ui(
     delete_tmp_on_close: bool
         Whether to delete the temporary mechdb file when the GUI is closed.
         By default, this is ``True``.
+    dry_run: bool
+        Whether or not to launch the GUI. By default, this is ``False``.
     """
     _launch_ui(app, delete_tmp_on_close, UILauncher(dry_run))

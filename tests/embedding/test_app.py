@@ -398,6 +398,8 @@ def test_launch_gui(embedded_app, tmp_path: pytest.TempPathFactory, capfd):
     embedded_app.launch_gui(delete_tmp_on_close=False, dry_run=True)
     embedded_app.close()
     out, err = capfd.readouterr()
+    assert f"ansys-mechanical --project-file" in out
+    assert f"--graphical --revision {str(embedded_app.version)}" in out
     assert f"Opened a new mechanical session based on {mechdb_path}" in out
 
 
