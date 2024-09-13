@@ -361,7 +361,7 @@ def test_launch_ui(embedded_app, tmp_path: pytest.TempPathFactory):
             """Open the original mechdb file from save_original()."""
             self.ops.append("open_orig_mechdb")
 
-        def graphically_launch_temp(self, app, mechdb_file, temp_file):
+        def graphically_launch_temp(self, app, temp_file):
             """Launch the GUI for the mechdb file with a temporary name from save_temp_copy()."""
             self.ops.append("launch_temp_mechdb")
 
@@ -404,7 +404,7 @@ def test_launch_gui(embedded_app, tmp_path: pytest.TempPathFactory, capfd):
 
 
 @pytest.mark.embedding
-def test_launch_gui_exception(embedded_app, tmp_path: pytest.TempPathFactory, capfd):
+def test_launch_gui_exception(embedded_app):
     """Test an exception is raised when the embedded_app has not been saved yet."""
     # Assert that an exception is raised
     with pytest.raises(Exception):
