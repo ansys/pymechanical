@@ -31,6 +31,10 @@ import typing
 class UILauncher:
     """Launch the GUI using a temporary mechdb file."""
 
+    def __init__(self, dry_run: bool = False):
+        """Initialize UILauncher class."""
+        self._dry_run = dry_run
+
     def save_original(self, app: "ansys.mechanical.core.embedding.App") -> None:
         """Save the active mechdb file.
 
@@ -126,10 +130,11 @@ class UILauncher:
         # Get the path to the cleanup script
         cleanup_script = Path(__file__).parent / "cleanup_gui.py"  # pragma: no cover
 
-        # Open a subprocess to remove the temporary mechdb file and folder when the process ends
-        Popen(
-            [sys.executable, cleanup_script, str(process.pid), temp_mechdb_path]
-        )  # pragma: no cover
+        if not self._dry_run:
+            # Open a subprocess to remove the temporary mechdb file and folder when the process ends
+            Popen(
+                [sys.executable, cleanup_script, str(process.pid), temp_mechdb_path]
+            )  # pragma: no cover
 
 
 def _is_saved(app: "ansys.mechanical.core.embedding.App") -> bool:
@@ -190,7 +195,11 @@ PyMechanical will not delete it after use."""
             )
 
 
-def launch_ui(app: "ansys.mechanical.core.embedding.App", delete_tmp_on_close: bool = True) -> None:
+def launch_ui(
+    app: "ansys.mechanical.core.embedding.App",
+    delete_tmp_on_close: bool = True,
+    dry_run: bool = False,
+) -> None:
     """Launch the Mechanical UI.
 
     Precondition: Mechanical has to have already been saved
@@ -204,4 +213,4 @@ def launch_ui(app: "ansys.mechanical.core.embedding.App", delete_tmp_on_close: b
         Whether to delete the temporary mechdb file when the GUI is closed.
         By default, this is ``True``.
     """
-    _launch_ui(app, delete_tmp_on_close, UILauncher())
+    _launch_ui(app, delete_tmp_on_close, UILauncher(dry_run))

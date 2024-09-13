@@ -395,7 +395,7 @@ def test_launch_gui(embedded_app, tmp_path: pytest.TempPathFactory, capfd):
     """Test the GUI is launched for an embedded app."""
     mechdb_path = os.path.join(tmp_path, "test.mechdb")
     embedded_app.save(mechdb_path)
-    embedded_app.launch_gui(delete_tmp_on_close=False)
+    embedded_app.launch_gui(delete_tmp_on_close=False, dry_run=True)
     embedded_app.close()
     out, err = capfd.readouterr()
     assert f"Opened a new mechanical session based on {mechdb_path}" in out

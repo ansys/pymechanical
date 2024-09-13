@@ -192,9 +192,9 @@ class App:
         """Save the project as."""
         self.DataModel.Project.SaveAs(path)
 
-    def launch_gui(self, delete_tmp_on_close: bool = True):
+    def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
         """Launch the GUI."""
-        launch_ui(self, delete_tmp_on_close)
+        launch_ui(self, delete_tmp_on_close, dry_run)
 
     def new(self):
         """Clear to a new application."""
