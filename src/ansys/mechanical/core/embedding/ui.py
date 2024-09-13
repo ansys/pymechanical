@@ -86,7 +86,7 @@ class UILauncher:
 
     def graphically_launch_temp(
         self, app: "ansys.mechanical.core.embedding.App", temp_file: Path
-    ) -> Popen | str:
+    ) -> typing.Union[Popen, str]:
         """Launch the GUI for the mechdb file with a temporary name from save_temp_copy().
 
         Parameters
