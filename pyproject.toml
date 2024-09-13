@@ -36,6 +36,7 @@ dependencies = [
     "clr-loader==0.2.6",
     "grpcio>=1.30.0",
     "protobuf>=3.12.2,<6",
+    "psutil==6.0.0",
     "tqdm>=4.45.0",
 ]
 

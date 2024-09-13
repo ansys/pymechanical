@@ -29,7 +29,7 @@ import time
 
 import pytest
 
-from ansys.mechanical.core.embedding.cleanup_gui import main as cleanup_gui_main
+from ansys.mechanical.core.embedding.cleanup_gui import cleanup_gui
 from ansys.mechanical.core.embedding.ui import _launch_ui
 import ansys.mechanical.core.embedding.utils as utils
 
@@ -429,8 +429,7 @@ def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory, run_subprocess):
     process, stdout, stderr = run_subprocess(["sleep", "3"])
 
     # Remove the temporary file and folder
-    sys.argv[1:] = [process.pid, temp_file]
-    cleanup_gui_main()
+    cleanup_gui(process.pid, temp_file)
 
     # Assert the file and folder do not exist
     assert not temp_file.exists()
