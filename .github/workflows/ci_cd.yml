@@ -491,7 +491,7 @@ jobs:
       - name: Install system dependencies
         run: |
           apt update
-          apt install lsb-release poppler-utils -y
+          apt install make lsb-release poppler-utils -y
 
       - name: Install gh cli
         run: |
@@ -507,7 +507,7 @@ jobs:
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
           gh release download --repo github.com/quarto-dev/quarto-cli --pattern *linux-amd64.deb
-          apt install ./quarto*linux-amd64.deb
+          apt install ./quarto*linux-amd64.deb -y
           quarto install tool tinytex --log-level warning
 
       - name: Test quarto installation
