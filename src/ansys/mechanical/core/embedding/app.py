@@ -31,6 +31,7 @@ from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 from ansys.mechanical.core.embedding.imports import global_entry_points, global_variables
 from ansys.mechanical.core.embedding.poster import Poster
+from ansys.mechanical.core.embedding.ui import launch_ui
 from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
 
 try:
@@ -190,6 +191,10 @@ class App:
     def save_as(self, path):
         """Save the project as."""
         self.DataModel.Project.SaveAs(path)
+
+    def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
+        """Launch the GUI."""
+        launch_ui(self, delete_tmp_on_close, dry_run)
 
     def new(self):
         """Clear to a new application."""
