@@ -454,4 +454,3 @@ def test_app_execute_script_from_file(embedded_app, rootdir, printer):
     succes_script_path = os.path.join(rootdir, "tests", "scripts", "run_python_success.py")
     result = embedded_app.execute_script_from_file(succes_script_path)
     assert result == "test"
-
