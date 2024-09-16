@@ -436,3 +436,22 @@ def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory, run_subprocess):
     # Assert the file and folder do not exist
     assert not temp_file.exists()
     assert not temp_folder.exists()
+
+
+@pytest.mark.embedding
+def test_app_execute_script_from_file(embedded_app, rootdir, printer):
+    """Test execute_script_from_file method."""
+    embedded_app.update_globals(globals())
+
+    printer("Running run_python_error.py")
+    error_script_path = os.path.join(rootdir, "tests", "scripts", "run_python_error.py")
+    with pytest.raises(Exception) as exc_info:
+        # This will throw an exception since no module named test available
+        embedded_app.execute_script_from_file(error_script_path)
+    assert "name 'get_myname' is not defined" in str(exc_info.value)
+
+    printer("Running run_python_success.py")
+    succes_script_path = os.path.join(rootdir, "tests", "scripts", "run_python_success.py")
+    result = embedded_app.execute_script_from_file(succes_script_path)
+    assert result == "test"
+

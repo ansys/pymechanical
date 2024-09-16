@@ -241,6 +241,13 @@ class App:
             raise Exception(error_msg)
         return script_result.Value
 
+    def execute_script_from_file(self, file_path=None):
+        """Execute the given script from file with the internal IronPython engine."""
+        text_file = open(file_path, "r", encoding="utf-8")
+        data = text_file.read()
+        text_file.close()
+        return self.execute_script(data)
+
     def plotter(self) -> None:
         """Return ``ansys.tools.visualization_interface.Plotter`` object."""
         if not HAS_ANSYS_VIZ:
