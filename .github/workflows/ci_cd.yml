@@ -274,8 +274,7 @@ jobs:
       - name: Install dependencies
         run: |
           . /env/bin/activate
-          pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
-          pip install --upgrade pip flit
+          pip install --upgrade pip
 
       - name: Install packages for testing
         run: |
@@ -348,8 +347,7 @@ jobs:
       - name: Install dependencies
         run: |
           . /env/bin/activate
-          pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
-          pip install --upgrade pip flit
+          pip install --upgrade pip
 
       - name: Install packages for testing
         run: |
@@ -417,22 +415,16 @@ jobs:
           apt install --reinstall ca-certificates
           apt install software-properties-common -y
           add-apt-repository ppa:deadsnakes/ppa -y
-          apt install python${{ matrix.python-version }} -y
-          ln -s /usr/bin/python${{ matrix.python-version }} /usr/bin/python
-          apt install python${{ matrix.python-version }}-venv -y
-          python -m ensurepip --default-pip
-          pip3 install --upgrade pip
-          python --version
-          pip3 --version
+          apt install -y python${{ env.MAIN_PYTHON_VERSION }} python${{ env.MAIN_PYTHON_VERSION }}-venv
+          python${{ env.MAIN_PYTHON_VERSION }} -m venv /env
 
       - name: Install dependencies
         run: |
           apt install -y lsb-release
-          pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
-          pip3 install --upgrade pip flit
 
       - name: Install packages for testing
         run: |
+          . /env/bin/activate
           pip install .[tests]
 
       - name: Set environment variable
@@ -499,11 +491,7 @@ jobs:
       - name: Install system dependencies
         run: |
           apt update
-          apt install -y sudo curl lsb-release
-          apt install -y zip pandoc libgl1-mesa-glx mesa-utils xvfb texlive-latex-extra latexmk nodejs npm graphviz
-          apt install -y tini
-          apt install poppler-utils -y
-          npm install -g @mermaid-js/mermaid-cli
+          apt install lsb-release poppler-utils -y
 
       - name: Install gh cli
         run: |
