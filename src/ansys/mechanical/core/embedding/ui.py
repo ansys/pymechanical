@@ -101,23 +101,23 @@ class UILauncher:
         subprocess.Popen
             The subprocess that launches the GUI for the temporary mechdb file.
         """
-        # The subprocess that uses ansys-mechanical to launch the GUI of the temporary mechdb file
+        # The ansys-mechanical command to launch the GUI in a subprocess
+        args = [
+            "ansys-mechanical",
+            "--project-file",
+            temp_file,
+            "--graphical",
+            "--revision",
+            str(app.version),
+        ]
         if not self._dry_run:
-            process = Popen(
-                [
-                    "ansys-mechanical",
-                    "--project-file",
-                    temp_file,
-                    "--graphical",
-                    "--revision",
-                    str(app.version),
-                ],
-            )
-
+            # The subprocess that uses ansys-mechanical to launch the GUI of the temporary
+            # mechdb file
+            process = Popen(args)
             return process
         else:
-            return f"ansys-mechanical --project-file {temp_file} --graphical \
---revision {str(app.version)}"
+            # Return a string containing the args
+            return " ".join(args)
 
     def _cleanup_gui(self, process: Popen, temp_mechdb_path: Path) -> None:
         """Remove the temporary mechdb file and folder when the GUI is closed.
