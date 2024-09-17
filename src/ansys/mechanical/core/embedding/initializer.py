@@ -113,6 +113,33 @@ def __check_for_mechanical_env():
         )
 
 
+def __is_lib_loaded(libname: str):
+    """Return whether a library is loaded."""
+    import ctypes
+
+    RTLD_NOLOAD = 4
+    try:
+        ctypes.CDLL(libname, RTLD_NOLOAD)
+    except:
+        return False
+    return True
+
+
+def __check_loaded_libs(version: int = None):
+    """Ensure that incompatible libraries aren't loaded prior to PyMechanical load."""
+    if platform.system() != "Linux":
+        return
+
+    if version < 251:
+        return
+
+    # For 2025 R1, PyMechanical will crash on shutdown if libX11.so is already loaded
+    # before starting Mechanical
+    if __is_lib_loaded("libX11.so"):
+        warnings.warn("libX11.so is loaded prior to initializing the Embedded Instance of Mechanical.\
+                      Python will crash on shutdown...")
+
+
 def initialize(version: int = None):
     """Initialize Mechanical embedding."""
     __check_python_interpreter_architecture()  # blocks 32 bit python
@@ -127,6 +154,8 @@ def initialize(version: int = None):
         version = _get_default_version()
 
     INITIALIZED_VERSION = version
+
+    __check_loaded_libs(version)
 
     __workaround_material_server(version)
 
