@@ -136,8 +136,10 @@ def __check_loaded_libs(version: int = None):
     # For 2025 R1, PyMechanical will crash on shutdown if libX11.so is already loaded
     # before starting Mechanical
     if __is_lib_loaded("libX11.so"):
-        warnings.warn("libX11.so is loaded prior to initializing the Embedded Instance of Mechanical.\
-                      Python will crash on shutdown...")
+        warnings.warn(
+            "libX11.so is loaded prior to initializing the Embedded Instance of Mechanical.\
+                      Python will crash on shutdown..."
+        )
 
 
 def initialize(version: int = None):
