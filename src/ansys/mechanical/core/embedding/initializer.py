@@ -157,7 +157,7 @@ def initialize(version: int = None):
 
     INITIALIZED_VERSION = version
 
-    __check_loaded_libs(version)   # pragma: no cover
+    __check_loaded_libs(version)  # pragma: no cover
 
     __workaround_material_server(version)
 
