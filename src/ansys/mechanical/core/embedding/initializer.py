@@ -113,7 +113,7 @@ def __check_for_mechanical_env():
         )
 
 
-def __is_lib_loaded(libname: str):
+def __is_lib_loaded(libname: str):  # pragma: no cover
     """Return whether a library is loaded."""
     import ctypes
 
@@ -125,7 +125,7 @@ def __is_lib_loaded(libname: str):
     return True
 
 
-def __check_loaded_libs(version: int = None):
+def __check_loaded_libs(version: int = None):  # pragma: no cover
     """Ensure that incompatible libraries aren't loaded prior to PyMechanical load."""
     if platform.system() != "Linux":
         return
@@ -157,7 +157,7 @@ def initialize(version: int = None):
 
     INITIALIZED_VERSION = version
 
-    __check_loaded_libs(version)
+    __check_loaded_libs(version)   # pragma: no cover
 
     __workaround_material_server(version)
 
