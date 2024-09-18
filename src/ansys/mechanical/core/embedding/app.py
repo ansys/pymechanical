@@ -23,8 +23,11 @@
 """Main application class for embedded Mechanical."""
 import atexit
 import os
+from pathlib import Path
+import sys
 import typing
 import warnings
+import xml.etree.ElementTree as ElementTree
 
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
@@ -138,6 +141,63 @@ class App:
             profile = UniqueUserProfile(new_profile_name)
             profile.update_environment(os.environ)
             atexit.register(_cleanup_private_appdata, profile)
+
+        temp = kwargs.get("temp_dir")
+        if temp:
+            new_temp_path = Path(temp)
+            # Make the temporary directory
+            os.makedirs(new_temp_path, exist_ok=True)
+
+            # Get the globalPreferences.xml file of the specified version
+            if "win" in sys.platform:
+                # <TempFolderLocation ... value="C:\Users\username\AppData\Local\Temp" />
+                preference_file = (
+                    Path(os.environ["APPDATA"])
+                    / "Ansys"
+                    / f"v{self._version}"
+                    / "en-us"
+                    / "globalPreferences.xml"
+                )
+            elif "lin" in sys.platform:
+                # <TempFolderLocation ... value="$TEMPDIR$"/>
+                preference_file = (
+                    "/install"
+                    / "ansys_inc"
+                    / f"v{self._version}"
+                    / "aisol"
+                    / "CommonFiles"
+                    / "CommonPages"
+                    / "Language"
+                    / "en-us"
+                    / "xml"
+                    / "globalPreferences.xml"
+                )
+
+            if preference_file.exists():
+                # Preferences -> Category -> UserInterface -> TempFolderLocation
+                tree = ElementTree.parse(preference_file)
+                root = tree.getroot()
+                category = root.find("Category")
+                ui = category.find("UserInterface")
+                # C:\Users\username\AppData\Local\Temp
+                current_temp_folder = ui.find("TempFolderLocation").get("value")
+
+                # Open the globalPreferences.xml file and replace the current temp folder
+                # location with the new temp folder location
+                with open(preference_file, "r+") as file:
+                    content = file.read()
+                    content = content.replace(current_temp_folder, new_temp_path)
+                    file.seek(0)
+                    file.write(content)
+                    file.truncate()
+            else:
+                # Set the TEMP env variable(s) to the new temporary directory if
+                # globalPreferences.xml doesn't exist
+                if "win" in sys.platform:
+                    os.environ["TMP"] = new_temp_path
+                    os.environ["TEMP"] = new_temp_path
+                elif "lin" in sys.platform:
+                    os.environ["TEMPDIR"] = new_temp_path
 
         self._app = _start_application(configuration, self._version, db_file)
         runtime.initialize(self._version)
