@@ -271,14 +271,10 @@ jobs:
           apt install -y python${{ matrix.python-version }} python${{ matrix.python-version }}-venv
           python${{ matrix.python-version }} -m venv /env
 
-      - name: Install dependencies
-        run: |
-          . /env/bin/activate
-          pip install --upgrade pip
-
       - name: Install packages for testing
         run: |
           . /env/bin/activate
+          pip install --upgrade pip
           pip install -e .[tests]
 
       - name: Unit Testing and coverage
@@ -344,14 +340,10 @@ jobs:
           apt install -y python${{ matrix.python-version }} python${{ matrix.python-version }}-venv
           python${{ matrix.python-version }} -m venv /env
 
-      - name: Install dependencies
-        run: |
-          . /env/bin/activate
-          pip install --upgrade pip
-
       - name: Install packages for testing
         run: |
           . /env/bin/activate
+          pip install --upgrade pip
           pip install -e .[tests]
 
       - name: Embedding scripts unit testing and coverage
@@ -436,6 +428,7 @@ jobs:
         run: |
           unset PYMECHANICAL_PORT
           unset PYMECHANICAL_START_INSTANCE
+          . /env/bin/activate
           pytest -m remote_session_launch -s --junitxml launch_test_results${{ matrix.python-version }}.xml || true
 
       - name: Publish Launch Test Report
