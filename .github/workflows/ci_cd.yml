@@ -632,6 +632,8 @@ jobs:
           # .coveragerc to control coverage.py
           [run]
           relative_files = True
+          omit =
+              /env/lib/**/ansys/mechanical
 
           [paths]
           source =
