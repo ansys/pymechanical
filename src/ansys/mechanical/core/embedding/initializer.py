@@ -154,6 +154,8 @@ def initialize(version: int = None):
 
     if version == None:
         version = _get_default_version()
+    elif version not in SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS:
+        raise ValueError(f"Mechanical version {version} is not supported.")
 
     INITIALIZED_VERSION = version
 
