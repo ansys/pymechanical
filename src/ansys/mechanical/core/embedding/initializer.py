@@ -142,6 +142,16 @@ def __check_loaded_libs(version: int = None):  # pragma: no cover
         )
 
 
+def __check_for_supported_version(version):
+    # if below env is set, then users can overwrite version support
+    is_old_version = os.getenv("ANSYS_MECHANICAL_EMBEDDING_SUPPORT_OLD_VERSIONS")
+
+    if is_old_version is not None and is_old_version == "1" and version >= 231:
+        return version
+    elif version < next(iter(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS)):
+        raise ValueError(f"Mechanical version {version} is not supported.")
+
+
 def initialize(version: int = None):
     """Initialize Mechanical embedding."""
     __check_python_interpreter_architecture()  # blocks 32 bit python
@@ -154,8 +164,8 @@ def initialize(version: int = None):
 
     if version == None:
         version = _get_default_version()
-    elif version not in SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS:
-        raise ValueError(f"Mechanical version {version} is not supported.")
+    elif version:
+        version = __check_for_supported_version(version=version)
 
     INITIALIZED_VERSION = version
 
