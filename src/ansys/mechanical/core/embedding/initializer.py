@@ -36,7 +36,7 @@ from ansys.mechanical.core.embedding.resolver import resolve
 INITIALIZED_VERSION = None
 """Constant for the initialized version."""
 
-SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS = {242: "2024R2", 241: "2024R1", 232: "2023R2"}
+SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS = {242: "2024R2", 241: "2024R1", 232: "2023R2"}
 """Supported Mechanical embedding versions on Windows."""
 
 
@@ -86,9 +86,7 @@ def _get_default_version() -> int:
     if os.name != "nt":  # pragma: no cover
         raise Exception("Unexpected platform!")
 
-    _, version = atp.find_mechanical(
-        supported_versions=SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS
-    )
+    _, version = atp.find_mechanical(supported_versions=SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS)
 
     # version is of the form 23.2
     int_version = int(str(version).replace(".", ""))
@@ -144,11 +142,11 @@ def __check_loaded_libs(version: int = None):  # pragma: no cover
 
 def __check_for_supported_version(version):
     # if below env is set, then users can overwrite version support
-    is_old_version = os.getenv("ANSYS_MECHANICAL_EMBEDDING_SUPPORT_OLD_VERSIONS")
+    allow_old_version = os.getenv("ANSYS_MECHANICAL_EMBEDDING_SUPPORT_OLD_VERSIONS")
 
-    if is_old_version is not None and is_old_version == "1" and version >= 231:
+    if allow_old_version == "1" and version >= 231:
         return version
-    elif version < next(iter(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS)):
+    elif version < next(iter(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS)):
         raise ValueError(f"Mechanical version {version} is not supported.")
 
 
