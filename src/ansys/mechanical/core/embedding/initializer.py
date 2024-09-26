@@ -142,12 +142,13 @@ def __check_loaded_libs(version: int = None):  # pragma: no cover
 
 def __check_for_supported_version(version):
     # if below env is set, then users can overwrite version support
-    allow_old_version = os.getenv("ANSYS_MECHANICAL_EMBEDDING_SUPPORT_OLD_VERSIONS")
+    allow_old_version = os.getenv("ANSYS_MECHANICAL_EMBEDDING_SUPPORT_OLD_VERSIONS") == "1"
 
-    if allow_old_version == "1" and version >= 231:
-        return version
-    elif version < next(iter(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS)):
+    # Check if the version is supported
+    if not allow_old_version and version < min(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS):
         raise ValueError(f"Mechanical version {version} is not supported.")
+
+    return version
 
 
 def initialize(version: int = None):
