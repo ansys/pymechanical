@@ -107,7 +107,7 @@ def __set_environment(version: int) -> None:
         if version < 251:
             os.environ["MECHANICAL_STARTUP_UNOPTIMIZED"] = "1"
 
-        #TODO - use this on linux as well
+        # TODO - use this on linux as well
         if version >= 251:
             if "PYMECHANICAL_NO_CLR_HOST_LITE" not in os.environ:
                 os.environ["ANSYS_MECHANICAL_EMBEDDING_CLR_HOST"] = "1"
