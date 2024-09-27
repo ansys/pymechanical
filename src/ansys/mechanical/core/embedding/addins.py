@@ -52,9 +52,3 @@ class AddinConfiguration:
     @addin_configuration.setter
     def addin_configuration(self, value: str):
         self._addin_configuration = value
-
-
-def configure(configuration: AddinConfiguration):
-    """Apply the given configuration."""
-    if configuration.no_act_addins:
-        os.environ["ANSYS_MECHANICAL_STANDALONE_NO_ACT_EXTENSIONS"] = "1"
