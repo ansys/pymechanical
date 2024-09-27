@@ -57,7 +57,7 @@ def __workaround_material_server(version: int) -> None:
         os.environ["ENGRDATA_SERVER_SERIAL"] = "1"
 
 
-def __check_for_supported_version(version):
+def __check_for_supported_version(version) -> None:
     """Check if Mechanical version is supported with current version of PyMechanical.
 
     If specific environment variable is enabled, then users can overwrite the supported versions.
@@ -75,9 +75,9 @@ def __check_for_supported_version(version):
 def _get_latest_default_version() -> int:
     """Try to get the latest Mechanical version from the environment.
 
-    Firstly, checks if multiple versions of Mechanical found in system.
+    Checks if multiple versions of Mechanical found in system.
     For Linux it will be only one since ``mechanical-env`` takes care of that.
-    If there are multiple versions then take the latest one since no version is given.
+    If multiple versions are detected, select the latest one, as no specific version is provided.
     """
     awp_roots = [value for key, value in os.environ.items() if key.startswith("AWP_ROOT")]
 
@@ -89,7 +89,7 @@ def _get_latest_default_version() -> int:
         folder = os.path.basename(os.path.normpath(path))
         version = folder.split("v")[-1]
         versions_found.append(int(version))
-    latest_version = max(awp_roots)
+    latest_version = max(versions_found)
 
     if len(awp_roots) > 1:
         raise Warning(
