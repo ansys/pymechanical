@@ -95,10 +95,22 @@ def _get_default_version() -> int:
     return int_version
 
 
-def __check_python_interpreter_architecture():
+def __check_python_interpreter_architecture() -> None:
     """Embedding support only 64 bit architecture."""
     if platform.architecture()[0] != "64bit":
         raise Exception("Mechanical Embedding requires a 64-bit Python environment.")
+
+
+def __set_environment(version: int) -> None:
+    """Set environment variables to configure embedding."""
+    if os.name == "nt":  # pragma: no cover
+        if version < 251:
+            os.environ["MECHANICAL_STARTUP_UNOPTIMIZED"] = "1"
+
+        # TODO - use this on linux as well
+        if version >= 251:
+            if "PYMECHANICAL_NO_CLR_HOST_LITE" not in os.environ:
+                os.environ["ANSYS_MECHANICAL_EMBEDDING_CLR_HOST"] = "1"
 
 
 def __check_for_mechanical_env():
@@ -157,7 +169,9 @@ def initialize(version: int = None):
 
     INITIALIZED_VERSION = version
 
-    __check_loaded_libs(version)  # pragma: no cover
+    __set_environment(version)
+
+    __check_loaded_libs(version)
 
     __workaround_material_server(version)
 
