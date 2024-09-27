@@ -103,7 +103,7 @@ def __check_python_interpreter_architecture() -> None:
 
 def __set_environment(version: int) -> None:
     """Set environment variables to configure embedding."""
-    if os.name == "nt":
+    if os.name == "nt":  # pragma: no cover
         if version < 251:
             os.environ["MECHANICAL_STARTUP_UNOPTIMIZED"] = "1"
 
