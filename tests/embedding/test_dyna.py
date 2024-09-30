@@ -37,6 +37,10 @@ def test_lsdyna(printer, embedded_app, assets):
     Runs only in Windows environment. This test involves
     a simple geometry with high velocity
     hitting on rigid wall.
+
+    Note - In order for standalone Mechanical to use LS-DYNA,
+           the lsdyna license needs to be at the top of the list.
+           Use the license preferences in Mechanical to set this up.
     """
     embedded_app.update_globals(globals())
     printer("Setting up test - LSDyna system")

@@ -1,7 +1,7 @@
 .. _ref_user_guide_session:
 
-Remote sessions
-===============
+Remote session
+==============
 
 This section  provides an overview of how you use PyMechanical as a client
 to a remote Mechanical session.
@@ -14,6 +14,7 @@ to a remote Mechanical session.
    :maxdepth: 1
    :hidden:
 
+   self
    server-launcher
    mechanical
    pool
@@ -53,7 +54,7 @@ option decides whether product exits at the end of the PyMechanical script or no
    ``version`` argument is used only if PyPIM is configured. For general cases, use ``exec_file``
 
 You can send genuine Python class commands to the application when Mechanical is active.
-Python class. For example, you can send a Python script:
+For example, you can send a Python script:
 
 .. code:: python
 

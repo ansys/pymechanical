@@ -9,6 +9,40 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.7 <https://github.com/ansys/pymechanical/releases/tag/v0.11.7>`_ - 2024-08-29
+===================================================================================
+
+Documentation
+^^^^^^^^^^^^^
+
+- Fix doc layout `#888 <https://github.com/ansys/pymechanical/pull/888>`_
+
+
+Maintenance
+^^^^^^^^^^^
+
+- update CHANGELOG for v0.11.6 `#887 <https://github.com/ansys/pymechanical/pull/887>`_
+
+`0.11.6 <https://github.com/ansys/pymechanical/releases/tag/v0.11.6>`_ - 2024-08-28
+===================================================================================
+
+Documentation
+^^^^^^^^^^^^^
+
+- Refactor `#878 <https://github.com/ansys/pymechanical/pull/878>`_
+- Minor changes `#885 <https://github.com/ansys/pymechanical/pull/885>`_
+
+
+Maintenance
+^^^^^^^^^^^
+
+- update CHANGELOG for v0.11.5 `#872 <https://github.com/ansys/pymechanical/pull/872>`_
+- Bump grpcio from 1.65.4 to 1.65.5 in the core group `#875 <https://github.com/ansys/pymechanical/pull/875>`_
+- Bump the doc group with 4 updates `#876 <https://github.com/ansys/pymechanical/pull/876>`_
+- Bump grpcio from 1.65.5 to 1.66.0 in the core group `#880 <https://github.com/ansys/pymechanical/pull/880>`_
+- Bump ansys-sphinx-theme[autoapi] from 1.0.5 to 1.0.7 in the doc group `#881 <https://github.com/ansys/pymechanical/pull/881>`_
+- [pre-commit.ci] pre-commit autoupdate `#884 <https://github.com/ansys/pymechanical/pull/884>`_
+
 `0.11.5 <https://github.com/ansys/pymechanical/releases/tag/v0.11.5>`_ - 2024-08-13
 ===================================================================================
 

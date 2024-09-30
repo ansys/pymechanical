@@ -13,6 +13,7 @@ This section provides an overview of Mechanical scripting.
    :maxdepth: 1
    :hidden:
 
+   self
    threading
 
 Overview

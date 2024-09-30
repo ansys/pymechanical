@@ -29,6 +29,8 @@ import time
 
 import pytest
 
+from ansys.mechanical.core.embedding.cleanup_gui import cleanup_gui
+from ansys.mechanical.core.embedding.ui import _launch_ui
 import ansys.mechanical.core.embedding.utils as utils
 
 
@@ -222,7 +224,7 @@ def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
 
     # Run embedded instance in virtual env with pythonnet installed
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
-    _, stderr = run_subprocess(
+    process, stdout, stderr = run_subprocess(
         [test_env.python, embedded_py, pytestconfig.getoption("ansys_version")]
     )
 
@@ -243,7 +245,7 @@ def test_private_appdata(pytestconfig, run_subprocess, rootdir):
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
     run_subprocess([sys.executable, embedded_py, version, "True", "Set"])
-    stdout, _ = run_subprocess([sys.executable, embedded_py, version, "True", "Run"])
+    process, stdout, stderr = run_subprocess([sys.executable, embedded_py, version, "True", "Run"])
     stdout = stdout.decode()
     assert "ShowTriad value is True" in stdout
 
@@ -257,7 +259,7 @@ def test_normal_appdata(pytestconfig, run_subprocess, rootdir):
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
     run_subprocess([sys.executable, embedded_py, version, "False", "Set"])
-    stdout, _ = run_subprocess([sys.executable, embedded_py, version, "False", "Run"])
+    process, stdout, stderr = run_subprocess([sys.executable, embedded_py, version, "False", "Run"])
     run_subprocess([sys.executable, embedded_py, version, "False", "Reset"])
 
     stdout = stdout.decode()
@@ -278,13 +280,15 @@ def test_building_gallery(pytestconfig, run_subprocess, rootdir):
 
     embedded_gallery_py = os.path.join(rootdir, "tests", "scripts", "build_gallery_test.py")
 
-    _, stderr = run_subprocess([sys.executable, embedded_gallery_py, version, "False"], None, False)
+    process, stdout, stderr = run_subprocess(
+        [sys.executable, embedded_gallery_py, version, "False"], None, False
+    )
     stderr = stderr.decode()
 
     # Assert Exception
     assert "Cannot have more than one embedded mechanical instance" in stderr
 
-    stdout, _ = run_subprocess([sys.executable, embedded_gallery_py, version, "True"])
+    process, stdout, stderr = run_subprocess([sys.executable, embedded_gallery_py, version, "True"])
     stdout = stdout.decode()
 
     # Assert stdout after launching multiple instances
@@ -312,3 +316,141 @@ def test_rm_lockfile(embedded_app, tmp_path: pytest.TempPathFactory):
     lockfile_path = os.path.join(embedded_app.DataModel.Project.ProjectDirectory, ".mech_lock")
     # Assert lock file path does not exist
     assert not os.path.exists(lockfile_path)
+
+
+@pytest.mark.embedding
+def test_app_execute_script(embedded_app):
+    """Test execute_script method."""
+    embedded_app.update_globals(globals())
+    result = embedded_app.execute_script("2+3")
+    assert result == 5
+    with pytest.raises(Exception):
+        # This will throw an exception since no module named test available
+        embedded_app.execute_script("import test")
+
+
+@pytest.mark.embedding
+def test_launch_ui(embedded_app, tmp_path: pytest.TempPathFactory):
+    """Test the _launch_ui function with a mock launcher."""
+
+    class MockLauncher:
+        """Mock Launcher to test launch_gui functionality."""
+
+        def __init__(self):
+            """Initialize the MockLauncher class."""
+            self.ops = []
+
+        def save_original(self, app):
+            """Save the active mechdb file."""
+            self.ops.append("save")
+
+        def save_temp_copy(self, app):
+            """Save a new mechdb file with a temporary name."""
+            # Identify the mechdb of the saved session from save_original()
+            self.ops.append("get_saved_session")
+
+            # Get name of NamedTemporaryFile
+            self.ops.append("get_name_temp_file")
+
+            # Save app with name of temporary file
+            self.ops.append("save_as")
+
+            return "", ""
+
+        def open_original(self, app, mechdb_file):
+            """Open the original mechdb file from save_original()."""
+            self.ops.append("open_orig_mechdb")
+
+        def graphically_launch_temp(self, app, temp_file):
+            """Launch the GUI for the mechdb file with a temporary name from save_temp_copy()."""
+            self.ops.append("launch_temp_mechdb")
+
+            return []
+
+    # Create an instance of the MockLauncher object
+    m = MockLauncher()
+
+    # Check that _launch_ui raises an Exception when it hasn't been saved yet
+    with pytest.raises(Exception):
+        _launch_ui(embedded_app, m)
+
+    mechdb_path = os.path.join(tmp_path, "test.mechdb")
+    # Save a test.mechdb file
+    embedded_app.save(mechdb_path)
+    # Launch the UI with the mock class
+    _launch_ui(embedded_app, False, m)
+    # Close the embedded_app
+    embedded_app.close()
+
+    assert m.ops[0] == "save"
+    assert m.ops[1] == "get_saved_session"
+    assert m.ops[2] == "get_name_temp_file"
+    assert m.ops[3] == "save_as"
+    assert m.ops[4] == "open_orig_mechdb"
+    assert m.ops[5] == "launch_temp_mechdb"
+
+
+@pytest.mark.embedding
+def test_launch_gui(embedded_app, tmp_path: pytest.TempPathFactory, capfd):
+    """Test the GUI is launched for an embedded app."""
+    mechdb_path = os.path.join(tmp_path, "test.mechdb")
+    embedded_app.save(mechdb_path)
+    embedded_app.launch_gui(delete_tmp_on_close=False, dry_run=True)
+    embedded_app.close()
+    out, err = capfd.readouterr()
+    assert f"ansys-mechanical --project-file" in out
+    assert f"--graphical --revision {str(embedded_app.version)}" in out
+    assert f"Opened a new mechanical session based on {mechdb_path}" in out
+
+
+@pytest.mark.embedding
+def test_launch_gui_exception(embedded_app):
+    """Test an exception is raised when the embedded_app has not been saved yet."""
+    # Assert that an exception is raised
+    with pytest.raises(Exception):
+        embedded_app.launch_gui(delete_tmp_on_close=False)
+    embedded_app.close()
+
+
+@pytest.mark.embedding_scripts
+def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory, run_subprocess):
+    """Test cleanup function to remove the temporary mechdb file and folder."""
+    temp_file = tmp_path / "tempfiletest.mechdb"
+    temp_folder = tmp_path / "tempfiletest_Mech_Files"
+
+    # Make temporary file
+    temp_file.touch()
+    # Make temporary folder
+    temp_folder.mkdir()
+
+    # Assert the file and folder exist
+    assert temp_file.exists()
+    assert temp_folder.exists()
+
+    # Run process
+    process, stdout, stderr = run_subprocess(["sleep", "3"])
+
+    # Remove the temporary file and folder
+    cleanup_gui(process.pid, temp_file)
+
+    # Assert the file and folder do not exist
+    assert not temp_file.exists()
+    assert not temp_folder.exists()
+
+
+@pytest.mark.embedding
+def test_app_execute_script_from_file(embedded_app, rootdir, printer):
+    """Test execute_script_from_file method."""
+    embedded_app.update_globals(globals())
+
+    printer("Running run_python_error.py")
+    error_script_path = os.path.join(rootdir, "tests", "scripts", "run_python_error.py")
+    with pytest.raises(Exception) as exc_info:
+        # This will throw an exception since no module named test available
+        embedded_app.execute_script_from_file(error_script_path)
+    assert "name 'get_myname' is not defined" in str(exc_info.value)
+
+    printer("Running run_python_success.py")
+    succes_script_path = os.path.join(rootdir, "tests", "scripts", "run_python_success.py")
+    result = embedded_app.execute_script_from_file(succes_script_path)
+    assert result == "test"

@@ -67,7 +67,7 @@ async def _read_and_display(cmd, env, do_display: bool):
 
     # wait for the process to exit
     rc = await process.wait()
-    return rc, b"".join(stdout), b"".join(stderr)
+    return rc, process, b"".join(stdout), b"".join(stderr)
 
 
 def _run(args, env, check=False, display=False):
@@ -77,13 +77,13 @@ def _run(args, env, check=False, display=False):
     else:
         loop = asyncio.get_event_loop()
     try:
-        rc, *output = loop.run_until_complete(_read_and_display(args, env, display))
+        rc, process, *output = loop.run_until_complete(_read_and_display(args, env, display))
         if rc and check:
             sys.exit("child failed with '{}' exit code".format(rc))
     finally:
         if os.name == "nt":
             loop.close()
-    return output
+    return process, output
 
 
 def _cli_impl(

@@ -28,15 +28,13 @@ import platform
 import sys
 import warnings
 
-import ansys.tools.path as atp
-
 from ansys.mechanical.core.embedding.loader import load_clr
 from ansys.mechanical.core.embedding.resolver import resolve
 
 INITIALIZED_VERSION = None
 """Constant for the initialized version."""
 
-SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS = {242: "2024R2", 241: "2024R1", 232: "2023R2"}
+SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS = {242: "2024R2", 241: "2024R1", 232: "2023R2"}
 """Supported Mechanical embedding versions on Windows."""
 
 
@@ -59,46 +57,64 @@ def __workaround_material_server(version: int) -> None:
         os.environ["ENGRDATA_SERVER_SERIAL"] = "1"
 
 
-def _get_default_linux_version() -> int:
-    """Try to get the active linux version from the environment.
+def __check_for_supported_version(version) -> None:
+    """Check if Mechanical version is supported with current version of PyMechanical.
 
-    On linux, embedding is only possible by setting environment variables before starting python.
-    The version will then be fixed  to a specific version, based on those env vars.
-    The documented way to set those variables is to run python using the ``mechanical-env`` script,
-    which can be used after installing the ``ansys-mechanical-env`` package with this command:
-    ``pip install ansys-mechanical-env``. The script takes user input of a version. If the user
-    does not provide a version, the ``find_mechanical()`` function from the ``ansys-tools-path``
-    package is used to find a version of Mechanical.
+    If specific environment variable is enabled, then users can overwrite the supported versions.
+    However, using unsupported versions may cause issues.
     """
-    supported_versions = [232, 241, 242]
-    awp_roots = {ver: os.environ.get(f"AWP_ROOT{ver}", "") for ver in supported_versions}
-    installed_versions = {
-        ver: path for ver, path in awp_roots.items() if path and os.path.isdir(path)
-    }
-    assert len(installed_versions) == 1, "multiple AWP_ROOT environment variables found!"
-    return next(iter(installed_versions))
+    allow_old_version = os.getenv("ANSYS_MECHANICAL_EMBEDDING_SUPPORT_OLD_VERSIONS") == "1"
+
+    # Check if the version is supported
+    if not allow_old_version and version < min(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS):
+        raise ValueError(f"Mechanical version {version} is not supported.")
+
+    return version
 
 
-def _get_default_version() -> int:
-    if os.name == "posix":
-        return _get_default_linux_version()
+def _get_latest_default_version() -> int:
+    """Try to get the latest Mechanical version from the environment.
 
-    if os.name != "nt":  # pragma: no cover
-        raise Exception("Unexpected platform!")
+    Checks if multiple versions of Mechanical found in system.
+    For Linux it will be only one since ``mechanical-env`` takes care of that.
+    If multiple versions are detected, select the latest one, as no specific version is provided.
+    """
+    awp_roots = [value for key, value in os.environ.items() if key.startswith("AWP_ROOT")]
 
-    _, version = atp.find_mechanical(
-        supported_versions=SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS
-    )
+    if not awp_roots:
+        raise Exception("No Mechanical installations found.")
 
-    # version is of the form 23.2
-    int_version = int(str(version).replace(".", ""))
-    return int_version
+    versions_found = []
+    for path in awp_roots:
+        folder = os.path.basename(os.path.normpath(path))
+        version = folder.split("v")[-1]
+        versions_found.append(int(version))
+    latest_version = max(versions_found)
+
+    if len(awp_roots) > 1:
+        raise Warning(
+            f"Multiple versions of Mechanical found! Using latest version {latest_version} ..."
+        )
+
+    return latest_version
 
 
-def __check_python_interpreter_architecture():
+def __check_python_interpreter_architecture() -> None:
     """Embedding support only 64 bit architecture."""
     if platform.architecture()[0] != "64bit":
         raise Exception("Mechanical Embedding requires a 64-bit Python environment.")
+
+
+def __set_environment(version: int) -> None:
+    """Set environment variables to configure embedding."""
+    if os.name == "nt":  # pragma: no cover
+        if version < 251:
+            os.environ["MECHANICAL_STARTUP_UNOPTIMIZED"] = "1"
+
+        # TODO - use this on linux as well
+        if version >= 251:
+            if "PYMECHANICAL_NO_CLR_HOST_LITE" not in os.environ:
+                os.environ["ANSYS_MECHANICAL_EMBEDDING_CLR_HOST"] = "1"
 
 
 def __check_for_mechanical_env():
@@ -113,6 +129,35 @@ def __check_for_mechanical_env():
         )
 
 
+def __is_lib_loaded(libname: str):  # pragma: no cover
+    """Return whether a library is loaded."""
+    import ctypes
+
+    RTLD_NOLOAD = 4
+    try:
+        ctypes.CDLL(libname, RTLD_NOLOAD)
+    except:
+        return False
+    return True
+
+
+def __check_loaded_libs(version: int = None):  # pragma: no cover
+    """Ensure that incompatible libraries aren't loaded prior to PyMechanical load."""
+    if platform.system() != "Linux":
+        return
+
+    if version < 251:
+        return
+
+    # For 2025 R1, PyMechanical will crash on shutdown if libX11.so is already loaded
+    # before starting Mechanical
+    if __is_lib_loaded("libX11.so"):
+        warnings.warn(
+            "libX11.so is loaded prior to initializing the Embedded Instance of Mechanical.\
+                      Python will crash on shutdown..."
+        )
+
+
 def initialize(version: int = None):
     """Initialize Mechanical embedding."""
     __check_python_interpreter_architecture()  # blocks 32 bit python
@@ -124,9 +169,15 @@ def initialize(version: int = None):
         return
 
     if version == None:
-        version = _get_default_version()
+        version = _get_latest_default_version()
+
+    version = __check_for_supported_version(version=version)
 
     INITIALIZED_VERSION = version
+
+    __set_environment(version)
+
+    __check_loaded_libs(version)
 
     __workaround_material_server(version)
 

@@ -8,7 +8,7 @@ name = "ansys-mechanical-core"
 version = "0.12.dev0"
 description = "A python wrapper for Ansys Mechanical"
 readme = "README.rst"
-requires-python = ">=3.9,<4.0"
+requires-python = ">=3.10,<4.0"
 license = {file = "LICENSE"}
 authors = [{name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"}]
 maintainers = [{name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"}]
@@ -18,7 +18,6 @@ classifiers = [
     "Development Status :: 4 - Beta",
     'Intended Audience :: Science/Research',
     'Topic :: Scientific/Engineering :: Information Analysis',
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -27,7 +26,7 @@ classifiers = [
 ]
 dependencies = [
     "ansys-api-mechanical==0.1.2",
-    "ansys-mechanical-env==0.1.7",
+    "ansys-mechanical-env==0.1.8",
     "ansys-platform-instancemanagement>=1.0.1",
     "ansys-pythonnet>=3.1.0rc2",
     "ansys-tools-path>=0.3.1",
@@ -36,6 +35,7 @@ dependencies = [
     "clr-loader==0.2.6",
     "grpcio>=1.30.0",
     "protobuf>=3.12.2,<6",
+    "psutil==6.0.0",
     "tqdm>=4.45.0",
 ]
 
@@ -48,30 +48,31 @@ Changelog = "https://mechanical.docs.pyansys.com/version/stable/changelog.html"
 
 [project.optional-dependencies]
 tests = [
-    "pytest==8.3.2",
+    "pytest==8.3.3",
     "pytest-cov==5.0.0",
-    "pytest-print==1.0.0",
+    "pytest-print==1.0.2",
+    "psutil==6.0.0"
 ]
 doc = [
     "sphinx==8.0.2",
-    "ansys-sphinx-theme[autoapi]==1.0.5",
-    "grpcio==1.65.5",
+    "ansys-sphinx-theme[autoapi]==1.0.11",
+    "grpcio==1.66.1",
     "imageio-ffmpeg==0.5.1",
     "imageio==2.35.1",
     "jupyter_sphinx==0.5.3",
     "jupyterlab>=3.2.8",
     "matplotlib==3.9.2",
-    "numpy==2.1.0",
+    "numpy==2.1.1",
     "numpydoc==1.8.0",
-    "pandas==2.2.2",
-    "panel==1.4.5",
-    "plotly==5.23.0",
+    "pandas==2.2.3",
+    "panel==1.5.0",
+    "plotly==5.24.1",
     "pypandoc==1.13",
     "pytest-sphinx==0.6.3",
     "pythreejs==2.4.2",
     "pyvista>=0.39.1",
-    "sphinx-autobuild==2024.4.16",
-    "sphinx-autodoc-typehints==2.2.3",
+    "sphinx-autobuild==2024.9.19",
+    "sphinx-autodoc-typehints==2.4.4",
     "sphinx-copybutton==0.5.2",
     "sphinx_design==0.6.1",
     "sphinx-gallery==0.17.1",
@@ -207,7 +208,7 @@ legacy_tox_ini = """
 [tox]
 description = Default tox environments list
 envlist =
-    style,{py39,py310,py311,py312}{,-coverage},doc
+    style,{py310,py311,py312}{,-coverage},doc
 passenv =  AWP_ROOT
 skip_missing_interpreters = true
 isolated_build = true
@@ -216,7 +217,6 @@ isolated_build_env = build
 [gh-actions]
 description = The tox environment to be executed in gh-actions for a given python version
 python =
-    3.9: style,py39-coverage,doc
     3.10: style,py310-coverage,doc
     3.11: style,py311-coverage,doc
     3.12: style,py311-coverage,doc
@@ -224,7 +224,6 @@ python =
 [testenv]
 description = Checks for project unit tests and coverage (if desired)
 basepython =
-    py39: python3.9
     py310: python3.10
     py311: python3.11
     py312: python3.12
