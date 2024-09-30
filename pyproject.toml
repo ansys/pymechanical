@@ -56,7 +56,7 @@ tests = [
 doc = [
     "sphinx==8.0.2",
     "ansys-sphinx-theme[autoapi]==1.0.11",
-    "grpcio==1.66.1",
+    "grpcio==1.66.2",
     "imageio-ffmpeg==0.5.1",
     "imageio==2.35.1",
     "jupyter_sphinx==0.5.3",
