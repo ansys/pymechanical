@@ -587,8 +587,6 @@ jobs:
 
       - name: Install coverage
         run: |
-          python -m venv /env
-          . /env/bin/activate
           python -m pip install -U pip
           pip install coverage
           pip install -e .
