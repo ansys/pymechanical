@@ -16,9 +16,7 @@ from ansys_sphinx_theme import ansys_favicon, get_version_match
 from sphinx_gallery.sorting import FileNameSortKey
 
 import ansys.mechanical.core as pymechanical
-from ansys.mechanical.core.embedding.initializer import (
-    SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS,
-)
+from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
 
 # necessary when building the sphinx gallery
 pymechanical.BUILDING_GALLERY = True
@@ -141,7 +139,7 @@ rst_epilog = ""
 with open("links.rst") as f:
     rst_epilog += f.read()
 
-current_mechanical_version = next(iter(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS.keys()))
+current_mechanical_version = next(iter(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS.keys()))
 rst_epilog = rst_epilog.replace("%%VERSION%%", f"v{current_mechanical_version}")
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"
