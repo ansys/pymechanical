@@ -637,6 +637,7 @@ jobs:
               /opt/hostedtoolcache/**/ansys/mechanical
               /usr/local/lib/**/ansys/mechanical
               .venv/lib/**/ansys/mechanical
+              /env/lib/**/ansys/mechanical
 
           EOF
 
