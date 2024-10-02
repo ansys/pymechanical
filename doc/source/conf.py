@@ -207,12 +207,6 @@ html_theme_options = {
             "icon": "fa fa-comment fa-fw",
         },
     ],
-    "use_meilisearch": {
-        "api_key": os.getenv("MEILISEARCH_PUBLIC_API_KEY", ""),
-        "index_uids": {
-            f"pymechanical-v{get_version_match(version).replace('.', '-')}": "PyMechanical",
-        },
-    },
     "cheatsheet": {
         "file": "cheatsheet/cheat_sheet.qmd",
         "title": "PyMechanical cheat sheet",
