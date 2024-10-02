@@ -653,7 +653,7 @@ jobs:
               src/ansys/mechanical
               /opt/hostedtoolcache/**/ansys/mechanical
               /usr/local/lib/**/ansys/mechanical
-              /.venv/lib/**/ansys/mechanical
+              .venv/lib/**/ansys/mechanical
 
           EOF
 
