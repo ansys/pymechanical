@@ -268,15 +268,10 @@ jobs:
           apt install -y python${{ matrix.python-version }} python${{ matrix.python-version }}-venv
           python${{ matrix.python-version }} -m venv /env
 
-      - name: Install dependencies
-        run: |
-          . /env/bin/activate
-          pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
-          pip install --upgrade pip flit
-
       - name: Install packages for testing
         run: |
           . /env/bin/activate
+          pip install --upgrade pip
           pip install -e .[tests]
 
       - name: Unit Testing and coverage
@@ -342,15 +337,10 @@ jobs:
           apt install -y python${{ matrix.python-version }} python${{ matrix.python-version }}-venv
           python${{ matrix.python-version }} -m venv /env
 
-      - name: Install dependencies
-        run: |
-          . /env/bin/activate
-          pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
-          pip install --upgrade pip flit
-
       - name: Install packages for testing
         run: |
           . /env/bin/activate
+          pip install --upgrade pip
           pip install -e .[tests]
 
       - name: Embedding scripts unit testing and coverage
@@ -414,22 +404,16 @@ jobs:
           apt install --reinstall ca-certificates
           apt install software-properties-common -y
           add-apt-repository ppa:deadsnakes/ppa -y
-          apt install python${{ matrix.python-version }} -y
-          ln -s /usr/bin/python${{ matrix.python-version }} /usr/bin/python
-          apt install python${{ matrix.python-version }}-venv -y
-          python -m ensurepip --default-pip
-          pip3 install --upgrade pip
-          python --version
-          pip3 --version
+          apt install -y python${{ env.MAIN_PYTHON_VERSION }} python${{ env.MAIN_PYTHON_VERSION }}-venv
+          python${{ env.MAIN_PYTHON_VERSION }} -m venv /env
 
       - name: Install dependencies
         run: |
           apt install -y lsb-release
-          pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
-          pip3 install --upgrade pip flit
 
       - name: Install packages for testing
         run: |
+          . /env/bin/activate
           pip install .[tests]
 
       - name: Set environment variable
@@ -441,6 +425,7 @@ jobs:
         run: |
           unset PYMECHANICAL_PORT
           unset PYMECHANICAL_START_INSTANCE
+          . /env/bin/activate
           pytest -m remote_session_launch -s --junitxml launch_test_results${{ matrix.python-version }}.xml || true
 
       - name: Publish Launch Test Report
@@ -496,11 +481,8 @@ jobs:
       - name: Install system dependencies
         run: |
           apt update
-          apt install -y sudo curl lsb-release
-          apt install -y zip pandoc libgl1-mesa-glx mesa-utils xvfb texlive-latex-extra latexmk nodejs npm graphviz
-          apt install -y tini
-          apt install poppler-utils -y
-          npm install -g @mermaid-js/mermaid-cli
+          apt install make lsb-release xvfb poppler-utils -y
+          apt install zip pandoc libgl1-mesa-glx mesa-utils texlive-latex-extra latexmk nodejs npm graphviz -y
 
       - name: Install gh cli
         run: |
@@ -516,7 +498,7 @@ jobs:
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
           gh release download --repo github.com/quarto-dev/quarto-cli --pattern *linux-amd64.deb
-          apt install ./quarto*linux-amd64.deb
+          apt install ./quarto*linux-amd64.deb -y
           quarto install tool tinytex --log-level warning
 
       - name: Test quarto installation
@@ -602,6 +584,7 @@ jobs:
 
       - name: Install coverage
         run: |
+          rm -rf env
           python -m pip install -U pip
           pip install coverage
           pip install -e .
@@ -654,6 +637,7 @@ jobs:
               /opt/hostedtoolcache/**/ansys/mechanical
               /usr/local/lib/**/ansys/mechanical
               .venv/lib/**/ansys/mechanical
+              /env/lib/**/ansys/mechanical
 
           EOF
 
