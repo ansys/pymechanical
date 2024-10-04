@@ -44,6 +44,10 @@ except:
     HAS_ANSYS_VIZ = False
 
 
+if typing.TYPE_CHECKING:
+    import Ansys
+
+
 def _get_default_addin_configuration() -> AddinConfiguration:
     configuration = AddinConfiguration()
     return configuration
@@ -302,7 +306,7 @@ class App:
         return GetterWrapper(self._app, lambda app: app.DataModel.Tree)
 
     @property
-    def Model(self):
+    def Model(self) -> Ansys.ACT.Automation.Mechanical.Model:
         """Return the Model object."""
         return GetterWrapper(self._app, lambda app: app.DataModel.Project.Model)
 

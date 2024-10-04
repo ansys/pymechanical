@@ -87,6 +87,7 @@ viz = [
 
 [project.scripts]
 ansys-mechanical = "ansys.mechanical.core.run:cli"
+ansys-mechanical-autocomplete = "ansys.mechanical.core.autocomplete:cli"
 
 [tool.flit.module]
 name = "ansys.mechanical.core"
