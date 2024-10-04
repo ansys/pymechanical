@@ -83,9 +83,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Check library vulnerabilities with development mode"
-        uses: ansys/actions/check-vulnerabilities@v5.1
+        uses: ansys/actions/check-vulnerabilities@v8
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
           python-package-name: 'ansys-mechanical-core'
           dev-mode: true
 
