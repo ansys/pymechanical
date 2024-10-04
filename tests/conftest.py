@@ -36,8 +36,9 @@ from ansys.mechanical.core import LocalMechanicalPool
 from ansys.mechanical.core._version import SUPPORTED_MECHANICAL_VERSIONS
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.errors import MechanicalExitedError
+from ansys.mechanical.core.examples import download_file
 from ansys.mechanical.core.misc import get_mechanical_bin
-from ansys.mechanical.core.run import _run
+import ansys.mechanical.core.run
 
 # to run tests with multiple markers
 # pytest -q --collect-only -m "remote_session_launch"
@@ -68,7 +69,7 @@ for rver in valid_rver:
 # minimum version on linux.
 # Override this if running on CI/CD and PYMAPDL_PORT has been specified
 ON_CI = "PYMECHANICAL_START_INSTANCE" in os.environ and "PYMECHANICAL_PORT" in os.environ
-HAS_GRPC = int(rver) >= 231 or ON_CI
+HAS_GRPC = int(rver) >= 232 or ON_CI
 
 
 def pytest_collection_modifyitems(config, items):
@@ -97,13 +98,9 @@ def pytest_collection_modifyitems(config, items):
 
 @pytest.fixture()
 def selection(embedded_app):
-    from ansys.mechanical.core import global_variables
-
-    globals().update(global_variables(embedded_app))
-
     class Selection:
         def __init__(self):
-            self._mgr = ExtAPI.SelectionManager
+            self._mgr = embedded_app.ExtAPI.SelectionManager
 
         def UpdateSelection(self, api, input, type):
             new_selection = self._mgr.CreateSelectionInfo(type)
@@ -111,6 +108,16 @@ def selection(embedded_app):
             self._mgr.NewSelection(new_selection)
 
     yield Selection()
+
+
+@pytest.fixture()
+def assets():
+    """Return the test assets folder.
+
+    TODO - share this with the mechanical remote tests.
+    """
+    ROOT_FOLDER = pathlib.Path(__file__).parent
+    return ROOT_FOLDER / "assets"
 
 
 def ensure_embedding() -> None:
@@ -169,14 +176,20 @@ def mke_app_reset(request):
 
 _CHECK_PROCESS_RETURN_CODE = os.name == "nt"
 
+# set to true if you want to see all the subprocess stdout/stderr
+_PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE = False
+
 
 @pytest.fixture()
 def run_subprocess():
     def func(args, env=None, check: bool = None):
         if check is None:
             check = _CHECK_PROCESS_RETURN_CODE
-        stdout, stderr = _run(args, env, check)
-        return stdout, stderr
+        process, output = ansys.mechanical.core.run._run(
+            args, env, check, _PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE
+        )
+        # process, stdout, stderr
+        return process, output[0], output[1]
 
     return func
 
@@ -186,6 +199,13 @@ def rootdir():
     """Return the root directory of the local clone of the PyMechanical GitHub repository."""
     base = pathlib.Path(__file__).parent
     yield base.parent
+
+
+@pytest.fixture()
+def disable_cli():
+    ansys.mechanical.core.run.DRY_RUN = True
+    yield
+    ansys.mechanical.core.run.DRY_RUN = False
 
 
 @pytest.fixture()
@@ -231,6 +251,13 @@ def test_env():
     # print(f"\ndeleting virtual environment in {venv_dir}")
     shutil.rmtree(venv_dir)
     # print(f"deleted virtual environment in {venv_dir}\n")
+
+
+@pytest.fixture(scope="session")
+def graphics_test_mechdb_file():
+    """Download mechdb files for graphics export test."""
+    mechdb_file = download_file("graphics_test.mechdb", "pymechanical", "test_files")
+    yield mechdb_file
 
 
 def launch_mechanical_instance(cleanup_on_exit=False):
@@ -346,7 +373,7 @@ def pytest_addoption(parser):
     mechanical_path = atp.get_mechanical_path(False)
 
     if mechanical_path == None:
-        parser.addoption("--ansys-version", default="241")
+        parser.addoption("--ansys-version", default="242")
     else:
         mechanical_version = atp.version_from_path("mechanical", mechanical_path)
         parser.addoption("--ansys-version", default=str(mechanical_version))
@@ -370,3 +397,8 @@ def pytest_collection_modifyitems(config, items):
         if "windows_only" in item.keywords and sys.platform != "win32":
             skip_except_windows = pytest.mark.skip(reason="Test requires Windows platform.")
             item.add_marker(skip_except_windows)
+
+        # Skip on platforms other than Linux
+        if "linux_only" in item.keywords and "lin" not in sys.platform:
+            skip_except_linux = pytest.mark.skip(reason="Test requires Linux platform.")
+            item.add_marker(skip_except_linux)

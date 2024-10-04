@@ -63,15 +63,19 @@ try:
     from tqdm import tqdm
 
     _HAS_TQDM = True
+    """Whether or not tqdm is installed."""
 except ModuleNotFoundError:  # pragma: no cover
     _HAS_TQDM = False
 
 # Default 256 MB message length
 MAX_MESSAGE_LENGTH = int(os.environ.get("PYMECHANICAL_MAX_MESSAGE_LENGTH", 256 * 1024**2))
+"""Default message length."""
 
 # Chunk sizes for streaming and file streaming
 DEFAULT_CHUNK_SIZE = 256 * 1024  # 256 kB
+"""Default chunk size."""
 DEFAULT_FILE_CHUNK_SIZE = 1024 * 1024  # 1MB
+"""Default file chunk size."""
 
 
 def setup_logger(loglevel="INFO", log_file=True, mechanical_instance=None):
@@ -112,9 +116,13 @@ def suppress_logging(func):
 
 
 LOCALHOST = "127.0.0.1"
+"""Localhost address."""
+
 MECHANICAL_DEFAULT_PORT = 10000
+"""Default Mechanical port."""
 
 GALLERY_INSTANCE = [None]
+"""List of gallery instances."""
 
 
 def _cleanup_gallery_instance():  # pragma: no cover
@@ -227,7 +235,7 @@ def check_valid_mechanical():
 
     >>> from ansys.mechanical.core import mechanical
     >>> from ansys.tools.path import change_default_mechanical_path
-    >>> mechanical_path = 'C:/Program Files/ANSYS Inc/v231/aisol/bin/win64/AnsysWBU.exe'
+    >>> mechanical_path = 'C:/Program Files/ANSYS Inc/v242/aisol/bin/win64/AnsysWBU.exe'
     >>> change_default_mechanical_path(mechanical_pth)
     >>> mechanical.check_valid_mechanical()
     True
@@ -238,7 +246,7 @@ def check_valid_mechanical():
     if mechanical_path == None:
         return False
     mechanical_version = atp.version_from_path("mechanical", mechanical_path)
-    return not (mechanical_version < 231 and os.name != "posix")
+    return not (mechanical_version < 232 and os.name != "posix")
 
 
 def change_default_mechanical_path(exe_loc):
@@ -471,7 +479,7 @@ class Mechanical(object):
         Get the version of the connected Mechanical instance.
 
         >>> mechanical.version
-        '231'
+        '242'
 
         """
         if self._version == None:
@@ -935,7 +943,7 @@ class Mechanical(object):
         Return a string value from Project object.
 
         >>> mechanical.run_python_script('ExtAPI.DataModel.Project.ProductVersion')
-        '2023 R1'
+        '2024 R2'
 
         Return an empty string, when you try to return the Project object.
 
@@ -1900,13 +1908,13 @@ def launch_grpc(
 
     Launch Mechanical using a specified executable file.
 
-    >>> exec_file_path = 'C:/Program Files/ANSYS Inc/v231/aisol/bin/win64/AnsysWBU.exe'
+    >>> exec_file_path = 'C:/Program Files/ANSYS Inc/v242/aisol/bin/win64/AnsysWBU.exe'
     >>> mechanical = launch_mechanical(exec_file_path)
 
     """
     # verify version
-    if atp.version_from_path("mechanical", exec_file) < 231:
-        raise VersionError("The Mechanical gRPC interface requires Mechanical 2023 R1 or later.")
+    if atp.version_from_path("mechanical", exec_file) < 232:
+        raise VersionError("The Mechanical gRPC interface requires Mechanical 2023 R2 or later.")
 
     # get the next available port
     local_ports = pymechanical.LOCAL_PORTS
@@ -1939,8 +1947,8 @@ def launch_remote_mechanical(version=None) -> (grpc.Channel, Instance):  # pragm
     Parameters
     ----------
     version : str, optional
-        Mechanical version to run in the three-digit format. For example, ``"231"`` to
-        run 2023 R1. The default is ``None``, in which case the server runs the latest
+        Mechanical version to run in the three-digit format. For example, ``"242"`` to
+        run 2024 R2. The default is ``None``, in which case the server runs the latest
         installed version.
 
     Returns
@@ -2056,8 +2064,8 @@ def launch_mechanical(
         When ``False``, Mechanical is not exited when the garbage for this Mechanical
         instance is collected.
     version : str, optional
-        Mechanical version to run in the three-digit format. For example, ``"231"``
-        for 2023 R1. The default is ``None``, in which case the server runs the
+        Mechanical version to run in the three-digit format. For example, ``"242"``
+        for 2024 R2. The default is ``None``, in which case the server runs the
         latest installed version. If PyPIM is configured and ``exce_file=None``,
         PyPIM launches Mechanical using its ``version`` parameter.
     keep_connection_alive : bool, optional
@@ -2085,7 +2093,7 @@ def launch_mechanical(
 
     Launch Mechanical using a specified executable file.
 
-    >>> exec_file_path = 'C:/Program Files/ANSYS Inc/v231/aisol/bin/win64/AnsysWBU.exe'
+    >>> exec_file_path = 'C:/Program Files/ANSYS Inc/v242/aisol/bin/win64/AnsysWBU.exe'
     >>> mech = launch_mechanical(exec_file_path)
 
     Connect to an existing Mechanical instance at IP address ``192.168.1.30`` on port

@@ -23,10 +23,14 @@ To use the above function, run the following:
 .. code:: python
 
 
-   from ansys.mechanical.core import App, global_variables
+   from ansys.mechanical.core import App
    from ansys.mechanical.core.embedding import add_mechanical_python_libraries
 
-   app = App(version=241)
+   app = App(version=242)
 
-   add_mechanical_python_libraries(241)
-   import materials  # This is materials.py that's shipped with Mechanical v241
+   add_mechanical_python_libraries(app)
+   import materials  # This is materials.py that's shipped with Mechanical v242
+
+.. warning::
+
+    Using version as argument to ``add_mechanical_python_libraries()`` is deprecated.

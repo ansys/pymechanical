@@ -1,7 +1,7 @@
 .. _ref_user_guide_embedding:
 
-Embedded instances
-==================
+Embedded instance
+=================
 
 This section provides an overview of how you use PyMechanical to embed
 an instance of Mechanical in Python.
@@ -14,6 +14,7 @@ an instance of Mechanical in Python.
    :maxdepth: 1
    :hidden:
 
+   self
    configuration
    globals
    logging
@@ -22,7 +23,7 @@ an instance of Mechanical in Python.
 Overview
 --------
 
-The :class:`Application <ansys.mechanical.core.embedding.Application>` class provides
+The `App <../api/ansys/mechanical/core/embedding/app/App.html>`_ class provides
 a Mechanical instance:
 
 .. code:: python
@@ -32,8 +33,8 @@ a Mechanical instance:
    app = App()
    ns = app.DataModel.Project.Model.AddNamedSelection()
 
-The :class:`Application <ansys.mechanical.core.embedding.Application>` class has access
-to the global scripting entry points that are available from built-in Mechanical scripting:
+The `App`_ class has access to the global scripting entry points that are
+available from built-in Mechanical scripting:
 
 * ExtAPI: ``Application.ExtAPI``
 * DataModel: ``Application.DataModel``
@@ -48,7 +49,7 @@ namespaces, and types, see :ref:`ref_embedding_user_guide_globals`.
 Additional configuration
 ------------------------
 
-By default, an instance of the :class:`Application <ansys.mechanical.core.embedding.Application>` class
+By default, an instance of the `App`_ class
 uses the same Addin configuration as standalone Mechanical. To customize Addins, see
 :ref:`ref_embedding_user_guide_addin_configuration`.
 
@@ -67,10 +68,10 @@ The scripting occurs inside Mechanical's command line interface. For instance, c
 
 .. code:: python
 
-  from ansys.mechanical.core import App, global_variables
+  from ansys.mechanical.core import App
 
   app = App()
-  globals().update(global_variables(app))
+  app.update_globals(globals())
   ns = DataModel.Project.Model.AddNamedSelection()
   ns.Name = "Jarvis"
 
@@ -105,7 +106,7 @@ versions can be specified using ``-r`` flag. Use ``-h`` for more information.
 
    .. code::
 
-      "C:/Program Files/ANSYS Inc/v241/aisol/bin/winx64/AnsysWBU.exe -DSApplet -AppModeMech -script file.py"
+      "C:/Program Files/ANSYS Inc/v242/aisol/bin/winx64/AnsysWBU.exe -DSApplet -AppModeMech -script file.py"
 
    PowerShell users can run the preceding command without including the opening and
    closing quotation marks.
@@ -114,9 +115,6 @@ versions can be specified using ``-r`` flag. Use ``-h`` for more information.
 
    .. code::
 
-      /usr/ansys_inc/v231/aisol/.workbench -DSApplet -AppModeMech -nosplash -notabctrl -script file.py
-
-
-   ``-nosplash`` and ``-notabctrl`` not needed for versions 23.2 or above
+      /usr/ansys_inc/v242/aisol/.workbench -DSApplet -AppModeMech -script file.py
 
    On either Windows or Linux, add the command line argument ``-b`` to run the script in batch mode.

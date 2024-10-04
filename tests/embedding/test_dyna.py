@@ -26,18 +26,10 @@ import os
 
 import pytest
 
-try:
-    from ansys.mechanical.core import global_variables
-except:
-    # No embedding - this import breaks test collection
-    global_variables = {}
-
-from .test_qk_eng_wb2 import get_assets_folder
-
 
 @pytest.mark.embedding
 @pytest.mark.windows_only
-def test_lsdyna(printer, embedded_app):
+def test_lsdyna(printer, embedded_app, assets):
     """
     Unit test for LSDyna.
 
@@ -45,11 +37,15 @@ def test_lsdyna(printer, embedded_app):
     Runs only in Windows environment. This test involves
     a simple geometry with high velocity
     hitting on rigid wall.
+
+    Note - In order for standalone Mechanical to use LS-DYNA,
+           the lsdyna license needs to be at the top of the list.
+           Use the license preferences in Mechanical to set this up.
     """
-    globals().update(global_variables(embedded_app, True))
+    embedded_app.update_globals(globals())
     printer("Setting up test - LSDyna system")
     Model.AddLSDynaAnalysis()
-    geometry_file = os.path.join(get_assets_folder(), "Eng157.x_t")
+    geometry_file = os.path.join(assets, "Eng157.x_t")
     printer(f"Setting up test - attaching geometry {geometry_file}")
     geometry_import = Model.GeometryImportGroup.AddGeometryImport()
     geometry_import.Import(geometry_file)

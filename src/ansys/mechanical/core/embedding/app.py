@@ -23,21 +23,25 @@
 """Main application class for embedded Mechanical."""
 import atexit
 import os
+import typing
 import warnings
 
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
+from ansys.mechanical.core.embedding.imports import global_entry_points, global_variables
 from ansys.mechanical.core.embedding.poster import Poster
+from ansys.mechanical.core.embedding.ui import launch_ui
 from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
 
 try:
-    import pyvista  # noqa: F401
+    import ansys.tools.visualization_interface  # noqa: F401
 
-    HAS_PYVISTA = True
+    HAS_ANSYS_VIZ = True
+    """Whether or not PyVista exists."""
 except:
 
-    HAS_PYVISTA = False
+    HAS_ANSYS_VIZ = False
 
 
 def _get_default_addin_configuration() -> AddinConfiguration:
@@ -46,6 +50,7 @@ def _get_default_addin_configuration() -> AddinConfiguration:
 
 
 INSTANCES = []
+"""List of instances."""
 
 
 def _dispose_embedded_app(instances):  # pragma: nocover
@@ -117,13 +122,13 @@ class App:
 
         if BUILDING_GALLERY:
             if len(INSTANCES) != 0:
-                self._app = INSTANCES[0]
-                self._app.new()
-                self._version = self._app.version
-                self._disposed = True
+                instance: App = INSTANCES[0]
+                instance._share(self)
+                if db_file != None:
+                    self.open(db_file)
                 return
         if len(INSTANCES) > 0:
-            raise Exception("Cannot have more than one embedded mechanical instance")
+            raise Exception("Cannot have more than one embedded mechanical instance!")
         version = kwargs.get("version")
         self._version = initializer.initialize(version)
         configuration = kwargs.get("config", _get_default_addin_configuration())
@@ -142,6 +147,8 @@ class App:
         self._disposed = False
         atexit.register(_dispose_embedded_app, INSTANCES)
         INSTANCES.append(self)
+        self._updated_scopes: typing.List[typing.Dict[str, typing.Any]] = []
+        self._subscribe()
 
     def __repr__(self):
         """Get the product info."""
@@ -165,6 +172,7 @@ class App:
     def _dispose(self):
         if self._disposed:
             return
+        self._unsubscribe()
         disconnect_warnings(self)
         self._app.Dispose()
         self._disposed = True
@@ -184,6 +192,10 @@ class App:
         """Save the project as."""
         self.DataModel.Project.SaveAs(path)
 
+    def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
+        """Launch the GUI."""
+        launch_ui(self, delete_tmp_on_close, dry_run)
+
     def new(self):
         """Clear to a new application."""
         self.DataModel.Project.New()
@@ -196,12 +208,13 @@ class App:
 
     def exit(self):
         """Exit the application."""
+        self._unsubscribe()
         if self.version < 241:
             self.ExtAPI.Application.Close()
         else:
             self.ExtAPI.Application.Exit()
 
-    def execute_script(self, script: str):
+    def execute_script(self, script: str) -> typing.Any:
         """Execute the given script with the internal IronPython engine."""
         SCRIPT_SCOPE = "pymechanical-internal"
         if not hasattr(self, "script_engine"):
@@ -219,15 +232,25 @@ class App:
         light_mode = True
         args = None
         rets = None
-        return self.script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
+        script_result = self.script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
+        error_msg = f"Failed to execute the script"
+        if script_result is None:
+            raise Exception(error_msg)
+        if script_result.Error is not None:
+            error_msg += f": {script_result.Error.Message}"
+            raise Exception(error_msg)
+        return script_result.Value
 
-    def plot(self) -> None:
-        """Visualize the model in 3d.
+    def execute_script_from_file(self, file_path=None):
+        """Execute the given script from file with the internal IronPython engine."""
+        text_file = open(file_path, "r", encoding="utf-8")
+        data = text_file.read()
+        text_file.close()
+        return self.execute_script(data)
 
-        Requires installation using the viz option. E.g.
-        pip install ansys-mechanical-core[viz]
-        """
-        if not HAS_PYVISTA:
+    def plotter(self) -> None:
+        """Return ``ansys.tools.visualization_interface.Plotter`` object."""
+        if not HAS_ANSYS_VIZ:
             warnings.warn(
                 "Installation of viz option required! Use pip install ansys-mechanical-core[viz]"
             )
@@ -237,9 +260,24 @@ class App:
             warnings.warn("Plotting is only supported with version 2024R2 and later!")
             return
 
-        from ansys.mechanical.core.embedding.viz.pyvista_plotter import plot_model
+        # TODO Check if anything loaded inside app or else show warning and return
 
-        plot_model(self)
+        from ansys.mechanical.core.embedding.viz.embedding_plotter import to_plotter
+
+        return to_plotter(self)
+
+    def plot(self) -> None:
+        """Visualize the model in 3d.
+
+        Requires installation using the viz option. E.g.
+        pip install ansys-mechanical-core[viz]
+        """
+        _plotter = self.plotter()
+
+        if _plotter is None:
+            return
+
+        return _plotter.show()
 
     @property
     def poster(self) -> Poster:
@@ -260,13 +298,18 @@ class App:
 
     @property
     def Tree(self):
-        """Return the ExtAPI object."""
+        """Return the Tree object."""
         return GetterWrapper(self._app, lambda app: app.DataModel.Tree)
 
     @property
     def Model(self):
-        """Return the ExtAPI object."""
+        """Return the Model object."""
         return GetterWrapper(self._app, lambda app: app.DataModel.Project.Model)
+
+    @property
+    def Graphics(self):
+        """Return the Graphics object."""
+        return GetterWrapper(self._app, lambda app: app.ExtAPI.Graphics)
 
     @property
     def readonly(self):
@@ -279,3 +322,161 @@ class App:
     def version(self):
         """Returns the version of the app."""
         return self._version
+
+    def _share(self, other) -> None:
+        """Shares the state of self with other.
+
+        Other is another instance of App.
+        This is used when the BUILDING_GALLERY flag is on.
+        In that mode, multiple instance of App are used, but
+        they all point to the same underlying application
+        object. Because of that, special care needs to be
+        taken to properly share the state. Other will be
+        a "weak reference", which doesn't own anything.
+        """
+        # the other app is not expecting to have a project
+        # already loaded
+        self.new()
+
+        # set up the type hint (typing.Self is python3.11+)
+        other: App = other
+
+        # copy `self` state to other.
+        other._app = self._app
+        other._version = self._version
+        other._poster = self._poster
+        other._updated_scopes = self._updated_scopes
+
+        # all events will be handled by the original App instance
+        other._subscribed = False
+
+        # finally, set the other disposed flag to be true
+        # so that the shutdown sequence isn't duplicated
+        other._disposed = True
+
+    def _subscribe(self):
+        try:
+            # This will throw an error when using pythonnet because
+            # EventSource isn't defined on the IApplication interface
+            self.ExtAPI.Application.EventSource.OnWorkbenchReady += self._on_workbench_ready
+            self._subscribed = True
+        except:
+            self._subscribed = False
+
+    def _unsubscribe(self):
+        if not self._subscribed:
+            return
+        self._subscribed = False
+        self.ExtAPI.Application.EventSource.OnWorkbenchReady -= self._on_workbench_ready
+
+    def _on_workbench_ready(self, sender, args) -> None:
+        self._update_all_globals()
+
+    def update_globals(
+        self, globals_dict: typing.Dict[str, typing.Any], enums: bool = True
+    ) -> None:
+        """Use to update globals variables.
+
+        When scripting inside Mechanical, the Mechanical UI will automatically
+        set global variables in python. PyMechanical can not do that automatically,
+        but this method can be used.
+        `app.update_globals(globals())`
+
+        By default, all enums will be imported too. To avoid including enums, set
+        the `enums` argument to False.
+        """
+        self._updated_scopes.append(globals_dict)
+        globals_dict.update(global_variables(self, enums))
+
+    def _update_all_globals(self) -> None:
+        for scope in self._updated_scopes:
+            scope.update(global_entry_points(self))
+
+    def _print_tree(self, node, max_lines, lines_count, indentation):
+        """Recursively print till provided maximum lines limit.
+
+        Each object in the tree is expected to have the following attributes:
+         - Name: The name of the object.
+         - Suppressed : Print as suppressed, if object is suppressed.
+         - Children: Checks if object have children.
+           Each child node is expected to have the all these attributes.
+
+        Parameters
+        ----------
+        lines_count: int, optional
+            The current count of lines printed. Default is 0.
+        indentation: str, optional
+            The indentation string used for printing the tree structure. Default is "".
+        """
+        if lines_count >= max_lines and max_lines != -1:
+            print(f"... truncating after {max_lines} lines")
+            return lines_count
+
+        if not hasattr(node, "Name"):
+            raise AttributeError("Object must have a 'Name' attribute")
+
+        node_name = node.Name
+        if hasattr(node, "Suppressed") and node.Suppressed is True:
+            node_name += " (Suppressed)"
+        print(f"{indentation}├── {node_name}")
+        lines_count += 1
+
+        if lines_count >= max_lines and max_lines != -1:
+            print(f"... truncating after {max_lines} lines")
+            return lines_count
+
+        if hasattr(node, "Children") and node.Children is not None and node.Children.Count > 0:
+            for child in node.Children:
+                lines_count = self._print_tree(child, max_lines, lines_count, indentation + "|  ")
+                if lines_count >= max_lines and max_lines != -1:
+                    break
+
+        return lines_count
+
+    def print_tree(self, node=None, max_lines=80, lines_count=0, indentation=""):
+        """
+        Print the hierarchical tree representation of the Mechanical project structure.
+
+        Parameters
+        ----------
+        node: DataModel object, optional
+            The starting object of the tree.
+        max_lines: int, optional
+            The maximum number of lines to print. Default is 80. If set to -1, no limit is applied.
+
+        Raises
+        ------
+        AttributeError
+            If the node does not have the required attributes.
+
+        Examples
+        --------
+        >>> import ansys.mechanical.core as mech
+        >>> app = mech.App()
+        >>> app.update_globals(globals())
+        >>> app.print_tree()
+        ... ├── Project
+        ... |  ├── Model
+        ... |  |  ├── Geometry Imports
+        ... |  |  ├── Geometry
+        ... |  |  ├── Materials
+        ... |  |  ├── Coordinate Systems
+        ... |  |  |  ├── Global Coordinate System
+        ... |  |  ├── Remote Points
+        ... |  |  ├── Mesh
+
+        >>> app.print_tree(Model, 3)
+        ... ├── Model
+        ... |  ├── Geometry Imports
+        ... |  ├── Geometry
+        ... ... truncating after 3 lines
+
+        >>> app.print_tree(max_lines=2)
+        ... ├── Project
+        ... |  ├── Model
+        ... ... truncating after 2 lines
+        """
+        if node is None:
+            node = self.DataModel.Project
+
+        self._print_tree(node, max_lines, lines_count, indentation)

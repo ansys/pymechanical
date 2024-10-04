@@ -31,6 +31,7 @@ from grpc._channel import _InactiveRpcError, _MultiThreadedRendezvous
 from ansys.mechanical.core import LOG as logger
 
 SIGINT_TRACKER = []
+"""List of SIGINT keyboard interrupts."""
 
 
 class VersionError(ValueError):

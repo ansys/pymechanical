@@ -118,13 +118,12 @@ def test_run_python_script_from_file_error(mechanical):
 
 @pytest.mark.remote_session_connect
 @pytest.mark.parametrize("file_name", [r"hsec.x_t"])
-def test_upload(mechanical, file_name):
+def test_upload(mechanical, file_name, assets):
     mechanical.run_python_script("ExtAPI.DataModel.Project.New()")
     directory = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
     print(directory)
 
-    current_working_directory = os.getcwd()
-    file_path = os.path.join(current_working_directory, "tests", "parts", file_name)
+    file_path = os.path.join(assets, file_name)
     mechanical.upload(
         file_name=file_path, file_location_destination=directory, chunk_size=1024 * 1024
     )
@@ -146,9 +145,8 @@ def test_upload(mechanical, file_name):
 # change the chunk_size for that
 # ideally this will be 64*1024, 1024*1024, etc.
 @pytest.mark.parametrize("chunk_size", [10, 50, 100])
-def test_upload_with_different_chunk_size(mechanical, chunk_size):
-    current_working_directory = os.getcwd()
-    file_path = os.path.join(current_working_directory, "tests", "parts", "hsec.x_t")
+def test_upload_with_different_chunk_size(mechanical, chunk_size, assets):
+    file_path = os.path.join(assets, "hsec.x_t")
     mechanical.run_python_script("ExtAPI.DataModel.Project.New()")
     directory = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
     mechanical.upload(
@@ -190,7 +188,7 @@ def enable_distributed_solve(mechanical):
 
 def solve_and_return_results(mechanical):
     current_working_directory = os.getcwd()
-    file_path = os.path.join(current_working_directory, "tests", "parts", "hsec.x_t")
+    file_path = os.path.join(current_working_directory, "tests", "assets", "hsec.x_t")
 
     mechanical.clear()
     directory = mechanical.project_directory
@@ -354,7 +352,7 @@ def verify_download(mechanical, tmpdir, file_name, chunk_size):
     print(directory)
 
     current_working_directory = os.getcwd()
-    file_path = os.path.join(current_working_directory, "tests", "parts", file_name)
+    file_path = os.path.join(current_working_directory, "tests", "assets", file_name)
     mechanical.upload(
         file_name=file_path, file_location_destination=directory, chunk_size=1024 * 1024
     )
@@ -443,7 +441,7 @@ def test_find_mechanical_path():
         else:
             assert ".workbench" in path
 
-        assert re.match(r"\d{3}", str(version)) and version >= 231
+        assert re.match(r"\d{3}", str(version)) and version >= 232
 
 
 @pytest.mark.remote_session_launch
@@ -463,13 +461,13 @@ def test_change_default_mechanical_path():
 
 @pytest.mark.remote_session_launch
 def test_version_from_path():
-    windows_path = "C:\\Program Files\\ANSYS Inc\\v231\\aisol\\bin\\winx64\\AnsysWBU.exe"
+    windows_path = "C:\\Program Files\\ANSYS Inc\\v242\\aisol\\bin\\winx64\\AnsysWBU.exe"
     version = ansys.tools.path.version_from_path("mechanical", windows_path)
-    assert version == 231
+    assert version == 242
 
-    linux_path = "/usr/ansys_inc/v231/aisol/.workbench"
+    linux_path = "/usr/ansys_inc/v242/aisol/.workbench"
     version = ansys.tools.path.version_from_path("mechanical", linux_path)
-    assert version == 231
+    assert version == 242
 
     with pytest.raises(RuntimeError):
         # doesn't contain version

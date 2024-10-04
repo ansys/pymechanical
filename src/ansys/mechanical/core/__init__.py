@@ -27,19 +27,23 @@ import os
 from ansys.tools.path import find_mechanical
 import appdirs
 
-# Setup data directory
 USER_DATA_PATH = appdirs.user_data_dir(appname="ansys_mechanical_core", appauthor="Ansys")
+"""User data directory."""
+
 if not os.path.exists(USER_DATA_PATH):
     os.makedirs(USER_DATA_PATH)
 
 EXAMPLES_PATH = os.path.join(USER_DATA_PATH, "examples")
+"""Examples path."""
+
 if not os.path.exists(EXAMPLES_PATH):
     os.makedirs(EXAMPLES_PATH)
 
 from ansys.mechanical.core.logging import Logger
 
-# Create logger for package level use
 LOG = Logger(level=logging.ERROR, to_file=False, to_stdout=True)
+"""Create logger for package level use."""
+
 LOG.debug("Loaded logging module as LOG")
 
 from ansys.mechanical.core._version import __version__
@@ -57,12 +61,14 @@ try:
     from ansys.mechanical.core.embedding import App, global_variables
 
     HAS_EMBEDDING = True
+    """Whether or not Mechanical embedding is being used."""
 except:
     HAS_EMBEDDING = False
 
-# manage the package level ports
 LOCAL_PORTS = []
+"""Manage the package level ports."""
 
 from ansys.mechanical.core.pool import LocalMechanicalPool
 
 BUILDING_GALLERY = False
+"""Whether or not to build gallery examples."""

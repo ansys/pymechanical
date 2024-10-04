@@ -28,14 +28,25 @@ from ansys.mechanical.core import global_variables
 
 @pytest.mark.embedding
 def test_global_variables(embedded_app):
-    """Test the global variables"""
+    """Test the global variables."""
+    attributes = [
+        "ExtAPI",
+        "DataModel",
+        "Model",
+        "Tree",
+        "Graphics",
+        "Quantity",
+        "System",
+        "Ansys",
+        "Transaction",
+        "MechanicalEnums",
+        "DataModelObjectCategory",
+        "Point",
+        "SectionPlane",
+        "Point2D",
+        "Point3D",
+        "Vector3D",
+    ]
     globals_dict = global_variables(embedded_app, True)
-    assert "ExtAPI" in globals_dict
-    assert "DataModel" in globals_dict
-    assert "Model" in globals_dict
-    assert "Tree" in globals_dict
-    assert "Quantity" in globals_dict
-    assert "System" in globals_dict
-    assert "Ansys" in globals_dict
-    assert "Transaction" in globals_dict
-    assert "MechanicalEnums" in globals_dict
+    for attribute in attributes:
+        assert attribute in globals_dict

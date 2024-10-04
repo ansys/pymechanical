@@ -1,5 +1,6 @@
-.. image:: https://raw.githubusercontent.com/ansys/pymechanical/main/doc/source/_static/logo/pymechanical-logo-light.png
+.. image:: https://raw.githubusercontent.com/ansys/pymechanical/main/doc/source/_static/logo/pymechanical-logo.png
    :alt: PyMechanical logo
+   :width: 580px
 
 
 |pyansys| |pypi| |python| |GH-CI| |codecov| |MIT| |black|
@@ -17,7 +18,7 @@
    :alt: Python
 
 .. |codecov| image:: https://codecov.io/gh/ansys/pymechanical/branch/main/graph/badge.svg
-   :target: https://codecov.io/gh/ansys/ansys-mechanical-core
+   :target: https://app.codecov.io/gh/ansys/pymechanical
    :alt: Codecov
 
 .. |GH-CI| image:: https://github.com/ansys/pymechanical/actions/workflows/ci_cd.yml/badge.svg
@@ -32,9 +33,13 @@
    :target: https://github.com/psf/black
    :alt: Black
 
+.. |pre-commit| image:: https://results.pre-commit.ci/badge/github/ansys/pymechanical/main.svg?style=flat
+   :target: https://results.pre-commit.ci/latest/github/ansys/pymechanical/main
+   :alt: pre-commit
 
 Overview
 --------
+
 PyMechanical brings Ansys Mechanical to Python. It enables your Python programs to use
 Mechanical within Python's ecosystem. It includes the ability to:
 
@@ -44,7 +49,8 @@ Mechanical within Python's ecosystem. It includes the ability to:
 
 Install the package
 -------------------
-Install PyMechanical using `pip` with::
+
+Install PyMechanical using ``pip`` with::
 
    pip install ansys-mechanical-core
 
@@ -65,14 +71,14 @@ Getting started
 
 PyMechanical uses the built-in scripting capabilities of Mechanical. For information on the
 scripting APIs available, see the `Scripting in Mechanical Guide
-<https://ansyshelp.ansys.com/Views/Secured/corp/v241/en/act_script/act_script.html>`_ in the
+<https://ansyshelp.ansys.com/Views/Secured/corp/v242/en/act_script/act_script.html>`_ in the
 Ansys Help.
 
 Configuring the mechanical installation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 On a Windows system, the environment variable ``AWP_ROOT<ver>`` is configured when Mechanical is
-installed, where ``<ver>`` is the Mechanical release number, such as ``231`` for release 2023 R1.
+installed, where ``<ver>`` is the Mechanical release number, such as ``242`` for release 2024 R2.
 PyMechanical automatically uses this environment variable (or variables if there are multiple
 installations of different versions) to locate the latest Mechanical installation. On a Linux
 system, you must configure the ``AWP_ROOT<ver>`` environment variable to point to the
@@ -107,21 +113,21 @@ Using an embedded instance of Mechanical as a Python object
 
 PyMechanical also supports directly embedding an instance of Mechanical as a Python object.
 In this mode, there is no externally running instance of Mechanical. This feature is supported
-on Windows for version 2023 R1 and later, and on Linux for version 2023 R2
-and later. Here is an example:
+on Windows and Linux for version 2023 R2 and later. Here is an example:
 
 .. code:: python
 
    import ansys.mechanical.core as pymechanical
 
    app = pymechanical.App()
-   project_dir = app.ExtAPI.DataModel.Project.ProjectDirectory
+   app.update_globals(globals())
+   project_dir = DataModel.Project.ProjectDirectory
 
 Documentation and issues
 ------------------------
 
 Documentation for the latest stable release of PyMechanical is hosted at `PyMechanical documentation
-<https://mechanical.docs.pyansys.com/version/stable/>`_.
+<https://mechanical.docs.pyansys.com/>`_.
 
 In the upper right corner of the documentation's title bar, there is an option for switching from
 viewing the documentation for the latest stable release to viewing the documentation for the
@@ -145,14 +151,3 @@ Testing and development
 If you would like to test or contribute to the development of PyMechanical, see
 `Contribute <https://mechanical.docs.pyansys.com/version/stable/contributing.html>`_ in
 the PyMechanical documentation.
-
-.. LINKS AND REFERENCES
-.. _black: https://github.com/psf/black
-.. _flake8: https://flake8.pycqa.org/en/latest/
-.. _isort: https://github.com/PyCQA/isort
-.. _pip: https://pypi.org/project/pip/
-.. _pre-commit: https://pre-commit.com/
-.. _PyAnsys Developer's Guide: https://dev.docs.pyansys.com/
-.. _pytest: https://docs.pytest.org/en/stable/
-.. _Sphinx: https://www.sphinx-doc.org/en/master/
-.. _tox: https://tox.wiki/

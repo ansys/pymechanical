@@ -21,12 +21,11 @@ solvers can be integrated into Mechanical and can take advantage of the
 powerful meshing, generic CAD reader, and the intuitive pre- and post-
 processing experience of Mechanical.
 
-Before discussing how Mechanical's API is implemented, we discuss a software
-design pattern known as the *command pattern*. This pattern can be used in many
-programming languages. For a general description (using the Java programming
-language) of the command pattern, see `Command Design Pattern
-<https://howtodoinjava.com/design-patterns/behavioral/command-pattern/>`_ in the
-*HowToDoInJava* newsletter. Our own brief explanation follows.
+Before discussing how Mechanical's API is implemented, let’s first look at the software design
+pattern known as the *command pattern*. You can use this pattern with many programming languages.
+For a general description (using the Java programming language) of the command pattern, see
+`Command Design Pattern <https://howtodoinjava.com/design-patterns/behavioral/command-pattern/>`_
+in the *HowToDoInJava* newsletter.
 
 Command pattern
 ---------------
@@ -125,7 +124,7 @@ servers. Clients send requests to servers. Servers are expected return a
 response to the client.
 
 There are protocols [#f5]_ that describe how information moves between
-computers. We begin with an explanation of remote procedure calls.
+computers. The next section begins with an explanation of remote procedure calls.
 
 Remote procedure calls
 ----------------------
@@ -159,7 +158,7 @@ protocol.
 
 Applications that conform to REST are said to provide RESTful APIs. For a more
 detailed description, see `What is a REST API
-<https://www.redhat.com/en/topics/api/what-is-a-rest-api>` on the *Red Hat
+<https://www.redhat.com/en/topics/api/what-is-a-rest-api>`_ on the *Red Hat
 Technology Topics* page.
 
 Remote method invocation

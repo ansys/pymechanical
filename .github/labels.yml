@@ -38,10 +38,22 @@
   description: Major issue which may have to be subdivided into smaller ones
   color: 5319e7
 
-- name: CI/CD
-  description: ""
+- name: ci/cd
+  description: Involves the GitHub workflow files
   color: b5f226
 
 - name: future
   description: To be implemented in the future
   color: 5319e7
+
+- name: windows
+  description: Only observed in Windows
+  color: 9fc5e8
+
+- name: linux
+  description: Only observed in Linux based platform
+  color: a2c4c9
+
+- name: docker
+  description: Only observed in Mechanical docker image
+  color: b6d7a8

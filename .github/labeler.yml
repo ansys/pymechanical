@@ -4,7 +4,7 @@ documentation:
 
 maintenance:
 - changed-files:
-  - any-glob-to-any-file: ['.github/**/*', 'codecov.yml', '.flake8', '.coveragerc', '.codespellrc', '.pre-commit-config.yaml', 'tox.ini']
+  - any-glob-to-any-file: ['.github/**/*', '.pre-commit-config.yaml']
 
 dependencies:
 - changed-files:

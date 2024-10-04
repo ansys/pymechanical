@@ -137,4 +137,4 @@ def test_run_batch_no_job(mechanical_pool, tmp_path: pathlib.Path):
 @pytest.mark.remote_session_launch
 def test_version_error():
     with pytest.raises(VersionError):
-        raise VersionError("Requires Mechanical 2023 R1 or later.")
+        raise VersionError("Requires Mechanical 2023 R2 or later.")

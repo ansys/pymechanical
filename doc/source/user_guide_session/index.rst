@@ -1,7 +1,7 @@
 .. _ref_user_guide_session:
 
-Remote sessions
-===============
+Remote session
+==============
 
 This section  provides an overview of how you use PyMechanical as a client
 to a remote Mechanical session.
@@ -14,6 +14,7 @@ to a remote Mechanical session.
    :maxdepth: 1
    :hidden:
 
+   self
    server-launcher
    mechanical
    pool
@@ -21,14 +22,13 @@ to a remote Mechanical session.
 Overview
 --------
 
-The :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>` method
-creates an instance of the :class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>`
+The `launch_mechanical() <../api/ansys/mechanical/core/mechanical/index.html#mechanical.launch_mechanical>`_ method
+creates an instance of the `Mechanical <../api/ansys/mechanical/core/mechanical/Mechanical.html>`_
 class in the background and sends commands to it as a service. Because errors and warnings
 are processed Pythonically, you can develop a script in real time without worrying about
 whether the script runs correctly when deployed in batch mode.
 
-Here is how you use the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>`
-method to launch Mechanical from Python in gRPC mode:
+Here is how you use the `launch_mechanical()`_ method to launch Mechanical from Python in gRPC mode:
 
 .. code:: python
 
@@ -37,8 +37,24 @@ method to launch Mechanical from Python in gRPC mode:
 
     mechanical = launch_mechanical()
 
-When Mechanical is active, you can send commands to it as a genuine
-Python class. For example, you can send a Python script:
+If multiple versions of product are installed, then you can use ``exec_file`` argument
+to select the version of the product to launch.
+
+.. code:: python
+
+    exec_file_path = "C:/Program Files/ANSYS Inc/v242/aisol/bin/win64/AnsysWBU.exe"
+    mechanical = launch_mechanical(
+        exec_file=exec_file_path, batch=False, cleanup_on_exit=False
+    )
+
+If ``batch`` option is set ``True`` the Mechanical launches without GUI. The ``cleanup_on_exit``
+option decides whether product exits at the end of the PyMechanical script or not.
+
+.. note::
+   ``version`` argument is used only if PyPIM is configured. For general cases, use ``exec_file``
+
+You can send genuine Python class commands to the application when Mechanical is active.
+For example, you can send a Python script:
 
 .. code:: python
 
@@ -62,7 +78,7 @@ Python, run them interactively, and then run them in batch without worrying if t
 scripts run correctly. This would not be the case if you had instead outputted the
 scripts that you wrote to script files.
 
-The :class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>` class supports
+The `Mechanical`_ class supports
 much more than sending text to Mechanical. It includes higher-level wrapping
 that provides for better scripting and interaction with Mechanical. For information
 on advanced methods for interacting with Mechanical, see :ref:`ref_examples`.
