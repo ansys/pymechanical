@@ -25,92 +25,67 @@
 import json
 import os
 from pathlib import Path
-import re
 import sys
 import sysconfig
 
 import ansys.tools.path as atp
 import click
-
-
-# bonus, see if this works: "from ansys.mechanical.core.stubs_importer import *"
-def valid_json(json_file):
-    """Check if the settings.json file can be loaded.
-
-    Parameters
-    ----------
-    json_file: pathlib.Path
-        The path to the settings.json file.
-
-    Returns
-    -------
-    bool
-        ``True`` if the JSON file can be loaded.
-        ``False`` if the JSON file cannot be loaded due to invalid syntax.
-    """
-    # If the JSON file has invalid format, return False
-    with open(json_file, "r") as file:
-        try:
-            data = json.load(file)
-            return True
-        except json.decoder.JSONDecodeError:
-            return False
+import git
 
 
 def _cli_impl(
-    ide: str = None,
-    location: str = None,
+    ide: str = "vscode",
+    settings_type: str = "user",
     revision: int = None,
 ):
-    if ide != "vscode":
-        raise Exception(f"{ide} is not a supported IDE at the moment.")
+    """Provide the user with the path to the settings.json file and autocomplete settings.
 
-    if location == "user":
+    Parameters
+    ----------
+    ide: str
+        The IDE to set up autocomplete settings. By default, it's ``vscode``.
+    settings_type: str
+        The type of settings to update. Either "user" or "workspace" in VS Code.
+        By default, it's ``user``.
+    revision: int
+        The Mechanical revision number. For example, "242".
+        If unspecified, it finds the default Mechanical version from ansys-tools-path.
+    """
+    # Check the IDE and raise an exception if it's not VS Code
+    if ide != "vscode":
+        raise Exception(f"{ide} is not supported at the moment.")
+
+    # Update the user or workspace settings
+    if settings_type == "user":
+        # Get the path to the user's settings.json file depending on the platform
         if "win" in sys.platform:
             settings_json = Path(os.environ.get("APPDATA")) / "Code" / "User" / "settings.json"
         elif "lin" in sys.platform:
             settings_json = (
                 Path(os.environ.get("HOME")) / ".config" / "Code" / "User" / "settings.json"
             )
+    elif settings_type == "workspace":
+        # Find the git repository
+        git_repo = git.Repo(os.getcwd(), search_parent_directories=True)
+        # Get the root folder of the git repository
+        git_root = git_repo.git.rev_parse("--show-toplevel")
+        # Get the path to the settings.json file based on the git root & .vscode folder
+        settings_json = Path(git_root) / ".vscode" / "settings.json"
 
-    elif location == "workspace":
-        # C:/Users/kmcadams/pyansys/pymechanical/.vscode/settings.json
-        settings_json = ""
-        raise Exception(f"Cannot update settings.json in the {location} settings yet.")
-
+    # Location where the stubs are installed -> .venv/Lib/site-packages, for example
     stubs_location = (
         Path(sysconfig.get_paths()["purelib"]) / "ansys" / "mechanical" / "stubs" / f"v{revision}"
     )
-    last_comma = r"\,(?!\s*?[\{\[\"\'\w])"
-    valid = valid_json(settings_json)
 
-    # If the JSON isn't valid
-    if not valid:
-        # Open the JSON, delete the trailing comma
-        with open(settings_json, "r") as file:
-            data = file.readlines()
-            data_joined = "".join(data)
-            data_joined = re.sub(last_comma, "", data_joined)
-
-        # Overwrite the JSON without the trailing comma
-        with open(settings_json, "w") as file:
-            file.write(data_joined)
-
-    # Open the properly formatted JSON file
-    with open(settings_json, "r") as file:
-        data = json.load(file)
-
+    # The settings to add to settings.json for autocomplete to work
     settings_json_data = {
         "python.autoComplete.extraPaths": [str(stubs_location)],
         "python.analysis.extraPaths": [str(stubs_location)],
     }
+    # Pretty print dictionary
+    pretty_dict = json.dumps(settings_json_data, indent=4)
 
-    # Combine the existing JSON with the autocomplete paths
-    combined_dict = {**data, **settings_json_data}
-
-    # Write the updated data back to the file
-    with open(settings_json, "w") as file:
-        json.dump(combined_dict, file, indent=4)
+    print(f"Update {settings_json} with the following information:\n{pretty_dict}")
 
 
 @click.command()
@@ -122,23 +97,34 @@ def _cli_impl(
     help="The IDE being used.",
 )
 @click.option(
-    "--location",
+    "--settings_type",
     default="user",
     type=str,
-    help="Whether to update the settings.json file on the workspace or user level.",
+    help="The type of settings to update - either user or workspace settings.",
 )
 @click.option(
     "--revision",
     default=None,
     type=int,
-    help='Ansys Revision number, e.g. "242" or "241". If none is specified\
-, uses the default from ansys-tools-path',
+    help='The Mechanical revision number, e.g. "242" or "241". If unspecified,\
+it finds and uses the default version from ansys-tools-path.',
 )
-def cli(ide: str, location: str, revision: int):
-    """CLI tool to run mechanical.
+def cli(ide: str, settings_type: str, revision: int) -> None:
+    """CLI tool to update settings.json files for autocomplete with ansys-mechanical-stubs.
 
-    USAGE:
+    Parameters
+    ----------
+    ide: str
+        The IDE to set up autocomplete settings. By default, it's ``vscode``.
+    settings_type: str
+        The type of settings to update. Either "user" or "workspace" in VS Code.
+        By default, it's ``user``.
+    revision: int
+        The Mechanical revision number. For example, "242".
+        If unspecified, it finds the default Mechanical version from ansys-tools-path.
 
+    Usage
+    -----
     The following example demonstrates the main use of this tool:
 
         $ ansys-mechanical-autocomplete --ide vscode --location user --revision 242
@@ -149,6 +135,6 @@ def cli(ide: str, location: str, revision: int):
 
     return _cli_impl(
         ide,
-        location,
+        settings_type,
         version,
     )
