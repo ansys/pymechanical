@@ -73,43 +73,44 @@ def _cli_impl(
                 Path(os.environ.get("HOME")) / ".config" / "Code" / "User" / "settings.json"
             )
 
-        stubs_location = (
-            Path(sysconfig.get_paths()["purelib"])
-            / "ansys"
-            / "mechanical"
-            / "stubs"
-            / f"v{revision}"
-        )
-        last_comma = r"\,(?!\s*?[\{\[\"\'\w])"
-        valid = valid_json(settings_json)
+    elif location == "workspace":
+        # C:/Users/kmcadams/pyansys/pymechanical/.vscode/settings.json
+        settings_json = ""
+        raise Exception(f"Cannot update settings.json in the {location} settings yet.")
 
-        # If the JSON isn't valid
-        if not valid:
-            # Open the JSON, delete the trailing comma
-            with open(settings_json, "r") as file:
-                data = file.readlines()
-                data_joined = "".join(data)
-                data_joined = re.sub(last_comma, "", data_joined)
+    stubs_location = (
+        Path(sysconfig.get_paths()["purelib"]) / "ansys" / "mechanical" / "stubs" / f"v{revision}"
+    )
+    last_comma = r"\,(?!\s*?[\{\[\"\'\w])"
+    valid = valid_json(settings_json)
 
-            # Overwrite the JSON without the trailing comma
-            with open(settings_json, "w") as file:
-                file.write(data_joined)
-
-        # Open the properly formatted JSON file
+    # If the JSON isn't valid
+    if not valid:
+        # Open the JSON, delete the trailing comma
         with open(settings_json, "r") as file:
-            data = json.load(file)
+            data = file.readlines()
+            data_joined = "".join(data)
+            data_joined = re.sub(last_comma, "", data_joined)
 
-        settings_json_data = {
-            "python.autoComplete.extraPaths": [str(stubs_location)],
-            "python.analysis.extraPaths": [str(stubs_location)],
-        }
-
-        # Combine the existing JSON with the autocomplete paths
-        combined_dict = {**data, **settings_json_data}
-
-        # Write the updated data back to the file
+        # Overwrite the JSON without the trailing comma
         with open(settings_json, "w") as file:
-            json.dump(combined_dict, file, indent=4)
+            file.write(data_joined)
+
+    # Open the properly formatted JSON file
+    with open(settings_json, "r") as file:
+        data = json.load(file)
+
+    settings_json_data = {
+        "python.autoComplete.extraPaths": [str(stubs_location)],
+        "python.analysis.extraPaths": [str(stubs_location)],
+    }
+
+    # Combine the existing JSON with the autocomplete paths
+    combined_dict = {**data, **settings_json_data}
+
+    # Write the updated data back to the file
+    with open(settings_json, "w") as file:
+        json.dump(combined_dict, file, indent=4)
 
 
 @click.command()
