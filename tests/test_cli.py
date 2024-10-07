@@ -21,10 +21,19 @@
 # SOFTWARE.
 
 import os
+from pathlib import Path
+import subprocess
+import sys
+import sysconfig
 
+import git
 import pytest
 
+from ansys.mechanical.core.autocomplete import _cli_impl as autocomplete_cli_impl
 from ansys.mechanical.core.run import _cli_impl
+
+git_repo = git.Repo(os.getcwd(), search_parent_directories=True)
+REPO_PATH = Path(git_repo.git.rev_parse("--show-toplevel"))
 
 
 @pytest.mark.cli
@@ -229,3 +238,153 @@ def test_cli_batch_required_args(disable_cli):
         _cli_impl(exe="AnsysWBU.exe", version=241, port=11)
     except Exception as e:
         assert False, f"cli raised an exception: {e}"
+
+
+def init_repo(tmp_path: pytest.TempPathFactory) -> git.Repo:
+    """Set up a git repository given a temporary path.
+
+    Parameters
+    ----------
+    tmp_path: pytest.TempPathFactory
+        A temporary folder created by pytest.
+
+    Returns
+    -------
+    git.Repo
+        The git repository at the temporary path.
+    """
+    git.Repo.init(tmp_path)
+    repo = git.Repo(tmp_path)
+    repo.index.commit("initialized git repo for tmp_path")
+
+    return repo
+
+
+def get_settings_location() -> str:
+    """Get the location of settings.json for user settings.
+
+    Returns
+    -------
+    str
+        The path to the settings.json file for users on Windows and Linux.
+    """
+    if "win" in sys.platform:
+        settings_json = Path(os.environ.get("APPDATA")) / "Code" / "User" / "settings.json"
+    elif "lin" in sys.platform:
+        settings_json = Path(os.environ.get("HOME")) / ".config" / "Code" / "User" / "settings.json"
+
+    return settings_json
+
+
+def get_stubs_location(revision: int) -> Path:
+    """Get the ansys-mechanical-stubs location with specified revision.
+
+    Parameters
+    ----------
+    revision: int
+        The Mechanical revision number. For example, "242".
+
+    Returns
+    -------
+    pathlib.Path
+        The path to the ansys-mechanical-stubs installation.
+    """
+    return (
+        Path(sysconfig.get_paths()["purelib"]) / "ansys" / "mechanical" / "stubs" / f"v{revision}"
+    )
+
+
+@pytest.mark.cli
+def test_autocomplete_cli_ide_exception(capfd):
+    """Test autocomplete raises an exception for anything but vscode."""
+    with pytest.raises(Exception):
+        autocomplete_cli_impl(
+            ide="pycharm",
+            settings_type="user",
+            revision=242,
+        )
+
+
+@pytest.mark.cli
+def test_autocomplete_cli_user_settings(capfd):
+    """Test autocomplete prints correct information for user settings."""
+    # Set the revision number
+    revision = 242
+
+    # Run the autocomplete settings command for the user settings type
+    autocomplete_cli_impl(
+        ide="vscode",
+        settings_type="user",
+        revision=revision,
+    )
+
+    # Get output of autocomplete settings command
+    out, err = capfd.readouterr()
+    out = out.replace("\\\\", "\\")
+
+    # Get the path to the settings.json file based on the git root & .vscode folder
+    settings_json = get_settings_location()
+    stubs_location = get_stubs_location(revision)
+
+    assert f"Update {settings_json} with the following information" in out
+    assert str(stubs_location) in out
+
+
+@pytest.mark.cli
+def test_autocomplete_cli_workspace_settings(capfd):
+    """Test autocomplete prints correct information for workplace settings."""
+    # Set the revision number
+    revision = 241
+
+    # Run the autocomplete settings command
+    autocomplete_cli_impl(
+        ide="vscode",
+        settings_type="workspace",
+        revision=revision,
+    )
+
+    # Get output of autocomplete settings command
+    out, err = capfd.readouterr()
+    out = out.replace("\\\\", "\\")
+
+    # Get the path to the settings.json file based on the git root & .vscode folder
+    settings_json = REPO_PATH / ".vscode" / "settings.json"
+    stubs_location = get_stubs_location(revision)
+
+    # Assert the correct settings.json file and stubs location is in the output
+    assert f"Update {settings_json} with the following information" in out
+    assert str(stubs_location) in out
+
+
+@pytest.mark.cli
+@pytest.mark.python_env
+def test_autocomplete_venv(test_env, run_subprocess, rootdir):
+    """Test autocomplete settings location when a virtual environment is active."""
+    # Set the revision number
+    revision = 242
+
+    # Install pymechanical
+    subprocess.check_call(
+        [test_env.python, "-m", "pip", "install", "-e", "."],
+        cwd=rootdir,
+        env=test_env.env,
+    )
+
+    # Run ansys-mechanical-autocomplete in the test virtual environment
+    process, stdout, stderr = run_subprocess(
+        [
+            "ansys-mechanical-autocomplete",
+            "--ide",
+            "vscode",
+            "--settings_type",
+            "user",
+            "--revision",
+            str(revision),
+        ],
+        env=test_env.env,
+    )
+    # Decode stdout and fix extra backslashes in paths
+    stdout = stdout.decode().replace("\\\\", "\\")
+
+    # Assert virtual environment is in the stdout
+    assert ".venv" in stdout
