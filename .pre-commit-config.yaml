@@ -1,3 +1,10 @@
+ci:
+    autofix_commit_msg: 'chore: auto fixes from pre-commit hooks'
+    autoupdate_commit_msg: 'chore: pre-commit automatic update'
+    autoupdate_schedule: weekly
+
+exclude: '^tests/embedding/assets/.*$|^tests/parts/.*$'
+
 repos:
 
 - repo: https://github.com/pre-commit-ci/pre-commit-ci-config
@@ -72,5 +79,3 @@ repos:
   rev: 0.29.3
   hooks:
     - id: check-github-workflows
-
-exclude: '^tests/embedding/assets/.*$|^tests/parts/.*$'
