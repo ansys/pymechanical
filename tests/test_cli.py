@@ -364,4 +364,4 @@ def test_autocomplete_venv(test_env, run_subprocess, rootdir):
     stdout = stdout.decode().replace("\\\\", "\\")
 
     # Assert virtual environment is in the stdout
-    assert ".venv" in stdout
+    assert ".test_env" in stdout
