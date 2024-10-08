@@ -508,8 +508,8 @@ class Mechanical(object):
                     return f"GRPC_{self._channel._channel._channel.target().decode()}"
                 else:
                     return f"GRPC_{self._channel._channel.target().decode()}"
-        except Exception:  # pragma: no cover
-            pass
+        except Exception as e:  # pragma: no cover
+            LOG.error(f"Error getting the Mechanical instance name: {str(e)}")
 
         return f"GRPC_instance_{id(self)}"  # pragma: no cover
 

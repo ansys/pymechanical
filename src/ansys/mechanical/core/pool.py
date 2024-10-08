@@ -583,8 +583,8 @@ class LocalMechanicalPool:
             if instance_local:
                 try:
                     instance_local.exit()
-                except:  # pragma: no cover
-                    pass
+                except Exception as e:  # pragma: no cover
+                    LOG.error(f"Error while exiting instance {str(instance_local)}: {str(e)}")
                 self._instances[index] = None
                 LOG.debug(f"Exited instance: {str(instance_local)}")
 
