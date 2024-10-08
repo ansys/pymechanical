@@ -26,14 +26,10 @@ import subprocess
 import sys
 import sysconfig
 
-import git
 import pytest
 
 from ansys.mechanical.core.autocomplete import _cli_impl as autocomplete_cli_impl
 from ansys.mechanical.core.run import _cli_impl
-
-git_repo = git.Repo(os.getcwd(), search_parent_directories=True)
-REPO_PATH = Path(git_repo.git.rev_parse("--show-toplevel"))
 
 
 @pytest.mark.cli
@@ -240,26 +236,6 @@ def test_cli_batch_required_args(disable_cli):
         assert False, f"cli raised an exception: {e}"
 
 
-def init_repo(tmp_path: pytest.TempPathFactory) -> git.Repo:
-    """Set up a git repository given a temporary path.
-
-    Parameters
-    ----------
-    tmp_path: pytest.TempPathFactory
-        A temporary folder created by pytest.
-
-    Returns
-    -------
-    git.Repo
-        The git repository at the temporary path.
-    """
-    git.Repo.init(tmp_path)
-    repo = git.Repo(tmp_path)
-    repo.index.commit("initialized git repo for tmp_path")
-
-    return repo
-
-
 def get_settings_location() -> str:
     """Get the location of settings.json for user settings.
 
@@ -322,7 +298,7 @@ def test_autocomplete_cli_user_settings(capfd):
     out, err = capfd.readouterr()
     out = out.replace("\\\\", "\\")
 
-    # Get the path to the settings.json file based on the git root & .vscode folder
+    # Get the path to the settings.json file based on operating system env vars
     settings_json = get_settings_location()
     stubs_location = get_stubs_location(revision)
 
@@ -347,13 +323,14 @@ def test_autocomplete_cli_workspace_settings(capfd):
     out, err = capfd.readouterr()
     out = out.replace("\\\\", "\\")
 
-    # Get the path to the settings.json file based on the git root & .vscode folder
-    settings_json = REPO_PATH / ".vscode" / "settings.json"
+    # Get the path to the settings.json file based on the current directory & .vscode folder
+    settings_json = Path.cwd() / ".vscode" / "settings.json"
     stubs_location = get_stubs_location(revision)
 
     # Assert the correct settings.json file and stubs location is in the output
     assert f"Update {settings_json} with the following information" in out
     assert str(stubs_location) in out
+    assert "Please ensure the .vscode folder is in the root of your project or repository" in out
 
 
 @pytest.mark.cli
