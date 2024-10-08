@@ -30,7 +30,6 @@ import sysconfig
 
 import ansys.tools.path as atp
 import click
-import git
 
 
 def _cli_impl(
@@ -65,12 +64,10 @@ def _cli_impl(
                 Path(os.environ.get("HOME")) / ".config" / "Code" / "User" / "settings.json"
             )
     elif settings_type == "workspace":
-        # Find the git repository
-        git_repo = git.Repo(os.getcwd(), search_parent_directories=True)
-        # Get the root folder of the git repository
-        git_root = git_repo.git.rev_parse("--show-toplevel")
+        # Get the current working directory
+        current_dir = Path.cwd()
         # Get the path to the settings.json file based on the git root & .vscode folder
-        settings_json = Path(git_root) / ".vscode" / "settings.json"
+        settings_json = current_dir / ".vscode" / "settings.json"
 
     # Location where the stubs are installed -> .venv/Lib/site-packages, for example
     stubs_location = (
@@ -85,7 +82,14 @@ def _cli_impl(
     # Pretty print dictionary
     pretty_dict = json.dumps(settings_json_data, indent=4)
 
-    print(f"Update {settings_json} with the following information:\n{pretty_dict}")
+    print(f"Update {settings_json} with the following information:\n")
+
+    if settings_type == "workspace":
+        print(
+            "Note: Please ensure the .vscode folder is in the root of your project or repository.\n"
+        )
+
+    print(pretty_dict)
 
 
 @click.command()
