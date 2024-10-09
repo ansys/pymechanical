@@ -51,14 +51,14 @@ This setup does not delete the temporary mechdb file when the GUI is closed:
     app.launch_gui(delete_tmp_on_close=False)
 
 
-The ``ansys-mechanical-autocomplete`` command
----------------------------------------------
+The ``ansys-mechanical-ideconfig`` command
+------------------------------------------
 
-The ``ansys-mechanical-autocomplete`` command prints the settings that are necessary for
+The ``ansys-mechanical-ideconfig`` command prints the settings that are necessary for
 autocomplete to work with ``ansys-mechanical-stubs``. This command takes in three arguments:
 
 * ``--ide``: Currently only accepts ``vscode`` as a valid IDE.
-* ``--settings_type``: The settings for autocomplete can be updated for either the workspace or user in VS Code. Because of this, the valid inputs for this argument are ``user`` or ``workspace``.
+* ``--target``: The settings for autocomplete can be updated for either the workspace or user in VS Code. Because of this, the valid inputs for this argument are ``user`` or ``workspace``.
 * ``--revision``: The Mechanical revision number, for example "242". If the revision number is not supplied, ``ansys-tools-path`` will retrieve the Mechanical version from your system.
 
 **Note**: This setting configuration assumes ``ansys-mechanical-stubs`` is installed on your system.
