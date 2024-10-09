@@ -32,38 +32,33 @@ import ansys.tools.path as atp
 import click
 
 
-def _cli_impl(
-    ide: str = "vscode",
-    settings_type: str = "user",
+def _vscode_impl(
+    target: str = "user",
     revision: int = None,
 ):
-    """Provide the user with the path to the settings.json file and autocomplete settings.
+    """Get the IDE configuration for autocomplete in VS Code.
 
     Parameters
     ----------
-    ide: str
-        The IDE to set up autocomplete settings. By default, it's ``vscode``.
-    settings_type: str
+    target: str
         The type of settings to update. Either "user" or "workspace" in VS Code.
         By default, it's ``user``.
     revision: int
         The Mechanical revision number. For example, "242".
         If unspecified, it finds the default Mechanical version from ansys-tools-path.
     """
-    # Check the IDE and raise an exception if it's not VS Code
-    if ide != "vscode":
-        raise Exception(f"{ide} is not supported at the moment.")
-
     # Update the user or workspace settings
-    if settings_type == "user":
+    if target == "user":
         # Get the path to the user's settings.json file depending on the platform
         if "win" in sys.platform:
-            settings_json = Path(os.environ.get("APPDATA")) / "Code" / "User" / "settings.json"
+            settings_json = (
+                Path(os.environ.get("APPDATA")) / "Code" / "User" / "settings.json"
+            )  # pragma: no cover
         elif "lin" in sys.platform:
             settings_json = (
                 Path(os.environ.get("HOME")) / ".config" / "Code" / "User" / "settings.json"
             )
-    elif settings_type == "workspace":
+    elif target == "workspace":
         # Get the current working directory
         current_dir = Path.cwd()
         # Get the path to the settings.json file based on the git root & .vscode folder
@@ -84,12 +79,37 @@ def _cli_impl(
 
     print(f"Update {settings_json} with the following information:\n")
 
-    if settings_type == "workspace":
+    if target == "workspace":
         print(
             "Note: Please ensure the .vscode folder is in the root of your project or repository.\n"
         )
 
     print(pretty_dict)
+
+
+def _cli_impl(
+    ide: str = "vscode",
+    target: str = "user",
+    revision: int = None,
+):
+    """Provide the user with the path to the settings.json file and IDE settings.
+
+    Parameters
+    ----------
+    ide: str
+        The IDE to set up autocomplete settings. By default, it's ``vscode``.
+    target: str
+        The type of settings to update. Either "user" or "workspace" in VS Code.
+        By default, it's ``user``.
+    revision: int
+        The Mechanical revision number. For example, "242".
+        If unspecified, it finds the default Mechanical version from ansys-tools-path.
+    """
+    # Check the IDE and raise an exception if it's not VS Code
+    if ide == "vscode":
+        return _vscode_impl(target, revision)
+    else:
+        raise Exception(f"{ide} is not supported at the moment.")
 
 
 @click.command()
@@ -101,10 +121,10 @@ def _cli_impl(
     help="The IDE being used.",
 )
 @click.option(
-    "--settings_type",
+    "--target",
     default="user",
     type=str,
-    help="The type of settings to update - either user or workspace settings.",
+    help="The type of settings to update - either ``user`` or ``workspace`` settings.",
 )
 @click.option(
     "--revision",
@@ -113,14 +133,14 @@ def _cli_impl(
     help='The Mechanical revision number, e.g. "242" or "241". If unspecified,\
 it finds and uses the default version from ansys-tools-path.',
 )
-def cli(ide: str, settings_type: str, revision: int) -> None:
+def cli(ide: str, target: str, revision: int) -> None:
     """CLI tool to update settings.json files for autocomplete with ansys-mechanical-stubs.
 
     Parameters
     ----------
     ide: str
         The IDE to set up autocomplete settings. By default, it's ``vscode``.
-    settings_type: str
+    target: str
         The type of settings to update. Either "user" or "workspace" in VS Code.
         By default, it's ``user``.
     revision: int
@@ -131,7 +151,7 @@ def cli(ide: str, settings_type: str, revision: int) -> None:
     -----
     The following example demonstrates the main use of this tool:
 
-        $ ansys-mechanical-autocomplete --ide vscode --location user --revision 242
+        $ ansys-mechanical-ideconfig --ide vscode --location user --revision 242
 
     """
     exe = atp.get_mechanical_path(allow_input=False, version=revision)
@@ -139,6 +159,6 @@ def cli(ide: str, settings_type: str, revision: int) -> None:
 
     return _cli_impl(
         ide,
-        settings_type,
+        target,
         version,
     )
