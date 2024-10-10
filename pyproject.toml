@@ -87,6 +87,7 @@ viz = [
 
 [project.scripts]
 ansys-mechanical = "ansys.mechanical.core.run:cli"
+ansys-mechanical-ideconfig = "ansys.mechanical.core.ide_config:cli"
 
 [tool.flit.module]
 name = "ansys.mechanical.core"
