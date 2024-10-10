@@ -20,6 +20,10 @@ Open the project files with Mechanical GUI.
 
 Opens up the saved ``.mechdb`` or ``.mechdat`` files.
 
+
+v0.10.x
+-------
+
 Visualize geometry in 3D
 ^^^^^^^^^^^^^^^^^^^^^^^^
 

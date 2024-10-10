@@ -207,10 +207,10 @@ html_theme_options = {
             "icon": "fa fa-comment fa-fw",
         },
     ],
-    "cheatsheet": {
-        "file": "cheatsheet/cheat_sheet.qmd",
-        "title": "PyMechanical cheat sheet",
-    },
+    # "cheatsheet": {
+    #     "file": "cheatsheet/cheat_sheet.qmd",
+    #     "title": "PyMechanical cheat sheet",
+    # },
     "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
     "navigation_depth": 10,
 }
@@ -224,6 +224,7 @@ html_sidebars = {
     "changelog": [],
     "examples/index": [],
     "contributing": [],
+    "index": ["sidebar-nav-bs.html", "whatsnew_sidebar.html"],
 }
 
 html_show_sourcelink = False
@@ -314,3 +315,30 @@ if switcher_version != "dev":
     linkcheck_ignore.append(
         f"https://github.com/ansys/pymechanical/releases/tag/v{pymechanical.__version__}"
     )
+
+
+from docutils import nodes
+
+def add_whatsnew(app, pagename, templatename, context, doctree):
+    """Add what's new section to the context."""
+    if pagename != "whatsnew":
+        return  
+
+    docs_content = doctree.traverse(nodes.section)
+    
+    for docs_content in docs_content:
+        contents = {
+            "title": docs_content[0].astext(),
+            "children": docs_content.traverse(nodes.paragraph)[0].astext(),
+            "url": "",
+        }
+        yield contents if contents["title"].startswith("v0") else None
+        
+    # filter the whatsnew content, only take the title strat with v0 *
+    # whats_new_content = [content for content in whats_new_content if content["title"].startswith("v0")]    
+    print(contents)
+    # context["whatsnew_content"] = whats_new_content
+    
+
+def setup(app):
+    app.connect("html-page-context", add_whatsnew)
