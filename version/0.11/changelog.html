@@ -1,0 +1,2105 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+    
+        
+    <title>Release notes &#8212; PyMechanical</title>
+    
+
+
+
+
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="_static/css/ansys_sphinx_theme.css?v=d2ac875c" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://www.nerdfonts.com/assets/css/webfont.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+ 
+<link href="_static/css/breadcrumbs.css" rel="stylesheet" />
+
+    <script src="_static/documentation_options.js?v=f2b85f9b"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/thebelab-helper.js"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=49e1bf35"></script>
+    <script src="_static/js/table.js?v=b64f5182"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'changelog';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://mechanical.docs.pyansys.com/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '0.11';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner = false;
+        </script>
+    <link rel="icon" href="_static/ansys-favicon.png"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Frequently asked questions" href="faq.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <link rel="canonical" href="https://mechanical.docs.pyansys.com/version/stable/changelog.html" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container"><!-- Debugging: html_theme_options =  -->
+
+  
+  <!-- Include the MeiliSearch CSS stylesheet only if theme present -->
+  <link href="_static/css/meilisearch.css" rel="stylesheet" />
+  <!-- Create a search bar form with a text input and a dropdown selector for the search index -->
+  <form class="bd-search d-flex align-items-center"
+  action="search.html"
+  method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+    class="form-control"
+    name="q"
+    placeholder="Search the docs ..."
+    aria-label="Search the docs ..."
+    autocomplete="off"
+    autocorrect="off"
+    autocapitalize="off"
+    spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+  <!-- Conditionally display the dropdown selector if there are multiple indices -->
+  
+  <!-- Include the MeiliSearch JavaScript library for the search bar -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
+  
+    
+  
+  <script>
+  var HOST_URL = "https://backend.search.pyansys.com/";
+  var API_KEY = "9fbccc76c147935ce2b562a9ee0c6669276987572dc1f22491cea72e9e99f35d";
+  // Iterates of the dictionary of index_uids and index_names to get the first child dicts
+  // and then the first key of the child dict to get the index_uid
+  var indexUid = "pymechanical-v0-11";
+
+  // Function to check if the MeiliSearch host URL is reachable
+  function checkMeiliSearchHost(url, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('HEAD', url, true);
+    xhr.onload = function () {
+      if (xhr.status === 404) {
+        callback(false);
+      } else {
+        callback(true);
+      }
+    };
+    xhr.onerror = function () {
+      callback(false);
+    };
+    xhr.send();
+  }
+
+  // Check the MeiliSearch host URL and load the appropriate search script
+  checkMeiliSearchHost(HOST_URL, function (isReachable) {
+    if (isReachable) {
+      var script = document.createElement('script');
+      script.src = "_static/js/meilisearch_theme_wrap.js";
+      document.head.appendChild(script);
+      // create an env value that the url is reachable to use in another script
+      const ACTIVE_MEILI_BACKEND = true;
+    }
+    });
+  </script>
+  </form>
+</div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+   
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="https://docs.pyansys.com/">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/pyansys_logo_transparent_black.png" class="logo__image only-light" alt="PyMechanical - Home"/>
+    <script>document.write(`<img src="_static/pyansys_logo_transparent_white.png" class="logo__image only-dark" alt="PyMechanical - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started/index.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide_session/index.html">
+    Remote session
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide_embedding/index.html">
+    Embedded instance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide_scripting/index.html">
+    Mechanical scripting
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="api/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="contributing.html">
+    Contribute
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="kil/index.html">
+    Known issues and limitations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="faq.html">
+    Frequently asked questions
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="#">
+    Release notes
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-2"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-2"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-2"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-2">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical/discussions" title="Support" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa fa-comment fa-fw fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Support</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+    <div id="announcement_msg"></div>
+<script>
+  fetch("announcement.html")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(
+      (text) => (document.getElementById("announcement_msg").innerHTML = text),
+    )
+    .catch((error) => console.error(`Fetch problem: ${error.message}`));
+</script>  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started/index.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide_session/index.html">
+    Remote session
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide_embedding/index.html">
+    Embedded instance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide_scripting/index.html">
+    Mechanical scripting
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="contributing.html">
+    Contribute
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="kil/index.html">
+    Known issues and limitations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="faq.html">
+    Frequently asked questions
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    Release notes
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-3"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-3"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-3"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-3">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical/discussions" title="Support" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa fa-comment fa-fw fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Support</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+         
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="https://docs.pyansys.com/" class="nav-link">PyAnsys</a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a
+        href="index.html"
+        class="nav-link"
+        aria-label="Home"
+      >
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+      
+    <li class="breadcrumb-item active" aria-current="page">Release notes</li>
+    
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="release-notes">
+<span id="ref-release-notes"></span><h1>Release notes<a class="headerlink" href="#release-notes" title="Link to this heading">#</a></h1>
+<p>This document contains the release notes for the project.</p>
+<section id="id2">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.11.7">0.11.7</a> - 2024-08-29<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<section id="documentation">
+<h3>Documentation<a class="headerlink" href="#documentation" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Fix doc layout <a class="reference external" href="https://github.com/ansys/pymechanical/pull/888">#888</a></p></li>
+</ul>
+</section>
+<section id="maintenance">
+<h3>Maintenance<a class="headerlink" href="#maintenance" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>update CHANGELOG for v0.11.6 <a class="reference external" href="https://github.com/ansys/pymechanical/pull/887">#887</a></p></li>
+</ul>
+</section>
+</section>
+<section id="id6">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.11.6">0.11.6</a> - 2024-08-28<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<section id="id7">
+<h3>Documentation<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Refactor <a class="reference external" href="https://github.com/ansys/pymechanical/pull/878">#878</a></p></li>
+<li><p>Minor changes <a class="reference external" href="https://github.com/ansys/pymechanical/pull/885">#885</a></p></li>
+</ul>
+</section>
+<section id="id10">
+<h3>Maintenance<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>update CHANGELOG for v0.11.5 <a class="reference external" href="https://github.com/ansys/pymechanical/pull/872">#872</a></p></li>
+<li><p>Bump grpcio from 1.65.4 to 1.65.5 in the core group <a class="reference external" href="https://github.com/ansys/pymechanical/pull/875">#875</a></p></li>
+<li><p>Bump the doc group with 4 updates <a class="reference external" href="https://github.com/ansys/pymechanical/pull/876">#876</a></p></li>
+<li><p>Bump grpcio from 1.65.5 to 1.66.0 in the core group <a class="reference external" href="https://github.com/ansys/pymechanical/pull/880">#880</a></p></li>
+<li><p>Bump ansys-sphinx-theme[autoapi] from 1.0.5 to 1.0.7 in the doc group <a class="reference external" href="https://github.com/ansys/pymechanical/pull/881">#881</a></p></li>
+<li><p>[pre-commit.ci] pre-commit autoupdate <a class="reference external" href="https://github.com/ansys/pymechanical/pull/884">#884</a></p></li>
+</ul>
+</section>
+</section>
+<section id="id18">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.11.5">0.11.5</a> - 2024-08-13<a class="headerlink" href="#id18" title="Link to this heading">#</a></h2>
+<section id="added">
+<h3>Added<a class="headerlink" href="#added" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>FEAT: Update cheat sheet with quarto <a class="reference external" href="https://github.com/ansys/pymechanical/pull/845">#845</a></p></li>
+<li><p>Feat: add a layer to load into an existing stage <a class="reference external" href="https://github.com/ansys/pymechanical/pull/857">#857</a></p></li>
+</ul>
+</section>
+<section id="fixed">
+<h3>Fixed<a class="headerlink" href="#fixed" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Refactor usd export <a class="reference external" href="https://github.com/ansys/pymechanical/pull/858">#858</a></p></li>
+<li><p>FIX: App plot None check <a class="reference external" href="https://github.com/ansys/pymechanical/pull/860">#860</a></p></li>
+</ul>
+</section>
+<section id="id23">
+<h3>Documentation<a class="headerlink" href="#id23" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>chore: update CHANGELOG for v0.11.4 <a class="reference external" href="https://github.com/ansys/pymechanical/pull/856">#856</a></p></li>
+<li><p>MAINT: Cheat sheet <a class="reference external" href="https://github.com/ansys/pymechanical/pull/871">#871</a></p></li>
+</ul>
+</section>
+<section id="dependencies">
+<h3>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>MAINT: update ansys-sphinx-theme <a class="reference external" href="https://github.com/ansys/pymechanical/pull/863">#863</a></p></li>
+<li><p>MAINT: Bump the doc group across 1 directory with 4 updates <a class="reference external" href="https://github.com/ansys/pymechanical/pull/866">#866</a></p></li>
+<li><p>MAINT: Bump ansys/actions from 6 to 7 <a class="reference external" href="https://github.com/ansys/pymechanical/pull/868">#868</a></p></li>
+<li><p>MAINT: Bump matplotlib from 3.9.1 to 3.9.1.post1 <a class="reference external" href="https://github.com/ansys/pymechanical/pull/869">#869</a></p></li>
+<li><p>[pre-commit.ci] pre-commit autoupdate <a class="reference external" href="https://github.com/ansys/pymechanical/pull/870">#870</a></p></li>
+</ul>
+</section>
+</section>
+<section id="id32">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.11.4">0.11.4</a> - 2024-08-06<a class="headerlink" href="#id32" title="Link to this heading">#</a></h2>
+<section id="id33">
+<h3>Added<a class="headerlink" href="#id33" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>DOC: Update known issues and limitations <a class="reference external" href="https://github.com/ansys/pymechanical/pull/829">#829</a></p></li>
+<li><p>Feat: Add option for generating docs without examples <a class="reference external" href="https://github.com/ansys/pymechanical/pull/830">#830</a></p></li>
+<li><p>Feat: Integrate ansys visualization tool <a class="reference external" href="https://github.com/ansys/pymechanical/pull/846">#846</a></p></li>
+</ul>
+</section>
+<section id="changed">
+<h3>Changed<a class="headerlink" href="#changed" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>chore: update CHANGELOG for v0.11.3 <a class="reference external" href="https://github.com/ansys/pymechanical/pull/824">#824</a></p></li>
+<li><p>Maint: Update new labels <a class="reference external" href="https://github.com/ansys/pymechanical/pull/836">#836</a></p></li>
+<li><p>MAINT: Update <code class="docutils literal notranslate"><span class="pre">shims.material_import</span></code> <a class="reference external" href="https://github.com/ansys/pymechanical/pull/837">#837</a></p></li>
+<li><p>[pre-commit.ci] pre-commit autoupdate <a class="reference external" href="https://github.com/ansys/pymechanical/pull/844">#844</a></p></li>
+</ul>
+</section>
+<section id="id41">
+<h3>Fixed<a class="headerlink" href="#id41" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Maint: Update qk_07 test <a class="reference external" href="https://github.com/ansys/pymechanical/pull/833">#833</a></p></li>
+<li><p>Maint: Update qk07 <a class="reference external" href="https://github.com/ansys/pymechanical/pull/848">#848</a></p></li>
+<li><p>use “OnWorkbenchReady” to update globals <a class="reference external" href="https://github.com/ansys/pymechanical/pull/854">#854</a></p></li>
+<li><p>fix: underline issue with changelog.rst section generation <a class="reference external" href="https://github.com/ansys/pymechanical/pull/855">#855</a></p></li>
+</ul>
+</section>
+<section id="id46">
+<h3>Dependencies<a class="headerlink" href="#id46" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>MAINT: Bump grpcio from 1.64.1 to 1.65.1 in the core group <a class="reference external" href="https://github.com/ansys/pymechanical/pull/826">#826</a></p></li>
+<li><p>MAINT: Bump pytest from 8.2.2 to 8.3.1 in the tests group <a class="reference external" href="https://github.com/ansys/pymechanical/pull/827">#827</a></p></li>
+<li><p>MAINT: Bump the doc group with 4 updates <a class="reference external" href="https://github.com/ansys/pymechanical/pull/828">#828</a></p></li>
+<li><p>MAINT: Bump pytest from 8.3.1 to 8.3.2 in the tests group <a class="reference external" href="https://github.com/ansys/pymechanical/pull/838">#838</a></p></li>
+<li><p>MAINT: Bump plotly from 5.22.0 to 5.23.0 in the doc group <a class="reference external" href="https://github.com/ansys/pymechanical/pull/839">#839</a></p></li>
+<li><p>MAINT: Bump usd-core from 24.3 to 24.8 <a class="reference external" href="https://github.com/ansys/pymechanical/pull/841">#841</a></p></li>
+<li><p>MAINT: Bump sphinxcontrib-websupport from 1.2.7 to 2.0.0 <a class="reference external" href="https://github.com/ansys/pymechanical/pull/842">#842</a></p></li>
+</ul>
+</section>
+<section id="miscellaneous">
+<h3>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>DOC: Add documentation for <code class="docutils literal notranslate"><span class="pre">launch_mechanical</span></code> <a class="reference external" href="https://github.com/ansys/pymechanical/pull/831">#831</a></p></li>
+</ul>
+</section>
+<section id="id55">
+<h3>Documentation<a class="headerlink" href="#id55" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>add background app class <a class="reference external" href="https://github.com/ansys/pymechanical/pull/849">#849</a></p></li>
+<li><p>MAINT: Bump grpcio from 1.65.1 to 1.65.4 in the core group <a class="reference external" href="https://github.com/ansys/pymechanical/pull/850">#850</a></p></li>
+<li><p>Maint: Update qk5 <a class="reference external" href="https://github.com/ansys/pymechanical/pull/852">#852</a></p></li>
+<li><p>[pre-commit.ci] pre-commit autoupdate <a class="reference external" href="https://github.com/ansys/pymechanical/pull/853">#853</a></p></li>
+</ul>
+</section>
+</section>
+<section id="id61">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.11.3">0.11.3</a> - 2024-07-19<a class="headerlink" href="#id61" title="Link to this heading">#</a></h2>
+<section id="id62">
+<h3>Changed<a class="headerlink" href="#id62" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>MAINT: Updates for 242 <a class="reference external" href="https://github.com/ansys/pymechanical/pull/822">#822</a></p></li>
+<li><p>chore: update CHANGELOG for v0.11.2 <a class="reference external" href="https://github.com/ansys/pymechanical/pull/823">#823</a></p></li>
+</ul>
+</section>
+</section>
+<section id="id66">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.11.2">0.11.2</a> - 2024-07-19<a class="headerlink" href="#id66" title="Link to this heading">#</a></h2>
+<section id="id67">
+<h3>Added<a class="headerlink" href="#id67" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>FEAT: Add known issues and limitation section <a class="reference external" href="https://github.com/ansys/pymechanical/pull/760">#760</a></p></li>
+<li><p>FEAT: Add test for building gallery <a class="reference external" href="https://github.com/ansys/pymechanical/pull/787">#787</a></p></li>
+<li><p>FEAT: Add graphics and globals <a class="reference external" href="https://github.com/ansys/pymechanical/pull/790">#790</a></p></li>
+<li><p>feat: add –script-args argument to ansys-mechanical <a class="reference external" href="https://github.com/ansys/pymechanical/pull/802">#802</a></p></li>
+<li><p>FEAT: Update print_tree method <a class="reference external" href="https://github.com/ansys/pymechanical/pull/804">#804</a></p></li>
+</ul>
+</section>
+<section id="id73">
+<h3>Changed<a class="headerlink" href="#id73" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>chore: update CHANGELOG for v0.11.1 <a class="reference external" href="https://github.com/ansys/pymechanical/pull/786">#786</a></p></li>
+<li><p>[pre-commit.ci] pre-commit autoupdate <a class="reference external" href="https://github.com/ansys/pymechanical/pull/789">#789</a>, <a class="reference external" href="https://github.com/ansys/pymechanical/pull/801">#801</a>, <a class="reference external" href="https://github.com/ansys/pymechanical/pull/819">#819</a></p></li>
+<li><p>MAINT: Update nightly runs for 251 <a class="reference external" href="https://github.com/ansys/pymechanical/pull/803">#803</a></p></li>
+<li><p>MAINT: Refactor CICD <a class="reference external" href="https://github.com/ansys/pymechanical/pull/806">#806</a></p></li>
+<li><p>MAINT: Update for 24R2 <a class="reference external" href="https://github.com/ansys/pymechanical/pull/810">#810</a></p></li>
+<li><p>MAINT: update for docker files 24R2 <a class="reference external" href="https://github.com/ansys/pymechanical/pull/811">#811</a></p></li>
+<li><p>Update ACT API Reference Guide link <a class="reference external" href="https://github.com/ansys/pymechanical/pull/815">#815</a></p></li>
+</ul>
+</section>
+<section id="id83">
+<h3>Fixed<a class="headerlink" href="#id83" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Fix sentence in architecture file <a class="reference external" href="https://github.com/ansys/pymechanical/pull/800">#800</a></p></li>
+</ul>
+</section>
+<section id="id85">
+<h3>Dependencies<a class="headerlink" href="#id85" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>MAINT: Bump numpy from 1.26.4 to 2.0.0 <a class="reference external" href="https://github.com/ansys/pymechanical/pull/773">#773</a></p></li>
+<li><p>MAINT: Bump the doc group with 4 updates <a class="reference external" href="https://github.com/ansys/pymechanical/pull/788">#788</a></p></li>
+<li><p>MAINT: Bump the doc group with 2 updates <a class="reference external" href="https://github.com/ansys/pymechanical/pull/805">#805</a></p></li>
+<li><p>MAINT: Update dev version of pymechanical <a class="reference external" href="https://github.com/ansys/pymechanical/pull/814">#814</a></p></li>
+<li><p>MAINT: Bump sphinx from 7.3.7 to 7.4.4 in the doc group <a class="reference external" href="https://github.com/ansys/pymechanical/pull/818">#818</a></p></li>
+<li><p>MAINT: Update pymech-env <a class="reference external" href="https://github.com/ansys/pymechanical/pull/821">#821</a></p></li>
+</ul>
+</section>
+<section id="id92">
+<h3>Miscellaneous<a class="headerlink" href="#id92" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>docs: update architecture.rst <a class="reference external" href="https://github.com/ansys/pymechanical/pull/796">#796</a></p></li>
+<li><p>fix exception when plotting a model with any line bodies <a class="reference external" href="https://github.com/ansys/pymechanical/pull/812">#812</a></p></li>
+</ul>
+</section>
+</section>
+<section id="id96">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.11.1">0.11.1</a> - 2024-06-21<a class="headerlink" href="#id96" title="Link to this heading">#</a></h2>
+<section id="id97">
+<h3>Added<a class="headerlink" href="#id97" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>FEAT: Add an App method to print project tree for embedding scenario <a class="reference external" href="https://github.com/ansys/pymechanical/pull/779">#779</a></p></li>
+</ul>
+</section>
+<section id="id99">
+<h3>Changed<a class="headerlink" href="#id99" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Test specific version <a class="reference external" href="https://github.com/ansys/pymechanical/pull/771">#771</a></p></li>
+<li><p>chore: update CHANGELOG for v0.11.0 <a class="reference external" href="https://github.com/ansys/pymechanical/pull/777">#777</a></p></li>
+<li><p>chore: bump add-license-headers version to 0.3.2 <a class="reference external" href="https://github.com/ansys/pymechanical/pull/782">#782</a></p></li>
+</ul>
+</section>
+<section id="id103">
+<h3>Fixed<a class="headerlink" href="#id103" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>fix sharing app instances, clarify contract <a class="reference external" href="https://github.com/ansys/pymechanical/pull/784">#784</a></p></li>
+</ul>
+</section>
+</section>
+<section id="id106">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.11.0">0.11.0</a> - 2024-06-18<a class="headerlink" href="#id106" title="Link to this heading">#</a></h2>
+<section id="id107">
+<h3>Added<a class="headerlink" href="#id107" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>feat: raise an exception if port or input script aren’t provided in batch mode <a class="reference external" href="https://github.com/ansys/pymechanical/pull/753">#753</a></p></li>
+<li><p>feat: use changelog.rst instead of CHANGELOG.md for release notes <a class="reference external" href="https://github.com/ansys/pymechanical/pull/757">#757</a></p></li>
+<li><p>Doc: Add embedding api references <a class="reference external" href="https://github.com/ansys/pymechanical/pull/758">#758</a></p></li>
+<li><p>feat: implement autoapi <a class="reference external" href="https://github.com/ansys/pymechanical/pull/761">#761</a></p></li>
+</ul>
+</section>
+<section id="id112">
+<h3>Changed<a class="headerlink" href="#id112" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>chore: update CHANGELOG for v0.10.11 <a class="reference external" href="https://github.com/ansys/pymechanical/pull/749">#749</a></p></li>
+<li><p>MAINT: Delete the apt-get lists after installing packages <a class="reference external" href="https://github.com/ansys/pymechanical/pull/750">#750</a></p></li>
+<li><p>[pre-commit.ci] pre-commit autoupdate <a class="reference external" href="https://github.com/ansys/pymechanical/pull/774">#774</a></p></li>
+</ul>
+</section>
+<section id="id116">
+<h3>Fixed<a class="headerlink" href="#id116" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>FIX: Modify pre-commit hook <a class="reference external" href="https://github.com/ansys/pymechanical/pull/763">#763</a></p></li>
+<li><p>fix lifetime issue <a class="reference external" href="https://github.com/ansys/pymechanical/pull/768">#768</a></p></li>
+<li><p>fix pythonnet issue <a class="reference external" href="https://github.com/ansys/pymechanical/pull/772">#772</a></p></li>
+<li><p>Fix: Remove disable sec check <a class="reference external" href="https://github.com/ansys/pymechanical/pull/776">#776</a></p></li>
+</ul>
+</section>
+<section id="id121">
+<h3>Dependencies<a class="headerlink" href="#id121" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>MAINT: Bump the doc group with 4 updates <a class="reference external" href="https://github.com/ansys/pymechanical/pull/751">#751</a></p></li>
+<li><p>[pre-commit.ci] pre-commit autoupdate <a class="reference external" href="https://github.com/ansys/pymechanical/pull/752">#752</a></p></li>
+<li><p>MAINT: Bump the doc group with 3 updates <a class="reference external" href="https://github.com/ansys/pymechanical/pull/755">#755</a></p></li>
+<li><p>MAINT: Update files as per pyansys standards <a class="reference external" href="https://github.com/ansys/pymechanical/pull/762">#762</a></p></li>
+<li><p>MAINT: Bump grpcio from 1.64.0 to 1.64.1 in the core group <a class="reference external" href="https://github.com/ansys/pymechanical/pull/764">#764</a></p></li>
+<li><p>MAINT: Bump pytest from 8.2.1 to 8.2.2 in the tests group <a class="reference external" href="https://github.com/ansys/pymechanical/pull/765">#765</a></p></li>
+<li><p>MAINT: Bump the doc group with 2 updates <a class="reference external" href="https://github.com/ansys/pymechanical/pull/766">#766</a></p></li>
+</ul>
+</section>
+<section id="id129">
+<h3>Miscellaneous<a class="headerlink" href="#id129" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>add method to update globals <a class="reference external" href="https://github.com/ansys/pymechanical/pull/767">#767</a></p></li>
+</ul>
+</section>
+</section>
+<section id="id131">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.10.11">0.10.11</a> - 2024-05-23<a class="headerlink" href="#id131" title="Link to this heading">#</a></h2>
+<section id="id132">
+<h3>Added<a class="headerlink" href="#id132" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>feat: Add tests for animation exports
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/729">#729</a></p></li>
+<li><p>add feature flags to ansys-mechanical cli
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/735">#735</a></p></li>
+<li><p>feat: Add test for deprecation warning
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/739">#739</a></p></li>
+</ul>
+</section>
+<section id="id133">
+<h3>Changed<a class="headerlink" href="#id133" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>chore: update CHANGELOG for v0.10.10
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/716">#716</a></p></li>
+<li><p>Maint: Display image info
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/717">#717</a></p></li>
+<li><p>[pre-commit.ci] pre-commit autoupdate
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/726">#726</a></p></li>
+<li><p>set mono trace env vars before loading mono
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/734">#734</a></p></li>
+</ul>
+</section>
+<section id="id134">
+<h3>Fixed<a class="headerlink" href="#id134" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>fix: merging coverage step in ci_cd
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/720">#720</a></p></li>
+<li><p>fix: Publish coverage for remote connect
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/721">#721</a></p></li>
+<li><p>fix: Restrict <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> &lt;6
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/722">#722</a></p></li>
+<li><p>Fix: add return for poster
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/727">#727</a></p></li>
+<li><p>fix: cli test are not getting coverage
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/737">#737</a></p></li>
+<li><p>fix: adding mechanical libraries
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/740">#740</a></p></li>
+<li><p>feat: Add more coverage on logging
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/744">#744</a></p></li>
+<li><p>fix: Display image and build info only for scheduled run
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/746">#746</a></p></li>
+<li><p>fix: upload coverage files only for latest stable version on release
+workflow <a class="reference external" href="https://github.com/ansys/pymechanical/pull/748">#748</a></p></li>
+</ul>
+</section>
+<section id="id135">
+<h3>Dependencies<a class="headerlink" href="#id135" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>MAINT: Bump pytest from 8.1.1 to 8.2.0 in the tests group
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/724">#724</a></p></li>
+<li><p>MAINT: Bump the doc group with 3 updates
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/725">#725</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/743">#743</a></p></li>
+<li><p>MAINT: Bump grpcio from 1.62.2 to 1.63.0 in the core group
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/731">#731</a></p></li>
+<li><p>MAINT: Bump the doc group with 2 updates
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/732">#732</a></p></li>
+<li><p>MAINT: Bump grpcio from 1.63.0 to 1.64.0 in the core group
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/741">#741</a></p></li>
+<li><p>MAINT: Bump pytest from 8.2.0 to 8.2.1 in the tests group
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/742">#742</a></p></li>
+</ul>
+</section>
+<section id="id136">
+<h3>Miscellaneous<a class="headerlink" href="#id136" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Split pyvista into two methods and remove the stability workaround
+for 242 <a class="reference external" href="https://github.com/ansys/pymechanical/pull/718">#718</a></p></li>
+<li><p>Update conf.py
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/723">#723</a></p></li>
+<li><p>catch the mono version warning
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/733">#733</a></p></li>
+</ul>
+</section>
+</section>
+<section id="id137">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.10.10">0.10.10</a> - 2024-04-23<a class="headerlink" href="#id137" title="Link to this heading">#</a></h2>
+<section id="id138">
+<h3>Added<a class="headerlink" href="#id138" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Add embedding_scripts marker
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/662">#662</a></p></li>
+<li><p>FEAT: Group dependabot alerts
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/666">#666</a></p></li>
+<li><p>add windows library loader util
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/672">#672</a></p></li>
+<li><p>Feat: Add reports for remote connect tests
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/690">#690</a></p></li>
+<li><p>Feat: Add link check
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/693">#693</a></p></li>
+<li><p>Feat: Add app libraries test
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/696">#696</a></p></li>
+<li><p>Feat: Update <code class="docutils literal notranslate"><span class="pre">get_mechanical_path</span></code>
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/707">#707</a></p></li>
+<li><p>Feat: <code class="docutils literal notranslate"><span class="pre">mechanical-env</span></code> check before running embedding
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/708">#708</a></p></li>
+<li><p>feat: set up doc-deploy-changelog action
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/710">#710</a></p></li>
+</ul>
+</section>
+<section id="id139">
+<h3>Changed<a class="headerlink" href="#id139" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Doc: fix docs and vale warning
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/656">#656</a></p></li>
+<li><p>Maint: post release change log update 10.9
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/665">#665</a></p></li>
+<li><p>Maint: Auto approve and merge dependabot PR
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/674">#674</a></p></li>
+<li><p>[pre-commit.ci] pre-commit autoupdate
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/691">#691</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/706">#706</a></p></li>
+<li><p>Maint: Add code cov report
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/692">#692</a></p></li>
+<li><p>Maint: Modify nightly run
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/712">#712</a></p></li>
+</ul>
+</section>
+<section id="id140">
+<h3>Fixed<a class="headerlink" href="#id140" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Fix: Assign ci bot for dependabot PR
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/677">#677</a></p></li>
+<li><p>Fix: Add matrix python in embedding test
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/681">#681</a></p></li>
+<li><p>Fix: Remove warning message test for remote session launch
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/682">#682</a></p></li>
+<li><p>fix transformation matrix
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/683">#683</a></p></li>
+<li><p>Fix: Modify retrieving path of Mechanical in tests
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/688">#688</a></p></li>
+<li><p>work around instability in 2024R1
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/695">#695</a></p></li>
+</ul>
+</section>
+<section id="id141">
+<h3>Dependencies<a class="headerlink" href="#id141" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>MAINT: Bump the doc group with 2 updates
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/668">#668</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/673">#673</a></p></li>
+<li><p>MAINT: Bump the doc group with 1 update
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/678">#678</a></p></li>
+<li><p>first version of 3d visualization with pyvista
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/680">#680</a></p></li>
+<li><p>MAINT: Bump the doc group with 3 updates
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/689">#689</a></p></li>
+<li><p>add open-usd exporter
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/701">#701</a></p></li>
+<li><p>MAINT: Bump the doc group with 5 updates
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/705">#705</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/715">#715</a></p></li>
+<li><p>MAINT: Bump grpcio from 1.62.1 to 1.62.2 in the core group
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/713">#713</a></p></li>
+<li><p>MAINT: Bump ansys/actions from 5 to 6
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/714">#714</a></p></li>
+</ul>
+</section>
+<section id="id142">
+<h3>Miscellaneous<a class="headerlink" href="#id142" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>cleanup <a class="reference external" href="https://github.com/ansys/pymechanical/pull/702">#702</a></p></li>
+<li><p>update graphics based on backend changes
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/711">#711</a></p></li>
+</ul>
+</section>
+</section>
+<section id="id143">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.10.9">0.10.9</a> - 2024-03-27<a class="headerlink" href="#id143" title="Link to this heading">#</a></h2>
+<section id="id144">
+<h3>Added<a class="headerlink" href="#id144" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Block 32 bit python for embedding
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/647">#647</a></p></li>
+<li><p>Add usage of cli under embedding
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/650">#650</a></p></li>
+<li><p>Add changelog action
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/653">#653</a></p></li>
+</ul>
+</section>
+<section id="id145">
+<h3>Fixed<a class="headerlink" href="#id145" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Fixed make pdf action in doc build
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/652">#652</a></p></li>
+<li><p>Use _run for better i/o in tests
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/655">#655</a></p></li>
+<li><p>Fix pdf action
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/664">#664</a></p></li>
+</ul>
+</section>
+<section id="id146">
+<h3>Dependencies<a class="headerlink" href="#id146" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">pytest-cov</span></code> from 4.1.0 to 5.0.0
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/657">#657</a></p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">ansys-mechanical-env</span></code> from 0.1.4 to 0.1.5
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/658">#658</a></p></li>
+</ul>
+</section>
+<section id="id147">
+<h3>Miscellaneous<a class="headerlink" href="#id147" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>DOC: Improve documentation for the embedded instances.
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/663">#663</a></p></li>
+</ul>
+</section>
+</section>
+<section id="id148">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.10.8">0.10.8</a> -  2024-03-18<a class="headerlink" href="#id148" title="Link to this heading">#</a></h2>
+<section id="id149">
+<h3>Added<a class="headerlink" href="#id149" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Add poster
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/642">#642</a>)</p></li>
+<li><p>Add LS Dyna unit test
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/584">#584</a>)</p></li>
+</ul>
+</section>
+<section id="id150">
+<h3>Fixed<a class="headerlink" href="#id150" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Add logo for dark theme
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/601">#601</a>)</p></li>
+<li><p>Architecture doc
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/612">#612</a>)</p></li>
+<li><p>Put remote example before embedding example
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/621">#621</a>)</p></li>
+<li><p>Minor updates to Architecture doc
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/618">#618</a>)</p></li>
+<li><p>Add MechanicalEnums
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/626">#626</a>)</p></li>
+<li><p>Update Release action to use Stable version of Mechanical
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/628">#628</a>)</p></li>
+<li><p>Update nightly run image version
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/636">#636</a>)</p></li>
+<li><p>Update logo without slash
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/640">#640</a>)</p></li>
+</ul>
+</section>
+<section id="id151">
+<h3>Changed<a class="headerlink" href="#id151" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">pre-commit</span></code>
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/610">#610</a>)</p></li>
+<li><p>Update vale version to 3.1.0
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/613">#613</a>)</p></li>
+<li><p>Update timeout for actions
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/631">#631</a>)</p></li>
+<li><p>Update cheat sheet with ansys-sphinx-theme
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/638">#638</a>)</p></li>
+</ul>
+</section>
+<section id="id152">
+<h3>Dependencies<a class="headerlink" href="#id152" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">ansys-sphinx-theme</span></code> from 0.13.4 to 0.14.0
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/608">#608</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">plotly</span></code> from 5.18.0 to 5.20.0
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/605">#605</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/644">#644</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">pypandoc</span></code> from 1.12 to 1.13
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/609">#609</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">pytest</span></code> from 8.0.0 to 8.1.1
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/606">#606</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/623">#623</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/634">#634</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">grpcio</span></code> from 1.60.1 to 1.62.1
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/620">#620</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/635">#635</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">pandas</span></code> from 2.2.0 to 2.2.1
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/619">#619</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> from 3.8.2 to 3.8.3
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/607">#607</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">ansys-mechanical-env</span></code> from 0.1.3 to 0.1.4
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/624">#624</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">pyvista</span></code> from 0.43.3 to 0.43.4
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/643">#643</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id153">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.10.7">0.10.7</a> - 2024-02-13<a class="headerlink" href="#id153" title="Link to this heading">#</a></h2>
+<section id="id154">
+<h3>Added<a class="headerlink" href="#id154" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Upload 241 docker files
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/567">#567</a>)</p></li>
+<li><p>Add pre-commit hooks
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/575">#575</a>)</p></li>
+<li><p>Add Automatic version update for Mechanical scripting external links
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/585">#585</a>)</p></li>
+<li><p>Add PyMechanical logo
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/592">#592</a>)</p></li>
+</ul>
+</section>
+<section id="id155">
+<h3>Changed<a class="headerlink" href="#id155" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Update getting started page
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/561">#561</a>)</p></li>
+<li><p>Update 232 to 241 in docs, docstrings, examples, and tests
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/566">#566</a>)</p></li>
+<li><p>Update workflow versions to run 241 and 242
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/590">#590</a>)</p></li>
+</ul>
+</section>
+<section id="id156">
+<h3>Dependencies<a class="headerlink" href="#id156" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">pyvista</span></code> from 0.43.1 to 0.43.3
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/564">#564</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/598">#598</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">sphinxcontrib-websupport</span></code> from 1.2.6 to 1.2.7
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/562">#562</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">ansys-sphinx-theme</span></code> from 0.13.0 to 0.13.4
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/563">#563</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/586">#586</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/596">#596</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">pandas</span></code> from 2.1.4 to 2.2.0
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/571">#571</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">sphinxemoji</span></code> from 0.2.0 to 0.3.1
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/569">#569</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">tj-actions/changed-files</span></code> from 41 to 42
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/572">#572</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">panel</span></code> from 1.3.6 to 1.3.8
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/570">#570</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/579">#579</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">peter-evans/create-or-update-comment</span></code> from 3 to 4
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/576">#576</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">pytest</span></code> from 7.4.4 to 8.0.0
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/577">#577</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">sphinx-autodoc-typehints</span></code> from 1.25.2 to 2.0.0
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/578">#578</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/597">#597</a>)</p></li>
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">pre-commit</span></code>
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/580">#580</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/599">#599</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">ansys.mechanical.env</span></code> from 0.1.2 to 0.1.3
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/583">#583</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">sphinx-autobuild</span></code> from 2021.3.14 to 2024.2.4
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/588">#588</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">pytest-sphinx</span></code> from 0.5.0 to 0.6.0
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/587">#587</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">grpcio</span></code> from 1.60.0 to 1.60.1
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/589">#589</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">numpy</span></code> from 1.26.3 to 1.26.4
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/595">#595</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">imageio</span></code> from 2.33.1 to 2.34.0
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/594">#594</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">mikepenz/action-junit-report</span></code> from 3 to 4
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/593">#593</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id157">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.10.6">0.10.6</a> - 2024-01-11<a class="headerlink" href="#id157" title="Link to this heading">#</a></h2>
+<section id="id158">
+<h3>Added<a class="headerlink" href="#id158" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Add release note configuration
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/512">#512</a>)</p></li>
+<li><p>Add 242 to scheduled nightly run
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/519">#519</a>)</p></li>
+<li><p>Add transaction for embedding
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/542">#542</a>)</p></li>
+</ul>
+</section>
+<section id="id159">
+<h3>Fixed<a class="headerlink" href="#id159" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Fix pymeilisearch name typo and favicon
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/538">#538</a>)</p></li>
+<li><p>Update the gif to reduce the whitespace
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/540">#540</a>)</p></li>
+<li><p>Update ansys/actions to v5
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/541">#541</a>)</p></li>
+<li><p>Fix cli find mechanical
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/550">#550</a>)</p></li>
+</ul>
+</section>
+<section id="id160">
+<h3>Changed<a class="headerlink" href="#id160" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Update LICENSE
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/548">#548</a>)</p></li>
+<li><p>Update license headers and package versions
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/556">#556</a>)</p></li>
+</ul>
+</section>
+<section id="id161">
+<h3>Dependencies<a class="headerlink" href="#id161" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">github/codeql-action</span></code> from 2 to 3
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/532">#532</a>)</p></li>
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">pre-commit</span></code>
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/537">#537</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/545">#545</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/553">#553</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">pyvista</span></code> from 0.43.0 to 0.43.1
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/536">#536</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">panel</span></code> from 1.3.4 to 1.3.6
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/535">#535</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/543">#543</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">actions/upload-artifact</span></code> and
+<code class="docutils literal notranslate"><span class="pre">actions/dwonload-artifact</span></code>from 3 to 4
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/533">#533</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">jupyter-sphinx</span></code> from 0.4.0 to 0.5.3
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/547">#547</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">tj-actions/changed-files</span></code> from 40 to 41
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/544">#544</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">pytest</span></code> from 7.4.3 to 7.4.4
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/546">#546</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">add-license-headers</span></code> from 0.2.2 to 0.2.4
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/549">#549</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">numpy</span></code> from 1.26.2 to 1.26.3
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/551">#551</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id162">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.10.5">0.10.5</a> - 2023-12-15<a class="headerlink" href="#id162" title="Link to this heading">#</a></h2>
+<section id="id163">
+<h3>Added<a class="headerlink" href="#id163" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Add codeql.yml for security checks
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/423">#423</a>)</p></li>
+<li><p>add readonly flag and assertion
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/441">#441</a>)</p></li>
+<li><p>Add PyMeilisearch in documentation
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/508">#508</a>)</p></li>
+<li><p>Add cheetsheat and improve example visibility
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/506">#506</a>)</p></li>
+<li><p>Add mechanical-env to workflow
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/521">#521</a>)</p></li>
+<li><p>Add doc pdf build to workflow
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/529">#529</a>)</p></li>
+</ul>
+</section>
+<section id="id164">
+<h3>Fixed<a class="headerlink" href="#id164" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Fix enum printout
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/421">#421</a>)</p></li>
+<li><p>fix appdata tests
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/425">#425</a>)</p></li>
+<li><p>Run all embedding tests &amp; fix appdata tests
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/433">#433</a>)</p></li>
+<li><p>unset all logging environment variables
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/434">#434</a>)</p></li>
+<li><p>pytest –ansys-version dependent on existing install
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/439">#439</a>)</p></li>
+<li><p>Fix app.save method for saving already saved project in current
+session (<a class="reference external" href="https://github.com/ansys/pymechanical/pull/453">#453</a>)</p></li>
+<li><p>Flexible version for embedding &amp; remote example
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/459">#459</a>)</p></li>
+<li><p>Fix obsolete API call in embedding test
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/456">#456</a>)</p></li>
+<li><p>Fix ignored env passing to cli
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/465">#465</a></p></li>
+<li><p>Fix private appdata environment variables and folder layout
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/474">#474</a>)</p></li>
+<li><p>Fix hanging embedding tests
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/498">#498</a>)</p></li>
+<li><p>Fix ansys-mechanical finding path
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/516">#516</a>)</p></li>
+</ul>
+</section>
+<section id="id165">
+<h3>Changed<a class="headerlink" href="#id165" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">pre-commit</span></code>
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/528">#528</a>)</p></li>
+<li><p>Update python minimum requirement from 3.8 to 3.9
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/484">#484</a>)</p></li>
+<li><p>remove version limit for protobuf
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/432">#432</a>)</p></li>
+<li><p>remove legacy configuration test
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/436">#436</a>)</p></li>
+<li><p>Update examples page
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/450">#450</a>)</p></li>
+<li><p>remove unneeded try/except
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/457">#457</a>)</p></li>
+<li><p>Updated wording for revn-variations section
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/458">#458</a>)</p></li>
+<li><p>Update temporary file creation in test_app
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/466">#466</a>)</p></li>
+<li><p>Remove .reuse and LICENSES directories &amp; bump add-license-header
+version (<a class="reference external" href="https://github.com/ansys/pymechanical/pull/496">#496</a>)</p></li>
+<li><p>Replace workbench_lite with mechanical-env in the docs
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/522">#522</a>)</p></li>
+</ul>
+</section>
+<section id="id166">
+<h3>Dependencies<a class="headerlink" href="#id166" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">pre-commit</span></code>
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/431">#431</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/471">#471</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/489">#489</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">numpydoc</span></code> from 1.5.0 to 1.6.0
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/428">#428</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">ansys-sphinx-theme</span></code> from 0.11.2 to 0.12.5
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/427">#427</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/463">#463</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/480">#480</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/493">#493</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">grpcio</span></code> from 1.58.0 to 1.60.0
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/429">#429</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/485">#485</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/504">#504</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/527">#527</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">actions/checkout</span></code> from 3 to 4
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/426">#426</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">pyvista</span></code> from 0.42.2 to 0.43.0
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/446">#446</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/526">#526</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">ansys-sphinx-theme</span></code> from 0.12.1 to 0.12.2
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/447">#447</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">stefanzweifel/git-auto-commit-action</span></code> from 4 to 5
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/448">#448</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">numpy</span></code> from 1.26.0 to 1.26.2
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/464">#464</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/495">#495</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">pypandoc</span></code> from 1.11 to 1.12
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/470">#470</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">imageio</span></code> from 2.31.5 to 2.33.1
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/469">#469</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/487">#487</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/503">#503</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/524">#524</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">add-license-headers</span></code> from v0.1.3 to v0.2.0
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/472">#472</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">panel</span></code> from 1.2.3 to 1.3.4
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/479">#479</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/486">#486</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/510">#510</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/518">#518</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">pytest</span></code> from 7.4.2 to 7.4.3
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/482">#482</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">tj-actions/changed-files</span></code> from 39 to 40
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/477">#477</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">plotly</span></code> from 5.17.0 to 5.18.0
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/478">#478</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">pandas</span></code> from 2.1.1 to 2.1.4
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/481">#481</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/494">#494</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/525">#525</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> from 3.8.0 to 3.8.2
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/488">#488</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/502">#502</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">sphinx-gallery</span></code> from 0.14.0 to 0.15.0
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/509">#509</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">actions/labeler</span></code> from 4 to 5
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/517">#517</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">actions/setup-python</span></code> from 4 to 5
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/523">#523</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id167">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.10.4">0.10.4</a> - 2023-10-06<a class="headerlink" href="#id167" title="Link to this heading">#</a></h2>
+<section id="id168">
+<h3>Dependencies<a class="headerlink" href="#id168" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">ansys_mechanical_api</span></code> from 0.1.0 to 0.1.1
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/444">#444</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id169">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.10.3">0.10.3</a> - 2023-09-26<a class="headerlink" href="#id169" title="Link to this heading">#</a></h2>
+<section id="id170">
+<h3>Added<a class="headerlink" href="#id170" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Set up daily run for 241 testing and added manual inputs for workflow
+dispatch (#385)</p></li>
+<li><p>add option to include enums in global variables (#394)</p></li>
+<li><p>add experimental libraries method (#395)</p></li>
+<li><p>add nonblocking sleep (#399)</p></li>
+<li><p>Add test case for exporting off screen
+image(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/400">#400</a>)</p></li>
+<li><p>Warn for obsolete apis (#409)</p></li>
+</ul>
+</section>
+<section id="id171">
+<h3>Fixed<a class="headerlink" href="#id171" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Fix embedded testing for all python version in CI/CD
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/393">#393</a>)</p></li>
+<li><p>fix broken link (#397)</p></li>
+<li><p>use Application.Exit() in 241+ (#396)</p></li>
+<li><p>Fix stale globals by wrapping them (#398)</p></li>
+<li><p>Fix API documentation (#411)</p></li>
+<li><p>doc fix (#412)</p></li>
+</ul>
+</section>
+<section id="id172">
+<h3>Dependencies<a class="headerlink" href="#id172" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">sphinx</span></code> from 7.2.5 to 7.2.6
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/403">#403</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> from 3.7.2 to 3.8.0
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/404">#404</a></p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">imageio-ffmpeg</span></code> from 0.4.8 to 0.4.9
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/405">#405</a></p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">ansys-sphinx-theme</span></code> from 0.11.1 to 0.11.2
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/406">#406</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">plotly</span></code> from 5.16.1 to 5.17.0
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/407">#407</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">docker/login-action</span></code> from 2 to 3
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/408">#408</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">pyvista</span></code> from 0.42.1 to 0.42.2
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/414">#414</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id173">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.10.2">0.10.2</a> - 2023-09-08<a class="headerlink" href="#id173" title="Link to this heading">#</a></h2>
+<section id="id174">
+<h3>Added<a class="headerlink" href="#id174" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Max parallel 2 for embedding tests - ci_cd.yml (#341)</p></li>
+<li><p>New features for ansys-mechanical console script (#343)</p></li>
+<li><p>Add a “Documentation and issues” section to README and doc landing
+page (#347)</p></li>
+<li><p>Dependabot changelog automation (#354)</p></li>
+<li><p>Follow up of dependabot automated changelog (#359)</p></li>
+<li><p>Add license headers to files in src (#373)</p></li>
+</ul>
+</section>
+<section id="id175">
+<h3>Changed<a class="headerlink" href="#id175" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Remove library-namespace from CI/CD (#342)</p></li>
+<li><p>Bump grpcio from 1.56.2 to 1.57.0 (#349)</p></li>
+<li><p>Bump plotly from 5.15.0 to 5.16.0 (#348)</p></li>
+<li><p>Bump sphinxcontrib-websupport from 1.2.4 to 1.2.6 (#350)</p></li>
+<li><p>Bump ansys-sphinx-theme from 0.10.2 to 0.10.3 (#351)</p></li>
+<li><p>pre-commit autoupdate
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/362">#362</a>),
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/380">#380</a>),
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/391">#391</a>)</p></li>
+</ul>
+</section>
+<section id="id176">
+<h3>Fixed<a class="headerlink" href="#id176" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Fix private appdata issue (#344)</p></li>
+<li><p>Fix issues with PyPIM object.inv location (#345)</p></li>
+</ul>
+</section>
+<section id="id177">
+<h3>Dependencies<a class="headerlink" href="#id177" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">plotly</span></code> from 5.16.0 to 5.16.1
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/357">#357</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">sphinx</span></code> from 7.1.2 to 7.2.5
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/358">#358</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/378">#378</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">sphinx-gallery</span></code> from 0.13.0 to 0.14.0
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/361">#361</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">ansys-sphinx-theme</span></code> from 0.10.3 to 0.11.1
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/360">#360</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/387">#387</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">pytest-print</span></code> from 0.3.3 to 1.0.0
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/369">#369</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">tj-actions/changed-files</span></code> from 37 to 39
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/367">#367</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/386">#386</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">imageio</span></code> from 2.31.1 to 2.31.2
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/370">#370</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">pytest</span></code> from 7.4.0 to 7.4.2
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/375">#375</a>,
+<a class="reference external" href="https://github.com/ansys/pymechanical/pull/389">#389</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">actions/checkout</span></code> from 3 to 4
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/379">#379</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">imageio</span></code> from 2.31.2 to 2.31.3
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/376">#376</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">sphinx-notfound-page</span></code> from 1.0.0rc1 to 1.0.0
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/374">#374</a>)</p></li>
+<li><p>Bump <code class="docutils literal notranslate"><span class="pre">pyvista</span></code> from 0.42.0 to 0.42.1
+(<a class="reference external" href="https://github.com/ansys/pymechanical/pull/388">#388</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id178">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.10.1">0.10.1</a> - 2023-08-08<a class="headerlink" href="#id178" title="Link to this heading">#</a></h2>
+<section id="id179">
+<h3>Changed<a class="headerlink" href="#id179" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Bump ansys-sphinx-theme from 0.10.0 to 0.10.2 (#337)</p></li>
+<li><p>Update clr-loader dependency (#339)</p></li>
+</ul>
+</section>
+</section>
+<section id="id180">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.10.0">0.10.0</a> - 2023-08-07<a class="headerlink" href="#id180" title="Link to this heading">#</a></h2>
+<section id="id181">
+<h3>Added<a class="headerlink" href="#id181" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Added warning for ansys-mechanical when provided an input script
+(#319)</p></li>
+<li><p>Add changelog check to CI/CD (#322)</p></li>
+<li><p>Added version check for ansys-mechanical warning message (#323)</p></li>
+<li><p>Added TempPathFactory to test_app_save_open (#332)</p></li>
+</ul>
+</section>
+<section id="id182">
+<h3>Changed<a class="headerlink" href="#id182" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Update python minimum requirement from 3.7 to 3.8 (#333)</p></li>
+<li><p>Minor private appdata updates (#335)</p></li>
+</ul>
+</section>
+<section id="id183">
+<h3>Fixed<a class="headerlink" href="#id183" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Broken links (#316)</p></li>
+<li><p>Remove project lock file on close (#320)</p></li>
+<li><p>Fixed warning message for ansys-mechanical (#326)</p></li>
+</ul>
+</section>
+</section>
+<section id="id184">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.9.3">0.9.3</a> - 2023-07-27<a class="headerlink" href="#id184" title="Link to this heading">#</a></h2>
+<section id="id185">
+<h3>Added<a class="headerlink" href="#id185" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Add ansys-mechanical console script (#297)</p></li>
+<li><p>addin configuration and tests (#308)</p></li>
+</ul>
+</section>
+<section id="id186">
+<h3>Changed<a class="headerlink" href="#id186" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Bump matplotlib from 3.7.1 to 3.7.2 (#294)</p></li>
+<li><p>Bump pyvista from 0.40.0 to 0.40.1 (#293)</p></li>
+<li><p>Bump sphinx-autodoc-typehints from 1.23.0 to 1.23.3 (#284)</p></li>
+<li><p>Bump patch version (#292)</p></li>
+<li><p>Remove pkg-resources and importlib_metadata (#300)</p></li>
+<li><p>Bump grpcio from 1.56.0 to 1.56.2 (#305)</p></li>
+<li><p>Bump pyvista from 0.40.1 to 0.41.1 (#306)</p></li>
+</ul>
+</section>
+<section id="id187">
+<h3>Fixed<a class="headerlink" href="#id187" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Update code snippet for accessing project directory. (#295)</p></li>
+<li><p>Added import logging to doc file (#299)</p></li>
+<li><p>Fix version variable issue running “ansys-mechanical -r {revn} -g”
+(#302)</p></li>
+<li><p>Update wording in running_mechanical.rst (#303)</p></li>
+</ul>
+</section>
+</section>
+<section id="id188">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.9.1">0.9.2</a> - 2023-07-07<a class="headerlink" href="#id188" title="Link to this heading">#</a></h2>
+<section id="id189">
+<h3>Added<a class="headerlink" href="#id189" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Added private AppData functionality to embedding (#285)</p></li>
+</ul>
+</section>
+<section id="id190">
+<h3>Fixed<a class="headerlink" href="#id190" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Updated pythonnet warning message (#286)</p></li>
+</ul>
+</section>
+<section id="id191">
+<h3>Changed<a class="headerlink" href="#id191" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Bump pytest from 7.3.2 to 7.4.0 (#282)</p></li>
+<li><p>Bump grpcio from 1.54.2 to 1.56.0 (#283)</p></li>
+</ul>
+</section>
+</section>
+<section id="id192">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.9.1">0.9.1</a> - 2023-06-21<a class="headerlink" href="#id192" title="Link to this heading">#</a></h2>
+<section id="id193">
+<h3>Added<a class="headerlink" href="#id193" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Add version configuration for embedding tests (#270)</p></li>
+</ul>
+</section>
+<section id="id194">
+<h3>Changed<a class="headerlink" href="#id194" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Bump pytest-print from 0.3.1 to 0.3.2 (#273)</p></li>
+</ul>
+</section>
+<section id="id195">
+<h3>Fixed<a class="headerlink" href="#id195" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>FIX: Use updated ansys-tools-path to resolve - missing 1 required
+positional argument: ‘exe_loc’ issue (#280)</p></li>
+</ul>
+</section>
+</section>
+<section id="id196">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.9.0">0.9.0</a> - 2023-06-13<a class="headerlink" href="#id196" title="Link to this heading">#</a></h2>
+<section id="id197">
+<h3>Added<a class="headerlink" href="#id197" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>link to pymechanical remote sessions examples (#252)</p></li>
+<li><p>add doc to run script without embedding (#262)</p></li>
+<li><p>pre-commit autoupdate (#269)</p></li>
+</ul>
+</section>
+<section id="id198">
+<h3>Changed<a class="headerlink" href="#id198" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Bump ansys-sphinx-theme from 0.9.8 to 0.9.9 (#248)</p></li>
+<li><p>Bump grpcio from 1.54.0 to 1.54.2 (#249)</p></li>
+<li><p>Bump sphinx from 6.2.0 to 6.2.1 (#250)</p></li>
+<li><p>change image tag in ci/cd (#254)</p></li>
+<li><p>Bump pyvista from 0.39.0 to 0.39.1 (#256)</p></li>
+<li><p>Standardizing data paths (#257)</p></li>
+<li><p>Bump imageio from 2.28.1 to 2.30.0 (#258)</p></li>
+<li><p>Bump pytest-cov from 4.0.0 to 4.1.0 (#259)</p></li>
+<li><p>Bump imageio from 2.30.0 to 2.31.0 (#264)</p></li>
+<li><p>Bump pytest from 7.3.1 to 7.3.2 (#267)</p></li>
+<li><p>Bump plotly from 5.14.1 to 5.15.0 (#268)</p></li>
+</ul>
+</section>
+<section id="id199">
+<h3>Fixed<a class="headerlink" href="#id199" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>FIX: GitHub organization rename to Ansys (#251)</p></li>
+<li><p>fix examples links (#253)</p></li>
+<li><p>fix windows pythonnet warning unit tests (#260)</p></li>
+</ul>
+</section>
+</section>
+<section id="id200">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.8.0">0.8.0</a> - 2023-05-12<a class="headerlink" href="#id200" title="Link to this heading">#</a></h2>
+<section id="id201">
+<h3>Added<a class="headerlink" href="#id201" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>changelog (#222)</p></li>
+<li><p>add link to embedding examples (#228)</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">close()</span></code> method to <code class="docutils literal notranslate"><span class="pre">Ansys.Mechanical.Embedding.Application</span></code>.
+See (#229)</p></li>
+<li><p>Add check if pythonnet exists in the user environment (#235)</p></li>
+</ul>
+</section>
+<section id="id202">
+<h3>Changed<a class="headerlink" href="#id202" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>cleanup docker ignore file (#206)</p></li>
+<li><p>Update contributing.rst (#213)</p></li>
+<li><p>Bump sphinx-autodoc-typehints from 1.22 to 1.23.0 (#215)</p></li>
+<li><p>Bump pytest from 7.3.0 to 7.3.1 (#216)</p></li>
+<li><p>Bump sphinx-gallery from 0.12.2 to 0.13.0 (#217)</p></li>
+<li><p>Bump sphinx-copybutton from 0.5.1 to 0.5.2 (#218)</p></li>
+<li><p>Bump sphinx-design from 0.3.0 to 0.4.1 (#219)</p></li>
+<li><p>Remove python 3.7 (#230)</p></li>
+<li><p>Use ansys-tools-path (#231)</p></li>
+<li><p>Bump sphinx from 6.2.0 to 7.0.0 (#232)</p></li>
+<li><p>Bump imageio from 2.28.0 to 2.28.1 (#233)</p></li>
+<li><p>ignore generated <em>.ipynb,</em> .py, <em>.rst,</em> .md5, <em>.png and</em> .pickle
+files (#239)</p></li>
+<li><p>Bump pyvista from 0.38.5 to 0.39.0 (#245)</p></li>
+</ul>
+</section>
+<section id="id203">
+<h3>Fixed<a class="headerlink" href="#id203" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>FIX: not necessary anymore to update apt-get (#220)</p></li>
+<li><p>Include amd folder for mapdl solver in the docker image. (#200)</p></li>
+<li><p>Remove jscript references from tests/ folder (#205)</p></li>
+<li><p>Fixes the windows executable path for standalone mechanical (#214)</p></li>
+<li><p>FIX: run_python_script* return empty string for objects that cannot
+be returned as string (#224)</p></li>
+<li><p>call <code class="docutils literal notranslate"><span class="pre">new()</span></code> in the BUILDING_GALLERY constructor of
+<code class="docutils literal notranslate"><span class="pre">Ansys.Mechanical.Embedding.Application</span></code> (#229)</p></li>
+<li><p>fix documentation link (#234)</p></li>
+<li><p>changed python doc url to fix doc pipeline error (#236)</p></li>
+<li><p>Docker dependencies to support topo and smart tests (#237)</p></li>
+</ul>
+</section>
+</section>
+<section id="id204">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.7.3">0.7.3</a> - 2023-04-20<a class="headerlink" href="#id204" title="Link to this heading">#</a></h2>
+<section id="id205">
+<h3>Changed<a class="headerlink" href="#id205" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Reuse instance of embedded application when building example gallery
+(#221)</p></li>
+</ul>
+</section>
+</section>
+<section id="id206">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.7.2">0.7.2</a> - 2023-04-13<a class="headerlink" href="#id206" title="Link to this heading">#</a></h2>
+<section id="id207">
+<h3>Changed<a class="headerlink" href="#id207" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Bump plotly from 5.14.0 to 5.14.1 (#197)</p></li>
+<li><p>Bump pytest from 7.2.2 to 7.3.0 (#196)</p></li>
+<li><p>Bump peter-evans/create-or-update-comment from 2 to 3 (#195)</p></li>
+<li><p>Bump ansys-sphinx-theme from 0.9.6 to 0.9.7 (#198)</p></li>
+</ul>
+</section>
+<section id="id208">
+<h3>Fixed<a class="headerlink" href="#id208" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Fixed documentation for updating global variables (#203)</p></li>
+<li><p>Remove references to unsupported legacy jscript APIs (#205)</p></li>
+<li><p>Clean up docker image (#206, #200)</p></li>
+</ul>
+</section>
+</section>
+<section id="id209">
+<h2><a class="reference external" href="https://github.com/ansys/pymechanical/releases/tag/v0.7.1">0.7.1</a> -  2023-04-10<a class="headerlink" href="#id209" title="Link to this heading">#</a></h2>
+<p>First public release of PyMechanical</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">0.11.7 - 2024-08-29</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation">Documentation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#maintenance">Maintenance</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">0.11.6 - 2024-08-28</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">Documentation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">Maintenance</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">0.11.5 - 2024-08-13</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#added">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed">Fixed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">Documentation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dependencies">Dependencies</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id32">0.11.4 - 2024-08-06</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id33">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#changed">Changed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id41">Fixed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id46">Dependencies</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#miscellaneous">Miscellaneous</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id55">Documentation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id61">0.11.3 - 2024-07-19</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id62">Changed</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id66">0.11.2 - 2024-07-19</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id67">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id73">Changed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id83">Fixed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id85">Dependencies</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id92">Miscellaneous</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id96">0.11.1 - 2024-06-21</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id97">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id99">Changed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id103">Fixed</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id106">0.11.0 - 2024-06-18</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id107">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id112">Changed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id116">Fixed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id121">Dependencies</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id129">Miscellaneous</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id131">0.10.11 - 2024-05-23</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id132">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id133">Changed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id134">Fixed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id135">Dependencies</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id136">Miscellaneous</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id137">0.10.10 - 2024-04-23</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id138">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id139">Changed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id140">Fixed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id141">Dependencies</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id142">Miscellaneous</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id143">0.10.9 - 2024-03-27</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id144">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id145">Fixed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id146">Dependencies</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id147">Miscellaneous</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id148">0.10.8 -  2024-03-18</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id149">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id150">Fixed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id151">Changed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id152">Dependencies</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id153">0.10.7 - 2024-02-13</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id154">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id155">Changed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id156">Dependencies</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id157">0.10.6 - 2024-01-11</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id158">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id159">Fixed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id160">Changed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id161">Dependencies</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id162">0.10.5 - 2023-12-15</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id163">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id164">Fixed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id165">Changed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id166">Dependencies</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id167">0.10.4 - 2023-10-06</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id168">Dependencies</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id169">0.10.3 - 2023-09-26</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id170">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id171">Fixed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id172">Dependencies</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id173">0.10.2 - 2023-09-08</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id174">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id175">Changed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id176">Fixed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id177">Dependencies</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id178">0.10.1 - 2023-08-08</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id179">Changed</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id180">0.10.0 - 2023-08-07</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id181">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id182">Changed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id183">Fixed</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id184">0.9.3 - 2023-07-27</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id185">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id186">Changed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id187">Fixed</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id188">0.9.2 - 2023-07-07</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id189">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id190">Fixed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id191">Changed</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id192">0.9.1 - 2023-06-21</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id193">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id194">Changed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id195">Fixed</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id196">0.9.0 - 2023-06-13</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id197">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id198">Changed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id199">Fixed</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id200">0.8.0 - 2023-05-12</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id201">Added</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id202">Changed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id203">Fixed</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id204">0.7.3 - 2023-04-20</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id205">Changed</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id206">0.7.2 - 2023-04-13</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id207">Changed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id208">Fixed</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id209">0.7.1 -  2023-04-10</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item"> 
+<div class="tocsection editthispage">
+  <a href="https://github.com/pyansys/pymechanical/edit/main/doc/source/changelog.rst">
+    <i class="fa-solid fa-pencil"></i>
+       Edit
+    on GitHub  
+  </a>
+</div>
+
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright (c) 2024 ANSYS, Inc. All rights reserved.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.0.2.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the
+  <a href="https://sphinxdocs.ansys.com/version/stable/index.html"
+    >Ansys Sphinx Theme</a
+  >
+  1.0.7. <br />Last updated on
+  <span id="date"></span>
+</p>
+<script>
+  var options = { day: "numeric", month: "long", year: "numeric" };
+  var lastModifiedDate = new Date(document.lastModified);
+  var date = lastModifiedDate.toLocaleDateString("en-US", options);
+  document.getElementById("date").innerHTML = date;
+</script></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

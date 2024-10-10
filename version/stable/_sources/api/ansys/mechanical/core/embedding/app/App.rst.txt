@@ -1,0 +1,691 @@
+.. vale off
+
+
+
+:class:`App`
+============
+
+.. py:class:: ansys.mechanical.core.embedding.app.App(db_file=None, private_appdata=False, **kwargs)
+
+   
+   Mechanical embedding Application.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+.. py:currentmodule:: App
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~open`
+            - Open the db file.
+          * - :py:attr:`~save`
+            - Save the project.
+          * - :py:attr:`~save_as`
+            - Save the project as.
+          * - :py:attr:`~new`
+            - Clear to a new application.
+          * - :py:attr:`~close`
+            - Close the active project.
+          * - :py:attr:`~exit`
+            - Exit the application.
+          * - :py:attr:`~execute_script`
+            - Execute the given script with the internal IronPython engine.
+          * - :py:attr:`~plotter`
+            - Return ``ansys.tools.visualization_interface.Plotter`` object.
+          * - :py:attr:`~plot`
+            - Visualize the model in 3d.
+          * - :py:attr:`~update_globals`
+            - Use to update globals variables.
+          * - :py:attr:`~print_tree`
+            - Print the hierarchical tree representation of the Mechanical project structure.
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~version`
+            - Returns the version of the app.
+          * - :py:attr:`~poster`
+            - Returns an instance of Poster.
+          * - :py:attr:`~DataModel`
+            - Return the DataModel.
+          * - :py:attr:`~ExtAPI`
+            - Return the ExtAPI object.
+          * - :py:attr:`~Tree`
+            - Return the Tree object.
+          * - :py:attr:`~Model`
+            - Return the Model object.
+          * - :py:attr:`~Graphics`
+            - Return the Graphics object.
+          * - :py:attr:`~readonly`
+            - Return whether the Mechanical object is read-only.
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~configuration`
+            - 
+
+
+
+   .. tab-item:: Special methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~__repr__`
+            - Get the product info.
+          * - :py:attr:`~__enter__`
+            - Enter the scope.
+          * - :py:attr:`~__exit__`
+            - Exit the scope.
+
+
+
+
+Import detail
+-------------
+
+    from ansys.mechanical.core.embedding.app import App
+
+
+Property detail
+---------------
+.. py:property:: version
+   
+   Returns the version of the app.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: poster
+   :type: ansys.mechanical.core.embedding.poster.Poster
+
+   
+   Returns an instance of Poster.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: DataModel
+   
+   Return the DataModel.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: ExtAPI
+   
+   Return the ExtAPI object.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: Tree
+   
+   Return the Tree object.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: Model
+   
+   Return the Model object.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: Graphics
+   
+   Return the Graphics object.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: readonly
+   
+   Return whether the Mechanical object is read-only.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Attribute detail
+----------------
+.. py:attribute:: configuration
+
+
+
+Method detail
+-------------
+.. py:method:: __repr__()
+
+   
+   Get the product info.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: __enter__()
+
+   
+   Enter the scope.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: __exit__(exc_type, exc_val, exc_tb)
+
+   
+   Exit the scope.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: open(db_file)
+
+   
+   Open the db file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: save(path=None)
+
+   
+   Save the project.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: save_as(path)
+
+   
+   Save the project as.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: new()
+
+   
+   Clear to a new application.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: close()
+
+   
+   Close the active project.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: exit()
+
+   
+   Exit the application.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: execute_script(script: str) -> Any
+
+   
+   Execute the given script with the internal IronPython engine.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: plotter() -> None
+
+   
+   Return ``ansys.tools.visualization_interface.Plotter`` object.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: plot() -> None
+
+   
+   Visualize the model in 3d.
+
+   Requires installation using the viz option. E.g.
+   pip install ansys-mechanical-core[viz]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: update_globals(globals_dict: Dict[str, Any], enums: bool = True) -> None
+
+   
+   Use to update globals variables.
+
+   When scripting inside Mechanical, the Mechanical UI will automatically
+   set global variables in python. PyMechanical can not do that automatically,
+   but this method can be used.
+   `app.update_globals(globals())`
+
+   By default, all enums will be imported too. To avoid including enums, set
+   the `enums` argument to False.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: print_tree(node=None, max_lines=80, lines_count=0, indentation='')
+
+   
+   Print the hierarchical tree representation of the Mechanical project structure.
+
+
+   :Parameters:
+
+       **node: DataModel object, optional**
+           The starting object of the tree.
+
+       **max_lines: int, optional**
+           The maximum number of lines to print. Default is 80. If set to -1, no limit is applied.
+
+
+
+
+
+
+
+   :Raises:
+
+       :obj:`AttributeError`
+           If the node does not have the required attributes.
+
+
+
+
+
+
+   .. rubric:: Examples
+
+   >>> import ansys.mechanical.core as mech
+   >>> app = mech.App()
+   >>> app.update_globals(globals())
+   >>> app.print_tree()
+   ... ├── Project
+   ... |  ├── Model
+   ... |  |  ├── Geometry Imports
+   ... |  |  ├── Geometry
+   ... |  |  ├── Materials
+   ... |  |  ├── Coordinate Systems
+   ... |  |  |  ├── Global Coordinate System
+   ... |  |  ├── Remote Points
+   ... |  |  ├── Mesh
+
+   >>> app.print_tree(Model, 3)
+   ... ├── Model
+   ... |  ├── Geometry Imports
+   ... |  ├── Geometry
+   ... ... truncating after 3 lines
+
+   >>> app.print_tree(max_lines=2)
+   ... ├── Project
+   ... |  ├── Model
+   ... ... truncating after 2 lines
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. vale on
