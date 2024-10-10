@@ -54,7 +54,8 @@ async def _read_and_display(cmd, env, do_display: bool):
     }
     while tasks:
         done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
-        assert done
+        if not done:
+            raise RuntimeError("Subprocess read failed: No tasks completed.")
         for future in done:
             buf, stream, display = tasks.pop(future)
             line = future.result()
