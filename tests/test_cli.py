@@ -374,7 +374,7 @@ def test_ideconfig_default(test_env, run_subprocess, rootdir, pytestconfig):
     # Get the revision number
     revision = pytestconfig.getoption("ansys_version")
     # Set part of the settings.json path
-    settings_json_fragment = "Code" / "User" / "settings.json"
+    settings_json_fragment = Path("Code") / "User" / "settings.json"
 
     # Install pymechanical
     subprocess.check_call(
@@ -393,6 +393,6 @@ def test_ideconfig_default(test_env, run_subprocess, rootdir, pytestconfig):
     # Decode stdout and fix extra backslashes in paths
     stdout = stdout.decode().replace("\\\\", "\\")
 
-    assert ".test_env" in stdout
     assert revision in stdout
     assert str(settings_json_fragment) in stdout
+    assert ".test_env" in stdout
