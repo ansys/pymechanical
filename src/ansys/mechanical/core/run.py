@@ -28,6 +28,7 @@ import os
 import sys
 import typing
 import warnings
+import webbrowser
 
 import ansys.tools.path as atp
 import click
@@ -54,8 +55,7 @@ async def _read_and_display(cmd, env, do_display: bool):
     }
     while tasks:
         done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
-        if not done:
-            raise RuntimeError("Subprocess read failed: No tasks completed.")
+        assert done
         for future in done:
             buf, stream, display = tasks.pop(future)
             line = future.result()
@@ -200,8 +200,23 @@ def _cli_impl(
         profile.cleanup()
 
 
+DOCUMENTATION_URL = "https://mechanical.docs.pyansys.com/"
+
+
+def _open_docs():
+    """Open the mechanical documentation in the default web browser."""
+    webbrowser.open(DOCUMENTATION_URL)
+    print(f"Opening documentation at {DOCUMENTATION_URL}")
+
+
 @click.command()
 @click.help_option("--help", "-h")
+@click.option(
+    "--docs",
+    is_flag=True,
+    default=False,
+    help="Open the PyMechanical documentation in a web browser.",
+)
 @click.option(
     "-p",
     "--project-file",
@@ -280,17 +295,18 @@ The ``exit`` command is only supported in version 2024 R1 or later.",
     help="Graphical mode",
 )
 def cli(
-    project_file: str,
-    port: int,
     debug: bool,
-    input_script: str,
-    script_args: str,
-    revision: int,
-    graphical: bool,
-    show_welcome_screen: bool,
-    private_appdata: bool,
+    docs: bool,
     exit: bool,
     features: str,
+    graphical: bool,
+    input_script: str,
+    port: int,
+    private_appdata: bool,
+    project_file: str,
+    revision: int,
+    script_args: str,
+    show_welcome_screen: bool,
 ):
     """CLI tool to run mechanical.
 
@@ -302,6 +318,10 @@ def cli(
 
         Starting Ansys Mechanical version 2024R2 in graphical mode...
     """
+    if docs:
+        _open_docs()
+        return
+
     exe = atp.get_mechanical_path(allow_input=False, version=revision)
     version = atp.version_from_path("mechanical", exe)
 
