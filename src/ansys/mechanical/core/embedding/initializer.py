@@ -166,8 +166,12 @@ def initialize(version: int = None):
     __check_for_mechanical_env()  # checks for mechanical-env in linux embedding
 
     global INITIALIZED_VERSION
-    if INITIALIZED_VERSION != None:
-        assert INITIALIZED_VERSION == version
+    if INITIALIZED_VERSION is not None:
+        if INITIALIZED_VERSION != version:
+            raise ValueError(
+                f"Initialized version {INITIALIZED_VERSION} "
+                f"does not match the expected version {version}."
+            )
         return
 
     if version == None:
