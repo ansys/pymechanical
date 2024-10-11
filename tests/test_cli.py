@@ -21,9 +21,14 @@
 # SOFTWARE.
 
 import os
+from pathlib import Path
+import subprocess
+import sys
+import sysconfig
 
 import pytest
 
+from ansys.mechanical.core.ide_config import _cli_impl as ideconfig_cli_impl
 from ansys.mechanical.core.run import _cli_impl
 
 
@@ -229,3 +234,165 @@ def test_cli_batch_required_args(disable_cli):
         _cli_impl(exe="AnsysWBU.exe", version=241, port=11)
     except Exception as e:
         assert False, f"cli raised an exception: {e}"
+
+
+def get_settings_location() -> str:
+    """Get the location of settings.json for user settings.
+
+    Returns
+    -------
+    str
+        The path to the settings.json file for users on Windows and Linux.
+    """
+    if "win" in sys.platform:
+        settings_json = Path(os.environ.get("APPDATA")) / "Code" / "User" / "settings.json"
+    elif "lin" in sys.platform:
+        settings_json = Path(os.environ.get("HOME")) / ".config" / "Code" / "User" / "settings.json"
+
+    return settings_json
+
+
+def get_stubs_location(revision: int) -> Path:
+    """Get the ansys-mechanical-stubs location with specified revision.
+
+    Parameters
+    ----------
+    revision: int
+        The Mechanical revision number. For example, "242".
+
+    Returns
+    -------
+    pathlib.Path
+        The path to the ansys-mechanical-stubs installation.
+    """
+    return (
+        Path(sysconfig.get_paths()["purelib"]) / "ansys" / "mechanical" / "stubs" / f"v{revision}"
+    )
+
+
+@pytest.mark.cli
+def test_ideconfig_cli_ide_exception(capfd):
+    """Test IDE configuration raises an exception for anything but vscode."""
+    with pytest.raises(Exception):
+        ideconfig_cli_impl(
+            ide="pycharm",
+            target="user",
+            revision=242,
+        )
+
+
+@pytest.mark.cli
+def test_ideconfig_cli_user_settings(capfd):
+    """Test the IDE configuration prints correct information for user settings."""
+    # Set the revision number
+    revision = 242
+
+    # Run the IDE configuration command for the user settings type
+    ideconfig_cli_impl(
+        ide="vscode",
+        target="user",
+        revision=revision,
+    )
+
+    # Get output of the IDE configuration command
+    out, err = capfd.readouterr()
+    out = out.replace("\\\\", "\\")
+
+    # Get the path to the settings.json file based on operating system env vars
+    settings_json = get_settings_location()
+    stubs_location = get_stubs_location(revision)
+
+    assert f"Update {settings_json} with the following information" in out
+    assert str(stubs_location) in out
+
+
+@pytest.mark.cli
+def test_ideconfig_cli_workspace_settings(capfd):
+    """Test the IDE configuration prints correct information for workplace settings."""
+    # Set the revision number
+    revision = 241
+
+    # Run the IDE configuration command
+    ideconfig_cli_impl(
+        ide="vscode",
+        target="workspace",
+        revision=revision,
+    )
+
+    # Get output of the IDE configuration command
+    out, err = capfd.readouterr()
+    out = out.replace("\\\\", "\\")
+
+    # Get the path to the settings.json file based on the current directory & .vscode folder
+    settings_json = Path.cwd() / ".vscode" / "settings.json"
+    stubs_location = get_stubs_location(revision)
+
+    # Assert the correct settings.json file and stubs location is in the output
+    assert f"Update {settings_json} with the following information" in out
+    assert str(stubs_location) in out
+    assert "Please ensure the .vscode folder is in the root of your project or repository" in out
+
+
+@pytest.mark.cli
+@pytest.mark.python_env
+def test_ideconfig_venv(test_env, run_subprocess, rootdir):
+    """Test the IDE configuration location when a virtual environment is active."""
+    # Set the revision number
+    revision = 242
+
+    # Install pymechanical
+    subprocess.check_call(
+        [test_env.python, "-m", "pip", "install", "-e", "."],
+        cwd=rootdir,
+        env=test_env.env,
+    )
+
+    # Run ansys-mechanical-ideconfig in the test virtual environment
+    process, stdout, stderr = run_subprocess(
+        [
+            "ansys-mechanical-ideconfig",
+            "--ide",
+            "vscode",
+            "--target",
+            "user",
+            "--revision",
+            str(revision),
+        ],
+        env=test_env.env,
+    )
+    # Decode stdout and fix extra backslashes in paths
+    stdout = stdout.decode().replace("\\\\", "\\")
+
+    # Assert virtual environment is in the stdout
+    assert ".test_env" in stdout
+
+
+@pytest.mark.cli
+@pytest.mark.python_env
+def test_ideconfig_default(test_env, run_subprocess, rootdir, pytestconfig):
+    """Test the IDE configuration location when no arguments are supplied."""
+    # Get the revision number
+    revision = pytestconfig.getoption("ansys_version")
+    # Set part of the settings.json path
+    settings_json_fragment = Path("Code") / "User" / "settings.json"
+
+    # Install pymechanical
+    subprocess.check_call(
+        [test_env.python, "-m", "pip", "install", "-e", "."],
+        cwd=rootdir,
+        env=test_env.env,
+    )
+
+    # Run ansys-mechanical-ideconfig in the test virtual environment
+    process, stdout, stderr = run_subprocess(
+        [
+            "ansys-mechanical-ideconfig",
+        ],
+        env=test_env.env,
+    )
+    # Decode stdout and fix extra backslashes in paths
+    stdout = stdout.decode().replace("\\\\", "\\")
+
+    assert revision in stdout
+    assert str(settings_json_fragment) in stdout
+    assert ".test_env" in stdout

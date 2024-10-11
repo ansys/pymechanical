@@ -1,5 +1,5 @@
 
-:thispagetitle: PyMechanical
+.. title:: PyMechanical
 
 
 .. image:: /_static/logo/pymechanical-logo-light.png

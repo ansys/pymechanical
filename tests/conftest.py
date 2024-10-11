@@ -185,10 +185,11 @@ def run_subprocess():
     def func(args, env=None, check: bool = None):
         if check is None:
             check = _CHECK_PROCESS_RETURN_CODE
-        stdout, stderr = ansys.mechanical.core.run._run(
+        process, output = ansys.mechanical.core.run._run(
             args, env, check, _PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE
         )
-        return stdout, stderr
+        # process, stdout, stderr
+        return process, output[0], output[1]
 
     return func
 

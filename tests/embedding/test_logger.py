@@ -51,7 +51,7 @@ def _run_embedding_log_test_process(
     """Runs the process and returns it after it finishes"""
     version = pytestconfig.getoption("ansys_version")
     embedded_py = os.path.join(rootdir, "tests", "scripts", "embedding_log_test.py")
-    stdout, stderr = run_subprocess(
+    process, stdout, stderr = run_subprocess(
         [sys.executable, embedded_py, version, testname],
         _get_env_without_logging_variables(),
         pass_expected,
