@@ -31,6 +31,7 @@ from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 from ansys.mechanical.core.embedding.imports import global_entry_points, global_variables
 from ansys.mechanical.core.embedding.poster import Poster
+from ansys.mechanical.core.embedding.ui import launch_ui
 from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
 
 try:
@@ -191,6 +192,10 @@ class App:
         """Save the project as."""
         self.DataModel.Project.SaveAs(path)
 
+    def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
+        """Launch the GUI."""
+        launch_ui(self, delete_tmp_on_close, dry_run)
+
     def new(self):
         """Clear to a new application."""
         self.DataModel.Project.New()
@@ -227,7 +232,21 @@ class App:
         light_mode = True
         args = None
         rets = None
-        return self.script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
+        script_result = self.script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
+        error_msg = f"Failed to execute the script"
+        if script_result is None:
+            raise Exception(error_msg)
+        if script_result.Error is not None:
+            error_msg += f": {script_result.Error.Message}"
+            raise Exception(error_msg)
+        return script_result.Value
+
+    def execute_script_from_file(self, file_path=None):
+        """Execute the given script from file with the internal IronPython engine."""
+        text_file = open(file_path, "r", encoding="utf-8")
+        data = text_file.read()
+        text_file.close()
+        return self.execute_script(data)
 
     def plotter(self) -> None:
         """Return ``ansys.tools.visualization_interface.Plotter`` object."""

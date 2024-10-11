@@ -10,94 +10,95 @@ with this guide before attempting to contribute to PyMechanical.
 
 The following contribution information is specific to PyMechanical.
 
-Install in developer mode
--------------------------
+Clone the repository and install project dependencies
+-----------------------------------------------------
 
-Installing PyMechanical in developer mode allows
-you to modify the source and enhance it.
+To clone and install the latest PyMechanical release in development mode, run
+these commands:
 
-.. note::
+Clone the repository and create a virtual environment:
 
-    Before contributing to the project, ensure that you are thoroughly familiar
-    with the `PyAnsys Developer's Guide`_.
+.. code::
 
-To install PyMechanical in developer mode, perform these steps:
+  # Clone the repository
+  git clone https://github.com/ansys/pymechanical
+  cd pymechanical
 
-#. Clone the ``pymechanical`` repository:
+  # Create a virtual environment
+  python -m venv .venv
 
-   .. code:: bash
-
-      git clone https://github.com/ansys/pymechanical
-
-#. Access the ``pymechanical`` directory where the repository has been cloned:
-
-   .. code:: bash
-
-      cd pymechanical
-
-#. Create a clean Python virtual environment and activate it:
+Activate the virtual environment:
 
 .. tab-set::
 
     .. tab-item:: Windows
 
-        .. tab-set::
+       .. code::
 
-            .. tab-item:: CMD
+          .venv\Scripts\activate.bat
 
-                .. code-block:: text
+    .. tab-item:: PowerShell
 
-                    python -m venv .venv
-                    .venv\Scripts\activate.bat
+       .. code::
 
-            .. tab-item:: PowerShell
-
-                .. code-block:: text
-
-                    python -m venv .venv
-                    .venv\Scripts\Activate.ps1
+          .venv\Scripts\Activate.ps1
 
     .. tab-item:: Linux/UNIX
 
-        .. code-block:: text
+       .. code::
 
-            python -m venv .venv
-            source .venv/bin/activate
+          source .venv/bin/activate
 
+Install tools and dependencies:
 
-#. Ensure that you have the latest required build system tools:
+.. code::
 
-   .. code:: bash
+  # Install build system tools
+  python -m pip install --upgrade pip tox flit twine
 
-      python -m pip install -U pip tox flit twine
-
-#. Install the project in editable mode:
-
-   .. code:: bash
-
-      # Install the minimum requirements
-      python -m pip install -e .
-
-      # Install the minimum + tests requirements
-      python -m pip install -e .[tests]
-
-      # Install the minimum + doc requirements
-      python -m pip install -e .[doc]
-
-      # Install all requirements
-      python -m pip install -e .[tests,doc]
-
-#. Verify your development installation:
-
-    .. code:: bash
-
-        tox
+  # Install the project, documentation, and test dependencies in editable mode
+  python -m pip install -e .[doc,tests]
 
 
 Test PyMechanical
 -----------------
 
-PyMechanical uses `PyTest`_ and `tox`_ for unit testing.
+PyMechanical uses `PyTest`_ and `tox`_ for unit testing. Prior to running the tests,
+ensure Mechanical is installed on your system with a valid license and the test
+dependencies are installed. Run this command to install the test dependencies::
+
+  pip install -e .[tests]
+
+Using ``pytest``
+^^^^^^^^^^^^^^^^
+
+To run the tests, navigate to the root directory of the repository and run this command::
+
+    pytest
+
+The ``pytest`` command runs all of the tests in the ``tests`` folder. After ``pytest`` is
+done running, it shows the test coverage of each of the files in the repository. To run
+specific tests, run these commands::
+
+    # Run tests for embedded instances
+    pytest -m embedding
+
+    # Run tests for embedded instances that use subprocess
+    pytest -m embedding_scripts
+
+    # Run tests that launch Mechanical and work with the gRPC server inside of it
+    pytest -m remote_session_launch
+
+    # Run tests that connect to Mechanical and work with the gRPC server inside of it
+    pytest -m remote_session_connect
+
+See the ``pyproject.toml`` file for a full list of markers (-m) and their descriptions.
+
+To run specific tests based on a keyword, use the ``-k`` argument::
+
+    # Run all tests containing the word ``appdata``
+    # This would run ``test_private_appdata`` and ``test_normal_appdata`` only
+    pytest -k appdata
 
 Using ``tox``
 ^^^^^^^^^^^^^
@@ -115,14 +116,6 @@ The following environment commands are provided:
 - ``tox -e py``: Checks for unit tests.
 - ``tox -e py-coverage``: Checks for unit testing and code coverage.
 - ``tox -e doc``: Checks for documentation-building process.
-
-Without ``tox``
-^^^^^^^^^^^^^^^
-
-If required, from the command line, you can call style commands like
-`black`_, `isort`_, and `flake8`_. You can also call unit testing commands like `PyTest`_.
-However, running these commands do not guarantee that your project is being tested
-in an isolated environment, which is the reason why tools like ``tox`` exist.
 
 Remote testing
 ^^^^^^^^^^^^^^
@@ -151,68 +144,8 @@ to attempt to connect to the existing Mechanical service by default
 when you use the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>`
 method.
 
-Documentation
--------------
-
-For building documentation, you can run the usual rules provided in the
-`Sphinx`_ ``make`` file. Here is an example:
-
-.. code:: bash
-
-    #  build and view the doc from the POSIX system
-    make -C doc/ html && your_browser_name doc/html/index.html
-
-    # build and view the doc from a Windows environment
-    .\doc\make.bat clean
-    .\doc\make.bat html
-    start .\doc\_build\html\index.html
-
-However, the recommended way of checking documentation integrity is to use
-``tox``:
-
-.. code:: bash
-
-    tox -e doc && your_browser_name .tox/doc_out/index.html
-
-Distributing
-------------
-
-If you would like to create either source or wheel files, start by installing
-the building requirements and then executing the build module:
-
-.. code:: bash
-
-    python -m pip install -U pip
-    python -m flit build
-    python -m twine check dist/*
-
-Post issues
------------
-
-Use the `PyMechanical Issues <https://github.com/ansys/pymechanical/issues>`_
-page to submit questions, report bugs, and request new features. When possible,
-use these templates:
-
-* Bug report
-* Feature request
-
-If your issue does not fit into one of these template categories, create your own issue.
-
-To reach the project support team, email `pyansys.core@ansys.com <pyansys.core@ansys.com>`_.
-
-View documentation
-------------------
-
-Documentation for the latest stable release of PyMechanical is hosted at
-`PyMechanical Documentation <https://mechanical.docs.pyansys.com>`_.
-
-In the upper right corner of the documentation's title bar, there is an option
-for switching from viewing the documentation for the latest stable release
-to viewing the documentation for the development version or previously
-released versions.
-
-Code style
-----------
+Adhere to coding style
+----------------------
 
 As indicated in `Coding style <https://dev.docs.pyansys.com/coding-style/index.html>`_
 in the *PyAnsys Developer's Guide*, PyMechanical follows PEP8 guidelines. PyMechanical
@@ -231,10 +164,70 @@ This way, it's not possible for you to push code that fails the style checks::
 
   $ pre-commit install
   $ git commit -am "added my cool feature"
+  check pre-commit.ci config...............................................Passed
   black....................................................................Passed
+  blacken-docs.............................................................Passed
   isort....................................................................Passed
   flake8...................................................................Passed
   codespell................................................................Passed
+  Add License Headers......................................................Passed
+  Ansys Technical Review...................................................Passed
+  pydocstyle...............................................................Passed
+  check for merge conflicts................................................Passed
+  debug statements (python)................................................Passed
+  check yaml...............................................................Passed
+  trim trailing whitespace.................................................Passed
+  check for added large files..............................................Passed
+  Validate GitHub Workflows................................................Passed
+
+Documentation
+-------------
+
+For building documentation, you can run the usual rules provided in the
+`Sphinx`_ ``make`` file:
+
+.. code:: bash
+
+    #  build and view the doc from the POSIX system
+    make -C doc html && your_browser_name doc/html/index.html
+
+    # build and view the doc from a Windows environment
+    make -C doc clean
+    make -C doc html
+    start .\doc\_build\html\index.html
+
+However, the recommended way of checking documentation integrity is to use
+``tox``:
+
+.. code:: bash
+
+    tox -e doc && your_browser_name .tox/doc_out/index.html
+
+View documentation
+------------------
+
+Documentation for the latest stable release of PyMechanical is hosted at
+`PyMechanical Documentation <https://mechanical.docs.pyansys.com>`_.
+
+In the upper right corner of the documentation's title bar, there is an option
+for switching from viewing the documentation for the latest stable release
+to viewing the documentation for the development version or previously
+released versions.
+
+Post issues
+-----------
+
+Use the `PyMechanical Issues <https://github.com/ansys/pymechanical/issues>`_
+page to submit questions, report bugs, and request new features. When possible,
+use these templates:
+
+* `File a bug report <https://github.com/ansys/pymechanical/issues/new?assignees=&labels=bug&projects=&template=bug.yml&title=Bug+located+in+...>`_
+* `File a documentation issue <https://github.com/ansys/pymechanical/issues/new?assignees=&labels=documentation&projects=&template=documentation.yml&title=Modify+...>`_
+* `Request a feature <https://github.com/ansys/pymechanical/issues/new?assignees=&labels=enhancement&projects=&template=feature.yml&title=Add+...>`_
+* `Add an example <https://github.com/ansys/pymechanical/issues/new?assignees=&labels=example&projects=&template=examples.yml&title=Example+proposal%3A+...>`_
+* `Post all other issues <https://github.com/ansys/pymechanical/issues/new>`_
+
+If your issue does not fit into one of these template categories, create your own issue.
 
 .. LINKS AND REFERENCES
 .. _PyAnsys Developer's Guide: https://dev.docs.pyansys.com/

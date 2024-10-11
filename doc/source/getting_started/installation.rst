@@ -12,7 +12,7 @@ please go though :ref:`FAQs <faq>` and :ref:`known issues and limitations <ref_k
 Install the package
 -------------------
 
-The latest ``ansys.mechanical.core`` package supports Python 3.9 through
+The latest ``ansys.mechanical.core`` package supports Python 3.10 through
 Python 3.12 on Windows, Linux, and Mac.
 
 You should consider installing PyMechanical in a virtual environment.
@@ -35,19 +35,19 @@ machine architecture from the `Releases page <https://github.com/ansys/pymechani
 of the PyMechanical repository.
 
 Each wheelhouse archive contains all the Python wheels necessary to install
-PyMechanical from scratch on Windows and Linux for Python 3.9 through Python 3.12. You can install
+PyMechanical from scratch on Windows and Linux for Python 3.10 through Python 3.12. You can install
 a wheelhouse archive on an isolated system with a fresh Python installation or on a
 virtual environment.
 
-For example, on Linux with Python 3.9, unzip the wheelhouse archive and install it with
+For example, on Linux with Python 3.10, unzip the wheelhouse archive and install it with
 this code:
 
 .. code::
 
-   unzip ansys-mechanical-core-v0.11.dev0-wheelhouse-Linux-3.9 wheelhouse
+   unzip ansys-mechanical-core-v0.12.dev0-wheelhouse-Linux-3.10 wheelhouse
    pip install ansys-mechanical-core -f wheelhouse --no-index --upgrade --ignore-installed
 
-If you are on Windows with Python 3.9, unzip the ``ansys-mechanical-core-v0.11.dev0-wheelhouse-Windows-3.9``
+If you are on Windows with Python 3.10, unzip the ``ansys-mechanical-core-v0.12.dev0-wheelhouse-Windows-3.10``
 wheelhouse archive to a ``wheelhouse`` directory and then install it using ``pip`` as
 in the preceding example.
 
@@ -116,15 +116,16 @@ Verify an embedded instance
 Verify your installation by loading an embedded instance of Mechanical in Python.
 
 .. note::
+
    If you are running on Linux, you must set some environment variables for
    embedding of Mechanical in Python to work. A script that sets these variables is
    shipped with ``ansys-mechanical-env`` which is part of PyMechanical
 
-To use the script, prepend it to any invocation of Python:
+   To use the script, prepend it to any invocation of Python:
 
-.. code::
+   .. code:: shell
 
-    mechanical-env python
+      $ mechanical-env python
 
 Inside of Python, use the following commands to load an embedded instance:
 

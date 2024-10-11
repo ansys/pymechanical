@@ -16,9 +16,7 @@ from ansys_sphinx_theme import ansys_favicon, get_version_match
 from sphinx_gallery.sorting import FileNameSortKey
 
 import ansys.mechanical.core as pymechanical
-from ansys.mechanical.core.embedding.initializer import (
-    SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS,
-)
+from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
 
 # necessary when building the sphinx gallery
 pymechanical.BUILDING_GALLERY = True
@@ -141,7 +139,7 @@ rst_epilog = ""
 with open("links.rst") as f:
     rst_epilog += f.read()
 
-current_mechanical_version = next(iter(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS.keys()))
+current_mechanical_version = next(iter(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS.keys()))
 rst_epilog = rst_epilog.replace("%%VERSION%%", f"v{current_mechanical_version}")
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"
@@ -209,12 +207,6 @@ html_theme_options = {
             "icon": "fa fa-comment fa-fw",
         },
     ],
-    "use_meilisearch": {
-        "api_key": os.getenv("MEILISEARCH_PUBLIC_API_KEY", ""),
-        "index_uids": {
-            f"pymechanical-v{get_version_match(version).replace('.', '-')}": "PyMechanical",
-        },
-    },
     "cheatsheet": {
         "file": "cheatsheet/cheat_sheet.qmd",
         "title": "PyMechanical cheat sheet",
@@ -233,6 +225,9 @@ html_sidebars = {
     "examples/index": [],
     "contributing": [],
 }
+
+html_show_sourcelink = False
+
 # -- Options for LaTeX output ------------------------------------------------
 latex_elements = {}
 
@@ -305,6 +300,7 @@ linkcheck_ignore = [
     "https://download.ansys.com/*",
     "https://support.ansys.com/*",
     "https://discuss.ansys.com/*",
+    "https://www.ansys.com/*",
     "../api/*",  # Remove this after release 0.10.12
     "path.html",
 ]
@@ -318,17 +314,3 @@ if switcher_version != "dev":
     linkcheck_ignore.append(
         f"https://github.com/ansys/pymechanical/releases/tag/v{pymechanical.__version__}"
     )
-
-
-def replace_version_in_qmd(file_path, version):
-    """Update the version in cheatsheet."""
-    with open(file_path, "r") as file:
-        content = file.read()
-
-    content = content.replace("version: main", f"version: {version}")
-
-    with open(file_path, "w") as file:
-        file.write(content)
-
-
-replace_version_in_qmd("cheatsheet/cheat_sheet.qmd", version)

@@ -9,6 +9,74 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.7 <https://github.com/ansys/pymechanical/releases/tag/v0.11.7>`_ - 2024-08-29
+===================================================================================
+
+Documentation
+^^^^^^^^^^^^^
+
+- Fix doc layout `#888 <https://github.com/ansys/pymechanical/pull/888>`_
+
+
+Maintenance
+^^^^^^^^^^^
+
+- update CHANGELOG for v0.11.6 `#887 <https://github.com/ansys/pymechanical/pull/887>`_
+
+`0.11.6 <https://github.com/ansys/pymechanical/releases/tag/v0.11.6>`_ - 2024-08-28
+===================================================================================
+
+Documentation
+^^^^^^^^^^^^^
+
+- Refactor `#878 <https://github.com/ansys/pymechanical/pull/878>`_
+- Minor changes `#885 <https://github.com/ansys/pymechanical/pull/885>`_
+
+
+Maintenance
+^^^^^^^^^^^
+
+- update CHANGELOG for v0.11.5 `#872 <https://github.com/ansys/pymechanical/pull/872>`_
+- Bump grpcio from 1.65.4 to 1.65.5 in the core group `#875 <https://github.com/ansys/pymechanical/pull/875>`_
+- Bump the doc group with 4 updates `#876 <https://github.com/ansys/pymechanical/pull/876>`_
+- Bump grpcio from 1.65.5 to 1.66.0 in the core group `#880 <https://github.com/ansys/pymechanical/pull/880>`_
+- Bump ansys-sphinx-theme[autoapi] from 1.0.5 to 1.0.7 in the doc group `#881 <https://github.com/ansys/pymechanical/pull/881>`_
+- [pre-commit.ci] pre-commit autoupdate `#884 <https://github.com/ansys/pymechanical/pull/884>`_
+
+`0.11.5 <https://github.com/ansys/pymechanical/releases/tag/v0.11.5>`_ - 2024-08-13
+===================================================================================
+
+Added
+^^^^^
+
+- FEAT: Update cheat sheet with quarto `#845 <https://github.com/ansys/pymechanical/pull/845>`_
+- Feat: add a layer to load into an existing stage `#857 <https://github.com/ansys/pymechanical/pull/857>`_
+
+
+Fixed
+^^^^^
+
+- Refactor usd export `#858 <https://github.com/ansys/pymechanical/pull/858>`_
+- FIX: App plot None check `#860 <https://github.com/ansys/pymechanical/pull/860>`_
+
+
+Documentation
+^^^^^^^^^^^^^
+
+- chore: update CHANGELOG for v0.11.4 `#856 <https://github.com/ansys/pymechanical/pull/856>`_
+- MAINT: Cheat sheet `#871 <https://github.com/ansys/pymechanical/pull/871>`_
+
+Dependencies
+^^^^^^^^^^^^
+
+
+- MAINT: update ansys-sphinx-theme `#863 <https://github.com/ansys/pymechanical/pull/863>`_
+- MAINT: Bump the doc group across 1 directory with 4 updates `#866 <https://github.com/ansys/pymechanical/pull/866>`_
+- MAINT: Bump ansys/actions from 6 to 7 `#868 <https://github.com/ansys/pymechanical/pull/868>`_
+- MAINT: Bump matplotlib from 3.9.1 to 3.9.1.post1 `#869 <https://github.com/ansys/pymechanical/pull/869>`_
+- [pre-commit.ci] pre-commit autoupdate `#870 <https://github.com/ansys/pymechanical/pull/870>`_
+
+
 `0.11.4 <https://github.com/ansys/pymechanical/releases/tag/v0.11.4>`_ - 2024-08-06
 ===================================================================================
 

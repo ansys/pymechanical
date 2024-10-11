@@ -1,7 +1,7 @@
 .. _ref_user_guide_embedding:
 
-Embedded instances
-==================
+Embedded instance
+=================
 
 This section provides an overview of how you use PyMechanical to embed
 an instance of Mechanical in Python.
@@ -14,6 +14,7 @@ an instance of Mechanical in Python.
    :maxdepth: 1
    :hidden:
 
+   self
    configuration
    globals
    logging
