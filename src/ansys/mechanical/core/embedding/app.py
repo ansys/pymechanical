@@ -239,7 +239,7 @@ class App:
         if script_result.Error is not None:
             error_msg += f": {script_result.Error.Message}"
             raise Exception(error_msg)
-        return str(script_result.Value)
+        return script_result.Value
 
     def execute_script_from_file(self, file_path=None):
         """Execute the given script from file with the internal IronPython engine."""
