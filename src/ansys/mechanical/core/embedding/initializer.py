@@ -92,7 +92,7 @@ def _get_latest_default_version() -> int:
     latest_version = max(versions_found)
 
     if len(awp_roots) > 1:
-        raise Warning(
+        warnings.warn(
             f"Multiple versions of Mechanical found! Using latest version {latest_version} ..."
         )
 
