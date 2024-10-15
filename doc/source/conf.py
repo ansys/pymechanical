@@ -183,7 +183,6 @@ html_context = {
     "github_repo": "pymechanical",
     "github_version": "main",
     "doc_path": "doc/source",
-    # "whatsnew": [{'title': 'v0.11.x', 'children': 'Open the project files with Mechanical GUI.', 'url': ''}, {'title': 'v0.10.x', 'children': 'Visualize imported geometry in 3D. This feature is available only from 24R1 or later.', 'url': ''}]
 }
 html_theme_options = {
     "logo": "pyansys",
