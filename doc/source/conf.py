@@ -216,7 +216,7 @@ html_theme_options = {
     "whatsnew": {
         "file": "whatsnew",
         "pages": ["index"],
-    }
+    },
 }
 
 # -- Options for HTMLHelp output ---------------------------------------------
