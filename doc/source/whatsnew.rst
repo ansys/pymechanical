@@ -27,7 +27,7 @@ Open the project files with Mechanical GUI.
 
 .. code:: python
 
-  launch_gui('path/to/project.mechdb')
+  launch_gui("path/to/project.mechdb")
 
 Opens up the specified project file.
 
