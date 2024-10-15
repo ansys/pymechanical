@@ -228,7 +228,6 @@ html_sidebars = {
     "changelog": [],
     "examples/index": [],
     "contributing": [],
-    "index": ["sidebar-nav-bs.html"],
 }
 
 html_show_sourcelink = False
