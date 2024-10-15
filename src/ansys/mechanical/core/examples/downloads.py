@@ -55,7 +55,6 @@ def _get_filepath_on_default_server(filename: str, *directory: str):
 
 
 def _retrieve_url(url: str, dest: str) -> str:
-
     with requests.get(url, stream=True, timeout=10) as r:
         r.raise_for_status()
         with open(dest, "wb") as f:
