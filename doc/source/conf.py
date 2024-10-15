@@ -216,7 +216,7 @@ html_theme_options = {
     "navigation_depth": 10,
     "whatsnew": {
         "file": "whatsnew",
-        "pages": ["index"],
+        "pages": ["index", "changelog"],
     }
 }
 
