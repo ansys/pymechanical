@@ -118,13 +118,13 @@ def _cli_impl(
     "--ide",
     default="vscode",
     type=str,
-    help="The IDE being used.",
+    help="The IDE being used. By default, it's ``vscode``.",
 )
 @click.option(
     "--target",
     default="user",
     type=str,
-    help="The type of settings to update - either ``user`` or ``workspace`` settings.",
+    help="The type of settings to update - either ``user`` or ``workspace`` settings in VS Code.",
 )
 @click.option(
     "--revision",
@@ -151,7 +151,7 @@ def cli(ide: str, target: str, revision: int) -> None:
     -----
     The following example demonstrates the main use of this tool:
 
-        $ ansys-mechanical-ideconfig --ide vscode --location user --revision 242
+        $ ansys-mechanical-ideconfig --ide vscode --target user --revision 242
 
     """
     exe = atp.get_mechanical_path(allow_input=False, version=revision)
