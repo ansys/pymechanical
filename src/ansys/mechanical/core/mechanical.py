@@ -496,7 +496,6 @@ class Mechanical(object):
                 raise
             finally:
                 self._disable_logging = False
-                pass
         return self._version
 
     @property

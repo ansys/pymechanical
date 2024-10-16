@@ -180,7 +180,7 @@ class LocalMechanicalPool:
                     version = kwargs["version"]
                     self._remote = True
                 else:
-                    raise "Pypim is configured. But version is not passed."
+                    raise ValueError("Pypim is configured, but version is not passed.")
             else:  # get default executable
                 exec_file = get_mechanical_path()
                 if exec_file is None:  # pragma: no cover

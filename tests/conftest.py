@@ -80,14 +80,33 @@ def pytest_collection_modifyitems(config, items):
 
     # skip embedding tests unless the mark is specified
     skip_embedding = pytest.mark.skip(
-        reason="""embedding not selected for pytest run
-        (`pytest -m embedding` or `pytest -m embedding_scripts`).  Skip by default"""
+        reason=(
+            "embedding not selected for pytest run ("
+            "`pytest -m embedding` or `pytest -m embedding_scripts`). Skip by default"
+        )
     )
-    [
-        item.add_marker(skip_embedding)
-        for item in items
-        if ("embedding" or "embedding_scripts") in item.keywords
-    ]
+    skip_except_windows = pytest.mark.skip(reason="Test requires Windows platform.")
+    skip_except_linux = pytest.mark.skip(reason="Test requires Linux platform.")
+
+    for item in items:
+        if "embedding" in item.keywords or "embedding_scripts" in item.keywords:
+            item.add_marker(skip_embedding)
+
+        if "minimum_version" in item.keywords:
+            revn = [mark.args[0] for mark in item.iter_markers(name="minimum_version")]
+            if int(config.getoption("--ansys-version")) < revn[0]:
+                skip_versions = pytest.mark.skip(
+                    reason=f"Requires ansys-version greater than or equal to {revn[0]}."
+                )
+                item.add_marker(skip_versions)
+
+        # Skip on platforms other than Windows
+        if "windows_only" in item.keywords and sys.platform != "win32":
+            item.add_marker(skip_except_windows)
+
+        # Skip on platforms other than Linux
+        if "linux_only" in item.keywords and "lin" not in sys.platform:
+            item.add_marker(skip_except_linux)
 
     # TODO - skip python_env tests unless the mark is specified. (The below doesn't work!)
     # skip_python_env = pytest.mark.skip(
@@ -380,25 +399,3 @@ def pytest_addoption(parser):
 
     # parser.addoption("--debugging", action="store_true")
     parser.addoption("--addin-configuration", default="Mechanical")
-
-
-def pytest_collection_modifyitems(config, items):
-    """Skips tests marked minimum_version if ansys-version is less than mark argument."""
-    for item in items:
-        if "minimum_version" in item.keywords:
-            revn = [mark.args[0] for mark in item.iter_markers(name="minimum_version")]
-            if int(config.getoption("--ansys-version")) < revn[0]:
-                skip_versions = pytest.mark.skip(
-                    reason=f"Requires ansys-version greater than or equal to {revn[0]}."
-                )
-                item.add_marker(skip_versions)
-
-        # Skip on platforms other than Windows
-        if "windows_only" in item.keywords and sys.platform != "win32":
-            skip_except_windows = pytest.mark.skip(reason="Test requires Windows platform.")
-            item.add_marker(skip_except_windows)
-
-        # Skip on platforms other than Linux
-        if "linux_only" in item.keywords and "lin" not in sys.platform:
-            skip_except_linux = pytest.mark.skip(reason="Test requires Linux platform.")
-            item.add_marker(skip_except_linux)
