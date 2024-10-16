@@ -27,6 +27,7 @@ classifiers = [
 dependencies = [
     "ansys-api-mechanical==0.1.2",
     "ansys-mechanical-env==0.1.8",
+    "ansys-mechanical-stubs==0.1.2",
     "ansys-platform-instancemanagement>=1.0.1",
     "ansys-pythonnet>=3.1.0rc2",
     "ansys-tools-path>=0.3.1",
@@ -37,6 +38,7 @@ dependencies = [
     "protobuf>=3.12.2,<6",
     "psutil==6.0.0",
     "tqdm>=4.45.0",
+    "requests>=2,<3",
 ]
 
 [project.urls]

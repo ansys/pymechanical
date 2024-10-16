@@ -21,6 +21,8 @@
 # SOFTWARE.
 
 """Main application class for embedded Mechanical."""
+from __future__ import annotations
+
 import atexit
 import os
 import typing
@@ -34,13 +36,17 @@ from ansys.mechanical.core.embedding.poster import Poster
 from ansys.mechanical.core.embedding.ui import launch_ui
 from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
 
+if typing.TYPE_CHECKING:
+    # Make sure to run ``ansys-mechanical-ideconfig`` to add the autocomplete settings to VS Code
+    # Run ``ansys-mechanical-ideconfig --help`` for more information
+    import Ansys  # pragma: no cover
+
 try:
     import ansys.tools.visualization_interface  # noqa: F401
 
     HAS_ANSYS_VIZ = True
     """Whether or not PyVista exists."""
 except:
-
     HAS_ANSYS_VIZ = False
 
 
@@ -302,7 +308,7 @@ class App:
         return GetterWrapper(self._app, lambda app: app.DataModel.Tree)
 
     @property
-    def Model(self):
+    def Model(self) -> Ansys.ACT.Automation.Mechanical.Model:
         """Return the Model object."""
         return GetterWrapper(self._app, lambda app: app.DataModel.Project.Model)
 
