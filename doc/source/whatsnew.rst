@@ -12,11 +12,12 @@ v0.11.x
 Launch GUI
 ^^^^^^^^^^
 
-Open the current project with Mechanical GUI. 
+Open the current project with Mechanical GUI.
 
 .. code:: python
 
     from ansys.mechanical.core import App
+
     app = App()
     app.save()
     app.launch_gui()
@@ -35,11 +36,12 @@ Prints Mechanical project tree
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This feature let you see the heirachial Mechanical project tree.
-It also shows whether an object is supressed or not.
+It also shows whether an object is suppressed or not.
 
 .. code:: python
 
   import ansys.mechanical.core as mech
+
   app = mech.App()
   app.update_globals(globals())
   app.print_tree()
