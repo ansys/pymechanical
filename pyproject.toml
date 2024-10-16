@@ -38,6 +38,7 @@ dependencies = [
     "protobuf>=3.12.2,<6",
     "psutil==6.0.0",
     "tqdm>=4.45.0",
+    "requests>=2,<3",
 ]
 
 [project.urls]
