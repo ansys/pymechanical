@@ -389,8 +389,8 @@ class LocalMechanicalPool:
                     LOG.error(f"Stopped instance because running failed.")
                     try:
                         obj.exit()
-                    except:
-                        pass
+                    except Exception as e:
+                        LOG.error(f"Unexpected error while exiting: {e}")
 
             obj.locked = False
             if pbar:
