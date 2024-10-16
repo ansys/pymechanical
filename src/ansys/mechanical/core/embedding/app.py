@@ -37,6 +37,8 @@ from ansys.mechanical.core.embedding.ui import launch_ui
 from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
 
 if typing.TYPE_CHECKING:
+    # Make sure to run ``ansys-mechanical-ideconfig`` to add the autocomplete settings to VS Code
+    # Run ``ansys-mechanical-ideconfig --help`` for more information
     import Ansys
 
 try:
