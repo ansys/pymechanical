@@ -21,6 +21,8 @@
 # SOFTWARE.
 
 """Main application class for embedded Mechanical."""
+from __future__ import annotations
+
 import atexit
 import os
 import typing
@@ -34,6 +36,9 @@ from ansys.mechanical.core.embedding.poster import Poster
 from ansys.mechanical.core.embedding.ui import launch_ui
 from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
 
+if typing.TYPE_CHECKING:
+    import Ansys
+
 try:
     import ansys.tools.visualization_interface  # noqa: F401
 
@@ -41,9 +46,6 @@ try:
     """Whether or not PyVista exists."""
 except:
     HAS_ANSYS_VIZ = False
-
-if typing.TYPE_CHECKING:
-    import Ansys
 
 
 def _get_default_addin_configuration() -> AddinConfiguration:
