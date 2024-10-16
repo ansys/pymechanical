@@ -39,7 +39,7 @@ from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnec
 if typing.TYPE_CHECKING:
     # Make sure to run ``ansys-mechanical-ideconfig`` to add the autocomplete settings to VS Code
     # Run ``ansys-mechanical-ideconfig --help`` for more information
-    import Ansys
+    import Ansys  # pragma: no cover
 
 try:
     import ansys.tools.visualization_interface  # noqa: F401
