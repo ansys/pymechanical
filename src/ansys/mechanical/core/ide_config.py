@@ -154,11 +154,14 @@ def cli(ide: str, target: str, revision: int) -> None:
         $ ansys-mechanical-ideconfig --ide vscode --target user --revision 242
 
     """
-    exe = atp.get_mechanical_path(allow_input=False, version=revision)
-    version = atp.version_from_path("mechanical", exe)
+    if revision < 241 or revision > 242:
+        raise Exception(f"PyMechanical Stubs are not available for {revision}")
+    else:
+        exe = atp.get_mechanical_path(allow_input=False, version=revision)
+        version = atp.version_from_path("mechanical", exe)
 
-    return _cli_impl(
-        ide,
-        target,
-        version,
-    )
+        return _cli_impl(
+            ide,
+            target,
+            version,
+        )

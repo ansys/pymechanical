@@ -273,20 +273,33 @@ def get_stubs_location(revision: int) -> Path:
 @pytest.mark.cli
 def test_ideconfig_cli_ide_exception(capfd, pytestconfig):
     """Test IDE configuration raises an exception for anything but vscode."""
-    revision = pytestconfig.getoption("ansys_version")
+    revision = int(pytestconfig.getoption("ansys_version"))
     with pytest.raises(Exception):
         ideconfig_cli_impl(
             ide="pycharm",
             target="user",
-            revision=242,
+            revision=revision,
         )
+
+
+@pytest.mark.cli
+def test_ideconfig_cli_version_exception(capfd, pytestconfig):
+    """Test IDE configuration raises an exception for anything but vscode."""
+    revision = int(pytestconfig.getoption("ansys_version"))
+    if revision < 241 or revision > 242:
+        with pytest.raises(Exception):
+            ideconfig_cli_impl(
+                ide="vscode",
+                target="user",
+                revision=revision,
+            )
 
 
 @pytest.mark.cli
 def test_ideconfig_cli_user_settings(capfd, pytestconfig):
     """Test the IDE configuration prints correct information for user settings."""
     # Set the revision number
-    revision = pytestconfig.getoption("ansys_version")
+    revision = int(pytestconfig.getoption("ansys_version"))
 
     # Run the IDE configuration command for the user settings type
     ideconfig_cli_impl(
@@ -303,15 +316,18 @@ def test_ideconfig_cli_user_settings(capfd, pytestconfig):
     settings_json = get_settings_location()
     stubs_location = get_stubs_location(revision)
 
-    assert f"Update {settings_json} with the following information" in out
-    assert str(stubs_location) in out
+    if revision < 241 or revision > 242:
+        assert f"PyMechanical Stubs are not available for {revision}." in out
+    else:
+        assert f"Update {settings_json} with the following information" in out
+        assert str(stubs_location) in out
 
 
 @pytest.mark.cli
 def test_ideconfig_cli_workspace_settings(capfd, pytestconfig):
     """Test the IDE configuration prints correct information for workplace settings."""
     # Set the revision number
-    revision = pytestconfig.getoption("ansys_version")
+    revision = int(pytestconfig.getoption("ansys_version"))
 
     # Run the IDE configuration command
     ideconfig_cli_impl(
@@ -328,10 +344,15 @@ def test_ideconfig_cli_workspace_settings(capfd, pytestconfig):
     settings_json = Path.cwd() / ".vscode" / "settings.json"
     stubs_location = get_stubs_location(revision)
 
-    # Assert the correct settings.json file and stubs location is in the output
-    assert f"Update {settings_json} with the following information" in out
-    assert str(stubs_location) in out
-    assert "Please ensure the .vscode folder is in the root of your project or repository" in out
+    if revision < 241 or revision > 242:
+        assert f"PyMechanical Stubs are not available for {revision}." in out
+    else:
+        # Assert the correct settings.json file and stubs location is in the output
+        assert f"Update {settings_json} with the following information" in out
+        assert str(stubs_location) in out
+        assert (
+            "Please ensure the .vscode folder is in the root of your project or repository" in out
+        )
 
 
 @pytest.mark.cli
@@ -339,7 +360,7 @@ def test_ideconfig_cli_workspace_settings(capfd, pytestconfig):
 def test_ideconfig_venv(test_env, run_subprocess, rootdir, pytestconfig):
     """Test the IDE configuration location when a virtual environment is active."""
     # Set the revision number
-    revision = pytestconfig.getoption("ansys_version")
+    revision = int(pytestconfig.getoption("ansys_version"))
 
     # Install pymechanical
     subprocess.check_call(
@@ -364,8 +385,11 @@ def test_ideconfig_venv(test_env, run_subprocess, rootdir, pytestconfig):
     # Decode stdout and fix extra backslashes in paths
     stdout = stdout.decode().replace("\\\\", "\\")
 
-    # Assert virtual environment is in the stdout
-    assert ".test_env" in stdout
+    if revision < 241 or revision > 242:
+        assert f"PyMechanical Stubs are not available for {revision}." in stdout
+    else:
+        # Assert virtual environment is in the stdout
+        assert ".test_env" in stdout
 
 
 @pytest.mark.cli
@@ -373,7 +397,7 @@ def test_ideconfig_venv(test_env, run_subprocess, rootdir, pytestconfig):
 def test_ideconfig_default(test_env, run_subprocess, rootdir, pytestconfig):
     """Test the IDE configuration location when no arguments are supplied."""
     # Get the revision number
-    revision = pytestconfig.getoption("ansys_version")
+    revision = int(pytestconfig.getoption("ansys_version"))
     # Set part of the settings.json path
     settings_json_fragment = Path("Code") / "User" / "settings.json"
 
@@ -394,6 +418,9 @@ def test_ideconfig_default(test_env, run_subprocess, rootdir, pytestconfig):
     # Decode stdout and fix extra backslashes in paths
     stdout = stdout.decode().replace("\\\\", "\\")
 
-    assert revision in stdout
-    assert str(settings_json_fragment) in stdout
-    assert ".test_env" in stdout
+    if revision < 241 or revision > 242:
+        assert f"PyMechanical Stubs are not available for {revision}." in stdout
+    else:
+        assert revision in stdout
+        assert str(settings_json_fragment) in stdout
+        assert ".test_env" in stdout
