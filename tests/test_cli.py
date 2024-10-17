@@ -372,7 +372,7 @@ def test_ideconfig_venv(test_env, run_subprocess, rootdir):
 def test_ideconfig_default(test_env, run_subprocess, rootdir, pytestconfig):
     """Test the IDE configuration location when no arguments are supplied."""
     # Get the revision number
-    revision = pytestconfig.getoption("ansys_version")
+    revision = 242
     # Set part of the settings.json path
     settings_json_fragment = Path("Code") / "User" / "settings.json"
 
