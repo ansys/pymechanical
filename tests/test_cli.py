@@ -335,10 +335,10 @@ def test_ideconfig_cli_workspace_settings(capfd):
 
 @pytest.mark.cli
 @pytest.mark.python_env
-def test_ideconfig_venv(test_env, run_subprocess, rootdir):
+def test_ideconfig_venv(test_env, run_subprocess, rootdir, pytestconfig):
     """Test the IDE configuration location when a virtual environment is active."""
     # Set the revision number
-    revision = 242
+    revision = pytestconfig.getoption("ansys_version")
 
     # Install pymechanical
     subprocess.check_call(
@@ -372,7 +372,7 @@ def test_ideconfig_venv(test_env, run_subprocess, rootdir):
 def test_ideconfig_default(test_env, run_subprocess, rootdir, pytestconfig):
     """Test the IDE configuration location when no arguments are supplied."""
     # Get the revision number
-    revision = 242
+    revision = pytestconfig.getoption("ansys_version")
     # Set part of the settings.json path
     settings_json_fragment = Path("Code") / "User" / "settings.json"
 
