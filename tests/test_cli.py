@@ -271,8 +271,9 @@ def get_stubs_location(revision: int) -> Path:
 
 
 @pytest.mark.cli
-def test_ideconfig_cli_ide_exception(capfd):
+def test_ideconfig_cli_ide_exception(capfd, pytestconfig):
     """Test IDE configuration raises an exception for anything but vscode."""
+    revision = pytestconfig.getoption("ansys_version")
     with pytest.raises(Exception):
         ideconfig_cli_impl(
             ide="pycharm",
@@ -282,10 +283,10 @@ def test_ideconfig_cli_ide_exception(capfd):
 
 
 @pytest.mark.cli
-def test_ideconfig_cli_user_settings(capfd):
+def test_ideconfig_cli_user_settings(capfd, pytestconfig):
     """Test the IDE configuration prints correct information for user settings."""
     # Set the revision number
-    revision = 242
+    revision = pytestconfig.getoption("ansys_version")
 
     # Run the IDE configuration command for the user settings type
     ideconfig_cli_impl(
@@ -307,10 +308,10 @@ def test_ideconfig_cli_user_settings(capfd):
 
 
 @pytest.mark.cli
-def test_ideconfig_cli_workspace_settings(capfd):
+def test_ideconfig_cli_workspace_settings(capfd, pytestconfig):
     """Test the IDE configuration prints correct information for workplace settings."""
     # Set the revision number
-    revision = 241
+    revision = pytestconfig.getoption("ansys_version")
 
     # Run the IDE configuration command
     ideconfig_cli_impl(
