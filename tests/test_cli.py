@@ -421,6 +421,6 @@ def test_ideconfig_default(test_env, run_subprocess, rootdir, pytestconfig):
     if revision < 241 or revision > 242:
         assert f"PyMechanical Stubs are not available for {revision}." in stdout
     else:
-        assert revision in stdout
+        assert str(revision) in stdout
         assert str(settings_json_fragment) in stdout
         assert ".test_env" in stdout
