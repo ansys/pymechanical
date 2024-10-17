@@ -92,7 +92,7 @@ def _get_latest_default_version() -> int:
     latest_version = max(versions_found)
 
     if len(awp_roots) > 1:
-        raise Warning(
+        warnings.warn(
             f"Multiple versions of Mechanical found! Using latest version {latest_version} ..."
         )
 
@@ -111,10 +111,12 @@ def __set_environment(version: int) -> None:
         if version < 251:
             os.environ["MECHANICAL_STARTUP_UNOPTIMIZED"] = "1"
 
-        # TODO - use this on linux as well
-        if version >= 251:
-            if "PYMECHANICAL_NO_CLR_HOST_LITE" not in os.environ:
-                os.environ["ANSYS_MECHANICAL_EMBEDDING_CLR_HOST"] = "1"
+    # Set an environment variable to use the custom CLR host
+    # for embedding.
+    # In the future (>251), it would always be used.
+    if version == 251:
+        if "PYMECHANICAL_NO_CLR_HOST_LITE" not in os.environ:
+            os.environ["ANSYS_MECHANICAL_EMBEDDING_CLR_HOST"] = "1"
 
 
 def __check_for_mechanical_env():
