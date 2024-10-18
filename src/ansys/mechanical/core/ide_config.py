@@ -106,10 +106,12 @@ def _cli_impl(
         If unspecified, it finds the default Mechanical version from ansys-tools-path.
     """
     # Check the IDE and raise an exception if it's not VS Code
-    if ide == "vscode":
-        return _vscode_impl(target, revision)
-    else:
+    if revision < 241 or revision > 242:
+        raise Exception(f"PyMechanical Stubs are not available for {revision}")
+    elif ide != "vscode":
         raise Exception(f"{ide} is not supported at the moment.")
+    else:
+        return _vscode_impl(target, revision)
 
 
 @click.command()
