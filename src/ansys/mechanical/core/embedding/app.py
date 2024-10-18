@@ -210,29 +210,32 @@ class App:
         overwrite: bool, optional
             Whether the file should be overwritten if it already exists (default is False).
         """
-        if not overwrite:
-            if os.path.exists(path):
+        if not os.path.exists(path):
+            self.DataModel.Project.SaveAs(path)
+        else:
+            if not overwrite:
                 raise Exception(
                     f"File already exists in {path}, Use ``overwrite`` flag to "
                     "replace the existing file."
                 )
-            else:
+
+            temp_dir = tempfile.mkdtemp()
+            temp_file_path = os.path.join(temp_dir, os.path.basename(path))
+
+            try:
+                # Move existing file to temp location
+                shutil.move(path, temp_file_path)
+                # Save as new file
                 self.DataModel.Project.SaveAs(path)
-        else:
-            if os.path.exists(path):
-                temp_dir = tempfile.mkdtemp()
-                temp_file_path = os.path.join(temp_dir, os.path.basename(path))
-                try:
-                    shutil.move(path, temp_file_path)  # Move current file to temp location
-                    self.DataModel.Project.SaveAs(path)  # Save as new file
-                    os.remove(temp_file_path)  # Remove file from temp location
-                except Exception as e:
-                    shutil.move(temp_file_path, path)  # Restore original file from temp location
-                    raise e
-                finally:
-                    shutil.rmtree(temp_dir)  # Cleanup temp directory
-            else:
-                self.DataModel.Project.SaveAs(path)
+                # Remove file from temp location
+                os.remove(temp_file_path)
+            except Exception as e:
+                # Restore original file from temp location
+                shutil.move(temp_file_path, path)
+                raise e
+            finally:
+                # Cleanup temp directory
+                shutil.rmtree(temp_dir)
 
     def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
         """Launch the GUI."""
