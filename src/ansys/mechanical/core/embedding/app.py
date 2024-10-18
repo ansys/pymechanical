@@ -210,21 +210,29 @@ class App:
         overwrite: bool, optional
             Whether the file should be overwritten if it already exists (default is False).
         """
-        if overwrite:
+        if not overwrite:
+            if os.path.exists(path):
+                raise Exception(
+                    f"File already exists in {path}, Use ``overwrite`` flag to "
+                    "replace the existing file."
+                )
+            else:
+                self.DataModel.Project.SaveAs(path)
+        else:
             if os.path.exists(path):
                 temp_dir = tempfile.mkdtemp()
                 temp_file_path = os.path.join(temp_dir, os.path.basename(path))
-            try:
-                shutil.move(path, temp_file_path)  # Move current file to temp location
-                self.DataModel.Project.SaveAs(path)  # Save as new file
-                os.remove(temp_file_path)  # Remove file from temp location
-            except Exception as e:
-                shutil.move(temp_file_path, path)  # Restore original file from temp location
-                raise e
-            finally:
-                shutil.rmtree(temp_dir)  # Cleanup temp directory
-        else:
-            self.DataModel.Project.SaveAs(path)
+                try:
+                    shutil.move(path, temp_file_path)  # Move current file to temp location
+                    self.DataModel.Project.SaveAs(path)  # Save as new file
+                    os.remove(temp_file_path)  # Remove file from temp location
+                except Exception as e:
+                    shutil.move(temp_file_path, path)  # Restore original file from temp location
+                    raise e
+                finally:
+                    shutil.rmtree(temp_dir)  # Cleanup temp directory
+            else:
+                self.DataModel.Project.SaveAs(path)
 
     def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
         """Launch the GUI."""
