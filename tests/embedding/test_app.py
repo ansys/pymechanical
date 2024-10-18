@@ -66,6 +66,9 @@ def test_app_save_open(embedded_app, tmp_path: pytest.TempPathFactory):
     embedded_app.DataModel.Project.Name = "PROJECT 1"
     project_file = os.path.join(tmp_path, f"{NamedTemporaryFile().name}.mechdat")
     embedded_app.save_as(project_file)
+    with pytest.raises(Exception):
+        embedded_app.save_as(project_file)
+    embedded_app.save_as(project_file, overwrite=True)
     embedded_app.new()
     embedded_app.open(project_file)
     assert embedded_app.DataModel.Project.Name == "PROJECT 1"

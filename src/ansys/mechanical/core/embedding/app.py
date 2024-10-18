@@ -25,6 +25,8 @@ from __future__ import annotations
 
 import atexit
 import os
+import shutil
+import tempfile
 import typing
 import warnings
 
@@ -194,9 +196,46 @@ class App:
         else:
             self.DataModel.Project.Save()
 
-    def save_as(self, path):
-        """Save the project as."""
-        self.DataModel.Project.SaveAs(path)
+    def save_as(self, path: str, overwrite: bool = False):
+        """Save the project as a new file.
+
+        If the `overwrite` flag is enabled, the current saved file is temporarily moved
+        to a backup location. The new file is then saved in its place. If the process fails,
+        the backup file is restored to its original location.
+
+        Parameters
+        ----------
+        path: int, optional
+            The path where file needs to be saved.
+        overwrite: bool, optional
+            Whether the file should be overwritten if it already exists (default is False).
+        """
+        if not os.path.exists(path):
+            self.DataModel.Project.SaveAs(path)
+        else:
+            if not overwrite:
+                raise Exception(
+                    f"File already exists in {path}, Use ``overwrite`` flag to "
+                    "replace the existing file."
+                )
+
+            temp_dir = tempfile.mkdtemp()
+            temp_file_path = os.path.join(temp_dir, os.path.basename(path))
+
+            try:
+                # Move existing file to temp location
+                shutil.move(path, temp_file_path)
+                # Save as new file
+                self.DataModel.Project.SaveAs(path)
+                # Remove file from temp location
+                os.remove(temp_file_path)
+            except Exception as e:
+                # Restore original file from temp location
+                shutil.move(temp_file_path, path)
+                raise e
+            finally:
+                # Cleanup temp directory
+                shutil.rmtree(temp_dir)
 
     def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
         """Launch the GUI."""
