@@ -223,15 +223,12 @@ class App:
             file_dir = os.path.dirname(path)
             associated_dir = os.path.join(file_dir, os.path.splitext(file_name)[0] + "_Mech_Files")
 
-            try:
-                # Remove existing files and associated folder
-                os.remove(path)
-                if os.path.exists(associated_dir):
-                    shutil.rmtree(associated_dir)
-                # Save the new file
-                self.DataModel.Project.SaveAs(path)
-            except Exception as e:
-                raise e
+            # Remove existing files and associated folder
+            os.remove(path)
+            if os.path.exists(associated_dir):
+                shutil.rmtree(associated_dir)
+            # Save the new file
+            self.DataModel.Project.SaveAs(path)
 
     def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
         """Launch the GUI."""
