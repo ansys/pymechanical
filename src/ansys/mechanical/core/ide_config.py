@@ -25,11 +25,56 @@
 import json
 import os
 from pathlib import Path
+import site
 import sys
-import sysconfig
 
 import ansys.tools.path as atp
 import click
+
+
+def get_stubs_location():
+    """Find the ansys-mechanical-stubs installation location in site-packages.
+
+    Returns
+    -------
+    pathlib.Path
+        The path to the ansys-mechanical-stubs installation in site-packages.
+    """
+    site_packages_path = ""
+    site_packages = site.getsitepackages()
+
+    for loc in site_packages:
+        if ("site-packages" in loc) and (sys.prefix in loc):
+            site_packages_path = loc
+
+    if site_packages_path:
+        # Get the stubs location
+        stubs_location = Path(site_packages_path) / "ansys" / "mechanical" / "stubs"
+        return stubs_location
+
+    raise Exception("Could not retrieve the location of the ansys-mechanical-stubs package.")
+
+
+def get_stubs_versions(stubs_location: Path):
+    """Retrieve the revision numbers in ansys-mechanical-stubs.
+
+    Parameters
+    ----------
+    pathlib.Path
+        The path to the ansys-mechanical-stubs installation in site-packages.
+
+    Returns
+    -------
+    list
+        The list containing minimum and maximum versions in the ansys-mechanical-stubs package.
+    """
+    # Get revision numbers in stubs folder
+    revns = [
+        int(revision[1:])
+        for revision in os.listdir(stubs_location)
+        if os.path.isdir(os.path.join(stubs_location, revision)) and revision.startswith("v")
+    ]
+    return revns
 
 
 def _vscode_impl(
@@ -65,9 +110,7 @@ def _vscode_impl(
         settings_json = current_dir / ".vscode" / "settings.json"
 
     # Location where the stubs are installed -> .venv/Lib/site-packages, for example
-    stubs_location = (
-        Path(sysconfig.get_paths()["purelib"]) / "ansys" / "mechanical" / "stubs" / f"v{revision}"
-    )
+    stubs_location = get_stubs_location() / f"v{revision}"
 
     # The settings to add to settings.json for autocomplete to work
     settings_json_data = {
@@ -105,8 +148,12 @@ def _cli_impl(
         The Mechanical revision number. For example, "242".
         If unspecified, it finds the default Mechanical version from ansys-tools-path.
     """
+    # Get the ansys-mechanical-stubs install location
+    stubs_location = get_stubs_location()
+    # Get all revision numbers available in ansys-mechanical-stubs
+    revns = get_stubs_versions(stubs_location)
     # Check the IDE and raise an exception if it's not VS Code
-    if revision < 241 or revision > 242:
+    if revision < min(revns) or revision > max(revns):
         raise Exception(f"PyMechanical Stubs are not available for {revision}")
     elif ide != "vscode":
         raise Exception(f"{ide} is not supported at the moment.")

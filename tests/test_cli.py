@@ -22,14 +22,12 @@
 
 import os
 from pathlib import Path
-import re
-import subprocess
 import sys
-import sysconfig
 
 import pytest
 
 from ansys.mechanical.core.ide_config import _cli_impl as ideconfig_cli_impl
+from ansys.mechanical.core.ide_config import get_stubs_location, get_stubs_versions
 from ansys.mechanical.core.run import _cli_impl
 
 
@@ -253,43 +251,6 @@ def get_settings_location() -> str:
     return settings_json
 
 
-def get_stubs_location(revision: int) -> Path:
-    """Get the ansys-mechanical-stubs location with specified revision.
-
-    Parameters
-    ----------
-    revision: int
-        The Mechanical revision number. For example, "242".
-
-    Returns
-    -------
-    pathlib.Path
-        The path to the ansys-mechanical-stubs installation.
-    """
-    return (
-        Path(sysconfig.get_paths()["purelib"]) / "ansys" / "mechanical" / "stubs" / f"v{revision}"
-    )
-
-
-def get_available_stubs_versions():
-    """Get all available versions for the PyMechanical Stubs.
-
-    Returns
-    -------
-    list
-        A list containing all revision numbers in the PyMechanical Stubs package.
-    """
-    # Get stubs folder
-    stubs_folder = Path(sysconfig.get_paths()["purelib"]) / "ansys" / "mechanical" / "stubs"
-    # Get revision numbers in stubs folder
-    revns = [
-        int(d[1:])
-        for d in os.listdir(stubs_folder)
-        if os.path.isdir(os.path.join(stubs_folder, d)) and d.startswith("v")
-    ]
-    return revns
-
-
 @pytest.mark.cli
 def test_ideconfig_cli_ide_exception(capfd, pytestconfig):
     """Test IDE configuration raises an exception for anything but vscode."""
@@ -302,11 +263,13 @@ def test_ideconfig_cli_ide_exception(capfd, pytestconfig):
         )
 
 
-@pytest.mark.cli
-def test_ideconfig_cli_version_exception(capfd, pytestconfig):
-    """Test IDE configuration raises an exception for anything but vscode."""
+def test_ideconfig_cli_version_exception(pytestconfig):
+    """Test IDE configuration raises an exception when the version is out of bounds."""
     revision = int(pytestconfig.getoption("ansys_version"))
-    if revision < 241 or revision > 242:
+    stubs_location = get_stubs_location()
+    stubs_revns = get_stubs_versions(stubs_location)
+
+    if revision > max(stubs_revns):
         with pytest.raises(Exception):
             ideconfig_cli_impl(
                 ide="vscode",
@@ -315,182 +278,7 @@ def test_ideconfig_cli_version_exception(capfd, pytestconfig):
             )
 
 
-def setup_testenv(test_env, rootdir, run_subprocess):
-    # Install pymechanical
-    subprocess.check_call(
-        [test_env.python, "-m", "pip", "install", "-e", "."],
-        cwd=rootdir,
-        env=test_env.env,
-    )
-
-    # Install ansys-mechanical-stubs
-    subprocess.check_call(
-        [test_env.python, "-m", "pip", "install", "ansys-mechanical-stubs"],
-        cwd=rootdir,
-        env=test_env.env,
-    )
-
-    # Get test_env site_packages location
-    process, stdout, stderr = run_subprocess(
-        [
-            test_env.python,
-            "-m",
-            "site",
-        ],
-        env=test_env.env,
-    )
-    # Decode stdout and fix extra backslashes in paths
-    stdout = stdout.decode().replace("\\\\", "\\")
-
-    # Get string that contains .test_env and return
-    pattern = re.compile(r"[^']*site-packages[^']*")
-    matches = pattern.findall(stdout)
-    for match in matches:
-        if ".test_env" in match:
-            return match
-
-
-@pytest.mark.cli
-def test_ideconfig_cli_user_settings(test_env, run_subprocess, rootdir, pytestconfig):
-    """Test the IDE configuration prints correct information for user settings."""
-    # Set the revision number
-    revision = int(pytestconfig.getoption("ansys_version"))
-
-    venv_site_packages = setup_testenv(test_env, rootdir, run_subprocess)
-
-    # Run ansys-mechanical-ideconfig in the test virtual environment
-    process, stdout, stderr = run_subprocess(
-        [
-            "ansys-mechanical-ideconfig",
-            "--ide",
-            "vscode",
-            "--target",
-            "user",
-            "--revision",
-            str(revision),
-        ],
-        env=test_env.env,
-    )
-    # Decode stdout and fix extra backslashes in paths
-    stdout = stdout.decode().replace("\\\\", "\\")
-    stderr = stderr.decode().replace("\\\\", "\\")
-
-    # Get the path to the settings.json file based on operating system env vars
-    settings_json = get_settings_location()
-    stubs_location = get_stubs_location(revision)
-    stubs_revns = get_available_stubs_versions()
-
-    if revision < min(stubs_revns) or revision > max(stubs_revns):
-        assert f"PyMechanical Stubs are not available for {revision}." in stderr
-    else:
-        assert f"Update {settings_json} with the following information" in stdout
-        assert str(stubs_location) in stdout
-        assert venv_site_packages in stdout
-
-
-@pytest.mark.cli
-def test_ideconfig_cli_workspace_settings(test_env, run_subprocess, rootdir, pytestconfig):
-    """Test the IDE configuration prints correct information for workplace settings."""
-    # Set the revision number
-    revision = int(pytestconfig.getoption("ansys_version"))
-
-    venv_site_packages = setup_testenv(test_env, rootdir, run_subprocess)
-
-    # Run ansys-mechanical-ideconfig in the test virtual environment
-    process, stdout, stderr = run_subprocess(
-        [
-            "ansys-mechanical-ideconfig",
-            "--ide",
-            "vscode",
-            "--target",
-            "workspace",
-            "--revision",
-            str(revision),
-        ],
-        env=test_env.env,
-    )
-    # Decode stdout and fix extra backslashes in paths
-    stdout = stdout.decode().replace("\\\\", "\\")
-    stderr = stderr.decode().replace("\\\\", "\\")
-    # print(stdout)
-
-    # Get the path to the settings.json file based on the current directory & .vscode folder
-    settings_json = Path.cwd() / ".vscode" / "settings.json"
-    stubs_location = get_stubs_location(revision)
-    stubs_revns = get_available_stubs_versions()
-
-    if revision < min(stubs_revns) or revision > max(stubs_revns):
-        assert f"PyMechanical Stubs are not available for {revision}." in stderr
-    else:
-        # Assert the correct settings.json file and stubs location is in the output
-        assert f"Update {settings_json} with the following information" in stdout
-        assert str(stubs_location) in stdout
-        assert (
-            "Please ensure the .vscode folder is in the root of your project or repository"
-            in stdout
-        )
-
-
-@pytest.mark.cli
-@pytest.mark.python_env
-def test_ideconfig_venv(test_env, run_subprocess, rootdir, pytestconfig):
-    """Test the IDE configuration location when a virtual environment is active."""
-    # Set the revision number
-    revision = int(pytestconfig.getoption("ansys_version"))
-
-    venv_site_packages = setup_testenv(test_env, rootdir, run_subprocess)
-
-    # Run ansys-mechanical-ideconfig in the test virtual environment
-    process, stdout, stderr = run_subprocess(
-        [
-            "ansys-mechanical-ideconfig",
-            "--ide",
-            "vscode",
-            "--target",
-            "user",
-            "--revision",
-            str(revision),
-        ],
-        env=test_env.env,
-    )
-    # Decode stdout and fix extra backslashes in paths
-    stdout = stdout.decode().replace("\\\\", "\\")
-    stderr = stderr.decode().replace("\\\\", "\\")
-    stubs_revns = get_available_stubs_versions()
-
-    if revision < min(stubs_revns) or revision > max(stubs_revns):
-        assert f"PyMechanical Stubs are not available for {revision}." in stderr
-    else:
-        # Assert virtual environment is in the stdout
-        assert str(Path(sysconfig.get_paths()["purelib"])) in stdout
-
-
-@pytest.mark.cli
-@pytest.mark.python_env
-def test_ideconfig_default(test_env, run_subprocess, rootdir, pytestconfig):
-    """Test the IDE configuration location when no arguments are supplied."""
-    # Get the revision number
-    revision = int(pytestconfig.getoption("ansys_version"))
-    # Set part of the settings.json path
-    settings_json_fragment = Path("Code") / "User" / "settings.json"
-
-    venv_site_packages = setup_testenv(test_env, rootdir, run_subprocess)
-
-    # Run ansys-mechanical-ideconfig in the test virtual environment
-    process, stdout, stderr = run_subprocess(
-        [
-            "ansys-mechanical-ideconfig",
-        ],
-        env=test_env.env,
-    )
-    # Decode stdout and fix extra backslashes in paths
-    stdout = stdout.decode().replace("\\\\", "\\")
-    stderr = stderr.decode().replace("\\\\", "\\")
-    stubs_revns = get_available_stubs_versions()
-
-    if revision < min(stubs_revns) or revision > max(stubs_revns):
-        assert f"PyMechanical Stubs are not available for {revision}." in stderr
-    else:
-        assert str(revision) in stdout
-        assert str(settings_json_fragment) in stdout
-        assert str(Path(sysconfig.get_paths()["purelib"])) in stdout
+# user settings
+# workspace settings
+# venv
+# default - just ansys-mechanical-ideconfig
