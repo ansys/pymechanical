@@ -221,7 +221,7 @@ class App:
 
             file_name = os.path.basename(path)
             file_dir = os.path.dirname(path)
-            associated_dir = os.path.join(file_dir, file_name.replace(".mechdb", "_Mech_Files"))
+            associated_dir = os.path.join(file_dir, os.path.splitext(file_name)[0] + "_Mech_Files")
 
             try:
                 # Remove existing files and associated folder
