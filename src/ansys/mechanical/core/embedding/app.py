@@ -225,8 +225,7 @@ class App:
 
             try:
                 # Remove existing files and associated folder
-                if os.path.exists(path):
-                    os.remove(path)
+                os.remove(path)
                 if os.path.exists(associated_dir):
                     shutil.rmtree(associated_dir)
                 # Save the new file
