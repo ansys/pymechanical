@@ -22,6 +22,7 @@
 
 import os
 from pathlib import Path
+import subprocess
 import sys
 
 import pytest
@@ -29,6 +30,11 @@ import pytest
 from ansys.mechanical.core.ide_config import _cli_impl as ideconfig_cli_impl
 from ansys.mechanical.core.ide_config import get_stubs_location, get_stubs_versions
 from ansys.mechanical.core.run import _cli_impl
+
+STUBS_LOC = get_stubs_location()
+STUBS_REVNS = get_stubs_versions(STUBS_LOC)
+MIN_STUBS_REVN = min(STUBS_REVNS)
+MAX_STUBS_REVN = max(STUBS_REVNS)
 
 
 @pytest.mark.cli
@@ -263,11 +269,17 @@ def test_ideconfig_cli_ide_exception(capfd, pytestconfig):
         )
 
 
-def test_ideconfig_cli_version_exception(pytestconfig):
-    """Test IDE configuration raises an exception when the version is out of bounds."""
+def get_ideconfig_vars(pytestconfig):
     revision = int(pytestconfig.getoption("ansys_version"))
     stubs_location = get_stubs_location()
     stubs_revns = get_stubs_versions(stubs_location)
+
+    return revision, stubs_location, stubs_revns
+
+
+def test_ideconfig_cli_version_exception(pytestconfig):
+    """Test the IDE configuration raises an exception when the version is out of bounds."""
+    revision, stubs_location, stubs_revns = get_ideconfig_vars(pytestconfig)
 
     if revision > max(stubs_revns):
         with pytest.raises(Exception):
@@ -278,7 +290,136 @@ def test_ideconfig_cli_version_exception(pytestconfig):
             )
 
 
-# user settings
-# workspace settings
-# venv
-# default - just ansys-mechanical-ideconfig
+@pytest.mark.cli
+@pytest.mark.version_range(MIN_STUBS_REVN, MAX_STUBS_REVN)
+def test_ideconfig_cli_user_settings(capfd, pytestconfig):
+    """Test the IDE configuration prints correct information for user settings."""
+    # Set the revision number
+    revision, stubs_location, stubs_revns = get_ideconfig_vars(pytestconfig)
+
+    # Run the IDE configuration command for the user settings type
+    ideconfig_cli_impl(
+        ide="vscode",
+        target="user",
+        revision=revision,
+    )
+
+    # Get output of the IDE configuration command
+    out, err = capfd.readouterr()
+    out = out.replace("\\\\", "\\")
+
+    # Get the path to the settings.json file based on operating system env vars
+    settings_json = get_settings_location()
+
+    assert f"Update {settings_json} with the following information" in out
+    assert str(stubs_location) in out
+
+
+@pytest.mark.cli
+@pytest.mark.version_range(MIN_STUBS_REVN, MAX_STUBS_REVN)
+def test_ideconfig_cli_workspace_settings(capfd, pytestconfig):
+    """Test the IDE configuration prints correct information for workplace settings."""
+    # Set the revision number
+    revision, stubs_location, stubs_revns = get_ideconfig_vars(pytestconfig)
+
+    # Run the IDE configuration command
+    ideconfig_cli_impl(
+        ide="vscode",
+        target="workspace",
+        revision=revision,
+    )
+
+    # Get output of the IDE configuration command
+    out, err = capfd.readouterr()
+    out = out.replace("\\\\", "\\")
+
+    # Get the path to the settings.json file based on the current directory & .vscode folder
+    settings_json = Path.cwd() / ".vscode" / "settings.json"
+
+    # Assert the correct settings.json file and stubs location is in the output
+    assert f"Update {settings_json} with the following information" in out
+    assert str(stubs_location) in out
+    assert "Please ensure the .vscode folder is in the root of your project or repository" in out
+
+
+@pytest.mark.cli
+@pytest.mark.python_env
+@pytest.mark.version_range(MIN_STUBS_REVN, MAX_STUBS_REVN)
+def test_ideconfig_cli_venv(test_env, run_subprocess, rootdir, pytestconfig):
+    """Test the IDE configuration location when a virtual environment is active."""
+    # Set the revision number
+    revision = pytestconfig.getoption("ansys_version")
+
+    # Install pymechanical
+    subprocess.check_call(
+        [test_env.python, "-m", "pip", "install", "-e", "."],
+        cwd=rootdir,
+        env=test_env.env,
+    )
+
+    # Get the virtual environment location
+    process, venv_loc, stderr = run_subprocess(
+        [test_env.python, "-c", "'import sys; print(sys.prefix)'"],
+        env=test_env.env,
+    )
+    # Decode stdout and fix extra backslashes in paths
+    venv_loc = venv_loc.decode().replace("\\\\", "\\")
+
+    # Run ansys-mechanical-ideconfig in the test virtual environment
+    process, stdout, stderr = run_subprocess(
+        [
+            "ansys-mechanical-ideconfig",
+            "--ide",
+            "vscode",
+            "--target",
+            "user",
+            "--revision",
+            str(revision),
+        ],
+        env=test_env.env,
+    )
+    # Decode stdout and fix extra backslashes in paths
+    stdout = stdout.decode().replace("\\\\", "\\")
+
+    # Assert virtual environment is in the stdout
+    assert venv_loc in stdout
+
+
+@pytest.mark.cli
+@pytest.mark.python_env
+@pytest.mark.version_range(MIN_STUBS_REVN, MAX_STUBS_REVN)
+def test_ideconfig_cli_default(test_env, run_subprocess, rootdir, pytestconfig):
+    """Test the IDE configuration location when no arguments are supplied."""
+    # Get the revision number
+    revision = pytestconfig.getoption("ansys_version")
+    # Set part of the settings.json path
+    settings_json_fragment = Path("Code") / "User" / "settings.json"
+
+    # Install pymechanical
+    subprocess.check_call(
+        [test_env.python, "-m", "pip", "install", "-e", "."],
+        cwd=rootdir,
+        env=test_env.env,
+    )
+
+    # Get the virtual environment location
+    process, venv_loc, stderr = run_subprocess(
+        [test_env.python, "-c", "'import sys; print(sys.prefix)'"],
+        env=test_env.env,
+    )
+    # Decode stdout and fix extra backslashes in paths
+    venv_loc = venv_loc.decode().replace("\\\\", "\\")
+
+    # Run ansys-mechanical-ideconfig in the test virtual environment
+    process, stdout, stderr = run_subprocess(
+        [
+            "ansys-mechanical-ideconfig",
+        ],
+        env=test_env.env,
+    )
+    # Decode stdout and fix extra backslashes in paths
+    stdout = stdout.decode().replace("\\\\", "\\")
+
+    assert revision in stdout
+    assert str(settings_json_fragment) in stdout
+    assert venv_loc in stdout

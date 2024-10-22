@@ -25,6 +25,7 @@
 import json
 import os
 from pathlib import Path
+import re
 import site
 import sys
 
@@ -40,16 +41,14 @@ def get_stubs_location():
     pathlib.Path
         The path to the ansys-mechanical-stubs installation in site-packages.
     """
-    site_packages_path = ""
     site_packages = site.getsitepackages()
+    prefix_path = sys.prefix.replace("\\", "\\\\")
+    site_packages_regex = re.compile(f"{prefix_path}.*site-packages$")
+    site_packages_paths = list(filter(site_packages_regex.match, site_packages))
 
-    for loc in site_packages:
-        if ("site-packages" in loc) and (sys.prefix in loc):
-            site_packages_path = loc
-
-    if site_packages_path:
+    if len(site_packages_paths) == 1:
         # Get the stubs location
-        stubs_location = Path(site_packages_path) / "ansys" / "mechanical" / "stubs"
+        stubs_location = Path(site_packages_paths[0]) / "ansys" / "mechanical" / "stubs"
         return stubs_location
 
     raise Exception("Could not retrieve the location of the ansys-mechanical-stubs package.")
