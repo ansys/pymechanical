@@ -25,7 +25,7 @@ from pathlib import Path
 
 # Subprocess is needed to launch the GUI and clean up the process on close.
 # Excluding bandit check.
-from subprocess import Popen  # nosec
+from subprocess import Popen  # nosec: B404
 import sys
 import tempfile
 import typing
@@ -116,7 +116,7 @@ class UILauncher:
         if not self._dry_run:
             # The subprocess that uses ansys-mechanical to launch the GUI of the temporary
             # mechdb file
-            process = Popen(args)  # nosec
+            process = Popen(args)  # nosec: B603
             return process
         else:
             # Return a string containing the args
@@ -139,7 +139,7 @@ class UILauncher:
             # Open a subprocess to remove the temporary mechdb file and folder when the process ends
             Popen(
                 [sys.executable, cleanup_script, str(process.pid), temp_mechdb_path]
-            )  # pragma: no cover # nosec
+            )  # pragma: no cover # nosec: B603
 
 
 def _is_saved(app: "ansys.mechanical.core.embedding.App") -> bool:

@@ -25,7 +25,7 @@ import errno
 import os
 
 # Subprocess is needed to start the backend. Excluding bandit check.
-import subprocess  # nosec
+import subprocess  # nosec: B404
 
 from ansys.mechanical.core import LOG
 
