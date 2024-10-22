@@ -26,7 +26,6 @@ from __future__ import annotations
 import atexit
 import os
 import shutil
-import tempfile
 import typing
 import warnings
 
@@ -212,6 +211,7 @@ class App:
         """
         if not os.path.exists(path):
             self.DataModel.Project.SaveAs(path)
+            return
         else:
             if not overwrite:
                 raise Exception(
@@ -219,23 +219,20 @@ class App:
                     "replace the existing file."
                 )
 
-            temp_dir = tempfile.mkdtemp()
-            temp_file_path = os.path.join(temp_dir, os.path.basename(path))
+            file_name = os.path.basename(path)
+            file_dir = os.path.dirname(path)
+            associated_dir = os.path.join(file_dir, file_name.replace(".mechdb", "_Mech_Files"))
 
             try:
-                # Move existing file to temp location
-                shutil.move(path, temp_file_path)
-                # Save as new file
+                # Remove existing files and associated folder
+                if os.path.exists(path):
+                    os.remove(path)
+                if os.path.exists(associated_dir):
+                    shutil.rmtree(associated_dir)
+                # Save the new file
                 self.DataModel.Project.SaveAs(path)
-                # Remove file from temp location
-                os.remove(temp_file_path)
             except Exception as e:
-                # Restore original file from temp location
-                shutil.move(temp_file_path, path)
                 raise e
-            finally:
-                # Cleanup temp directory
-                shutil.rmtree(temp_dir)
 
     def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
         """Launch the GUI."""
