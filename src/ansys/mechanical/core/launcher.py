@@ -100,7 +100,7 @@ class MechanicalLauncher:
             args_list,
             stdout=subprocess.PIPE,
             env=env_variables,
-        )  # nosec
+        )  # nosec: B603
         LOG.info(f"Started the process:{process} using {args_list}.")
 
     @staticmethod
