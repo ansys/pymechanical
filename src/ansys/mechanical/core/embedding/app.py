@@ -330,12 +330,12 @@ class App:
         return GetterWrapper(self._app, lambda app: app.DataModel)
 
     @property
-    def ExtAPI(self):
+    def ExtAPI(self) -> Ansys.ACT.Interfaces.Mechanical.IMechanicalExtAPI:
         """Return the ExtAPI object."""
         return GetterWrapper(self._app, lambda app: app.ExtAPI)
 
     @property
-    def Tree(self):
+    def Tree(self) -> Ansys.ACT.Automation.Mechanical.Tree:
         """Return the Tree object."""
         return GetterWrapper(self._app, lambda app: app.DataModel.Tree)
 
@@ -345,7 +345,7 @@ class App:
         return GetterWrapper(self._app, lambda app: app.DataModel.Project.Model)
 
     @property
-    def Graphics(self):
+    def Graphics(self) -> Ansys.ACT.Common.Graphics.MechanicalGraphicsWrapper:
         """Return the Graphics object."""
         return GetterWrapper(self._app, lambda app: app.ExtAPI.Graphics)
 
