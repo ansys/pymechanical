@@ -212,23 +212,23 @@ class App:
         if not os.path.exists(path):
             self.DataModel.Project.SaveAs(path)
             return
-        else:
-            if not overwrite:
-                raise Exception(
-                    f"File already exists in {path}, Use ``overwrite`` flag to "
-                    "replace the existing file."
-                )
 
-            file_name = os.path.basename(path)
-            file_dir = os.path.dirname(path)
-            associated_dir = os.path.join(file_dir, os.path.splitext(file_name)[0] + "_Mech_Files")
+        if not overwrite:
+            raise Exception(
+                f"File already exists in {path}, Use ``overwrite`` flag to "
+                "replace the existing file."
+            )
 
-            # Remove existing files and associated folder
-            os.remove(path)
-            if os.path.exists(associated_dir):
-                shutil.rmtree(associated_dir)
-            # Save the new file
-            self.DataModel.Project.SaveAs(path)
+        file_name = os.path.basename(path)
+        file_dir = os.path.dirname(path)
+        associated_dir = os.path.join(file_dir, os.path.splitext(file_name)[0] + "_Mech_Files")
+
+        # Remove existing files and associated folder
+        os.remove(path)
+        if os.path.exists(associated_dir):
+            shutil.rmtree(associated_dir)
+        # Save the new file
+        self.DataModel.Project.SaveAs(path)
 
     def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
         """Launch the GUI."""
