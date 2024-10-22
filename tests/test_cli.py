@@ -269,18 +269,14 @@ def test_ideconfig_cli_ide_exception(capfd, pytestconfig):
         )
 
 
-def get_ideconfig_vars(pytestconfig):
+def test_ideconfig_cli_version_exception(pytestconfig):
+    """Test the IDE configuration raises an exception when the version is out of bounds."""
     revision = int(pytestconfig.getoption("ansys_version"))
     stubs_location = get_stubs_location()
     stubs_revns = get_stubs_versions(stubs_location)
 
-    return revision, stubs_location, stubs_revns
-
-
-def test_ideconfig_cli_version_exception(pytestconfig):
-    """Test the IDE configuration raises an exception when the version is out of bounds."""
-    revision, stubs_location, stubs_revns = get_ideconfig_vars(pytestconfig)
-
+    # If revision number is greater than the maximum stubs revision number
+    # assert an exception is raised
     if revision > max(stubs_revns):
         with pytest.raises(Exception):
             ideconfig_cli_impl(
@@ -294,8 +290,9 @@ def test_ideconfig_cli_version_exception(pytestconfig):
 @pytest.mark.version_range(MIN_STUBS_REVN, MAX_STUBS_REVN)
 def test_ideconfig_cli_user_settings(capfd, pytestconfig):
     """Test the IDE configuration prints correct information for user settings."""
-    # Set the revision number
-    revision, stubs_location, stubs_revns = get_ideconfig_vars(pytestconfig)
+    # Get the revision number
+    revision = int(pytestconfig.getoption("ansys_version"))
+    stubs_location = get_stubs_location()
 
     # Run the IDE configuration command for the user settings type
     ideconfig_cli_impl(
@@ -320,7 +317,8 @@ def test_ideconfig_cli_user_settings(capfd, pytestconfig):
 def test_ideconfig_cli_workspace_settings(capfd, pytestconfig):
     """Test the IDE configuration prints correct information for workplace settings."""
     # Set the revision number
-    revision, stubs_location, stubs_revns = get_ideconfig_vars(pytestconfig)
+    revision = int(pytestconfig.getoption("ansys_version"))
+    stubs_location = get_stubs_location()
 
     # Run the IDE configuration command
     ideconfig_cli_impl(
@@ -358,15 +356,15 @@ def test_ideconfig_cli_venv(test_env, run_subprocess, rootdir, pytestconfig):
     )
 
     # Get the virtual environment location
-    process, venv_loc, stderr = run_subprocess(
+    subprocess_output = run_subprocess(
         [test_env.python, "-c", "'import sys; print(sys.prefix)'"],
         env=test_env.env,
     )
     # Decode stdout and fix extra backslashes in paths
-    venv_loc = venv_loc.decode().replace("\\\\", "\\")
+    venv_loc = subprocess_output[1].decode().replace("\\\\", "\\")
 
     # Run ansys-mechanical-ideconfig in the test virtual environment
-    process, stdout, stderr = run_subprocess(
+    subprocess_output_ideconfig = run_subprocess(
         [
             "ansys-mechanical-ideconfig",
             "--ide",
@@ -379,7 +377,7 @@ def test_ideconfig_cli_venv(test_env, run_subprocess, rootdir, pytestconfig):
         env=test_env.env,
     )
     # Decode stdout and fix extra backslashes in paths
-    stdout = stdout.decode().replace("\\\\", "\\")
+    stdout = subprocess_output_ideconfig[1].decode().replace("\\\\", "\\")
 
     # Assert virtual environment is in the stdout
     assert venv_loc in stdout
@@ -403,22 +401,20 @@ def test_ideconfig_cli_default(test_env, run_subprocess, rootdir, pytestconfig):
     )
 
     # Get the virtual environment location
-    process, venv_loc, stderr = run_subprocess(
+    subprocess_output = run_subprocess(
         [test_env.python, "-c", "'import sys; print(sys.prefix)'"],
         env=test_env.env,
     )
     # Decode stdout and fix extra backslashes in paths
-    venv_loc = venv_loc.decode().replace("\\\\", "\\")
+    venv_loc = subprocess_output[1].decode().replace("\\\\", "\\")
 
     # Run ansys-mechanical-ideconfig in the test virtual environment
-    process, stdout, stderr = run_subprocess(
-        [
-            "ansys-mechanical-ideconfig",
-        ],
+    subprocess_output_ideconfig = run_subprocess(
+        ["ansys-mechanical-ideconfig"],
         env=test_env.env,
     )
     # Decode stdout and fix extra backslashes in paths
-    stdout = stdout.decode().replace("\\\\", "\\")
+    stdout = subprocess_output_ideconfig[1].decode().replace("\\\\", "\\")
 
     assert revision in stdout
     assert str(settings_json_fragment) in stdout
