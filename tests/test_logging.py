@@ -165,9 +165,12 @@ def test_global_logger_debug_mode():
 @pytest.mark.remote_session_launch
 def test_global_logger_exception_handling(caplog):
     exc = "Unexpected exception"
-    with pytest.raises(Exception):
-        raise Exception(exc)
-        assert exc in caplog.text
+    with caplog.at_level(logging.ERROR):
+        with pytest.raises(Exception):
+            LOG.error(exc)  # Log the exception before raising
+            raise Exception(exc)
+
+    assert exc in caplog.text
 
 
 @pytest.mark.remote_session_launch

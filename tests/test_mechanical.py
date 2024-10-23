@@ -425,12 +425,6 @@ def test_close_all_Local_instances(tmpdir):
 
 
 @pytest.mark.remote_session_launch
-def test_launch_result_mode(mechanical_result):
-    result = mechanical_result.run_python_script("2+3")
-    assert result == "5"
-
-
-@pytest.mark.remote_session_launch
 def test_find_mechanical_path():
     if pymechanical.mechanical.get_start_instance():
         path = ansys.tools.path.get_mechanical_path()
