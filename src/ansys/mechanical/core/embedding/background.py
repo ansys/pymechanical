@@ -102,5 +102,5 @@ class BackgroundApp:
             try:
                 utils.sleep(40)
             except:
-                pass
+                raise Exception("BackgroundApp cannot sleep.")  # pragma: no cover
         BackgroundApp.__stopped = True
