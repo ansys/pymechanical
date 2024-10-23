@@ -116,7 +116,7 @@ class UILauncher:
         if not self._dry_run:
             # The subprocess that uses ansys-mechanical to launch the GUI of the temporary
             # mechdb file
-            process = Popen(args)  # nosec: B603
+            process = Popen(args)  # nosec: B603 # pragma: no cover
             return process
         else:
             # Return a string containing the args
