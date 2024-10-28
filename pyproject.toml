@@ -84,7 +84,7 @@ doc = [
 ]
 viz = [
     "ansys-tools-visualization-interface>=0.2.6",
-    "usd-core==24.8",
+    "usd-core==24.11",
 ]
 
 [project.scripts]
