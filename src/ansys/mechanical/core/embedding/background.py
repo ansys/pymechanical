@@ -59,9 +59,8 @@ class BackgroundApp:
                 time.sleep(0.05)
                 continue
         else:
-            assert (
-                not BackgroundApp.__stopped
-            ), "Cannot initialize a BackgroundApp once it has been stopped!"
+            if BackgroundApp.__stopped:
+                raise RuntimeError("Cannot initialize a BackgroundApp once it has been stopped!")
 
             def new():
                 BackgroundApp.__app.new()
@@ -80,7 +79,8 @@ class BackgroundApp:
 
     def post(self, callable: typing.Callable):
         """Post callable method to the background app thread."""
-        assert not BackgroundApp.__stopped, "Cannot use background app after stopping it."
+        if BackgroundApp.__stopped:
+            raise RuntimeError("Cannot use BackgroundApp after stopping it.")
         return BackgroundApp.__poster.post(callable)
 
     def stop(self) -> None:
@@ -102,5 +102,5 @@ class BackgroundApp:
             try:
                 utils.sleep(40)
             except:
-                pass
+                raise Exception("BackgroundApp cannot sleep.")  # pragma: no cover
         BackgroundApp.__stopped = True

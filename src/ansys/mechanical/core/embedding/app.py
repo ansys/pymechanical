@@ -21,8 +21,11 @@
 # SOFTWARE.
 
 """Main application class for embedded Mechanical."""
+from __future__ import annotations
+
 import atexit
 import os
+import shutil
 import typing
 import warnings
 
@@ -34,13 +37,17 @@ from ansys.mechanical.core.embedding.poster import Poster
 from ansys.mechanical.core.embedding.ui import launch_ui
 from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
 
+if typing.TYPE_CHECKING:
+    # Make sure to run ``ansys-mechanical-ideconfig`` to add the autocomplete settings to VS Code
+    # Run ``ansys-mechanical-ideconfig --help`` for more information
+    import Ansys  # pragma: no cover
+
 try:
     import ansys.tools.visualization_interface  # noqa: F401
 
     HAS_ANSYS_VIZ = True
     """Whether or not PyVista exists."""
 except:
-
     HAS_ANSYS_VIZ = False
 
 
@@ -188,8 +195,39 @@ class App:
         else:
             self.DataModel.Project.Save()
 
-    def save_as(self, path):
-        """Save the project as."""
+    def save_as(self, path: str, overwrite: bool = False):
+        """Save the project as a new file.
+
+        If the `overwrite` flag is enabled, the current saved file is temporarily moved
+        to a backup location. The new file is then saved in its place. If the process fails,
+        the backup file is restored to its original location.
+
+        Parameters
+        ----------
+        path: int, optional
+            The path where file needs to be saved.
+        overwrite: bool, optional
+            Whether the file should be overwritten if it already exists (default is False).
+        """
+        if not os.path.exists(path):
+            self.DataModel.Project.SaveAs(path)
+            return
+
+        if not overwrite:
+            raise Exception(
+                f"File already exists in {path}, Use ``overwrite`` flag to "
+                "replace the existing file."
+            )
+
+        file_name = os.path.basename(path)
+        file_dir = os.path.dirname(path)
+        associated_dir = os.path.join(file_dir, os.path.splitext(file_name)[0] + "_Mech_Files")
+
+        # Remove existing files and associated folder
+        os.remove(path)
+        if os.path.exists(associated_dir):
+            shutil.rmtree(associated_dir)
+        # Save the new file
         self.DataModel.Project.SaveAs(path)
 
     def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
@@ -292,22 +330,22 @@ class App:
         return GetterWrapper(self._app, lambda app: app.DataModel)
 
     @property
-    def ExtAPI(self):
+    def ExtAPI(self) -> Ansys.ACT.Interfaces.Mechanical.IMechanicalExtAPI:
         """Return the ExtAPI object."""
         return GetterWrapper(self._app, lambda app: app.ExtAPI)
 
     @property
-    def Tree(self):
+    def Tree(self) -> Ansys.ACT.Automation.Mechanical.Tree:
         """Return the Tree object."""
         return GetterWrapper(self._app, lambda app: app.DataModel.Tree)
 
     @property
-    def Model(self):
+    def Model(self) -> Ansys.ACT.Automation.Mechanical.Model:
         """Return the Model object."""
         return GetterWrapper(self._app, lambda app: app.DataModel.Project.Model)
 
     @property
-    def Graphics(self):
+    def Graphics(self) -> Ansys.ACT.Common.Graphics.MechanicalGraphicsWrapper:
         """Return the Graphics object."""
         return GetterWrapper(self._app, lambda app: app.ExtAPI.Graphics)
 
