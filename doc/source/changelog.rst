@@ -9,6 +9,37 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.9 <https://github.com/ansys/pymechanical/releases/tag/v0.11.9>`_ - 2024-10-29
+===================================================================================
+
+Added
+^^^^^
+
+- add `ansys-mechanical-stubs` as a dependency `#948 <https://github.com/ansys/pymechanical/pull/948>`_
+- Add overwrite option for `App.save_as()` `#951 <https://github.com/ansys/pymechanical/pull/951>`_
+- add typehints to ExtAPI, Tree, and Graphics `#957 <https://github.com/ansys/pymechanical/pull/957>`_
+
+
+Fixed
+^^^^^
+
+- bandit warnings `#950 <https://github.com/ansys/pymechanical/pull/950>`_
+- stubs CLI test `#952 <https://github.com/ansys/pymechanical/pull/952>`_
+
+
+Maintenance
+^^^^^^^^^^^
+
+- update CHANGELOG for v0.11.8 `#946 <https://github.com/ansys/pymechanical/pull/946>`_
+- code maintenance `#947 <https://github.com/ansys/pymechanical/pull/947>`_, `#949 <https://github.com/ansys/pymechanical/pull/949>`_
+- Bump the core group with 2 updates `#953 <https://github.com/ansys/pymechanical/pull/953>`_
+- Bump ansys-sphinx-theme[autoapi] from 1.1.4 to 1.1.6 in the doc group `#954 <https://github.com/ansys/pymechanical/pull/954>`_
+- Bump psutil from 6.0.0 to 6.1.0 `#955 <https://github.com/ansys/pymechanical/pull/955>`_
+- bump `ansys-mechanical-stubs` to v0.1.4 `#956 <https://github.com/ansys/pymechanical/pull/956>`_
+- Bump the doc group with 2 updates `#960 <https://github.com/ansys/pymechanical/pull/960>`_
+- Bump usd-core from 24.8 to 24.11 `#961 <https://github.com/ansys/pymechanical/pull/961>`_
+- pre-commit automatic update `#962 <https://github.com/ansys/pymechanical/pull/962>`_
+
 `0.11.8 <https://github.com/ansys/pymechanical/releases/tag/v0.11.8>`_ - 2024-10-15
 ===================================================================================
 
