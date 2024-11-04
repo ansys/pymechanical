@@ -95,7 +95,7 @@ def _get_latest_default_version() -> int:
         raise Warning(
             f"Multiple versions of Mechanical found! Using latest version {latest_version} ..."
         )
-
+    print(latest_version)
     return latest_version
 
 

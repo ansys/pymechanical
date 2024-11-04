@@ -20,16 +20,38 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""RPC and Mechanical service implementation."""
-from .client import Client
+import sys
 
-# todo - provide an implementation of Server (RemoteMechancial) that installs the below
-# from .default_server import RemoteMechanical
-#        and remove them from this import statement
-from .misc import clear, run_python_script, run_python_script_from_file
+from ansys.mechanical.core.embedding.rpc import (
+    MechanicalEmbeddedServer,
+    clear,
+    run_python_script,
+    run_python_script_from_file,
+)
+from ansys.mechanical.core.embedding.rpc.server import (
+    DefaultServiceMethods,
+    MechanicalDefaultServer,
+)
 
-# todo - combine Server and MechanicalService
-from .server import MechanicalEmbeddedServer
 
-# todo - get_remote_methods should not be here
-from .utils import get_remote_methods, remote_method
+def start_server(port, version):
+    if 0:
+        server = MechanicalEmbeddedServer(
+            port=port,
+            version=version,
+            methods=[run_python_script, run_python_script_from_file],
+        )
+    if 1:
+        server = MechanicalDefaultServer(
+            port=port,
+            version=version,
+            methods=[run_python_script, run_python_script_from_file, clear],
+        )
+    server.start()
+
+
+if __name__ == "__main__":
+    # TODO: condition for port not given
+    port = int(sys.argv[1])  # Pass port as argument
+    version = int(sys.argv[2])
+    start_server(port, version)

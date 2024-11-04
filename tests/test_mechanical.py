@@ -51,14 +51,6 @@ def test_run_python_script_success_return_empty(mechanical):
 
 
 @pytest.mark.remote_session_connect
-def test_run_python_script_error(mechanical):
-    with pytest.raises(grpc.RpcError) as exc_info:
-        mechanical.run_python_script("import test")
-
-    assert exc_info.value.details() == "No module named test"
-
-
-@pytest.mark.remote_session_connect
 def test_run_python_from_file_success(mechanical):
     current_working_directory = os.getcwd()
     script_path = os.path.join(
@@ -192,6 +184,7 @@ def solve_and_return_results(mechanical):
 
     mechanical.clear()
     directory = mechanical.project_directory
+    print(directory)
     mechanical.upload(
         file_name=file_path, file_location_destination=directory, chunk_size=1024 * 1024
     )

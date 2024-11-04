@@ -20,16 +20,40 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""RPC and Mechanical service implementation."""
-from .client import Client
+import threading
+import time
 
-# todo - provide an implementation of Server (RemoteMechancial) that installs the below
-# from .default_server import RemoteMechanical
-#        and remove them from this import statement
-from .misc import clear, run_python_script, run_python_script_from_file
+import pytest
+import rpyc
 
-# todo - combine Server and MechanicalService
-from .server import MechanicalEmbeddedServer
+from ansys.mechanical.core.embedding.rpc import Client, MechanicalEmbeddedServer
 
-# todo - get_remote_methods should not be here
-from .utils import get_remote_methods, remote_method
+
+def get_project_name(app: "ansys.mechanical.core.embedding.App"):
+    return app.DataModel.Project.Name
+
+
+@pytest.fixture(scope="module")
+def start_server():
+    server = MechanicalEmbeddedServer(
+        port=18861,
+        version=242,
+        methods=[get_project_name],
+        # impl=mod.ServiceMethods,
+    )
+    server_thread = threading.Thread(target=server.start)
+    server_thread.daemon = True
+    server_thread.start()
+    yield
+    server.stop()
+    server_thread.join()
+
+
+def test_client(start_server, printer):
+    c1 = Client("localhost", 18861)
+    server = c1.root
+
+    project_name = server.get_project_name()
+    printer(project_name)
+    assert project_name == "Project"
+    c1.close()

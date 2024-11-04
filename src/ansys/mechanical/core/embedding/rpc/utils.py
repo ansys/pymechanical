@@ -25,7 +25,6 @@ import typing
 
 class remote_method:
     """Decorator for passing remote methods.
-
     Parameters
     ----------
     func : Callable
@@ -34,6 +33,7 @@ class remote_method:
 
     def __init__(self, func):
         """Initialize with the given function."""
+        print("init remote_method")
         self._func = func
 
     def __call__(self, *args, **kwargs):
@@ -48,14 +48,48 @@ class remote_method:
         """Return a partially applied method."""
         from functools import partial
 
+        print("getting func")
         func = partial(self.__call_method__, obj)
         func._is_remote = True
         func.__name__ = self._func.__name__
         func._owner = obj
+        print("done getting func")
         return func
 
 
-def get_remote_methods(obj) -> typing.Generator[typing.Tuple[str, typing.Callable], None, None]:
+class MethodType:
+    METHOD = 0
+    PROP = 1
+
+
+def try_get_remote_method(methodname: str, obj: typing.Any) -> typing.Tuple[str, typing.Callable]:
+    print(f"checking if {methodname} is callable and remote")
+    method = getattr(obj, methodname)
+    if not callable(method):
+        return None
+    print(f"yielding {methodname}")
+    if hasattr(method, "_is_remote") and method._is_remote is True:
+        return (methodname, method)
+
+
+def try_get_remote_property(attrname: str, obj: typing.Any) -> typing.Tuple[str, property]:
+    objclass: typing.Type = obj.__class__
+    class_attribute = getattr(objclass, attrname)
+    getmethod = None
+    setmethod = None
+    if class_attribute.fget:
+        if isinstance(class_attribute.fget, remote_method):
+            getmethod = class_attribute.fget
+    if class_attribute.fset:
+        if isinstance(class_attribute.fset, remote_method):
+            setmethod = class_attribute.fset
+
+    return (attrname, property(getmethod, setmethod))
+
+
+def get_remote_methods(
+    obj,
+) -> typing.Generator[typing.Tuple[str, typing.Callable, MethodType], None, None]:
     """Yield names and methods of an object's remote methods.
 
     A remote method is identified by the presence of an attribute `_is_remote` set to `True`.
@@ -69,13 +103,21 @@ def get_remote_methods(obj) -> typing.Generator[typing.Tuple[str, typing.Callabl
     ------
     Generator[Tuple[str, Callable], None, None]
         A tuple containing the method name and the method itself
-        for each remote method found in the object.
+        for each remote method found in the object
     """
-    for methodname in dir(obj):
-        if methodname.startswith("__"):
+    print(f"Getting remote methods on {obj}")
+    objclass = obj.__class__
+    for attrname in dir(obj):
+        if attrname.startswith("__"):
             continue
-        method = getattr(obj, methodname)
-        if not callable(method):
-            continue
-        if hasattr(method, "_is_remote") and method._is_remote is True:
-            yield methodname, method
+        print(attrname)
+        if hasattr(objclass, attrname):
+            class_attribute = getattr(objclass, attrname)
+            if isinstance(class_attribute, property):
+                attrname, prop = try_get_remote_property(attrname, obj)
+                yield attrname, prop, MethodType.PROP
+                continue
+        result = try_get_remote_method(attrname, obj)
+        if result != None:
+            attrname, method = result
+            yield attrname, method, MethodType.METHOD

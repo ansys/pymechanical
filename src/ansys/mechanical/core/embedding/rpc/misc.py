@@ -19,17 +19,39 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+"""functions that can be installed in Server."""
 
-"""RPC and Mechanical service implementation."""
-from .client import Client
 
-# todo - provide an implementation of Server (RemoteMechancial) that installs the below
-# from .default_server import RemoteMechanical
-#        and remove them from this import statement
-from .misc import clear, run_python_script, run_python_script_from_file
+# free functions: first argument of each must be app
+def run_python_script(
+    app: "ansys.mechanical.core.embedding.App",
+    script: str,
+    enable_logging=False,
+    log_level="WARNING",
+    progress_interval=2000,
+):
+    """Run scripts using Internal python engine."""
+    try:
+        app.execute_script(script)
+    except Exception as e:
+        raise Exception({str(e)})
+    return app.execute_script(script)
 
-# todo - combine Server and MechanicalService
-from .server import MechanicalEmbeddedServer
 
-# todo - get_remote_methods should not be here
-from .utils import get_remote_methods, remote_method
+def run_python_script_from_file(
+    app: "ansys.mechanical.core.embedding.App",
+    file_path: str,
+    enable_logging=False,
+    log_level="WARNING",
+    progress_interval=2000,
+):
+    """Run scripts using Internal python engine."""
+    return app.execute_script_from_file(file_path)
+
+
+def clear(app: "ansys.mechanical.core.embedding.App"):
+    app.new()
+
+
+# def project_directory(app: "ansys.mechanical.core.embedding.App"):
+#     return app.execute_script("ExtAPI.DataModel.Project.ProjectDirectory")

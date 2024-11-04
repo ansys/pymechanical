@@ -21,9 +21,11 @@
 # SOFTWARE.
 """Client for Mechanical services."""
 
+import os
 import time
 
 import rpyc
+from rpyc.utils.classic import upload
 
 
 class Client:
@@ -52,11 +54,21 @@ class Client:
         self.root = None
         self._connect()
 
+    def __getattr__(self, attr):
+        if hasattr(self.root, attr):
+            return getattr(self.root, attr)
+        # if hasattr(self.root, attr+"__property__"):
+        #    return getattr(self.root)
+
     def _connect(self):
         self._wait_until_ready()
         self.connection = rpyc.connect(self.host, self.port)
         self.root = self.connection.root
         print(f"Connected to {self.host}:{self.port}")
+        # setattr(self.root, "close", self.close)
+        # setattr(self.root, "upload", self.upload)
+        # setattr(self.root, "download", self.download)
+        print(f"Installed methods")
 
     def _wait_until_ready(self):
         t_max = time.time() + self.timeout
@@ -78,3 +90,74 @@ class Client:
         """Close the connection."""
         self.connection.close()
         print(f"Connection to {self.host}:{self.port} closed")
+
+    from ansys.mechanical.core.mechanical import DEFAULT_CHUNK_SIZE
+
+    def upload(
+        self,
+        file_name,
+        file_location_destination=None,
+        chunk_size=DEFAULT_CHUNK_SIZE,
+        progress_bar=False,
+    ):
+        print(f"arg: {file_name}, {file_location_destination}")
+        print()
+        if not os.path.exists(file_name):
+            print(f"File {file_name} does not exist.")
+            return
+        file_base_name = os.path.basename(file_name)
+        remote_path = os.path.join(file_location_destination, file_base_name)
+
+        with open(file_name, "rb") as f:
+            file_data = f.read()
+            self.root.exposed_upload(remote_path, file_data)
+
+        print(f"File {file_name} uploaded to {file_location_destination}")
+
+    def download(
+        self,
+        files,
+        target_dir=None,
+        chunk_size=DEFAULT_CHUNK_SIZE,
+        progress_bar=None,
+        recursive=False,
+    ):
+        """Download a file from the server."""
+
+        os.makedirs(target_dir, exist_ok=True)
+
+        response = self.root.exposed_download(files)
+
+        if isinstance(response, dict) and response["is_directory"]:
+            for relative_file_path in response["files"]:
+                full_remote_path = os.path.join(files, relative_file_path)
+                local_file_path = os.path.join(target_dir, relative_file_path)
+                local_file_dir = os.path.dirname(local_file_path)
+                os.makedirs(local_file_dir, exist_ok=True)
+
+                self._download_file(full_remote_path, local_file_path, chunk_size, overwrite=True)
+        else:
+            self._download_file(
+                files, os.path.join(target_dir, os.path.basename(files)), chunk_size, overwrite=True
+            )
+
+    def _download_file(self, remote_file_path, local_file_path, chunk_size=1024, overwrite=False):
+        """Download a single file from the server."""
+
+        if os.path.exists(local_file_path) and not overwrite:
+            print(f"File {local_file_path} already exists locally. Skipping download.")
+            return
+        response = self.root.exposed_download(remote_file_path)
+        if isinstance(response, dict):
+            raise ValueError("Expected a file download, but got a directory response.")
+        file_data = response
+
+        # Write the file data to the local path
+        with open(local_file_path, "wb") as f:
+            f.write(file_data)
+
+        print(f"File {remote_file_path} downloaded to {local_file_path}")
+
+    @property
+    def project_directory(self):
+        return self.root.exposed_run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
