@@ -174,6 +174,20 @@ jobs:
           else
             echo "matrix={\"mechanical-version\":['${{ needs.revn-variations.outputs.test_docker_image_version }}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           fi
+  container-stability-check:
+    runs-on: ubuntu-latest
+    needs: [revn-variations]
+    steps:
+      - name: Check Container Stability
+        run: |
+          sudo apt update
+          sudo apt install bc -y
+          CONTAINER_VERSION=$(echo "${{ needs.revn-variations.outputs.test_docker_image_version }}" | grep -o -E '[0-9]+(\.[0-9]+)?' | head -n 1)
+          if (( $(echo "$CONTAINER_VERSION > 24.2" | bc -l) )); then
+            echo "CONTAINER_STABLE_EXIT=true" >> $GITHUB_ENV
+          else
+            echo "CONTAINER_STABLE_EXIT=false" >> $GITHUB_ENV
+          fi
 
   remote-connect:
     name: Remote connect testing and coverage - Mechanical ${{ matrix.mechanical-version }}
@@ -304,7 +318,11 @@ jobs:
           PYTHONUNBUFFERED: 1
         run: |
           . /env/bin/activate
-          xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml || true
+          if [ "${{ env.CONTAINER_STABLE_EXIT }}" == "true" ]; then
+            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml || true
+          else
+            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml
+          fi
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v4
