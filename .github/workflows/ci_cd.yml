@@ -321,7 +321,7 @@ jobs:
           if [ "${{ env.CONTAINER_STABLE_EXIT }}" == "true" ]; then
             xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml
           else
-            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml || true
+            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml
           fi
 
       - name: Upload coverage results
@@ -566,10 +566,11 @@ jobs:
             if [ "${{ env.CONTAINER_STABLE_EXIT }}" == "true" ]; then
               xvfb-run mechanical-env make -C doc $1
             else
-              xvfb-run mechanical-env make -C doc $1 > $output_file 2>&1 || true
-              cat $output_file
-              echo done running make
-              validate_output $output_file
+              xvfb-run mechanical-env make -C doc $1
+              # xvfb-run mechanical-env make -C doc $1 > $output_file 2>&1 || true
+              # cat $output_file
+              # echo done running make
+              # validate_output $output_file
             fi
           }
 
