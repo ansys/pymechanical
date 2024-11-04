@@ -222,7 +222,7 @@ jobs:
           pytest-extra-args: '-s --junitxml remote_results${{ env.MAIN_PYTHON_VERSION}}.xml'
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@v4
+        uses: mikepenz/action-junit-report@v5
         if: always()
         with:
           report_paths: '**/remote_results*.xml'
@@ -325,7 +325,7 @@ jobs:
           retention-days: 7
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@v4
+        uses: mikepenz/action-junit-report@v5
         if: always()
         with:
           report_paths: '**/test_results*.xml'
@@ -395,7 +395,7 @@ jobs:
           retention-days: 7
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@v4
+        uses: mikepenz/action-junit-report@v5
         if: always()
         with:
           report_paths: '**/test_results*.xml'
@@ -450,7 +450,7 @@ jobs:
           pytest -m remote_session_launch -s --junitxml launch_test_results${{ matrix.python-version }}.xml || true
 
       - name: Publish Launch Test Report
-        uses: mikepenz/action-junit-report@v4
+        uses: mikepenz/action-junit-report@v5
         if: always()
         with:
           report_paths: '**/launch_test_results*.xml'
