@@ -184,6 +184,15 @@ directory = "miscellaneous"
 name = "Miscellaneous"
 showcontent = true
 
+[[tool.towncrier.type]]
+directory = "whatsnew"
+name = "Whatsnew"
+showcontent = true
+
+[[tool.towncrier.section]]
+name = "Whatsnew"
+path = "whatsnew"
+
 # ========================================================
 # Flake8 Configuration
 # ========================================================
