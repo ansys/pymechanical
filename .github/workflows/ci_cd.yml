@@ -319,9 +319,9 @@ jobs:
         run: |
           . /env/bin/activate
           if [ "${{ env.CONTAINER_STABLE_EXIT }}" == "true" ]; then
-            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml || true
-          else
             xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml
+          else
+            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml || true
           fi
 
       - name: Upload coverage results
@@ -563,10 +563,14 @@ jobs:
             unset PYMECHANICAL_START_INSTANCE
 
             output_file=doc_$1_output.txt
-            xvfb-run mechanical-env make -C doc $1 > $output_file 2>&1 || true
-            cat $output_file
-            echo done running make
-            validate_output $output_file
+            if [ "${{ env.CONTAINER_STABLE_EXIT }}" == "true" ]; then
+              xvfb-run mechanical-env make -C doc $1
+            else
+              xvfb-run mechanical-env make -C doc $1 > $output_file 2>&1 || true
+              cat $output_file
+              echo done running make
+              validate_output $output_file
+            fi
           }
 
           # Validate that the html or pdf build succeeded
