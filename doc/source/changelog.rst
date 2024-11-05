@@ -9,6 +9,11 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`1.3.0 <https://github.com/ansys/pymechanical/releases/tag/v1.3.0>`_ - 2024-11-05
+=================================================================================
+No significant changes.
+
+
 `0.11.7 <https://github.com/ansys/pymechanical/releases/tag/v0.11.7>`_ - 2024-08-29
 ===================================================================================
 
