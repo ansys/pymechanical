@@ -177,6 +177,8 @@ jobs:
   container-stability-check:
     runs-on: ubuntu-latest
     needs: [revn-variations]
+    outputs:
+      container_stable_exit: ${{ steps.check_stability.outputs.container_stable_exit }}
     steps:
       - name: Check Container Stability
         run: |
@@ -184,9 +186,9 @@ jobs:
           sudo apt install bc -y
           CONTAINER_VERSION=$(echo "${{ needs.revn-variations.outputs.test_docker_image_version }}" | grep -o -E '[0-9]+(\.[0-9]+)?' | head -n 1)
           if (( $(echo "$CONTAINER_VERSION > 24.2" | bc -l) )); then
-            echo "CONTAINER_STABLE_EXIT=true" >> $GITHUB_ENV
+            echo "container_stable_exit=true" >> $GITHUB_OUTPUT
           else
-            echo "CONTAINER_STABLE_EXIT=false" >> $GITHUB_ENV
+            echo "container_stable_exit=false" >> $GITHUB_OUTPUT
           fi
 
   remote-connect:
@@ -283,7 +285,7 @@ jobs:
     name: Embedding testing and coverage
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [smoke-tests, revn-variations]
+    needs: [smoke-tests, revn-variations, container-stability-check]
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
@@ -318,10 +320,10 @@ jobs:
           PYTHONUNBUFFERED: 1
         run: |
           . /env/bin/activate
-          if [ "${{ env.CONTAINER_STABLE_EXIT }}" == "true" ]; then
+          if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" == "true" ]; then
             xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml
           else
-            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml
+            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml || true
           fi
 
       - name: Upload coverage results
@@ -501,7 +503,7 @@ jobs:
     container:
       image: ${{ needs.revn-variations.outputs.stable_container }}
       options: --entrypoint /bin/bash
-    needs: [style, doc-style, revn-variations]
+    needs: [style, doc-style, revn-variations, container-stability-check]
 
     steps:
 
@@ -563,14 +565,13 @@ jobs:
             unset PYMECHANICAL_START_INSTANCE
 
             output_file=doc_$1_output.txt
-            if [ "${{ env.CONTAINER_STABLE_EXIT }}" == "true" ]; then
+            if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" == "true" ]; then
               xvfb-run mechanical-env make -C doc $1
             else
-              xvfb-run mechanical-env make -C doc $1
-              # xvfb-run mechanical-env make -C doc $1 > $output_file 2>&1 || true
-              # cat $output_file
-              # echo done running make
-              # validate_output $output_file
+              xvfb-run mechanical-env make -C doc $1 > $output_file 2>&1 || true
+              cat $output_file
+              echo done running make
+              validate_output $output_file
             fi
           }
 
