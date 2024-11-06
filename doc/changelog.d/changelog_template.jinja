@@ -1,17 +1,41 @@
+{% set ns = namespace(references=[]) %}
 {% if sections["Whatsnew"] %}
-{% for category, val in sections["Whatsnew"].items() -%}
-{{ category }}
-{% set underline = '-' * category|length %}
-{{ underline }}
-{% for text, _ in val.items() %}
+    {% for category, val in sections["Whatsnew"].items() %}
+        {% if definitions.get(category) and definitions[category].get('name') %}
+            {% set ns.references = ns.references + [definitions[category]['name']] %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
 
-{{ text|trim() }}
+{% if sections.get("") %}
+    {% set ns.references = ns.references + ["Changelog"] %}
+{% endif %}
+{% if ns.references %}
 
-{% endfor %}
+{% for reference in ns.references %}
+- `{{ reference }}`_
 {% endfor %}
 {% endif %}
 
-{% if sections[""] %}
+{% if sections["Whatsnew"] %}
+  {%- for category, val in sections["Whatsnew"].items() %}
+    {%- if definitions.get(category) and definitions[category].get('name') -%}
+{{ definitions[category]['name'] }}
+{{ "~" * definitions[category]['name']|length }}
+    {% endif %}
+    {% for text, values in sections["Whatsnew"][category].items() %}
+
+{{ text }}
+
+    {% endfor %}
+  {%- endfor %}
+{% endif %}
+
+{% if sections[""] %}-
+
+Changelog
+---------
+
 .. tab-set::
 {% for category, val in definitions.items() if category in sections[""] %}
   .. tab-item:: {{ definitions[category]['name'] }}
@@ -34,4 +58,3 @@ No significant changes.
 
 
 {% endif %}
-

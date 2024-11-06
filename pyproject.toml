@@ -161,17 +161,17 @@ issue_format = "`#{issue} <https://github.com/ansys/pymechanical/pull/{issue}>`_
 
 [[tool.towncrier.type]]
 directory = "added"
-name = "Added"
+name = "Features"
 showcontent = true
 
 [[tool.towncrier.type]]
 directory = "changed"
-name = "Changed"
+name = "Deprecated and Changed"
 showcontent = true
 
 [[tool.towncrier.type]]
 directory = "fixed"
-name = "Fixed"
+name = "Bug fixes"
 showcontent = true
 
 [[tool.towncrier.type]]
