@@ -190,6 +190,10 @@ name = "Whatsnew"
 showcontent = true
 
 [[tool.towncrier.section]]
+name = ""
+path = ""
+
+[[tool.towncrier.section]]
 name = "Whatsnew"
 path = "whatsnew"
 

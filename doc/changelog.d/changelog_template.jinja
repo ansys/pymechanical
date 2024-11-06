@@ -1,25 +1,37 @@
 {% if sections[""] %}
+.. tab-set::
 {% for category, val in definitions.items() if category in sections[""] %}
-
   .. tab-item:: {{ definitions[category]['name'] }}
 
       .. list-table::
           :header-rows: 0
           :widths: auto
 
-            {%- for text, values in sections[""][category].items() %}
-            * - {{ text }}
-              - {{ values|join(', ') }}
-            {%- endfor %}
+            {% for text, values in sections[""][category].items() %}
 
-{{ definitions[category]['name'] }}
-{% set underline = '^' * definitions[category]['name']|length %}
-{{ underline }}
-
+          * - {{ text|indent(12) }}
+            - {{ values|join(', ')|indent(12) }}
+            
+            {% endfor %}
 
 {% endfor %}
+
 {% else %}
 No significant changes.
 
 
 {% endif %}
+
+{% if sections["Whatsnew"] %}
+{% for category, val in sections["Whatsnew"].items() %}
+{{ category }}
+{% set underline = '-' * category|length %}
+{{ underline }}
+{% for text, values in val.items() %}
+{{ text|indent }}
+{% endfor %}
+{% endfor %}
+
+{% endif %}
+
+
