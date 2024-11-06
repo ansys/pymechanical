@@ -180,7 +180,7 @@ jobs:
     outputs:
       container_stable_exit: ${{ steps.check_stability.outputs.container_stable_exit }}
     steps:
-      - name: Check Container Stability
+      - id: check_stability
         run: |
           sudo apt update
           sudo apt install bc -y
