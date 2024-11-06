@@ -501,7 +501,7 @@ jobs:
     name: Documentation
     runs-on: ubuntu-latest
     container:
-      image: ${{ needs.revn-variations.outputs.stable_container }}
+      image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
     needs: [style, doc-style, revn-variations, container-stability-check]
 
