@@ -1,3 +1,16 @@
+{% if sections["Whatsnew"] %}
+{% for category, val in sections["Whatsnew"].items() -%}
+{{ category }}
+{% set underline = '-' * category|length %}
+{{ underline }}
+{% for text, _ in val.items() %}
+
+{{ text|trim() }}
+
+{% endfor %}
+{% endfor %}
+{% endif %}
+
 {% if sections[""] %}
 .. tab-set::
 {% for category, val in definitions.items() if category in sections[""] %}
@@ -21,17 +34,4 @@ No significant changes.
 
 
 {% endif %}
-
-{% if sections["Whatsnew"] %}
-{% for category, val in sections["Whatsnew"].items() %}
-{{ category }}
-{% set underline = '-' * category|length %}
-{{ underline }}
-{% for text, values in val.items() %}
-{{ text|indent }}
-{% endfor %}
-{% endfor %}
-
-{% endif %}
-
 

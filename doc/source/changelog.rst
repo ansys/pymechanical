@@ -9,6 +9,221 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+Version `v0.12.0 <https://github.com/ansys/pymechanical/releases/tag/vv0.12.0>`_ (2024-11-06)
+=============================================================================================
+whatsnew
+--------
+
+Launch GUI
+  ^^^^^^^^^^
+  Open the current project with Mechanical GUI.
+
+  .. code:: python
+
+      from ansys.mechanical.core import App
+
+      app = App()
+      app.save()
+      app.launch_gui()
+
+  Above code opens up the temporarily saved ``.mechdb`` or ``.mechdat`` files.
+  The files are deleted when GUI is closed . For more info check
+  `launch_gui() <../api/ansys/mechanical/core/embedding/launch_gui/index.html>`_ function
+
+  Opens up the specified project file.
+
+  .. code:: python
+
+    launch_gui("path/to/project.mechdb")
+
+
+Prints Mechanical project tree
+  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  This feature let you see the heirachial Mechanical project tree.
+  It also shows whether an object is suppressed or not.
+
+  .. code:: python
+
+    import ansys.mechanical.core as mech
+
+    app = mech.App()
+    app.update_globals(globals())
+    app.print_tree()
+
+
+.. tab-set::
+  .. tab-item:: Added
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+            
+          * - launch_gui command
+            - `#882 <https://github.com/ansys/pymechanical/pull/882>`_
+            
+            
+          * - Add method to execute script from file for embedding
+            - `#902 <https://github.com/ansys/pymechanical/pull/902>`_
+            
+            
+          * - add warning for x11 loaded before init on 25.1+
+            - `#909 <https://github.com/ansys/pymechanical/pull/909>`_
+            
+            
+          * - `ansys-mechanical-ideconfig` command
+            - `#935 <https://github.com/ansys/pymechanical/pull/935>`_
+            
+            
+          * - Automatically update pre-commit ci PR with prefix
+            - `#936 <https://github.com/ansys/pymechanical/pull/936>`_
+            
+            
+          * - add what's new section
+            - `#945 <https://github.com/ansys/pymechanical/pull/945>`_
+            
+            
+  .. tab-item:: Fixed
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+            
+          * - Update ``execute_script`` method
+            - `#894 <https://github.com/ansys/pymechanical/pull/894>`_
+            
+            
+          * - Adapting braking change for upload action
+            - `#895 <https://github.com/ansys/pymechanical/pull/895>`_
+            
+            
+          * - Remove Python class reference.
+            - `#901 <https://github.com/ansys/pymechanical/pull/901>`_
+            
+            
+          * - documentation links
+            - `#911 <https://github.com/ansys/pymechanical/pull/911>`_
+            
+            
+          * - Throw value error for unsupported version of Mechanical
+            - `#917 <https://github.com/ansys/pymechanical/pull/917>`_
+            
+            
+          * - Use "lite" CLR host on windows for 251+
+            - `#920 <https://github.com/ansys/pymechanical/pull/920>`_
+            
+            
+          * - update AUTHORS file
+            - `#929 <https://github.com/ansys/pymechanical/pull/929>`_
+            
+            
+          * - Warning for multiple version
+            - `#942 <https://github.com/ansys/pymechanical/pull/942>`_
+            
+            
+  .. tab-item:: Miscellaneous
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+            
+          * - use embedding clr host in version 251
+            - `#926 <https://github.com/ansys/pymechanical/pull/926>`_
+            
+            
+  .. tab-item:: Documentation
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+            
+          * - remove ``thispagetitle`` metatag
+            - `#897 <https://github.com/ansys/pymechanical/pull/897>`_
+            
+            
+  .. tab-item:: Maintenance
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+            
+          * - Add vulnerability check
+            - `#709 <https://github.com/ansys/pymechanical/pull/709>`_
+            
+            
+          * - update CHANGELOG for v0.11.7
+            - `#889 <https://github.com/ansys/pymechanical/pull/889>`_
+            
+            
+          * - Bump grpcio from 1.66.0 to 1.66.1 in the core group
+            - `#891 <https://github.com/ansys/pymechanical/pull/891>`_
+            
+            
+          * - Bump the doc group with 2 updates
+            - `#892 <https://github.com/ansys/pymechanical/pull/892>`_
+            
+            
+          * - Bump pytest-print from 1.0.0 to 1.0.1 in the tests group
+            - `#898 <https://github.com/ansys/pymechanical/pull/898>`_
+            
+            
+          * - Bump the doc group with 4 updates
+            - `#899 <https://github.com/ansys/pymechanical/pull/899>`_, `#907 <https://github.com/ansys/pymechanical/pull/907>`_, `#916 <https://github.com/ansys/pymechanical/pull/916>`_
+            
+            
+          * - Drop python 3.9
+            - `#904 <https://github.com/ansys/pymechanical/pull/904>`_
+            
+            
+          * - Bump pytest from 8.3.2 to 8.3.3 in the tests group
+            - `#906 <https://github.com/ansys/pymechanical/pull/906>`_
+            
+            
+          * - Remove unnecessary dependencies
+            - `#908 <https://github.com/ansys/pymechanical/pull/908>`_
+            
+            
+          * - Bump ansys-mechanical-env from 0.1.7 to 0.1.8 in the core group
+            - `#914 <https://github.com/ansys/pymechanical/pull/914>`_
+            
+            
+          * - Bump pytest-print from 1.0.1 to 1.0.2 in the tests group
+            - `#915 <https://github.com/ansys/pymechanical/pull/915>`_
+            
+            
+          * - Bump grpcio from 1.66.1 to 1.66.2 in the core group
+            - `#922 <https://github.com/ansys/pymechanical/pull/922>`_
+            
+            
+          * - Bump panel from 1.5.0 to 1.5.1 in the doc group
+            - `#923 <https://github.com/ansys/pymechanical/pull/923>`_
+            
+            
+          * - Use static search
+            - `#927 <https://github.com/ansys/pymechanical/pull/927>`_
+            
+            
+          * - Bump the doc group with 5 updates
+            - `#933 <https://github.com/ansys/pymechanical/pull/933>`_, `#943 <https://github.com/ansys/pymechanical/pull/943>`_
+            
+            
+          * - pre-commit autoupdate
+            - `#934 <https://github.com/ansys/pymechanical/pull/934>`_
+            
+            
+          * - Code maintenance
+            - `#937 <https://github.com/ansys/pymechanical/pull/937>`_
+            
+            
+          * - pre-commit automatic update
+            - `#944 <https://github.com/ansys/pymechanical/pull/944>`_
+            
+            
+
 `1.3.0 <https://github.com/ansys/pymechanical/releases/tag/v1.3.0>`_ - 2024-11-05
 =================================================================================
 No significant changes.
