@@ -565,7 +565,7 @@ jobs:
             unset PYMECHANICAL_START_INSTANCE
 
             output_file=doc_$1_output.txt
-            if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" == "true" ]; then
+            if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
               xvfb-run mechanical-env make -C doc $1
             else
               xvfb-run mechanical-env make -C doc $1 > $output_file 2>&1 || true
