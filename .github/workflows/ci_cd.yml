@@ -320,7 +320,7 @@ jobs:
           PYTHONUNBUFFERED: 1
         run: |
           . /env/bin/activate
-          if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" == "true" ]; then
+          if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
             xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml
           else
             xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml || true
@@ -431,7 +431,7 @@ jobs:
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
-    needs: [ style, revn-variations]
+    needs: [ style, revn-variations, container-stability-check]
     strategy:
       fail-fast: false
       matrix:
@@ -467,7 +467,11 @@ jobs:
           unset PYMECHANICAL_PORT
           unset PYMECHANICAL_START_INSTANCE
           . /env/bin/activate
-          pytest -m remote_session_launch -s --junitxml launch_test_results${{ matrix.python-version }}.xml || true
+          if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
+            pytest -m remote_session_launch -s --junitxml launch_test_results${{ matrix.python-version }}.xml
+          else
+            pytest -m remote_session_launch -s --junitxml launch_test_results${{ matrix.python-version }}.xml || true
+          fi
 
       - name: Publish Launch Test Report
         uses: mikepenz/action-junit-report@v4
@@ -569,7 +573,7 @@ jobs:
               xvfb-run mechanical-env make -C doc $1
             else
               xvfb-run mechanical-env make -C doc $1 > $output_file 2>&1 || true
-              cat $output_file
+              cat $output_filehttps://github.com/ansys/pymechanical/issues
               echo done running make
               validate_output $output_file
             fi
