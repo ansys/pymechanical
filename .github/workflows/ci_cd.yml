@@ -573,7 +573,7 @@ jobs:
               xvfb-run mechanical-env make -C doc $1
             else
               xvfb-run mechanical-env make -C doc $1 > $output_file 2>&1 || true
-              cat $output_filehttps://github.com/ansys/pymechanical/issues
+              cat $output_file
               echo done running make
               validate_output $output_file
             fi
