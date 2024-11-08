@@ -158,6 +158,7 @@ start_string = ".. towncrier release notes start\n"
 template = "doc/changelog.d/changelog_template.jinja"
 title_format = "Version `{version} <https://github.com/ansys/pymechanical/releases/tag/v{version}>`_ ({project_date})"
 issue_format = "`#{issue} <https://github.com/ansys/pymechanical/pull/{issue}>`_"
+all_bullets = false
 
 [[tool.towncrier.type]]
 directory = "added"

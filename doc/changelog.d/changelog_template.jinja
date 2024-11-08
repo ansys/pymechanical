@@ -1,60 +1,36 @@
-{% set ns = namespace(references=[]) %}
 {% if sections["Whatsnew"] %}
-    {% for category, val in sections["Whatsnew"].items() %}
-        {% if definitions.get(category) and definitions[category].get('name') %}
-            {% set ns.references = ns.references + [definitions[category]['name']] %}
-        {% endif %}
-    {% endfor %}
-{% endif %}
-
-{% if sections.get("") %}
-    {% set ns.references = ns.references + ["Changelog"] %}
-{% endif %}
-{% if ns.references %}
-
-{% for reference in ns.references %}
-- `{{ reference }}`_
-{% endfor %}
-{% endif %}
-
-{% if sections["Whatsnew"] %}
-  {%- for category, val in sections["Whatsnew"].items() %}
-    {%- if definitions.get(category) and definitions[category].get('name') -%}
+  {%+ for category, val in sections["Whatsnew"].items() +%}
+    {%+ if definitions.get(category) and definitions[category].get('name') +%}
 {{ definitions[category]['name'] }}
 {{ "~" * definitions[category]['name']|length }}
     {% endif %}
-    {% for text, values in sections["Whatsnew"][category].items() %}
+    {%- for text, values in sections["Whatsnew"][category].items() %}
 
 {{ text }}
 
-    {% endfor %}
-  {%- endfor %}
+    {% endfor -%}
+  {% endfor %}
 {% endif %}
 
-{% if sections[""] %}-
+{% if sections[""] %}
 
 Changelog
 ---------
 
 .. tab-set::
-{% for category, val in definitions.items() if category in sections[""] %}
+  {%+ for category, val in definitions.items() if category in sections[""] +%}
   .. tab-item:: {{ definitions[category]['name'] }}
 
-      .. list-table::
-          :header-rows: 0
-          :widths: auto
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
 
-            {% for text, values in sections[""][category].items() %}
-
-          * - {{ text|indent(12) }}
-            - {{ values|join(', ')|indent(12) }}
-            
-            {% endfor %}
-
-{% endfor %}
+    {%+ for text, values in sections[""][category].items() +%}
+        * - {{ text }}
+          - {{ values|join(', ') }}
+    {% endfor %}
+  {% endfor %}
 
 {% else %}
 No significant changes.
-
-
 {% endif %}
