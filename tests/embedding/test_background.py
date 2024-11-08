@@ -92,7 +92,7 @@ def test_background_app_use_stopped(rootdir, run_subprocess, pytestconfig):
     stderr = _run_background_app_test(
         run_subprocess, rootdir, pytestconfig, "test_background_app_use_stopped", False
     )
-    assert "Cannot use background app after stopping it" in stderr
+    assert "Cannot use BackgroundApp after stopping it" in stderr
 
 
 @pytest.mark.embedding_scripts
