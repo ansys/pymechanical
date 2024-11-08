@@ -62,7 +62,8 @@ def _run_background_app_test(
     Returns the stderr of the subprocess as a string.
     """
     subprocess_pass_expected = pass_expected
-    if pass_expected == True and os.name != "nt":
+    version = pytestconfig.getoption("ansys_version")
+    if pass_expected == True and os.name != "nt" and int(version) < 251:
         subprocess_pass_expected = False
     stdout, stderr = _run_background_app_test_process(
         rootdir, run_subprocess, pytestconfig, testname, subprocess_pass_expected

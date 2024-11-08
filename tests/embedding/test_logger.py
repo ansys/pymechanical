@@ -87,7 +87,8 @@ def _run_embedding_log_test(
     Returns the stderr
     """
     subprocess_pass_expected = pass_expected
-    if pass_expected == True and os.name != "nt":
+    version = pytestconfig.getoption("ansys_version")
+    if pass_expected == True and os.name != "nt" and int(version) < 251:
         subprocess_pass_expected = False
     stdout, stderr = _run_embedding_log_test_process(
         rootdir, run_subprocess, pytestconfig, testname, subprocess_pass_expected
