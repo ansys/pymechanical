@@ -65,6 +65,11 @@ def _run_background_app_test(
     version = pytestconfig.getoption("ansys_version")
     if pass_expected == True and os.name != "nt" and int(version) < 251:
         subprocess_pass_expected = False
+
+    # TODO: revert below condition once bug #975 is fixed
+    if testname == "multiple_instances":
+        subprocess_pass_expected = True
+
     stdout, stderr = _run_background_app_test_process(
         rootdir, run_subprocess, pytestconfig, testname, subprocess_pass_expected
     )
