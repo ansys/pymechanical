@@ -67,7 +67,7 @@ def _run_background_app_test(
         subprocess_pass_expected = False
 
     # TODO: revert below condition once bug #975 is fixed
-    if testname == "multiple_instances":
+    if testname == "multiple_instances" and subprocess_pass_expected == True:
         subprocess_pass_expected = True
 
     stdout, stderr = _run_background_app_test_process(
