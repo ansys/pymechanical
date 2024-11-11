@@ -25,8 +25,6 @@ import os
 import time
 
 import rpyc
-from rpyc.utils.classic import upload
-
 
 class Client:
     """Client for connecting to Mechanical services."""
@@ -57,8 +55,20 @@ class Client:
     def __getattr__(self, attr):
         if hasattr(self.root, attr):
             return getattr(self.root, attr)
-        # if hasattr(self.root, attr+"__property__"):
-        #    return getattr(self.root)
+        propget_name = f"propget_{attr}"
+        if hasattr(self.root, propget_name):
+            exposed_fget =  getattr(self.root, propget_name)
+            return exposed_fget()
+        return self.__dict__.items[attr]
+    """
+    def __setattr__(self, attr, value):
+        if hasattr(self.root, attr):
+            inner_prop = getattr(self.root.__class__, attr)
+            if isinstance(inner_prop, property):
+                inner_prop.fset(self.root, value)
+        else:
+            super().__setattr__(attr, value)
+    """
 
     def _connect(self):
         self._wait_until_ready()
@@ -158,6 +168,6 @@ class Client:
 
         print(f"File {remote_file_path} downloaded to {local_file_path}")
 
-    @property
-    def project_directory(self):
-        return self.root.exposed_run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
+    # @property
+    # def project_directory(self):
+    #     return self.root.exposed_run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")

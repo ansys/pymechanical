@@ -80,9 +80,11 @@ def try_get_remote_property(attrname: str, obj: typing.Any) -> typing.Tuple[str,
     if class_attribute.fget:
         if isinstance(class_attribute.fget, remote_method):
             getmethod = class_attribute.fget
+            getmethod._owner = obj
     if class_attribute.fset:
         if isinstance(class_attribute.fset, remote_method):
             setmethod = class_attribute.fset
+            setmethod._owner = obj
 
     return (attrname, property(getmethod, setmethod))
 

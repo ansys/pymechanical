@@ -67,7 +67,7 @@ class MechanicalService(rpyc.Service):
             if methodtype == MethodType.METHOD:
                 self._install_method(method)
             elif methodtype == MethodType.PROP:
-                self._install_property(method)
+                self._install_property(method, methodname)
 
     def on_connect(self, conn):
         """Handle client connection."""
@@ -78,13 +78,27 @@ class MechanicalService(rpyc.Service):
         """Handle client disconnection."""
         print("Client disconnected")
 
+    def _curry_property(self, prop, propname, get: bool):
+        """Curry the given property."""
+
+        def posted(*arg):
+            def curried():
+                if get:
+                    return getattr(prop._owner, propname)
+                else:
+                    setattr(prop._owner, propname, *arg)
+
+            return self._poster.post(curried)
+
+        return posted
+
     def _curry_method(self, method, realmethodname):
         """Curry the given method."""
 
-        def posted(*args):
+        def posted(*args, **kwargs):
             def curried():
                 original_method = getattr(method._owner, realmethodname)
-                result = original_method(*args)
+                result = original_method(*args, **kwargs)
                 return result
 
             return self._poster.post(curried)
@@ -104,28 +118,47 @@ class MechanicalService(rpyc.Service):
 
         return posted
 
-    def _install_property(self, property: property):
+    def _install_property(self, prop: property, propname: str):
         """Install property with inner and exposed pairs."""
         # TODO: check how rpyc has property
-        print("installing property")
+        # print("installing property")
+
+        # install exposed_fget and fset
+        # exposed fget gets the inner attr ?
+
+        # get value using poster here
+
+        if prop.fget:
+            exposed_get_name = f"exposed_propget_{propname}"
+            def exposed_propget():
+                """Convert to exposed getter."""
+                f = self._curry_property(prop.fget, propname, True)
+                result = f()
+                return result
+            setattr(self, exposed_get_name, exposed_propget)
+        if prop.fset:
+            exposed_set_name = f"exposed_propset_{propname}"
+            def exposed_propset(arg):
+                """Convert to exposed getter."""
+                f = self._curry_property(prop.fset, propname, True)
+                result = f(arg)
+                return result
+            setattr(self, exposed_set_name, exposed_propset)
 
     def _install_method(self, method):
+        methodname = method.__name__
+        self._install_method_with_name(methodname, methodname)
+
+    def _install_method_with_name(self, method, methodname, innername):
         """Install methods of impl with inner and exposed pairs."""
-        exposed_name = f"exposed_{method.__name__}"
-        inner_name = f"inner_{method.__name__}"
+        exposed_name = f"exposed_{methodname}"
 
-        def inner_method(*args):
-            """Convert to inner method."""
-            result = method(*args)
-            return result
-
-        def exposed_method(*args):
+        def exposed_method(*args, **kwargs):
             """Convert to exposed method."""
-            f = self._curry_method(method, method.__name__)
-            result = f(*args)
+            f = self._curry_method(method, innername)
+            result = f(*args, **kwargs)
             return result
 
-        setattr(self, inner_name, inner_method)
         setattr(self, exposed_name, exposed_method)
 
     def _install_function(self, function):
@@ -271,9 +304,9 @@ class DefaultServiceMethods:
     def __repr__(self):
         return '"ServiceMethods instance"'
 
-    # @property
+    @property
     @remote_method
-    def get_project_name(self):
+    def project_name(self):
         return self.helper_func()
 
     def helper_func(self):

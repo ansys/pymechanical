@@ -33,19 +33,20 @@ if __name__ == "__main__":
 
     # c2: DefaultServiceMethods = launch_server() => creates client, returns client.roo
 
-    # print(client.get_project_name())
+    client.project_name = "hello"
+    print(client.project_name)
     # client.change_project_name("lol")
     # print(client.get_project_name())
     # print(client.run_python_script("ExtAPI.DataModel.Project", False, "WARNING", 2000))
 
-    print(
-        client.run_python_script(
-            "ExtAPI.DataModel.Project",
-            enable_logging=False,
-            log_level="WARNING",
-            progress_interval=2000,
-        )
-    )
+    # print(
+    #     client.run_python_script(
+    #         "ExtAPI.DataModel.Project",
+    #         enable_logging=False,
+    #         log_level="WARNING",
+    #         progress_interval=2000,
+    #     )
+    # )
     # print(client.project_directory)
 
     # will this work ? since file is not in server
