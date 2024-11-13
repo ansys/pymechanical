@@ -31,7 +31,7 @@ from .test_logger import _assert_success
 
 
 def _run_background_app_test(
-    run_subprocess, rootdir: str, pytestconfig, testname: str, pass_expected: bool
+    run_subprocess, rootdir: str, pytestconfig, testname: str, pass_expected: bool = True
 ) -> typing.Tuple[bytes, bytes]:
     """Run the process and return stdout and stderr after it finishes."""
 
@@ -39,10 +39,9 @@ def _run_background_app_test(
     script = os.path.join(rootdir, "tests", "scripts", "background_app_test.py")
 
     subprocess_pass_expected = pass_expected
-
-    # TODO: revert below condition once bug #975 is fixed
-    if testname == "multiple_instances" and os.name != "nt":
-        subprocess_pass_expected = False
+    if pass_expected and os.name != "nt":
+        if int(version) < 251 or testname == "multiple_instances":
+            subprocess_pass_expected = False
 
     process, stdout, stderr = run_subprocess(
         [sys.executable, script, version, testname], None, subprocess_pass_expected
@@ -56,10 +55,11 @@ def _run_background_app_test(
 
 
 @pytest.mark.embedding_scripts
-def test_background_app_multiple_instances(rootdir, run_subprocess, pytestconfig, pass_expected):
+@pytest.mark.embedding_backgroundapp
+def test_background_app_multiple_instances(rootdir, run_subprocess, pytestconfig):
     """Multiple instances of background app can be used."""
     stderr = _run_background_app_test(
-        run_subprocess, rootdir, pytestconfig, "multiple_instances", pass_expected
+        run_subprocess, rootdir, pytestconfig, "multiple_instances", True
     )
     assert "Project 1" in stderr
     assert "Project 2" in stderr
@@ -68,6 +68,7 @@ def test_background_app_multiple_instances(rootdir, run_subprocess, pytestconfig
 
 
 @pytest.mark.embedding_scripts
+@pytest.mark.embedding_backgroundapp
 def test_background_app_use_stopped(rootdir, run_subprocess, pytestconfig):
     """Multiple instances of background app cannot be used after an instance is stopped."""
     stderr = _run_background_app_test(
@@ -77,6 +78,7 @@ def test_background_app_use_stopped(rootdir, run_subprocess, pytestconfig):
 
 
 @pytest.mark.embedding_scripts
+@pytest.mark.embedding_backgroundapp
 def test_background_app_initialize_stopped(rootdir, run_subprocess, pytestconfig):
     """Multiple instances of background app cannot be used after an instance is stopped."""
     stderr = _run_background_app_test(
