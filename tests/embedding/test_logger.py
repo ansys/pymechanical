@@ -45,18 +45,23 @@ def _get_env_without_logging_variables():
     return env
 
 
-def _run_embedding_log_test_process(
-    rootdir: str, run_subprocess, pytestconfig, testname: str, pass_expected: bool = None
+def _run_embedding_log_test(
+    run_subprocess, rootdir: str, pytestconfig, testname: str, pass_expected: bool
 ) -> typing.Tuple[bytes, bytes]:
     """Runs the process and returns it after it finishes"""
     version = pytestconfig.getoption("ansys_version")
+
     embedded_py = os.path.join(rootdir, "tests", "scripts", "embedding_log_test.py")
     process, stdout, stderr = run_subprocess(
         [sys.executable, embedded_py, version, testname],
         _get_env_without_logging_variables(),
         pass_expected,
     )
-    return stdout, stderr
+
+    stdout = stdout.decode()
+    stderr = stderr.decode()
+    _assert_success(stdout, pass_expected)
+    return stderr
 
 
 def _assert_success(stdout: str, pass_expected: bool) -> int:
@@ -74,31 +79,6 @@ def _assert_success(stdout: str, pass_expected: bool) -> int:
         assert "@@success@@" not in stdout
 
 
-def _run_embedding_log_test(
-    run_subprocess, rootdir: str, pytestconfig, testname: str, pass_expected: bool = True
-) -> str:
-    """Test stderr logging using a subprocess.
-
-    Also ensure that the subprocess either passes or fails based on pass_expected
-    Mechanical logging all goes into the process stderr at the C level, but capturing
-    that from python isn't possible because python's stderr stream isn't aware of content
-    that doesn't come from python (or its C/API)
-
-    Returns the stderr
-    """
-    subprocess_pass_expected = pass_expected
-    version = pytestconfig.getoption("ansys_version")
-    if pass_expected == True and os.name != "nt" and int(version) < 251:
-        subprocess_pass_expected = False
-    stdout, stderr = _run_embedding_log_test_process(
-        rootdir, run_subprocess, pytestconfig, testname, subprocess_pass_expected
-    )
-    stdout = stdout.decode()
-    stderr = stderr.decode()
-    _assert_success(stdout, pass_expected)
-    return stderr
-
-
 @pytest.mark.embedding_scripts
 def test_logging_write_log_before_init(rootdir, run_subprocess, pytestconfig):
     """Test that an error is thrown when trying to log before initializing"""
@@ -110,11 +90,15 @@ def test_logging_write_log_before_init(rootdir, run_subprocess, pytestconfig):
 
 @pytest.mark.embedding_scripts
 def test_logging_write_info_after_initialize_with_error_level(
-    rootdir, run_subprocess, pytestconfig
+    rootdir, run_subprocess, pytestconfig, pass_expected
 ):
     """Test that no output is written when an info is logged when configured at the error level."""
     stderr = _run_embedding_log_test(
-        run_subprocess, rootdir, pytestconfig, "log_info_after_initialize_with_error_level"
+        run_subprocess,
+        rootdir,
+        pytestconfig,
+        "log_info_after_initialize_with_error_level",
+        pass_expected,
     )
     assert "0xdeadbeef" not in stderr
 
@@ -122,31 +106,48 @@ def test_logging_write_info_after_initialize_with_error_level(
 @pytest.mark.parametrize("addin_configuration", ["Mechanical", "WorkBench"])
 @pytest.mark.embedding_scripts
 @pytest.mark.minimum_version(241)
-def test_addin_configuration(rootdir, run_subprocess, pytestconfig, addin_configuration):
+def test_addin_configuration(
+    rootdir, run_subprocess, pytestconfig, addin_configuration, pass_expected
+):
     """Test that mechanical can start with both the Mechanical and WorkBench configuration."""
     stderr = _run_embedding_log_test(
-        run_subprocess, rootdir, pytestconfig, f"log_configuration_{addin_configuration}"
+        run_subprocess,
+        rootdir,
+        pytestconfig,
+        f"log_configuration_{addin_configuration}",
+        pass_expected,
     )
     assert f"{addin_configuration} configuration!" in stderr
 
 
 @pytest.mark.embedding_scripts
 def test_logging_write_error_after_initialize_with_info_level(
-    rootdir, run_subprocess, pytestconfig
+    rootdir, run_subprocess, pytestconfig, pass_expected
 ):
     """Test that output is written when an error is logged when configured at the info level."""
     stderr = _run_embedding_log_test(
-        run_subprocess, rootdir, pytestconfig, "log_error_after_initialize_with_info_level"
+        run_subprocess,
+        rootdir,
+        pytestconfig,
+        "log_error_after_initialize_with_info_level",
+        pass_expected,
     )
     assert "Will no one rid me of this turbulent priest?" in stderr
 
 
 @pytest.mark.embedding_scripts
-def test_logging_level_before_and_after_initialization(rootdir, run_subprocess, pytestconfig):
+def test_logging_level_before_and_after_initialization(
+    rootdir, run_subprocess, pytestconfig, pass_expected
+):
     """Test logging level API  before and after initialization."""
-    stdout, stderr = _run_embedding_log_test_process(
-        rootdir, run_subprocess, pytestconfig, "log_check_can_log_message"
+    stderr = _run_embedding_log_test(
+        run_subprocess, rootdir, pytestconfig, "log_check_can_log_message", pass_expected
     )
-    stdout = stdout.decode()
-    stderr = stderr.decode()
-    _assert_success(stdout, True)
+
+
+@pytest.mark.embedding_scripts
+def test_logging_all_level(rootdir, run_subprocess, pytestconfig, pass_expected):
+    """Test all logging level after initialization."""
+    stderr = _run_embedding_log_test(
+        run_subprocess, rootdir, pytestconfig, "log_check_all_log_level", pass_expected
+    )

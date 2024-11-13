@@ -56,10 +56,10 @@ def _run_background_app_test(
 
 
 @pytest.mark.embedding_scripts
-def test_background_app_multiple_instances(rootdir, run_subprocess, pytestconfig):
+def test_background_app_multiple_instances(rootdir, run_subprocess, pytestconfig, pass_expected):
     """Multiple instances of background app can be used."""
     stderr = _run_background_app_test(
-        run_subprocess, rootdir, pytestconfig, "multiple_instances", True
+        run_subprocess, rootdir, pytestconfig, "multiple_instances", pass_expected
     )
     assert "Project 1" in stderr
     assert "Project 2" in stderr
