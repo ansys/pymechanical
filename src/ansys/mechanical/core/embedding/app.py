@@ -137,6 +137,13 @@ class App:
         if len(INSTANCES) > 0:
             raise Exception("Cannot have more than one embedded mechanical instance!")
         version = kwargs.get("version")
+        if version is not None:
+            try:
+                version = int(version)
+            except ValueError:
+                raise ValueError(
+                    f"The version must be an integer or that can be converted to an integer."
+                )
         self._version = initializer.initialize(version)
         configuration = kwargs.get("config", _get_default_addin_configuration())
 
