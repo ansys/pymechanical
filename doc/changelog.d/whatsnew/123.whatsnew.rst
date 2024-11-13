@@ -1,5 +1,5 @@
 Launch GUI
-----------
+^^^^^^^^^^
 Open the current project with Mechanical GUI.
 
 .. code:: python

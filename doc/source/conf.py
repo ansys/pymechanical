@@ -214,8 +214,8 @@ html_theme_options = {
     "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
     "navigation_depth": 10,
     "whatsnew": {
-        "file": "whatsnew",
-        "pages": ["index", "changelog"],
+        "file": "release-note",
+        "pages": ["index", "release-note"],
     },
 }
 

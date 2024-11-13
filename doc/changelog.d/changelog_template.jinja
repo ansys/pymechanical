@@ -2,7 +2,7 @@
   {%+ for category, val in sections["Whatsnew"].items() +%}
     {%+ if definitions.get(category) and definitions[category].get('name') +%}
 {{ definitions[category]['name'] }}
-{{ "~" * definitions[category]['name']|length }}
+{{ "-" * definitions[category]['name']|length }}
     {% endif %}
     {%- for text, values in sections["Whatsnew"][category].items() %}
 
