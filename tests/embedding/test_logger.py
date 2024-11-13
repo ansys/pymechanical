@@ -143,9 +143,7 @@ def test_logging_write_error_after_initialize_with_info_level(
 @pytest.mark.embedding_logging
 def test_logging_level_before_and_after_initialization(rootdir, run_subprocess, pytestconfig):
     """Test logging level API  before and after initialization."""
-    stderr = _run_embedding_log_test(
-        run_subprocess, rootdir, pytestconfig, "log_check_can_log_message"
-    )
+    _run_embedding_log_test(run_subprocess, rootdir, pytestconfig, "log_check_can_log_message")
 
 
 @pytest.mark.embedding_scripts
