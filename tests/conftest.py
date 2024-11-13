@@ -177,7 +177,7 @@ def mke_app_reset(request):
 _CHECK_PROCESS_RETURN_CODE = os.name == "nt"
 
 # set to true if you want to see all the subprocess stdout/stderr
-_PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE = False
+_PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE = True
 
 
 @pytest.fixture()
@@ -199,6 +199,16 @@ def rootdir():
     """Return the root directory of the local clone of the PyMechanical GitHub repository."""
     base = pathlib.Path(__file__).parent
     yield base.parent
+
+
+@pytest.fixture()
+def pass_expected(pytestconfig):
+    """Checks for conditions to see if scripts run in subprocess are expected to pass or not."""
+
+    version = pytestconfig.getoption("ansys_version")
+    if os.name != "nt" and int(version) < 251:
+        yield False
+    yield True
 
 
 @pytest.fixture()

@@ -27,52 +27,27 @@ import typing
 
 import pytest
 
-
-def _run_background_app_test_process(
-    rootdir: str, run_subprocess, pytestconfig, testname: str, pass_expected: bool = None
-) -> typing.Tuple[bytes, bytes]:
-    """Run the process and return stdout and stderr after it finishes."""
-    version = pytestconfig.getoption("ansys_version")
-    script = os.path.join(rootdir, "tests", "scripts", "background_app_test.py")
-    process, stdout, stderr = run_subprocess(
-        [sys.executable, script, version, testname], None, pass_expected
-    )
-    return stdout, stderr
-
-
-def _assert_success(stdout: str, pass_expected: bool) -> bool:
-    """Check whether the process ran to completion from its stdout
-
-    Duplicate of the `_assert_success` function in test_logger.py
-    """
-
-    if pass_expected:
-        assert "@@success@@" in stdout
-    else:
-        assert "@@success@@" not in stdout
+from .test_logger import _assert_success
 
 
 def _run_background_app_test(
-    run_subprocess, rootdir: str, pytestconfig, testname: str, pass_expected: bool = True
-) -> str:
-    """Test stderr logging using a subprocess.
+    run_subprocess, rootdir: str, pytestconfig, testname: str, pass_expected: bool
+) -> typing.Tuple[bytes, bytes]:
+    """Run the process and return stdout and stderr after it finishes."""
 
-    Also ensure that the subprocess either passes or fails based on pass_expected
-
-    Returns the stderr of the subprocess as a string.
-    """
-    subprocess_pass_expected = pass_expected
     version = pytestconfig.getoption("ansys_version")
-    if pass_expected == True and os.name != "nt" and int(version) < 251:
-        subprocess_pass_expected = False
+    script = os.path.join(rootdir, "tests", "scripts", "background_app_test.py")
+
+    subprocess_pass_expected = pass_expected
 
     # TODO: revert below condition once bug #975 is fixed
-    if testname == "multiple_instances" and subprocess_pass_expected == True:
-        subprocess_pass_expected = True
+    if testname == "multiple_instances" and os.name != "nt":
+        subprocess_pass_expected = False
 
-    stdout, stderr = _run_background_app_test_process(
-        rootdir, run_subprocess, pytestconfig, testname, subprocess_pass_expected
+    process, stdout, stderr = run_subprocess(
+        [sys.executable, script, version, testname], None, subprocess_pass_expected
     )
+
     if not subprocess_pass_expected:
         stdout = stdout.decode()
         _assert_success(stdout, pass_expected)
