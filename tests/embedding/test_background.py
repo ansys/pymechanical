@@ -27,46 +27,26 @@ import typing
 
 import pytest
 
-
-def _run_background_app_test_process(
-    rootdir: str, run_subprocess, pytestconfig, testname: str, pass_expected: bool = None
-) -> typing.Tuple[bytes, bytes]:
-    """Run the process and return stdout and stderr after it finishes."""
-    version = pytestconfig.getoption("ansys_version")
-    script = os.path.join(rootdir, "tests", "scripts", "background_app_test.py")
-    process, stdout, stderr = run_subprocess(
-        [sys.executable, script, version, testname], None, pass_expected
-    )
-    return stdout, stderr
-
-
-def _assert_success(stdout: str, pass_expected: bool) -> bool:
-    """Check whether the process ran to completion from its stdout
-
-    Duplicate of the `_assert_success` function in test_logger.py
-    """
-
-    if pass_expected:
-        assert "@@success@@" in stdout
-    else:
-        assert "@@success@@" not in stdout
+from .test_logger import _assert_success
 
 
 def _run_background_app_test(
     run_subprocess, rootdir: str, pytestconfig, testname: str, pass_expected: bool = True
-) -> str:
-    """Test stderr logging using a subprocess.
+) -> typing.Tuple[bytes, bytes]:
+    """Run the process and return stdout and stderr after it finishes."""
 
-    Also ensure that the subprocess either passes or fails based on pass_expected
+    version = pytestconfig.getoption("ansys_version")
+    script = os.path.join(rootdir, "tests", "scripts", "background_app_test.py")
 
-    Returns the stderr of the subprocess as a string.
-    """
     subprocess_pass_expected = pass_expected
-    if pass_expected == True and os.name != "nt":
-        subprocess_pass_expected = False
-    stdout, stderr = _run_background_app_test_process(
-        rootdir, run_subprocess, pytestconfig, testname, subprocess_pass_expected
+    if pass_expected and os.name != "nt":
+        if int(version) < 251 or testname == "multiple_instances":
+            subprocess_pass_expected = False
+
+    process, stdout, stderr = run_subprocess(
+        [sys.executable, script, version, testname], None, subprocess_pass_expected
     )
+
     if not subprocess_pass_expected:
         stdout = stdout.decode()
         _assert_success(stdout, pass_expected)
@@ -75,6 +55,7 @@ def _run_background_app_test(
 
 
 @pytest.mark.embedding_scripts
+@pytest.mark.embedding_backgroundapp
 def test_background_app_multiple_instances(rootdir, run_subprocess, pytestconfig):
     """Multiple instances of background app can be used."""
     stderr = _run_background_app_test(
@@ -87,6 +68,7 @@ def test_background_app_multiple_instances(rootdir, run_subprocess, pytestconfig
 
 
 @pytest.mark.embedding_scripts
+@pytest.mark.embedding_backgroundapp
 def test_background_app_use_stopped(rootdir, run_subprocess, pytestconfig):
     """Multiple instances of background app cannot be used after an instance is stopped."""
     stderr = _run_background_app_test(
@@ -96,6 +78,7 @@ def test_background_app_use_stopped(rootdir, run_subprocess, pytestconfig):
 
 
 @pytest.mark.embedding_scripts
+@pytest.mark.embedding_backgroundapp
 def test_background_app_initialize_stopped(rootdir, run_subprocess, pytestconfig):
     """Multiple instances of background app cannot be used after an instance is stopped."""
     stderr = _run_background_app_test(
