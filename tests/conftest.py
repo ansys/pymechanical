@@ -54,6 +54,8 @@ import ansys.mechanical.core.run
 # Check if Mechanical is installed
 # NOTE: checks in this order to get the newest installed version
 
+# Ignore functions starts with `test` from scripts folder
+collect_ignore = ["scripts"]
 
 valid_rver = [str(each) for each in SUPPORTED_MECHANICAL_VERSIONS]
 
@@ -199,6 +201,17 @@ def rootdir():
     """Return the root directory of the local clone of the PyMechanical GitHub repository."""
     base = pathlib.Path(__file__).parent
     yield base.parent
+
+
+# @pytest.fixture()
+# def subprocess_pass_expected(pytestconfig):
+#     """Checks for conditions to see if scripts run in subprocess are expected to pass or not."""
+
+#     version = pytestconfig.getoption("ansys_version")
+#     if os.name != "nt" and int(version) < 251:
+#         yield False
+#     else:
+#         yield True
 
 
 @pytest.fixture()
