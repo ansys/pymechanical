@@ -23,9 +23,13 @@ You could already perform scripting of Mechanical with Python from inside
 Mechanical. PyMechanical leverages the same APIs but allows you to run your
 automation from outside Mechanical.
 
-For comprehensive information on these APIs, see the
-`Mechanical API Documentation <https://scripting.mechanical.docs.pyansys.com/version/dev/api/index.html>`_
-and the `Scripting in Mechanical Guide`_ in the Ansys Help portal.
+For comprehensive information on these APIs, see the `Scripting in Mechanical Guide`_ in the
+Ansys Help.
+
+.. note::
+
+   See the `Mechanical API Documentation`_ or the `Mechanical scripting interface APIs`_ in the
+   Developer Portal.
 
 Recording
 ---------
