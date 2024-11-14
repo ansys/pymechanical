@@ -1,4 +1,14 @@
+:orphan:
+
 .. _ref_release_notes:
+
+.. button-ref:: release-note
+    :ref-type: doc
+    :color: primary
+    :shadow:
+    :expand:
+
+    Go to new release notes
 
 Release notes
 #############
