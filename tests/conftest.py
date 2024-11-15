@@ -203,17 +203,6 @@ def rootdir():
     yield base.parent
 
 
-# @pytest.fixture()
-# def subprocess_pass_expected(pytestconfig):
-#     """Checks for conditions to see if scripts run in subprocess are expected to pass or not."""
-
-#     version = pytestconfig.getoption("ansys_version")
-#     if os.name != "nt" and int(version) < 251:
-#         yield False
-#     else:
-#         yield True
-
-
 @pytest.fixture()
 def disable_cli():
     ansys.mechanical.core.run.DRY_RUN = True
@@ -290,7 +279,7 @@ def connect_to_mechanical_instance(port=None, clear_on_connect=False):
     # ip needs to be passed or start instance takes precedence
     # typical for container scenarios use connect
     # and needs to be treated as remote scenarios
-    mechanical = pymechanical.launch_mechanical(
+    mechanical = pymechanical.connect_to_mechanical(
         ip=hostname, port=port, clear_on_connect=clear_on_connect, cleanup_on_exit=False
     )
     return mechanical
