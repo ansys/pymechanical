@@ -2242,3 +2242,38 @@ def launch_mechanical(
         raise exception
 
     return mechanical
+
+
+def connect_to_mechanical(
+    port=None,
+    ip=None,
+    loglevel="ERROR",
+    log_file=False,
+    log_mechanical=None,
+    start_timeout=120,
+    clear_on_connect=False,
+    cleanup_on_exit=True,
+    keep_connection_alive=True,
+) -> Mechanical:
+    """Connect to an existing Mechanical server instance .
+
+    Examples
+    --------
+    Connect to Mechanical server which is already running on
+    specific ip and port.
+
+
+    >>> mech = connect_to_mechanical(ip='192.168.1.30', port=50001)
+    """
+    return launch_mechanical(
+        start_instance=False,
+        loglevel=loglevel,
+        log_file=log_file,
+        log_mechanical=log_mechanical,
+        start_timeout=start_timeout,
+        port=port,
+        ip=ip,
+        clear_on_connect=clear_on_connect,
+        cleanup_on_exit=cleanup_on_exit,
+        keep_connection_alive=keep_connection_alive,
+    )
