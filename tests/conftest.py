@@ -54,6 +54,8 @@ import ansys.mechanical.core.run
 # Check if Mechanical is installed
 # NOTE: checks in this order to get the newest installed version
 
+# Ignore functions starts with `test` from scripts folder
+collect_ignore = ["scripts"]
 
 valid_rver = [str(each) for each in SUPPORTED_MECHANICAL_VERSIONS]
 
@@ -277,7 +279,7 @@ def connect_to_mechanical_instance(port=None, clear_on_connect=False):
     # ip needs to be passed or start instance takes precedence
     # typical for container scenarios use connect
     # and needs to be treated as remote scenarios
-    mechanical = pymechanical.launch_mechanical(
+    mechanical = pymechanical.connect_to_mechanical(
         ip=hostname, port=port, clear_on_connect=clear_on_connect, cleanup_on_exit=False
     )
     return mechanical

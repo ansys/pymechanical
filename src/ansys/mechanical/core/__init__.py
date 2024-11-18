@@ -50,6 +50,7 @@ from ansys.mechanical.core._version import __version__
 from ansys.mechanical.core.mechanical import (
     change_default_mechanical_path,
     close_all_local_instances,
+    connect_to_mechanical,
     get_mechanical_path,
     launch_mechanical,
 )
