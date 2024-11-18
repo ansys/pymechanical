@@ -75,12 +75,12 @@ ansys-mechanical -r 242 --port 10000 -g
 ## Manually connect to the Mechanical session
 ```{python}
 #| eval: false
-import ansys.mechanical.core as pymechanical
+from ansys.mechanical.core import connect_to_mechanical
 # Connect locally
-mechanical = pymechanical.Mechanical(port=10000)
+mechanical = connect_to_mechanical(port=10000)
           # Or
 # Connect remotely, to the IP address or hostname
-mechanical = pymechanical.Mechanical(
+mechanical = connect_to_mechanical(
   "192.168.0.1", port=10000
   )
 ```

@@ -2242,3 +2242,86 @@ def launch_mechanical(
         raise exception
 
     return mechanical
+
+
+def connect_to_mechanical(
+    ip=None,
+    port=None,
+    loglevel="ERROR",
+    log_file=False,
+    log_mechanical=None,
+    connect_timeout=120,
+    clear_on_connect=False,
+    cleanup_on_exit=False,
+    keep_connection_alive=True,
+) -> Mechanical:
+    """Connect to an existing Mechanical server instance.
+
+    Parameters
+    ----------
+    ip : str, optional
+        IP address for connecting to an existing Mechanical instance. The
+        IP address defaults to ``"127.0.0.1"``.
+    port : int, optional
+        Port to listen on for an existing Mechanical instance. The default is ``None``,
+        in which case ``10000`` is used. You can override the
+        default behavior of this parameter with the
+        ``PYMECHANICAL_PORT=<VALID PORT>`` environment variable.
+    loglevel : str, optional
+        Level of messages to print to the console.
+        Options are:
+
+        - ``"WARNING"``: Prints only Ansys warning messages.
+        - ``"ERROR"``: Prints only Ansys error messages.
+        - ``"INFO"``: Prints all Ansys messages.
+
+        The default is ``WARNING``.
+    log_file : bool, optional
+        Whether to copy the messages to a file named ``logs.log``, which is
+        located where the Python script is executed. The default is ``False``.
+    log_mechanical : str, optional
+        Path to the output file on the local disk to write every script
+        command to. The default is ``None``. However, you might set
+        ``"log_mechanical='pymechanical_log.txt'"`` to write all commands that are
+        sent to Mechanical via PyMechanical to this file. You can then use these
+        commands to run a script within Mechanical without PyMechanical.
+    connect_timeout : float, optional
+        Maximum allowable time in seconds to connect to the Mechanical server.
+        The default is ``120``.
+    clear_on_connect : bool, optional
+        Whether to clear the Mechanical instance when connecting. The default is ``False``.
+        When ``True``, a fresh environment is provided when you connect to Mechanical.
+    cleanup_on_exit : bool, optional
+        Whether to exit Mechanical when Python exits. The default is ``False``.
+        When ``False``, Mechanical is not exited when the garbage for this Mechanical
+        instance is collected.
+    keep_connection_alive : bool, optional
+        Whether to keep the gRPC connection alive by running a background thread
+        and making dummy calls for remote connections. The default is ``True``.
+
+    Returns
+    -------
+    ansys.mechanical.core.mechanical.Mechanical
+        Instance of Mechanical.
+
+    Examples
+    --------
+    Connect to an existing Mechanical instance at IP address ``192.168.1.30`` on port
+    ``50001``..
+
+
+    >>> from ansys.mechanical.core import connect_to_mechanical
+    >>> pymech = connect_to_mechanical(ip='192.168.1.30', port=50001)
+    """
+    return launch_mechanical(
+        start_instance=False,
+        loglevel=loglevel,
+        log_file=log_file,
+        log_mechanical=log_mechanical,
+        start_timeout=connect_timeout,
+        port=port,
+        ip=ip,
+        clear_on_connect=clear_on_connect,
+        cleanup_on_exit=cleanup_on_exit,
+        keep_connection_alive=keep_connection_alive,
+    )
