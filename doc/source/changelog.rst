@@ -9,6 +9,41 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.10 <https://github.com/ansys/pymechanical/releases/tag/v0.11.10>`_ - 2024-11-18
+=====================================================================================
+
+Added
+^^^^^
+
+- Version input type check `#979 <https://github.com/ansys/pymechanical/pull/979>`_
+- Adding new method for connecting to Mechanical instance `#980 <https://github.com/ansys/pymechanical/pull/980>`_
+
+
+Fixed
+^^^^^
+
+- Update embedding script tests `#974 <https://github.com/ansys/pymechanical/pull/974>`_
+
+
+Documentation
+^^^^^^^^^^^^^
+
+- add Mechanical API link to Mechanical Scripting page `#972 <https://github.com/ansys/pymechanical/pull/972>`_
+
+
+Maintenance
+^^^^^^^^^^^
+
+- update CHANGELOG for v0.11.9 `#963 <https://github.com/ansys/pymechanical/pull/963>`_
+- Modify how job success is verified for CI/CD `#965 <https://github.com/ansys/pymechanical/pull/965>`_
+- Bump mikepenz/action-junit-report from 4 to 5 `#966 <https://github.com/ansys/pymechanical/pull/966>`_
+- Bump grpcio from 1.67.0 to 1.67.1 in the core group `#967 <https://github.com/ansys/pymechanical/pull/967>`_
+- Bump the doc group with 2 updates `#968 <https://github.com/ansys/pymechanical/pull/968>`_, `#982 <https://github.com/ansys/pymechanical/pull/982>`_
+- Bump pytest-cov from 5.0.0 to 6.0.0 `#969 <https://github.com/ansys/pymechanical/pull/969>`_
+- Update docs build action container `#971 <https://github.com/ansys/pymechanical/pull/971>`_
+- pre-commit automatic update `#977 <https://github.com/ansys/pymechanical/pull/977>`_
+- Bump grpcio from 1.67.1 to 1.68.0 in the core group `#981 <https://github.com/ansys/pymechanical/pull/981>`_
+
 `0.11.9 <https://github.com/ansys/pymechanical/releases/tag/v0.11.9>`_ - 2024-10-29
 ===================================================================================
 
