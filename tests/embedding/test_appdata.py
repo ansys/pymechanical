@@ -25,7 +25,7 @@
 import os
 import sys
 from unittest import mock
-
+from pathlib import Path
 import pytest
 
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
@@ -64,8 +64,8 @@ def test_normal_appdata(pytestconfig, run_subprocess, rootdir):
 
 @pytest.mark.embedding
 def test_uniqueprofile_creation():
-
-    folder_to_check = os.path.join("AppData", "Local", "Ansys") if os.name == "nt" else ".mw"
+    """Test user profile is copied when copy_profile is ``True`` and is not copied when ``False``."""
+    folder_to_check = Path("AppData") / "Local" / "Ansys" if os.name == "nt" else ".mw"
 
     # Create private app data without copying profiles
     private_data2 = UniqueUserProfile(profile_name="test1", copy_profile=False)
@@ -75,8 +75,8 @@ def test_uniqueprofile_creation():
     private_data1 = UniqueUserProfile(profile_name="test1")
     assert private_data1.location == private_data2.location
 
-    # check if folder exists after copying profiles
-    assert os.path.exists(os.path.join(private_data1.location, folder_to_check))
+    # Check if folder exists after copying profiles
+    assert Path(private_data1.location / folder_to_check).exists()
 
     # Create new profile
     private_data3 = UniqueUserProfile(profile_name="test2")
@@ -85,6 +85,7 @@ def test_uniqueprofile_creation():
 
 @pytest.mark.embedding
 def test_uniqueprofile_env():
+    """Test the environment is correctly updated for the profile based on operating system."""
     profile = UniqueUserProfile("test_env")
     env = {}
     platforms = ["win32", "linux"]
@@ -95,15 +96,16 @@ def test_uniqueprofile_env():
 
     if platform == "win32":
         env["USERPROFILE"] = profile.location
-        env["APPDATA"] = os.path.join(profile.location, "AppData/Roaming")
-        env["LOCALAPPDATA"] = os.path.join(profile.location, "AppData/Local")
-        env["TMP"] = os.path.join(profile.location, "AppData/Local/Temp")
-        env["TEMP"] = os.path.join(profile.location, "AppData/Local/Temp")
+        env["APPDATA"] =Path(profile.location) / "AppData" / "Roaming"
+        env["LOCALAPPDATA"] = Path(profile.location) / "AppData" / "Local"
+        env["TMP"] = Path(profile.location) / "AppData" / "Local" / "Temp"
+        env["TEMP"] = Path(profile.location) / "AppData" / "Local " / "Temp"
     else:
         env["HOME"] = profile.location
 
 
 @pytest.mark.embedding
 def test_uniqueprofile_dryrun():
+    """Test the profile is not copied during dry runs."""
     profile = UniqueUserProfile("test_dry_run", dry_run=True)
-    assert not os.path.exists(profile.location)
+    assert not Path(profile.location).exists()
