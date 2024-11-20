@@ -23,9 +23,10 @@
 """Embedding tests related to app data"""
 
 import os
+from pathlib import Path
 import sys
 from unittest import mock
-from pathlib import Path
+
 import pytest
 
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
@@ -96,7 +97,7 @@ def test_uniqueprofile_env():
 
     if platform == "win32":
         env["USERPROFILE"] = profile.location
-        env["APPDATA"] =Path(profile.location) / "AppData" / "Roaming"
+        env["APPDATA"] = Path(profile.location) / "AppData" / "Roaming"
         env["LOCALAPPDATA"] = Path(profile.location) / "AppData" / "Local"
         env["TMP"] = Path(profile.location) / "AppData" / "Local" / "Temp"
         env["TEMP"] = Path(profile.location) / "AppData" / "Local " / "Temp"
