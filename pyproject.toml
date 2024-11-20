@@ -111,6 +111,8 @@ src_paths = ["doc", "src", "tests"]
 [tool.coverage.run]
 relative_files = true
 source = ["ansys.mechanical"]
+branch = true
+parallel = true
 
 [tool.coverage.report]
 show_missing = true

@@ -253,7 +253,9 @@ def test_building_gallery(pytestconfig, run_subprocess, rootdir):
     embedded_gallery_py = os.path.join(rootdir, "tests", "scripts", "build_gallery_test.py")
 
     process, stdout, stderr = run_subprocess(
-        [sys.executable, embedded_gallery_py, version, "False"], None, False
+        [sys.executable, "-m", "coverage", "run", embedded_gallery_py, version, "False"],
+        None,
+        False,
     )
     stderr = stderr.decode()
 
