@@ -150,7 +150,7 @@ class App:
         if private_appdata:
             copy_profile = kwargs.get("copy_profile", True)
             new_profile_name = f"PyMechanical-{os.getpid()}"
-            profile = UniqueUserProfile(new_profile_name, copy_profile)
+            profile = UniqueUserProfile(new_profile_name, copy_profile=copy_profile)
             profile.update_environment(os.environ)
             atexit.register(_cleanup_private_appdata, profile)
 
