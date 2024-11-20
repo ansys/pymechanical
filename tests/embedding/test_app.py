@@ -226,9 +226,9 @@ def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
     subprocess.check_call([test_env.python, "-m", "pip", "install", "pythonnet"], env=test_env.env)
 
     # Initialize with pythonnet
-    embedded_py = os.path.join(rootdir, "tests", "scripts", "pythonnet_warning.py")
+    embedded_pythonnet_py = os.path.join(rootdir, "tests", "scripts", "pythonnet_warning.py")
     process, stdout, stderr = run_subprocess(
-        [test_env.python, embedded_py, pytestconfig.getoption("ansys_version")]
+        [test_env.python, embedded_pythonnet_py, pytestconfig.getoption("ansys_version")]
     )
 
     # If UserWarning & pythonnet are in the stderr output, set warning to True.
