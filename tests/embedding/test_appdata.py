@@ -66,7 +66,7 @@ def test_normal_appdata(pytestconfig, run_subprocess, rootdir):
 @pytest.mark.embedding
 def test_uniqueprofile_creation():
     """Test profile is copied when copy_profile is ``True`` and is not copied when ``False``."""
-    folder_to_check = Path("AppData") / "Local" / "Ansys" if os.name == "nt" else ".mw"
+    folder_to_check = Path("AppData") / "Local" / "Ansys" if os.name == "nt" else Path(".mw")
 
     # Create private app data without copying profiles
     private_data2 = UniqueUserProfile(profile_name="test1", copy_profile=False)
