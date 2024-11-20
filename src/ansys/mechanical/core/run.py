@@ -172,7 +172,7 @@ def _cli_impl(
     profile: UniqueUserProfile = None
     if private_appdata:
         new_profile_name = f"Mechanical-{os.getpid()}"
-        profile = UniqueUserProfile(new_profile_name, DRY_RUN)
+        profile = UniqueUserProfile(new_profile_name, dry_run=DRY_RUN)
         profile.update_environment(env)
 
     if not DRY_RUN:

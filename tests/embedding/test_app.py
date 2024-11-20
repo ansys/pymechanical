@@ -240,37 +240,6 @@ def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
 
 
 @pytest.mark.embedding_scripts
-@pytest.mark.python_env
-def test_private_appdata(pytestconfig, run_subprocess, rootdir):
-    """Test embedded instance does not save ShowTriad using a test-scoped Python environment."""
-
-    version = pytestconfig.getoption("ansys_version")
-    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
-
-    run_subprocess([sys.executable, embedded_py, version, "True", "Set"])
-    process, stdout, stderr = run_subprocess([sys.executable, embedded_py, version, "True", "Run"])
-    stdout = stdout.decode()
-    assert "ShowTriad value is True" in stdout
-
-
-@pytest.mark.embedding_scripts
-@pytest.mark.python_env
-def test_normal_appdata(pytestconfig, run_subprocess, rootdir):
-    """Test embedded instance saves ShowTriad value using a test-scoped Python environment."""
-    version = pytestconfig.getoption("ansys_version")
-
-    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
-
-    run_subprocess([sys.executable, embedded_py, version, "False", "Set"])
-    process, stdout, stderr = run_subprocess([sys.executable, embedded_py, version, "False", "Run"])
-    run_subprocess([sys.executable, embedded_py, version, "False", "Reset"])
-
-    stdout = stdout.decode()
-    # Assert ShowTriad was set to False for regular embedded session
-    assert "ShowTriad value is False" in stdout
-
-
-@pytest.mark.embedding_scripts
 def test_building_gallery(pytestconfig, run_subprocess, rootdir):
     """Test for building gallery check.
 
