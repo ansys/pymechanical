@@ -225,17 +225,17 @@ def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
     # Install pythonnet
     subprocess.check_call([test_env.python, "-m", "pip", "install", "pythonnet"], env=test_env.env)
 
-    # Run embedded instance in virtual env with pythonnet installed
-    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+    # Initialize with pythonnet
+    embedded_pythonnet_py = os.path.join(rootdir, "tests", "scripts", "pythonnet_warning.py")
     process, stdout, stderr = run_subprocess(
-        [test_env.python, embedded_py, pytestconfig.getoption("ansys_version")]
+        [test_env.python, embedded_pythonnet_py, pytestconfig.getoption("ansys_version")]
     )
 
     # If UserWarning & pythonnet are in the stderr output, set warning to True.
     # Otherwise, set warning to False
     warning = True if "UserWarning" and "pythonnet" in stderr.decode() else False
 
-    # Assert warning message appears for embedded app
+    # # Assert warning message appears for embedded app
     assert warning, "UserWarning should appear in the output of the script"
 
 

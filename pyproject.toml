@@ -50,20 +50,20 @@ Changelog = "https://mechanical.docs.pyansys.com/version/stable/changelog.html"
 
 [project.optional-dependencies]
 tests = [
-    "pytest==8.3.3",
+    "pytest==8.3.4",
     "pytest-cov==6.0.0",
     "pytest-print==1.0.2",
     "psutil==6.1.0"
 ]
 doc = [
     "sphinx==8.1.3",
-    "ansys-sphinx-theme[autoapi]==1.2.1",
-    "grpcio==1.68.0",
+    "ansys-sphinx-theme[autoapi]==1.2.2",
+    "grpcio==1.68.1",
     "imageio-ffmpeg==0.5.1",
-    "imageio==2.36.0",
+    "imageio==2.36.1",
     "jupyter_sphinx==0.5.3",
     "jupyterlab>=3.2.8",
-    "matplotlib==3.9.2",
+    "matplotlib==3.9.3",
     "numpy==2.1.3",
     "numpydoc==1.8.0",
     "pandas==2.2.3",
@@ -148,6 +148,8 @@ markers = [
     "windows_only: tests that run if the testing platform is on Windows",
     "linux_only: tests that run if the testing platform is on Linux",
     "cli: tests for the Command Line Interface",
+    "embedding_backgroundapp: tests for the BackgroundApp",
+    "embedding_logging: tests for the logging with Embedded App",
 ]
 xfail_strict = true
 
