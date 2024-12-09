@@ -13,7 +13,7 @@ Install the package
 -------------------
 
 The latest ``ansys.mechanical.core`` package supports Python 3.10 through
-Python 3.12 on Windows, Linux, and Mac.
+Python 3.13 on Windows, Linux, and Mac.
 
 You should consider installing PyMechanical in a virtual environment.
 For more information, see Python's
@@ -35,7 +35,7 @@ machine architecture from the `Releases page <https://github.com/ansys/pymechani
 of the PyMechanical repository.
 
 Each wheelhouse archive contains all the Python wheels necessary to install
-PyMechanical from scratch on Windows and Linux for Python 3.10 through Python 3.12. You can install
+PyMechanical from scratch on Windows and Linux for Python 3.10 through Python 3.13. You can install
 a wheelhouse archive on an isolated system with a fresh Python installation or on a
 virtual environment.
 
