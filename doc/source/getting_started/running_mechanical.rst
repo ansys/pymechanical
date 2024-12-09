@@ -124,7 +124,9 @@ default port (``10000``), you would use this code to connect to it with this cod
 
     mechanical = Mechanical()
 
-or Alternatively, you can use the `connect_to_mechanical()`_ method to connect to Mechanical.
+Alternatively, you can use the
+`connect_to_mechanical() <../api/ansys/mechanical/core/mechanical/index.html#mechanical.connect_to_mechanical>`_
+for same functionality.
 
 .. code:: python
 
