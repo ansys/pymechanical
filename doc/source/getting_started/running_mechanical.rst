@@ -124,6 +124,17 @@ default port (``10000``), you would use this code to connect to it with this cod
 
     mechanical = Mechanical()
 
+Alternatively, you can use the
+`connect_to_mechanical() <../api/ansys/mechanical/core/mechanical/index.html#mechanical.connect_to_mechanical>`_
+for same functionality.
+
+.. code:: python
+
+    from ansys.mechanical.core import connect_to_mechanical
+
+    mechanical = connect_to_mechanical()
+
+
 Now assume that a remote instance of Mechanical has been started in server mode. To connect to
 the computer on your local area network that is running Mechanical, you can use either
 an IP address and port or a hostname and port.
@@ -138,6 +149,12 @@ You would connect to it with this code:
 
     mechanical = Mechanical("192.168.0.1", port=10000)
 
+or
+
+.. code:: python
+
+    mechanical = connect_to_mechanical("192.168.0.1", port=10000)
+
 **Hostname and port**
 
 Assume that Mechanical is running remotely at hostname ``myremotemachine`` on port ``10000``.
@@ -147,6 +164,12 @@ You would connect to it with this code:
 .. code:: python
 
     mechanical = Mechanical("myremotemachine", port=10000)
+
+or
+
+.. code:: python
+
+    mechanical = connect_to_mechanical("myremotemachine", port=10000)
 
 Launching issues
 ----------------
@@ -204,9 +227,9 @@ Open a terminal and run the following command:
 If the preceding command for your operating system doesn't launch Mechanical, you might have
 a variety of issues, including:
 
-  - License server setup
-  - Running behind a VPN
-  - Missing dependencies
+- License server setup
+- Running behind a VPN
+- Missing dependencies
 
 Embed a Mechanical instance
 ---------------------------
