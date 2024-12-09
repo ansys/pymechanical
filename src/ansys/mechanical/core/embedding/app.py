@@ -194,8 +194,6 @@ class App:
 
     def __repr__(self):
         """Get the product info."""
-        if self._version < 232:  # pragma: no cover
-            return "Ansys Mechanical"
         import clr
 
         clr.AddReference("Ansys.Mechanical.Application")
@@ -262,7 +260,7 @@ class App:
                 f"File already exists in {path}, Use ``overwrite`` flag to "
                 "replace the existing file."
             )
-        if self.version == 232:
+        if self.version < 241:  # pragma: no cover
             file_name = os.path.basename(path)
             file_dir = os.path.dirname(path)
             associated_dir = os.path.join(file_dir, os.path.splitext(file_name)[0] + "_Mech_Files")
