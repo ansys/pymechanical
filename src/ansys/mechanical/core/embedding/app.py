@@ -112,18 +112,45 @@ class GetterWrapper(object):
 
 
 class App:
-    """Mechanical embedding Application."""
+    """Mechanical embedding Application.
+
+    Parameters
+    ----------
+    db_file : str, optional
+        Path to a mechanical database file (.mechdat or .mechdb).
+    version : int, optional
+        Version number of the Mechanical application.
+    private_appdata : bool, optional
+        Setting for a temporary AppData directory. Default is False.
+        Enables running parallel instances of Mechanical.
+    config : AddinConfiguration, optional
+        Configuration for addins. By default "Mechanical" is used and ACT Addins are disabled.
+    copy_profile : bool, optional
+        Whether to copy the user profile when private_appdata is True. Default is True.
+
+    Examples
+    --------
+    Create App with Mechanical project file and version:
+
+    >>> from ansys.mechanical.core import App
+    >>> app = App(db_file="path/to/file.mechdat", version=241, pri)
+
+
+    Disable copying the user profile when private appdata is enabled
+
+    >>> app = App(private_appdata=True, copy_profile=False)
+
+    Create App with "Mechanical" configuration and no ACT Addins
+
+    >>> from ansys.mechanical.core.embedding import AddinConfiguration
+    >>> from ansys.mechanical.core import App
+    >>> config = AddinConfiguration("Mechanical")
+    >>> config.no_act_addins = True
+    >>> app = App(config=config)
+    """
 
     def __init__(self, db_file=None, private_appdata=False, **kwargs):
-        """Construct an instance of the mechanical Application.
-
-        db_file is an optional path to a mechanical database file (.mechdat or .mechdb)
-        you may set a version number with the `version` keyword argument.
-
-        private_appdata is an optional setting for a temporary AppData directory.
-        By default, private_appdata is False. This enables you to run parallel
-        instances of Mechanical.
-        """
+        """Construct an instance of the mechanical Application."""
         global INSTANCES
         from ansys.mechanical.core import BUILDING_GALLERY
 
@@ -167,8 +194,6 @@ class App:
 
     def __repr__(self):
         """Get the product info."""
-        if self._version < 232:  # pragma: no cover
-            return "Ansys Mechanical"
         import clr
 
         clr.AddReference("Ansys.Mechanical.Application")
@@ -204,18 +229,27 @@ class App:
             self.DataModel.Project.Save()
 
     def save_as(self, path: str, overwrite: bool = False):
-        """Save the project as a new file.
+        """
+        Save the project as a new file.
 
-        If the `overwrite` flag is enabled, the current saved file is temporarily moved
-        to a backup location. The new file is then saved in its place. If the process fails,
-        the backup file is restored to its original location.
+        If the `overwrite` flag is enabled, the current saved file is replaced with the new file.
 
         Parameters
         ----------
-        path: int, optional
-            The path where file needs to be saved.
-        overwrite: bool, optional
+        path : str
+            The path where the file needs to be saved.
+        overwrite : bool, optional
             Whether the file should be overwritten if it already exists (default is False).
+
+        Raises
+        ------
+        Exception
+            If the file already exists at the specified path and `overwrite` is False.
+
+        Notes
+        -----
+        For version 232, if `overwrite` is True, the existing file and its associated directory
+        (if any) will be removed before saving the new file.
         """
         if not os.path.exists(path):
             self.DataModel.Project.SaveAs(path)
@@ -226,17 +260,19 @@ class App:
                 f"File already exists in {path}, Use ``overwrite`` flag to "
                 "replace the existing file."
             )
+        if self.version < 241:  # pragma: no cover
+            file_name = os.path.basename(path)
+            file_dir = os.path.dirname(path)
+            associated_dir = os.path.join(file_dir, os.path.splitext(file_name)[0] + "_Mech_Files")
 
-        file_name = os.path.basename(path)
-        file_dir = os.path.dirname(path)
-        associated_dir = os.path.join(file_dir, os.path.splitext(file_name)[0] + "_Mech_Files")
-
-        # Remove existing files and associated folder
-        os.remove(path)
-        if os.path.exists(associated_dir):
-            shutil.rmtree(associated_dir)
-        # Save the new file
-        self.DataModel.Project.SaveAs(path)
+            # Remove existing files and associated folder
+            os.remove(path)
+            if os.path.exists(associated_dir):
+                shutil.rmtree(associated_dir)
+            # Save the new file
+            self.DataModel.Project.SaveAs(path)
+        else:
+            self.DataModel.Project.SaveAs(path, overwrite)
 
     def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
         """Launch the GUI."""
@@ -317,6 +353,13 @@ class App:
 
         Requires installation using the viz option. E.g.
         pip install ansys-mechanical-core[viz]
+
+        Examples
+        --------
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
+        >>> app.open("path/to/file.mechdat")
+        >>> app.plot()
         """
         _plotter = self.plotter()
 
@@ -421,15 +464,20 @@ class App:
     def update_globals(
         self, globals_dict: typing.Dict[str, typing.Any], enums: bool = True
     ) -> None:
-        """Use to update globals variables.
+        """Update global variables.
 
-        When scripting inside Mechanical, the Mechanical UI will automatically
-        set global variables in python. PyMechanical can not do that automatically,
+        When scripting inside Mechanical, the Mechanical UI automatically
+        sets global variables in Python. PyMechanical cannot do that automatically,
         but this method can be used.
-        `app.update_globals(globals())`
 
         By default, all enums will be imported too. To avoid including enums, set
         the `enums` argument to False.
+
+        Examples
+        --------
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
+        >>> app.update_globals(globals())
         """
         self._updated_scopes.append(globals_dict)
         globals_dict.update(global_variables(self, enums))
