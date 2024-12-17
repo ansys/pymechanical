@@ -132,6 +132,13 @@ def test_app_print_tree(embedded_app, capsys, assets):
     with pytest.raises(AttributeError):
         embedded_app.print_tree(DataModel)
 
+    Modal = Model.AddModalAnalysis()
+    Modal.Solution.Solve(True)
+    embedded_app.print_tree()
+    captured = capsys.readouterr()
+    printed_output = captured.out.strip()
+    assert all(symbol in printed_output for symbol in ["?", "⚡︎", "✕", "✓"])
+
 
 @pytest.mark.embedding
 def test_app_poster(embedded_app):
