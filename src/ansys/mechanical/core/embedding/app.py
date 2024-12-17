@@ -464,6 +464,15 @@ class App:
         node_name = node.Name
         if hasattr(node, "Suppressed") and node.Suppressed is True:
             node_name += " (Suppressed)"
+        if hasattr(node, "ObjectState"):
+            if str(node.ObjectState) == "UnderDefined":
+                node_name += " (?)"
+            elif str(node.ObjectState) == "Solved" or str(node.ObjectState) == "FullyDefined":
+                node_name += " (✓)"
+            elif str(node.ObjectState) == "NotSolved" or str(node.ObjectState) == "Obsolete":
+                node_name += " (⚡︎)"
+            elif str(node.ObjectState) == "SolveFailed":
+                node_name += " (✕)"
         print(f"{indentation}├── {node_name}")
         lines_count += 1
 
