@@ -554,24 +554,24 @@ class App:
 
         Examples
         --------
-        >>> import ansys.mechanical.core as mech
-        >>> app = mech.App()
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
         >>> app.update_globals(globals())
         >>> app.print_tree()
         ... ├── Project
         ... |  ├── Model
-        ... |  |  ├── Geometry Imports
-        ... |  |  ├── Geometry
-        ... |  |  ├── Materials
-        ... |  |  ├── Coordinate Systems
-        ... |  |  |  ├── Global Coordinate System
-        ... |  |  ├── Remote Points
-        ... |  |  ├── Mesh
+        ... |  |  ├── Geometry Imports (⚡︎)
+        ... |  |  ├── Geometry (?)
+        ... |  |  ├── Materials (✓)
+        ... |  |  ├── Coordinate Systems (✓)
+        ... |  |  |  ├── Global Coordinate System (✓)
+        ... |  |  ├── Remote Points (✓)
+        ... |  |  ├── Mesh (?)
 
         >>> app.print_tree(Model, 3)
         ... ├── Model
-        ... |  ├── Geometry Imports
-        ... |  ├── Geometry
+        ... |  ├── Geometry Imports (⚡︎)
+        ... |  ├── Geometry (?)
         ... ... truncating after 3 lines
 
         >>> app.print_tree(max_lines=2)
