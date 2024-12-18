@@ -225,7 +225,9 @@ class App:
             if lock_file.exists():
                 warnings.warn(
                     f"Removing the lock file, {lock_file}, before opening the project. \
-This may corrupt the project file."
+This may corrupt the project file.",
+                    UserWarning,
+                    stacklevel=2,
                 )
                 lock_file.unlink()
 

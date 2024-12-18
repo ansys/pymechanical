@@ -447,8 +447,9 @@ def test_app_lock_file_open(embedded_app, tmp_path: pytest.TempPathFactory):
     # Assert the lock file exists after opening it
     assert lock_file.exists()
 
-    # Remove the lock file before opening the project file
-    embedded_app.open(project_file, remove_lock=True)
+    with pytest.warns(UserWarning):
+        # Remove the lock file before opening the project file
+        embedded_app.open(project_file, remove_lock=True)
 
     # Assert the lock file has been removed
     assert not lock_file.exists()
