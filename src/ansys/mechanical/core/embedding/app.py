@@ -224,7 +224,7 @@ class App:
             lock_file = Path(self.DataModel.Project.ProjectDirectory) / ".mech_lock"
             if lock_file.exists():
                 warnings.warn(
-                    "Removing the lock file before opening the project. \
+                    f"Removing the lock file, {lock_file}, before opening the project. \
 This may corrupt the project file."
                 )
                 lock_file.unlink()
