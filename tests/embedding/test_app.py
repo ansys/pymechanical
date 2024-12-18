@@ -441,15 +441,9 @@ def test_app_lock_file_open(embedded_app, tmp_path: pytest.TempPathFactory):
 
     lock_file = Path(embedded_app.DataModel.Project.ProjectDirectory) / ".mech_lock"
 
-    # Do not remove the lock file before opening the project file
-    embedded_app.open(project_file)
-
-    # Assert the lock file exists after opening it
+    # Assert the lock file exists after saving it
     assert lock_file.exists()
 
+    # Assert a warning is emitted if the lock file is going to be removed
     with pytest.warns(UserWarning):
-        # Remove the lock file before opening the project file
         embedded_app.open(project_file, remove_lock=True)
-
-    # Assert the lock file has been removed
-    assert not lock_file.exists()

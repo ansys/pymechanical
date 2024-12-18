@@ -220,6 +220,7 @@ class App:
 
     def open(self, db_file, remove_lock=False):
         """Open the db file."""
+        # Remove the lock file if it exists before opening the project file
         if remove_lock:
             lock_file = Path(self.DataModel.Project.ProjectDirectory) / ".mech_lock"
             if lock_file.exists():
