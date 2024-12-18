@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import atexit
 import os
+from pathlib import Path
 import shutil
 import typing
 import warnings
@@ -217,8 +218,17 @@ class App:
         self._app.Dispose()
         self._disposed = True
 
-    def open(self, db_file):
+    def open(self, db_file, remove_lock=False):
         """Open the db file."""
+        if remove_lock:
+            lock_file = Path(self.DataModel.Project.ProjectDirectory) / ".mech_lock"
+            if lock_file.exists():
+                warnings.warn(
+                    "Removing the lock file before opening the project. \
+This may corrupt the project file."
+                )
+                lock_file.unlink()
+
         self.DataModel.Project.Open(db_file)
 
     def save(self, path=None):
