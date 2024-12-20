@@ -1,0 +1,84 @@
+.. vale off
+
+
+
+
+
+
+
+The ``poster.py`` module
+========================
+
+.. py:module:: ansys.mechanical.core.embedding.poster
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: poster
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.mechanical.core.embedding.poster.Poster`
+            - Class which can post a python callable function to Mechanical's main thread.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> Poster</api/ansys/mechanical/core/embedding/poster/Poster>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Use the Poster class to post functions to Mechanical's main thread.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+
+
+.. vale on
