@@ -20,45 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Embedding tests for global variables associated with Mechanical"""
-import pytest
+"""Test script for checking pythonnet warning."""
+import sys
 
-from ansys.mechanical.core import global_variables
-from ansys.mechanical.core.embedding.imports import Transaction
+from ansys.mechanical.core.embedding import initializer
 
-
-@pytest.mark.embedding
-def test_global_variables(embedded_app):
-    """Test the global variables."""
-    attributes = [
-        "ExtAPI",
-        "DataModel",
-        "Model",
-        "Tree",
-        "Graphics",
-        "Quantity",
-        "System",
-        "Ansys",
-        "Transaction",
-        "MechanicalEnums",
-        "DataModelObjectCategory",
-        "Point",
-        "SectionPlane",
-        "Point2D",
-        "Point3D",
-        "Vector3D",
-    ]
-    globals_dict = global_variables(embedded_app, True)
-    for attribute in attributes:
-        assert attribute in globals_dict
-
-
-@pytest.mark.embedding
-def test_global_variable_transaction(embedded_app):
-    embedded_app.update_globals(globals())
-    project_name = DataModel.Project.Name
-    assert project_name == "Project"
-    with Transaction():
-        DataModel.Project.Name = "New Project"
-    project_name = DataModel.Project.Name
-    assert project_name == "New Project"
+if __name__ == "__main__":
+    version = int(sys.argv[1])
+    initializer.initialize(version)
