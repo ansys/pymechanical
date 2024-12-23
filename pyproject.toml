@@ -36,7 +36,7 @@ dependencies = [
     "clr-loader==0.2.7.post0",
     "grpcio>=1.30.0",
     "protobuf>=3.12.2,<6",
-    "psutil==6.1.0",
+    "psutil==6.1.1",
     "tqdm>=4.45.0",
     "requests>=2,<3",
 ]
@@ -53,7 +53,7 @@ tests = [
     "pytest==8.3.4",
     "pytest-cov==6.0.0",
     "pytest-print==1.0.2",
-    "psutil==6.1.0"
+    "psutil==6.1.1"
 ]
 doc = [
     "sphinx==8.1.3",
