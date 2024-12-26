@@ -41,7 +41,7 @@ def _get_logger():
         import Ansys
 
         return Ansys.Common.WB1ManagedUtils.Logger
-    except:
+    except (ImportError, RuntimeError):
         raise Exception("Logging cannot be used until after Mechanical embedding is initialized.")
 
 

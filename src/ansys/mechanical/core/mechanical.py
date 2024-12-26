@@ -480,9 +480,8 @@ class Mechanical(object):
 
         >>> mechanical.version
         '242'
-
         """
-        if self._version == None:
+        if self._version is None:
             try:
                 self._disable_logging = True
                 script = (
@@ -537,7 +536,6 @@ class Mechanical(object):
         timeout : float, optional
             Maximum allowable time in seconds for establishing a connection.
             The default is ``60``.
-
         """
         # This prevents a single failed connection from blocking other attempts
         connected = False
