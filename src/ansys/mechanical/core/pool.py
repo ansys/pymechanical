@@ -342,8 +342,8 @@ class LocalMechanicalPool:
         if progress_bar:
             if not _HAS_TQDM:  # pragma: no cover
                 raise ModuleNotFoundError(
-                    f"To use the keyword argument 'progress_bar', you must have installed "
-                    f"the 'tqdm' package. To avoid this message, you can set 'progress_bar=False'."
+                    "To use the keyword argument 'progress_bar', you must have installed "
+                    "the 'tqdm' package. To avoid this message, you can set 'progress_bar=False'."
                 )
 
             pbar = tqdm(total=jobs_count, desc="Mechanical Running")
@@ -386,7 +386,7 @@ class LocalMechanicalPool:
             else:
                 run_thread.join()
                 if not complete[0]:  # pragma: no cover
-                    LOG.error(f"Stopped instance because running failed.")
+                    LOG.error("Stopped instance because running failed.")
                     try:
                         obj.exit()
                     except Exception as e:
