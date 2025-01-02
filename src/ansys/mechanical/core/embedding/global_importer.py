@@ -20,17 +20,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Library to import Mechanical enums.
+""""""
 
-A useful subset of what is imported by
-Ansys Inc/v{NNN}/ACT/apis/Mechanical.py
-"""
+# TODO - assert that the app is initialized
 import clr
 
 clr.AddReference("Ansys.Mechanical.DataModel")
 clr.AddReference("Ansys.ACT.Interfaces")
 
-from Ansys.ACT.Interfaces.Common import *  # noqa isort: skip
-from Ansys.Mechanical.DataModel.Enums import *  # noqa isort: skip
 
-import Ansys  # noqa  isort: skip
+clr.AddReference("System.Collections")
+clr.AddReference("Ansys.ACT.WB1")
+clr.AddReference("Ansys.Mechanical.DataModel")
+
+from ansys.mechanical.core.embedding.transaction import Transaction
+# from Ansys.ACT.Mechanical import Transaction
+# When ansys-pythonnet issue #14 is fixed, uncomment above
+from Ansys.ACT.Core.Math import Point2D, Point3D
+from Ansys.ACT.Math import Vector3D
+from Ansys.Core.Units import Quantity
+from Ansys.Mechanical.DataModel import MechanicalEnums
+from Ansys.Mechanical.Graphics import Point, SectionPlane
+
+import System  # isort: skip
+import Ansys  # isort: skip

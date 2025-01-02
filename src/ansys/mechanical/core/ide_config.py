@@ -202,8 +202,11 @@ def cli(ide: str, target: str, revision: int) -> None:
         $ ansys-mechanical-ideconfig --ide vscode --target user --revision 242
 
     """
-    exe = atp.get_mechanical_path(allow_input=False, version=revision)
-    version = atp.version_from_path("mechanical", exe)
+    if revision is None:
+        exe = atp.get_mechanical_path(allow_input=False, version=revision)
+        version = atp.version_from_path("mechanical", exe)
+    else:
+        version = revision
 
     return _cli_impl(
         ide,
