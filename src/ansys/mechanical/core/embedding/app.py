@@ -376,7 +376,7 @@ class App:
         return self._poster
 
     @property
-    def DataModel(self):
+    def DataModel(self) -> Ansys.Mechanical.DataModel.Interfaces.DataModelObject:
         """Return the DataModel."""
         return GetterWrapper(self._app, lambda app: app.DataModel)
 
