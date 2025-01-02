@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -41,7 +41,7 @@ def _get_logger():
         import Ansys
 
         return Ansys.Common.WB1ManagedUtils.Logger
-    except:
+    except (ImportError, RuntimeError):
         raise Exception("Logging cannot be used until after Mechanical embedding is initialized.")
 
 

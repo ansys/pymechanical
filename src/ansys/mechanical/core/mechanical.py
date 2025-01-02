@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -444,14 +444,14 @@ class Mechanical(object):
         self._disable_logging = False
 
         if self._local:
-            self.log_info(f"Mechanical connection is treated as local.")
+            self.log_info("Mechanical connection is treated as local.")
         else:
-            self.log_info(f"Mechanical connection is treated as remote.")
+            self.log_info("Mechanical connection is treated as remote.")
 
         # connect and validate to the channel
         self._multi_connect(timeout=timeout)
 
-        self.log_info("Mechanical is ready to accept grpc calls")
+        self.log_info("Mechanical is ready to accept grpc calls.")
 
     def __del__(self):  # pragma: no cover
         """Clean up on exit."""
@@ -480,9 +480,8 @@ class Mechanical(object):
 
         >>> mechanical.version
         '242'
-
         """
-        if self._version == None:
+        if self._version is None:
             try:
                 self._disable_logging = True
                 script = (
@@ -537,7 +536,6 @@ class Mechanical(object):
         timeout : float, optional
             Maximum allowable time in seconds for establishing a connection.
             The default is ``60``.
-
         """
         # This prevents a single failed connection from blocking other attempts
         connected = False
@@ -1399,7 +1397,7 @@ class Mechanical(object):
 
         if chunk_size > 4 * 1024 * 1024:  # 4MB
             raise ValueError(
-                f"Chunk sizes bigger than 4 MB can generate unstable behaviour in PyMechanical. "
+                "Chunk sizes bigger than 4 MB can generate unstable behaviour in PyMechanical. "
                 "Decrease the ``chunk_size`` value."
             )
 
@@ -1518,8 +1516,8 @@ class Mechanical(object):
         if progress_bar:
             if not _HAS_TQDM:  # pragma: no cover
                 raise ModuleNotFoundError(
-                    f"To use the keyword argument 'progress_bar', you need to have installed "
-                    f"the 'tqdm' package.To avoid this message you can set 'progress_bar=False'."
+                    "To use the keyword argument 'progress_bar', you need to have installed "
+                    "the 'tqdm' package.To avoid this message you can set 'progress_bar=False'."
                 )
 
         file_size = 0
@@ -1572,7 +1570,6 @@ class Mechanical(object):
         Download all the files in the project.
 
         >>> local_file_path_list = mechanical.download_project()
-
         """
         destination_directory = target_dir.rstrip("\\/")
 

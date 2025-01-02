@@ -48,7 +48,7 @@ try:
 
     HAS_ANSYS_VIZ = True
     """Whether or not PyVista exists."""
-except:
+except ImportError:
     HAS_ANSYS_VIZ = False
 
 
@@ -397,7 +397,7 @@ This may corrupt the project file.",
         return self._poster
 
     @property
-    def DataModel(self):
+    def DataModel(self) -> Ansys.Mechanical.DataModel.Interfaces.DataModelObject:
         """Return the DataModel."""
         return GetterWrapper(self._app, lambda app: app.DataModel)
 
@@ -533,6 +533,15 @@ This may corrupt the project file.",
         node_name = node.Name
         if hasattr(node, "Suppressed") and node.Suppressed is True:
             node_name += " (Suppressed)"
+        if hasattr(node, "ObjectState"):
+            if str(node.ObjectState) == "UnderDefined":
+                node_name += " (?)"
+            elif str(node.ObjectState) == "Solved" or str(node.ObjectState) == "FullyDefined":
+                node_name += " (✓)"
+            elif str(node.ObjectState) == "NotSolved" or str(node.ObjectState) == "Obsolete":
+                node_name += " (⚡︎)"
+            elif str(node.ObjectState) == "SolveFailed":
+                node_name += " (✕)"
         print(f"{indentation}├── {node_name}")
         lines_count += 1
 
@@ -566,24 +575,24 @@ This may corrupt the project file.",
 
         Examples
         --------
-        >>> import ansys.mechanical.core as mech
-        >>> app = mech.App()
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
         >>> app.update_globals(globals())
         >>> app.print_tree()
         ... ├── Project
         ... |  ├── Model
-        ... |  |  ├── Geometry Imports
-        ... |  |  ├── Geometry
-        ... |  |  ├── Materials
-        ... |  |  ├── Coordinate Systems
-        ... |  |  |  ├── Global Coordinate System
-        ... |  |  ├── Remote Points
-        ... |  |  ├── Mesh
+        ... |  |  ├── Geometry Imports (⚡︎)
+        ... |  |  ├── Geometry (?)
+        ... |  |  ├── Materials (✓)
+        ... |  |  ├── Coordinate Systems (✓)
+        ... |  |  |  ├── Global Coordinate System (✓)
+        ... |  |  ├── Remote Points (✓)
+        ... |  |  ├── Mesh (?)
 
         >>> app.print_tree(Model, 3)
         ... ├── Model
-        ... |  ├── Geometry Imports
-        ... |  ├── Geometry
+        ... |  ├── Geometry Imports (⚡︎)
+        ... |  ├── Geometry (?)
         ... ... truncating after 3 lines
 
         >>> app.print_tree(max_lines=2)

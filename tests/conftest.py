@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -167,7 +167,7 @@ def embedded_app(pytestconfig, request):
 @pytest.fixture(autouse=True)
 def mke_app_reset(request):
     global EMBEDDED_APP
-    if EMBEDDED_APP == None:
+    if EMBEDDED_APP is None:
         # embedded app was not started - no need to do anything
         return
     terminal_reporter = request.config.pluginmanager.getplugin("terminalreporter")
@@ -178,7 +178,7 @@ def mke_app_reset(request):
 
 _CHECK_PROCESS_RETURN_CODE = os.name == "nt"
 
-# set to true if you want to see all the subprocess stdout/stderr
+# set to True if you want to see all the subprocess stdout/stderr
 _PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE = False
 
 
@@ -374,7 +374,7 @@ def mechanical_pool():
 def pytest_addoption(parser):
     mechanical_path = atp.get_mechanical_path(False)
 
-    if mechanical_path == None:
+    if mechanical_path is None:
         parser.addoption("--ansys-version", default="242")
     else:
         mechanical_version = atp.version_from_path("mechanical", mechanical_path)
