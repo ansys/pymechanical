@@ -144,14 +144,14 @@ class Configuration:
     @classmethod
     def set_log_directory(cls, value: str) -> None:
         """Configure logging to write to a directory."""
-        if value == None:
+        if value is None:
             return
         _get_backend().set_directory(value)
 
     @classmethod
     def set_log_base_directory(cls, directory: str) -> None:
         """Configure logging to write in a time-stamped subfolder in this directory."""
-        if directory == None:
+        if directory is None:
             return
         _get_backend().set_base_directory(directory)
 

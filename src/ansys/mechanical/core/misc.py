@@ -150,7 +150,7 @@ def check_valid_start_instance(start_instance):
 
     if start_instance.lower() not in ["true", "false"]:
         raise ValueError(
-            f"The value for 'start_instance' should be 'True' or 'False' (case insensitive)."
+            "The value for 'start_instance' should be 'True' or 'False' (case insensitive)."
         )
 
     return start_instance.lower() == "true"

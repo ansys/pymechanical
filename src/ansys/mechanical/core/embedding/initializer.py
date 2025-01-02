@@ -138,7 +138,7 @@ def __is_lib_loaded(libname: str):  # pragma: no cover
     RTLD_NOLOAD = 4
     try:
         ctypes.CDLL(libname, RTLD_NOLOAD)
-    except:
+    except OSError:
         return False
     return True
 
@@ -174,7 +174,7 @@ def initialize(version: int = None):
             )
         return
 
-    if version == None:
+    if version is None:
         version = _get_latest_default_version()
 
     version = __check_for_supported_version(version=version)

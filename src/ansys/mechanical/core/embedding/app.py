@@ -47,7 +47,7 @@ try:
 
     HAS_ANSYS_VIZ = True
     """Whether or not PyVista exists."""
-except:
+except ImportError:
     HAS_ANSYS_VIZ = False
 
 
