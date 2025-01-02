@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -219,10 +219,18 @@ class App:
         self._disposed = True
 
     def open(self, db_file, remove_lock=False):
-        """Open the db file."""
-        # Remove the lock file if it exists before opening the project file
+        """Open the db file.
+
+        Parameters
+        ----------
+        db_file : str
+            Path to a Mechanical database file (.mechdat or .mechdb).
+        remove_lock : bool, optional
+            Whether or not to remove the lock file if it exists before opening the project file.
+        """
         if remove_lock:
             lock_file = Path(self.DataModel.Project.ProjectDirectory) / ".mech_lock"
+            # Remove the lock file if it exists before opening the project file
             if lock_file.exists():
                 warnings.warn(
                     f"Removing the lock file, {lock_file}, before opening the project. \
