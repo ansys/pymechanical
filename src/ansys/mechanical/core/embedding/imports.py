@@ -23,6 +23,7 @@
 """Additional imports for embedded Mechanical."""
 import typing
 
+
 def global_entry_points(app: "ansys.mechanical.core.App") -> typing.Dict:
     """Return the global entry points of the application."""
     vars = {}
@@ -45,21 +46,36 @@ def global_variables(app: "ansys.mechanical.core.App", enums: bool = False) -> t
     To also import all the enums, set the parameter enums to true.
     """
     vars = global_entry_points(app)
-    from ansys.mechanical.core.embedding.transaction import Transaction
-    from ansys.mechanical.core.embedding.global_importer import Ansys, Point, Point2D, Point3D, MechanicalEnums, Quantity, SectionPlane, System, Vector3D
 
-    vars["Quantity"] = Quantity
-    vars["System"] = System
-    vars["Ansys"] = Ansys
+    from ansys.mechanical.core.embedding.transaction import Transaction
+
     vars["Transaction"] = Transaction
-    vars["MechanicalEnums"] = MechanicalEnums
-    # Graphics
-    vars["Point"] = Point
-    vars["SectionPlane"] = SectionPlane
-    # Math
-    vars["Point2D"] = Point2D
-    vars["Point3D"] = Point3D
-    vars["Vector3D"] = Vector3D
+
+    # Import modules if the app is initialized
+    if app.is_initialized():
+        from ansys.mechanical.core.embedding.global_importer import (
+            Ansys,
+            MechanicalEnums,
+            Point,
+            Point2D,
+            Point3D,
+            Quantity,
+            SectionPlane,
+            System,
+            Vector3D,
+        )
+
+        vars["Quantity"] = Quantity
+        vars["System"] = System
+        vars["Ansys"] = Ansys
+        vars["MechanicalEnums"] = MechanicalEnums
+        # Graphics
+        vars["Point"] = Point
+        vars["SectionPlane"] = SectionPlane
+        # Math
+        vars["Point2D"] = Point2D
+        vars["Point3D"] = Point3D
+        vars["Vector3D"] = Vector3D
 
     if enums:
         vars.update(get_all_enums())
