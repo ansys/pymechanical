@@ -159,7 +159,7 @@ class App:
             if len(INSTANCES) != 0:
                 instance: App = INSTANCES[0]
                 instance._share(self)
-                if db_file != None:
+                if db_file is not None:
                     self.open(db_file)
                 return
         if len(INSTANCES) > 0:
@@ -392,7 +392,7 @@ This may corrupt the project file.",
     @property
     def poster(self) -> Poster:
         """Returns an instance of Poster."""
-        if self._poster == None:
+        if self._poster is None:
             self._poster = Poster()
         return self._poster
 
