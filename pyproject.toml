@@ -6,7 +6,6 @@ build-backend = "flit_core.buildapi"
 # Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
 name = "ansys-mechanical-core"
 version = "0.12.dev0"
-# minor_version = f"{'.'.join(version.split('.')[0:-1])}"
 description = "A python wrapper for Ansys Mechanical"
 readme = "README.rst"
 requires-python = ">=3.10,<4.0"
@@ -178,6 +177,11 @@ showcontent = true
 [[tool.towncrier.type]]
 directory = "fixed"
 name = "Fixed"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "dependencies"
+name = "Dependencies"
 showcontent = true
 
 [[tool.towncrier.type]]
