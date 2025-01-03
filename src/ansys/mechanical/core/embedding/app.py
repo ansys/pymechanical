@@ -170,7 +170,7 @@ class App:
                 version = int(version)
             except ValueError:
                 raise ValueError(
-                    f"The version must be an integer or that can be converted to an integer."
+                    "The version must be an integer or of type that can be converted to an integer."
                 )
         self._version = initializer.initialize(version)
         configuration = kwargs.get("config", _get_default_addin_configuration())
