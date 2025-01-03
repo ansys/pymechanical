@@ -243,7 +243,7 @@ def check_valid_mechanical():
 
     """
     mechanical_path = atp.get_mechanical_path(False)
-    if mechanical_path == None:
+    if mechanical_path is None:
         return False
     mechanical_version = atp.version_from_path("mechanical", mechanical_path)
     return not (mechanical_version < 232 and os.name != "posix")

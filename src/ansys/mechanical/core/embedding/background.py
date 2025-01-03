@@ -49,7 +49,7 @@ class BackgroundApp:
 
     def __init__(self, **kwargs):
         """Construct an instance of BackgroundApp."""
-        if BackgroundApp.__app_thread == None:
+        if BackgroundApp.__app_thread is None:
             BackgroundApp.__app_thread = threading.Thread(
                 target=self._start_app, kwargs=kwargs, daemon=True
             )

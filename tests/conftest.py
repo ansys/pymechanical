@@ -144,7 +144,7 @@ def start_embedding_app(version, pytestconfig) -> datetime.timedelta:
     ), "Can't run test cases, Mechanical is in readonly mode! Check license configuration."
     startup_time = (datetime.datetime.now() - start).total_seconds()
     num_cores = os.environ.get("NUM_CORES", None)
-    if num_cores != None:
+    if num_cores is not None:
         config = EMBEDDED_APP.ExtAPI.Application.SolveConfigurations["My Computer"]
         config.SolveProcessSettings.MaxNumberOfCores = int(num_cores)
     return startup_time
