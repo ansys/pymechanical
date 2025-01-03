@@ -276,8 +276,18 @@ def test_ideconfig_cli_version_exception(pytestconfig):
     stubs_revns = get_stubs_versions(stubs_location)
 
     # If revision number is greater than the maximum stubs revision number
-    # assert an exception is raised
+    # assert a warning is raised
     if revision > max(stubs_revns):
+        with pytest.raises(Warning):
+            ideconfig_cli_impl(
+                ide="vscode",
+                target="user",
+                revision=revision,
+            )
+
+    # If revision number is less than the minimum stubs revision number
+    # assert an exception is raised
+    if revision < min(stubs_revns):
         with pytest.raises(Exception):
             ideconfig_cli_impl(
                 ide="vscode",
