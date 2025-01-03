@@ -19,6 +19,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+"""A class to speed up bulk user interactions using Ansys ACT Mechanical Transaction."""
+
 
 class Transaction:  # When ansys-pythonnet issue #14 is fixed, this class will be removed
     """
