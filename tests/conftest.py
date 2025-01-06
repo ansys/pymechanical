@@ -176,7 +176,7 @@ def mke_app_reset(request):
     EMBEDDED_APP.new()
 
 
-_CHECK_PROCESS_RETURN_CODE = os.name == "nt"
+_CHECK_PROCESS_RETURN_CODE = True
 
 # set to True if you want to see all the subprocess stdout/stderr
 _PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE = False
