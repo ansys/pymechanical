@@ -78,7 +78,7 @@ def _get_backend() -> (
     Actually logging a message or flushing the log only works after initializing.
     """
     # TODO - use abc instead of a union type?
-    embedding_initialized = initializer.INITIALIZED_VERSION != None
+    embedding_initialized = initializer.INITIALIZED_VERSION is not None
     if not embedding_initialized:
         return environ.EnvironBackend()
     if os.name == "nt":
@@ -115,7 +115,7 @@ class Configuration:
 
         # Set up the sink-specific log configuration and store to global state.
         cls._store_stdout_sink_enabled(to_stdout)
-        file_sink_enabled = directory != None or base_directory != None
+        file_sink_enabled = directory is not None or base_directory is not None
         cls._store_file_sink_enabled(file_sink_enabled)
 
         # Commit the sink-specific log configuration global state to the backend.
