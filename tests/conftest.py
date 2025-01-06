@@ -176,8 +176,6 @@ def mke_app_reset(request):
     EMBEDDED_APP.new()
 
 
-_CHECK_PROCESS_RETURN_CODE = True
-
 # set to True if you want to see all the subprocess stdout/stderr
 _PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE = False
 
@@ -186,7 +184,7 @@ _PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE = False
 def run_subprocess():
     def func(args, env=None, check: bool = None):
         if check is None:
-            check = _CHECK_PROCESS_RETURN_CODE
+            check = True
         process, output = ansys.mechanical.core.run._run(
             args, env, check, _PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE
         )
