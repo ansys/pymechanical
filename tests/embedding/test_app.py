@@ -67,6 +67,10 @@ def test_app_save_open(embedded_app, tmp_path: pytest.TempPathFactory):
     embedded_app.DataModel.Project.Name = "PROJECT 1"
     project_file = os.path.join(tmp_path, f"{NamedTemporaryFile().name}.mechdat")
     embedded_app.save_as(project_file)
+
+    project_file_directory = os.path.splitext(project_file)[0] + "_Mech_Files"
+    assert project_file_directory == os.path.normpath(embedded_app.project_directory)
+
     with pytest.raises(Exception):
         embedded_app.save_as(project_file)
     embedded_app.save_as(project_file, overwrite=True)
@@ -293,7 +297,7 @@ def test_rm_lockfile(embedded_app, tmp_path: pytest.TempPathFactory):
     embedded_app.save(mechdat_path)
     embedded_app.close()
 
-    lockfile_path = os.path.join(embedded_app.DataModel.Project.ProjectDirectory, ".mech_lock")
+    lockfile_path = os.path.join(embedded_app.project_directory, ".mech_lock")
     # Assert lock file path does not exist
     assert not os.path.exists(lockfile_path)
 
@@ -446,7 +450,7 @@ def test_app_lock_file_open(embedded_app, tmp_path: pytest.TempPathFactory):
         embedded_app.save_as(project_file)
     embedded_app.save_as(project_file, overwrite=True)
 
-    lock_file = Path(embedded_app.DataModel.Project.ProjectDirectory) / ".mech_lock"
+    lock_file = Path(embedded_app.project_directory) / ".mech_lock"
 
     # Assert the lock file exists after saving it
     assert lock_file.exists()

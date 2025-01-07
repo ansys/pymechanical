@@ -433,6 +433,11 @@ This may corrupt the project file.",
         """Returns the version of the app."""
         return self._version
 
+    @property
+    def project_directory(self):
+        """Returns the current project directory."""
+        return self.DataModel.Project.ProjectDirectory
+
     def _share(self, other) -> None:
         """Shares the state of self with other.
 

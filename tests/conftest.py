@@ -176,17 +176,20 @@ def mke_app_reset(request):
     EMBEDDED_APP.new()
 
 
-_CHECK_PROCESS_RETURN_CODE = os.name == "nt"
-
 # set to True if you want to see all the subprocess stdout/stderr
 _PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE = False
 
 
 @pytest.fixture()
-def run_subprocess():
+def run_subprocess(pytestconfig):
+    version = pytestconfig.getoption("ansys_version")
+
     def func(args, env=None, check: bool = None):
         if check is None:
-            check = _CHECK_PROCESS_RETURN_CODE
+            check = True
+            if os.name != "nt":
+                if int(version) < 251:
+                    check = False
         process, output = ansys.mechanical.core.run._run(
             args, env, check, _PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE
         )
