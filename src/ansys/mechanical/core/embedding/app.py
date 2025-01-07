@@ -62,11 +62,9 @@ INSTANCES = []
 
 
 def _dispose_embedded_app(instances):  # pragma: nocover
-    print("CALLING DISPOSE EMBEDDED APP")
     if len(instances) > 0:
         instance = instances[0]
         instance._dispose()
-    print("DISPOSED!")
 
 
 def _cleanup_private_appdata(profile: UniqueUserProfile):
