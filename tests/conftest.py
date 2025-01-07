@@ -187,7 +187,7 @@ def run_subprocess(pytestconfig):
         if check is None:
             check = True
             if os.name != "nt":
-                if version < 251:
+                if int(version) < 251:
                     check = False
         process, output = ansys.mechanical.core.run._run(
             args, env, check, _PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE
