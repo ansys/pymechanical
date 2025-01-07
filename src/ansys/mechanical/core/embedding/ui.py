@@ -59,7 +59,7 @@ class UILauncher:
             A Mechanical embedding application.
         """
         # Identify the mechdb of the saved session from save_original()
-        project_directory = Path(app.DataModel.Project.ProjectDirectory)
+        project_directory = Path(app.project_directory)
         project_directory_parent = project_directory.parent
         mechdb_file = (
             project_directory_parent / f"{project_directory.parts[-1].split('_')[0]}.mechdb"
