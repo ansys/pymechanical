@@ -183,6 +183,7 @@ _PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE = False
 @pytest.fixture()
 def run_subprocess(pytestconfig):
     version = pytestconfig.getoption("ansys_version")
+
     def func(args, env=None, check: bool = None):
         if check is None:
             check = True
