@@ -30,12 +30,12 @@ import typing
 import ansys.mechanical.core as mech
 from ansys.mechanical.core.embedding.poster import Poster
 import ansys.mechanical.core.embedding.utils as utils
+from ansys.mechanical.core.embedding import initializer
 
 
 def _exit(background_app: "BackgroundApp"):
     """Stop the thread serving the Background App."""
     background_app.stop()
-    atexit.unregister(_exit)
 
 
 class BackgroundApp:
@@ -50,6 +50,7 @@ class BackgroundApp:
     def __init__(self, **kwargs):
         """Construct an instance of BackgroundApp."""
         if BackgroundApp.__app_thread is None:
+            initializer.initialize(kwargs.get("version"))
             BackgroundApp.__app_thread = threading.Thread(
                 target=self._start_app, kwargs=kwargs, daemon=True
             )
@@ -67,7 +68,6 @@ class BackgroundApp:
 
             self.post(new)
 
-        atexit.register(_exit, self)
 
     @property
     def app(self) -> mech.App:
@@ -96,6 +96,7 @@ class BackgroundApp:
     def _start_app(self, **kwargs) -> None:
         BackgroundApp.__app = mech.App(**kwargs)
         BackgroundApp.__poster = BackgroundApp.__app.poster
+        atexit.register(_exit, self)
         while True:
             if BackgroundApp.__stop_signaled:
                 break

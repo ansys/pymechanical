@@ -162,24 +162,22 @@ def __check_loaded_libs(version: int = None):  # pragma: no cover
 
 def initialize(version: int = None):
     """Initialize Mechanical embedding."""
-    __check_python_interpreter_architecture()  # blocks 32 bit python
-    __check_for_mechanical_env()  # checks for mechanical-env in linux embedding
-
     global INITIALIZED_VERSION
+    if version is None:
+        version = _get_latest_default_version()
+
+    version = __check_for_supported_version(version=version)
+
     if INITIALIZED_VERSION is not None:
         if INITIALIZED_VERSION != version:
             raise ValueError(
                 f"Initialized version {INITIALIZED_VERSION} "
                 f"does not match the expected version {version}."
             )
-        return
+        return INITIALIZED_VERSION
 
-    if version is None:
-        version = _get_latest_default_version()
-
-    version = __check_for_supported_version(version=version)
-
-    INITIALIZED_VERSION = version
+    __check_python_interpreter_architecture()  # blocks 32 bit python
+    __check_for_mechanical_env()  # checks for mechanical-env in linux embedding
 
     __set_environment(version)
 
@@ -212,4 +210,5 @@ def initialize(version: int = None):
     # attach the resolver
     resolve(version)
 
+    INITIALIZED_VERSION = version
     return version
