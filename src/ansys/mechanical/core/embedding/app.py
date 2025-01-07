@@ -124,6 +124,9 @@ class App:
     private_appdata : bool, optional
         Setting for a temporary AppData directory. Default is False.
         Enables running parallel instances of Mechanical.
+    globals : dict, optional
+        Global variables to be updated. For example, globals().
+        Replaces "app.update_globals(globals())".
     config : AddinConfiguration, optional
         Configuration for addins. By default "Mechanical" is used and ACT Addins are disabled.
     copy_profile : bool, optional
@@ -134,12 +137,15 @@ class App:
     Create App with Mechanical project file and version:
 
     >>> from ansys.mechanical.core import App
-    >>> app = App(db_file="path/to/file.mechdat", version=241, pri)
-
+    >>> app = App(db_file="path/to/file.mechdat", version=241)
 
     Disable copying the user profile when private appdata is enabled
 
     >>> app = App(private_appdata=True, copy_profile=False)
+
+    Update the global variables with globals
+
+    >>> app = App(globals=globals())
 
     Create App with "Mechanical" configuration and no ACT Addins
 
@@ -149,6 +155,9 @@ class App:
     >>> config.no_act_addins = True
     >>> app = App(config=config)
     """
+
+    # Set the initialized flag to False
+    _initialized = False
 
     def __init__(self, db_file=None, private_appdata=False, **kwargs):
         """Construct an instance of the mechanical Application."""
@@ -164,6 +173,7 @@ class App:
                 return
         if len(INSTANCES) > 0:
             raise Exception("Cannot have more than one embedded mechanical instance!")
+
         version = kwargs.get("version")
         if version is not None:
             try:
@@ -186,12 +196,18 @@ class App:
         runtime.initialize(self._version)
         connect_warnings(self)
         self._poster = None
+        # Set the initialized flag to True
+        self._app._initialized = True
 
         self._disposed = False
         atexit.register(_dispose_embedded_app, INSTANCES)
         INSTANCES.append(self)
         self._updated_scopes: typing.List[typing.Dict[str, typing.Any]] = []
         self._subscribe()
+
+        globals = kwargs.get("globals")
+        if globals is not None:
+            self.update_globals(globals)
 
     def __repr__(self):
         """Get the product info."""
@@ -217,6 +233,10 @@ class App:
         disconnect_warnings(self)
         self._app.Dispose()
         self._disposed = True
+
+    def is_initialized(self):
+        """Check if the app has been initialized."""
+        return self._initialized
 
     def open(self, db_file, remove_lock=False):
         """Open the db file.
@@ -502,8 +522,7 @@ This may corrupt the project file.",
         Examples
         --------
         >>> from ansys.mechanical.core import App
-        >>> app = App()
-        >>> app.update_globals(globals())
+        >>> app = App(globals=globals())
         """
         self._updated_scopes.append(globals_dict)
         globals_dict.update(global_variables(self, enums))
@@ -581,8 +600,7 @@ This may corrupt the project file.",
         Examples
         --------
         >>> from ansys.mechanical.core import App
-        >>> app = App()
-        >>> app.update_globals(globals())
+        >>> app = App(globals=globals())
         >>> app.print_tree()
         ... ├── Project
         ... |  ├── Model
