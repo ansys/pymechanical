@@ -40,7 +40,7 @@ def _run_background_app_test(
 
     subprocess_pass_expected = pass_expected
     if pass_expected and os.name != "nt":
-        if int(version) < 251 or testname == "multiple_instances":
+        if int(version) < 251:
             subprocess_pass_expected = False
 
     process, stdout, stderr = run_subprocess(
