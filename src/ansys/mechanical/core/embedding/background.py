@@ -28,9 +28,9 @@ import time
 import typing
 
 import ansys.mechanical.core as mech
+from ansys.mechanical.core.embedding import initializer
 from ansys.mechanical.core.embedding.poster import Poster
 import ansys.mechanical.core.embedding.utils as utils
-from ansys.mechanical.core.embedding import initializer
 
 
 def _exit(background_app: "BackgroundApp"):
@@ -67,7 +67,6 @@ class BackgroundApp:
                 BackgroundApp.__app.new()
 
             self.post(new)
-
 
     @property
     def app(self) -> mech.App:
