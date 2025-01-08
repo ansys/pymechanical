@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -40,7 +40,7 @@ def _run_background_app_test(
 
     subprocess_pass_expected = pass_expected
     if pass_expected and os.name != "nt":
-        if int(version) < 251 or testname == "multiple_instances":
+        if int(version) < 251:
             subprocess_pass_expected = False
 
     process, stdout, stderr = run_subprocess(
