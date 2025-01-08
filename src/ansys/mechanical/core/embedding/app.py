@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import atexit
 import os
+from pathlib import Path
 import shutil
 import typing
 import warnings
@@ -47,7 +48,7 @@ try:
 
     HAS_ANSYS_VIZ = True
     """Whether or not PyVista exists."""
-except:
+except ImportError:
     HAS_ANSYS_VIZ = False
 
 
@@ -158,7 +159,7 @@ class App:
             if len(INSTANCES) != 0:
                 instance: App = INSTANCES[0]
                 instance._share(self)
-                if db_file != None:
+                if db_file is not None:
                     self.open(db_file)
                 return
         if len(INSTANCES) > 0:
@@ -169,7 +170,7 @@ class App:
                 version = int(version)
             except ValueError:
                 raise ValueError(
-                    f"The version must be an integer or that can be converted to an integer."
+                    "The version must be an integer or of type that can be converted to an integer."
                 )
         self._version = initializer.initialize(version)
         configuration = kwargs.get("config", _get_default_addin_configuration())
@@ -217,8 +218,28 @@ class App:
         self._app.Dispose()
         self._disposed = True
 
-    def open(self, db_file):
-        """Open the db file."""
+    def open(self, db_file, remove_lock=False):
+        """Open the db file.
+
+        Parameters
+        ----------
+        db_file : str
+            Path to a Mechanical database file (.mechdat or .mechdb).
+        remove_lock : bool, optional
+            Whether or not to remove the lock file if it exists before opening the project file.
+        """
+        if remove_lock:
+            lock_file = Path(self.DataModel.Project.ProjectDirectory) / ".mech_lock"
+            # Remove the lock file if it exists before opening the project file
+            if lock_file.exists():
+                warnings.warn(
+                    f"Removing the lock file, {lock_file}, before opening the project. \
+This may corrupt the project file.",
+                    UserWarning,
+                    stacklevel=2,
+                )
+                lock_file.unlink()
+
         self.DataModel.Project.Open(db_file)
 
     def save(self, path=None):
@@ -371,12 +392,12 @@ class App:
     @property
     def poster(self) -> Poster:
         """Returns an instance of Poster."""
-        if self._poster == None:
+        if self._poster is None:
             self._poster = Poster()
         return self._poster
 
     @property
-    def DataModel(self):
+    def DataModel(self) -> Ansys.Mechanical.DataModel.Interfaces.DataModelObject:
         """Return the DataModel."""
         return GetterWrapper(self._app, lambda app: app.DataModel)
 
@@ -411,6 +432,11 @@ class App:
     def version(self):
         """Returns the version of the app."""
         return self._version
+
+    @property
+    def project_directory(self):
+        """Returns the current project directory."""
+        return self.DataModel.Project.ProjectDirectory
 
     def _share(self, other) -> None:
         """Shares the state of self with other.
