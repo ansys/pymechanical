@@ -77,8 +77,6 @@ jobs:
           MECHANICAL_IMAGE: ${{ env.DOCKER_PACKAGE }}
         run: |
           docker pull ${{ env.MECHANICAL_IMAGE }}
-          docker run --restart always --name ${{ env.DOCKER_MECH_CONTAINER_NAME }} -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }} > log.txt &
-          grep -q 'WB Initialize Done' <(timeout 60 tail -f log.txt)
 
       - name: Display info
         id: capture_info
