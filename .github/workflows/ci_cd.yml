@@ -84,7 +84,7 @@ jobs:
         id: capture_info
         run: |
           IMAGE_NAME=${{ env.DOCKER_PACKAGE }}
-          BUILD_DATE=$(docker run --rm --entrypoint head $IMAGE_NAME -n 1 /install/ansys_inc/v252/aisol/CommonFiles/builddate.txt)
+          BUILD_DATE=$(docker run --rm --entrypoint head $IMAGE_NAME -n 1 CommonFiles/builddate.txt)
           PUSHED_AT=$(docker inspect --format='{{.Created}}' $IMAGE_NAME)
           echo "docker_info=$IMAGE_NAME was pushed at: $PUSHED_AT" >> $GITHUB_OUTPUT
           echo "::group::Docker Info"
