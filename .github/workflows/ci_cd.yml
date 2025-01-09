@@ -29,7 +29,7 @@ on:
 
 
 env:
-  PYMECHANICAL_PORT: 10000  # default won't work on GitHub runners
+  PYMECHANICAL_PORT: 10000
   PYMECHANICAL_START_INSTANCE: false
   DOCKER_PACKAGE: ghcr.io/ansys/mechanical@sha256:660f9cc8f5bbbb38fe5c789509836a2119c9ed8f93d568e4052550432eea5ec2
   DOCKER_MECH_CONTAINER_NAME: mechanical
