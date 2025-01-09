@@ -31,7 +31,7 @@ on:
 env:
   PYMECHANICAL_PORT: 10000  # default won't work on GitHub runners
   PYMECHANICAL_START_INSTANCE: false
-  DOCKER_PACKAGE: ghcr.io/ansys/mechanical@sha256:29a551fec7355a9da2a277b199e9b04694f2cdac8e11bcc72b9501ba571d3e37
+  DOCKER_PACKAGE: ghcr.io/ansys/mechanical@sha256:660f9cc8f5bbbb38fe5c789509836a2119c9ed8f93d568e4052550432eea5ec2
   DOCKER_MECH_CONTAINER_NAME: mechanical
   PACKAGE_NAME: ansys-mechanical-core
   DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
@@ -99,7 +99,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     container:
-      image: ghcr.io/ansys/mechanical@sha256:29a551fec7355a9da2a277b199e9b04694f2cdac8e11bcc72b9501ba571d3e37
+      image: ghcr.io/ansys/mechanical@sha256:660f9cc8f5bbbb38fe5c789509836a2119c9ed8f93d568e4052550432eea5ec2
       options: --entrypoint /bin/bash
     strategy:
       fail-fast: false
@@ -167,7 +167,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     container:
-      image: ghcr.io/ansys/mechanical@sha256:29a551fec7355a9da2a277b199e9b04694f2cdac8e11bcc72b9501ba571d3e37
+      image: ghcr.io/ansys/mechanical@sha256:660f9cc8f5bbbb38fe5c789509836a2119c9ed8f93d568e4052550432eea5ec2
       options: --entrypoint /bin/bash
     strategy:
       fail-fast: false
