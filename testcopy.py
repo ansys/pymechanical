@@ -1,9 +1,11 @@
 G_stuff = 1
 
+
 class Foo:
     @property
     def bar(self):
         return G_stuff
+
     @bar.setter
     def bar(self, value):
         global G_stuff
@@ -11,15 +13,16 @@ class Foo:
 
     def propget_bar(self):
         return self.bar
+
     def propset_bar(self, value):
         self.bar = value
-        
+
 
 class Baz:
     def __init__(self, typ):
         print("callinginit")
-        super().__setattr__('_inner', typ())
-        super().__setattr__('x', 100)
+        super().__setattr__("_inner", typ())
+        super().__setattr__("x", 100)
         # here install the property
 
     def __getattr__(self, attr):
@@ -36,12 +39,13 @@ class Baz:
         else:
             super().__setattr__(attr, value)
 
+
 import sys
 
 if __name__ == "__main__":
-    foo=Foo()
+    foo = Foo()
     print(foo.__class__.__dict__)
-    barprop: property =getattr(Foo, "bar")
+    barprop: property = getattr(Foo, "bar")
     print(barprop.fget(foo))
     print(barprop.fset(foo, 3))
     print(foo.bar)
@@ -58,7 +62,6 @@ if __name__ == "__main__":
     # #setattr(baz, "bar", 2)
     # assert G_stuff == 2
     # assert baz.bar == 2
-
 
 
 # x = "some string"

@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -36,8 +36,6 @@ import ansys.mechanical.core.embedding.utils as utils
 from .utils import MethodType, get_remote_methods
 
 # TODO : implement logging
-
-
 
 
 class MechanicalService(rpyc.Service):
@@ -130,19 +128,23 @@ class MechanicalService(rpyc.Service):
 
         if prop.fget:
             exposed_get_name = f"exposed_propget_{propname}"
+
             def exposed_propget():
                 """Convert to exposed getter."""
                 f = self._curry_property(prop.fget, propname, True)
                 result = f()
                 return result
+
             setattr(self, exposed_get_name, exposed_propget)
         if prop.fset:
             exposed_set_name = f"exposed_propset_{propname}"
+
             def exposed_propset(arg):
                 """Convert to exposed getter."""
                 f = self._curry_property(prop.fset, propname, True)
                 result = f(arg)
                 return result
+
             setattr(self, exposed_set_name, exposed_propset)
 
     def _install_method(self, method):
