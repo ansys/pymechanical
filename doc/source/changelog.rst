@@ -9,6 +9,187 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.11 <https://github.com/ansys/pymechanical/releases/tag/v0.11.11>`_ - 2025-01-08
+=====================================================================================
+
+Added
+^^^^^
+
+- Add tests for transaction `#985 <https://github.com/ansys/pymechanical/pull/985>`_
+- Update private app data creation and add tests `#986 <https://github.com/ansys/pymechanical/pull/986>`_
+- Update docstring and ``App.save_as()`` `#1001 <https://github.com/ansys/pymechanical/pull/1001>`_
+- Update object state for `print_tree()` `#1005 <https://github.com/ansys/pymechanical/pull/1005>`_
+- Option to ignore lock file on open `#1007 <https://github.com/ansys/pymechanical/pull/1007>`_
+- Add project directory property `#1022 <https://github.com/ansys/pymechanical/pull/1022>`_
+
+
+Fixed
+^^^^^
+
+- Process return code `#1026 <https://github.com/ansys/pymechanical/pull/1026>`_, `#1029 <https://github.com/ansys/pymechanical/pull/1029>`_
+- Background App initialization `#1030 <https://github.com/ansys/pymechanical/pull/1030>`_
+
+
+Miscellaneous
+^^^^^^^^^^^^^
+
+- Remove f-string without placeholders and specify exception type. `#1011 <https://github.com/ansys/pymechanical/pull/1011>`_
+
+
+Documentation
+^^^^^^^^^^^^^
+
+- Update docs with new api `#1000 <https://github.com/ansys/pymechanical/pull/1000>`_
+
+
+Maintenance
+^^^^^^^^^^^
+
+- Bump codecov/codecov-action from 4 to 5 `#983 <https://github.com/ansys/pymechanical/pull/983>`_
+- update CHANGELOG for v0.11.10 `#984 <https://github.com/ansys/pymechanical/pull/984>`_
+- Bump ansys-sphinx-theme[autoapi] from 1.2.1 to 1.2.2 in the doc group `#988 <https://github.com/ansys/pymechanical/pull/988>`_
+- Bump grpcio from 1.68.0 to 1.68.1 in the core group `#990 <https://github.com/ansys/pymechanical/pull/990>`_
+- Bump pytest from 8.3.3 to 8.3.4 in the tests group `#991 <https://github.com/ansys/pymechanical/pull/991>`_
+- Bump the doc group with 2 updates `#992 <https://github.com/ansys/pymechanical/pull/992>`_, `#999 <https://github.com/ansys/pymechanical/pull/999>`_
+- pre-commit automatic update `#993 <https://github.com/ansys/pymechanical/pull/993>`_
+- Support python 3.13 `#997 <https://github.com/ansys/pymechanical/pull/997>`_
+- Bump clr-loader from 0.2.6 to 0.2.7.post0 in the core group `#1003 <https://github.com/ansys/pymechanical/pull/1003>`_
+- Bump matplotlib from 3.9.3 to 3.10.0 in the doc group `#1004 <https://github.com/ansys/pymechanical/pull/1004>`_
+- Bump the doc group with 3 updates `#1008 <https://github.com/ansys/pymechanical/pull/1008>`_
+- Bump psutil from 6.1.0 to 6.1.1 `#1009 <https://github.com/ansys/pymechanical/pull/1009>`_
+- Update license headers for 2025 `#1014 <https://github.com/ansys/pymechanical/pull/1014>`_
+- Bump ``ansys-mechanical-stubs`` to 0.1.5 and add typehint to DataModel `#1015 <https://github.com/ansys/pymechanical/pull/1015>`_
+- Follow pythonic standard for comparison to None. `#1016 <https://github.com/ansys/pymechanical/pull/1016>`_
+- Bump grpcio from 1.68.1 to 1.69.0 in the core group `#1020 <https://github.com/ansys/pymechanical/pull/1020>`_
+- Bump sphinx-autodoc-typehints from 2.5.0 to 3.0.0 `#1021 <https://github.com/ansys/pymechanical/pull/1021>`_
+- Update ngihtly for pre-release version `#1023 <https://github.com/ansys/pymechanical/pull/1023>`_
+
+`0.11.10 <https://github.com/ansys/pymechanical/releases/tag/v0.11.10>`_ - 2024-11-18
+=====================================================================================
+
+Added
+^^^^^
+
+- Version input type check `#979 <https://github.com/ansys/pymechanical/pull/979>`_
+- Adding new method for connecting to Mechanical instance `#980 <https://github.com/ansys/pymechanical/pull/980>`_
+
+
+Fixed
+^^^^^
+
+- Update embedding script tests `#974 <https://github.com/ansys/pymechanical/pull/974>`_
+
+
+Documentation
+^^^^^^^^^^^^^
+
+- add Mechanical API link to Mechanical Scripting page `#972 <https://github.com/ansys/pymechanical/pull/972>`_
+
+
+Maintenance
+^^^^^^^^^^^
+
+- update CHANGELOG for v0.11.9 `#963 <https://github.com/ansys/pymechanical/pull/963>`_
+- Modify how job success is verified for CI/CD `#965 <https://github.com/ansys/pymechanical/pull/965>`_
+- Bump mikepenz/action-junit-report from 4 to 5 `#966 <https://github.com/ansys/pymechanical/pull/966>`_
+- Bump grpcio from 1.67.0 to 1.67.1 in the core group `#967 <https://github.com/ansys/pymechanical/pull/967>`_
+- Bump the doc group with 2 updates `#968 <https://github.com/ansys/pymechanical/pull/968>`_, `#982 <https://github.com/ansys/pymechanical/pull/982>`_
+- Bump pytest-cov from 5.0.0 to 6.0.0 `#969 <https://github.com/ansys/pymechanical/pull/969>`_
+- Update docs build action container `#971 <https://github.com/ansys/pymechanical/pull/971>`_
+- pre-commit automatic update `#977 <https://github.com/ansys/pymechanical/pull/977>`_
+- Bump grpcio from 1.67.1 to 1.68.0 in the core group `#981 <https://github.com/ansys/pymechanical/pull/981>`_
+
+`0.11.9 <https://github.com/ansys/pymechanical/releases/tag/v0.11.9>`_ - 2024-10-29
+===================================================================================
+
+Added
+^^^^^
+
+- add `ansys-mechanical-stubs` as a dependency `#948 <https://github.com/ansys/pymechanical/pull/948>`_
+- Add overwrite option for `App.save_as()` `#951 <https://github.com/ansys/pymechanical/pull/951>`_
+- add typehints to ExtAPI, Tree, and Graphics `#957 <https://github.com/ansys/pymechanical/pull/957>`_
+
+
+Fixed
+^^^^^
+
+- bandit warnings `#950 <https://github.com/ansys/pymechanical/pull/950>`_
+- stubs CLI test `#952 <https://github.com/ansys/pymechanical/pull/952>`_
+
+
+Maintenance
+^^^^^^^^^^^
+
+- update CHANGELOG for v0.11.8 `#946 <https://github.com/ansys/pymechanical/pull/946>`_
+- code maintenance `#947 <https://github.com/ansys/pymechanical/pull/947>`_, `#949 <https://github.com/ansys/pymechanical/pull/949>`_
+- Bump the core group with 2 updates `#953 <https://github.com/ansys/pymechanical/pull/953>`_
+- Bump ansys-sphinx-theme[autoapi] from 1.1.4 to 1.1.6 in the doc group `#954 <https://github.com/ansys/pymechanical/pull/954>`_
+- Bump psutil from 6.0.0 to 6.1.0 `#955 <https://github.com/ansys/pymechanical/pull/955>`_
+- bump `ansys-mechanical-stubs` to v0.1.4 `#956 <https://github.com/ansys/pymechanical/pull/956>`_
+- Bump the doc group with 2 updates `#960 <https://github.com/ansys/pymechanical/pull/960>`_
+- Bump usd-core from 24.8 to 24.11 `#961 <https://github.com/ansys/pymechanical/pull/961>`_
+- pre-commit automatic update `#962 <https://github.com/ansys/pymechanical/pull/962>`_
+
+`0.11.8 <https://github.com/ansys/pymechanical/releases/tag/v0.11.8>`_ - 2024-10-15
+===================================================================================
+
+Added
+^^^^^
+
+- launch_gui command `#882 <https://github.com/ansys/pymechanical/pull/882>`_
+- Add method to execute script from file for embedding `#902 <https://github.com/ansys/pymechanical/pull/902>`_
+- add warning for x11 loaded before init on 25.1+ `#909 <https://github.com/ansys/pymechanical/pull/909>`_
+- `ansys-mechanical-ideconfig` command `#935 <https://github.com/ansys/pymechanical/pull/935>`_
+- Automatically update pre-commit ci PR with prefix `#936 <https://github.com/ansys/pymechanical/pull/936>`_
+
+
+Fixed
+^^^^^
+
+- Update ``execute_script`` method `#894 <https://github.com/ansys/pymechanical/pull/894>`_
+- Adapting braking change for upload action `#895 <https://github.com/ansys/pymechanical/pull/895>`_
+- Remove Python class reference. `#901 <https://github.com/ansys/pymechanical/pull/901>`_
+- documentation links `#911 <https://github.com/ansys/pymechanical/pull/911>`_
+- Throw value error for unsupported version of Mechanical `#917 <https://github.com/ansys/pymechanical/pull/917>`_
+- Use "lite" CLR host on windows for 251+ `#920 <https://github.com/ansys/pymechanical/pull/920>`_
+- update AUTHORS file `#929 <https://github.com/ansys/pymechanical/pull/929>`_
+- Warning for multiple version `#942 <https://github.com/ansys/pymechanical/pull/942>`_
+
+
+Miscellaneous
+^^^^^^^^^^^^^
+
+- use embedding clr host in version 251 `#926 <https://github.com/ansys/pymechanical/pull/926>`_
+
+
+Documentation
+^^^^^^^^^^^^^
+
+- remove ``thispagetitle`` metatag `#897 <https://github.com/ansys/pymechanical/pull/897>`_
+
+
+Maintenance
+^^^^^^^^^^^
+
+- Add vulnerability check `#709 <https://github.com/ansys/pymechanical/pull/709>`_
+- update CHANGELOG for v0.11.7 `#889 <https://github.com/ansys/pymechanical/pull/889>`_
+- Bump grpcio from 1.66.0 to 1.66.1 in the core group `#891 <https://github.com/ansys/pymechanical/pull/891>`_
+- Bump the doc group with 2 updates `#892 <https://github.com/ansys/pymechanical/pull/892>`_
+- Bump pytest-print from 1.0.0 to 1.0.1 in the tests group `#898 <https://github.com/ansys/pymechanical/pull/898>`_
+- Bump the doc group with 4 updates `#899 <https://github.com/ansys/pymechanical/pull/899>`_, `#907 <https://github.com/ansys/pymechanical/pull/907>`_, `#916 <https://github.com/ansys/pymechanical/pull/916>`_
+- Drop python 3.9 `#904 <https://github.com/ansys/pymechanical/pull/904>`_
+- Bump pytest from 8.3.2 to 8.3.3 in the tests group `#906 <https://github.com/ansys/pymechanical/pull/906>`_
+- Remove unnecessary dependencies `#908 <https://github.com/ansys/pymechanical/pull/908>`_
+- Bump ansys-mechanical-env from 0.1.7 to 0.1.8 in the core group `#914 <https://github.com/ansys/pymechanical/pull/914>`_
+- Bump pytest-print from 1.0.1 to 1.0.2 in the tests group `#915 <https://github.com/ansys/pymechanical/pull/915>`_
+- Bump grpcio from 1.66.1 to 1.66.2 in the core group `#922 <https://github.com/ansys/pymechanical/pull/922>`_
+- Bump panel from 1.5.0 to 1.5.1 in the doc group `#923 <https://github.com/ansys/pymechanical/pull/923>`_
+- Use static search `#927 <https://github.com/ansys/pymechanical/pull/927>`_
+- Bump the doc group with 5 updates `#933 <https://github.com/ansys/pymechanical/pull/933>`_, `#943 <https://github.com/ansys/pymechanical/pull/943>`_
+- pre-commit autoupdate `#934 <https://github.com/ansys/pymechanical/pull/934>`_
+- Code maintenance `#937 <https://github.com/ansys/pymechanical/pull/937>`_
+- pre-commit automatic update `#944 <https://github.com/ansys/pymechanical/pull/944>`_
+
 `0.11.7 <https://github.com/ansys/pymechanical/releases/tag/v0.11.7>`_ - 2024-08-29
 ===================================================================================
 

@@ -23,9 +23,9 @@ def launch_mechanical(port: int, version: int) -> Client:
 
 
 if __name__ == "__main__":
-    client: DefaultServiceMethods = None
     LAUNCHING = True
     if LAUNCHING:
+        client: DefaultServiceMethods = None
         print(f"Launching server...")
         client = launch_mechanical(PORT, VER)
     else:
@@ -35,6 +35,9 @@ if __name__ == "__main__":
 
     client.project_name = "hello"
     print(client.project_name)
+    print(client.project_directory)
+    print(client.run_python_script("""get_myname()"""))
+    print(client.project_directory)
     # client.change_project_name("lol")
     # print(client.get_project_name())
     # print(client.run_python_script("ExtAPI.DataModel.Project", False, "WARNING", 2000))

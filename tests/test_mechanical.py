@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -415,12 +415,6 @@ def test_close_all_Local_instances(tmpdir):
     pymechanical.close_all_local_instances(list_ports, use_thread=False)
     for value in list_ports:
         assert value not in pymechanical.LOCAL_PORTS
-
-
-@pytest.mark.remote_session_launch
-def test_launch_result_mode(mechanical_result):
-    result = mechanical_result.run_python_script("2+3")
-    assert result == "5"
 
 
 @pytest.mark.remote_session_launch

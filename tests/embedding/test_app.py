@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -22,6 +22,7 @@
 
 """Miscellaneous embedding tests"""
 import os
+from pathlib import Path
 import subprocess
 import sys
 from tempfile import NamedTemporaryFile
@@ -66,6 +67,13 @@ def test_app_save_open(embedded_app, tmp_path: pytest.TempPathFactory):
     embedded_app.DataModel.Project.Name = "PROJECT 1"
     project_file = os.path.join(tmp_path, f"{NamedTemporaryFile().name}.mechdat")
     embedded_app.save_as(project_file)
+
+    project_file_directory = os.path.splitext(project_file)[0] + "_Mech_Files"
+    assert project_file_directory == os.path.normpath(embedded_app.project_directory)
+
+    with pytest.raises(Exception):
+        embedded_app.save_as(project_file)
+    embedded_app.save_as(project_file, overwrite=True)
     embedded_app.new()
     embedded_app.open(project_file)
     assert embedded_app.DataModel.Project.Name == "PROJECT 1"
@@ -128,6 +136,13 @@ def test_app_print_tree(embedded_app, capsys, assets):
 
     with pytest.raises(AttributeError):
         embedded_app.print_tree(DataModel)
+
+    Modal = Model.AddModalAnalysis()
+    Modal.Solution.Solve(True)
+    embedded_app.print_tree()
+    captured = capsys.readouterr()
+    printed_output = captured.out.strip()
+    assert all(symbol in printed_output for symbol in ["?", "⚡︎", "✕", "✓"])
 
 
 @pytest.mark.embedding
@@ -222,49 +237,18 @@ def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
     # Install pythonnet
     subprocess.check_call([test_env.python, "-m", "pip", "install", "pythonnet"], env=test_env.env)
 
-    # Run embedded instance in virtual env with pythonnet installed
-    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+    # Initialize with pythonnet
+    embedded_pythonnet_py = os.path.join(rootdir, "tests", "scripts", "pythonnet_warning.py")
     process, stdout, stderr = run_subprocess(
-        [test_env.python, embedded_py, pytestconfig.getoption("ansys_version")]
+        [test_env.python, embedded_pythonnet_py, pytestconfig.getoption("ansys_version")]
     )
 
     # If UserWarning & pythonnet are in the stderr output, set warning to True.
     # Otherwise, set warning to False
     warning = True if "UserWarning" and "pythonnet" in stderr.decode() else False
 
-    # Assert warning message appears for embedded app
+    # # Assert warning message appears for embedded app
     assert warning, "UserWarning should appear in the output of the script"
-
-
-@pytest.mark.embedding_scripts
-@pytest.mark.python_env
-def test_private_appdata(pytestconfig, run_subprocess, rootdir):
-    """Test embedded instance does not save ShowTriad using a test-scoped Python environment."""
-
-    version = pytestconfig.getoption("ansys_version")
-    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
-
-    run_subprocess([sys.executable, embedded_py, version, "True", "Set"])
-    process, stdout, stderr = run_subprocess([sys.executable, embedded_py, version, "True", "Run"])
-    stdout = stdout.decode()
-    assert "ShowTriad value is True" in stdout
-
-
-@pytest.mark.embedding_scripts
-@pytest.mark.python_env
-def test_normal_appdata(pytestconfig, run_subprocess, rootdir):
-    """Test embedded instance saves ShowTriad value using a test-scoped Python environment."""
-    version = pytestconfig.getoption("ansys_version")
-
-    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
-
-    run_subprocess([sys.executable, embedded_py, version, "False", "Set"])
-    process, stdout, stderr = run_subprocess([sys.executable, embedded_py, version, "False", "Run"])
-    run_subprocess([sys.executable, embedded_py, version, "False", "Reset"])
-
-    stdout = stdout.decode()
-    # Assert ShowTriad was set to False for regular embedded session
-    assert "ShowTriad value is False" in stdout
 
 
 @pytest.mark.embedding_scripts
@@ -313,7 +297,7 @@ def test_rm_lockfile(embedded_app, tmp_path: pytest.TempPathFactory):
     embedded_app.save(mechdat_path)
     embedded_app.close()
 
-    lockfile_path = os.path.join(embedded_app.DataModel.Project.ProjectDirectory, ".mech_lock")
+    lockfile_path = os.path.join(embedded_app.project_directory, ".mech_lock")
     # Assert lock file path does not exist
     assert not os.path.exists(lockfile_path)
 
@@ -454,3 +438,23 @@ def test_app_execute_script_from_file(embedded_app, rootdir, printer):
     succes_script_path = os.path.join(rootdir, "tests", "scripts", "run_python_success.py")
     result = embedded_app.execute_script_from_file(succes_script_path)
     assert result == "test"
+
+
+@pytest.mark.embedding
+def test_app_lock_file_open(embedded_app, tmp_path: pytest.TempPathFactory):
+    """Test the lock file is removed on open if remove_lock=True."""
+    embedded_app.DataModel.Project.Name = "PROJECT 1"
+    project_file = os.path.join(tmp_path, f"{NamedTemporaryFile().name}.mechdat")
+    embedded_app.save_as(project_file)
+    with pytest.raises(Exception):
+        embedded_app.save_as(project_file)
+    embedded_app.save_as(project_file, overwrite=True)
+
+    lock_file = Path(embedded_app.project_directory) / ".mech_lock"
+
+    # Assert the lock file exists after saving it
+    assert lock_file.exists()
+
+    # Assert a warning is emitted if the lock file is going to be removed
+    with pytest.warns(UserWarning):
+        embedded_app.open(project_file, remove_lock=True)

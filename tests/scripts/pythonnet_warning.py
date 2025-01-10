@@ -20,18 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Library to import Mechanical enums.
+"""Test script for checking pythonnet warning."""
+import sys
 
-A useful subset of what is imported by
-Ansys Inc/v{NNN}/ACT/apis/Mechanical.py
-"""
+from ansys.mechanical.core.embedding import initializer
 
-import clr
-
-clr.AddReference("Ansys.Mechanical.DataModel")
-clr.AddReference("Ansys.ACT.Interfaces")
-
-from Ansys.ACT.Interfaces.Common import *  # noqa isort: skip
-from Ansys.Mechanical.DataModel.Enums import *  # noqa isort: skip
-
-import Ansys  # noqa  isort: skip
+if __name__ == "__main__":
+    version = int(sys.argv[1])
+    initializer.initialize(version)

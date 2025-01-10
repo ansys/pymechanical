@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -23,10 +23,11 @@
 """Launch Mechanical in batch or UI mode."""
 import errno
 import os
-import subprocess
+
+# Subprocess is needed to start the backend. Excluding bandit check.
+import subprocess  # nosec: B404
 
 from ansys.mechanical.core import LOG
-from ansys.mechanical.core.misc import is_windows
 
 
 class MechanicalLauncher:
@@ -90,17 +91,16 @@ class MechanicalLauncher:
         env_variables = self.__get_env_variables()
         args_list = self.__get_commandline_args()
 
-        shell_value = False
-
-        if is_windows():
-            shell_value = True
-
         LOG.info(f"Starting the process using {args_list}.")
         if self.verbose:
             command = " ".join(args_list)
             print(f"Running {command}.")
 
-        process = subprocess.Popen(args_list, shell=shell_value, env=env_variables)
+        process = subprocess.Popen(
+            args_list,
+            stdout=subprocess.PIPE,
+            env=env_variables,
+        )  # nosec: B603
         LOG.info(f"Started the process:{process} using {args_list}.")
 
     @staticmethod

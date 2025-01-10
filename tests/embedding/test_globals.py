@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -24,6 +24,7 @@
 import pytest
 
 from ansys.mechanical.core import global_variables
+from ansys.mechanical.core.embedding.imports import Transaction
 
 
 @pytest.mark.embedding
@@ -50,3 +51,14 @@ def test_global_variables(embedded_app):
     globals_dict = global_variables(embedded_app, True)
     for attribute in attributes:
         assert attribute in globals_dict
+
+
+@pytest.mark.embedding
+def test_global_variable_transaction(embedded_app):
+    embedded_app.update_globals(globals())
+    project_name = DataModel.Project.Name
+    assert project_name == "Project"
+    with Transaction():
+        DataModel.Project.Name = "New Project"
+    project_name = DataModel.Project.Name
+    assert project_name == "New Project"

@@ -147,7 +147,7 @@ class MechanicalService(rpyc.Service):
 
     def _install_method(self, method):
         methodname = method.__name__
-        self._install_method_with_name(methodname, methodname)
+        self._install_method_with_name(method, methodname, methodname)
 
     def _install_method_with_name(self, method, methodname, innername):
         """Install methods of impl with inner and exposed pairs."""
@@ -311,19 +311,37 @@ class DefaultServiceMethods:
 
     def helper_func(self):
         return self._app.DataModel.Project.Name
-
-    """
+    
     @remote_method
-    def get_model_name(self):
-        return self._app.Model.Name
-
-    def get_model_name_no_wrapper(self):
-        return self._app.Model.Name
+    def run_python_script(self, script: str, enable_logging=False, log_level="WARNING", progress_interval=2000):
+        """Run scripts using Internal python engine."""
+        try:
+            result = self._app.execute_script(script)
+            return result
+        except Exception as e:
+            raise RuntimeError(f"Server-side error during script execution: {str(e)}")
 
     @remote_method
-    def change_project_name(self, name: str):
-        self._app.DataModel.Project.Name = name
-    """
+    def run_python_script_from_file(
+            self,
+            file_path: str,
+            enable_logging=False,
+            log_level="WARNING",
+            progress_interval=2000,
+        ):
+        """Run scripts using Internal python engine."""
+        return self._app.execute_script_from_file(file_path)
+
+    
+    @remote_method
+    def clear(self):
+        self._app.new()
+
+
+    @property
+    @remote_method
+    def project_directory(self):
+        return self._app.execute_script("ExtAPI.DataModel.Project.ProjectDirectory")
 
 
 class MechanicalDefaultServer(MechanicalEmbeddedServer):

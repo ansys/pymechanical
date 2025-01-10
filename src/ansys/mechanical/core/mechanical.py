@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -243,7 +243,7 @@ def check_valid_mechanical():
 
     """
     mechanical_path = atp.get_mechanical_path(False)
-    if mechanical_path == None:
+    if mechanical_path is None:
         return False
     mechanical_version = atp.version_from_path("mechanical", mechanical_path)
     return not (mechanical_version < 232 and os.name != "posix")
@@ -444,14 +444,14 @@ class Mechanical(object):
         self._disable_logging = False
 
         if self._local:
-            self.log_info(f"Mechanical connection is treated as local.")
+            self.log_info("Mechanical connection is treated as local.")
         else:
-            self.log_info(f"Mechanical connection is treated as remote.")
+            self.log_info("Mechanical connection is treated as remote.")
 
         # connect and validate to the channel
         self._multi_connect(timeout=timeout)
 
-        self.log_info("Mechanical is ready to accept grpc calls")
+        self.log_info("Mechanical is ready to accept grpc calls.")
 
     def __del__(self):  # pragma: no cover
         """Clean up on exit."""
@@ -480,9 +480,8 @@ class Mechanical(object):
 
         >>> mechanical.version
         '242'
-
         """
-        if self._version == None:
+        if self._version is None:
             try:
                 self._disable_logging = True
                 script = (
@@ -496,7 +495,6 @@ class Mechanical(object):
                 raise
             finally:
                 self._disable_logging = False
-                pass
         return self._version
 
     @property
@@ -538,7 +536,6 @@ class Mechanical(object):
         timeout : float, optional
             Maximum allowable time in seconds for establishing a connection.
             The default is ``60``.
-
         """
         # This prevents a single failed connection from blocking other attempts
         connected = False
@@ -1400,7 +1397,7 @@ class Mechanical(object):
 
         if chunk_size > 4 * 1024 * 1024:  # 4MB
             raise ValueError(
-                f"Chunk sizes bigger than 4 MB can generate unstable behaviour in PyMechanical. "
+                "Chunk sizes bigger than 4 MB can generate unstable behaviour in PyMechanical. "
                 "Decrease the ``chunk_size`` value."
             )
 
@@ -1519,8 +1516,8 @@ class Mechanical(object):
         if progress_bar:
             if not _HAS_TQDM:  # pragma: no cover
                 raise ModuleNotFoundError(
-                    f"To use the keyword argument 'progress_bar', you need to have installed "
-                    f"the 'tqdm' package.To avoid this message you can set 'progress_bar=False'."
+                    "To use the keyword argument 'progress_bar', you need to have installed "
+                    "the 'tqdm' package.To avoid this message you can set 'progress_bar=False'."
                 )
 
         file_size = 0
@@ -1573,7 +1570,6 @@ class Mechanical(object):
         Download all the files in the project.
 
         >>> local_file_path_list = mechanical.download_project()
-
         """
         destination_directory = target_dir.rstrip("\\/")
 
@@ -2243,3 +2239,86 @@ def launch_mechanical(
         raise exception
 
     return mechanical
+
+
+def connect_to_mechanical(
+    ip=None,
+    port=None,
+    loglevel="ERROR",
+    log_file=False,
+    log_mechanical=None,
+    connect_timeout=120,
+    clear_on_connect=False,
+    cleanup_on_exit=False,
+    keep_connection_alive=True,
+) -> Mechanical:
+    """Connect to an existing Mechanical server instance.
+
+    Parameters
+    ----------
+    ip : str, optional
+        IP address for connecting to an existing Mechanical instance. The
+        IP address defaults to ``"127.0.0.1"``.
+    port : int, optional
+        Port to listen on for an existing Mechanical instance. The default is ``None``,
+        in which case ``10000`` is used. You can override the
+        default behavior of this parameter with the
+        ``PYMECHANICAL_PORT=<VALID PORT>`` environment variable.
+    loglevel : str, optional
+        Level of messages to print to the console.
+        Options are:
+
+        - ``"WARNING"``: Prints only Ansys warning messages.
+        - ``"ERROR"``: Prints only Ansys error messages.
+        - ``"INFO"``: Prints all Ansys messages.
+
+        The default is ``WARNING``.
+    log_file : bool, optional
+        Whether to copy the messages to a file named ``logs.log``, which is
+        located where the Python script is executed. The default is ``False``.
+    log_mechanical : str, optional
+        Path to the output file on the local disk to write every script
+        command to. The default is ``None``. However, you might set
+        ``"log_mechanical='pymechanical_log.txt'"`` to write all commands that are
+        sent to Mechanical via PyMechanical to this file. You can then use these
+        commands to run a script within Mechanical without PyMechanical.
+    connect_timeout : float, optional
+        Maximum allowable time in seconds to connect to the Mechanical server.
+        The default is ``120``.
+    clear_on_connect : bool, optional
+        Whether to clear the Mechanical instance when connecting. The default is ``False``.
+        When ``True``, a fresh environment is provided when you connect to Mechanical.
+    cleanup_on_exit : bool, optional
+        Whether to exit Mechanical when Python exits. The default is ``False``.
+        When ``False``, Mechanical is not exited when the garbage for this Mechanical
+        instance is collected.
+    keep_connection_alive : bool, optional
+        Whether to keep the gRPC connection alive by running a background thread
+        and making dummy calls for remote connections. The default is ``True``.
+
+    Returns
+    -------
+    ansys.mechanical.core.mechanical.Mechanical
+        Instance of Mechanical.
+
+    Examples
+    --------
+    Connect to an existing Mechanical instance at IP address ``192.168.1.30`` on port
+    ``50001``..
+
+
+    >>> from ansys.mechanical.core import connect_to_mechanical
+    >>> pymech = connect_to_mechanical(ip='192.168.1.30', port=50001)
+    """
+    return launch_mechanical(
+        start_instance=False,
+        loglevel=loglevel,
+        log_file=log_file,
+        log_mechanical=log_mechanical,
+        start_timeout=connect_timeout,
+        port=port,
+        ip=ip,
+        clear_on_connect=clear_on_connect,
+        cleanup_on_exit=cleanup_on_exit,
+        keep_connection_alive=keep_connection_alive,
+    )
