@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -25,6 +25,7 @@ import os
 import time
 
 import rpyc
+
 
 class Client:
     """Client for connecting to Mechanical services."""
@@ -57,9 +58,10 @@ class Client:
             return getattr(self.root, attr)
         propget_name = f"propget_{attr}"
         if hasattr(self.root, propget_name):
-            exposed_fget =  getattr(self.root, propget_name)
+            exposed_fget = getattr(self.root, propget_name)
             return exposed_fget()
         return self.__dict__.items[attr]
+
     """
     def __setattr__(self, attr, value):
         if hasattr(self.root, attr):
