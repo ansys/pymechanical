@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -36,8 +36,6 @@ import ansys.mechanical.core.embedding.utils as utils
 from .utils import MethodType, get_remote_methods
 
 # TODO : implement logging
-
-
 
 
 class MechanicalService(rpyc.Service):
@@ -130,19 +128,23 @@ class MechanicalService(rpyc.Service):
 
         if prop.fget:
             exposed_get_name = f"exposed_propget_{propname}"
+
             def exposed_propget():
                 """Convert to exposed getter."""
                 f = self._curry_property(prop.fget, propname, True)
                 result = f()
                 return result
+
             setattr(self, exposed_get_name, exposed_propget)
         if prop.fset:
             exposed_set_name = f"exposed_propset_{propname}"
+
             def exposed_propset(arg):
                 """Convert to exposed getter."""
                 f = self._curry_property(prop.fset, propname, True)
                 result = f(arg)
                 return result
+
             setattr(self, exposed_set_name, exposed_propset)
 
     def _install_method(self, method):
@@ -311,9 +313,11 @@ class DefaultServiceMethods:
 
     def helper_func(self):
         return self._app.DataModel.Project.Name
-    
+
     @remote_method
-    def run_python_script(self, script: str, enable_logging=False, log_level="WARNING", progress_interval=2000):
+    def run_python_script(
+        self, script: str, enable_logging=False, log_level="WARNING", progress_interval=2000
+    ):
         """Run scripts using Internal python engine."""
         try:
             result = self._app.execute_script(script)
@@ -323,20 +327,18 @@ class DefaultServiceMethods:
 
     @remote_method
     def run_python_script_from_file(
-            self,
-            file_path: str,
-            enable_logging=False,
-            log_level="WARNING",
-            progress_interval=2000,
-        ):
+        self,
+        file_path: str,
+        enable_logging=False,
+        log_level="WARNING",
+        progress_interval=2000,
+    ):
         """Run scripts using Internal python engine."""
         return self._app.execute_script_from_file(file_path)
 
-    
     @remote_method
     def clear(self):
         self._app.new()
-
 
     @property
     @remote_method
