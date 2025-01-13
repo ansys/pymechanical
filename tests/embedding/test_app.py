@@ -169,6 +169,7 @@ def test_app_poster(embedded_app):
     poster = embedded_app.poster
 
     name = []
+    error = []
 
     def change_name_async(poster):
         """Change_name_async will run a background thread
@@ -182,8 +183,18 @@ def test_app_poster(embedded_app):
         def change_name():
             embedded_app.DataModel.Project.Name = "foo"
 
+        def raise_ex():
+            raise Exception("Exception")
+
         name.append(poster.post(get_name))
         poster.post(change_name)
+
+        try:
+            poster.try_post()
+        except Exception as e:
+            error.append(e)
+
+        name.append(poster.try_post(get_name))
 
     import threading
 
@@ -196,9 +207,11 @@ def test_app_poster(embedded_app):
     # thread, e.g. `change_name` that was posted by the poster.
     utils.sleep(400)
     change_name_thread.join()
-    assert len(name) == 1
+    assert len(name) == 2
     assert name[0] == "Project"
+    assert name[1] == "foo"
     assert embedded_app.DataModel.Project.Name == "foo"
+    assert len(error) == 1
 
 
 @pytest.mark.embedding
