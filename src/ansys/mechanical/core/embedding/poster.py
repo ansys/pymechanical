@@ -26,11 +26,15 @@ import typing
 
 
 class PosterError(Exception):
+    """Class which holds errors from the background thread posting system."""
+
     def __init__(self, error: Exception):
+        """Create an instance to hold the given error."""
         self._error = error
 
     @property
     def error(self) -> Exception:
+        """Get the underlying exception."""
         return self._error
 
 
@@ -47,10 +51,11 @@ class Poster:
         self._poster = Ans.Common.WB1ManagedUtils.TaskPoster
 
     def try_post(self, callable: typing.Callable) -> typing.Any:
-        """Same as `post`, but raises exceptions.
+        """Post the callable to Mechanical's main thread.
 
-        If `callable` raises an exception, try_post will raise
-        the same exception to the caller of try_post.
+        This does the same thing as `post` but if `callable`
+        raises an exception, try_post will raise the same
+        exception to the caller of `try_post`.
         """
 
         def wrapped():
