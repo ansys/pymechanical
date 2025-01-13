@@ -41,7 +41,7 @@ repos:
     args: ["--ignore-words", "doc/styles/config/vocabularies/ANSYS/accept.txt", "-w"]
 
 - repo: https://github.com/ansys/pre-commit-hooks
-  rev: v0.4.4
+  rev: v0.5.0
   hooks:
   - id: add-license-headers
     args:
@@ -76,6 +76,6 @@ repos:
   - id: check-added-large-files
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.30.0
+  rev: 0.31.0
   hooks:
     - id: check-github-workflows
