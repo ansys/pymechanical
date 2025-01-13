@@ -25,6 +25,14 @@
 import typing
 
 
+class PosterError(Exception):
+    def __init__(self, error: Exception):
+        self._error = error
+
+    @property
+    def error(self) -> Exception:
+        return self._error
+
 class Poster:
     """Class which can post a python callable function to Mechanical's main thread."""
 
@@ -37,7 +45,23 @@ class Poster:
 
         self._poster = Ans.Common.WB1ManagedUtils.TaskPoster
 
-    def post(self, callable: typing.Callable):
+    def try_post(self, callable: typing.Callable) -> typing.Any:
+        """Same as `post`, but raises exceptions.
+
+        If `callable` raises an exception, try_post will raise
+        the same exception to the caller of try_post.
+        """
+        def wrapped():
+            try:
+                return callable()
+            except Exception as e:
+                return PosterError(e)
+        result = self.post(wrapped)
+        if isinstance(result, PosterError):
+            raise result.error
+        return result
+
+    def post(self, callable: typing.Callable) -> typing.Any:
         """Post the callable to Mechanical's main thread.
 
         The main thread needs to be receiving posted messages
