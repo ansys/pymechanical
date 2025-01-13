@@ -33,6 +33,7 @@ class PosterError(Exception):
     def error(self) -> Exception:
         return self._error
 
+
 class Poster:
     """Class which can post a python callable function to Mechanical's main thread."""
 
@@ -51,11 +52,13 @@ class Poster:
         If `callable` raises an exception, try_post will raise
         the same exception to the caller of try_post.
         """
+
         def wrapped():
             try:
                 return callable()
             except Exception as e:
                 return PosterError(e)
+
         result = self.post(wrapped)
         if isinstance(result, PosterError):
             raise result.error
