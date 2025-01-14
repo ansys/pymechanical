@@ -93,8 +93,8 @@ Verify your connection with this code:
 
     >>> mechanical
     Ansys Mechanical [Ansys Mechanical Enterprise]
-    Product Version:242
-    Software build date: 06/03/2024 14:47:58
+    Product Version:251
+    Software build date: 11/27/2024 09:34:44
 
 Additional considerations
 -------------------------

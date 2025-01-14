@@ -69,16 +69,17 @@ session must be reachable from your Python program.
 Getting started
 ---------------
 
+.. _scripting_guide: https://ansyshelp.ansys.com/Views/Secured/corp/v251/en/act_script/act_script.html
+
 PyMechanical uses the built-in scripting capabilities of Mechanical. For information on the
-scripting APIs available, see the `Scripting in Mechanical Guide
-<https://ansyshelp.ansys.com/Views/Secured/corp/v242/en/act_script/act_script.html>`_ in the
+scripting APIs available, see the `Scripting in Mechanical Guide <_scripting_guide>`_ in the
 Ansys Help.
 
 Configuring the mechanical installation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 On a Windows system, the environment variable ``AWP_ROOT<ver>`` is configured when Mechanical is
-installed, where ``<ver>`` is the Mechanical release number, such as ``242`` for release 2024 R2.
+installed, where ``<ver>`` is the Mechanical release number, such as ``251`` for release 2025 R2.
 PyMechanical automatically uses this environment variable (or variables if there are multiple
 installations of different versions) to locate the latest Mechanical installation. On a Linux
 system, you must configure the ``AWP_ROOT<ver>`` environment variable to point to the
