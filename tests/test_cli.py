@@ -181,8 +181,15 @@ def test_cli_features(disable_cli):
         args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, features="a;b;c", port=11)
         assert "-featureflags" in args
         assert "a;b;c" in args
-    args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, features="MultistageHarmonic", port=11)
+    args, _ = _cli_impl(
+        exe="AnsysWBU.exe",
+        version=241,
+        features="ThermalShells;MultistageHarmonic;CPythonCapability",
+        port=11,
+    )
+    assert "Mechanical.ThermalShells" in args
     assert "Mechanical.MultistageHarmonic" in args
+    assert "Mechanical.CPython.Capability" in args
 
 
 @pytest.mark.cli
