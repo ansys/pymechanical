@@ -12,7 +12,14 @@ from datetime import datetime
 import os
 import warnings
 
-from ansys_sphinx_theme import ansys_favicon, get_version_match
+from ansys_sphinx_theme import (
+    ansys_favicon,
+    ansys_logo_white,
+    ansys_logo_white_cropped,
+    get_version_match,
+    latex,
+    watermark,
+)
 from sphinx_gallery.sorting import FileNameSortKey
 
 import ansys.mechanical.core as pymechanical
@@ -179,7 +186,7 @@ sphinx_gallery_conf = {
 html_short_title = html_title = "PyMechanical"
 html_theme = "ansys_sphinx_theme"
 html_context = {
-    "github_user": "pyansys",
+    "github_user": "ansys",
     "github_repo": "pymechanical",
     "github_version": "main",
     "doc_path": "doc/source",
@@ -206,7 +213,18 @@ html_theme_options = {
             "url": "https://github.com/ansys/pymechanical/discussions",
             "icon": "fa fa-comment fa-fw",
         },
+        {
+            "name": "Download documentation in PDF",
+            "url": f"https://{cname}/version/{get_version_match(version)}/_static/download/ansys.mechanical.core.pdf",  # noqa: E501
+            "icon": "fa fa-file-pdf fa-fw",
+        },
     ],
+    "use_meilisearch": {
+        "api_key": os.getenv("MEILISEARCH_PUBLIC_API_KEY", ""),
+        "index_uids": {
+            f"pymechanical-v{get_version_match(version).replace('.', '-')}": "PyMechanical",
+        },
+    },
     "cheatsheet": {
         "file": "cheatsheet/cheat_sheet.qmd",
         "title": "PyMechanical cheat sheet",
@@ -220,16 +238,9 @@ html_theme_options = {
 # Output file base name for HTML help builder.
 htmlhelp_basename = "pymechanicaldoc"
 
-html_sidebars = {
-    "changelog": [],
-    "examples/index": [],
-    "contributing": [],
-}
-
-html_show_sourcelink = False
-
+latex_additional_files = [watermark, ansys_logo_white, ansys_logo_white_cropped]
 # -- Options for LaTeX output ------------------------------------------------
-latex_elements = {}
+latex_elements = {"preamble": latex.generate_preamble(html_title)}
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
@@ -243,6 +254,20 @@ latex_documents = [
         "manual",
     ),
 ]
+
+# -- Options for simplepdf output --------------------------------------------
+simplepdf_vars = {
+    "primary": "#000000",
+    "primary_opaque:": "#4D5352",
+    "secondary": "#3972A1",
+    "cover": "#ffffff",
+    "white": "#ffffff",
+    "links": "1E6DDC",
+    "cover-bg": "url(cover-bg.jpg) no-repeat center",
+    "cover-overlay": "rgba(200, 146, 17, 0.5)",
+    "top-left-content": "counter(page)",
+    "bottom-center-content": '"(c) ANSYS, Inc. All rights reserved"',
+}
 
 
 # -- Options for manual page output ------------------------------------------

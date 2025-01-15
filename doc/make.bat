@@ -15,6 +15,7 @@ if "%1" == "" goto help
 if "%1" == "html-noplot" goto html-noplot
 if "%1" == "clean" goto clean
 if "%1" == "pdf" goto pdf
+if "%1" == "simple-pdf" goto simple-pdf
 if "%1" == "linkcheck" goto linkcheck
 
 %SPHINXBUILD% >NUL 2>NUL
@@ -47,6 +48,14 @@ goto end
 cd "%BUILDDIR%\latex"
 for %%f in (*.tex) do (
 pdflatex "%%f" --interaction=nonstopmode)
+if NOT EXIST ansys-mechanical-core.pdf (
+	Echo "no pdf generated!"
+	exit /b 1)
+Echo "pdf generated!"
+
+:simple-pdf
+%SPHINXBUILD% -M simplepdf %SOURCEDIR% %BUILDDIR% %SPHINXOPTS% %O%
+cd "%BUILDDIR%\simplepdf"
 if NOT EXIST ansys-mechanical-core.pdf (
 	Echo "no pdf generated!"
 	exit /b 1)
