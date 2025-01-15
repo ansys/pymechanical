@@ -69,7 +69,7 @@ usage, type the following command:
 
             $ ansys-mechanical -r 251 -g
 
-            Starting Ansys Mechanical version 2024R1 in graphical mode...
+            Starting Ansys Mechanical version 2025R1 in graphical mode...
 
     Options:
         -h, --help                 Show this message and exit.

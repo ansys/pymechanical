@@ -170,7 +170,7 @@ class LocalMechanicalPool:
         self._spawn_kwargs = kwargs
         self._remote = False
 
-        # verify that mechanical is 2023R2 or newer
+        # Verify that Mechanical is 2023R2 or newer
         exec_file = None
         if "exec_file" in kwargs:
             exec_file = kwargs["exec_file"]

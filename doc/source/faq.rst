@@ -156,7 +156,7 @@ This section provides answers to frequently asked questions.
 
         $ mechanical-env python
         >>> import ansys.mechanical.core as mech
-        >>> app=mech.App(version=42)
+        >>> app=mech.App(version=251)
 
     or
 
