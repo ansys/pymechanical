@@ -187,6 +187,7 @@ def test_cli_features(disable_cli):
         features="ThermalShells;MultistageHarmonic;CPythonCapability",
         port=11,
     )
+    args = [arg for arg in args if arg.startswith("Mechanical")][0]
     assert "Mechanical.ThermalShells" in args
     assert "Mechanical.MultistageHarmonic" in args
     assert "Mechanical.CPython.Capability" in args
