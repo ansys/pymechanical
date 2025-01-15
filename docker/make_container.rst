@@ -24,7 +24,8 @@ Requirements
 
 * These files are provided:
 
-  * `Dockerfile <https://github.com/ansys/pymechanical/tree/main/docker/252/Dockerfile>`_
+  * `Dockerfile <https://github.com/ansys/pymechanical/tree/main/docker/251/Dockerfile>`_
+
   * `.dockerignore <https://github.com/ansys/pymechanical/tree/main/docker/251/.dockerignore>`_
 
 
@@ -86,7 +87,8 @@ which you should modify to adapt it to your needs.
 .. code:: bash
 
     # Create env vars for the Dockerfile
-    export ANS_MAJOR_VERSION=24
+    export ANS_MAJOR_VERSION=25
+
     export ANS_MINOR_VERSION=1
     export ANS_VERSION=${ANS_MAJOR_VERSION}${ANS_MINOR_VERSION}
 

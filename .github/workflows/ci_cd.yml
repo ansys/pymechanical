@@ -13,7 +13,7 @@ on:
         - '241'
         - '232'
         description: 'The Mechanical revision number to run tests on.'
-        default: '251' #stable version is 242, must match $stable_container
+        default: '251' #stable version is 251, must match $stable_container
   schedule:
     - cron: '00 22 * * *'  # UTC time, may start 5-15 mins later than scheduled time
   # registry_package:
