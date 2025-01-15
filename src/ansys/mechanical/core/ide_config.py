@@ -178,7 +178,8 @@ def _cli_impl(
     "--revision",
     default=None,
     type=int,
-    help='The Mechanical revision number, e.g. "251" or "241". If unspecified,\
+    help='The Mechanical revision number, e.g. "251" or "242". If unspecified,\
+
 it finds and uses the default version from ansys-tools-path.',
 )
 def cli(ide: str, target: str, revision: int) -> None:

@@ -79,7 +79,7 @@ Configuring the mechanical installation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 On a Windows system, the environment variable ``AWP_ROOT<ver>`` is configured when Mechanical is
-installed, where ``<ver>`` is the Mechanical release number, such as ``251`` for release 2025 R2.
+installed, where ``<ver>`` is the Mechanical release number, such as ``251`` for release 2025 R1.
 PyMechanical automatically uses this environment variable (or variables if there are multiple
 installations of different versions) to locate the latest Mechanical installation. On a Linux
 system, you must configure the ``AWP_ROOT<ver>`` environment variable to point to the
