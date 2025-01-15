@@ -53,7 +53,7 @@ Launch Mechanical with this code:
 .. code::
 
     LICENSE_SERVER=1055@XXX.XXX.XXX.XXX
-    VERSION=v24.2.0
+    VERSION=v25.1.0
 
     IMAGE=ghcr.io/ansys/pymechanical/mechanical:$VERSION
     docker run -e ANSYSLMD_LICENSE_FILE=$LICENSE_SERVER -p ip:10000:10000 $IMAGE
