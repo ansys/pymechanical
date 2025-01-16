@@ -9,6 +9,27 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.12 <https://github.com/ansys/pymechanical/releases/tag/v0.11.12>`_ - 2025-01-16
+=====================================================================================
+
+Added
+^^^^^
+
+- Update enum and globals `#1037 <https://github.com/ansys/pymechanical/pull/1037>`_
+- add poster method that raises an exception `#1038 <https://github.com/ansys/pymechanical/pull/1038>`_
+- docker and ci/cd change for 25R1 `#1042 <https://github.com/ansys/pymechanical/pull/1042>`_
+
+
+Maintenance
+^^^^^^^^^^^
+
+- update CHANGELOG for v0.11.11 `#1031 <https://github.com/ansys/pymechanical/pull/1031>`_
+- Bump the doc group with 2 updates `#1036 <https://github.com/ansys/pymechanical/pull/1036>`_
+- pre-commit automatic update `#1039 <https://github.com/ansys/pymechanical/pull/1039>`_
+- Bump `ansys-mechanical-stubs` from 0.1.5 to 0.1.6 `#1044 <https://github.com/ansys/pymechanical/pull/1044>`_
+- Update default product version to 25R1 `#1045 <https://github.com/ansys/pymechanical/pull/1045>`_
+- Bump `ansys-mechanical-env` version from `0.1.8` to  `0.1.9` `#1048 <https://github.com/ansys/pymechanical/pull/1048>`_
+
 `0.11.11 <https://github.com/ansys/pymechanical/releases/tag/v0.11.11>`_ - 2025-01-08
 =====================================================================================
 
