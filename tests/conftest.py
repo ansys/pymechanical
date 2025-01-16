@@ -378,7 +378,7 @@ def pytest_addoption(parser):
     mechanical_path = atp.get_mechanical_path(False)
 
     if mechanical_path is None:
-        parser.addoption("--ansys-version", default="242")
+        parser.addoption("--ansys-version", default="251")
     else:
         mechanical_version = atp.version_from_path("mechanical", mechanical_path)
         parser.addoption("--ansys-version", default=str(mechanical_version))
@@ -400,7 +400,7 @@ def pytest_collection_modifyitems(config, items):
                 item.add_marker(skip_versions)
 
         # Skip tests that are outside of the provided version range. For example,
-        # @pytest.mark.version_range(241,242)
+        # @pytest.mark.version_range(241,251)
         if "version_range" in item.keywords:
             revns = [mark.args for mark in item.iter_markers(name="version_range")][0]
             ansys_version = int(config.getoption("--ansys-version"))

@@ -134,8 +134,7 @@ class App:
     Create App with Mechanical project file and version:
 
     >>> from ansys.mechanical.core import App
-    >>> app = App(db_file="path/to/file.mechdat", version=241, pri)
-
+    >>> app = App(db_file="path/to/file.mechdat", version=251)
 
     Disable copying the user profile when private appdata is enabled
 

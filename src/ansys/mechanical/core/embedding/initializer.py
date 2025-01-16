@@ -34,7 +34,12 @@ from ansys.mechanical.core.embedding.resolver import resolve
 INITIALIZED_VERSION = None
 """Constant for the initialized version."""
 
-SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS = {242: "2024R2", 241: "2024R1", 232: "2023R2"}
+SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS = {
+    251: "2025R1",
+    242: "2024R2",
+    241: "2024R1",
+    232: "2023R2",
+}
 """Supported Mechanical embedding versions on Windows."""
 
 
