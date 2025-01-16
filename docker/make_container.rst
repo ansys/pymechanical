@@ -88,7 +88,6 @@ which you should modify to adapt it to your needs.
 
     # Create env vars for the Dockerfile
     export ANS_MAJOR_VERSION=25
-
     export ANS_MINOR_VERSION=1
     export ANS_VERSION=${ANS_MAJOR_VERSION}${ANS_MINOR_VERSION}
 
