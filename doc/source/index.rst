@@ -117,5 +117,4 @@ Python API to interact with `Ansys Mechanical`_ (FEA software for structural eng
    contributing
    kil/index
    faq
-   release-note
-   whatsnew
+   changelog

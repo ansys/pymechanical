@@ -207,15 +207,14 @@ html_theme_options = {
             "icon": "fa fa-comment fa-fw",
         },
     ],
-    # "cheatsheet": {
-    #     "file": "cheatsheet/cheat_sheet.qmd",
-    #     "title": "PyMechanical cheat sheet",
-    # },
     "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
     "navigation_depth": 10,
     "whatsnew": {
-        "file": "release-note",
-        "pages": ["index", "release-note"],
+        "no_of_headers": 3,
+        "no_of_contents": 3,
+        "whatsnew_file": "whatsnew",
+        "changelog_file": "changelog",
+        "pages": ["changelog", "index"],
     },
 }
 
