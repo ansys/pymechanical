@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -34,7 +34,12 @@ from ansys.mechanical.core.embedding.resolver import resolve
 INITIALIZED_VERSION = None
 """Constant for the initialized version."""
 
-SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS = {242: "2024R2", 241: "2024R1", 232: "2023R2"}
+SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS = {
+    251: "2025R1",
+    242: "2024R2",
+    241: "2024R1",
+    232: "2023R2",
+}
 """Supported Mechanical embedding versions on Windows."""
 
 
@@ -138,7 +143,7 @@ def __is_lib_loaded(libname: str):  # pragma: no cover
     RTLD_NOLOAD = 4
     try:
         ctypes.CDLL(libname, RTLD_NOLOAD)
-    except:
+    except OSError:
         return False
     return True
 
@@ -162,24 +167,22 @@ def __check_loaded_libs(version: int = None):  # pragma: no cover
 
 def initialize(version: int = None):
     """Initialize Mechanical embedding."""
-    __check_python_interpreter_architecture()  # blocks 32 bit python
-    __check_for_mechanical_env()  # checks for mechanical-env in linux embedding
-
     global INITIALIZED_VERSION
+    if version is None:
+        version = _get_latest_default_version()
+
+    version = __check_for_supported_version(version=version)
+
     if INITIALIZED_VERSION is not None:
         if INITIALIZED_VERSION != version:
             raise ValueError(
                 f"Initialized version {INITIALIZED_VERSION} "
                 f"does not match the expected version {version}."
             )
-        return
+        return INITIALIZED_VERSION
 
-    if version == None:
-        version = _get_latest_default_version()
-
-    version = __check_for_supported_version(version=version)
-
-    INITIALIZED_VERSION = version
+    __check_python_interpreter_architecture()  # blocks 32 bit python
+    __check_for_mechanical_env()  # checks for mechanical-env in linux embedding
 
     __set_environment(version)
 
@@ -212,4 +215,5 @@ def initialize(version: int = None):
     # attach the resolver
     resolve(version)
 
+    INITIALIZED_VERSION = version
     return version

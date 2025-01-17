@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -144,7 +144,7 @@ def start_embedding_app(version, pytestconfig) -> datetime.timedelta:
     ), "Can't run test cases, Mechanical is in readonly mode! Check license configuration."
     startup_time = (datetime.datetime.now() - start).total_seconds()
     num_cores = os.environ.get("NUM_CORES", None)
-    if num_cores != None:
+    if num_cores is not None:
         config = EMBEDDED_APP.ExtAPI.Application.SolveConfigurations["My Computer"]
         config.SolveProcessSettings.MaxNumberOfCores = int(num_cores)
     return startup_time
@@ -167,7 +167,7 @@ def embedded_app(pytestconfig, request):
 @pytest.fixture(autouse=True)
 def mke_app_reset(request):
     global EMBEDDED_APP
-    if EMBEDDED_APP == None:
+    if EMBEDDED_APP is None:
         # embedded app was not started - no need to do anything
         return
     terminal_reporter = request.config.pluginmanager.getplugin("terminalreporter")
@@ -176,17 +176,20 @@ def mke_app_reset(request):
     EMBEDDED_APP.new()
 
 
-_CHECK_PROCESS_RETURN_CODE = os.name == "nt"
-
-# set to true if you want to see all the subprocess stdout/stderr
+# set to True if you want to see all the subprocess stdout/stderr
 _PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE = False
 
 
 @pytest.fixture()
-def run_subprocess():
+def run_subprocess(pytestconfig):
+    version = pytestconfig.getoption("ansys_version")
+
     def func(args, env=None, check: bool = None):
         if check is None:
-            check = _CHECK_PROCESS_RETURN_CODE
+            check = True
+            if os.name != "nt":
+                if int(version) < 251:
+                    check = False
         process, output = ansys.mechanical.core.run._run(
             args, env, check, _PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE
         )
@@ -201,17 +204,6 @@ def rootdir():
     """Return the root directory of the local clone of the PyMechanical GitHub repository."""
     base = pathlib.Path(__file__).parent
     yield base.parent
-
-
-# @pytest.fixture()
-# def subprocess_pass_expected(pytestconfig):
-#     """Checks for conditions to see if scripts run in subprocess are expected to pass or not."""
-
-#     version = pytestconfig.getoption("ansys_version")
-#     if os.name != "nt" and int(version) < 251:
-#         yield False
-#     else:
-#         yield True
 
 
 @pytest.fixture()
@@ -290,7 +282,7 @@ def connect_to_mechanical_instance(port=None, clear_on_connect=False):
     # ip needs to be passed or start instance takes precedence
     # typical for container scenarios use connect
     # and needs to be treated as remote scenarios
-    mechanical = pymechanical.launch_mechanical(
+    mechanical = pymechanical.connect_to_mechanical(
         ip=hostname, port=port, clear_on_connect=clear_on_connect, cleanup_on_exit=False
     )
     return mechanical
@@ -385,8 +377,8 @@ def mechanical_pool():
 def pytest_addoption(parser):
     mechanical_path = atp.get_mechanical_path(False)
 
-    if mechanical_path == None:
-        parser.addoption("--ansys-version", default="242")
+    if mechanical_path is None:
+        parser.addoption("--ansys-version", default="251")
     else:
         mechanical_version = atp.version_from_path("mechanical", mechanical_path)
         parser.addoption("--ansys-version", default=str(mechanical_version))
@@ -408,7 +400,7 @@ def pytest_collection_modifyitems(config, items):
                 item.add_marker(skip_versions)
 
         # Skip tests that are outside of the provided version range. For example,
-        # @pytest.mark.version_range(241,242)
+        # @pytest.mark.version_range(241,251)
         if "version_range" in item.keywords:
             revns = [mark.args for mark in item.iter_markers(name="version_range")][0]
             ansys_version = int(config.getoption("--ansys-version"))

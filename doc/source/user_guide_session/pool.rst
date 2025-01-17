@@ -12,7 +12,7 @@ This code shows how to create a pool with 10 instances:
 .. code:: pycon
 
     >>> from ansys.mechanical.core import LocalMechanicalPool
-    >>> pool = LocalMechanicalPool(10, version="242")
+    >>> pool = LocalMechanicalPool(10, version="251")
     'Mechanical Pool with 10 active instances'
 
 When you are creating a pool, you can supply additional keyword arguments.
@@ -22,7 +22,7 @@ For example, to restart failed instances, you can set ``restart_failed=True``:
 
     >>> import os
     >>> my_path = os.getcmd()
-    >>> pool = LocalMechanicalPool(10, version="242", restart_failed=True)
+    >>> pool = LocalMechanicalPool(10, version="251", restart_failed=True)
     Creating Pool: 100%|########| 10/10 [00:01<00:00,  1.43it/s]
 
 You can access each individual instance of Mechanical with this code:

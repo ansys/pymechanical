@@ -7,11 +7,13 @@ on:
       revn:
         type: choice
         options:
+        - '252'
         - '251'
         - '242'
         - '241'
+        - '232'
         description: 'The Mechanical revision number to run tests on.'
-        default: '242' #stable version is 242, must match $stable_container
+        default: '251' #stable version is 251, must match $stable_container
   schedule:
     - cron: '00 22 * * *'  # UTC time, may start 5-15 mins later than scheduled time
   # registry_package:
@@ -33,10 +35,10 @@ env:
   DOCKER_MECH_CONTAINER_NAME: mechanical
   PACKAGE_NAME: ansys-mechanical-core
   DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
-  MAIN_PYTHON_VERSION: '3.10'
+  MAIN_PYTHON_VERSION: '3.13'
   # DEV_REVN & its Docker image are used in scheduled or registry package runs
-  DEV_REVN: '251'
-  DEV_DOCKER_IMAGE_VERSION: '25.1_candidate'
+  STABLE_REVN: '251'
+  DEV_REVN: '252'
   LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
   ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
 
@@ -106,7 +108,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ['3.10', '3.11', '3.12']
+        python-version: ['3.10', '3.11', '3.12', '3.13']
         should-release:
           - ${{ github.event_name == 'push' && contains(github.ref, 'refs/tags') }}
         exclude:
@@ -124,39 +126,41 @@ jobs:
     name: Save variations of revn
     runs-on: ubuntu-latest
     outputs:
-      # ghcr.io/ansys/mechanical:24.2.0
       stable_container: ${{ steps.save-versions.outputs.stable_container }}
-      # '242' or '251'
       test_revn: '${{ steps.save-versions.outputs.test_revn }}'
-      # ghcr.io/ansys/mechanical:24.2.0 or ghcr.io/ansys/mechanical:25.1.0
       test_container: ${{ steps.save-versions.outputs.test_container }}
-      # '24.2.0' or '25.1.0'
       test_docker_image_version: '${{ steps.save-versions.outputs.test_docker_image_version }}'
     steps:
       - id: save-versions
         run: |
           if ${{ github.event_name == 'schedule' }}; then
-            # 251
             echo "test_revn=${{ env.DEV_REVN}}" >> $GITHUB_OUTPUT
-            # ghcr.io/ansys/mechanical:24.2_candidate
-            echo "test_container=${{ env.DOCKER_PACKAGE }}:${{ env.DEV_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
-            # 25.1_candidate
-            echo "test_docker_image_version=${{ env.DEV_DOCKER_IMAGE_VERSION }}" >> $GITHUB_OUTPUT
+            test_mech_revn=${{ env.DEV_REVN}}
+            test_mech_image_version=${test_mech_revn:0:2}.${test_mech_revn:2}_candidate
+            echo "test_container=${{ env.DOCKER_PACKAGE }}:$test_mech_image_version" >> $GITHUB_OUTPUT
+            echo "test_docker_image_version=$test_mech_image_version" >> $GITHUB_OUTPUT
           else
             if [[ -z "${{inputs.revn}}" ]]; then
-              export mech_revn=242
+              mech_revn=${{ env.STABLE_REVN }}
             else
-              export mech_revn=${{inputs.revn}}
+              mech_revn=${{inputs.revn}}
             fi
             export mech_image_version=${mech_revn:0:2}.${mech_revn:2}.0
             echo "test_revn=$mech_revn" >> $GITHUB_OUTPUT
-            # ghcr.io/ansys/mechanical:24.2.0
             echo "test_container=${{ env.DOCKER_PACKAGE }}:$mech_image_version" >> $GITHUB_OUTPUT
-            # 24.2.0
             echo "test_docker_image_version=$mech_image_version" >> $GITHUB_OUTPUT
           fi
 
-          echo "stable_container=${{ env.DOCKER_PACKAGE }}:24.2.0" >> $GITHUB_OUTPUT
+          stable_mech_revn=${{ env.STABLE_REVN }}
+          stable_mech_image_version=${mech_revn:0:2}.${mech_revn:2}.0
+          echo "stable_container=${{ env.DOCKER_PACKAGE }}:$stable_mech_image_version" >> $GITHUB_OUTPUT
+
+          echo $GITHUB_OUTPUT
+
+          # --- Help ----
+          # schedule nightly uses DEV_REVN candidate
+          # PRs and merges use STABLE_REVN
+          # Workflow dispatch can use any revision number
 
   config-matrix:
     runs-on: ubuntu-latest
@@ -166,11 +170,9 @@ jobs:
     steps:
       - id: set-matrix
         run: |
-          # Run all stable mechanical versions release tags
-          # For nightly scheduled runs use pre-release (25.1_candidate)
-          # For pull requests and merges use latest stable version (242)
+          # if a tag(release) is pushed, test all versions
           if ${{ github.event_name == 'push' }} && ${{ contains(github.ref, 'refs/tags') }}; then
-            echo "matrix={\"mechanical-version\":['23.2.0', '24.1.0', '24.2.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
+            echo "matrix={\"mechanical-version\":['23.2.0', '24.1.0', '24.2.0', '25.1.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           else
             echo "matrix={\"mechanical-version\":['${{ needs.revn-variations.outputs.test_docker_image_version }}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           fi
@@ -184,8 +186,8 @@ jobs:
         run: |
           sudo apt update
           sudo apt install bc -y
-          CONTAINER_VERSION=$(echo "${{ needs.revn-variations.outputs.test_docker_image_version }}" | grep -o -E '[0-9]+(\.[0-9]+)?' | head -n 1)
-          if (( $(echo "$CONTAINER_VERSION > 24.2" | bc -l) )); then
+          container_version=$(echo "${{ needs.revn-variations.outputs.test_docker_image_version }}" | grep -o -E '[0-9]+(\.[0-9]+)?' | head -n 1)
+          if (( $(echo "$container_version > 24.2" | bc -l) )); then
             echo "container_stable_exit=true" >> $GITHUB_OUTPUT
           else
             echo "container_stable_exit=false" >> $GITHUB_OUTPUT
@@ -292,7 +294,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.10', '3.11', '3.12']
+        python-version: ['3.10', '3.11', '3.12', '3.13']
 
     steps:
       - uses: actions/checkout@v4
@@ -365,7 +367,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.10', '3.11', '3.12']
+        python-version: ['3.10', '3.11', '3.12', '3.13']
 
     steps:
       - uses: actions/checkout@v4
@@ -435,7 +437,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.10', '3.11', '3.12']
+        python-version: ['3.10', '3.11', '3.12', '3.13']
 
     steps:
       - uses: actions/checkout@v4
@@ -706,7 +708,7 @@ jobs:
           retention-days: 7
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:

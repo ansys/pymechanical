@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import atexit
 import os
+from pathlib import Path
 import shutil
 import typing
 import warnings
@@ -47,7 +48,7 @@ try:
 
     HAS_ANSYS_VIZ = True
     """Whether or not PyVista exists."""
-except:
+except ImportError:
     HAS_ANSYS_VIZ = False
 
 
@@ -112,18 +113,44 @@ class GetterWrapper(object):
 
 
 class App:
-    """Mechanical embedding Application."""
+    """Mechanical embedding Application.
+
+    Parameters
+    ----------
+    db_file : str, optional
+        Path to a mechanical database file (.mechdat or .mechdb).
+    version : int, optional
+        Version number of the Mechanical application.
+    private_appdata : bool, optional
+        Setting for a temporary AppData directory. Default is False.
+        Enables running parallel instances of Mechanical.
+    config : AddinConfiguration, optional
+        Configuration for addins. By default "Mechanical" is used and ACT Addins are disabled.
+    copy_profile : bool, optional
+        Whether to copy the user profile when private_appdata is True. Default is True.
+
+    Examples
+    --------
+    Create App with Mechanical project file and version:
+
+    >>> from ansys.mechanical.core import App
+    >>> app = App(db_file="path/to/file.mechdat", version=251)
+
+    Disable copying the user profile when private appdata is enabled
+
+    >>> app = App(private_appdata=True, copy_profile=False)
+
+    Create App with "Mechanical" configuration and no ACT Addins
+
+    >>> from ansys.mechanical.core.embedding import AddinConfiguration
+    >>> from ansys.mechanical.core import App
+    >>> config = AddinConfiguration("Mechanical")
+    >>> config.no_act_addins = True
+    >>> app = App(config=config)
+    """
 
     def __init__(self, db_file=None, private_appdata=False, **kwargs):
-        """Construct an instance of the mechanical Application.
-
-        db_file is an optional path to a mechanical database file (.mechdat or .mechdb)
-        you may set a version number with the `version` keyword argument.
-
-        private_appdata is an optional setting for a temporary AppData directory.
-        By default, private_appdata is False. This enables you to run parallel
-        instances of Mechanical.
-        """
+        """Construct an instance of the mechanical Application."""
         global INSTANCES
         from ansys.mechanical.core import BUILDING_GALLERY
 
@@ -131,7 +158,7 @@ class App:
             if len(INSTANCES) != 0:
                 instance: App = INSTANCES[0]
                 instance._share(self)
-                if db_file != None:
+                if db_file is not None:
                     self.open(db_file)
                 return
         if len(INSTANCES) > 0:
@@ -142,14 +169,15 @@ class App:
                 version = int(version)
             except ValueError:
                 raise ValueError(
-                    f"The version must be an integer or that can be converted to an integer."
+                    "The version must be an integer or of type that can be converted to an integer."
                 )
         self._version = initializer.initialize(version)
         configuration = kwargs.get("config", _get_default_addin_configuration())
 
         if private_appdata:
+            copy_profile = kwargs.get("copy_profile", True)
             new_profile_name = f"PyMechanical-{os.getpid()}"
-            profile = UniqueUserProfile(new_profile_name)
+            profile = UniqueUserProfile(new_profile_name, copy_profile=copy_profile)
             profile.update_environment(os.environ)
             atexit.register(_cleanup_private_appdata, profile)
 
@@ -166,8 +194,6 @@ class App:
 
     def __repr__(self):
         """Get the product info."""
-        if self._version < 232:  # pragma: no cover
-            return "Ansys Mechanical"
         import clr
 
         clr.AddReference("Ansys.Mechanical.Application")
@@ -191,8 +217,28 @@ class App:
         self._app.Dispose()
         self._disposed = True
 
-    def open(self, db_file):
-        """Open the db file."""
+    def open(self, db_file, remove_lock=False):
+        """Open the db file.
+
+        Parameters
+        ----------
+        db_file : str
+            Path to a Mechanical database file (.mechdat or .mechdb).
+        remove_lock : bool, optional
+            Whether or not to remove the lock file if it exists before opening the project file.
+        """
+        if remove_lock:
+            lock_file = Path(self.DataModel.Project.ProjectDirectory) / ".mech_lock"
+            # Remove the lock file if it exists before opening the project file
+            if lock_file.exists():
+                warnings.warn(
+                    f"Removing the lock file, {lock_file}, before opening the project. \
+This may corrupt the project file.",
+                    UserWarning,
+                    stacklevel=2,
+                )
+                lock_file.unlink()
+
         self.DataModel.Project.Open(db_file)
 
     def save(self, path=None):
@@ -203,18 +249,27 @@ class App:
             self.DataModel.Project.Save()
 
     def save_as(self, path: str, overwrite: bool = False):
-        """Save the project as a new file.
+        """
+        Save the project as a new file.
 
-        If the `overwrite` flag is enabled, the current saved file is temporarily moved
-        to a backup location. The new file is then saved in its place. If the process fails,
-        the backup file is restored to its original location.
+        If the `overwrite` flag is enabled, the current saved file is replaced with the new file.
 
         Parameters
         ----------
-        path: int, optional
-            The path where file needs to be saved.
-        overwrite: bool, optional
+        path : str
+            The path where the file needs to be saved.
+        overwrite : bool, optional
             Whether the file should be overwritten if it already exists (default is False).
+
+        Raises
+        ------
+        Exception
+            If the file already exists at the specified path and `overwrite` is False.
+
+        Notes
+        -----
+        For version 232, if `overwrite` is True, the existing file and its associated directory
+        (if any) will be removed before saving the new file.
         """
         if not os.path.exists(path):
             self.DataModel.Project.SaveAs(path)
@@ -225,17 +280,19 @@ class App:
                 f"File already exists in {path}, Use ``overwrite`` flag to "
                 "replace the existing file."
             )
+        if self.version < 241:  # pragma: no cover
+            file_name = os.path.basename(path)
+            file_dir = os.path.dirname(path)
+            associated_dir = os.path.join(file_dir, os.path.splitext(file_name)[0] + "_Mech_Files")
 
-        file_name = os.path.basename(path)
-        file_dir = os.path.dirname(path)
-        associated_dir = os.path.join(file_dir, os.path.splitext(file_name)[0] + "_Mech_Files")
-
-        # Remove existing files and associated folder
-        os.remove(path)
-        if os.path.exists(associated_dir):
-            shutil.rmtree(associated_dir)
-        # Save the new file
-        self.DataModel.Project.SaveAs(path)
+            # Remove existing files and associated folder
+            os.remove(path)
+            if os.path.exists(associated_dir):
+                shutil.rmtree(associated_dir)
+            # Save the new file
+            self.DataModel.Project.SaveAs(path)
+        else:
+            self.DataModel.Project.SaveAs(path, overwrite)
 
     def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
         """Launch the GUI."""
@@ -316,6 +373,13 @@ class App:
 
         Requires installation using the viz option. E.g.
         pip install ansys-mechanical-core[viz]
+
+        Examples
+        --------
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
+        >>> app.open("path/to/file.mechdat")
+        >>> app.plot()
         """
         _plotter = self.plotter()
 
@@ -327,12 +391,12 @@ class App:
     @property
     def poster(self) -> Poster:
         """Returns an instance of Poster."""
-        if self._poster == None:
+        if self._poster is None:
             self._poster = Poster()
         return self._poster
 
     @property
-    def DataModel(self):
+    def DataModel(self) -> Ansys.Mechanical.DataModel.Interfaces.DataModelObject:
         """Return the DataModel."""
         return GetterWrapper(self._app, lambda app: app.DataModel)
 
@@ -367,6 +431,11 @@ class App:
     def version(self):
         """Returns the version of the app."""
         return self._version
+
+    @property
+    def project_directory(self):
+        """Returns the current project directory."""
+        return self.DataModel.Project.ProjectDirectory
 
     def _share(self, other) -> None:
         """Shares the state of self with other.
@@ -420,15 +489,20 @@ class App:
     def update_globals(
         self, globals_dict: typing.Dict[str, typing.Any], enums: bool = True
     ) -> None:
-        """Use to update globals variables.
+        """Update global variables.
 
-        When scripting inside Mechanical, the Mechanical UI will automatically
-        set global variables in python. PyMechanical can not do that automatically,
+        When scripting inside Mechanical, the Mechanical UI automatically
+        sets global variables in Python. PyMechanical cannot do that automatically,
         but this method can be used.
-        `app.update_globals(globals())`
 
         By default, all enums will be imported too. To avoid including enums, set
         the `enums` argument to False.
+
+        Examples
+        --------
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
+        >>> app.update_globals(globals())
         """
         self._updated_scopes.append(globals_dict)
         globals_dict.update(global_variables(self, enums))
@@ -463,6 +537,15 @@ class App:
         node_name = node.Name
         if hasattr(node, "Suppressed") and node.Suppressed is True:
             node_name += " (Suppressed)"
+        if hasattr(node, "ObjectState"):
+            if str(node.ObjectState) == "UnderDefined":
+                node_name += " (?)"
+            elif str(node.ObjectState) == "Solved" or str(node.ObjectState) == "FullyDefined":
+                node_name += " (✓)"
+            elif str(node.ObjectState) == "NotSolved" or str(node.ObjectState) == "Obsolete":
+                node_name += " (⚡︎)"
+            elif str(node.ObjectState) == "SolveFailed":
+                node_name += " (✕)"
         print(f"{indentation}├── {node_name}")
         lines_count += 1
 
@@ -496,24 +579,24 @@ class App:
 
         Examples
         --------
-        >>> import ansys.mechanical.core as mech
-        >>> app = mech.App()
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
         >>> app.update_globals(globals())
         >>> app.print_tree()
         ... ├── Project
         ... |  ├── Model
-        ... |  |  ├── Geometry Imports
-        ... |  |  ├── Geometry
-        ... |  |  ├── Materials
-        ... |  |  ├── Coordinate Systems
-        ... |  |  |  ├── Global Coordinate System
-        ... |  |  ├── Remote Points
-        ... |  |  ├── Mesh
+        ... |  |  ├── Geometry Imports (⚡︎)
+        ... |  |  ├── Geometry (?)
+        ... |  |  ├── Materials (✓)
+        ... |  |  ├── Coordinate Systems (✓)
+        ... |  |  |  ├── Global Coordinate System (✓)
+        ... |  |  ├── Remote Points (✓)
+        ... |  |  ├── Mesh (?)
 
         >>> app.print_tree(Model, 3)
         ... ├── Model
-        ... |  ├── Geometry Imports
-        ... |  ├── Geometry
+        ... |  ├── Geometry Imports (⚡︎)
+        ... |  ├── Geometry (?)
         ... ... truncating after 3 lines
 
         >>> app.print_tree(max_lines=2)

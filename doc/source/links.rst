@@ -19,8 +19,10 @@
 .. _Chapter 7: https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/%%VERSION%%/en/installation/win_silent.html
 
 .. # Mechanical related
-.. _Mechanical scripting interface: https://developer.ansys.com/docs/mechanical-scripting-interface/api/index.md
-.. _ACT API Reference Guide: https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v242/en/act_ref/act_ref.html
+.. _Mechanical API Documentation: https://scripting.mechanical.docs.pyansys.com/version/dev/api/index.html
+.. _Mechanical scripting interface APIs: https://developer.ansys.com/docs/mechanical-scripting-interface/api/index.md
+.. _ACT API Reference Guide: https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/%%VERSION%%/en/act_ref/act_ref.html
+
 .. _Mechanical API known issues and limitations: https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/%%VERSION%%/en/act_script/mech_apis_KIL.html?q=known%20issues
 .. _ACT known issues and limitations: https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/%%VERSION%%/en/act_dev/act_dev_knownissues.html
 .. _Ansys Mechanical: https://www.ansys.com/products/structures/ansys-mechanical

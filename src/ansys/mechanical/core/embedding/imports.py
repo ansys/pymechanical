@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -55,6 +55,7 @@ def global_variables(app: "ansys.mechanical.core.App", enums: bool = False) -> t
     # When ansys-pythonnet issue #14 is fixed, uncomment above
     from Ansys.ACT.Core.Math import Point2D, Point3D
     from Ansys.ACT.Math import Vector3D
+    from Ansys.ACT.Mechanical.Fields import VariableDefinitionType
     from Ansys.Core.Units import Quantity
     from Ansys.Mechanical.DataModel import MechanicalEnums
     from Ansys.Mechanical.Graphics import Point, SectionPlane
@@ -74,6 +75,7 @@ def global_variables(app: "ansys.mechanical.core.App", enums: bool = False) -> t
     vars["Point2D"] = Point2D
     vars["Point3D"] = Point3D
     vars["Vector3D"] = Vector3D
+    vars["VariableDefinitionType"] = VariableDefinitionType
 
     if enums:
         vars.update(get_all_enums())

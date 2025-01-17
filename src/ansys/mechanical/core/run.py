@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -172,7 +172,7 @@ def _cli_impl(
     profile: UniqueUserProfile = None
     if private_appdata:
         new_profile_name = f"Mechanical-{os.getpid()}"
-        profile = UniqueUserProfile(new_profile_name, DRY_RUN)
+        profile = UniqueUserProfile(new_profile_name, dry_run=DRY_RUN)
         profile.update_environment(env)
 
     if not DRY_RUN:
@@ -269,7 +269,7 @@ The ``exit`` command is only supported in version 2024 R1 or later.",
     "--revision",
     default=None,
     type=int,
-    help='Ansys Revision number, e.g. "242" or "241". If none is specified\
+    help='Ansys Revision number, e.g. "251" or "242". If none is specified\
 , uses the default from ansys-tools-path',
 )
 @click.option(
@@ -298,9 +298,9 @@ def cli(
 
     The following example demonstrates the main use of this tool:
 
-        $ ansys-mechanical -r 242 -g
+        $ ansys-mechanical -r 251 -g
 
-        Starting Ansys Mechanical version 2024R2 in graphical mode...
+        Starting Ansys Mechanical version 2025R1 in graphical mode...
     """
     exe = atp.get_mechanical_path(allow_input=False, version=revision)
     version = atp.version_from_path("mechanical", exe)

@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -32,7 +32,7 @@ import ansys.mechanical.core as pymechanical
 def launch_app(version, private_appdata):
     """Launch embedded instance of app."""
     # Configuration.configure(level=logging.DEBUG, to_stdout=True, base_directory=None)
-    app = pymechanical.App(version=version, private_appdata=private_appdata)
+    app = pymechanical.App(version=version, private_appdata=private_appdata, copy_profile=True)
     return app
 
 

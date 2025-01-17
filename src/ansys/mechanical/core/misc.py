@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -47,8 +47,8 @@ def get_mechanical_bin(release_version):
     Parameters
     ----------
     release_version: str
-        Mechanical version using the three-digit format. For example, ``"242"`` for
-        2024 R2.
+        Mechanical version using the three-digit format. For example, ``"251"`` for
+        2025 R1.
     """
     if is_windows():  # pragma: no cover
         program_files = os.getenv("PROGRAMFILES", os.path.join("c:\\", "Program Files"))
@@ -150,7 +150,7 @@ def check_valid_start_instance(start_instance):
 
     if start_instance.lower() not in ["true", "false"]:
         raise ValueError(
-            f"The value for 'start_instance' should be 'True' or 'False' (case insensitive)."
+            "The value for 'start_instance' should be 'True' or 'False' (case insensitive)."
         )
 
     return start_instance.lower() == "true"

@@ -20,30 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import pytest
+"""Test script for checking pythonnet warning."""
+import sys
 
-import ansys.mechanical.core.misc as misc
+from ansys.mechanical.core.embedding import initializer
 
-
-@pytest.mark.remote_session_launch
-def test_valid_start_instance():
-    assert misc.check_valid_start_instance("true")
-
-    assert False == misc.check_valid_start_instance("false")
-
-    assert misc.check_valid_start_instance("True")
-
-    assert False == misc.check_valid_start_instance("False")
-
-    with pytest.raises(ValueError):
-        misc.check_valid_start_instance([])
-
-    with pytest.raises(ValueError):
-        misc.check_valid_start_instance("hello")
-
-
-@pytest.mark.remote_session_launch
-def test_is_float():
-    assert misc.is_float("1.3")
-
-    assert False == misc.is_float("hello")
+if __name__ == "__main__":
+    version = int(sys.argv[1])
+    initializer.initialize(version)
