@@ -1254,9 +1254,7 @@ class Mechanical(object):
         >>> files = mechanical.list_files()
         >>> for file in files: print(file)
         """
-        result = self.run_python_script(
-            "import pymechanical_helpers\npymechanical_helpers.GetAllProjectFiles(ExtAPI)"
-        )
+        result = self.run_python_script("""ExtAPI.DataModel.Project.FilePath""")
 
         files_out = result.splitlines()
         if not files_out:  # pragma: no cover
