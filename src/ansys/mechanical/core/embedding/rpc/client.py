@@ -25,7 +25,7 @@ import os
 import time
 
 import rpyc
-
+import pathlib
 
 class Client:
     """Client for connecting to Mechanical services."""
@@ -62,15 +62,14 @@ class Client:
             return exposed_fget()
         return self.__dict__.items[attr]
 
-    """
-    def __setattr__(self, attr, value):
-        if hasattr(self.root, attr):
-            inner_prop = getattr(self.root.__class__, attr)
-            if isinstance(inner_prop, property):
-                inner_prop.fset(self.root, value)
-        else:
-            super().__setattr__(attr, value)
-    """
+    # TODO - implement setattr
+    # def __setattr__(self, attr, value):
+    #     if hasattr(self.root, attr):
+    #         inner_prop = getattr(self.root.__class__, attr)
+    #         if isinstance(inner_prop, property):
+    #             inner_prop.fset(self.root, value)
+    #     else:
+    #         super().__setattr__(attr, value)
 
     def _connect(self):
         self._wait_until_ready()
@@ -135,7 +134,7 @@ class Client:
         recursive=False,
     ):
         """Download a file from the server."""
-
+        out_files = []
         os.makedirs(target_dir, exist_ok=True)
 
         response = self.root.exposed_download(files)
@@ -147,12 +146,15 @@ class Client:
                 local_file_dir = os.path.dirname(local_file_path)
                 os.makedirs(local_file_dir, exist_ok=True)
 
-                self._download_file(full_remote_path, local_file_path, chunk_size, overwrite=True)
+                out_file_path = self._download_file(full_remote_path, local_file_path, chunk_size, overwrite=True)
         else:
-            self._download_file(
+            out_file_path = self._download_file(
                 files, os.path.join(target_dir, os.path.basename(files)), chunk_size, overwrite=True
             )
+        out_files.append(out_file_path)
 
+        return out_files
+    
     def _download_file(self, remote_file_path, local_file_path, chunk_size=1024, overwrite=False):
         """Download a single file from the server."""
 
@@ -170,6 +172,56 @@ class Client:
 
         print(f"File {remote_file_path} downloaded to {local_file_path}")
 
-    # @property
-    # def project_directory(self):
-    #     return self.root.exposed_run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
+        return local_file_path
+
+
+    def download_project(self, extensions=None, target_dir=None, progress_bar=False):
+        """Download all project files in the working directory of the Mechanical instance.
+        """
+        destination_directory = target_dir.rstrip("\\/")
+        if destination_directory:
+            path = pathlib.Path(destination_directory)
+            path.mkdir(parents=True, exist_ok=True)
+        else:
+            destination_directory = os.getcwd()
+        # relative directory?
+        if os.path.isdir(destination_directory):
+            if not os.path.isabs(destination_directory):
+                # construct full path
+                destination_directory = os.path.join(os.getcwd(), destination_directory)
+        _project_directory = self.root.exposed_propget_project_directory()
+        _project_directory = _project_directory.rstrip("\\/")
+
+        # this is where .mechddb resides
+        parent_directory = os.path.dirname(_project_directory)
+
+        list_of_files = []
+
+        if not extensions:
+            files = self.root.exposed_list_files()
+        else:
+            files = []
+            for each_extension in extensions:
+                # mechdb resides one level above project directory
+                if "mechdb" == each_extension.lower():
+                    file_temp = os.path.join(parent_directory, f"*.{each_extension}")
+                else:
+                    file_temp = os.path.join(_project_directory, "**", f"*.{each_extension}")
+
+                
+                list_files = self.exposed__get_files(file_temp, recursive=False)
+
+                files.extend(list_files)
+
+        for file in files:
+            # create similar hierarchy locally
+            new_path = file.replace(parent_directory, destination_directory)
+            new_path_dir = os.path.dirname(new_path)
+            temp_files = self.download(
+                files=file, target_dir=new_path_dir, progress_bar=progress_bar
+            )
+            list_of_files.extend(temp_files)
+        return list_of_files
+
+    def test(self):
+        print(self.root.exposed_propget_project_directory())

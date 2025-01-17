@@ -29,6 +29,7 @@ import typing
 import rpyc
 from rpyc.utils.server import ThreadedServer
 import toolz
+import fnmatch
 
 import ansys.mechanical.core as mech
 import ansys.mechanical.core.embedding.utils as utils
@@ -86,7 +87,7 @@ class MechanicalService(rpyc.Service):
                 else:
                     setattr(prop._owner, propname, *arg)
 
-            return self._poster.post(curried)
+            return self._poster.try_post(curried)
 
         return posted
 
@@ -99,7 +100,7 @@ class MechanicalService(rpyc.Service):
                 result = original_method(*args, **kwargs)
                 return result
 
-            return self._poster.post(curried)
+            return self._poster.try_post(curried)
 
         return posted
 
@@ -112,7 +113,7 @@ class MechanicalService(rpyc.Service):
             def curried():
                 return curried_method(self._app, *args, **kwargs)
 
-            return self._poster.post(curried)
+            return self._poster.try_post(curried)
 
         return posted
 
@@ -319,11 +320,13 @@ class DefaultServiceMethods:
         self, script: str, enable_logging=False, log_level="WARNING", progress_interval=2000
     ):
         """Run scripts using Internal python engine."""
-        try:
-            result = self._app.execute_script(script)
-            return result
-        except Exception as e:
-            raise RuntimeError(f"Server-side error during script execution: {str(e)}")
+        result = self._app.execute_script(script)
+        return result
+        # try:
+        #     result = self._app.execute_script(script)
+        #     return result
+        # except Exception as e:
+        #     raise RuntimeError(f"Server-side error during script execution: {str(e)}")
 
     @remote_method
     def run_python_script_from_file(
@@ -343,7 +346,59 @@ class DefaultServiceMethods:
     @property
     @remote_method
     def project_directory(self):
-        return self._app.execute_script("ExtAPI.DataModel.Project.ProjectDirectory")
+        return self._app.execute_script("""ExtAPI.DataModel.Project.ProjectDirectory""")
+    
+    @remote_method
+    def list_files(self):
+        list = []
+        mechdbPath = self._app.execute_script("""ExtAPI.DataModel.Project.FilePath""")
+        # currently the mechdb is not stored under project directory
+        # replace this with python API once it is available
+        if mechdbPath != "":
+            list.append(mechdbPath)
+        rootDir = self._app.execute_script("""ExtAPI.DataModel.Project.ProjectDirectory""")
+        
+        for dirPath, dirNames, fileNames in os.walk(rootDir):
+            for fileName in fileNames:
+                list.append(os.path.join(dirPath, fileName))
+        files_out = "\n".join(list).splitlines()
+        if not files_out:  # pragma: no cover
+            print("No files listed")
+        return files_out
+
+    @remote_method
+    def _get_files(self, files, recursive=False):
+        self_files = self.list_files()  # to avoid calling it too much
+
+        if isinstance(files, str):
+            if files in self_files:
+                list_files = [files]
+            elif "*" in files:
+                list_files = fnmatch.filter(self_files, files)
+                if not list_files:
+                    raise ValueError(
+                        f"The `'files'` parameter ({files}) didn't match any file using "
+                        f"glob expressions in the remote server."
+                    )
+            else:
+                raise ValueError(
+                    f"The `'files'` parameter ('{files}') does not match any file or pattern."
+                )
+
+        elif isinstance(files, (list, tuple)):
+            if not all([isinstance(each, str) for each in files]):
+                raise ValueError(
+                    "The parameter `'files'` can be a list or tuple, but it "
+                    "should only contain strings."
+                )
+            list_files = files
+        else:
+            raise ValueError(
+                f"The `file` parameter type ({type(files)}) is not supported."
+                "Only strings, tuple of strings, or list of strings are allowed."
+            )
+
+        return list_files
 
 
 class MechanicalDefaultServer(MechanicalEmbeddedServer):

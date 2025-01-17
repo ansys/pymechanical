@@ -33,7 +33,6 @@ class remote_method:
 
     def __init__(self, func):
         """Initialize with the given function."""
-        print("init remote_method")
         self._func = func
 
     def __call__(self, *args, **kwargs):
@@ -48,12 +47,10 @@ class remote_method:
         """Return a partially applied method."""
         from functools import partial
 
-        print("getting func")
         func = partial(self.__call_method__, obj)
         func._is_remote = True
         func.__name__ = self._func.__name__
         func._owner = obj
-        print("done getting func")
         return func
 
 
@@ -63,11 +60,11 @@ class MethodType:
 
 
 def try_get_remote_method(methodname: str, obj: typing.Any) -> typing.Tuple[str, typing.Callable]:
-    print(f"checking if {methodname} is callable and remote")
+    #print(f"checking if {methodname} is callable and remote")
     method = getattr(obj, methodname)
     if not callable(method):
         return None
-    print(f"yielding {methodname}")
+    #print(f"yielding {methodname}")
     if hasattr(method, "_is_remote") and method._is_remote is True:
         return (methodname, method)
 
