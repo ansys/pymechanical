@@ -58,7 +58,7 @@ tests = [
 ]
 doc = [
     "sphinx==8.1.3",
-    "ansys-sphinx-theme[autoapi]==1.2.6",
+    "ansys-sphinx-theme[autoapi] @ git+https://github.com/ansys/ansys-sphinx-theme.git@fix/jinja-template-testing",
     "grpcio==1.69.0",
     "imageio-ffmpeg==0.5.1",
     "imageio==2.36.1",
@@ -161,23 +161,24 @@ package = "ansys.mechanical.core"
 directory = "doc/changelog.d"
 filename = "doc/source/changelog.rst"
 start_string = ".. towncrier release notes start\n"
-template = "doc/changelog.d/changelog_template.jinja"
+template = "ansys_sphinx_theme:changelog_template.jinja"
 title_format = "`{version} <https://github.com/ansys/pymechanical/releases/tag/v{version}>`_ - {project_date}"
 issue_format = "`#{issue} <https://github.com/ansys/pymechanical/pull/{issue}>`_"
+all_bullets = false
 
 [[tool.towncrier.type]]
 directory = "added"
-name = "Added"
+name = "Features"
 showcontent = true
 
 [[tool.towncrier.type]]
 directory = "changed"
-name = "Changed"
+name = "Deprecated and Changed"
 showcontent = true
 
 [[tool.towncrier.type]]
 directory = "fixed"
-name = "Fixed"
+name = "Bug fixes"
 showcontent = true
 
 [[tool.towncrier.type]]
@@ -189,6 +190,25 @@ showcontent = true
 directory = "miscellaneous"
 name = "Miscellaneous"
 showcontent = true
+
+[[tool.towncrier.type]]
+directory = "documentation"
+name = "Documentation"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "maintenance"
+name = "Maintenance"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "test"
+name = "Test"
+showcontent = true
+
+[[tool.towncrier.section]]
+name = ""
+path = ""
 
 # ========================================================
 # Flake8 Configuration
@@ -263,17 +283,3 @@ extras = doc
 commands =
     sphinx-build -d "{toxworkdir}/doc_doctree" doc/source "{toxinidir}/doc/_build/html" --color -vW -bhtml
 """
-[[tool.towncrier.type]]
-directory = "documentation"
-name = "Documentation"
-showcontent = true
-
-[[tool.towncrier.type]]
-directory = "maintenance"
-name = "Maintenance"
-showcontent = true
-
-[[tool.towncrier.type]]
-directory = "test"
-name = "Test"
-showcontent = true
