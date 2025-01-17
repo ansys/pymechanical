@@ -3,9 +3,9 @@ fragments:
 - title: Launch GUI
   version: 0.11.8
   content: |
-    The `launch_gui() <../api/ansys/mechanical/core/embedding/launch_gui/index.html>`_ function
+    The `launch_gui() <api/ansys/mechanical/core/embedding/app/App.html#App.launch_gui>`_ function
     graphically launches the current state of the embedded instance when the
-    `App <../api/ansys/mechanical/core/embedding/app/App.html>`_ has been saved.
+    `App <api/ansys/mechanical/core/embedding/app/App.html>`_ has been saved.
 
     The `launch_gui()` function saves the active `.mechdb` file and creates a copy of the existing
     `.mechdb` file with a temporary name. The temporary `.mechdb` file is used to launch the GUI.
