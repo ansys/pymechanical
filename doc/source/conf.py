@@ -13,13 +13,15 @@ import os
 import warnings
 
 from ansys_sphinx_theme import ansys_favicon, get_version_match
-from sphinx_gallery.sorting import FileNameSortKey
 
 import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
 
+# from sphinx_gallery.sorting import FileNameSortKey
+
+
 # necessary when building the sphinx gallery
-pymechanical.BUILDING_GALLERY = True
+# pymechanical.BUILDING_GALLERY = False # True
 
 # suppress annoying matplotlib bug
 warnings.filterwarnings(
@@ -57,7 +59,7 @@ extensions = [
     "sphinx_autodoc_typehints",
     "sphinx_copybutton",
     "sphinx_design",
-    "sphinx_gallery.gen_gallery",
+    # "sphinx_gallery.gen_gallery",
     "sphinxemoji.sphinxemoji",
 ]
 
@@ -153,27 +155,27 @@ copybutton_prompt_text = r">>> ?|\.\.\. "
 copybutton_prompt_is_regexp = True
 
 # -- Sphinx Gallery Options ---------------------------------------------------
-sphinx_gallery_conf = {
-    # convert rst to md for ipynb
-    "pypandoc": True,
-    # path to your examples scripts
-    "examples_dirs": ["../../examples/"],
-    # path where to save gallery generated examples
-    "gallery_dirs": ["examples/gallery_examples"],
-    # Pattern to search for example files
-    "filename_pattern": r"\.py",
-    # Remove the "Download all examples" button from the top level gallery
-    "download_all_examples": False,
-    # Sort gallery example by file name instead of number of lines (default)
-    "within_subsection_order": FileNameSortKey,
-    # directory where function granular galleries are stored
-    "backreferences_dir": None,
-    # Modules for which function level galleries are created.  In
-    "doc_module": "ansys-mechanical-core",
-    "image_scrapers": ("matplotlib"),
-    "ignore_pattern": "flycheck*",
-    "thumbnail_size": (350, 350),
-}
+# sphinx_gallery_conf = {
+#     # convert rst to md for ipynb
+#     "pypandoc": True,
+#     # path to your examples scripts
+#     "examples_dirs": ["../../examples/"],
+#     # path where to save gallery generated examples
+#     "gallery_dirs": ["examples/gallery_examples"],
+#     # Pattern to search for example files
+#     "filename_pattern": r"\.py",
+#     # Remove the "Download all examples" button from the top level gallery
+#     "download_all_examples": False,
+#     # Sort gallery example by file name instead of number of lines (default)
+#     "within_subsection_order": FileNameSortKey,
+#     # directory where function granular galleries are stored
+#     "backreferences_dir": None,
+#     # Modules for which function level galleries are created.  In
+#     "doc_module": "ansys-mechanical-core",
+#     "image_scrapers": ("matplotlib"),
+#     "ignore_pattern": "flycheck*",
+#     "thumbnail_size": (350, 350),
+# }
 
 # -- Options for HTML output -------------------------------------------------
 html_short_title = html_title = "PyMechanical"
@@ -183,6 +185,11 @@ html_context = {
     "github_repo": "pymechanical",
     "github_version": "main",
     "doc_path": "doc/source",
+    # "page_assets": {
+    #     "examples/table": {
+    #         "needs_datatables": True,
+    #     },
+    # },
 }
 html_theme_options = {
     "logo": "pyansys",
