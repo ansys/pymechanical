@@ -82,6 +82,12 @@ class BackgroundApp:
             raise RuntimeError("Cannot use BackgroundApp after stopping it.")
         return BackgroundApp.__poster.post(callable)
 
+    def try_post(self, callable: typing.Callable):
+        """Try post callable method to the background app thread."""
+        if BackgroundApp.__stopped:
+            raise RuntimeError("Cannot use BackgroundApp after stopping it.")
+        return BackgroundApp.__poster.try_post(callable)
+
     def stop(self) -> None:
         """Stop the background app thread."""
         if BackgroundApp.__stopped:
