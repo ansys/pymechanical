@@ -44,7 +44,7 @@ def test_run_python_script_success(mechanical):
 def test_run_python_script_success_return_empty(mechanical):
     result = str(mechanical.run_python_script("ExtAPI.DataModel.Project"))
     # TODO: Investigate why the result is different for grpc
-    if misc.is_windows() and mechanical._rpc_type == "grpc":
+    if misc.is_windows() and not hasattr(mechanical, "_rpc_type"):
         assert result == ""
     else:
         assert result == "Ansys.ACT.Automation.Mechanical.Project"
@@ -57,7 +57,7 @@ def test_run_python_script_error(mechanical):
         mechanical.run_python_script("import test")
 
     # TODO : we can do custom error in currying with poster
-    if mechanical._rpc_type == "grpc":
+    if not hasattr(mechanical, "_rpc_type"):
         assert exc_info.value.details() == "No module named test"
     else:
         assert "No module named test" in str(exc_info.value)
@@ -84,7 +84,7 @@ def test_run_python_script_from_file_error(mechanical):
         )
         print("running python script : ", script_path)
         mechanical.run_python_script_from_file(script_path)
-    if mechanical._rpc_type == "grpc":
+    if not hasattr(mechanical, "_rpc_type"):
         assert exc_info.value.details() == "name 'get_myname' is not defined"
     else:
         assert "name 'get_myname' is not defined" in str(exc_info.value)

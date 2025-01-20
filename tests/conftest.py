@@ -332,7 +332,6 @@ def mechanical(pytestconfig, rootdir):
         else:
             mechanical = launch_mechanical_instance()
         setattr(mechanical, "_rpc_error_type", grpc.RpcError)
-        setattr(mechanical, "_rpc_type", "grpc")
 
     print(mechanical)
     yield mechanical
