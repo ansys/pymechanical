@@ -297,7 +297,7 @@ def test_upload_attach_mesh_solve_use_api_non_distributed_solve(mechanical, tmpd
 
     result = mechanical.run_python_script("ExtAPI.DataModel.Project.Model.Analyses[0].ObjectState")
     # TODO: Investigate why the result is different for grpc
-    if mechanical._rpc_type == "grpc":
+    if not hasattr(mechanical, "_rpc_type"):
         assert "5" == result
     else:
         assert "Solved" == str(result)
@@ -320,7 +320,7 @@ def test_upload_attach_mesh_solve_use_api_distributed_solve(mechanical, tmpdir):
     print(f"min_value = {min_value} max_value = {max_value} avg_value = {avg_value}")
 
     result = mechanical.run_python_script("ExtAPI.DataModel.Project.Model.Analyses[0].ObjectState")
-    if mechanical._rpc_type == "grpc":
+    if not hasattr(mechanical, "_rpc_type"):
         assert "5" == result.lower()
     else:
         assert "solved" == result.lower()
