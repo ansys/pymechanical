@@ -58,7 +58,7 @@ tests = [
 ]
 doc = [
     "sphinx==8.1.3",
-    "ansys-sphinx-theme[autoapi]==1.2.6",
+    "ansys-sphinx-theme[autoapi] @ git+https://github.com/ansys/ansys-sphinx-theme.git@fix/jinja-template-testing",
     "grpcio==1.69.0",
     "imageio-ffmpeg==0.6.0",
     "imageio==2.37.0",
