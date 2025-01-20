@@ -216,13 +216,13 @@ html_theme_options = {
     ],
     "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
     "navigation_depth": 10,
-    "whatsnew": {
-        "no_of_headers": 3,
-        "no_of_contents": 3,
-        "whatsnew_file": "whatsnew",
-        "changelog_file": "changelog",
-        "pages": ["changelog", "index"],
-    },
+    # "whatsnew": {
+    #     "no_of_headers": 3,
+    #     "no_of_contents": 3,
+    #     "whatsnew_file": "whatsnew",
+    #     "changelog_file": "changelog",
+    #     "pages": ["changelog", "index"],
+    # },
 }
 
 # -- Options for HTMLHelp output ---------------------------------------------
