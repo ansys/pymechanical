@@ -321,9 +321,9 @@ def test_upload_attach_mesh_solve_use_api_distributed_solve(mechanical, tmpdir):
 
     result = mechanical.run_python_script("ExtAPI.DataModel.Project.Model.Analyses[0].ObjectState")
     if not hasattr(mechanical, "_rpc_type"):
-        assert "5" == result.lower()
+        assert "5" == result
     else:
-        assert "solved" == result.lower()
+        assert "Solved" == str(result)
 
     verify_project_download(mechanical, tmpdir)
 
