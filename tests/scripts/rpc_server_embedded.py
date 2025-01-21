@@ -24,18 +24,11 @@ import sys
 
 from ansys.mechanical.core.embedding.rpc import MechanicalDefaultServer
 
-
-def start_server(port, version):
-    """Start the server."""
+if __name__ == "__main__":
+    _port = int(sys.argv[1])
+    _version = int(sys.argv[2])
     server = MechanicalDefaultServer(
-        port=port,
-        version=version,
+        port=_port,
+        version=_version,
     )
     server.start()
-
-
-if __name__ == "__main__":
-    # TODO: condition for port not given
-    port = int(sys.argv[1])  # Pass port as argument
-    version = int(sys.argv[2])
-    start_server(port, version)

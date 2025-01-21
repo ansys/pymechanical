@@ -30,10 +30,13 @@ from rpyc.utils.server import ThreadedServer
 import toolz
 
 from ansys.mechanical.core.embedding.background import BackgroundApp
+from ansys.mechanical.core.mechanical import port_in_use
 
 from .utils import MethodType, get_remote_methods, remote_method
 
 # TODO : implement logging
+
+PYMECHANICAL_DEFAULT_RPC_PORT = 20000
 
 
 class MechanicalService(rpyc.Service):
@@ -225,7 +228,14 @@ class MechanicalEmbeddedServer:
         self._service = service
         self._methods = methods
         print("Initializing Mechanical ...")
-        # no_start = False
+
+        # if port is None:
+        #     port = PYMECHANICAL_DEFAULT_RPC_PORT
+
+        # while port_in_use(port):
+        #     port += 1
+
+        self._port = self.get_free_port(port)
 
         if impl is None:
             self._impl = None
@@ -234,6 +244,20 @@ class MechanicalEmbeddedServer:
 
         my_service = self._service(self._background_app, self._methods, self._impl)
         self._server = ThreadedServer(my_service, port=self._port)
+
+    @staticmethod
+    def get_free_port(port=None):
+        """Get free port.
+
+        If port is not given, it will find a free port starting from PYMECHANICAL_DEFAULT_RPC_PORT.
+        """
+        if port is None:
+            port = PYMECHANICAL_DEFAULT_RPC_PORT
+
+        while port_in_use(port):
+            port += 1
+
+        return port
 
     def start(self) -> None:
         """Start server on specified port."""

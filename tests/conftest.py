@@ -292,7 +292,6 @@ def connect_to_mechanical_instance(port=None, clear_on_connect=False):
 def launch_rpc_embedded_server(port: int, version: int, server_script: str):
     """Start the server as a subprocess using `port`."""
     global embedded_server
-    port = port
     env_copy = os.environ.copy()
     embedded_server = subprocess.Popen(
         [sys.executable, server_script, str(port), str(version)], env=env_copy
@@ -319,11 +318,13 @@ def mechanical(pytestconfig, rootdir):
     print("current working directory: ", os.getcwd())
     is_embedded_server = pytestconfig.getoption("remote_server_type") == "rpyc"
     if is_embedded_server:
-        version = int(pytestconfig.getoption("ansys_version"))
+        from ansys.mechanical.core.embedding.rpc import MechanicalEmbeddedServer
+
+        _version = int(pytestconfig.getoption("ansys_version"))
         server_py = os.path.join(rootdir, "tests", "scripts", "rpc_server_embedded.py")
-        # TODO: port should be dynamic ?
-        launch_rpc_embedded_server(20000, version, server_py)
-        mechanical = connect_rpc_embedded_server(20000)
+        _port = MechanicalEmbeddedServer.get_free_port()
+        launch_rpc_embedded_server(port=_port, version=_version, server_script=server_py)
+        mechanical = connect_rpc_embedded_server(port=_port)
         setattr(mechanical, "_rpc_error_type", Exception)
         setattr(mechanical, "_rpc_type", "rpyc")
     else:
