@@ -211,7 +211,11 @@ html_theme_options = {
         "file": "cheatsheet/cheat_sheet.qmd",
         "title": "PyMechanical cheat sheet",
     },
-    "whatsnew": {"pages": ["changelog"]},
+    "whatsnew": {
+        "whatsnew_file_name": "whatsnew",
+        "changelog_file_name": "changelog",
+        "sidebar_pages": ["changelog"],
+    },
     "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
     "navigation_depth": 10,
 }

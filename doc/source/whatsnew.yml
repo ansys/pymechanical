@@ -45,6 +45,7 @@ fragments:
     .. code:: shell
 
        Update C:\Users\{username}\AppData\Roaming\Code\User\settings.json with the following information:
+
         {
             "python.autoComplete.extraPaths": [
                 "{project_directory}\\.venv\\Lib\\site-packages\\ansys\\mechanical\\stubs\\v251"
