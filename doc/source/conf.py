@@ -212,8 +212,8 @@ html_theme_options = {
         "title": "PyMechanical cheat sheet",
     },
     "whatsnew": {
-        "whatsnew_file_name": "whatsnew",
-        "changelog_file_name": "changelog",
+        "whatsnew_file_name": "changelog.d/whatsnew.yml",
+        "changelog_file_name": "changelog.rst",
         "sidebar_pages": ["changelog"],
     },
     "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
