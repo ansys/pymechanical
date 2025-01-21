@@ -32,8 +32,9 @@ fragments:
   content: |
     The ``ansys-mechanical-ideconfig`` command prints the settings that are necessary for
     autocomplete to work with ``ansys-mechanical-stubs``. This command takes in three arguments:
-    ``--ide vscode``, ``--target user or workspace``, and ``--revision 251``. If the revision
-    is not provided, ``ansys-tools-path`` will retrieve the Mechanical version from your system.
+    ``--ide vscode``, ``--target user`` or ``--target workspace``, and ``--revision <version>``.
+    If the revision is not provided, ``ansys-tools-path`` will retrieve the Mechanical version
+    from your system.
 
     Usage:
     .. code:: shell
