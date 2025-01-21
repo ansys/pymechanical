@@ -23,16 +23,13 @@
 
 import fnmatch
 import os
-import threading
-import time
 import typing
 
 import rpyc
 from rpyc.utils.server import ThreadedServer
 import toolz
 
-import ansys.mechanical.core as mech
-import ansys.mechanical.core.embedding.utils as utils
+from ansys.mechanical.core.embedding.background import BackgroundApp
 
 from .utils import MethodType, get_remote_methods, remote_method
 
@@ -42,11 +39,10 @@ from .utils import MethodType, get_remote_methods, remote_method
 class MechanicalService(rpyc.Service):
     """Starts Mechanical app services."""
 
-    def __init__(self, app, poster, functions=[], impl=None):
+    def __init__(self, backgroundapp, functions=[], impl=None):
         """Initialize the service."""
         super().__init__()
-        self._app = app
-        self._poster = poster
+        self._backgroundapp = backgroundapp
         self._install_functions(functions)
         self._install_class(impl)
         self.EMBEDDED = True
@@ -71,7 +67,7 @@ class MechanicalService(rpyc.Service):
     def on_connect(self, conn):
         """Handle client connection."""
         print("Client connected")
-        print(self._app)
+        print(self._backgroundapp.app)
 
     def on_disconnect(self, conn):
         """Handle client disconnection."""
@@ -87,7 +83,7 @@ class MechanicalService(rpyc.Service):
                 else:
                     setattr(prop._owner, propname, *arg)
 
-            return self._poster.try_post(curried)
+            return self._backgroundapp.try_post(curried)
 
         return posted
 
@@ -100,7 +96,7 @@ class MechanicalService(rpyc.Service):
                 result = original_method(*args, **kwargs)
                 return result
 
-            return self._poster.try_post(curried)
+            return self._backgroundapp.try_post(curried)
 
         return posted
 
@@ -113,7 +109,7 @@ class MechanicalService(rpyc.Service):
             def curried():
                 return curried_method(self._app, *args, **kwargs)
 
-            return self._poster.try_post(curried)
+            return self._backgroundapp.try_post(curried)
 
         return posted
 
@@ -224,36 +220,26 @@ class MechanicalEmbeddedServer:
     ):
         """Initialize the server."""
         self._exited = False
-        self._app: mech.App = None
-        self._poster = None
+        self._background_app = BackgroundApp(version=version)
         self._port = port
         self._service = service
         self._methods = methods
-        init_thread = threading.Thread(target=self._start_app, args=(version,))
         print("Initializing Mechanical ...")
-        no_start = False
-        if not no_start:
-            init_thread.start()
-
-            # TODO: Add check for port
-            while self._poster is None:
-                time.sleep(0.01)
-                continue
-            print("Initializing Mechanical completed.")
+        # no_start = False
 
         if impl is None:
             self._impl = None
         else:
-            self._impl = impl(self._app)
+            self._impl = impl(self._background_app.app)
 
-        my_service = self._service(self._app, self._poster, self._methods, self._impl)
+        my_service = self._service(self._background_app, self._methods, self._impl)
         self._server = ThreadedServer(my_service, port=self._port)
 
     def start(self) -> None:
         """Start server on specified port."""
         print(
             f"starting mechanical application in server."
-            f"Listening on port {self._port}\n{self._app}"
+            f"Listening on port {self._port}\n{self._background_app.app}"
         )
         self._server.start()
         """try:
@@ -265,32 +251,13 @@ class MechanicalEmbeddedServer:
             conn.close()"""
         self._exited = True
 
-    def _start_app(self, version: int) -> None:
-        print("Starting app ...")
-        self._app = mech.App(version=version)
-        print("started app")
-        self._poster = self._app.poster
-        while True:
-            if self._exited:
-                break
-            try:
-                utils.sleep(40)
-            except Exception as e:
-                print(str(e))
-                pass
-        print("Out of loop!")
-
     def stop(self) -> None:
         """Stop the server."""
         print("Stopping the server...")
+        self._background_app.stop()
         self._server.close()
         self._exited = True
-        # TODO : is it dispose ?
-        self._app.close()
         print("Server stopped.")
-
-
-from .utils import remote_method
 
 
 class DefaultServiceMethods:
