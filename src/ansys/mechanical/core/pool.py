@@ -26,7 +26,15 @@ import os
 import time
 import warnings
 
-import ansys.platform.instancemanagement as pypim
+try:
+    import ansys.platform.instancemanagement as pypim  # noqa: F401
+
+    HAS_ANSYS_PIM = True
+    """Whether or not PyPIM exists."""
+except ImportError:
+    HAS_ANSYS_PIM = False
+
+
 from ansys.tools.path import version_from_path
 
 from ansys.mechanical.core.errors import VersionError
@@ -175,12 +183,13 @@ class LocalMechanicalPool:
         if "exec_file" in kwargs:
             exec_file = kwargs["exec_file"]
         else:
-            if pypim.is_configured():  # pragma: no cover
-                if "version" in kwargs:
-                    version = kwargs["version"]
-                    self._remote = True
-                else:
-                    raise ValueError("Pypim is configured, but version is not passed.")
+            if HAS_ANSYS_PIM:
+                if pypim.is_configured():  # pragma: no cover
+                    if "version" in kwargs:
+                        version = kwargs["version"]
+                        self._remote = True
+                    else:
+                        raise ValueError("Pypim is configured, but version is not passed.")
             else:  # get default executable
                 exec_file = get_mechanical_path()
                 if exec_file is None:  # pragma: no cover

@@ -32,12 +32,21 @@ import pathlib
 import socket
 import threading
 import time
+import warnings
 import weakref
 
 import ansys.api.mechanical.v0.mechanical_pb2 as mechanical_pb2
 import ansys.api.mechanical.v0.mechanical_pb2_grpc as mechanical_pb2_grpc
-import ansys.platform.instancemanagement as pypim
-from ansys.platform.instancemanagement import Instance
+
+try:
+    import ansys.platform.instancemanagement as pypim  # noqa: F401
+    from ansys.platform.instancemanagement import Instance  # noqa: F401
+
+    HAS_ANSYS_PIM = True
+    """Whether or not PyPIM exists."""
+except ImportError:
+    HAS_ANSYS_PIM = False
+
 import ansys.tools.path as atp
 import grpc
 
@@ -1932,7 +1941,7 @@ def launch_grpc(
     return port
 
 
-def launch_remote_mechanical(version=None) -> (grpc.Channel, Instance):  # pragma: no cover
+def launch_remote_mechanical(version=None):  # pragma: no cover
     """Start Mechanical remotely using the Product Instance Management (PIM) API.
 
     When calling this method, you must ensure that you are in an environment
@@ -1951,6 +1960,13 @@ def launch_remote_mechanical(version=None) -> (grpc.Channel, Instance):  # pragm
     -------
         Tuple containing channel, remote_instance.
     """
+    # Display warning if PyPIM is not installed
+    if not HAS_ANSYS_PIM:
+        warnings.warn(
+            "Installation of pim option required! Use pip install ansys-mechanical-core[pim]"
+        )
+        return
+
     pim = pypim.connect()
     instance = pim.create_instance(product_name="mechanical", product_version=version)
 
@@ -2062,7 +2078,7 @@ def launch_mechanical(
     version : str, optional
         Mechanical version to run in the three-digit format. For example, ``"251"``
         for 2025 R1. The default is ``None``, in which case the server runs the
-        latest installed version. If PyPIM is configured and ``exce_file=None``,
+        latest installed version. If PyPIM is configured and ``exec_file=None``,
         PyPIM launches Mechanical using its ``version`` parameter.
     keep_connection_alive : bool, optional
         Whether to keep the gRPC connection alive by running a background thread
@@ -2099,19 +2115,20 @@ def launch_mechanical(
     """
     # Start Mechanical with PyPIM if the environment is configured for it
     # and a directive on how to launch Mechanical was not passed.
-    if pypim.is_configured() and exec_file is None:  # pragma: no cover
-        LOG.info("Starting Mechanical remotely. The startup configuration will be ignored.")
-        channel, remote_instance = launch_remote_mechanical(version=version)
-        return Mechanical(
-            channel=channel,
-            remote_instance=remote_instance,
-            loglevel=loglevel,
-            log_file=log_file,
-            log_mechanical=log_mechanical,
-            timeout=start_timeout,
-            cleanup_on_exit=cleanup_on_exit,
-            keep_connection_alive=keep_connection_alive,
-        )
+    if HAS_ANSYS_PIM:
+        if pypim.is_configured() and exec_file is None:  # pragma: no cover
+            LOG.info("Starting Mechanical remotely. The startup configuration will be ignored.")
+            channel, remote_instance = launch_remote_mechanical(version=version)
+            return Mechanical(
+                channel=channel,
+                remote_instance=remote_instance,
+                loglevel=loglevel,
+                log_file=log_file,
+                log_mechanical=log_mechanical,
+                timeout=start_timeout,
+                cleanup_on_exit=cleanup_on_exit,
+                keep_connection_alive=keep_connection_alive,
+            )
 
     if ip is None:
         ip = os.environ.get("PYMECHANICAL_IP", LOCALHOST)
