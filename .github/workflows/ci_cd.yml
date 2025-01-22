@@ -294,8 +294,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.10']
-        #python-version: ['3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.10', '3.11', '3.12', '3.13']
 
     steps:
       - uses: actions/checkout@v4
@@ -317,6 +316,9 @@ jobs:
 
       - name: Unit Testing and coverage
         env:
+          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
+          ANSYS_WORKBENCH_LOGGING: 0
+          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
           PYTHONUNBUFFERED: 1
         run: |
           . /env/bin/activate
