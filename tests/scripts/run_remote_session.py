@@ -21,7 +21,19 @@
 # SOFTWARE.
 
 """Launch remote session."""
+import sys
+
 import ansys.mechanical.core as pymechanical
 
-# Launch remote session
-pymechanical.launch_mechanical()
+
+def launch_remote_session(start_instance: bool):
+    """Launch a remote session with the start_instance flag."""
+    # Launch remote session
+    pymechanical.launch_mechanical(start_instance=start_instance)
+
+
+if __name__ == "__main__":
+    if sys.argv[1] == "start_instance":
+        launch_remote_session(True)
+    else:
+        launch_remote_session(False)

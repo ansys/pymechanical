@@ -21,10 +21,10 @@
 # SOFTWARE.
 
 import json
-import logging
 import os
 import pathlib
 import re
+import subprocess
 
 import ansys.tools.path
 import grpc
@@ -529,16 +529,45 @@ def test_launch_grpc_not_supported_version():
         pymechanical.mechanical.launch_grpc(exec_file=exec_file)
 
 
-@pytest.mark.remote_session_launch
-def test_pim_install(caplog):
-    # Set the logging level to capture
-    caplog.set_level(logging.INFO)
+# @pytest.mark.remote_session_launch
+# def test_pim_install(caplog):
+#     # Set the logging level to capture
+#     caplog.set_level(logging.INFO)
 
-    # Assert Mechanical starts with PyPIM if the environment is configured for it
-    # and a directive on how to launch Mechanical was not passed.
-    pymechanical.launch_mechanical(start_instance=True)
+#     # Assert Mechanical starts with PyPIM if the environment is configured for it
+#     # and a directive on how to launch Mechanical was not passed.
+#     pymechanical.launch_mechanical(start_instance=True)
 
-    assert "Starting Mechanical remotely. The startup configuration will be ignored." in caplog.text
+#     assert "Starting Mechanical remotely. The startup configuration will be ignored."
+#  in caplog.text
+
+
+@pytest.mark.python_env
+def test_pim_install(test_env, pytestconfig, run_subprocess, rootdir):
+    """Test Mechanical starts with PyPIM if the environment is configured."""
+
+    # Install pymechanical
+    subprocess.check_call(
+        [test_env.python, "-m", "pip", "install", "-e", "."],
+        cwd=rootdir,
+        env=test_env.env,
+    )
+
+    # Install PyPIM
+    subprocess.check_call(
+        [test_env.python, "-m", "pip", "install", "ansys-mechanical-core[pim]"], env=test_env.env
+    )
+
+    # Launch Mechanical with PyPIM configured
+    run_remote_session = os.path.join(rootdir, "tests", "scripts", "run_remote_session.py")
+    process, stdout, stderr = run_subprocess(
+        [test_env.python, run_remote_session, "start_instance"]
+    )
+
+    assert (
+        "Starting Mechanical remotely. The startup configuration will be ignored."
+        in stdout.decode()
+    )
 
 
 # def test_call_before_launch_or_connect():
