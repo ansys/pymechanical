@@ -135,8 +135,7 @@ class App:
     Create App with Mechanical project file and version:
 
     >>> from ansys.mechanical.core import App
-    >>> app = App(db_file="path/to/file.mechdat", version=241, pri)
-
+    >>> app = App(db_file="path/to/file.mechdat", version=251)
 
     Disable copying the user profile when private appdata is enabled
 
@@ -193,7 +192,8 @@ class App:
         INSTANCES.append(self)
         self._updated_scopes: typing.List[typing.Dict[str, typing.Any]] = []
         self._subscribe()
-        self.message = MessageManager(self)
+        _complete_message_info = kwargs.get("complete_msg_info", False)
+        self.message = MessageManager(self._app)
 
     def __repr__(self):
         """Get the product info."""

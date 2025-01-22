@@ -19,11 +19,17 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+"""Message Manager for App."""
 
 
 class MessageManager:
+    """Message manager for adding, fetching, and printing messages."""
+
     def __init__(self, app):
-        self.app = app  # Reference to the app instance
+        """Initialize the message manager."""
+        self._app = app
+
+        # Imports necessary classes
         from Ansys.Mechanical.Application import Message
         from Ansys.Mechanical.DataModel.Enums import MessageSeverityType
 
@@ -31,33 +37,77 @@ class MessageManager:
         self.Message = Message
 
     def add(self, severity: str, text: str):
-        """Add a message."""
-        _msg = self.Message(text, self.MessageSeverityType.Error)
-        self.app.ExtAPI.Application.Messages.Add(_msg)
+        """Add a message.
 
-    def fetch_app_messages(self):
-        """Fetch messages from the app's ExtAPI.Message."""
-        # Assuming ExtAPI.Message provides a list of messages in the format (severity, text)
-        return [(msg.Severity, msg.DisplayString) for msg in self.app.ExtAPI.Application.Messages]
+        Parameters
+        ----------
+        severity : str
+            Severity of the message. Can be "info", "warning", or "error".
+        text : str
+            Message text.
 
-    def print(self):
-        """Print all messages, combining local and app messages."""
-        # Fetch messages from ExtAPI.Message
-        app_messages = self.fetch_app_messages()
-        formatted_app_messages = [f"[{severity}] {text}" for severity, text in app_messages]
+        Examples
+        --------
+        >>> app.message.add("info", "User clicked the start button.")
 
-        # Combine and display messages
-        if formatted_app_messages:
-            print("\n".join(formatted_app_messages))
+        Raises
+        ------
+        ValueError
+            If the severity is not "info", "warning", or "error".
+        """
+        # Map severity to MessageSeverityType
+        if severity.lower() == "info":
+            _msg = self.Message(text, self.MessageSeverityType.Info)
+        elif severity.lower() == "warning":
+            _msg = self.Message(text, self.MessageSeverityType.Warning)
+        elif severity.lower() == "error":
+            _msg = self.Message(text, self.MessageSeverityType.Error)
         else:
-            print("No messages to display.")
+            raise ValueError(f"Invalid severity: {severity}")
 
-    def __str__(self):
-        """Provide a raw print of all messages when accessed as a string."""
-        # Fetch messages from ExtAPI.Message
-        app_messages = self.fetch_app_messages()
-        formatted_app_messages = [f"[{severity}] {text}" for severity, text in app_messages]
+        _msg = self.Message(text, self.MessageSeverityType.Error)
+        self._app.ExtAPI.Application.Messages.Add(_msg)
+
+    def _fetch_app_messages(self, complete_info=False):
+        """Fetch messages from the app's ExtAPI.Message."""
+        if complete_info:
+            return [
+                (
+                    msg.Severity,
+                    msg.TimeStamp,
+                    msg.DisplayString,
+                    msg.Source,
+                    msg.StringID,
+                    msg.Location,
+                    msg.RelatedObjects,
+                )
+                for msg in self._app.ExtAPI.Application.Messages
+            ]
+        return [(msg.Severity, msg.DisplayString) for msg in self._app.ExtAPI.Application.Messages]
+
+    def _get_messages(self, complete_info=False):
+        _app_messages = self._fetch_app_messages(complete_info)
+        if complete_info:
+            formatted_app_messages = []
+            for severity, time, text, source, string_id, location, related_objects in _app_messages:
+                formatted_app_messages.append(
+                    f"[{str(severity).upper()}] {time} : {text} - "
+                    f"<source>{source} - <string id>{string_id} - "
+                    f"<location>{location} - <related objects>{related_objects}"
+                )
+        else:
+            formatted_app_messages = [
+                f"[{str(severity).upper()}] : {text}" for severity, text in _app_messages
+            ]
 
         # Combine local and app messages
         all_messages = formatted_app_messages
         return "\n".join(all_messages) if all_messages else "No messages to display."
+
+    def print(self, complete_info=False):
+        """Print all messages, combining local and app messages."""
+        print(self._get_messages(complete_info))
+
+    def __str__(self):
+        """Provide a raw print of all messages when accessed as a string."""
+        return self._get_messages()
