@@ -44,6 +44,18 @@ def __register_function_codec():
     Ansys.Mechanical.CPython.Codecs.FunctionCodec.Register()
 
 
+def _bind_assembly_for_explicit_interface(assembly_name: str):
+    """Bind the assembly for explicit interface implementation."""
+    import clr
+
+    assembly = clr.AddReference(assembly_name)
+    from Python.Runtime import BindingManager, BindingOptions
+
+    binding_options = BindingOptions()
+    binding_options.AllowExplicitInterfaceImplementation = True
+    BindingManager.SetBindingOptions(assembly, binding_options)
+
+
 def initialize(version: int) -> None:
     """Initialize the runtime.
 
@@ -59,3 +71,5 @@ def initialize(version: int) -> None:
         # function codec is distributed with pymechanical on linux only
         # at version 242 or later
         __register_function_codec()
+
+    _bind_assembly_for_explicit_interface("Ansys.ACT.WB1")
