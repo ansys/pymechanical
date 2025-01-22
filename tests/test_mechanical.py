@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 import json
+import logging
 import os
 import pathlib
 import re
@@ -526,6 +527,18 @@ def test_launch_grpc_not_supported_version():
 
     with pytest.raises(errors.VersionError):
         pymechanical.mechanical.launch_grpc(exec_file=exec_file)
+
+
+@pytest.mark.remote_session_launch
+def test_pim_install(caplog):
+    # Set the logging level to capture
+    caplog.set_level(logging.INFO)
+
+    # Assert Mechanical starts with PyPIM if the environment is configured for it
+    # and a directive on how to launch Mechanical was not passed.
+    pymechanical.launch_mechanical(start_instance=True)
+
+    assert "Starting Mechanical remotely. The startup configuration will be ignored." in caplog.text
 
 
 # def test_call_before_launch_or_connect():
