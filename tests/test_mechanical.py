@@ -542,6 +542,7 @@ def test_launch_grpc_not_supported_version():
 #  in caplog.text
 
 
+@pytest.mark.remote_session_launch
 @pytest.mark.python_env
 def test_pim_install(test_env, pytestconfig, run_subprocess, rootdir):
     """Test Mechanical starts with PyPIM if the environment is configured."""
