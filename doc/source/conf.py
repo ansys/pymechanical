@@ -212,7 +212,7 @@ html_theme_options = {
         "title": "PyMechanical cheat sheet",
     },
     "whatsnew": {
-        "whatsnew_file_name": "changelog.d/whatsnew.yml",
+        "whatsnew_file_name": "../changelog.d/whatsnew.yml",
         "changelog_file_name": "changelog.rst",
         "sidebar_pages": ["changelog"],
     },
