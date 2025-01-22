@@ -220,6 +220,16 @@ class Client:
             list_of_files.extend(temp_files)
         return list_of_files
 
+    @property
+    def is_alive(self):
+        """Check if the Mechanical instance is alive."""
+        try:
+            conn = rpyc.connect(self.host, self.port)
+            conn.ping()
+            return True
+        except:
+            return False
+
     def exit(self):
         """Shuts down the Mechanical instance."""
         # TODO: implement

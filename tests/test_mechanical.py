@@ -93,6 +93,8 @@ def test_run_python_script_from_file_error(mechanical):
 @pytest.mark.remote_session_connect
 @pytest.mark.parametrize("file_name", [r"hsec.x_t"])
 def test_upload(mechanical, file_name, assets):
+    if not mechanical.is_alive:
+        pytest.fail("Mechanical instance is not alive")
     mechanical.run_python_script("ExtAPI.DataModel.Project.New()")
     directory = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
     print(directory)
@@ -120,6 +122,8 @@ def test_upload(mechanical, file_name, assets):
 # ideally this will be 64*1024, 1024*1024, etc.
 @pytest.mark.parametrize("chunk_size", [10, 50, 100])
 def test_upload_with_different_chunk_size(mechanical, chunk_size, assets):
+    if not mechanical.is_alive:
+        pytest.fail("Mechanical instance is not alive")
     file_path = os.path.join(assets, "hsec.x_t")
     mechanical.run_python_script("ExtAPI.DataModel.Project.New()")
     directory = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
@@ -274,6 +278,8 @@ def verify_project_download(mechanical, tmpdir):
 # @pytest.mark.wip
 # @pytest.mark.skip(reason="avoid long running")
 def test_upload_attach_mesh_solve_use_api_non_distributed_solve(mechanical, tmpdir):
+    if not mechanical.is_alive:
+        pytest.fail("Mechanical instance is not alive")
     # default is distributed solve
     # let's disable the distributed solve and then solve
     # enable the distributed solve back
@@ -307,6 +313,8 @@ def test_upload_attach_mesh_solve_use_api_non_distributed_solve(mechanical, tmpd
 
 @pytest.mark.remote_session_connect
 def test_upload_attach_mesh_solve_use_api_distributed_solve(mechanical, tmpdir):
+    if not mechanical.is_alive:
+        pytest.fail("Mechanical instance is not alive")
     # default is distributed solve
 
     result = solve_and_return_results(mechanical)
