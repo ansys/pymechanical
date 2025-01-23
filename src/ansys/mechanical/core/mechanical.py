@@ -39,8 +39,8 @@ import ansys.api.mechanical.v0.mechanical_pb2 as mechanical_pb2
 import ansys.api.mechanical.v0.mechanical_pb2_grpc as mechanical_pb2_grpc
 
 try:
-    import ansys.platform.instancemanagement as pypim  # noqa: F401
-    from ansys.platform.instancemanagement import Instance  # noqa: F401
+    import ansys.platform.instancemanagement as pypim  # pragma: nocover noqa: F401
+    from ansys.platform.instancemanagement import Instance  # pragma: nocover noqa: F401
 
     HAS_ANSYS_PIM = True
     """Whether or not PyPIM exists."""

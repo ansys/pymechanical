@@ -27,7 +27,7 @@ import time
 import warnings
 
 try:
-    import ansys.platform.instancemanagement as pypim  # noqa: F401
+    import ansys.platform.instancemanagement as pypim  # pragma: nocover noqa: F401
 
     HAS_ANSYS_PIM = True
     """Whether or not PyPIM exists."""
