@@ -47,6 +47,8 @@ try:
 except ImportError:
     HAS_ANSYS_PIM = False
 
+from typing import Optional
+
 import ansys.tools.path as atp
 import grpc
 
@@ -1941,7 +1943,9 @@ def launch_grpc(
     return port
 
 
-def launch_remote_mechanical(version=None):  # pragma: no cover
+def launch_remote_mechanical(
+    version=None,
+) -> (grpc.Channel, Optional["Instance"]):  # pragma: no cover
     """Start Mechanical remotely using the Product Instance Management (PIM) API.
 
     When calling this method, you must ensure that you are in an environment
