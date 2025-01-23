@@ -43,7 +43,7 @@ an issue or discussion so our team can address them promptly:
 * `PyMechanical Discussions <https://github.com/ansys/pymechanical/discussions>`_: Post questions, share ideas, and get community feedback.
 
 For issues pertaining to `Mechanical scripting <https://mechanical.docs.pyansys.com/version/stable/user_guide_scripting/index.html>`_,
-please make a post on the `Developer Portal <https://forum.ansys.com/categories/structures>`_.
+please make a post on the `Ansys Developer Forum for Mechanical <https://discuss.ansys.com/categories/structures>`_.
 
 If you have general questions about PyAnsys or are unsure which repository to place an issue in,
 email `pyansys.core@ansys.com <pyansys.core@ansys.com>`_.
