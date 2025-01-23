@@ -22,7 +22,9 @@
 
 """Runtime initialize for pythonnet in embedding."""
 
+from importlib.metadata import distribution
 import os
+import warnings
 
 from ansys.mechanical.core.embedding.logger import Logger
 
@@ -71,5 +73,16 @@ def initialize(version: int) -> None:
         # function codec is distributed with pymechanical on linux only
         # at version 242 or later
         __register_function_codec()
-
-    _bind_assembly_for_explicit_interface("Ansys.ACT.WB1")
+    try:
+        distribution("pythonnet")
+        warnings.warn(
+            "Explicit interface binding is not supported with pythonnet."
+            "Some of the Mechanical API may not work as expected."
+            "For using PyMechanical, we recommend you do the following:\n"
+            "1. Uninstall your existing pythonnet package: pip uninstall pythonnet\n"
+            "2. Install the ansys-pythonnet package: pip install --upgrade "
+            "--force-reinstall ansys-pythonnet\n",
+            stacklevel=2,
+        )
+    except:
+        _bind_assembly_for_explicit_interface("Ansys.ACT.WB1")
