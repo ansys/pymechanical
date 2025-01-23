@@ -2115,20 +2115,19 @@ def launch_mechanical(
     """
     # Start Mechanical with PyPIM if the environment is configured for it
     # and a directive on how to launch Mechanical was not passed.
-    if HAS_ANSYS_PIM:
-        if pypim.is_configured() and exec_file is None:  # pragma: no cover
-            LOG.info("Starting Mechanical remotely. The startup configuration will be ignored.")
-            channel, remote_instance = launch_remote_mechanical(version=version)
-            return Mechanical(
-                channel=channel,
-                remote_instance=remote_instance,
-                loglevel=loglevel,
-                log_file=log_file,
-                log_mechanical=log_mechanical,
-                timeout=start_timeout,
-                cleanup_on_exit=cleanup_on_exit,
-                keep_connection_alive=keep_connection_alive,
-            )
+    if HAS_ANSYS_PIM and pypim.is_configured() and exec_file is None:  # pragma: no cover
+        LOG.info("Starting Mechanical remotely. The startup configuration will be ignored.")
+        channel, remote_instance = launch_remote_mechanical(version=version)
+        return Mechanical(
+            channel=channel,
+            remote_instance=remote_instance,
+            loglevel=loglevel,
+            log_file=log_file,
+            log_mechanical=log_mechanical,
+            timeout=start_timeout,
+            cleanup_on_exit=cleanup_on_exit,
+            keep_connection_alive=keep_connection_alive,
+        )
 
     if ip is None:
         ip = os.environ.get("PYMECHANICAL_IP", LOCALHOST)
