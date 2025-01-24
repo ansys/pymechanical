@@ -88,8 +88,8 @@ viz = [
     "usd-core==24.11",
 ]
 rpc = [
-    "rpyc==6.0.0",
-    "toolz==0.12.1",
+    "rpyc==6.0.1",
+    "toolz==1.0.0",
 ]
 
 [project.scripts]
