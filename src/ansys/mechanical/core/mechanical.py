@@ -42,7 +42,7 @@ import ansys.tools.path as atp
 import grpc
 
 import ansys.mechanical.core as pymechanical
-from ansys.mechanical.core import HAS_ANSYS_PIM, LOG
+from ansys.mechanical.core import LOG
 from ansys.mechanical.core.errors import (
     MechanicalExitedError,
     MechanicalRuntimeError,
@@ -56,6 +56,16 @@ from ansys.mechanical.core.misc import (
     check_valid_start_instance,
     threaded,
 )
+
+# Check if PyPIM is installed
+try:
+    import ansys.platform.instancemanagement as pypim  # pragma: nocover noqa: F401
+
+    _HAS_ANSYS_PIM = True
+    """Whether or not PyPIM exists."""
+except ImportError:
+    _HAS_ANSYS_PIM = False
+
 
 # Checking if tqdm is installed.
 # If it is, the default value for progress_bar is true.
@@ -1954,7 +1964,7 @@ def launch_remote_mechanical(
         Tuple containing channel, remote_instance.
     """
     # Display warning if PyPIM is not installed
-    if not HAS_ANSYS_PIM:
+    if not _HAS_ANSYS_PIM:
         warnings.warn(
             "Installation of pim option required! Use ``pip install ansys-mechanical-core[pim]``."
         )
@@ -2108,7 +2118,7 @@ def launch_mechanical(
     """
     # Start Mechanical with PyPIM if the environment is configured for it
     # and a directive on how to launch Mechanical was not passed.
-    if HAS_ANSYS_PIM and pypim.is_configured() and exec_file is None:  # pragma: no cover
+    if _HAS_ANSYS_PIM and pypim.is_configured() and exec_file is None:  # pragma: no cover
         LOG.info("Starting Mechanical remotely. The startup configuration will be ignored.")
         channel, remote_instance = launch_remote_mechanical(version=version)
         return Mechanical(

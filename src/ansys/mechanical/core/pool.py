@@ -28,9 +28,9 @@ import warnings
 
 from ansys.tools.path import version_from_path
 
-from ansys.mechanical.core import HAS_ANSYS_PIM
 from ansys.mechanical.core.errors import VersionError
 from ansys.mechanical.core.mechanical import (
+    _HAS_ANSYS_PIM,
     _HAS_TQDM,
     LOG,
     MECHANICAL_DEFAULT_PORT,
@@ -175,7 +175,7 @@ class LocalMechanicalPool:
         if "exec_file" in kwargs:
             exec_file = kwargs["exec_file"]
         else:
-            if HAS_ANSYS_PIM and pypim.is_configured():  # pragma: no cover
+            if _HAS_ANSYS_PIM and pypim.is_configured():  # pragma: no cover
                 if "version" in kwargs:
                     version = kwargs["version"]
                     self._remote = True
