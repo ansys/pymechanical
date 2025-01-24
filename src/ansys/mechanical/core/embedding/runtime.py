@@ -25,7 +25,6 @@
 from importlib.metadata import distribution
 import os
 
-from ansys.mechanical.core.embedding.initializer import __issue_pythonnet_warning
 from ansys.mechanical.core.embedding.logger import Logger
 
 
@@ -48,6 +47,13 @@ def __register_function_codec():
 
 def _bind_assembly_for_explicit_interface(assembly_name: str):
     """Bind the assembly for explicit interface implementation."""
+    # if pythonnet is not installed, we can't bind the assembly
+    try:
+        distribution("pythonnet")
+        return
+    except ModuleNotFoundError:
+        pass
+
     import clr
 
     assembly = clr.AddReference(assembly_name)
@@ -73,8 +79,5 @@ def initialize(version: int) -> None:
         # function codec is distributed with pymechanical on linux only
         # at version 242 or later
         __register_function_codec()
-    try:
-        distribution("pythonnet")
-        __issue_pythonnet_warning()
-    except:
-        _bind_assembly_for_explicit_interface("Ansys.ACT.WB1")
+
+    _bind_assembly_for_explicit_interface("Ansys.ACT.WB1")
