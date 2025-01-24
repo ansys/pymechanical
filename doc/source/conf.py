@@ -21,6 +21,9 @@ from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMB
 # necessary when building the sphinx gallery
 pymechanical.BUILDING_GALLERY = True
 
+# Whether or not to build the cheatsheet
+BUILD_CHEATSHEET = True
+
 # suppress annoying matplotlib bug
 warnings.filterwarnings(
     "ignore",
@@ -57,9 +60,11 @@ extensions = [
     "sphinx_autodoc_typehints",
     "sphinx_copybutton",
     "sphinx_design",
-    "sphinx_gallery.gen_gallery",
     "sphinxemoji.sphinxemoji",
 ]
+
+if pymechanical.BUILDING_GALLERY:
+    extensions.append("sphinx_gallery.gen_gallery")
 
 # Intersphinx mapping
 intersphinx_mapping = {
@@ -207,13 +212,15 @@ html_theme_options = {
             "icon": "fa fa-comment fa-fw",
         },
     ],
-    "cheatsheet": {
-        "file": "cheatsheet/cheat_sheet.qmd",
-        "title": "PyMechanical cheat sheet",
-    },
     "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
     "navigation_depth": 10,
 }
+
+if BUILD_CHEATSHEET:
+    html_theme_options["cheatsheet"] = {
+        "file": "cheatsheet/cheat_sheet.qmd",
+        "title": "PyMechanical cheat sheet",
+    }
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
