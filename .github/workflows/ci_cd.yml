@@ -322,14 +322,11 @@ jobs:
           PYTHONUNBUFFERED: 1
         run: |
           . /env/bin/activate
-          # if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
-          #  xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml
-          # else
-          #   xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml || true
-          # fi
-          # cicd will always pass. This is done temporarily to avoid failing the build since rpc is not yet stable
-          xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml || true
-        continue-on-error: true
+          if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
+            xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml
+          else
+            xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml || true
+          fi
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v4
@@ -357,7 +354,7 @@ jobs:
           check_name: Test Report ${{ matrix.python-version }}
           detailed_summary: true
           include_passed: true
-          fail_on_failure: true
+          fail_on_failure: false
 
 
   embedding-tests:
