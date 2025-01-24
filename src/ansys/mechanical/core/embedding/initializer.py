@@ -165,8 +165,7 @@ def __check_loaded_libs(version: int = None):  # pragma: no cover
         )
 
 
-def __check_and_issue_pythonnet_warning():
-    distribution("pythonnet")
+def __issue_pythonnet_warning():
     warnings.warn(
         "The pythonnet package was found in your environment "
         "which interferes with the ansys-pythonnet package. "
@@ -209,7 +208,8 @@ def initialize(version: int = None):
 
     # Check if 'pythonnet' is installed... and if so, throw warning
     try:
-        __check_and_issue_pythonnet_warning()
+        distribution("pythonnet")
+        __issue_pythonnet_warning()
     except ModuleNotFoundError:
         pass
 

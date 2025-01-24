@@ -22,9 +22,10 @@
 
 """Runtime initialize for pythonnet in embedding."""
 
+from importlib.metadata import distribution
 import os
 
-from ansys.mechanical.core.embedding.initializer import __check_and_issue_pythonnet_warning
+from ansys.mechanical.core.embedding.initializer import __issue_pythonnet_warning
 from ansys.mechanical.core.embedding.logger import Logger
 
 
@@ -73,6 +74,7 @@ def initialize(version: int) -> None:
         # at version 242 or later
         __register_function_codec()
     try:
-        __check_and_issue_pythonnet_warning()
+        distribution("pythonnet")
+        __issue_pythonnet_warning()
     except:
         _bind_assembly_for_explicit_interface("Ansys.ACT.WB1")
