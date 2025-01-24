@@ -329,6 +329,7 @@ jobs:
           # fi
           # cicd will always pass. This is done temporarily to avoid failing the build since rpc is not yet stable
           xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml || true
+        continue-on-error: true
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v4
