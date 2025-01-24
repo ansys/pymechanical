@@ -278,8 +278,8 @@ def verify_project_download(mechanical, tmpdir):
 # @pytest.mark.wip
 # @pytest.mark.skip(reason="avoid long running")
 def test_upload_attach_mesh_solve_use_api_non_distributed_solve(mechanical, tmpdir):
-    if not mechanical.is_alive:
-        pytest.fail("Mechanical instance is not alive")
+    if mechanical._rpc_type == "rpyc":
+        pytest.skip("This test is not supported for rpyc")
     # default is distributed solve
     # let's disable the distributed solve and then solve
     # enable the distributed solve back
@@ -313,8 +313,8 @@ def test_upload_attach_mesh_solve_use_api_non_distributed_solve(mechanical, tmpd
 
 @pytest.mark.remote_session_connect
 def test_upload_attach_mesh_solve_use_api_distributed_solve(mechanical, tmpdir):
-    if not mechanical.is_alive:
-        pytest.fail("Mechanical instance is not alive")
+    if mechanical._rpc_type == "rpyc":
+        pytest.skip("This test is not supported for rpyc")
     # default is distributed solve
 
     result = solve_and_return_results(mechanical)
