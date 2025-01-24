@@ -66,6 +66,14 @@ try:
 except:
     HAS_EMBEDDING = False
 
+try:
+    import ansys.platform.instancemanagement as pypim  # pragma: nocover noqa: F401
+
+    HAS_ANSYS_PIM = True
+    """Whether or not PyPIM exists."""
+except ImportError:
+    HAS_ANSYS_PIM = False
+
 LOCAL_PORTS = []
 """Manage the package level ports."""
 

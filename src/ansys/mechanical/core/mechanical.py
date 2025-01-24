@@ -32,28 +32,17 @@ import pathlib
 import socket
 import threading
 import time
+from typing import Optional
 import warnings
 import weakref
 
 import ansys.api.mechanical.v0.mechanical_pb2 as mechanical_pb2
 import ansys.api.mechanical.v0.mechanical_pb2_grpc as mechanical_pb2_grpc
-
-try:
-    import ansys.platform.instancemanagement as pypim  # pragma: nocover noqa: F401
-    from ansys.platform.instancemanagement import Instance  # pragma: nocover noqa: F401
-
-    HAS_ANSYS_PIM = True
-    """Whether or not PyPIM exists."""
-except ImportError:
-    HAS_ANSYS_PIM = False
-
-from typing import Optional
-
 import ansys.tools.path as atp
 import grpc
 
 import ansys.mechanical.core as pymechanical
-from ansys.mechanical.core import LOG
+from ansys.mechanical.core import HAS_ANSYS_PIM, LOG
 from ansys.mechanical.core.errors import (
     MechanicalExitedError,
     MechanicalRuntimeError,
@@ -1967,7 +1956,7 @@ def launch_remote_mechanical(
     # Display warning if PyPIM is not installed
     if not HAS_ANSYS_PIM:
         warnings.warn(
-            "Installation of pim option required! Use pip install ansys-mechanical-core[pim]"
+            "Installation of pim option required! Use ``pip install ansys-mechanical-core[pim]``."
         )
         return
 

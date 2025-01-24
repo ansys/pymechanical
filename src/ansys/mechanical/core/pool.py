@@ -26,17 +26,9 @@ import os
 import time
 import warnings
 
-try:
-    import ansys.platform.instancemanagement as pypim  # pragma: nocover noqa: F401
-
-    HAS_ANSYS_PIM = True
-    """Whether or not PyPIM exists."""
-except ImportError:
-    HAS_ANSYS_PIM = False
-
-
 from ansys.tools.path import version_from_path
 
+from ansys.mechanical.core import HAS_ANSYS_PIM
 from ansys.mechanical.core.errors import VersionError
 from ansys.mechanical.core.mechanical import (
     _HAS_TQDM,
