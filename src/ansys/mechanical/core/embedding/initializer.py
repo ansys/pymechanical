@@ -165,6 +165,20 @@ def __check_loaded_libs(version: int = None):  # pragma: no cover
         )
 
 
+def __check_and_issue_pythonnet_warning():
+    distribution("pythonnet")
+    warnings.warn(
+        "The pythonnet package was found in your environment "
+        "which interferes with the ansys-pythonnet package. "
+        "Some APIs may not work due to pythonnet being installed.\n\n"
+        "For using PyMechanical, we recommend you do the following:\n"
+        "1. Uninstall your existing pythonnet package: pip uninstall pythonnet\n"
+        "2. Install the ansys-pythonnet package: pip install --upgrade "
+        "--force-reinstall ansys-pythonnet\n",
+        stacklevel=2,
+    )
+
+
 def initialize(version: int = None):
     """Initialize Mechanical embedding."""
     global INITIALIZED_VERSION
@@ -195,17 +209,7 @@ def initialize(version: int = None):
 
     # Check if 'pythonnet' is installed... and if so, throw warning
     try:
-        distribution("pythonnet")
-        warnings.warn(
-            "The pythonnet package was found in your environment "
-            "which interferes with the ansys-pythonnet package. "
-            "Some APIs may not work due to pythonnet being installed.\n\n"
-            "For using PyMechanical, we recommend you do the following:\n"
-            "1. Uninstall your existing pythonnet package: pip uninstall pythonnet\n"
-            "2. Install the ansys-pythonnet package: pip install --upgrade "
-            "--force-reinstall ansys-pythonnet\n",
-            stacklevel=2,
-        )
+        __check_and_issue_pythonnet_warning()
     except ModuleNotFoundError:
         pass
 
