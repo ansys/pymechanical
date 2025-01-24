@@ -107,7 +107,7 @@ def test_explicit_interface(embedded_app):
     except AttributeError as e:
         pytest.fail(
             f"{str(e)}. This might be related to pythonnet."
-            "Unisntall pythonnet and install ansys-pythonnet."
+            "Uninstall pythonnet and install ansys-pythonnet."
         )
 
 
