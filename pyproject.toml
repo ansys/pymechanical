@@ -29,7 +29,6 @@ dependencies = [
     "ansys-api-mechanical==0.1.2",
     "ansys-mechanical-env==0.1.9",
     "ansys-mechanical-stubs==0.1.6",
-    "ansys-platform-instancemanagement>=1.0.1",
     "ansys-pythonnet>=3.1.0rc2",
     "ansys-tools-path>=0.3.1",
     "appdirs>=1.4.0",
@@ -86,6 +85,9 @@ doc = [
 viz = [
     "ansys-tools-visualization-interface>=0.2.6",
     "usd-core==24.11",
+]
+pim = [
+    "ansys-platform-instancemanagement>=1.0.1",
 ]
 
 [project.scripts]
