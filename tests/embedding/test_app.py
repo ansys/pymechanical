@@ -103,7 +103,7 @@ def test_explicit_interface(embedded_app):
     try:
         namedselection = Model.AddNamedSelection()
         ids = list(namedselection.Ids)
-        assert not ids, f"Expected an empty Ids list, but got {ids}."
+        assert len(ids) == 0, f"Expected an empty Ids list, but got {ids}."
     except AttributeError as e:
         pytest.fail(
             f"{str(e)}. This might be related to pythonnet."
