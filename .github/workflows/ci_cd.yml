@@ -311,8 +311,7 @@ jobs:
         run: |
           . /env/bin/activate
           pip install --upgrade pip
-          pip install -e .[tests]
-          pip install -e .[rpc]
+          pip install -e .[tests, rpc]
 
       - name: Unit Testing and coverage
         env:
