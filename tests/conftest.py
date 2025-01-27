@@ -306,11 +306,12 @@ def connect_rpc_embedded_server(port: int):
 
 
 def stop_embeddedd_server():
+    # TODO: not use a terminate.
     global embedded_server
     if embedded_server is not None:
-        embedded_server.terminate()  # Sends a SIGTERM signal
-        embedded_server.wait()  # Wait for the process to terminate
-        embedded_server = None  # Reset the process reference
+        embedded_server.terminate()
+        embedded_server.wait()
+        embedded_server = None
 
 
 @pytest.fixture(scope="session")
@@ -338,6 +339,7 @@ def mechanical(pytestconfig, rootdir):
     yield mechanical
     if is_embedded_server:
         print("stopping embedded server")
+        mechanical.exit()
         stop_embeddedd_server()
     else:
         assert "Ansys Mechanical" in str(mechanical)

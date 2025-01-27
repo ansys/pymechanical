@@ -33,7 +33,7 @@ from ansys.mechanical.core.mechanical import DEFAULT_CHUNK_SIZE
 class Client:
     """Client for connecting to Mechanical services."""
 
-    def __init__(self, host: str, port: int, timeout: float = 60.0):
+    def __init__(self, host: str, port: int, timeout: float = 120.0):
         """Initialize the client.
 
         Parameters
@@ -224,13 +224,14 @@ class Client:
     def is_alive(self):
         """Check if the Mechanical instance is alive."""
         try:
-            conn = rpyc.connect(self.host, self.port)
-            conn.ping()
+            self.connection.ping()
             return True
         except:
             return False
 
     def exit(self):
         """Shuts down the Mechanical instance."""
-        # TODO: implement
-        pass
+        print("Requesting server shutdown ...")
+        self.root.service_exit()
+        self.connection.close()
+        print("Disconnected from server")

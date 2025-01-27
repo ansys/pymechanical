@@ -209,6 +209,11 @@ class MechanicalService(rpyc.Service):
         print(f"File {remote_path} downloaded successfully.")
         return file_data
 
+    def exposed_service_exit(self):
+        """Exit the server."""
+        self._backgroundapp.stop()
+        self._backgroundapp = None
+
 
 class MechanicalEmbeddedServer:
     """Start rpc server."""
@@ -224,19 +229,11 @@ class MechanicalEmbeddedServer:
         """Initialize the server."""
         self._exited = False
         self._background_app = BackgroundApp(version=version)
-        self._port = port
         self._service = service
         self._methods = methods
         print("Initializing Mechanical ...")
 
-        # if port is None:
-        #     port = PYMECHANICAL_DEFAULT_RPC_PORT
-
-        # while port_in_use(port):
-        #     port += 1
-
         self._port = self.get_free_port(port)
-
         if impl is None:
             self._impl = None
         else:
@@ -262,7 +259,7 @@ class MechanicalEmbeddedServer:
     def start(self) -> None:
         """Start server on specified port."""
         print(
-            f"starting mechanical application in server."
+            f"Starting mechanical application in server.\n"
             f"Listening on port {self._port}\n{self._background_app.app}"
         )
         self._server.start()
