@@ -192,8 +192,7 @@ class App:
         INSTANCES.append(self)
         self._updated_scopes: typing.List[typing.Dict[str, typing.Any]] = []
         self._subscribe()
-        _complete_message_info = kwargs.get("complete_msg_info", False)
-        self.message = MessageManager(self._app)
+        self._messages = None
 
     def __repr__(self):
         """Get the product info."""
@@ -439,6 +438,14 @@ This may corrupt the project file.",
     def project_directory(self):
         """Returns the current project directory."""
         return self.DataModel.Project.ProjectDirectory
+
+    @property
+    def messages(self):
+        """Lazy-load the MessageManager."""
+        if self._messages is None:
+            self._messages = MessageManager(self._app)
+        self._messages._update_messages_cache()
+        return self._messages
 
     def _share(self, other) -> None:
         """Shares the state of self with other.
