@@ -199,13 +199,13 @@ def test_app_poster(embedded_app):
             embedded_app.DataModel.Project.Name = "foo"
 
         def raise_ex():
-            raise Exception("Exception")
+            raise Exception("TestException")
 
         name.append(poster.post(get_name))
         poster.post(change_name)
 
         try:
-            poster.try_post()
+            poster.try_post(raise_ex)
         except Exception as e:
             error.append(e)
 
@@ -227,6 +227,7 @@ def test_app_poster(embedded_app):
     assert name[1] == "foo"
     assert embedded_app.DataModel.Project.Name == "foo"
     assert len(error) == 1
+    assert str(error[0]) == "TestException"
 
 
 @pytest.mark.embedding
