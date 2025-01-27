@@ -97,6 +97,21 @@ def test_app_update_globals_after_open(embedded_app, assets):
 
 
 @pytest.mark.embedding
+def test_explicit_interface(embedded_app):
+    """Test save and open of the Application class."""
+    embedded_app.update_globals(globals())
+    try:
+        namedselection = Model.AddNamedSelection()
+        ids = list(namedselection.Ids)
+        assert len(ids) == 0, f"Expected an empty Ids list, but got {ids}."
+    except AttributeError as e:
+        pytest.fail(
+            f"{str(e)}. This might be related to pythonnet."
+            "Uninstall pythonnet and install ansys-pythonnet."
+        )
+
+
+@pytest.mark.embedding
 def test_app_version(embedded_app):
     """Test version of the Application class."""
     version = embedded_app.version
