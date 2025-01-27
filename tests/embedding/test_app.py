@@ -235,7 +235,7 @@ def test_app_getters_notstale(embedded_app):
     assert model.Name != "b"
 
 
-@pytest.mark.embedding_scripts
+# @pytest.mark.embedding_scripts
 @pytest.mark.python_env
 def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
     """Test Python.NET warning of the embedded instance using a test-scoped Python environment."""
@@ -264,7 +264,7 @@ def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
     assert warning, "UserWarning should appear in the output of the script"
 
 
-@pytest.mark.embedding_scripts
+# @pytest.mark.embedding_scripts
 def test_building_gallery(pytestconfig, run_subprocess, rootdir):
     """Test for building gallery check.
 
@@ -409,7 +409,7 @@ def test_launch_gui_exception(embedded_app):
     embedded_app.close()
 
 
-@pytest.mark.embedding_scripts
+# @pytest.mark.embedding_scripts
 def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory, run_subprocess):
     """Test cleanup function to remove the temporary mechdb file and folder."""
     temp_file = tmp_path / "tempfiletest.mechdb"
@@ -433,6 +433,26 @@ def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory, run_subprocess):
     # Assert the file and folder do not exist
     assert not temp_file.exists()
     assert not temp_folder.exists()
+
+
+@pytest.mark.embedding_scripts
+def test_attribute_error(tmp_path: pytest.TempPathFactory, pytestconfig, rootdir, run_subprocess):
+    """Test cleanup function to remove the temporary mechdb file and folder."""
+    version = pytestconfig.getoption("ansys_version")
+    temp_folder = tmp_path / "Ansys"
+
+    # Make temporary folder
+    temp_folder.mkdir()
+
+    # Assert the file and folder exist
+    assert temp_folder.exists()
+
+    # Run process
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+
+    process, stdout, stderr = run_subprocess([sys.executable, embedded_py, version])
+    stderr = stderr.decode()
+    assert "Unable to resolve Mechanical assemblies." in stderr
 
 
 @pytest.mark.embedding

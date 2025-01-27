@@ -32,7 +32,7 @@ import pytest
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 
 
-@pytest.mark.embedding_scripts
+# @pytest.mark.embedding_scripts
 @pytest.mark.python_env
 def test_private_appdata(pytestconfig, run_subprocess, rootdir):
     """Test embedded instance does not save ShowTriad using a test-scoped Python environment."""
@@ -46,7 +46,7 @@ def test_private_appdata(pytestconfig, run_subprocess, rootdir):
     assert "ShowTriad value is True" in stdout
 
 
-@pytest.mark.embedding_scripts
+# @pytest.mark.embedding_scripts
 @pytest.mark.python_env
 def test_normal_appdata(pytestconfig, run_subprocess, rootdir):
     """Test embedded instance saves ShowTriad value using a test-scoped Python environment."""
