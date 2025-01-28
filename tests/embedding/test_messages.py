@@ -30,7 +30,7 @@ import pytest
 @pytest.mark.embedding
 def test_message_manager(embedded_app, capsys):
     """Test message manager"""
-    assert embedded_app.messages.count() == 0
+    assert len(embedded_app.messages) == 0
     assert embedded_app.messages._messages_df.empty == True
 
     print(embedded_app.messages)
@@ -54,13 +54,13 @@ def test_message_manager(embedded_app, capsys):
 def test_message_add_and_clear(embedded_app):
     """Test adding and clearing messages"""
     embedded_app.messages.add("info", "Info message")
-    assert embedded_app.messages.count() == 1
+    assert len(embedded_app.messages) == 1
     embedded_app.messages.add("warning", "Warning message")
-    assert embedded_app.messages.count() == 2
+    assert len(embedded_app.messages) == 2
     embedded_app.messages.add("error", "Error message")
-    assert embedded_app.messages.count() == 3
+    assert len(embedded_app.messages) == 3
     embedded_app.messages.clear()
-    assert embedded_app.messages.count() == 0
+    assert len(embedded_app.messages) == 0
 
     with pytest.raises(ValueError):
         embedded_app.messages.add("trace", "Trace message")

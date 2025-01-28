@@ -89,7 +89,7 @@ class MessageManager:
         row = self._messages_df.iloc[index]
         return _Message(row)
 
-    def count(self):
+    def __len__(self):
         """Return the number of messages."""
         return len(self._messages_df)
 
