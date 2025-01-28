@@ -135,6 +135,7 @@ addopts = """-ra -s --durations=0 --cov=ansys.mechanical --cov-report html:.cov/
 # addopts = """-ra -s -m 'remote_session_launch or remote_session_connect or embedding' --durations=0
 # --cov=ansys.mechanical --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report \
 # term -vv --print --print-relative-time"""
+
 testpaths = [
     "tests",
 ]
