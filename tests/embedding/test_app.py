@@ -225,15 +225,16 @@ def test_app_poster(embedded_app, printer):
     # messages. The `sleep` utility puts Mechanical's main thread to
     # idle and only execute actions that have been posted to its main
     # thread, e.g. `change_name` that was posted by the poster.
-    while True:
-        printer("starting sleep 40")
-        utils.sleep(40)
-        printer("ending sleep 40")
-        if not change_name_thread.is_alive():
-            printer("break")
-            break
+    utils.sleep(400)
+    # while True:
+    #     printer("starting sleep 40")
+    #     utils.sleep(40)
+    #     printer("ending sleep 40")
+    #     if not change_name_thread.is_alive():
+    #         printer("break")
+    #         break
     printer("exited while loop")
-    printer("joined")
+    printer("joining thread")
     change_name_thread.join()
     printer("testing asserts")
     assert len(name) == 2
