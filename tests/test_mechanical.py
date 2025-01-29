@@ -26,7 +26,6 @@ import pathlib
 import re
 
 import ansys.tools.path
-import grpc
 import pytest
 
 import ansys.mechanical.core as pymechanical
@@ -37,14 +36,15 @@ import conftest
 
 @pytest.mark.remote_session_connect
 def test_run_python_script_success(mechanical):
-    result = mechanical.run_python_script("2+3")
+    result = str(mechanical.run_python_script("2+3"))
     assert result == "5"
 
 
 @pytest.mark.remote_session_connect
 def test_run_python_script_success_return_empty(mechanical):
-    result = mechanical.run_python_script("ExtAPI.DataModel.Project")
-    if misc.is_windows():
+    result = str(mechanical.run_python_script("ExtAPI.DataModel.Project"))
+    # TODO: Investigate why the result is different for grpc
+    if misc.is_windows() and mechanical._rpc_type == "grpc":
         assert result == ""
     else:
         assert result == "Ansys.ACT.Automation.Mechanical.Project"
@@ -52,10 +52,15 @@ def test_run_python_script_success_return_empty(mechanical):
 
 @pytest.mark.remote_session_connect
 def test_run_python_script_error(mechanical):
-    with pytest.raises(grpc.RpcError) as exc_info:
+
+    with pytest.raises(mechanical._rpc_error_type) as exc_info:
         mechanical.run_python_script("import test")
 
-    assert exc_info.value.details() == "No module named test"
+    # TODO : we can do custom error with currying poster
+    if mechanical._rpc_type == "grpc":
+        assert exc_info.value.details() == "No module named test"
+    else:
+        assert "No module named test" in str(exc_info.value)
 
 
 @pytest.mark.remote_session_connect
@@ -70,50 +75,19 @@ def test_run_python_from_file_success(mechanical):
     assert result == "test"
 
 
-# @pytest.mark.remote_session_connect
-# def test_run_python_from_file_log_messages(mechanical):
-#     current_working_directory = os.getcwd()
-#     script_path = os.path.join(current_working_directory, "tests", "scripts", "log_message.py")
-#     print("running python script : ", script_path)
-#
-#     print("logging_not enabled")
-#     result = mechanical.run_python_script_from_file(script_path)
-#
-#     print("logging_enabled")
-#     result = mechanical.run_python_script_from_file(
-#         script_path, enable_logging=True, log_level="DEBUG", progress_interval=1000
-#     )
-#
-#     result = mechanical.run_python_script_from_file(
-#         script_path, enable_logging=True, log_level="INFO", progress_interval=1000
-#     )
-#
-#     result = mechanical.run_python_script_from_file(
-#         script_path, enable_logging=True, log_level="WARNING", progress_interval=1000
-#     )
-#
-#     result = mechanical.run_python_script_from_file(
-#         script_path, enable_logging=True, log_level="ERROR", progress_interval=1000
-#     )
-#
-#     result = mechanical.run_python_script_from_file(
-#         script_path, enable_logging=True, log_level="CRITICAL", progress_interval=1000
-#     )
-#
-#     assert result == "log_test"
-
-
 @pytest.mark.remote_session_connect
 def test_run_python_script_from_file_error(mechanical):
-    with pytest.raises(grpc.RpcError) as exc_info:
+    with pytest.raises(mechanical._rpc_error_type) as exc_info:
         current_working_directory = os.getcwd()
         script_path = os.path.join(
             current_working_directory, "tests", "scripts", "run_python_error.py"
         )
         print("running python script : ", script_path)
         mechanical.run_python_script_from_file(script_path)
-
-    assert exc_info.value.details() == "name 'get_myname' is not defined"
+    if mechanical._rpc_type == "grpc":
+        assert exc_info.value.details() == "name 'get_myname' is not defined"
+    else:
+        assert "name 'get_myname' is not defined" in str(exc_info.value)
 
 
 @pytest.mark.remote_session_connect
@@ -322,15 +296,17 @@ def test_upload_attach_mesh_solve_use_api_non_distributed_solve(mechanical, tmpd
     print(f"min_value = {min_value} max_value = {max_value} avg_value = {avg_value}")
 
     result = mechanical.run_python_script("ExtAPI.DataModel.Project.Model.Analyses[0].ObjectState")
-    assert "5" == result.lower()
+    # TODO: Investigate why the result is different for grpc
+    if mechanical._rpc_type == "grpc":
+        assert "5" == result
+    else:
+        assert "Solved" == str(result)
 
     verify_project_download(mechanical, tmpdir)
 
 
 @pytest.mark.remote_session_connect
 def test_upload_attach_mesh_solve_use_api_distributed_solve(mechanical, tmpdir):
-    # default is distributed solve
-
     result = solve_and_return_results(mechanical)
 
     dict_result = json.loads(result)
@@ -342,7 +318,10 @@ def test_upload_attach_mesh_solve_use_api_distributed_solve(mechanical, tmpdir):
     print(f"min_value = {min_value} max_value = {max_value} avg_value = {avg_value}")
 
     result = mechanical.run_python_script("ExtAPI.DataModel.Project.Model.Analyses[0].ObjectState")
-    assert "5" == result.lower()
+    if mechanical._rpc_type == "grpc":
+        assert "5" == result
+    else:
+        assert "Solved" == str(result)
 
     verify_project_download(mechanical, tmpdir)
 
@@ -372,7 +351,6 @@ def verify_download(mechanical, tmpdir, file_name, chunk_size):
 
 
 @pytest.mark.remote_session_connect
-# @pytest.mark.wip
 @pytest.mark.parametrize("file_name", ["hsec.x_t"])
 def test_download_file(mechanical, tmpdir, file_name):
     verify_download(mechanical, tmpdir, file_name, 1024 * 1024)

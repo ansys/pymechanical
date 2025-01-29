@@ -86,6 +86,10 @@ viz = [
     "ansys-tools-visualization-interface>=0.2.6",
     "usd-core==24.11",
 ]
+rpc = [
+    "rpyc==6.0.1",
+    "toolz==1.0.0",
+]
 pim = [
     "ansys-platform-instancemanagement>=1.0.1",
 ]
