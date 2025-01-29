@@ -81,8 +81,5 @@ class Poster:
         """
         import System
 
-        print("before func")
         func = System.Func[System.Object](callable)
-        print(f"func: {func}")
-        print(f"self._poster.Get[System.Object](func): {self._poster.Get[System.Object](func)}")
         return self._poster.Get[System.Object](func)

@@ -219,7 +219,7 @@ def test_app_poster(embedded_app, printer):
 
     import threading
 
-    change_name_thread = threading.Thread(target=change_name_async, args=[poster])
+    change_name_thread = threading.Thread(target=change_name_async, args=(poster,))
     change_name_thread.start()
 
     # The poster can't do anything unless the main thread is receiving
@@ -229,7 +229,6 @@ def test_app_poster(embedded_app, printer):
     while True:
         utils.sleep(40)
         if not change_name_thread.is_alive():
-            printer("break")
             break
     change_name_thread.join()
     assert len(name) == 2
