@@ -194,12 +194,15 @@ def test_app_poster(embedded_app, printer):
         printer("change_name_async")
 
         def get_name():
+            printer("in get_name")
             return embedded_app.DataModel.Project.Name
 
         def change_name():
+            printer("in change_name")
             embedded_app.DataModel.Project.Name = "foo"
 
         def raise_ex():
+            printer("in raise exception")
             raise Exception("TestException")
 
         name.append(poster.post(get_name))
@@ -225,14 +228,13 @@ def test_app_poster(embedded_app, printer):
     # messages. The `sleep` utility puts Mechanical's main thread to
     # idle and only execute actions that have been posted to its main
     # thread, e.g. `change_name` that was posted by the poster.
-    utils.sleep(400)
-    # while True:
-    #     printer("starting sleep 40")
-    #     utils.sleep(40)
-    #     printer("ending sleep 40")
-    #     if not change_name_thread.is_alive():
-    #         printer("break")
-    #         break
+    while True:
+        printer("starting sleep 40")
+        utils.sleep(40)
+        printer("ending sleep 40")
+        if not change_name_thread.is_alive():
+            printer("break")
+            break
     printer("exited while loop")
     printer("joining thread")
     change_name_thread.join()
