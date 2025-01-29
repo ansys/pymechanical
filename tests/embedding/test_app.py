@@ -172,7 +172,6 @@ def test_app_poster(embedded_app, printer):
     that they properly redirect the calls to the appropriate C#
     object after a new()
     """
-
     version = embedded_app.version
     if os.name != "nt" and version < 242:
         """This test is effectively disabled for versions older than 242 on linux.
@@ -227,6 +226,7 @@ def test_app_poster(embedded_app, printer):
     # idle and only execute actions that have been posted to its main
     # thread, e.g. `change_name` that was posted by the poster.
     while True:
+        printer("sleep 40")
         utils.sleep(40)
         if not change_name_thread.is_alive():
             break
