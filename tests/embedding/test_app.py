@@ -205,6 +205,7 @@ def test_app_poster(embedded_app, printer):
             printer("in raise exception")
             raise Exception("TestException")
 
+        printer("before poster.post(get_name)")
         name.append(poster.post(get_name))
         printer("get_name")
         poster.post(change_name)
