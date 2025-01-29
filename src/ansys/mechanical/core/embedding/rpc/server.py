@@ -51,20 +51,19 @@ class MechanicalService(rpyc.Service):
 
     def _install_functions(self, methods):
         """Install the given list of methods."""
+        if not methods:
+            return
         [self._install_function(method) for method in methods]
 
     def _install_classes(self, impl):
         """Install the given list of classes."""
-        if impl is None:
+        if not impl:
             return
         [self._install_class(_impl) for _impl in impl]
 
     def _install_class(self, impl):
         """Install methods from the given implemented class."""
-        print("Install class")
-        if impl is None:
-            return
-        print("Installing methods from class")
+        print(f"Installing methods from class : {impl}")
         for methodname, method, methodtype in get_remote_methods(impl):
             print(f"installing {methodname} of {impl}")
             if methodtype == MethodType.METHOD:
