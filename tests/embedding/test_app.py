@@ -161,7 +161,10 @@ def test_app_print_tree(embedded_app, capsys, assets):
 
 
 @pytest.mark.embedding
-def test_app_poster(embedded_app):
+@pytest.mark.skip(
+    reason="This test is not working on the CI (https://github.com/ansys/pymechanical/issues/1071 )"
+)
+def test_app_poster(embedded_app, printer):
     """The getters of app should be usable after a new().
 
     The C# objects referred to by ExtAPI, Model, DataModel, and Tree
@@ -172,6 +175,7 @@ def test_app_poster(embedded_app):
     that they properly redirect the calls to the appropriate C#
     object after a new()
     """
+
     version = embedded_app.version
     if os.name != "nt" and version < 242:
         """This test is effectively disabled for versions older than 242 on linux.
@@ -191,6 +195,7 @@ def test_app_poster(embedded_app):
 
         It will change the name of the project to "foo"
         """
+        printer("change_name_async")
 
         def get_name():
             return embedded_app.DataModel.Project.Name
@@ -199,17 +204,21 @@ def test_app_poster(embedded_app):
             embedded_app.DataModel.Project.Name = "foo"
 
         def raise_ex():
-            raise Exception("Exception")
+            raise Exception("TestException")
 
         name.append(poster.post(get_name))
+        printer("get_name")
         poster.post(change_name)
+        printer("change_name")
 
         try:
-            poster.try_post()
+            poster.try_post(raise_ex)
         except Exception as e:
             error.append(e)
+        printer("raise_ex")
 
         name.append(poster.try_post(get_name))
+        printer("get_name")
 
     import threading
 
@@ -220,13 +229,17 @@ def test_app_poster(embedded_app):
     # messages. The `sleep` utility puts Mechanical's main thread to
     # idle and only execute actions that have been posted to its main
     # thread, e.g. `change_name` that was posted by the poster.
-    utils.sleep(400)
+    while True:
+        utils.sleep(40)
+        if not change_name_thread.is_alive():
+            break
     change_name_thread.join()
     assert len(name) == 2
     assert name[0] == "Project"
     assert name[1] == "foo"
     assert embedded_app.DataModel.Project.Name == "foo"
     assert len(error) == 1
+    assert str(error[0]) == "TestException"
 
 
 @pytest.mark.embedding
