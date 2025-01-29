@@ -194,23 +194,16 @@ def test_app_poster(embedded_app, printer):
         printer("change_name_async")
 
         def get_name():
-            printer("in get_name")
             return embedded_app.DataModel.Project.Name
 
         def change_name():
-            printer("in change_name")
             embedded_app.DataModel.Project.Name = "foo"
 
         def raise_ex():
-            printer("in raise exception")
             raise Exception("TestException")
 
         utils.sleep(400)
-        printer("before poster.post(get_name)")
-        printer(name)
-        get_name_var = poster.post(get_name)
-        printer(get_name_var)
-        name.append(get_name_var)
+        name.append(poster.post(get_name))
         printer("get_name")
         poster.post(change_name)
         printer("change_name")
@@ -234,16 +227,11 @@ def test_app_poster(embedded_app, printer):
     # idle and only execute actions that have been posted to its main
     # thread, e.g. `change_name` that was posted by the poster.
     while True:
-        printer("starting sleep 40")
         utils.sleep(40)
-        printer("ending sleep 40")
         if not change_name_thread.is_alive():
             printer("break")
             break
-    printer("exited while loop")
-    printer("joining thread")
     change_name_thread.join()
-    printer("testing asserts")
     assert len(name) == 2
     assert name[0] == "Project"
     assert name[1] == "foo"
