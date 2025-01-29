@@ -206,7 +206,10 @@ def test_app_poster(embedded_app, printer):
             raise Exception("TestException")
 
         printer("before poster.post(get_name)")
-        name.append(poster.post(get_name))
+        printer(name)
+        get_name_var = poster.post(get_name)
+        printer(get_name_var)
+        name.append(get_name_var)
         printer("get_name")
         poster.post(change_name)
         printer("change_name")
@@ -222,7 +225,7 @@ def test_app_poster(embedded_app, printer):
 
     import threading
 
-    change_name_thread = threading.Thread(target=change_name_async, args=(poster,))
+    change_name_thread = threading.Thread(target=change_name_async, args=[poster])
     change_name_thread.start()
 
     # The poster can't do anything unless the main thread is receiving
