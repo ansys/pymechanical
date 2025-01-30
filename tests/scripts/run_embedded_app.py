@@ -26,6 +26,8 @@ import sys
 
 import ansys.mechanical.core as pymechanical
 
+# from ansys.mechanical.core.embedding.logger import Configuration
+
 
 def launch_app(version, private_appdata):
     """Launch embedded instance of app."""
