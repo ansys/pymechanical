@@ -32,12 +32,12 @@ import pathlib
 import socket
 import threading
 import time
+from typing import Optional
+import warnings
 import weakref
 
 import ansys.api.mechanical.v0.mechanical_pb2 as mechanical_pb2
 import ansys.api.mechanical.v0.mechanical_pb2_grpc as mechanical_pb2_grpc
-import ansys.platform.instancemanagement as pypim
-from ansys.platform.instancemanagement import Instance
 import ansys.tools.path as atp
 import grpc
 
@@ -56,6 +56,16 @@ from ansys.mechanical.core.misc import (
     check_valid_start_instance,
     threaded,
 )
+
+# Check if PyPIM is installed
+try:
+    import ansys.platform.instancemanagement as pypim  # pragma: nocover noqa: F401
+
+    _HAS_ANSYS_PIM = True
+    """Whether or not PyPIM exists."""
+except ImportError:
+    _HAS_ANSYS_PIM = False
+
 
 # Checking if tqdm is installed.
 # If it is, the default value for progress_bar is true.
@@ -235,7 +245,7 @@ def check_valid_mechanical():
 
     >>> from ansys.mechanical.core import mechanical
     >>> from ansys.tools.path import change_default_mechanical_path
-    >>> mechanical_path = 'C:/Program Files/ANSYS Inc/v242/aisol/bin/win64/AnsysWBU.exe'
+    >>> mechanical_path = 'C:/Program Files/ANSYS Inc/v251/aisol/bin/win64/AnsysWBU.exe'
     >>> change_default_mechanical_path(mechanical_pth)
     >>> mechanical.check_valid_mechanical()
     True
@@ -243,7 +253,7 @@ def check_valid_mechanical():
 
     """
     mechanical_path = atp.get_mechanical_path(False)
-    if mechanical_path == None:
+    if mechanical_path is None:
         return False
     mechanical_version = atp.version_from_path("mechanical", mechanical_path)
     return not (mechanical_version < 232 and os.name != "posix")
@@ -450,8 +460,8 @@ class Mechanical(object):
 
         # connect and validate to the channel
         self._multi_connect(timeout=timeout)
-
         self.log_info("Mechanical is ready to accept grpc calls.")
+        self._rpc_type = "grpc"
 
     def __del__(self):  # pragma: no cover
         """Clean up on exit."""
@@ -479,7 +489,7 @@ class Mechanical(object):
         Get the version of the connected Mechanical instance.
 
         >>> mechanical.version
-        '242'
+        '251'
         """
         if self._version is None:
             try:
@@ -940,7 +950,7 @@ class Mechanical(object):
         Return a string value from Project object.
 
         >>> mechanical.run_python_script('ExtAPI.DataModel.Project.ProductVersion')
-        '2024 R2'
+        '2025 R1'
 
         Return an empty string, when you try to return the Project object.
 
@@ -1904,7 +1914,7 @@ def launch_grpc(
 
     Launch Mechanical using a specified executable file.
 
-    >>> exec_file_path = 'C:/Program Files/ANSYS Inc/v242/aisol/bin/win64/AnsysWBU.exe'
+    >>> exec_file_path = 'C:/Program Files/ANSYS Inc/v251/aisol/bin/win64/AnsysWBU.exe'
     >>> mechanical = launch_mechanical(exec_file_path)
 
     """
@@ -1932,7 +1942,9 @@ def launch_grpc(
     return port
 
 
-def launch_remote_mechanical(version=None) -> (grpc.Channel, Instance):  # pragma: no cover
+def launch_remote_mechanical(
+    version=None,
+) -> (grpc.Channel, Optional["Instance"]):  # pragma: no cover
     """Start Mechanical remotely using the Product Instance Management (PIM) API.
 
     When calling this method, you must ensure that you are in an environment
@@ -1943,14 +1955,21 @@ def launch_remote_mechanical(version=None) -> (grpc.Channel, Instance):  # pragm
     Parameters
     ----------
     version : str, optional
-        Mechanical version to run in the three-digit format. For example, ``"242"`` to
-        run 2024 R2. The default is ``None``, in which case the server runs the latest
+        Mechanical version to run in the three-digit format. For example, ``"251"`` to
+        run 2025 R1. The default is ``None``, in which case the server runs the latest
         installed version.
 
     Returns
     -------
         Tuple containing channel, remote_instance.
     """
+    # Display warning if PyPIM is not installed
+    if not _HAS_ANSYS_PIM:
+        warnings.warn(
+            "Installation of pim option required! Use ``pip install ansys-mechanical-core[pim]``."
+        )
+        return
+
     pim = pypim.connect()
     instance = pim.create_instance(product_name="mechanical", product_version=version)
 
@@ -2060,9 +2079,9 @@ def launch_mechanical(
         When ``False``, Mechanical is not exited when the garbage for this Mechanical
         instance is collected.
     version : str, optional
-        Mechanical version to run in the three-digit format. For example, ``"242"``
-        for 2024 R2. The default is ``None``, in which case the server runs the
-        latest installed version. If PyPIM is configured and ``exce_file=None``,
+        Mechanical version to run in the three-digit format. For example, ``"251"``
+        for 2025 R1. The default is ``None``, in which case the server runs the
+        latest installed version. If PyPIM is configured and ``exec_file=None``,
         PyPIM launches Mechanical using its ``version`` parameter.
     keep_connection_alive : bool, optional
         Whether to keep the gRPC connection alive by running a background thread
@@ -2089,7 +2108,7 @@ def launch_mechanical(
 
     Launch Mechanical using a specified executable file.
 
-    >>> exec_file_path = 'C:/Program Files/ANSYS Inc/v242/aisol/bin/win64/AnsysWBU.exe'
+    >>> exec_file_path = 'C:/Program Files/ANSYS Inc/v251/aisol/bin/win64/AnsysWBU.exe'
     >>> mech = launch_mechanical(exec_file_path)
 
     Connect to an existing Mechanical instance at IP address ``192.168.1.30`` on port
@@ -2099,7 +2118,7 @@ def launch_mechanical(
     """
     # Start Mechanical with PyPIM if the environment is configured for it
     # and a directive on how to launch Mechanical was not passed.
-    if pypim.is_configured() and exec_file is None:  # pragma: no cover
+    if _HAS_ANSYS_PIM and pypim.is_configured() and exec_file is None:  # pragma: no cover
         LOG.info("Starting Mechanical remotely. The startup configuration will be ignored.")
         channel, remote_instance = launch_remote_mechanical(version=version)
         return Mechanical(

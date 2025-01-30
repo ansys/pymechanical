@@ -45,8 +45,8 @@ Launch Mechanical locally with this code:
     >>> mechanical
 
     Ansys Mechanical [Ansys Mechanical Enterprise]
-    Product Version:242
-    Software build date: 06/03/2024 14:47:58
+    Product Version:251
+    Software build date: 11/27/2024 09:34:44
 
 Launch Mechanical from the command line
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,9 +67,9 @@ usage, type the following command:
 
         The following example demonstrates the main use of this tool:
 
-            $ ansys-mechanical -r 242 -g
+            $ ansys-mechanical -r 251 -g
 
-            Starting Ansys Mechanical version 2024R1 in graphical mode...
+            Starting Ansys Mechanical version 2025R1 in graphical mode...
 
     Options:
         -h, --help                 Show this message and exit.
@@ -83,7 +83,7 @@ usage, type the following command:
                                     with -p
         --features TEXT            Beta feature flags to set, as a semicolon
                                     delimited list. Options: ['MultistageHarmonic',
-                                    'ThermalShells']
+                                    'ThermalShells', 'CPython']
         --exit                     Exit the application after running an input
                                     script. You can only use this command with
                                     --input-script argument (-i). The command
@@ -96,8 +96,8 @@ usage, type the following command:
                                     application when in graphical mode.
         --debug                    Show a debug dialog window at the start of the
                                     process.
-        -r, --revision INTEGER     Ansys Revision number, e.g. "242" or "241". If
-                                    none is specified, uses the default from ansys-
+        -r, --revision INTEGER     Ansys Revision number, e.g. "232", "241", "242" or "251".
+                                    If none is specified, uses the default from ansys-
                                     tools-path
         -g, --graphical            Graphical mode
 
@@ -191,7 +191,7 @@ for the `launch_mechanical()`_ method.
 
     from ansys.mechanical.core import launch_mechanical
 
-    exec_loc = "C:/Program Files/ANSYS Inc/v242/aisol/bin/winx64/AnsysWBU.exe"
+    exec_loc = "C:/Program Files/ANSYS Inc/v251/aisol/bin/winx64/AnsysWBU.exe"
     mechanical = launch_mechanical(exec_loc)
 
 **On Linux**
@@ -200,7 +200,7 @@ for the `launch_mechanical()`_ method.
 
     from ansys.mechanical.core import launch_mechanical
 
-    exec_loc = "/usr/ansys_inc/v242/aisol/.workbench"
+    exec_loc = "/usr/ansys_inc/v251/aisol/.workbench"
     mechanical = launch_mechanical(exec_loc)
 
 If, when using the `launch_mechanical()`_
@@ -247,8 +247,8 @@ Python code
     >>> mechanical = App()
     >>> mechanical
     Ansys Mechanical [Ansys Mechanical Enterprise]
-    Product Version:242
-    Software build date: 06/03/2024 14:47:58
+    Product Version:251
+    Software build date: 11/27/2024 09:34:44
 
 Additional information for Linux
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

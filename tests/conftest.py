@@ -29,6 +29,7 @@ import subprocess
 import sys
 
 import ansys.tools.path as atp
+import grpc
 import pytest
 
 import ansys.mechanical.core as pymechanical
@@ -144,7 +145,7 @@ def start_embedding_app(version, pytestconfig) -> datetime.timedelta:
     ), "Can't run test cases, Mechanical is in readonly mode! Check license configuration."
     startup_time = (datetime.datetime.now() - start).total_seconds()
     num_cores = os.environ.get("NUM_CORES", None)
-    if num_cores != None:
+    if num_cores is not None:
         config = EMBEDDED_APP.ExtAPI.Application.SolveConfigurations["My Computer"]
         config.SolveProcessSettings.MaxNumberOfCores = int(num_cores)
     return startup_time
@@ -176,17 +177,20 @@ def mke_app_reset(request):
     EMBEDDED_APP.new()
 
 
-_CHECK_PROCESS_RETURN_CODE = os.name == "nt"
-
 # set to True if you want to see all the subprocess stdout/stderr
 _PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE = False
 
 
 @pytest.fixture()
-def run_subprocess():
+def run_subprocess(pytestconfig):
+    version = pytestconfig.getoption("ansys_version")
+
     def func(args, env=None, check: bool = None):
         if check is None:
-            check = _CHECK_PROCESS_RETURN_CODE
+            check = True
+            if os.name != "nt":
+                if int(version) < 251:
+                    check = False
         process, output = ansys.mechanical.core.run._run(
             args, env, check, _PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE
         )
@@ -196,7 +200,7 @@ def run_subprocess():
     return func
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def rootdir():
     """Return the root directory of the local clone of the PyMechanical GitHub repository."""
     base = pathlib.Path(__file__).parent
@@ -285,27 +289,68 @@ def connect_to_mechanical_instance(port=None, clear_on_connect=False):
     return mechanical
 
 
-@pytest.fixture(scope="session")
-def mechanical():
-    print("current working directory: ", os.getcwd())
+def launch_rpc_embedded_server(port: int, version: int, server_script: str):
+    """Start the server as a subprocess using `port`."""
+    global embedded_server
+    env_copy = os.environ.copy()
+    embedded_server = subprocess.Popen(
+        [sys.executable, server_script, str(port), str(version)], env=env_copy
+    )
 
-    if not pymechanical.mechanical.get_start_instance():
-        mechanical = connect_to_mechanical_instance()
+
+def connect_rpc_embedded_server(port: int):
+    from ansys.mechanical.core.embedding.rpc.client import Client
+
+    client = Client("localhost", port)
+    return client
+
+
+def stop_embeddedd_server():
+    # TODO: not use a terminate.
+    global embedded_server
+    if embedded_server is not None:
+        embedded_server.terminate()
+        embedded_server.wait()
+        embedded_server = None
+
+
+@pytest.fixture(scope="session")
+def mechanical(pytestconfig, rootdir):
+    print("current working directory: ", os.getcwd())
+    is_embedded_server = pytestconfig.getoption("remote_server_type") == "rpyc"
+    if is_embedded_server:
+        from ansys.mechanical.core.embedding.rpc import MechanicalEmbeddedServer
+
+        _version = int(pytestconfig.getoption("ansys_version"))
+        server_py = os.path.join(rootdir, "tests", "scripts", "rpc_server_embedded.py")
+        _port = MechanicalEmbeddedServer.get_free_port()
+        launch_rpc_embedded_server(port=_port, version=_version, server_script=server_py)
+        mechanical = connect_rpc_embedded_server(port=_port)
+        setattr(mechanical, "_rpc_error_type", Exception)
+        setattr(mechanical, "_rpc_type", "rpyc")
     else:
-        mechanical = launch_mechanical_instance()
+        if not pymechanical.mechanical.get_start_instance():
+            mechanical = connect_to_mechanical_instance()
+        else:
+            mechanical = launch_mechanical_instance()
+        setattr(mechanical, "_rpc_error_type", grpc.RpcError)
 
     print(mechanical)
     yield mechanical
+    if is_embedded_server:
+        print("stopping embedded server")
+        mechanical.exit()
+        stop_embeddedd_server()
+    else:
+        assert "Ansys Mechanical" in str(mechanical)
 
-    assert "Ansys Mechanical" in str(mechanical)
-
-    if pymechanical.mechanical.get_start_instance():
-        print(f"get_start_instance() returned True. exiting mechanical.")
-        mechanical.exit(force=True)
-        assert mechanical.exited
-        assert "Mechanical exited" in str(mechanical)
-        with pytest.raises(MechanicalExitedError):
-            mechanical.run_python_script("3+4")
+        if pymechanical.mechanical.get_start_instance():
+            print(f"get_start_instance() returned True. exiting mechanical.")
+            mechanical.exit(force=True)
+            assert mechanical.exited
+            assert "Mechanical exited" in str(mechanical)
+            with pytest.raises(MechanicalExitedError):
+                mechanical.run_python_script("3+4")
 
 
 # used only once
@@ -375,13 +420,19 @@ def pytest_addoption(parser):
     mechanical_path = atp.get_mechanical_path(False)
 
     if mechanical_path is None:
-        parser.addoption("--ansys-version", default="242")
+        parser.addoption("--ansys-version", default="251")
     else:
         mechanical_version = atp.version_from_path("mechanical", mechanical_path)
         parser.addoption("--ansys-version", default=str(mechanical_version))
 
     # parser.addoption("--debugging", action="store_true")
     parser.addoption("--addin-configuration", default="Mechanical")
+    parser.addoption(
+        "--remote-server-type",
+        default="grpc",
+        help="Specify RPC protocol",
+        choices=["grpc", "rpyc"],
+    )
 
 
 def pytest_collection_modifyitems(config, items):
@@ -397,7 +448,7 @@ def pytest_collection_modifyitems(config, items):
                 item.add_marker(skip_versions)
 
         # Skip tests that are outside of the provided version range. For example,
-        # @pytest.mark.version_range(241,242)
+        # @pytest.mark.version_range(241,251)
         if "version_range" in item.keywords:
             revns = [mark.args for mark in item.iter_markers(name="version_range")][0]
             ansys_version = int(config.getoption("--ansys-version"))

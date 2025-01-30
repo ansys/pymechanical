@@ -38,8 +38,9 @@ MAX_STUBS_REVN = max(STUBS_REVNS)
 
 
 @pytest.mark.cli
-def test_cli_default(disable_cli):
-    args, env = _cli_impl(exe="AnsysWBU.exe", version=241, port=11)
+def test_cli_default(disable_cli, pytestconfig):
+    version = int(pytestconfig.getoption("ansys_version"))
+    args, env = _cli_impl(exe="AnsysWBU.exe", version=version, port=11)
     assert os.environ == env
     assert "-AppModeMech" in args
     assert "-b" in args
@@ -48,49 +49,56 @@ def test_cli_default(disable_cli):
 
 
 @pytest.mark.cli
-def test_cli_debug(disable_cli):
-    _, env = _cli_impl(exe="AnsysWBU.exe", version=241, debug=True, port=11)
+def test_cli_debug(disable_cli, pytestconfig):
+    version = int(pytestconfig.getoption("ansys_version"))
+    _, env = _cli_impl(exe="AnsysWBU.exe", version=version, debug=True, port=11)
     assert "WBDEBUG_STOP" in env
 
 
 @pytest.mark.cli
-def test_cli_graphical(disable_cli):
-    args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, graphical=True)
+def test_cli_graphical(disable_cli, pytestconfig):
+    version = int(pytestconfig.getoption("ansys_version"))
+    args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, graphical=True)
     assert "-b" not in args
 
 
 @pytest.mark.cli
-def test_cli_appdata(disable_cli):
-    _, env = _cli_impl(exe="AnsysWBU.exe", version=241, private_appdata=True, port=11)
+def test_cli_appdata(disable_cli, pytestconfig):
+    version = int(pytestconfig.getoption("ansys_version"))
+    _, env = _cli_impl(exe="AnsysWBU.exe", version=version, private_appdata=True, port=11)
     var_to_compare = "TEMP" if os.name == "nt" else "HOME"
     assert os.environ[var_to_compare] != env[var_to_compare]
 
 
 @pytest.mark.cli
-def test_cli_errors(disable_cli):
+def test_cli_errors(disable_cli, pytestconfig):
+    version = int(pytestconfig.getoption("ansys_version"))
     # can't mix project file and input script
     with pytest.raises(Exception):
         _cli_impl(
             exe="AnsysWBU.exe",
-            version=241,
+            version=version,
             project_file="foo.mechdb",
             input_script="foo.py",
             graphical=True,
         )
     # project file only works in graphical mode
     with pytest.raises(Exception):
-        _cli_impl(exe="AnsysWBU.exe", version=241, project_file="foo.mechdb")
+        _cli_impl(exe="AnsysWBU.exe", version=version, project_file="foo.mechdb")
     # can't mix port and project file
     with pytest.raises(Exception):
-        _cli_impl(exe="AnsysWBU.exe", version=241, project_file="foo.mechdb", port=11)
+        _cli_impl(exe="AnsysWBU.exe", version=version, project_file="foo.mechdb", port=11)
     # can't mix port and input script
     with pytest.raises(Exception):
-        _cli_impl(exe="AnsysWBU.exe", version=241, input_script="foo.py", port=11)
+        _cli_impl(exe="AnsysWBU.exe", version=version, input_script="foo.py", port=11)
 
 
 @pytest.mark.cli
-def test_cli_appmode(disable_cli):
-    args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, show_welcome_screen=True, graphical=True)
+def test_cli_appmode(disable_cli, pytestconfig):
+    version = int(pytestconfig.getoption("ansys_version"))
+    args, _ = _cli_impl(
+        exe="AnsysWBU.exe", version=version, show_welcome_screen=True, graphical=True
+    )
     assert "-AppModeMech" not in args
 
 
@@ -102,31 +110,37 @@ def test_cli_231(disable_cli):
 
 
 @pytest.mark.cli
-def test_cli_port(disable_cli):
-    args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, port=11)
+def test_cli_port(disable_cli, pytestconfig):
+    version = int(pytestconfig.getoption("ansys_version"))
+    args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, port=11)
     assert "-grpc" in args
     assert "11" in args
 
 
 @pytest.mark.cli
-def test_cli_project(disable_cli):
-    args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, project_file="foo.mechdb", graphical=True)
+def test_cli_project(disable_cli, pytestconfig):
+    version = int(pytestconfig.getoption("ansys_version"))
+    args, _ = _cli_impl(
+        exe="AnsysWBU.exe", version=version, project_file="foo.mechdb", graphical=True
+    )
     assert "-file" in args
     assert "foo.mechdb" in args
 
 
 @pytest.mark.cli
-def test_cli_script(disable_cli):
-    args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, input_script="foo.py", graphical=True)
+def test_cli_script(disable_cli, pytestconfig):
+    version = int(pytestconfig.getoption("ansys_version"))
+    args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, input_script="foo.py", graphical=True)
     assert "-script" in args
     assert "foo.py" in args
 
 
 @pytest.mark.cli
-def test_cli_scriptargs(disable_cli):
+def test_cli_scriptargs(disable_cli, pytestconfig):
+    version = int(pytestconfig.getoption("ansys_version"))
     args, _ = _cli_impl(
         exe="AnsysWBU.exe",
-        version=241,
+        version=version,
         input_script="foo.py",
         script_args="arg1,arg2,arg3",
         graphical=True,
@@ -138,21 +152,23 @@ def test_cli_scriptargs(disable_cli):
 
 
 @pytest.mark.cli
-def test_cli_scriptargs_no_script(disable_cli):
+def test_cli_scriptargs_no_script(disable_cli, pytestconfig):
+    version = int(pytestconfig.getoption("ansys_version"))
     with pytest.raises(Exception):
         _cli_impl(
             exe="AnsysWBU.exe",
-            version=241,
+            version=version,
             script_args="arg1,arg2,arg3",
             graphical=True,
         )
 
 
 @pytest.mark.cli
-def test_cli_scriptargs_singlequote(disable_cli):
+def test_cli_scriptargs_singlequote(disable_cli, pytestconfig):
+    version = int(pytestconfig.getoption("ansys_version"))
     args, _ = _cli_impl(
         exe="AnsysWBU.exe",
-        version=241,
+        version=version,
         input_script="foo.py",
         script_args="arg1,arg2,'arg3'",
         graphical=True,
@@ -164,11 +180,12 @@ def test_cli_scriptargs_singlequote(disable_cli):
 
 
 @pytest.mark.cli
-def test_cli_scriptargs_doublequote(disable_cli):
+def test_cli_scriptargs_doublequote(disable_cli, pytestconfig):
+    version = int(pytestconfig.getoption("ansys_version"))
     with pytest.raises(Exception):
         _cli_impl(
             exe="AnsysWBU.exe",
-            version=241,
+            version=version,
             input_script="foo.py",
             script_args='arg1,"arg2",arg3',
             graphical=True,
@@ -176,22 +193,32 @@ def test_cli_scriptargs_doublequote(disable_cli):
 
 
 @pytest.mark.cli
-def test_cli_features(disable_cli):
+def test_cli_features(disable_cli, pytestconfig):
+    version = int(pytestconfig.getoption("ansys_version"))
     with pytest.warns(UserWarning):
-        args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, features="a;b;c", port=11)
+        args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, features="a;b;c", port=11)
         assert "-featureflags" in args
         assert "a;b;c" in args
-    args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, features="MultistageHarmonic", port=11)
+    args, _ = _cli_impl(
+        exe="AnsysWBU.exe",
+        version=version,
+        features="ThermalShells;MultistageHarmonic;CPython",
+        port=11,
+    )
+    args = [arg for arg in args if arg.startswith("Mechanical")][0]
+    assert "Mechanical.ThermalShells" in args
     assert "Mechanical.MultistageHarmonic" in args
+    assert "Mechanical.CPython.Capability" in args
 
 
 @pytest.mark.cli
-def test_cli_exit(disable_cli):
+def test_cli_exit(disable_cli, pytestconfig):
+    version = int(pytestconfig.getoption("ansys_version"))
     # Regardless of version, `exit` does nothing on its own
     args, _ = _cli_impl(exe="AnsysWBU.exe", version=232, exit=True, port=11)
     assert "-x" not in args
 
-    args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, exit=True, port=11)
+    args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, exit=True, port=11)
     assert "-x" not in args
 
     # On versions earlier than 2024R1, `exit` throws a warning but does nothing
@@ -200,19 +227,19 @@ def test_cli_exit(disable_cli):
         assert "-x" not in args
 
     # In UI mode, exit must be manually specified
-    args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, input_script="foo.py", graphical=True)
+    args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, input_script="foo.py", graphical=True)
     assert "-x" not in args
 
     # In batch mode, exit is implied
-    args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, input_script="foo.py")
+    args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, input_script="foo.py")
     assert "-x" in args
 
     # In batch mode, exit can be explicitly passed
-    args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, exit=True, input_script="foo.py")
+    args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, exit=True, input_script="foo.py")
     assert "-x" in args
 
     # In batch mode, exit can not be disabled
-    args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, exit=False, input_script="foo.py")
+    args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, exit=False, input_script="foo.py")
     assert "-x" in args
 
 

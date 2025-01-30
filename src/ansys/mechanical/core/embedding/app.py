@@ -137,7 +137,7 @@ class App:
     Create App with Mechanical project file and version:
 
     >>> from ansys.mechanical.core import App
-    >>> app = App(db_file="path/to/file.mechdat", version=241)
+    >>> app = App(db_file="path/to/file.mechdat", version=251)
 
     Disable copying the user profile when private appdata is enabled
 
@@ -168,7 +168,7 @@ class App:
             if len(INSTANCES) != 0:
                 instance: App = INSTANCES[0]
                 instance._share(self)
-                if db_file != None:
+                if db_file is not None:
                     self.open(db_file)
                 return
         if len(INSTANCES) > 0:
@@ -180,7 +180,7 @@ class App:
                 version = int(version)
             except ValueError:
                 raise ValueError(
-                    f"The version must be an integer or that can be converted to an integer."
+                    "The version must be an integer or of type that can be converted to an integer."
                 )
         self._version = initializer.initialize(version)
         configuration = kwargs.get("config", _get_default_addin_configuration())
@@ -192,8 +192,8 @@ class App:
             profile.update_environment(os.environ)
             atexit.register(_cleanup_private_appdata, profile)
 
-        self._app = _start_application(configuration, self._version, db_file)
         runtime.initialize(self._version)
+        self._app = _start_application(configuration, self._version, db_file)
         connect_warnings(self)
         self._poster = None
         # Set the initialized flag to True
@@ -412,7 +412,7 @@ This may corrupt the project file.",
     @property
     def poster(self) -> Poster:
         """Returns an instance of Poster."""
-        if self._poster == None:
+        if self._poster is None:
             self._poster = Poster()
         return self._poster
 
@@ -452,6 +452,11 @@ This may corrupt the project file.",
     def version(self):
         """Returns the version of the app."""
         return self._version
+
+    @property
+    def project_directory(self):
+        """Returns the current project directory."""
+        return self.DataModel.Project.ProjectDirectory
 
     def _share(self, other) -> None:
         """Shares the state of self with other.

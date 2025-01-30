@@ -57,14 +57,16 @@ def _run_embedding_log_test(
     embedded_py = os.path.join(rootdir, "tests", "scripts", "embedding_log_test.py")
 
     subprocess_pass_expected = pass_expected
-    if pass_expected == True and os.name != "nt" and int(version) < 251:
-        subprocess_pass_expected = False
+    if pass_expected == True:
+        if os.name != "nt" and int(version) < 251:
+            subprocess_pass_expected = False
 
-    process, stdout, stderr = run_subprocess(
+    _, stdout, stderr = run_subprocess(
         [sys.executable, embedded_py, version, testname],
         _get_env_without_logging_variables(),
         subprocess_pass_expected,
     )
+
     if not subprocess_pass_expected:
         stdout = stdout.decode()
         _assert_success(stdout, pass_expected)

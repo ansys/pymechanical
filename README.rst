@@ -69,16 +69,17 @@ session must be reachable from your Python program.
 Getting started
 ---------------
 
+.. _scripting_guide: https://ansyshelp.ansys.com/Views/Secured/corp/v251/en/act_script/act_script.html
+
 PyMechanical uses the built-in scripting capabilities of Mechanical. For information on the
-scripting APIs available, see the `Scripting in Mechanical Guide
-<https://ansyshelp.ansys.com/Views/Secured/corp/v242/en/act_script/act_script.html>`_ in the
+scripting APIs available, see the `Scripting in Mechanical Guide <_scripting_guide>`_ in the
 Ansys Help.
 
 Configuring the mechanical installation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 On a Windows system, the environment variable ``AWP_ROOT<ver>`` is configured when Mechanical is
-installed, where ``<ver>`` is the Mechanical release number, such as ``242`` for release 2024 R2.
+installed, where ``<ver>`` is the Mechanical release number, such as ``251`` for release 2025 R1.
 PyMechanical automatically uses this environment variable (or variables if there are multiple
 installations of different versions) to locate the latest Mechanical installation. On a Linux
 system, you must configure the ``AWP_ROOT<ver>`` environment variable to point to the
@@ -123,8 +124,23 @@ on Windows and Linux for version 2023 R2 and later. Here is an example:
    app.update_globals(globals())
    project_dir = DataModel.Project.ProjectDirectory
 
-Documentation and issues
-------------------------
+How to report issues
+--------------------
+
+If you encounter any issues or limitations with PyMechanical that hinder your work, please create
+an issue or discussion so our team can address them promptly:
+
+* `PyMechanical Issues <https://github.com/ansys/pymechanical/issues>`_: Report bugs and request new features.
+* `PyMechanical Discussions <https://github.com/ansys/pymechanical/discussions>`_: Post questions, share ideas, and get community feedback.
+
+For issues pertaining to `Mechanical scripting <https://mechanical.docs.pyansys.com/version/stable/user_guide_scripting/index.html>`_,
+please make a post on the `Developer Portal <https://forum.ansys.com/categories/structures>`_.
+
+If you have general questions about PyAnsys or are unsure which repository to place an issue in,
+email `pyansys.core@ansys.com <pyansys.core@ansys.com>`_.
+
+Documentation resources
+-----------------------
 
 Documentation for the latest stable release of PyMechanical is hosted at `PyMechanical documentation
 <https://mechanical.docs.pyansys.com/>`_.
@@ -137,13 +153,6 @@ You can also `view <https://cheatsheets.docs.pyansys.com/pymechanical_cheat_shee
 `download <https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.pdf>`_ the
 PyMechanical cheat sheet. This one-page reference provides syntax rules and commands
 for using PyMechanical.
-
-On the `PyMechanical Issues <https://github.com/ansys/pymechanical/issues>`_ page,
-you can create issues to report bugs and request new features. On the `PyMechanical Discussions
-<https://github.com/ansys/pymechanical/discussions>`_ page or the `Discussions <https://discuss.ansys.com/>`_
-page on the Ansys Developer portal, you can post questions, share ideas, and get community feedback.
-
-To reach the project support team, email `pyansys.core@ansys.com <pyansys.core@ansys.com>`_.
 
 Testing and development
 -----------------------

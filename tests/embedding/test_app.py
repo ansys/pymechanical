@@ -23,6 +23,7 @@
 """Miscellaneous embedding tests"""
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 from tempfile import NamedTemporaryFile
@@ -67,6 +68,10 @@ def test_app_save_open(embedded_app, tmp_path: pytest.TempPathFactory):
     embedded_app.DataModel.Project.Name = "PROJECT 1"
     project_file = os.path.join(tmp_path, f"{NamedTemporaryFile().name}.mechdat")
     embedded_app.save_as(project_file)
+
+    project_file_directory = os.path.splitext(project_file)[0] + "_Mech_Files"
+    assert project_file_directory == os.path.normpath(embedded_app.project_directory)
+
     with pytest.raises(Exception):
         embedded_app.save_as(project_file)
     embedded_app.save_as(project_file, overwrite=True)
@@ -90,6 +95,21 @@ def test_app_update_globals_after_open(embedded_app, assets):
     embedded_app.new()
     embedded_app.open(os.path.join(assets, "cube-hole.mechdb"))
     Model.AddNamedSelection()
+
+
+@pytest.mark.embedding
+def test_explicit_interface(embedded_app):
+    """Test save and open of the Application class."""
+    embedded_app.update_globals(globals())
+    try:
+        namedselection = Model.AddNamedSelection()
+        ids = list(namedselection.Ids)
+        assert len(ids) == 0, f"Expected an empty Ids list, but got {ids}."
+    except AttributeError as e:
+        pytest.fail(
+            f"{str(e)}. This might be related to pythonnet."
+            "Uninstall pythonnet and install ansys-pythonnet."
+        )
 
 
 @pytest.mark.embedding
@@ -142,7 +162,10 @@ def test_app_print_tree(embedded_app, capsys, assets):
 
 
 @pytest.mark.embedding
-def test_app_poster(embedded_app):
+@pytest.mark.skip(
+    reason="This test is not working on the CI (https://github.com/ansys/pymechanical/issues/1071 )"
+)
+def test_app_poster(embedded_app, printer):
     """The getters of app should be usable after a new().
 
     The C# objects referred to by ExtAPI, Model, DataModel, and Tree
@@ -153,6 +176,7 @@ def test_app_poster(embedded_app):
     that they properly redirect the calls to the appropriate C#
     object after a new()
     """
+
     version = embedded_app.version
     if os.name != "nt" and version < 242:
         """This test is effectively disabled for versions older than 242 on linux.
@@ -165,12 +189,14 @@ def test_app_poster(embedded_app):
     poster = embedded_app.poster
 
     name = []
+    error = []
 
     def change_name_async(poster):
         """Change_name_async will run a background thread
 
         It will change the name of the project to "foo"
         """
+        printer("change_name_async")
 
         def get_name():
             return embedded_app.DataModel.Project.Name
@@ -178,8 +204,22 @@ def test_app_poster(embedded_app):
         def change_name():
             embedded_app.DataModel.Project.Name = "foo"
 
+        def raise_ex():
+            raise Exception("TestException")
+
         name.append(poster.post(get_name))
+        printer("get_name")
         poster.post(change_name)
+        printer("change_name")
+
+        try:
+            poster.try_post(raise_ex)
+        except Exception as e:
+            error.append(e)
+        printer("raise_ex")
+
+        name.append(poster.try_post(get_name))
+        printer("get_name")
 
     import threading
 
@@ -190,11 +230,17 @@ def test_app_poster(embedded_app):
     # messages. The `sleep` utility puts Mechanical's main thread to
     # idle and only execute actions that have been posted to its main
     # thread, e.g. `change_name` that was posted by the poster.
-    utils.sleep(400)
+    while True:
+        utils.sleep(40)
+        if not change_name_thread.is_alive():
+            break
     change_name_thread.join()
-    assert len(name) == 1
+    assert len(name) == 2
     assert name[0] == "Project"
+    assert name[1] == "foo"
     assert embedded_app.DataModel.Project.Name == "foo"
+    assert len(error) == 1
+    assert str(error[0]) == "TestException"
 
 
 @pytest.mark.embedding
@@ -293,7 +339,7 @@ def test_rm_lockfile(embedded_app, tmp_path: pytest.TempPathFactory):
     embedded_app.save(mechdat_path)
     embedded_app.close()
 
-    lockfile_path = os.path.join(embedded_app.DataModel.Project.ProjectDirectory, ".mech_lock")
+    lockfile_path = os.path.join(embedded_app.project_directory, ".mech_lock")
     # Assert lock file path does not exist
     assert not os.path.exists(lockfile_path)
 
@@ -418,6 +464,36 @@ def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory, run_subprocess):
     assert not temp_folder.exists()
 
 
+@pytest.mark.embedding_scripts
+def test_attribute_error(tmp_path: pytest.TempPathFactory, pytestconfig, rootdir, run_subprocess):
+    """Test cleanup function to remove the temporary mechdb file and folder."""
+    # Change directory to tmp_path
+    os.chdir(tmp_path)
+
+    # Get the version
+    version = pytestconfig.getoption("ansys_version")
+
+    # Create the Ansys folder in tmp_path and assert it exists
+    temp_folder = tmp_path / "Ansys"
+    temp_folder.mkdir()
+    assert temp_folder.exists()
+
+    # Copy the run_embedded_app.py script to tmp_path
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+    tmp_file_script = tmp_path / "run_embedded_app.py"
+    shutil.copyfile(embedded_py, tmp_file_script)
+
+    # Run the script and assert the AttributeError is raised
+    stdout, stderr = subprocess.Popen(
+        [sys.executable, tmp_file_script, version], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    ).communicate()
+
+    # Assert the AttributeError is raised
+    assert "Unable to resolve Mechanical assemblies." in stderr.decode()
+
+    os.chdir(rootdir)
+
+
 @pytest.mark.embedding
 def test_app_execute_script_from_file(embedded_app, rootdir, printer):
     """Test execute_script_from_file method."""
@@ -446,7 +522,7 @@ def test_app_lock_file_open(embedded_app, tmp_path: pytest.TempPathFactory):
         embedded_app.save_as(project_file)
     embedded_app.save_as(project_file, overwrite=True)
 
-    lock_file = Path(embedded_app.DataModel.Project.ProjectDirectory) / ".mech_lock"
+    lock_file = Path(embedded_app.project_directory) / ".mech_lock"
 
     # Assert the lock file exists after saving it
     assert lock_file.exists()
