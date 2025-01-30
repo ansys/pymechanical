@@ -24,7 +24,7 @@
 import pytest
 
 from ansys.mechanical.core import global_variables
-from ansys.mechanical.core.embedding.imports import Transaction
+from ansys.mechanical.core.embedding.transaction import Transaction
 
 
 @pytest.mark.embedding
