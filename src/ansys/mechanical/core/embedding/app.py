@@ -89,6 +89,11 @@ def _start_application(configuration: AddinConfiguration, version, db_file) -> "
         return Ansys.Mechanical.Embedding.Application(db_file)
 
 
+def is_initialized():
+    """Check if the app has been initialized."""
+    return True if len(INSTANCES) != 0 else False
+
+
 class GetterWrapper(object):
     """Wrapper class around an attribute of an object."""
 
@@ -156,9 +161,6 @@ class App:
     >>> app = App(config=config)
     """
 
-    # Set the initialized flag to False
-    _initialized = False
-
     def __init__(self, db_file=None, private_appdata=False, **kwargs):
         """Construct an instance of the mechanical Application."""
         global INSTANCES
@@ -196,8 +198,6 @@ class App:
         self._app = _start_application(configuration, self._version, db_file)
         connect_warnings(self)
         self._poster = None
-        # Set the initialized flag to True
-        self._app._initialized = True
 
         self._disposed = False
         atexit.register(_dispose_embedded_app, INSTANCES)
@@ -206,7 +206,7 @@ class App:
         self._subscribe()
 
         globals = kwargs.get("globals")
-        if globals is not None:
+        if globals is not None and is_initialized():
             self.update_globals(globals)
 
     def __repr__(self):
@@ -233,10 +233,6 @@ class App:
         disconnect_warnings(self)
         self._app.Dispose()
         self._disposed = True
-
-    def is_initialized(self):
-        """Check if the app has been initialized."""
-        return self._initialized
 
     def open(self, db_file, remove_lock=False):
         """Open the db file.

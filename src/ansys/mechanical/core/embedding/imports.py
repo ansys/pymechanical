@@ -47,12 +47,13 @@ def global_variables(app: "ansys.mechanical.core.App", enums: bool = False) -> t
     """
     vars = global_entry_points(app)
 
+    from ansys.mechanical.core.embedding.app import is_initialized
     from ansys.mechanical.core.embedding.transaction import Transaction
 
     vars["Transaction"] = Transaction
 
     # Import modules if the app is initialized
-    if app.is_initialized():
+    if is_initialized():
         from ansys.mechanical.core.embedding.global_importer import (
             Ansys,
             MechanicalEnums,

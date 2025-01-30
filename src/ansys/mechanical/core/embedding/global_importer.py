@@ -21,6 +21,11 @@
 # SOFTWARE.
 """Import Mechanical globals."""
 
+from ansys.mechanical.core.embedding.app import is_initialized
+
+if not is_initialized():
+    raise Exception("Globals cannot be imported until the embedded app is initialized.")
+
 import clr
 
 clr.AddReference("Ansys.Mechanical.DataModel")
