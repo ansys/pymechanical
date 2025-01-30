@@ -89,7 +89,7 @@ def _assert_success(stdout: str, pass_expected: bool) -> int:
         assert "@@success@@" not in stdout
 
 
-# @pytest.mark.embedding_scripts
+@pytest.mark.embedding_scripts
 @pytest.mark.embedding_logging
 def test_logging_write_log_before_init(rootdir, run_subprocess, pytestconfig):
     """Test that an error is thrown when trying to log before initializing"""
@@ -99,7 +99,7 @@ def test_logging_write_log_before_init(rootdir, run_subprocess, pytestconfig):
     assert "Can't log to the embedding logger until Mechanical is initialized" in stderr
 
 
-# @pytest.mark.embedding_scripts
+@pytest.mark.embedding_scripts
 @pytest.mark.embedding_logging
 def test_logging_write_info_after_initialize_with_error_level(
     rootdir, run_subprocess, pytestconfig
@@ -115,7 +115,7 @@ def test_logging_write_info_after_initialize_with_error_level(
 
 
 @pytest.mark.parametrize("addin_configuration", ["Mechanical", "WorkBench"])
-# @pytest.mark.embedding_scripts
+@pytest.mark.embedding_scripts
 @pytest.mark.embedding_logging
 @pytest.mark.minimum_version(241)
 def test_addin_configuration(rootdir, run_subprocess, pytestconfig, addin_configuration):
@@ -129,7 +129,7 @@ def test_addin_configuration(rootdir, run_subprocess, pytestconfig, addin_config
     assert f"{addin_configuration} configuration!" in stderr
 
 
-# @pytest.mark.embedding_scripts
+@pytest.mark.embedding_scripts
 @pytest.mark.embedding_logging
 def test_logging_write_error_after_initialize_with_info_level(
     rootdir, run_subprocess, pytestconfig
@@ -141,14 +141,14 @@ def test_logging_write_error_after_initialize_with_info_level(
     assert "Will no one rid me of this turbulent priest?" in stderr
 
 
-# @pytest.mark.embedding_scripts
+@pytest.mark.embedding_scripts
 @pytest.mark.embedding_logging
 def test_logging_level_before_and_after_initialization(rootdir, run_subprocess, pytestconfig):
     """Test logging level API  before and after initialization."""
     _run_embedding_log_test(run_subprocess, rootdir, pytestconfig, "log_check_can_log_message")
 
 
-# @pytest.mark.embedding_scripts
+@pytest.mark.embedding_scripts
 @pytest.mark.embedding_logging
 def test_logging_all_level(rootdir, run_subprocess, pytestconfig):
     """Test all logging level after initialization."""
