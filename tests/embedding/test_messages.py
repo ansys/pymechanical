@@ -27,7 +27,7 @@ import os
 import pytest
 
 
-@pytest.mark.embedding
+@pytest.mark.embedding__
 def test_message_manager(embedded_app, capsys):
     """Test message manager"""
     assert len(embedded_app.messages) == 0
@@ -50,7 +50,7 @@ def test_message_manager(embedded_app, capsys):
     assert "Info message" in printed_output
 
 
-@pytest.mark.embedding
+@pytest.mark.embedding__
 def test_message_add_and_clear(embedded_app):
     """Test adding and clearing messages"""
     embedded_app.messages.add("info", "Info message")
@@ -66,7 +66,7 @@ def test_message_add_and_clear(embedded_app):
         embedded_app.messages.add("trace", "Trace message")
 
 
-@pytest.mark.embedding
+@pytest.mark.embedding__
 def test_message_show(embedded_app, capsys):
     """Test showing messages"""
     print(embedded_app.messages.show())
@@ -78,16 +78,16 @@ def test_message_show(embedded_app, capsys):
     embedded_app.messages.show()
     captured = capsys.readouterr()
     printed_output = captured.out.strip()
-    assert "Severity" in printed_output
-    assert "Message" in printed_output
+    assert "severity" in printed_output
+    assert "message" in printed_output
     assert "Info message" in printed_output
-    embedded_app.messages.show(complete_info=True)
+    embedded_app.messages.show(filter="time_stamp")
     captured = capsys.readouterr()
     printed_output = captured.out.strip()
-    assert "TimeStamp" in printed_output
+    assert "time_stamp" in printed_output
 
 
-@pytest.mark.embedding
+@pytest.mark.embedding__
 def test_message_get(embedded_app, assets, capsys):
     """Test getting a message"""
     embedded_app.open(os.path.join(assets, "cube-hole.mechdb"))
@@ -112,12 +112,12 @@ def test_message_get(embedded_app, assets, capsys):
     captured = capsys.readouterr()
     printed_output = captured.out.strip()
     assert "The currently selected unit" in printed_output
-    assert "Source" not in printed_output
+    assert "source" not in printed_output
 
-    embedded_app.messages[1].show(complete_info=True)
+    embedded_app.messages[1].show(filter="*")
     captured = capsys.readouterr()
     printed_output = captured.out.strip()
-    assert "Source" in printed_output
+    assert "source" in printed_output
 
     with pytest.raises(IndexError):
         embedded_app.messages[10]

@@ -121,27 +121,36 @@ class MessageManager:
 
         self._update_messages_cache()
 
-    def show(self, complete_info=False):
+    def show(self, filter="severity;message"):
         """Print all messages with full details.
 
         Parameters
         ----------
-        complete_info : bool, optional
-            If True, print all available message details. Default is False.
+        filter : str, optional
+            Semicolon separated list of message attributes to display.
+            Default is "severity;message".
+            if filter is "*", all available attributes will be displayed.
 
         Examples
         --------
         >>> app.messages.show()
+        ... severity: info
+        ... message: User clicked the start button.
 
-        >>> app.messages.show(complete_info=True)
+        >>> app.messages.show(filter="time_stamp;severity;message")
+        ... time_stamp: 1/30/2025 12:10:35 PM
+        ... severity: info
+        ... message: User clicked the start button.
         """
+        self._update_messages_cache()
+
         if self._messages_df.empty:
             print("No messages to display.")
             return
 
         for _, row in self._messages_df.iterrows():
             msg = _Message(row)
-            msg.show(complete_info)
+            msg.show(filter)
 
     def clear(self):
         """Clear all messages."""
@@ -191,25 +200,47 @@ class _Message:
         """Return the message related objects."""
         return self.row["RelatedObjects"]
 
-    def show(self, complete_info=False):
+    def show(self, filter="severity;message"):
         """Show the message details.
 
         Parameters
         ----------
-        complete_info : bool, optional
-            If True, print all available message details. Default is False.
+        filter : str, optional
+            Semicolon separated list of message attributes to display.
+            Default is "severity;message".
+            if filter is "*", all available attributes will be displayed.
+            other options are "time_stamp", "source", "location", "related_objects".
 
         Examples
         --------
         >>> app.messages[0].show()
-        """
-        print(f"Severity: {self.row['Severity']}")
-        print(f"Message: {self.row['DisplayString']}")
+        ... severity: info
+        ... message: User clicked the start button.
 
-        if complete_info:
-            for key in ["TimeStamp", "Source", "StringID", "Location", "RelatedObjects"]:
-                if key in self.row and pd.notna(self.row[key]):
-                    print(f"{key}: {self.row[key]}")
+        >>> app.messages[0].show(filter="*")
+        ... severity: info
+        ... message: User clicked the start button.
+        ... time_stamp: 1/30/2025 12:10:35 PM
+        ... source: None
+        ... string_id: None
+        ... location: Ansys.ACT.Core.Utilities.SelectionInfo
+        ... related_objects: None
+        """
+        if filter == "*":
+            selected_columns = [
+                "time_stamp",
+                "severity",
+                "message",
+                "source",
+                "string_id",
+                "location",
+                "related_objects",
+            ]
+        else:
+            selected_columns = [col.strip() for col in filter.split(";")]
+
+        for key in selected_columns:
+            print(f"{key}: {getattr(self, key, "Specified filter not found.")}")
 
     def __str__(self):
         """Provide a string representation of the message."""
