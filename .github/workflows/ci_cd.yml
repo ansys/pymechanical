@@ -176,6 +176,7 @@ jobs:
           else
             echo "matrix={\"mechanical-version\":['${{ needs.revn-variations.outputs.test_docker_image_version }}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           fi
+
   container-stability-check:
     runs-on: ubuntu-latest
     needs: [revn-variations]
@@ -793,7 +794,6 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
           files: .coverage-combined/xml
-
 
   package:
     name: Package library
