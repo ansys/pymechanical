@@ -456,3 +456,34 @@ def test_ideconfig_cli_default(test_env, run_subprocess, rootdir, pytestconfig):
     assert revision in stdout
     assert str(settings_json_fragment) in stdout
     assert venv_loc in stdout
+
+
+@pytest.mark.cli
+def test_ideconfig_revision_max():
+    """Test the IDE configuration location when no arguments are supplied."""
+    # Set the revision number to be greater than the maximum stubs revision number
+    revision = MAX_STUBS_REVN + 10
+
+    # Assert a warning is raised
+    with pytest.warns(UserWarning):
+        ideconfig_cli_impl(
+            ide="vscode",
+            target="user",
+            revision=revision,
+        )
+
+
+# @pytest.mark.cli
+# def test_ideconfig_no_revision(capfd):
+#     """Test the IDE configuration when no revision is supplied."""
+# # Run the cli() function in the IDE configuration module -> have to import CLI
+# ideconfig_cli_impl(
+#     ide="vscode",
+#     target="user",
+# )
+
+# # Get output of the IDE configuration command
+# out, err = capfd.readouterr()
+# out = out.replace("\\\\", "\\")
+
+# assert "false" in out
