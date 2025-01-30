@@ -181,8 +181,8 @@ class App:
             profile.update_environment(os.environ)
             atexit.register(_cleanup_private_appdata, profile)
 
-        self._app = _start_application(configuration, self._version, db_file)
         runtime.initialize(self._version)
+        self._app = _start_application(configuration, self._version, db_file)
         connect_warnings(self)
         self._poster = None
 

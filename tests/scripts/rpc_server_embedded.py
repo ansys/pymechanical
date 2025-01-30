@@ -19,30 +19,16 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+"""Start rpc sever for embedded instance."""
+import sys
 
-"""Version of ansys-mechanical-core module.
+from ansys.mechanical.core.embedding.rpc import MechanicalDefaultServer
 
-On the ``main`` branch, use 'dev0' to denote a development version.
-For example:
-
-# major, minor, patch
-version_info = 0, 58, 'dev0'
-
-"""
-
-try:
-    import importlib.metadata as importlib_metadata
-except ModuleNotFoundError:  # pragma: no cover
-    import importlib_metadata
-
-# Read from the pyproject.toml
-# major, minor, patch
-__version__ = importlib_metadata.version("ansys-mechanical-core")
-
-SUPPORTED_MECHANICAL_VERSIONS = {
-    251: "2025R1",
-    242: "2024R2",
-    241: "2024R1",
-    232: "2023R2",
-}
-"""Supported mechanical versions in descending order."""
+if __name__ == "__main__":
+    _port = int(sys.argv[1])
+    _version = int(sys.argv[2])
+    server = MechanicalDefaultServer(
+        port=_port,
+        version=_version,
+    )
+    server.start()
