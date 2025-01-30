@@ -23,6 +23,7 @@
 """Miscellaneous embedding tests"""
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 from tempfile import NamedTemporaryFile
@@ -438,21 +439,31 @@ def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory, run_subprocess):
 @pytest.mark.embedding_scripts
 def test_attribute_error(tmp_path: pytest.TempPathFactory, pytestconfig, rootdir, run_subprocess):
     """Test cleanup function to remove the temporary mechdb file and folder."""
+    # Change directory to tmp_path
+    os.chdir(tmp_path)
+
+    # Get the version
     version = pytestconfig.getoption("ansys_version")
+
+    # Create the Ansys folder in tmp_path and assert it exists
     temp_folder = tmp_path / "Ansys"
-
-    # Make temporary folder
     temp_folder.mkdir()
-
-    # Assert the file and folder exist
     assert temp_folder.exists()
 
-    # Run process
+    # Copy the run_embedded_app.py script to tmp_path
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+    tmp_file_script = tmp_path / "run_embedded_app.py"
+    shutil.copyfile(embedded_py, tmp_file_script)
 
-    process, stdout, stderr = run_subprocess([sys.executable, embedded_py, version])
-    stderr = stderr.decode()
-    assert "Unable to resolve Mechanical assemblies." in stderr
+    # Run the script and assert the AttributeError is raised
+    stdout, stderr = subprocess.Popen(
+        [sys.executable, tmp_file_script, version], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    ).communicate()
+
+    # Assert the AttributeError is raised
+    assert "Unable to resolve Mechanical assemblies." in stderr.decode()
+
+    os.chdir(rootdir)
 
 
 @pytest.mark.embedding
