@@ -1281,12 +1281,12 @@ class Mechanical(object):
         if not os.path.exists(rootDir):
             print(f"Error: rootDir {rootDir} does not exist")
         print("-" * 10, "rootDir -- ", rootDir)
-        print('repeating project dir again')
+        print("repeating project dir again")
         rootDir = self.run_python_script("""ExtAPI.DataModel.Project.ProjectDirectory""")
         if not os.path.exists(rootDir):
-        print(f"Error: rootDir {rootDir} does not exist")
+            print(f"Error: rootDir {rootDir} does not exist")
         print("-" * 10, "rootDir -- ", rootDir)
-        print("Directory listing of /tmp:")
+        print("Directory listing of tmp:")
         print(os.listdir(rootDir))
         for dirPath, dirNames, fileNames in os.walk(rootDir):
             for fileName in fileNames:
