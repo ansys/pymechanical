@@ -1264,6 +1264,14 @@ class Mechanical(object):
         >>> files = mechanical.list_files()
         >>> for file in files: print(file)
         """
+        # result = self.run_python_script(
+        #     "import pymechanical_helpers\npymechanical_helpers.GetAllProjectFiles(ExtAPI)"
+        # )
+
+        # files_out = result.splitlines()
+        # if not files_out:  # pragma: no cover
+        #     self.log_warning("No files listed")
+        # return files_out
         list = []
         mechdbPath = self.run_python_script("""ExtAPI.DataModel.Project.FilePath""")
         print("mechdb path if any", mechdbPath)
@@ -1273,8 +1281,12 @@ class Mechanical(object):
         if not os.path.exists(rootDir):
             print(f"Error: rootDir {rootDir} does not exist")
         print("-" * 10, "rootDir -- ", rootDir)
+        print('repeating project dir again')
+        rootDir = self.run_python_script("""ExtAPI.DataModel.Project.ProjectDirectory""")
+        if not os.path.exists(rootDir):
+        print(f"Error: rootDir {rootDir} does not exist")
+        print("-" * 10, "rootDir -- ", rootDir)
         print("Directory listing of /tmp:")
-        print(os.listdir("/tmp"))
         print(os.listdir(rootDir))
         for dirPath, dirNames, fileNames in os.walk(rootDir):
             for fileName in fileNames:
