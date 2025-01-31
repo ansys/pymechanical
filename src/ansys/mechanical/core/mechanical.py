@@ -1269,11 +1269,13 @@ class Mechanical(object):
         if mechdbPath != "":
             list.append(mechdbPath)
         rootDir = self.run_python_script("""ExtAPI.DataModel.Project.ProjectDirectory""")
-
+        print("-" * 50, rootDir)
         for dirPath, dirNames, fileNames in os.walk(rootDir):
             for fileName in fileNames:
                 list.append(os.path.join(dirPath, fileName))
+        print("-" * 50, files_out)
         files_out = "\n".join(list).splitlines()
+        print("-" * 50, files_out)
         if not files_out:  # pragma: no cover
             self.log_warning("No files listed")
         return files_out
