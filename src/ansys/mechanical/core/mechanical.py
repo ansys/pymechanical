@@ -1270,13 +1270,18 @@ class Mechanical(object):
         if mechdbPath != "":
             list.append(mechdbPath)
         rootDir = self.run_python_script("""ExtAPI.DataModel.Project.ProjectDirectory""")
-        print("-" * 50, "rootDir -- ", rootDir)
+        if not os.path.exists(rootDir):
+            print(f"Error: rootDir {rootDir} does not exist")
+        print("-" * 10, "rootDir -- ", rootDir)
+        print("Directory listing of /tmp:")
+        print(os.listdir("/tmp"))
+        print(os.listdir(rootDir))
         for dirPath, dirNames, fileNames in os.walk(rootDir):
             for fileName in fileNames:
                 list.append(os.path.join(dirPath, fileName))
-        print("-" * 50, "list", list)
+        print("-" * 10, "list", list)
         files_out = "\n".join(list).splitlines()
-        print("-" * 50, "list split", files_out)
+        print("-" * 10, "list split", files_out)
         if not files_out:  # pragma: no cover
             self.log_warning("No files listed")
         return files_out
