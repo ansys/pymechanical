@@ -22,7 +22,17 @@
 
 """Message Manager for App."""
 
-import pandas as pd
+# TODO: add functionality to filter only errors, warnings, info
+# TODO: add max number of messages to display
+# TODO: implement pep8 formatting
+
+try:
+    import pandas as pd  # noqa: F401
+
+    HAS_PANDAS = True
+    """Whether or not pandas exists."""
+except ImportError:
+    HAS_PANDAS = False
 
 
 class MessageManager:
@@ -39,9 +49,8 @@ class MessageManager:
         self._message_severity = MessageSeverityType
         self._message = Message
         self._messages = self._app.ExtAPI.Application.Messages
-        self._messages_df = pd.DataFrame()
 
-    def _update_messages_cache(self):
+    def _create_messages_data(self):
         """Update the local cache of messages."""
         data = {
             "Severity": [],
@@ -61,22 +70,21 @@ class MessageManager:
             data["Location"].append(msg.Location)
             data["RelatedObjects"].append(msg.RelatedObjects)
 
-        self._messages_df = pd.DataFrame(data)
+        return data
 
     def __repr__(self):
         """Provide a DataFrame representation of all messages."""
-        self._update_messages_cache()
-        return repr(self._messages_df)
+        if not HAS_PANDAS:  # pragma: no cover
+            return "Pandas is not available. Please pip install pandas to display messages."
+        data = self._create_messages_data()
+        return repr(pd.DataFrame(data))
 
     def __str__(self):
         """Provide a custom string representation of the messages."""
-        if self._messages_df.empty:
+        if self._messages.Count == 0:
             return "No messages to display."
 
-        formatted_messages = [
-            f"[{row['Severity']}] : {row['DisplayString']}"
-            for _, row in self._messages_df.iterrows()
-        ]
+        formatted_messages = [f"[{msg.Severity}] : {msg.DisplayString}" for msg in self._messages]
         return "\n".join(formatted_messages)
 
     def __getitem__(self, index):
@@ -85,8 +93,7 @@ class MessageManager:
             raise IndexError("No messages are available.")
         if index >= len(self._messages) or index < 0:
             raise IndexError("Message index out of range.")
-        row = self._messages[index]
-        return Message(row)
+        return self._messages[index]
 
     def __len__(self):
         """Return the number of messages."""
@@ -118,8 +125,6 @@ class MessageManager:
         _msg = self._message(text, severity_map[severity.lower()])
         self._messages.Add(_msg)
 
-        self._update_messages_cache()
-
     def remove(self, index: int):
         """Remove a message by index.
 
@@ -137,10 +142,7 @@ class MessageManager:
         _msg = self._messages[index]
         self._messages.Remove(_msg)
 
-    # TODO: add functionality to filter only errors, warnings, info
-
     def show(self, filter="severity;message"):
-        # TODO : add max number of messages to display
         """Print all messages with full details.
 
         Parameters
@@ -154,114 +156,35 @@ class MessageManager:
         --------
         >>> app.messages.show()
         ... severity: info
-        ... message: User clicked the start button.
+        ... message: Sample message.
 
         >>> app.messages.show(filter="time_stamp;severity;message")
         ... time_stamp: 1/30/2025 12:10:35 PM
         ... severity: info
-        ... message: User clicked the start button.
+        ... message: Sample message.
         """
-        if self._app.ExtAPI.Application.Messages.Count == 0:
+        if self._messages.Count == 0:
             print("No messages to display.")
             return
 
-        for message in self._messages:
-            msg = Message(message)
-            msg.show(filter)
-
-    def clear(self):
-        """Clear all messages."""
-        self._messages.Clear()
-
-
-class Message:
-    """Lightweight message object for individual message handling."""
-
-    def __init__(self, message: "Ansys.Mechanical.Application.Message"):
-        """Initialize with a row from the DataFrame."""
-        self._msg = message
-
-    @property
-    def message(self):
-        """Return the message text."""
-        return self._msg.DisplayString
-
-    @property
-    def severity(self):
-        """Return the message severity."""
-        return self._msg.Severity
-
-    @property
-    def time_stamp(self):
-        """Return the message timestamp."""
-        return str(self._msg.TimeStamp)
-
-    @property
-    def source(self):
-        """Return the message source."""
-        return self._msg.Source
-
-    @property
-    def string_id(self):
-        """Return the message string ID."""
-        return self._msg.StringID
-
-    @property
-    def location(self):
-        """Return the message location."""
-        return self._msg.Location
-
-    @property
-    def related_objects(self):
-        """Return the message related objects."""
-        return self._msg.RelatedObjects
-
-    def show(self, filter="severity;message"):
-        """Show the message details.
-
-        Parameters
-        ----------
-        filter : str, optional
-            Semicolon separated list of message attributes to display.
-            Default is "severity;message".
-            if filter is "*", all available attributes will be displayed.
-            other options are "time_stamp", "source", "location", "related_objects".
-
-        Examples
-        --------
-        >>> app.messages[0].show()
-        ... severity: info
-        ... message: User clicked the start button.
-
-        >>> app.messages[0].show(filter="*")
-        ... severity: info
-        ... message: User clicked the start button.
-        ... time_stamp: 1/30/2025 12:10:35 PM
-        ... source: None
-        ... string_id: None
-        ... location: Ansys.ACT.Core.Utilities.SelectionInfo
-        ... related_objects: None
-        """
         if filter == "*":
             selected_columns = [
-                "time_stamp",
-                "severity",
+                "TimeStamp",
+                "Severity",
                 "message",
-                "source",
-                "string_id",
-                "location",
-                "related_objects",
+                "Source",
+                "StringID",
+                "Location",
+                "RelatedObjects",
             ]
         else:
             selected_columns = [col.strip() for col in filter.split(";")]
 
-        for key in selected_columns:
-            print(f"{key}: {getattr(self, key, "Specified filter not found.")}")
+        for msg in self._messages:
+            for key in selected_columns:
+                print(f"{key}: {getattr(msg, key, 'Specified attribute not found.')}")
+            print()
 
-    def __str__(self):
-        """Provide a string representation of the message."""
-        return f"[{self._msg.Severity}] {self._msg.DisplayString}"
-
-    def __repr__(self):
-        """Provide a string representation of the message."""
-        return f"[{self._msg.Severity}] {self._msg.DisplayString}"
+    def clear(self):
+        """Clear all messages."""
+        self._messages.Clear()

@@ -36,6 +36,7 @@ def test_message_manager(embedded_app, capsys):
     print(embedded_app.messages)
     captured = capsys.readouterr()
     printed_output = captured.out.strip()
+
     assert "No messages to display." in printed_output
 
     assert "Empty" in repr(embedded_app.messages)
@@ -59,6 +60,13 @@ def test_message_add_and_clear(embedded_app):
     assert len(embedded_app.messages) == 2
     embedded_app.messages.add("error", "Error message")
     assert len(embedded_app.messages) == 3
+
+    embedded_app.messages.remove(0)
+    assert len(embedded_app.messages) == 2
+
+    with pytest.raises(IndexError):
+        embedded_app.messages.remove(10)
+
     embedded_app.messages.clear()
     assert len(embedded_app.messages) == 0
 
@@ -86,6 +94,9 @@ def test_message_show(embedded_app, capsys):
     printed_output = captured.out.strip()
     assert "time_stamp" in printed_output
 
+    with pytest.raises(ValueError):
+        embedded_app.messages.show(filter="unknown")
+
 
 @pytest.mark.embedding__
 def test_message_get(embedded_app, assets, capsys):
@@ -96,28 +107,17 @@ def test_message_get(embedded_app, assets, capsys):
     print(_msg1)
     captured = capsys.readouterr()
     printed_output = captured.out.strip()
-    assert "WARNING" in printed_output
+    assert "Ansys.Mechanical.Application.Message" in printed_output
 
-    assert _msg1.severity == "warning"
+    assert _msg1.Severity == "warning"
     assert "Image file not found" in _msg1.message
-    assert "AM" in _msg1.time_stamp or "PM" in _msg1.time_stamp
-    print(_msg1.string_id, _msg1.source, _msg1.location, _msg1.related_objects)
+    assert "AM" in _msg1.TimeStamp or "PM" in _msg1.TimeStamp
+    print(_msg1.StringID, _msg1.Source, _msg1.Location, _msg1.RelatedObjects)
     captured = capsys.readouterr()
     printed_output = captured.out.strip()
     assert "Ansys.ACT.Automation.Mechanical.Image" in printed_output
     assert "Ansys.Mechanical.DataModel.Interfaces.IDataModelObject" in printed_output
     assert "Ansys.ACT.Core.Utilities.SelectionInf" in printed_output
-
-    embedded_app.messages[1].show()
-    captured = capsys.readouterr()
-    printed_output = captured.out.strip()
-    assert "The currently selected unit" in printed_output
-    assert "source" not in printed_output
-
-    embedded_app.messages[1].show(filter="*")
-    captured = capsys.readouterr()
-    printed_output = captured.out.strip()
-    assert "source" in printed_output
 
     with pytest.raises(IndexError):
         embedded_app.messages[10]
