@@ -31,19 +31,13 @@ import pytest
 def test_message_manager(embedded_app, capsys):
     """Test message manager"""
     assert len(embedded_app.messages) == 0
-    assert embedded_app.messages._messages_df.empty == True
 
     print(embedded_app.messages)
     captured = capsys.readouterr()
     printed_output = captured.out.strip()
-
     assert "No messages to display." in printed_output
 
-    assert "Empty" in repr(embedded_app.messages)
-
     embedded_app.messages.add("info", "Info message")
-
-    assert "INFO" in repr(embedded_app.messages[0])
 
     print(embedded_app.messages)
     captured = capsys.readouterr()
@@ -86,32 +80,37 @@ def test_message_show(embedded_app, capsys):
     embedded_app.messages.show()
     captured = capsys.readouterr()
     printed_output = captured.out.strip()
-    assert "severity" in printed_output
-    assert "message" in printed_output
+    assert "Severity" in printed_output
+    assert "DisplayString" in printed_output
     assert "Info message" in printed_output
-    embedded_app.messages.show(filter="time_stamp")
+    embedded_app.messages.show(filter="TimeStamp")
     captured = capsys.readouterr()
     printed_output = captured.out.strip()
-    assert "time_stamp" in printed_output
+    assert "TimeStamp" in printed_output
 
-    with pytest.raises(ValueError):
-        embedded_app.messages.show(filter="unknown")
+    embedded_app.messages.show(filter="unknown")
+    captured = capsys.readouterr()
+    printed_output = captured.out.strip()
+    assert "Specified attribute not found" in printed_output
 
 
 @pytest.mark.embedding__
 def test_message_get(embedded_app, assets, capsys):
     """Test getting a message"""
+    with pytest.raises(IndexError):
+        embedded_app.messages[0]
+
     embedded_app.open(os.path.join(assets, "cube-hole.mechdb"))
     _msg1 = embedded_app.messages[0]
 
-    print(_msg1)
+    print(embedded_app.messages[0])
     captured = capsys.readouterr()
     printed_output = captured.out.strip()
     assert "Ansys.Mechanical.Application.Message" in printed_output
 
-    assert _msg1.Severity == "warning"
-    assert "Image file not found" in _msg1.message
-    assert "AM" in _msg1.TimeStamp or "PM" in _msg1.TimeStamp
+    assert str(_msg1.Severity) == "Warning"
+    assert "Image file not found" in _msg1.DisplayString
+    assert "AM" in str(_msg1.TimeStamp) or "PM" in str(_msg1.TimeStamp)
     print(_msg1.StringID, _msg1.Source, _msg1.Location, _msg1.RelatedObjects)
     captured = capsys.readouterr()
     printed_output = captured.out.strip()

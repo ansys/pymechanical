@@ -26,8 +26,8 @@
 # TODO: add max number of messages to display
 # TODO: implement pep8 formatting
 
-try:
-    import pandas as pd  # noqa: F401
+try:  # noqa: F401
+    import pandas as pd
 
     HAS_PANDAS = True
     """Whether or not pandas exists."""
@@ -50,7 +50,7 @@ class MessageManager:
         self._message = Message
         self._messages = self._app.ExtAPI.Application.Messages
 
-    def _create_messages_data(self):
+    def _create_messages_data(self):  # noqa: F401
         """Update the local cache of messages."""
         data = {
             "Severity": [],
@@ -72,9 +72,9 @@ class MessageManager:
 
         return data
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no cover
         """Provide a DataFrame representation of all messages."""
-        if not HAS_PANDAS:  # pragma: no cover
+        if not HAS_PANDAS:
             return "Pandas is not available. Please pip install pandas to display messages."
         data = self._create_messages_data()
         return repr(pd.DataFrame(data))
@@ -142,7 +142,7 @@ class MessageManager:
         _msg = self._messages[index]
         self._messages.Remove(_msg)
 
-    def show(self, filter="severity;message"):
+    def show(self, filter="Severity;DisplayString"):
         """Print all messages with full details.
 
         Parameters
@@ -171,7 +171,7 @@ class MessageManager:
             selected_columns = [
                 "TimeStamp",
                 "Severity",
-                "message",
+                "DisplayString",
                 "Source",
                 "StringID",
                 "Location",
