@@ -1264,36 +1264,21 @@ class Mechanical(object):
         >>> files = mechanical.list_files()
         >>> for file in files: print(file)
         """
-        # result = self.run_python_script(
-        #     "import pymechanical_helpers\npymechanical_helpers.GetAllProjectFiles(ExtAPI)"
-        # )
-
-        # files_out = result.splitlines()
-        # if not files_out:  # pragma: no cover
-        #     self.log_warning("No files listed")
-        # return files_out
-        list = []
-        mechdbPath = self.run_python_script("""ExtAPI.DataModel.Project.FilePath""")
-        print("mechdb path if any", mechdbPath)
-        if mechdbPath != "":
-            list.append(mechdbPath)
-        rootDir = self.run_python_script("""ExtAPI.DataModel.Project.ProjectDirectory""")
-        if not os.path.exists(rootDir):
-            print(f"Error: rootDir {rootDir} does not exist")
-        print("-" * 10, "rootDir -- ", rootDir)
-        print("repeating project dir again")
-        rootDir = self.run_python_script("""ExtAPI.DataModel.Project.ProjectDirectory""")
-        if not os.path.exists(rootDir):
-            print(f"Error: rootDir {rootDir} does not exist")
-        print("-" * 10, "rootDir -- ", rootDir)
-        print("Directory listing of tmp:")
-        print(os.listdir(rootDir))
-        for dirPath, dirNames, fileNames in os.walk(rootDir):
-            for fileName in fileNames:
-                list.append(os.path.join(dirPath, fileName))
-        print("-" * 10, "list", list)
+        list = self.run_python_script(
+            """import os
+mechdbPath = ExtAPI.DataModel.Project.FilePath
+list = []
+if mechdbPath != '':
+    list.append(mechdbPath)
+rootDir = ExtAPI.DataModel.Project.ProjectDirectory
+for dirPath, dirNames, fileNames in os.walk(rootDir):
+    for fileName in fileNames:
+        list.append(os.path.join(dirPath, fileName))
+list
+"""
+        )
+        print(list)
         files_out = "\n".join(list).splitlines()
-        print("-" * 10, "list split", files_out)
         if not files_out:  # pragma: no cover
             self.log_warning("No files listed")
         return files_out
