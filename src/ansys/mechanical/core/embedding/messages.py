@@ -36,12 +36,10 @@ class MessageManager:
         from Ansys.Mechanical.Application import Message
         from Ansys.Mechanical.DataModel.Enums import MessageSeverityType
 
-        self.MessageSeverityType = MessageSeverityType
-        self.Message = Message
-
-        # Initialize a local cache for messages
+        self._message_severity = MessageSeverityType
+        self._message = Message
+        self._messages = self._app.ExtAPI.Application.Messages
         self._messages_df = pd.DataFrame()
-        self._update_messages_cache()
 
     def _update_messages_cache(self):
         """Update the local cache of messages."""
@@ -67,6 +65,7 @@ class MessageManager:
 
     def __repr__(self):
         """Provide a DataFrame representation of all messages."""
+        self._update_messages_cache()
         return repr(self._messages_df)
 
     def __str__(self):
@@ -82,16 +81,16 @@ class MessageManager:
 
     def __getitem__(self, index):
         """Allow indexed access to messages."""
-        if self._messages_df.empty:
+        if len(self._messages) == 0:
             raise IndexError("No messages are available.")
-        if index >= len(self._messages_df) or index < 0:
+        if index >= len(self._messages) or index < 0:
             raise IndexError("Message index out of range.")
-        row = self._messages_df.iloc[index]
-        return _Message(row)
+        row = self._messages[index]
+        return Message(row)
 
     def __len__(self):
         """Return the number of messages."""
-        return len(self._messages_df)
+        return self._messages.Count
 
     def add(self, severity: str, text: str):
         """Add a message and update the cache.
@@ -108,20 +107,40 @@ class MessageManager:
         >>> app.messages.add("info", "User clicked the start button.")
         """
         severity_map = {
-            "info": self.MessageSeverityType.Info,
-            "warning": self.MessageSeverityType.Warning,
-            "error": self.MessageSeverityType.Error,
+            "info": self._message_severity.Info,
+            "warning": self._message_severity.Warning,
+            "error": self._message_severity.Error,
         }
 
         if severity.lower() not in severity_map:
             raise ValueError(f"Invalid severity: {severity}")
 
-        _msg = self.Message(text, severity_map[severity.lower()])
-        self._app.ExtAPI.Application.Messages.Add(_msg)
+        _msg = self._message(text, severity_map[severity.lower()])
+        self._messages.Add(_msg)
 
         self._update_messages_cache()
 
+    def remove(self, index: int):
+        """Remove a message by index.
+
+        Parameters
+        ----------
+        index : int
+            Index of the message to remove.
+
+        Examples
+        --------
+        >>> app.messages.remove(0)
+        """
+        if index >= len(self._app.ExtAPI.Application.Messages) or index < 0:
+            raise IndexError("Message index out of range.")
+        _msg = self._messages[index]
+        self._messages.Remove(_msg)
+
+    # TODO: add functionality to filter only errors, warnings, info
+
     def show(self, filter="severity;message"):
+        # TODO : add max number of messages to display
         """Print all messages with full details.
 
         Parameters
@@ -142,63 +161,60 @@ class MessageManager:
         ... severity: info
         ... message: User clicked the start button.
         """
-        self._update_messages_cache()
-
-        if self._messages_df.empty:
+        if self._app.ExtAPI.Application.Messages.Count == 0:
             print("No messages to display.")
             return
 
-        for _, row in self._messages_df.iterrows():
-            msg = _Message(row)
+        for message in self._messages:
+            msg = Message(message)
             msg.show(filter)
 
     def clear(self):
         """Clear all messages."""
-        self._app.ExtAPI.Application.Messages.Clear()
-        self._update_messages_cache()
+        self._messages.Clear()
 
 
-class _Message:
+class Message:
     """Lightweight message object for individual message handling."""
 
-    def __init__(self, row):
+    def __init__(self, message: "Ansys.Mechanical.Application.Message"):
         """Initialize with a row from the DataFrame."""
-        self.row = row
+        self._msg = message
 
     @property
     def message(self):
         """Return the message text."""
-        return self.row["DisplayString"]
+        return self._msg.DisplayString
 
     @property
     def severity(self):
         """Return the message severity."""
-        return self.row["Severity"].lower()
+        return self._msg.Severity
 
     @property
     def time_stamp(self):
         """Return the message timestamp."""
-        return str(self.row["TimeStamp"])
+        return str(self._msg.TimeStamp)
 
     @property
     def source(self):
         """Return the message source."""
-        return self.row["Source"]
+        return self._msg.Source
 
     @property
     def string_id(self):
         """Return the message string ID."""
-        return self.row["StringID"]
+        return self._msg.StringID
 
     @property
     def location(self):
         """Return the message location."""
-        return self.row["Location"]
+        return self._msg.Location
 
     @property
     def related_objects(self):
         """Return the message related objects."""
-        return self.row["RelatedObjects"]
+        return self._msg.RelatedObjects
 
     def show(self, filter="severity;message"):
         """Show the message details.
@@ -244,8 +260,8 @@ class _Message:
 
     def __str__(self):
         """Provide a string representation of the message."""
-        return f"[{self.row['Severity']}] {self.row['DisplayString']}"
+        return f"[{self._msg.Severity}] {self._msg.DisplayString}"
 
     def __repr__(self):
         """Provide a string representation of the message."""
-        return repr(self.row)
+        return f"[{self._msg.Severity}] {self._msg.DisplayString}"

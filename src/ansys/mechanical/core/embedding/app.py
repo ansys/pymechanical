@@ -34,7 +34,6 @@ from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 from ansys.mechanical.core.embedding.imports import global_entry_points, global_variables
-from ansys.mechanical.core.embedding.messages import MessageManager
 from ansys.mechanical.core.embedding.poster import Poster
 from ansys.mechanical.core.embedding.ui import launch_ui
 from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
@@ -443,8 +442,9 @@ This may corrupt the project file.",
     def messages(self):
         """Lazy-load the MessageManager."""
         if self._messages is None:
+            from ansys.mechanical.core.embedding.messages import MessageManager
+
             self._messages = MessageManager(self._app)
-        self._messages._update_messages_cache()
         return self._messages
 
     def _share(self, other) -> None:
