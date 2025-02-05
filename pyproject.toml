@@ -29,7 +29,7 @@ dependencies = [
     "ansys-api-mechanical==0.1.2",
     "ansys-mechanical-env==0.1.9",
     "ansys-mechanical-stubs==0.1.6",
-    "ansys-pythonnet>=3.1.0rc2",
+    "ansys-pythonnet>=3.1.0rc6",
     "ansys-tools-path>=0.3.1",
     "appdirs>=1.4.0",
     "click>=8.1.3", # for CLI interface
@@ -68,7 +68,7 @@ doc = [
     "numpydoc==1.8.0",
     "pandas==2.2.3",
     "panel==1.6.0",
-    "plotly==5.24.1",
+    "plotly==6.0.0",
     "pypandoc==1.15",
     "pytest-sphinx==0.6.3",
     "pythreejs==2.4.2",
@@ -78,13 +78,17 @@ doc = [
     "sphinx-copybutton==0.5.2",
     "sphinx_design==0.6.1",
     "sphinx-gallery==0.18.0",
-    "sphinx-notfound-page==1.0.4",
+    "sphinx-notfound-page==1.1.0",
     "sphinxcontrib-websupport==2.0.0",
     "sphinxemoji==0.3.1",
 ]
 viz = [
     "ansys-tools-visualization-interface>=0.2.6",
     "usd-core==24.11",
+]
+rpc = [
+    "rpyc==6.0.1",
+    "toolz==1.0.0",
 ]
 pim = [
     "ansys-platform-instancemanagement>=1.0.1",
@@ -135,6 +139,7 @@ addopts = """-ra -s --durations=0 --cov=ansys.mechanical --cov-report html:.cov/
 # addopts = """-ra -s -m 'remote_session_launch or remote_session_connect or embedding' --durations=0
 # --cov=ansys.mechanical --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report \
 # term -vv --print --print-relative-time"""
+
 testpaths = [
     "tests",
 ]

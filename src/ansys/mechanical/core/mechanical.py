@@ -460,8 +460,8 @@ class Mechanical(object):
 
         # connect and validate to the channel
         self._multi_connect(timeout=timeout)
-
         self.log_info("Mechanical is ready to accept grpc calls.")
+        self._rpc_type = "grpc"
 
     def __del__(self):  # pragma: no cover
         """Clean up on exit."""

@@ -20,29 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""This is the .NET assembly resolving for embedding Ansys Mechanical.
+"""RPC and Mechanical service implementation."""
+from .client import Client
 
-Note that for some Mechanical Addons - additional resolving may be
-necessary. A resolve handler is shipped with Ansys Mechanical on Windows
-starting in version 23.1 and on Linux starting in version 23.2
-"""
-
-
-def resolve(version):
-    """Resolve function for all versions of Ansys Mechanical."""
-    import clr  # isort: skip
-    import System  # isort: skip
-
-    clr.AddReference("Ansys.Mechanical.Embedding")
-    import Ansys  # isort: skip
-
-    try:
-        assembly_resolver = Ansys.Mechanical.Embedding.AssemblyResolver
-        resolve_handler = assembly_resolver.MechanicalResolveEventHandler
-        System.AppDomain.CurrentDomain.AssemblyResolve += resolve_handler
-    except AttributeError:
-        error_msg = f"""Unable to resolve Mechanical assemblies. Please ensure the following:
-    1. Mechanical is installed.
-    2. A folder with the name "Ansys" does not exist in the same directory as the script being run.
-    """
-        raise AttributeError(error_msg)
+# todo - provide an implementation of Server (RemoteMechancial) that installs the below
+# from .default_server import RemoteMechanical
+#        and remove them from this import statement
+# todo - combine Server and MechanicalService
+from .server import (
+    DefaultServiceMethods,
+    MechanicalDefaultServer,
+    MechanicalEmbeddedServer,
+    MechanicalService,
+)
+from .utils import get_remote_methods, remote_method

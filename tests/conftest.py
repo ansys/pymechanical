@@ -29,6 +29,7 @@ import subprocess
 import sys
 
 import ansys.tools.path as atp
+import grpc
 import pytest
 
 import ansys.mechanical.core as pymechanical
@@ -199,7 +200,7 @@ def run_subprocess(pytestconfig):
     return func
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def rootdir():
     """Return the root directory of the local clone of the PyMechanical GitHub repository."""
     base = pathlib.Path(__file__).parent
@@ -288,27 +289,68 @@ def connect_to_mechanical_instance(port=None, clear_on_connect=False):
     return mechanical
 
 
-@pytest.fixture(scope="session")
-def mechanical():
-    print("current working directory: ", os.getcwd())
+def launch_rpc_embedded_server(port: int, version: int, server_script: str):
+    """Start the server as a subprocess using `port`."""
+    global embedded_server
+    env_copy = os.environ.copy()
+    embedded_server = subprocess.Popen(
+        [sys.executable, server_script, str(port), str(version)], env=env_copy
+    )
 
-    if not pymechanical.mechanical.get_start_instance():
-        mechanical = connect_to_mechanical_instance()
+
+def connect_rpc_embedded_server(port: int):
+    from ansys.mechanical.core.embedding.rpc.client import Client
+
+    client = Client("localhost", port)
+    return client
+
+
+def stop_embeddedd_server():
+    # TODO: not use a terminate.
+    global embedded_server
+    if embedded_server is not None:
+        embedded_server.terminate()
+        embedded_server.wait()
+        embedded_server = None
+
+
+@pytest.fixture(scope="session")
+def mechanical(pytestconfig, rootdir):
+    print("current working directory: ", os.getcwd())
+    is_embedded_server = pytestconfig.getoption("remote_server_type") == "rpyc"
+    if is_embedded_server:
+        from ansys.mechanical.core.embedding.rpc import MechanicalEmbeddedServer
+
+        _version = int(pytestconfig.getoption("ansys_version"))
+        server_py = os.path.join(rootdir, "tests", "scripts", "rpc_server_embedded.py")
+        _port = MechanicalEmbeddedServer.get_free_port()
+        launch_rpc_embedded_server(port=_port, version=_version, server_script=server_py)
+        mechanical = connect_rpc_embedded_server(port=_port)
+        setattr(mechanical, "_rpc_error_type", Exception)
+        setattr(mechanical, "_rpc_type", "rpyc")
     else:
-        mechanical = launch_mechanical_instance()
+        if not pymechanical.mechanical.get_start_instance():
+            mechanical = connect_to_mechanical_instance()
+        else:
+            mechanical = launch_mechanical_instance()
+        setattr(mechanical, "_rpc_error_type", grpc.RpcError)
 
     print(mechanical)
     yield mechanical
+    if is_embedded_server:
+        print("stopping embedded server")
+        mechanical.exit()
+        stop_embeddedd_server()
+    else:
+        assert "Ansys Mechanical" in str(mechanical)
 
-    assert "Ansys Mechanical" in str(mechanical)
-
-    if pymechanical.mechanical.get_start_instance():
-        print(f"get_start_instance() returned True. exiting mechanical.")
-        mechanical.exit(force=True)
-        assert mechanical.exited
-        assert "Mechanical exited" in str(mechanical)
-        with pytest.raises(MechanicalExitedError):
-            mechanical.run_python_script("3+4")
+        if pymechanical.mechanical.get_start_instance():
+            print(f"get_start_instance() returned True. exiting mechanical.")
+            mechanical.exit(force=True)
+            assert mechanical.exited
+            assert "Mechanical exited" in str(mechanical)
+            with pytest.raises(MechanicalExitedError):
+                mechanical.run_python_script("3+4")
 
 
 # used only once
@@ -385,6 +427,12 @@ def pytest_addoption(parser):
 
     # parser.addoption("--debugging", action="store_true")
     parser.addoption("--addin-configuration", default="Mechanical")
+    parser.addoption(
+        "--remote-server-type",
+        default="grpc",
+        help="Specify RPC protocol",
+        choices=["grpc", "rpyc"],
+    )
 
 
 def pytest_collection_modifyitems(config, items):

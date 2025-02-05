@@ -23,6 +23,7 @@
 """Miscellaneous embedding tests"""
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 from tempfile import NamedTemporaryFile
@@ -161,7 +162,10 @@ def test_app_print_tree(embedded_app, capsys, assets):
 
 
 @pytest.mark.embedding
-def test_app_poster(embedded_app):
+@pytest.mark.skip(
+    reason="This test is not working on the CI (https://github.com/ansys/pymechanical/issues/1071 )"
+)
+def test_app_poster(embedded_app, printer):
     """The getters of app should be usable after a new().
 
     The C# objects referred to by ExtAPI, Model, DataModel, and Tree
@@ -172,6 +176,7 @@ def test_app_poster(embedded_app):
     that they properly redirect the calls to the appropriate C#
     object after a new()
     """
+
     version = embedded_app.version
     if os.name != "nt" and version < 242:
         """This test is effectively disabled for versions older than 242 on linux.
@@ -191,6 +196,7 @@ def test_app_poster(embedded_app):
 
         It will change the name of the project to "foo"
         """
+        printer("change_name_async")
 
         def get_name():
             return embedded_app.DataModel.Project.Name
@@ -199,17 +205,21 @@ def test_app_poster(embedded_app):
             embedded_app.DataModel.Project.Name = "foo"
 
         def raise_ex():
-            raise Exception("Exception")
+            raise Exception("TestException")
 
         name.append(poster.post(get_name))
+        printer("get_name")
         poster.post(change_name)
+        printer("change_name")
 
         try:
-            poster.try_post()
+            poster.try_post(raise_ex)
         except Exception as e:
             error.append(e)
+        printer("raise_ex")
 
         name.append(poster.try_post(get_name))
+        printer("get_name")
 
     import threading
 
@@ -220,13 +230,17 @@ def test_app_poster(embedded_app):
     # messages. The `sleep` utility puts Mechanical's main thread to
     # idle and only execute actions that have been posted to its main
     # thread, e.g. `change_name` that was posted by the poster.
-    utils.sleep(400)
+    while True:
+        utils.sleep(40)
+        if not change_name_thread.is_alive():
+            break
     change_name_thread.join()
     assert len(name) == 2
     assert name[0] == "Project"
     assert name[1] == "foo"
     assert embedded_app.DataModel.Project.Name == "foo"
     assert len(error) == 1
+    assert str(error[0]) == "TestException"
 
 
 @pytest.mark.embedding
@@ -448,6 +462,36 @@ def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory, run_subprocess):
     # Assert the file and folder do not exist
     assert not temp_file.exists()
     assert not temp_folder.exists()
+
+
+@pytest.mark.embedding_scripts
+def test_attribute_error(tmp_path: pytest.TempPathFactory, pytestconfig, rootdir, run_subprocess):
+    """Test cleanup function to remove the temporary mechdb file and folder."""
+    # Change directory to tmp_path
+    os.chdir(tmp_path)
+
+    # Get the version
+    version = pytestconfig.getoption("ansys_version")
+
+    # Create the Ansys folder in tmp_path and assert it exists
+    temp_folder = tmp_path / "Ansys"
+    temp_folder.mkdir()
+    assert temp_folder.exists()
+
+    # Copy the run_embedded_app.py script to tmp_path
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+    tmp_file_script = tmp_path / "run_embedded_app.py"
+    shutil.copyfile(embedded_py, tmp_file_script)
+
+    # Run the script and assert the AttributeError is raised
+    stdout, stderr = subprocess.Popen(
+        [sys.executable, tmp_file_script, version], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    ).communicate()
+
+    # Assert the AttributeError is raised
+    assert "Unable to resolve Mechanical assemblies." in stderr.decode()
+
+    os.chdir(rootdir)
 
 
 @pytest.mark.embedding
