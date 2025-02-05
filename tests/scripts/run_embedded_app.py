@@ -24,6 +24,7 @@
 import argparse
 
 import ansys.mechanical.core as pymechanical
+from ansys.mechanical.core.embedding.app import is_initialized
 
 
 def launch_app(args):
@@ -34,6 +35,10 @@ def launch_app(args):
         from ansys.mechanical.core.embedding.logger import Configuration
 
         Configuration.configure(level=logging.DEBUG, to_stdout=True, base_directory=None)
+
+    if args.test_not_initialized:
+        init_msg = "The app is initialized" if is_initialized() else "The app is not initialized"
+        print(init_msg)
 
     if args.update_globals:
         app = pymechanical.App(
@@ -72,6 +77,9 @@ if __name__ == "__main__":
     parser.add_argument("--action", type=str, help="Action to perform")
     parser.add_argument("--update_globals", type=str, help="Global variables")
     parser.add_argument("--debug", action="store_true")  # 'store_true' implies default=False
+    parser.add_argument(
+        "--test_not_initialized", action="store_true"
+    )  # 'store_true' implies default=False
 
     # Get and set args from subprocess
     args = parser.parse_args()

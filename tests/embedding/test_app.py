@@ -31,6 +31,7 @@ import time
 
 import pytest
 
+from ansys.mechanical.core.embedding.app import is_initialized
 from ansys.mechanical.core.embedding.cleanup_gui import cleanup_gui
 from ansys.mechanical.core.embedding.ui import _launch_ui
 import ansys.mechanical.core.embedding.utils as utils
@@ -532,3 +533,29 @@ def test_app_lock_file_open(embedded_app, tmp_path: pytest.TempPathFactory):
     # Assert a warning is emitted if the lock file is going to be removed
     with pytest.warns(UserWarning):
         embedded_app.open(project_file, remove_lock=True)
+
+
+@pytest.mark.embedding
+def test_app_initialized(embedded_app):
+    """Test the app is initialized."""
+    assert is_initialized()
+
+
+@pytest.mark.embedding
+def test_app_not_initialized(run_subprocess, pytestconfig, rootdir):
+    """Test the app is not initialized."""
+    version = pytestconfig.getoption("ansys_version")
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+
+    process, stdout, stderr = run_subprocess(
+        [
+            sys.executable,
+            embedded_py,
+            "--version",
+            version,
+            "--test_not_initialized",
+        ]
+    )
+    stdout = stdout.decode()
+
+    assert "The app is not initialized" in stdout

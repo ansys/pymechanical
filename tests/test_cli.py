@@ -25,9 +25,11 @@ from pathlib import Path
 import subprocess
 import sys
 
+import ansys.tools.path as atp
+from click.testing import CliRunner
 import pytest
 
-from ansys.mechanical.core.ide_config import _cli_impl as ideconfig_cli_impl
+from ansys.mechanical.core.ide_config import cli as ideconfig_cli
 from ansys.mechanical.core.ide_config import get_stubs_location, get_stubs_versions
 from ansys.mechanical.core.run import _cli_impl
 
@@ -285,42 +287,19 @@ def get_settings_location() -> str:
 
 
 @pytest.mark.cli
-def test_ideconfig_cli_ide_exception(capfd, pytestconfig):
+def test_ideconfig_cli_ide_exception(pytestconfig):
     """Test IDE configuration raises an exception for anything but vscode."""
     revision = int(pytestconfig.getoption("ansys_version"))
-    with pytest.raises(Exception):
-        ideconfig_cli_impl(
-            ide="pycharm",
-            target="user",
-            revision=revision,
-        )
+    unsupported_ide = "pycharm"
 
+    # Set up the runner for click
+    runner = CliRunner()
+    result = runner.invoke(
+        ideconfig_cli, ["--ide", unsupported_ide, "--target", "user", "--revision", str(revision)]
+    )
 
-def test_ideconfig_cli_version_exception(pytestconfig):
-    """Test the IDE configuration raises an exception when the version is out of bounds."""
-    revision = int(pytestconfig.getoption("ansys_version"))
-    stubs_location = get_stubs_location()
-    stubs_revns = get_stubs_versions(stubs_location)
-
-    # If revision number is greater than the maximum stubs revision number
-    # assert a warning is raised
-    if revision > max(stubs_revns):
-        with pytest.raises(Warning):
-            ideconfig_cli_impl(
-                ide="vscode",
-                target="user",
-                revision=revision,
-            )
-
-    # If revision number is less than the minimum stubs revision number
-    # assert an exception is raised
-    if revision < min(stubs_revns):
-        with pytest.raises(Exception):
-            ideconfig_cli_impl(
-                ide="vscode",
-                target="user",
-                revision=revision,
-            )
+    assert result.exception is not None
+    assert f"{unsupported_ide} is not supported at the moment" in result.exception.args[0]
 
 
 @pytest.mark.cli
@@ -330,51 +309,41 @@ def test_ideconfig_cli_user_settings(capfd, pytestconfig):
     # Get the revision number
     revision = int(pytestconfig.getoption("ansys_version"))
     stubs_location = get_stubs_location()
-
-    # Run the IDE configuration command for the user settings type
-    ideconfig_cli_impl(
-        ide="vscode",
-        target="user",
-        revision=revision,
-    )
-
-    # Get output of the IDE configuration command
-    out, err = capfd.readouterr()
-    out = out.replace("\\\\", "\\")
-
     # Get the path to the settings.json file based on operating system env vars
     settings_json = get_settings_location()
 
-    assert f"Update {settings_json} with the following information" in out
-    assert str(stubs_location) in out
+    runner = CliRunner()
+    result = runner.invoke(
+        ideconfig_cli, ["--ide", "vscode", "--target", "user", "--revision", str(revision)]
+    )
+    stdout = result.output.replace("\\\\", "\\")
+
+    assert result.exit_code == 0
+    assert f"Update {settings_json} with the following information" in stdout
+    assert str(stubs_location) in stdout
 
 
 @pytest.mark.cli
 @pytest.mark.version_range(MIN_STUBS_REVN, MAX_STUBS_REVN)
-def test_ideconfig_cli_workspace_settings(capfd, pytestconfig):
+def test_ideconfig_cli_workspace_settings(pytestconfig):
     """Test the IDE configuration prints correct information for workplace settings."""
     # Set the revision number
     revision = int(pytestconfig.getoption("ansys_version"))
     stubs_location = get_stubs_location()
-
-    # Run the IDE configuration command
-    ideconfig_cli_impl(
-        ide="vscode",
-        target="workspace",
-        revision=revision,
-    )
-
-    # Get output of the IDE configuration command
-    out, err = capfd.readouterr()
-    out = out.replace("\\\\", "\\")
-
     # Get the path to the settings.json file based on the current directory & .vscode folder
     settings_json = Path.cwd() / ".vscode" / "settings.json"
 
+    runner = CliRunner()
+    result = runner.invoke(
+        ideconfig_cli, ["--ide", "vscode", "--target", "workspace", "--revision", str(revision)]
+    )
+    stdout = result.output.replace("\\\\", "\\")
+
     # Assert the correct settings.json file and stubs location is in the output
-    assert f"Update {settings_json} with the following information" in out
-    assert str(stubs_location) in out
-    assert "Please ensure the .vscode folder is in the root of your project or repository" in out
+    assert result.exit_code == 0
+    assert f"Update {settings_json} with the following information" in stdout
+    assert str(stubs_location) in stdout
+    assert "Please ensure the .vscode folder is in the root of your project or repository" in stdout
 
 
 @pytest.mark.cli
@@ -453,37 +422,66 @@ def test_ideconfig_cli_default(test_env, run_subprocess, rootdir, pytestconfig):
     # Decode stdout and fix extra backslashes in paths
     stdout = subprocess_output_ideconfig[1].decode().replace("\\\\", "\\")
 
-    assert revision in stdout
+    # Get the version from the Mechanical executable
+    exe = atp.get_mechanical_path(allow_input=False, version=revision)
+    if exe:
+        exe_version = atp.version_from_path("mechanical", exe)
+        assert str(exe_version) in stdout
+
     assert str(settings_json_fragment) in stdout
     assert venv_loc in stdout
 
 
 @pytest.mark.cli
-def test_ideconfig_revision_max():
+def test_ideconfig_revision_max_min():
     """Test the IDE configuration location when no arguments are supplied."""
     # Set the revision number to be greater than the maximum stubs revision number
-    revision = MAX_STUBS_REVN + 10
+    stubs_location = get_stubs_location()
+    # Get the path to the settings.json file based on operating system env vars
+    settings_json = get_settings_location()
 
-    # Assert a warning is raised
+    # Set the revision number to be greater than the maximum stubs revision number
+    gt_max_revision = MAX_STUBS_REVN + 10
+    # Set the revision number to be less than the minimum stubs revision number
+    lt_min_revision = MIN_STUBS_REVN - 10
+
+    # Set up the runner for click
+    runner = CliRunner()
+
+    # Assert a warning is raised when the revision is greater than the maximum version in the stubs
     with pytest.warns(UserWarning):
-        ideconfig_cli_impl(
-            ide="vscode",
-            target="user",
-            revision=revision,
+        result = runner.invoke(
+            ideconfig_cli,
+            ["--ide", "vscode", "--target", "user", "--revision", str(gt_max_revision)],
         )
+        stdout = result.output.replace("\\\\", "\\")
+
+        assert result.exit_code == 0
+        assert f"Update {settings_json} with the following information" in stdout
+        assert str(stubs_location) in stdout
+        assert str(MAX_STUBS_REVN) in stdout
+
+    # Assert an exception is raised when the revision is less than the minimum version in the stubs
+    result = runner.invoke(
+        ideconfig_cli, ["--ide", "vscode", "--target", "user", "--revision", str(lt_min_revision)]
+    )
+    assert result.exception is not None
+    assert f"PyMechanical Stubs are not available for {lt_min_revision}" in result.exception.args[0]
 
 
-# @pytest.mark.cli
-# def test_ideconfig_no_revision(capfd):
-#     """Test the IDE configuration when no revision is supplied."""
-# # Run the cli() function in the IDE configuration module -> have to import CLI
-# ideconfig_cli_impl(
-#     ide="vscode",
-#     target="user",
-# )
+@pytest.mark.cli
+def test_ideconfig_no_revision():
+    """Test the IDE configuration when no revision is supplied."""
+    # Set the revision number to be greater than the maximum stubs revision number
+    stubs_location = get_stubs_location()
+    # Get the path to the settings.json file based on operating system env vars
+    settings_json = get_settings_location()
 
-# # Get output of the IDE configuration command
-# out, err = capfd.readouterr()
-# out = out.replace("\\\\", "\\")
+    # Set the runner for click
+    runner = CliRunner()
+    result = runner.invoke(ideconfig_cli, ["--ide", "vscode", "--target", "user"])
+    stdout = result.output.replace("\\\\", "\\")
 
-# assert "false" in out
+    assert result.exit_code == 0
+    assert f"Update {settings_json} with the following information" in stdout
+    assert str(stubs_location) in stdout
