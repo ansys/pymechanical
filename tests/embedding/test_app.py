@@ -485,7 +485,9 @@ def test_attribute_error(tmp_path: pytest.TempPathFactory, pytestconfig, rootdir
 
     # Run the script and assert the AttributeError is raised
     stdout, stderr = subprocess.Popen(
-        [sys.executable, tmp_file_script, version], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        [sys.executable, tmp_file_script, f"--version {version}"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
     ).communicate()
 
     # Assert the AttributeError is raised
