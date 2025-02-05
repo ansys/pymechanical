@@ -43,14 +43,12 @@ class MessageManager:
         self._app = app
 
         # Import necessary classes
-        from Ansys.Mechanical.Application import Message
         from Ansys.Mechanical.DataModel.Enums import MessageSeverityType
 
         self._message_severity = MessageSeverityType
-        self._message = Message
         self._messages = self._app.ExtAPI.Application.Messages
 
-    def _create_messages_data(self):  # noqa: F401
+    def _create_messages_data(self):
         """Update the local cache of messages."""
         data = {
             "Severity": [],
@@ -72,7 +70,7 @@ class MessageManager:
 
         return data
 
-    def __repr__(self):  # pragma: no cover
+    def __repr__(self):
         """Provide a DataFrame representation of all messages."""
         if not HAS_PANDAS:
             return "Pandas is not available. Please pip install pandas to display messages."

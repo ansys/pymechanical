@@ -27,7 +27,7 @@ import os
 import pytest
 
 
-@pytest.mark.embedding__
+@pytest.mark.embedding
 def test_message_manager(embedded_app, capsys):
     """Test message manager"""
     assert len(embedded_app.messages) == 0
@@ -45,7 +45,7 @@ def test_message_manager(embedded_app, capsys):
     assert "Info message" in printed_output
 
 
-@pytest.mark.embedding__
+@pytest.mark.embedding
 def test_message_add_and_clear(embedded_app):
     """Test adding and clearing messages"""
     embedded_app.messages.add("info", "Info message")
@@ -68,7 +68,7 @@ def test_message_add_and_clear(embedded_app):
         embedded_app.messages.add("trace", "Trace message")
 
 
-@pytest.mark.embedding__
+@pytest.mark.embedding
 def test_message_show(embedded_app, capsys):
     """Test showing messages"""
     print(embedded_app.messages.show())
@@ -94,7 +94,7 @@ def test_message_show(embedded_app, capsys):
     assert "Specified attribute not found" in printed_output
 
 
-@pytest.mark.embedding__
+@pytest.mark.embedding
 def test_message_get(embedded_app, assets, capsys):
     """Test getting a message"""
     with pytest.raises(IndexError):
