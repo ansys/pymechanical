@@ -465,7 +465,7 @@ def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory, run_subprocess):
 
 
 @pytest.mark.embedding_scripts
-def test_attribute_error(tmp_path: pytest.TempPathFactory, pytestconfig, rootdir, run_subprocess):
+def test_attribute_error(tmp_path: pytest.TempPathFactory, pytestconfig, rootdir):
     """Test cleanup function to remove the temporary mechdb file and folder."""
     # Change directory to tmp_path
     os.chdir(tmp_path)
@@ -485,7 +485,7 @@ def test_attribute_error(tmp_path: pytest.TempPathFactory, pytestconfig, rootdir
 
     # Run the script and assert the AttributeError is raised
     stdout, stderr = subprocess.Popen(
-        [sys.executable, tmp_file_script, f"--version {version}"],
+        [sys.executable, tmp_file_script, "--version", version],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     ).communicate()
