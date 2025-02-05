@@ -30,6 +30,7 @@ import pytest
 @pytest.mark.embedding
 def test_message_manager(embedded_app, capsys):
     """Test message manager"""
+    embedded_app.new()
     assert len(embedded_app.messages) == 0
 
     print(embedded_app.messages)
@@ -48,6 +49,7 @@ def test_message_manager(embedded_app, capsys):
 @pytest.mark.embedding
 def test_message_add_and_clear(embedded_app):
     """Test adding and clearing messages"""
+    embedded_app.new()
     embedded_app.messages.add("info", "Info message")
     assert len(embedded_app.messages) == 1
     embedded_app.messages.add("warning", "Warning message")
@@ -71,6 +73,7 @@ def test_message_add_and_clear(embedded_app):
 @pytest.mark.embedding
 def test_message_show(embedded_app, capsys):
     """Test showing messages"""
+    embedded_app.new()
     print(embedded_app.messages.show())
     captured = capsys.readouterr()
     printed_output = captured.out.strip()
@@ -97,6 +100,7 @@ def test_message_show(embedded_app, capsys):
 @pytest.mark.embedding
 def test_message_get(embedded_app, assets, capsys):
     """Test getting a message"""
+    embedded_app.new()
     with pytest.raises(IndexError):
         embedded_app.messages[0]
 
