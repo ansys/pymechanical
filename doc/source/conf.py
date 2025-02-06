@@ -215,7 +215,7 @@ html_theme_options = {
     "whatsnew": {
         "whatsnew_file_name": "../changelog.d/whatsnew.yml",
         "changelog_file_name": "changelog.rst",
-        "sidebar_pages": ["changelog"],
+        "sidebar_pages": ["changelog", "index"],
     },
     "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
     "navigation_depth": 10,
