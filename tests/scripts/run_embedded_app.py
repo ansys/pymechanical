@@ -50,14 +50,14 @@ def launch_app(args):
     return app
 
 
-def set_showtriad(args, value):  # set_showtriad(version, appdata_option, value):
+def set_showtriad(args, value):
     """Launch embedded instance of app & set ShowTriad to False."""
     app = launch_app(args)
     ExtAPI.Graphics.ViewOptions.ShowTriad = value
     app.close()
 
 
-def print_showtriad(args):  # print_showtriad(version, appdata_option):
+def print_showtriad(args):
     """Return ShowTriad value."""
     app = launch_app(args)
     print("ShowTriad value is " + str(app.ExtAPI.Graphics.ViewOptions.ShowTriad))
