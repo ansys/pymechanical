@@ -21,7 +21,6 @@
 # SOFTWARE.
 
 """Embedding tests for global variables associated with Mechanical"""
-import os
 import subprocess
 import sys
 
@@ -83,19 +82,3 @@ def test_global_importer_exception(rootdir):
 
     # Assert the exception is raised
     assert "Globals cannot be imported until the embedded app is initialized." in stderr.decode()
-
-
-@pytest.mark.embedding_scripts
-def test_globals_arg(pytestconfig, run_subprocess, rootdir):
-    """Test the globals argument in app()."""
-    version = pytestconfig.getoption("ansys_version")
-
-    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
-
-    stdout, stderr = subprocess.Popen(
-        [sys.executable, embedded_py, "--version", version, "--update_globals", "True"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    ).communicate()
-
-    # Figure out assert for globals stdout

@@ -40,17 +40,12 @@ def launch_app(args):
         init_msg = "The app is initialized" if is_initialized() else "The app is not initialized"
         print(init_msg)
 
-    if args.update_globals:
-        app = pymechanical.App(
-            version=int(args.version),
-            private_appdata=args.private_appdata,
-            copy_profile=True,
-            globals=globals(),
-        )
-    else:
-        app = pymechanical.App(
-            version=int(args.version), private_appdata=args.private_appdata, copy_profile=True
-        )
+    app = pymechanical.App(
+        version=int(args.version),
+        private_appdata=args.private_appdata,
+        copy_profile=True,
+        globals=globals(),
+    )
 
     return app
 
@@ -58,7 +53,7 @@ def launch_app(args):
 def set_showtriad(args, value):  # set_showtriad(version, appdata_option, value):
     """Launch embedded instance of app & set ShowTriad to False."""
     app = launch_app(args)
-    app.ExtAPI.Graphics.ViewOptions.ShowTriad = value
+    ExtAPI.Graphics.ViewOptions.ShowTriad = value
     app.close()
 
 
@@ -75,7 +70,6 @@ if __name__ == "__main__":
     parser.add_argument("--version", type=str, help="Mechanical version")
     parser.add_argument("--private_appdata", type=str, help="Private appdata")
     parser.add_argument("--action", type=str, help="Action to perform")
-    parser.add_argument("--update_globals", type=str, help="Global variables")
     parser.add_argument("--debug", action="store_true")  # 'store_true' implies default=False
     parser.add_argument(
         "--test_not_initialized", action="store_true"
@@ -86,7 +80,6 @@ if __name__ == "__main__":
     action = args.action
 
     args.private_appdata = args.private_appdata == "True"
-    args.update_globals = args.update_globals == "True"
 
     if action == "Set":
         set_showtriad(args, False)
