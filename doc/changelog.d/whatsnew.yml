@@ -85,7 +85,7 @@ fragments:
   version: 0.11.1
   content: |
     The `app.print_tree()` function prints the hierarchical tree representation of the
-    Mechanical project structure and shows whether an object is suppressed or not.
+    Mechanical project structure and object state.
 
     Usage:
     .. code:: python
