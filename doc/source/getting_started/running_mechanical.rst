@@ -83,7 +83,7 @@ usage, type the following command:
                                     with -p
         --features TEXT            Beta feature flags to set, as a semicolon
                                     delimited list. Options: ['MultistageHarmonic',
-                                    'ThermalShells']
+                                    'ThermalShells', 'CPython']
         --exit                     Exit the application after running an input
                                     script. You can only use this command with
                                     --input-script argument (-i). The command

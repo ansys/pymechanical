@@ -36,6 +36,13 @@ def resolve(version):
     clr.AddReference("Ansys.Mechanical.Embedding")
     import Ansys  # isort: skip
 
-    assembly_resolver = Ansys.Mechanical.Embedding.AssemblyResolver
-    resolve_handler = assembly_resolver.MechanicalResolveEventHandler
-    System.AppDomain.CurrentDomain.AssemblyResolve += resolve_handler
+    try:
+        assembly_resolver = Ansys.Mechanical.Embedding.AssemblyResolver
+        resolve_handler = assembly_resolver.MechanicalResolveEventHandler
+        System.AppDomain.CurrentDomain.AssemblyResolve += resolve_handler
+    except AttributeError:
+        error_msg = f"""Unable to resolve Mechanical assemblies. Please ensure the following:
+    1. Mechanical is installed.
+    2. A folder with the name "Ansys" does not exist in the same directory as the script being run.
+    """
+        raise AttributeError(error_msg)

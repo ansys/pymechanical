@@ -31,6 +31,7 @@ class FeatureFlags:
 
     ThermalShells = "Mechanical.ThermalShells"
     MultistageHarmonic = "Mechanical.MultistageHarmonic"
+    CPython = "Mechanical.CPython.Capability"
 
 
 def get_feature_flag_names() -> typing.List[str]:
