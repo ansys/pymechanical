@@ -315,9 +315,7 @@ def mechanical(pytestconfig, rootdir):
         server_py = os.path.join(rootdir, "tests", "scripts", "rpc_server_embedded.py")
         _port = MechanicalEmbeddedServer.get_free_port()
         launch_rpc_embedded_server(port=_port, version=_version, server_script=server_py)
-        print("connecting from fixture")
         mechanical = connect_rpc_embedded_server(port=_port)
-        print("connected from fixture")
         setattr(mechanical, "_rpc_error_type", Exception)
         setattr(mechanical, "_rpc_type", "rpyc")
     else:
