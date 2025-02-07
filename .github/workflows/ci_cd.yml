@@ -715,11 +715,10 @@ jobs:
 
       - name: Install coverage
         run: |
-          rm -rf env
+          rm -rf ./env
           python -m pip install -U pip
-          pip install uv
-          uv pip install coverage
-          uv pip install -e .
+          pip install coverage
+          pip install -e .
 
       - name: Create common coverage directory
         run: mkdir cov-dir
