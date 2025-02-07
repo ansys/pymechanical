@@ -9,53 +9,6 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
-`0.11.12 <https://github.com/ansys/pymechanical/releases/tag/v0.11.12>`_ - 2025-02-07
-=====================================================================================
-
-Added
-^^^^^
-
-- Add CPython feature flag for `ansys-mechanical`  cli `#1049 <https://github.com/ansys/pymechanical/pull/1049>`_
-- Rpyc integration `#1055 <https://github.com/ansys/pymechanical/pull/1055>`_
-- Add "what's new" sections to changelog `#1057 <https://github.com/ansys/pymechanical/pull/1057>`_
-- Create option for PyPIM to be installed separately `#1060 <https://github.com/ansys/pymechanical/pull/1060>`_
-
-
-Fixed
-^^^^^
-
-- Add explicit interface support `#1058 <https://github.com/ansys/pymechanical/pull/1058>`_
-- Disable app poster test `#1072 <https://github.com/ansys/pymechanical/pull/1072>`_
-
-
-Documentation
-^^^^^^^^^^^^^
-
-- Clarify support guidelines `#1061 <https://github.com/ansys/pymechanical/pull/1061>`_
-
-
-Maintenance
-^^^^^^^^^^^
-
-- update CHANGELOG for v0.11.12 `#1050 <https://github.com/ansys/pymechanical/pull/1050>`_
-- Bump the doc group with 4 updates `#1054 <https://github.com/ansys/pymechanical/pull/1054>`_
-- pre-commit automatic update `#1056 <https://github.com/ansys/pymechanical/pull/1056>`_, `#1067 <https://github.com/ansys/pymechanical/pull/1067>`_, `#1081 <https://github.com/ansys/pymechanical/pull/1081>`_
-- Raise error if Ansys has no attribute Mechanical `#1062 <https://github.com/ansys/pymechanical/pull/1062>`_
-- Bump grpcio from 1.69.0 to 1.70.0 in the core group `#1063 <https://github.com/ansys/pymechanical/pull/1063>`_
-- Bump panel from 1.5.5 to 1.6.0 in the doc group `#1064 <https://github.com/ansys/pymechanical/pull/1064>`_
-- Upgrade `ansys-pythonnet` version `#1066 <https://github.com/ansys/pymechanical/pull/1066>`_
-- Add gitattributes and renormalize files `#1069 <https://github.com/ansys/pymechanical/pull/1069>`_
-- Bump sphinx-notfound-page from 1.0.4 to 1.1.0 in the doc group `#1079 <https://github.com/ansys/pymechanical/pull/1079>`_
-- Bump plotly from 5.24.1 to 6.0.0 `#1080 <https://github.com/ansys/pymechanical/pull/1080>`_
-- Upgrade `ansys-sphinx-theme` `#1082 <https://github.com/ansys/pymechanical/pull/1082>`_
-- update clr loader version `#1083 <https://github.com/ansys/pymechanical/pull/1083>`_
-
-
-Test
-^^^^
-
-- update poster test `#1065 <https://github.com/ansys/pymechanical/pull/1065>`_
-
 `0.11.12 <https://github.com/ansys/pymechanical/releases/tag/v0.11.12>`_ - 2025-01-16
 =====================================================================================
 
