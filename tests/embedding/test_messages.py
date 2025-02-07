@@ -30,7 +30,9 @@ import pytest
 @pytest.mark.embedding
 def test_message_manager(embedded_app, capsys):
     """Test message manager"""
-    embedded_app.new()
+    # if license checkout takes time then there is a warning message
+    # get added to app. So, clear the messages before starting the test
+    embedded_app.messages.clear()
     assert len(embedded_app.messages) == 0
 
     print(embedded_app.messages)
@@ -49,7 +51,9 @@ def test_message_manager(embedded_app, capsys):
 @pytest.mark.embedding
 def test_message_add_and_clear(embedded_app):
     """Test adding and clearing messages"""
-    embedded_app.new()
+    embedded_app.messages.clear()
+    assert len(embedded_app.messages) == 0
+
     embedded_app.messages.add("info", "Info message")
     assert len(embedded_app.messages) == 1
     embedded_app.messages.add("warning", "Warning message")
@@ -63,9 +67,6 @@ def test_message_add_and_clear(embedded_app):
     with pytest.raises(IndexError):
         embedded_app.messages.remove(10)
 
-    embedded_app.messages.clear()
-    assert len(embedded_app.messages) == 0
-
     with pytest.raises(ValueError):
         embedded_app.messages.add("trace", "Trace message")
 
@@ -73,7 +74,7 @@ def test_message_add_and_clear(embedded_app):
 @pytest.mark.embedding
 def test_message_show(embedded_app, capsys):
     """Test showing messages"""
-    embedded_app.new()
+    embedded_app.messages.clear()
     print(embedded_app.messages.show())
     captured = capsys.readouterr()
     printed_output = captured.out.strip()
@@ -100,7 +101,7 @@ def test_message_show(embedded_app, capsys):
 @pytest.mark.embedding
 def test_message_get(embedded_app, assets, capsys):
     """Test getting a message"""
-    embedded_app.new()
+    embedded_app.messages.clear()
     with pytest.raises(IndexError):
         embedded_app.messages[0]
 
