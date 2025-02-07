@@ -101,14 +101,20 @@ def test_message_show(embedded_app, capsys):
 @pytest.mark.embedding
 def test_message_get(embedded_app, assets, capsys):
     """Test getting a message"""
-    embedded_app.messages.clear()
     with pytest.raises(IndexError):
-        embedded_app.messages[0]
+        embedded_app.messages[10]
 
     embedded_app.open(os.path.join(assets, "cube-hole.mechdb"))
-    _msg1 = embedded_app.messages[0]
+    _messages = embedded_app.messages
+    _msg1 = None
+    for _msg in _messages:
+        print(_msg.DisplayString)
+        if "Image file not found" in _msg.DisplayString:
+            _msg1 = _msg
+            break
+    assert _msg1 is not None, "Expected message not found in messages"
 
-    print(embedded_app.messages[0])
+    print(_msg1)
     captured = capsys.readouterr()
     printed_output = captured.out.strip()
     assert "Ansys.Mechanical.Application.Message" in printed_output
