@@ -56,7 +56,6 @@ class MechanicalService(rpyc.Service):
 
     def _install_class(self, impl):
         """Install methods from the given implemented class."""
-        print("Install class")
         if impl is None:
             return
         print("Installing methods from class")
@@ -66,15 +65,6 @@ class MechanicalService(rpyc.Service):
                 self._install_method(method)
             elif methodtype == MethodType.PROP:
                 self._install_property(method, methodname)
-
-    def on_connect(self, conn):
-        """Handle client connection."""
-        print("Client connected")
-        print(self._backgroundapp.app)
-
-    def on_disconnect(self, conn):
-        """Handle client disconnection."""
-        print("Client disconnected")
 
     def _curry_property(self, prop, propname, get: bool):
         """Curry the given property."""
