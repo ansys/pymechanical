@@ -338,7 +338,7 @@ def mechanical(pytestconfig, rootdir):
             if time.time() - start_time > 10:
                 try:
                     embedded_server.terminate()
-                    embedded_server.wait(timeout=2)
+                    embedded_server.wait()
                 except subprocess.TimeoutExpired:
                     embedded_server.kill()
                 break
