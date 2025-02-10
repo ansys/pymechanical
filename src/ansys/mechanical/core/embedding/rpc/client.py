@@ -229,6 +229,6 @@ class Client:
     def exit(self):
         """Shuts down the Mechanical instance."""
         print("Requesting server shutdown ...")
-        self.root.service_exit()
+        self.service_exit()
         self.connection.close()
         print("Disconnected from server")
