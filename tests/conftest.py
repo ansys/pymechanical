@@ -27,6 +27,7 @@ import platform
 import shutil
 import subprocess
 import sys
+import time
 
 import ansys.tools.path as atp
 import grpc
@@ -291,6 +292,7 @@ def connect_to_mechanical_instance(port=None, clear_on_connect=False):
 
 def launch_rpc_embedded_server(port: int, version: int, server_script: str):
     """Start the server as a subprocess using `port`."""
+    global embedded_server
     env_copy = os.environ.copy()
     embedded_server = subprocess.Popen(
         [sys.executable, server_script, str(port), str(version)], env=env_copy
@@ -328,8 +330,19 @@ def mechanical(pytestconfig, rootdir):
     print(mechanical)
     yield mechanical
     if is_embedded_server:
-        print("\nStopping embedded server fixture")
+        print("\n Stopping embedded server")
+        global embedded_server
         mechanical.exit()
+        start_time = time.time()
+        while embedded_server.poll() is None:
+            if time.time() - start_time > 10:
+                embedded_server.terminate()
+                try:
+                    prembedded_serveroc.wait(timeout=2)
+                except subprocess.TimeoutExpired:
+                    embedded_server.kill()
+                break
+            time.sleep(0.5)
     else:
         assert "Ansys Mechanical" in str(mechanical)
 

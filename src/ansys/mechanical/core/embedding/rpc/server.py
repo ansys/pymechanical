@@ -282,7 +282,7 @@ class MechanicalEmbeddedServer:
         self._exited = True
 
     def _wait_exit(self) -> None:
-        if self._exit_thread == None:
+        if self._exit_thread is None:
             return
         self._exit_thread.join()
 
