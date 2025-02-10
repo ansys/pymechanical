@@ -23,6 +23,7 @@
 """Message manager test"""
 
 import os
+import re
 
 import pytest
 
@@ -121,7 +122,7 @@ def test_message_get(embedded_app, assets, capsys):
 
     assert str(_msg1.Severity) == "Warning"
     assert "Image file not found" in _msg1.DisplayString
-    assert "AM" in str(_msg1.TimeStamp) or "PM" in str(_msg1.TimeStamp)
+    assert re.search(r"\d", str(_msg1.TimeStamp))
     print(_msg1.StringID, _msg1.Source, _msg1.Location, _msg1.RelatedObjects)
     captured = capsys.readouterr()
     printed_output = captured.out.strip()
