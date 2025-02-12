@@ -91,7 +91,7 @@ def _start_application(configuration: AddinConfiguration, version, db_file) -> "
 
 def is_initialized():
     """Check if the app has been initialized."""
-    return True if len(INSTANCES) != 0 else False
+    return len(INSTANCES) != 0
 
 
 class GetterWrapper(object):
@@ -207,7 +207,7 @@ class App:
         self._messages = None
 
         globals = kwargs.get("globals")
-        if globals is not None and is_initialized():
+        if globals:
             self.update_globals(globals)
 
     def __repr__(self):
@@ -528,7 +528,8 @@ This may corrupt the project file.",
         Examples
         --------
         >>> from ansys.mechanical.core import App
-        >>> app = App(globals=globals())
+        >>> app = App()
+        >>> app.update_globals(globals())
         """
         self._updated_scopes.append(globals_dict)
         globals_dict.update(global_variables(self, enums))
