@@ -204,6 +204,7 @@ class App:
         INSTANCES.append(self)
         self._updated_scopes: typing.List[typing.Dict[str, typing.Any]] = []
         self._subscribe()
+        self._messages = None
 
         globals = kwargs.get("globals")
         if globals is not None and is_initialized():
@@ -453,6 +454,15 @@ This may corrupt the project file.",
     def project_directory(self):
         """Returns the current project directory."""
         return self.DataModel.Project.ProjectDirectory
+
+    @property
+    def messages(self):
+        """Lazy-load the MessageManager."""
+        if self._messages is None:
+            from ansys.mechanical.core.embedding.messages import MessageManager
+
+            self._messages = MessageManager(self._app)
+        return self._messages
 
     def _share(self, other) -> None:
         """Shares the state of self with other.
