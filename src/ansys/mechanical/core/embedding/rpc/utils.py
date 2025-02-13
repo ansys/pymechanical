@@ -21,9 +21,25 @@
 # SOFTWARE.
 """Utilities necessary for remote calls."""
 import typing
+from typing import TypeVar, TypeVarTuple, Generic
+
+TRet = TypeVar("TRet")
+TArgs = TypeVarTuple("TArgs")
+
+import collections.abc
+
+import sys
+if sys.version_info >= (3, 12):
+    class _x_12:
+        BAR=2
+    q = _x_12
+else:
+    class _x_11:
+        FOO=1
+    q = _x_11
 
 
-class remote_method:
+class remote_method(Generic[TRet, *TArgs]):
     """Decorator for passing remote methods."""
 
     def __init__(self, func):
@@ -38,7 +54,7 @@ class remote_method:
         """Call the stored function with the instance and provided arguments."""
         return self._func(instance, *args, **kwargs)
 
-    def __get__(self, obj, objtype):
+    def __get__(self, obj, objtype) -> collections.abc.Callable[[TArgs], TRet]:
         """Return a partially applied method."""
         from functools import partial
 
@@ -47,6 +63,14 @@ class remote_method:
         func.__name__ = self._func.__name__
         func._owner = obj
         return func
+
+x = remote_method[bool, int, int, int](None).__get__(None, None)
+y = remote_method[bool, int](None).__get__(None, None)
+z = remote_method[bool](None).__get__(None, None)
+x()
+y()
+z()
+
 
 
 class MethodType:
