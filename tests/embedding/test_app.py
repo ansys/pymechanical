@@ -23,6 +23,7 @@
 """Miscellaneous embedding tests"""
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 from tempfile import NamedTemporaryFile
@@ -30,6 +31,7 @@ import time
 
 import pytest
 
+from ansys.mechanical.core.embedding.app import is_initialized
 from ansys.mechanical.core.embedding.cleanup_gui import cleanup_gui
 from ansys.mechanical.core.embedding.ui import _launch_ui
 import ansys.mechanical.core.embedding.utils as utils
@@ -463,6 +465,38 @@ def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory, run_subprocess):
     assert not temp_folder.exists()
 
 
+@pytest.mark.embedding_scripts
+def test_attribute_error(tmp_path: pytest.TempPathFactory, pytestconfig, rootdir):
+    """Test cleanup function to remove the temporary mechdb file and folder."""
+    # Change directory to tmp_path
+    os.chdir(tmp_path)
+
+    # Get the version
+    version = pytestconfig.getoption("ansys_version")
+
+    # Create the Ansys folder in tmp_path and assert it exists
+    temp_folder = tmp_path / "Ansys"
+    temp_folder.mkdir()
+    assert temp_folder.exists()
+
+    # Copy the run_embedded_app.py script to tmp_path
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+    tmp_file_script = tmp_path / "run_embedded_app.py"
+    shutil.copyfile(embedded_py, tmp_file_script)
+
+    # Run the script and assert the AttributeError is raised
+    stdout, stderr = subprocess.Popen(
+        [sys.executable, tmp_file_script, "--version", version],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    ).communicate()
+
+    # Assert the AttributeError is raised
+    assert "Unable to resolve Mechanical assemblies." in stderr.decode()
+
+    os.chdir(rootdir)
+
+
 @pytest.mark.embedding
 def test_app_execute_script_from_file(embedded_app, rootdir, printer):
     """Test execute_script_from_file method."""
@@ -499,3 +533,29 @@ def test_app_lock_file_open(embedded_app, tmp_path: pytest.TempPathFactory):
     # Assert a warning is emitted if the lock file is going to be removed
     with pytest.warns(UserWarning):
         embedded_app.open(project_file, remove_lock=True)
+
+
+@pytest.mark.embedding
+def test_app_initialized(embedded_app):
+    """Test the app is initialized."""
+    assert is_initialized()
+
+
+@pytest.mark.embedding
+def test_app_not_initialized(run_subprocess, pytestconfig, rootdir):
+    """Test the app is not initialized."""
+    version = pytestconfig.getoption("ansys_version")
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+
+    process, stdout, stderr = run_subprocess(
+        [
+            sys.executable,
+            embedded_py,
+            "--version",
+            version,
+            "--test_not_initialized",
+        ]
+    )
+    stdout = stdout.decode()
+
+    assert "The app is not initialized" in stdout

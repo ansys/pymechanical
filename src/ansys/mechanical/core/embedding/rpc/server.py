@@ -23,6 +23,8 @@
 
 import fnmatch
 import os
+import threading
+import time
 import typing
 
 import rpyc
@@ -215,8 +217,11 @@ class MechanicalService(rpyc.Service):
 
     def exposed_service_exit(self):
         """Exit the server."""
+        print("Shutting down server ...")
         self._backgroundapp.stop()
         self._backgroundapp = None
+        self._server.stop_async()
+        print("Server stopped")
 
 
 class MechanicalEmbeddedServer:
@@ -235,6 +240,7 @@ class MechanicalEmbeddedServer:
         self._background_app = BackgroundApp(version=version)
         self._service = service
         self._methods = methods if methods is not None else []
+        self._exit_thread: threading.Thread = None
         print("Initializing Mechanical ...")
 
         self._port = self.get_free_port(port)
@@ -242,6 +248,7 @@ class MechanicalEmbeddedServer:
 
         my_service = self._service(self._background_app, self._methods, self._impl)
         self._server = ThreadedServer(my_service, port=self._port)
+        my_service._server = self
 
     @staticmethod
     def get_free_port(port=None):
@@ -271,7 +278,27 @@ class MechanicalEmbeddedServer:
                 print("User interrupt!")
         finally:
             conn.close()"""
+        print("Server exited!")
+        self._wait_exit()
         self._exited = True
+
+    def _wait_exit(self) -> None:
+        if self._exit_thread is None:
+            return
+        self._exit_thread.join()
+
+    def stop_async(self):
+        """Return immediately but will stop the server."""
+
+        def stop_f():  # wait for all connections to close
+            while len(self._server.clients) > 0:
+                time.sleep(0.005)
+            self._background_app.stop()
+            self._server.close()
+            self._exited = True
+
+        self._exit_thread = threading.Thread(target=stop_f)
+        self._exit_thread.start()
 
     def stop(self) -> None:
         """Stop the server."""

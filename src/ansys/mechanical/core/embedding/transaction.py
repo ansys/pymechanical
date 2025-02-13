@@ -19,30 +19,33 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-"""This is the .NET assembly resolving for embedding Ansys Mechanical.
-
-Note that for some Mechanical Addons - additional resolving may be
-necessary. A resolve handler is shipped with Ansys Mechanical on Windows
-starting in version 23.1 and on Linux starting in version 23.2
-"""
+"""A class to speed up bulk user interactions using Ansys ACT Mechanical Transaction."""
 
 
-def resolve(version):
-    """Resolve function for all versions of Ansys Mechanical."""
-    import clr  # isort: skip
-    import System  # isort: skip
-
-    clr.AddReference("Ansys.Mechanical.Embedding")
-    import Ansys  # isort: skip
-
-    try:
-        assembly_resolver = Ansys.Mechanical.Embedding.AssemblyResolver
-        resolve_handler = assembly_resolver.MechanicalResolveEventHandler
-        System.AppDomain.CurrentDomain.AssemblyResolve += resolve_handler
-    except AttributeError:
-        error_msg = f"""Unable to resolve Mechanical assemblies. Please ensure the following:
-    1. Mechanical is installed.
-    2. A folder with the name "Ansys" does not exist in the same directory as the script being run.
+class Transaction:  # When ansys-pythonnet issue #14 is fixed, this class will be removed
     """
-        raise AttributeError(error_msg)
+    A class to speed up bulk user interactions using Ansys ACT Mechanical Transaction.
+
+    Example
+    -------
+    >>> with Transaction() as transaction:
+    ...     pass   # Perform bulk user interactions here
+    ...
+    """
+
+    def __init__(self):
+        """Initialize the Transaction class."""
+        import clr
+
+        clr.AddReference("Ansys.ACT.WB1")
+        import Ansys
+
+        self._transaction = Ansys.ACT.Mechanical.Transaction()
+
+    def __enter__(self):
+        """Enter the context of the transaction."""
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Exit the context of the transaction and disposes of resources."""
+        self._transaction.Dispose()
