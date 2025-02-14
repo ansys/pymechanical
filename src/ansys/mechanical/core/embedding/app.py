@@ -37,6 +37,7 @@ from ansys.mechanical.core.embedding.imports import global_entry_points, global_
 from ansys.mechanical.core.embedding.poster import Poster
 from ansys.mechanical.core.embedding.ui import launch_ui
 from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
+from ansys.mechanical.core.logging import Logger
 
 if typing.TYPE_CHECKING:
     # Make sure to run ``ansys-mechanical-ideconfig`` to add the autocomplete settings to VS Code
@@ -166,6 +167,13 @@ class App:
         global INSTANCES
         from ansys.mechanical.core import BUILDING_GALLERY
 
+        self._disable_logging = False
+        self._log_level = kwargs.get("log_level", "WARNING")
+
+        self._log = Logger(level=self._log_level, to_file=False, to_stdout=True)
+
+        self.log_info("Starting Mechanical Application")
+
         if BUILDING_GALLERY:
             if len(INSTANCES) != 0:
                 instance: App = INSTANCES[0]
@@ -245,6 +253,7 @@ class App:
         remove_lock : bool, optional
             Whether or not to remove the lock file if it exists before opening the project file.
         """
+        self.log_info(f"Opening {db_file} ...")
         if remove_lock:
             lock_file = Path(self.DataModel.Project.ProjectDirectory) / ".mech_lock"
             # Remove the lock file if it exists before opening the project file
@@ -634,3 +643,40 @@ This may corrupt the project file.",
             node = self.DataModel.Project
 
         self._print_tree(node, max_lines, lines_count, indentation)
+
+    def log_debug(self, message):
+        """Log the debug message."""
+        if self._disable_logging:
+            return
+        self._log.debug(message)
+
+    def log_info(self, message):
+        """Log the info message."""
+        if self._disable_logging:
+            return
+        self._log.info(message)
+
+    def log_warning(self, message):
+        """Log the warning message."""
+        if self._disable_logging:
+            return
+        self._log.warning(message)
+
+    def log_error(self, message):
+        """Log the error message."""
+        if self._disable_logging:
+            return
+        self._log.error(message)
+
+    # @property
+    # def log_level(self):-> str:
+    #     """Disable logging."""
+    #     return self._log_level
+
+    # @log_level.setter
+    # def log_level(self, log_level: str):
+    #     if self._disable_logging:
+    #         return
+    #     self.log.set_log_level(log_level)
+
+    # TODO enable or disable logging through a property
