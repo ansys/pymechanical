@@ -28,6 +28,7 @@ from pathlib import Path
 import re
 import site
 import sys
+import warnings
 
 import ansys.tools.path as atp
 import click
@@ -151,13 +152,23 @@ def _cli_impl(
     stubs_location = get_stubs_location()
     # Get all revision numbers available in ansys-mechanical-stubs
     revns = get_stubs_versions(stubs_location)
-    # Check the IDE and raise an exception if it's not VS Code
-    if revision < min(revns) or revision > max(revns):
+
+    # Check if the user revision number is less or greater than the min and max revisions
+    # in the ansys-mechanical-stubs package location
+    if revision < min(revns):
         raise Exception(f"PyMechanical Stubs are not available for {revision}")
-    elif ide != "vscode":
+    elif revision > max(revns):
+        warnings.warn(
+            f"PyMechanical Stubs are not available for {revision}. Using {max(revns)} instead.",
+            stacklevel=2,
+        )
+        revision = max(revns)
+
+    # Check the IDE and raise an exception if it's not VS Code
+    if ide != "vscode":
         raise Exception(f"{ide} is not supported at the moment.")
-    else:
-        return _vscode_impl(target, revision)
+
+    return _vscode_impl(target, revision)
 
 
 @click.command()
@@ -202,8 +213,11 @@ def cli(ide: str, target: str, revision: int) -> None:
         $ ansys-mechanical-ideconfig --ide vscode --target user --revision 251
 
     """
-    exe = atp.get_mechanical_path(allow_input=False, version=revision)
-    version = atp.version_from_path("mechanical", exe)
+    if not revision:
+        exe = atp.get_mechanical_path(allow_input=False, version=revision)
+        version = atp.version_from_path("mechanical", exe)
+    else:
+        version = revision
 
     return _cli_impl(
         ide,

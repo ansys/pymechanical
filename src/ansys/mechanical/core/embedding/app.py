@@ -89,6 +89,11 @@ def _start_application(configuration: AddinConfiguration, version, db_file) -> "
         return Ansys.Mechanical.Embedding.Application(db_file)
 
 
+def is_initialized():
+    """Check if the app has been initialized."""
+    return len(INSTANCES) != 0
+
+
 class GetterWrapper(object):
     """Wrapper class around an attribute of an object."""
 
@@ -124,6 +129,9 @@ class App:
     private_appdata : bool, optional
         Setting for a temporary AppData directory. Default is False.
         Enables running parallel instances of Mechanical.
+    globals : dict, optional
+        Global variables to be updated. For example, globals().
+        Replaces "app.update_globals(globals())".
     config : AddinConfiguration, optional
         Configuration for addins. By default "Mechanical" is used and ACT Addins are disabled.
     copy_profile : bool, optional
@@ -139,6 +147,10 @@ class App:
     Disable copying the user profile when private appdata is enabled
 
     >>> app = App(private_appdata=True, copy_profile=False)
+
+    Update the global variables with globals
+
+    >>> app = App(globals=globals())
 
     Create App with "Mechanical" configuration and no ACT Addins
 
@@ -163,6 +175,7 @@ class App:
                 return
         if len(INSTANCES) > 0:
             raise Exception("Cannot have more than one embedded mechanical instance!")
+
         version = kwargs.get("version")
         if version is not None:
             try:
@@ -192,6 +205,10 @@ class App:
         self._updated_scopes: typing.List[typing.Dict[str, typing.Any]] = []
         self._subscribe()
         self._messages = None
+
+        globals = kwargs.get("globals")
+        if globals:
+            self.update_globals(globals)
 
     def __repr__(self):
         """Get the product info."""
@@ -590,8 +607,7 @@ This may corrupt the project file.",
         Examples
         --------
         >>> from ansys.mechanical.core import App
-        >>> app = App()
-        >>> app.update_globals(globals())
+        >>> app = App(globals=globals())
         >>> app.print_tree()
         ... ├── Project
         ... |  ├── Model

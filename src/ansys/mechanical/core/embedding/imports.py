@@ -46,36 +46,37 @@ def global_variables(app: "ansys.mechanical.core.App", enums: bool = False) -> t
     To also import all the enums, set the parameter enums to true.
     """
     vars = global_entry_points(app)
-    import clr  # isort: skip
 
-    clr.AddReference("System.Collections")
-    clr.AddReference("Ansys.ACT.WB1")
-    clr.AddReference("Ansys.Mechanical.DataModel")
-    # from Ansys.ACT.Mechanical import Transaction
-    # When ansys-pythonnet issue #14 is fixed, uncomment above
-    from Ansys.ACT.Core.Math import Point2D, Point3D
-    from Ansys.ACT.Math import Vector3D
-    from Ansys.ACT.Mechanical.Fields import VariableDefinitionType
-    from Ansys.Core.Units import Quantity
-    from Ansys.Mechanical.DataModel import MechanicalEnums
-    from Ansys.Mechanical.Graphics import Point, SectionPlane
+    from ansys.mechanical.core.embedding.app import is_initialized
+    from ansys.mechanical.core.embedding.transaction import Transaction
 
-    import System  # isort: skip
-    import Ansys  # isort: skip
-
-    vars["Quantity"] = Quantity
-    vars["System"] = System
-    vars["Ansys"] = Ansys
     vars["Transaction"] = Transaction
-    vars["MechanicalEnums"] = MechanicalEnums
-    # Graphics
-    vars["Point"] = Point
-    vars["SectionPlane"] = SectionPlane
-    # Math
-    vars["Point2D"] = Point2D
-    vars["Point3D"] = Point3D
-    vars["Vector3D"] = Vector3D
-    vars["VariableDefinitionType"] = VariableDefinitionType
+
+    # Import modules if the app is initialized
+    if is_initialized():
+        from ansys.mechanical.core.embedding.global_importer import (
+            Ansys,
+            MechanicalEnums,
+            Point,
+            Point2D,
+            Point3D,
+            Quantity,
+            SectionPlane,
+            System,
+            Vector3D,
+        )
+
+        vars["Quantity"] = Quantity
+        vars["System"] = System
+        vars["Ansys"] = Ansys
+        vars["MechanicalEnums"] = MechanicalEnums
+        # Graphics
+        vars["Point"] = Point
+        vars["SectionPlane"] = SectionPlane
+        # Math
+        vars["Point2D"] = Point2D
+        vars["Point3D"] = Point3D
+        vars["Vector3D"] = Vector3D
 
     if enums:
         vars.update(get_all_enums())
@@ -95,32 +96,3 @@ def get_all_enums() -> typing.Dict[str, typing.Any]:
         if type(the_enum).__name__ == "CLRMetatype":
             enums[attr] = the_enum
     return enums
-
-
-class Transaction:  # When ansys-pythonnet issue #14 is fixed, this class will be removed
-    """
-    A class to speed up bulk user interactions using Ansys ACT Mechanical Transaction.
-
-    Example
-    -------
-    >>> with Transaction() as transaction:
-    ...     pass   # Perform bulk user interactions here
-    ...
-    """
-
-    def __init__(self):
-        """Initialize the Transaction class."""
-        import clr
-
-        clr.AddReference("Ansys.ACT.WB1")
-        import Ansys
-
-        self._transaction = Ansys.ACT.Mechanical.Transaction()
-
-    def __enter__(self):
-        """Enter the context of the transaction."""
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """Exit the context of the transaction and disposes of resources."""
-        self._transaction.Dispose()

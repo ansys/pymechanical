@@ -19,18 +19,32 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+"""Import Mechanical globals."""
 
-"""Library to import Mechanical enums.
+from ansys.mechanical.core.embedding.app import is_initialized
 
-A useful subset of what is imported by
-Ansys Inc/v{NNN}/ACT/apis/Mechanical.py
-"""
+if not is_initialized():
+    raise Exception("Globals cannot be imported until the embedded app is initialized.")
+
 import clr
 
 clr.AddReference("Ansys.Mechanical.DataModel")
 clr.AddReference("Ansys.ACT.Interfaces")
 
-from Ansys.ACT.Interfaces.Common import *  # noqa isort: skip
-from Ansys.Mechanical.DataModel.Enums import *  # noqa isort: skip
-from Ansys.ACT.Interfaces.Analysis import *  # noqa isort: skip
-import Ansys  # noqa  isort: skip
+
+clr.AddReference("System.Collections")
+clr.AddReference("Ansys.ACT.WB1")
+clr.AddReference("Ansys.Mechanical.DataModel")
+
+# from Ansys.ACT.Mechanical import Transaction
+# When ansys-pythonnet issue #14 is fixed, uncomment above
+from Ansys.ACT.Core.Math import Point2D, Point3D  # noqa isort: skip
+from Ansys.ACT.Math import Vector3D  # noqa isort: skip
+from Ansys.Core.Units import Quantity  # noqa isort: skip
+from Ansys.Mechanical.DataModel import MechanicalEnums  # noqa isort: skip
+from Ansys.Mechanical.Graphics import Point, SectionPlane  # noqa isort: skip
+
+from ansys.mechanical.core.embedding.transaction import Transaction  # noqa isort: skip
+
+import System  # noqa isort: skip
+import Ansys  # noqa isort: skip
