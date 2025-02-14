@@ -26,14 +26,14 @@ import pathlib
 import time
 
 import rpyc
-
+import logging
 from ansys.mechanical.core.mechanical import DEFAULT_CHUNK_SIZE
-
+from .utils import set_log_level
 
 class Client:
     """Client for connecting to Mechanical services."""
 
-    def __init__(self, host: str, port: int, timeout: float = 120.0):
+    def __init__(self, host: str, port: int, timeout: float = 120.0, enable_logging: bool = False, log_level: str = "INFO"):
         """Initialize the client.
 
         Parameters
@@ -53,6 +53,25 @@ class Client:
         self.port = port
         self.timeout = timeout
         self.connection = None
+        self._enable_logging = enable_logging
+        self._log_level = log_level
+        print(f"current level {logging.getLevelName(logging.getLogger().getEffectiveLevel())} from client")
+        if self._enable_logging:
+            print(f"log_level: {log_level}", "from client")
+            self._log_level = set_log_level(self._log_level)
+            print(f"self.log_level: {self._log_level}", "from client")
+            root_logger = logging.getLogger()
+    
+            if not root_logger.hasHandlers():  # Only configure if no handlers exist
+                handler = logging.StreamHandler()
+                handler.setLevel(self._log_level)
+                logging.basicConfig(level=self._log_level, force=True)
+                root_logger.addHandler(handler)
+                print("Logging configured")
+                
+            else:
+                print("Logging was already configured")
+            logging.info("Client logging enabled")
         self.root = None
         self._connect()
 
@@ -79,17 +98,27 @@ class Client:
         self._wait_until_ready()
         self.connection = rpyc.connect(self.host, self.port)
         self.root = self.connection.root
+<<<<<<< Updated upstream
         print(f"Connected to {self.host}:{self.port}")
         print(f"Installed methods")
+=======
+        logging.info(f"Connected to {self.host}:{self.port}")
+>>>>>>> Stashed changes
 
     def _wait_until_ready(self):
         t_max = time.time() + self.timeout
         while time.time() < t_max:
             try:
+<<<<<<< Updated upstream
                 conn = rpyc.connect(self.host, self.port)
                 conn.ping()  # Simple ping to check if the connection is healthy
                 conn.close()
                 print("Server is ready to connect")
+=======
+                self.connection = rpyc.connect(self.host, self.port)
+                self.connection.ping()
+                logging.info("Server is ready.")
+>>>>>>> Stashed changes
                 break
             except:
                 time.sleep(2)
@@ -101,7 +130,7 @@ class Client:
     def close(self):
         """Close the connection."""
         self.connection.close()
-        print(f"Connection to {self.host}:{self.port} closed")
+        logging.info(f"Connection to {self.host}:{self.port} closed")
 
     def upload(
         self,

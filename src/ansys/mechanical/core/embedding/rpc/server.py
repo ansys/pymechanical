@@ -34,7 +34,9 @@ import toolz
 from ansys.mechanical.core.embedding.background import BackgroundApp
 from ansys.mechanical.core.mechanical import port_in_use
 
-from .utils import MethodType, get_remote_methods, remote_method
+import logging
+
+from .utils import MethodType, get_remote_methods, remote_method, set_log_level
 
 # TODO : implement logging
 
@@ -50,7 +52,6 @@ class MechanicalService(rpyc.Service):
         self._backgroundapp = backgroundapp
         self._install_functions(functions)
         self._install_class(impl)
-        self.EMBEDDED = True
 
     def _install_functions(self, methods):
         """Install the given list of methods."""
@@ -61,9 +62,9 @@ class MechanicalService(rpyc.Service):
         print("Install class")
         if impl is None:
             return
-        print("Installing methods from class")
+        logging.info(f"Installing methods from {impl}")
         for methodname, method, methodtype in get_remote_methods(impl):
-            print(f"installing {methodname} of {impl}")
+            logging.info(f"installing {methodname} of {impl}")
             if methodtype == MethodType.METHOD:
                 self._install_method(method)
             elif methodtype == MethodType.PROP:
@@ -159,7 +160,7 @@ class MechanicalService(rpyc.Service):
 
     def _install_function(self, function):
         """Install a functions with inner and exposed pairs."""
-        print(f"Installing {function}")
+        logging.info(f"Installing {function}")
         exposed_name = f"exposed_{function.__name__}"
         inner_name = f"inner_{function.__name__}"
 
@@ -213,11 +214,13 @@ class MechanicalService(rpyc.Service):
 
     def exposed_service_exit(self):
         """Exit the server."""
-        print("Shutting down server ...")
+        logging.warning("Shutting down server ...")
+        # print("Shutting down server ...")
         self._backgroundapp.stop()
         self._backgroundapp = None
         self._server.stop_async()
-        print("Server stopped")
+        logging.info("Server stopped")
+        #print("Server stopped")
 
 
 class MechanicalEmbeddedServer:
@@ -230,6 +233,8 @@ class MechanicalEmbeddedServer:
         version: int = None,
         methods: typing.List[typing.Callable] = [],
         impl=None,
+        enable_logging = False,
+        log_level = "WARNING",
     ):
         """Initialize the server."""
         self._exited = False
@@ -237,7 +242,20 @@ class MechanicalEmbeddedServer:
         self._service = service
         self._methods = methods
         self._exit_thread: threading.Thread = None
-        print("Initializing Mechanical ...")
+        self._enable_logging = enable_logging
+
+        if self._enable_logging:
+            root_logger = logging.getLogger()
+            self._log_level = set_log_level(log_level)
+            root_logger.setLevel(self._log_level)
+            if not root_logger.hasHandlers():
+                logging.basicConfig(level=self._log_level, force=True)
+                print("Logging configured for server")
+            else:
+                print("Logging was already configured for server")
+
+   
+        logging.info("Initializing Mechanical ...")
 
         self._port = self.get_free_port(port)
         if impl is None:
@@ -261,6 +279,8 @@ class MechanicalEmbeddedServer:
         while port_in_use(port):
             port += 1
 
+        logging.debug(f"Aquired port : {port}")
+        
         return port
 
     def start(self) -> None:
@@ -301,11 +321,11 @@ class MechanicalEmbeddedServer:
 
     def stop(self) -> None:
         """Stop the server."""
-        print("Stopping the server...")
+        logging.info("Shutting down server ...")
         self._background_app.stop()
         self._server.close()
         self._exited = True
-        print("Server stopped.")
+        logging.info("Server stopped")
 
 
 class DefaultServiceMethods:
@@ -406,4 +426,5 @@ class MechanicalDefaultServer(MechanicalEmbeddedServer):
 
     def __init__(self, **kwargs):
         """Initialize the MechanicalDefaultServer."""
+        print(f"kawrgs: {kwargs}")
         super().__init__(service=MechanicalService, impl=DefaultServiceMethods, **kwargs)

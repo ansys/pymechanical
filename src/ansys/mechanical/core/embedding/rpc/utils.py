@@ -21,7 +21,7 @@
 # SOFTWARE.
 """Utilities necessary for remote calls."""
 import typing
-
+import logging
 
 class remote_method:
     """Decorator for passing remote methods."""
@@ -102,12 +102,12 @@ def get_remote_methods(
         A tuple containing the method name and the method itself
         for each remote method found in the object
     """
-    print(f"Getting remote methods on {obj}")
+    logging.info(f"Getting remote methods on {obj}")
     objclass = obj.__class__
     for attrname in dir(obj):
         if attrname.startswith("__"):
             continue
-        print(attrname)
+        logging.debug(attrname)
         if hasattr(objclass, attrname):
             class_attribute = getattr(objclass, attrname)
             if isinstance(class_attribute, property):
@@ -118,3 +118,16 @@ def get_remote_methods(
         if result != None:
             attrname, method = result
             yield attrname, method, MethodType.METHOD
+
+def set_log_level(log_level :str)->logging.Logger:
+    """Setup logger for the module."""
+    log_levels = {
+            "DEBUG": logging.DEBUG,
+            "INFO": logging.INFO,
+            "WARNING": logging.WARNING,
+            "ERROR": logging.ERROR,
+            "CRITICAL": logging.CRITICAL,
+        }
+    if log_level not in log_levels:
+        raise ValueError(f"Invalid log level {log_level}")
+    return log_levels[log_level]

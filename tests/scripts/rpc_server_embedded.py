@@ -27,8 +27,12 @@ from ansys.mechanical.core.embedding.rpc import MechanicalDefaultServer
 if __name__ == "__main__":
     _port = int(sys.argv[1])
     _version = int(sys.argv[2])
+    _enable_logging = eval(sys.argv[3])
+    _log_level = str(sys.argv[4])
     server = MechanicalDefaultServer(
         port=_port,
         version=_version,
+        enable_logging=_enable_logging,
+        log_level=_log_level
     )
     server.start()
