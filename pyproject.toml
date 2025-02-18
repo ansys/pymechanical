@@ -53,7 +53,7 @@ tests = [
     "pytest==8.3.4",
     "pytest-cov==6.0.0",
     "pytest-print==1.0.2",
-    "psutil==6.1.1"
+    "psutil==7.0.0"
 ]
 doc = [
     "sphinx==8.1.3",
