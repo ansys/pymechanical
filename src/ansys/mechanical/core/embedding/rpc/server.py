@@ -234,10 +234,16 @@ class MechanicalEmbeddedServer:
         self._exited = False
         self._background_app = BackgroundApp(version=version)
         self._service = service
-        self._methods = methods if methods is not None else []
         print("Initializing Mechanical ...")
 
         self._port = self.get_free_port(port)
+
+        if methods and not isinstance(methods, list):
+            methods = [methods]
+        self._methods = methods if methods is not None else []
+
+        if impl and not isinstance(impl, list):
+            impl = [impl]
         self._impl = [i(self._background_app.app) for i in impl] if impl else []
 
         my_service = self._service(self._background_app, self._methods, self._impl)
