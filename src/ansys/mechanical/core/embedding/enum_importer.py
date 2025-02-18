@@ -25,7 +25,6 @@
 A useful subset of what is imported by
 Ansys Inc/v{NNN}/ACT/apis/Mechanical.py
 """
-
 import clr
 
 clr.AddReference("Ansys.Mechanical.DataModel")

@@ -33,10 +33,10 @@ dependencies = [
     "ansys-tools-path>=0.3.1",
     "appdirs>=1.4.0",
     "click>=8.1.3", # for CLI interface
-    "clr-loader==0.2.7.post0",
+    "clr-loader>=0.2.6",
     "grpcio>=1.30.0",
     "protobuf>=3.12.2,<6",
-    "psutil==6.1.1",
+    "psutil>=6",
     "tqdm>=4.45.0",
     "requests>=2,<3",
 ]
@@ -53,22 +53,22 @@ tests = [
     "pytest==8.3.4",
     "pytest-cov==6.0.0",
     "pytest-print==1.0.2",
-    "psutil==6.1.1"
+    "psutil==7.0.0"
 ]
 doc = [
     "sphinx==8.1.3",
-    "ansys-sphinx-theme[autoapi]==1.2.6",
+    "ansys-sphinx-theme[autoapi,changelog]==1.3.1",
     "grpcio==1.70.0",
     "imageio-ffmpeg==0.6.0",
     "imageio==2.37.0",
     "jupyter_sphinx==0.5.3",
     "jupyterlab>=3.2.8",
     "matplotlib==3.10.0",
-    "numpy==2.2.2",
+    "numpy==2.2.3",
     "numpydoc==1.8.0",
     "pandas==2.2.3",
-    "panel==1.6.0",
-    "plotly==5.24.1",
+    "panel==1.6.1",
+    "plotly==6.0.0",
     "pypandoc==1.15",
     "pytest-sphinx==0.6.3",
     "pythreejs==2.4.2",
@@ -77,8 +77,8 @@ doc = [
     "sphinx-autodoc-typehints==3.0.1",
     "sphinx-copybutton==0.5.2",
     "sphinx_design==0.6.1",
-    "sphinx-gallery==0.18.0",
-    "sphinx-notfound-page==1.0.4",
+    "sphinx-gallery==0.19.0",
+    "sphinx-notfound-page==1.1.0",
     "sphinxcontrib-websupport==2.0.0",
     "sphinxemoji==0.3.1",
 ]

@@ -27,6 +27,7 @@ import platform
 import shutil
 import subprocess
 import sys
+import time
 
 import ansys.tools.path as atp
 import grpc
@@ -305,15 +306,6 @@ def connect_rpc_embedded_server(port: int):
     return client
 
 
-def stop_embeddedd_server():
-    # TODO: not use a terminate.
-    global embedded_server
-    if embedded_server is not None:
-        embedded_server.terminate()
-        embedded_server.wait()
-        embedded_server = None
-
-
 @pytest.fixture(scope="session")
 def mechanical(pytestconfig, rootdir):
     print("current working directory: ", os.getcwd())
@@ -338,9 +330,19 @@ def mechanical(pytestconfig, rootdir):
     print(mechanical)
     yield mechanical
     if is_embedded_server:
-        print("stopping embedded server")
+        print("\n Stopping embedded server")
+        global embedded_server
         mechanical.exit()
-        stop_embeddedd_server()
+        start_time = time.time()
+        while embedded_server.poll() is None:
+            if time.time() - start_time > 10:
+                try:
+                    embedded_server.terminate()
+                    embedded_server.wait()
+                except subprocess.TimeoutExpired:
+                    embedded_server.kill()
+                break
+            time.sleep(0.5)
     else:
         assert "Ansys Mechanical" in str(mechanical)
 

@@ -176,6 +176,7 @@ jobs:
           else
             echo "matrix={\"mechanical-version\":['${{ needs.revn-variations.outputs.test_docker_image_version }}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           fi
+
   container-stability-check:
     runs-on: ubuntu-latest
     needs: [revn-variations]
@@ -311,7 +312,8 @@ jobs:
         run: |
           . /env/bin/activate
           pip install --upgrade pip
-          pip install -e .[tests,rpc]
+          pip install uv
+          uv pip install -e .[tests,rpc]
 
       - name: Unit Testing and coverage
         env:
@@ -385,7 +387,8 @@ jobs:
         run: |
           . /env/bin/activate
           pip install --upgrade pip
-          pip install -e .[tests]
+          pip install uv
+          uv pip install -e .[tests]
 
       - name: Unit Testing and coverage
         env:
@@ -458,7 +461,8 @@ jobs:
         run: |
           . /env/bin/activate
           pip install --upgrade pip
-          pip install -e .[tests]
+          pip install uv
+          uv pip install -e .[tests]
 
       - name: Embedding scripts unit testing and coverage
         env:
@@ -531,7 +535,8 @@ jobs:
       - name: Install packages for testing
         run: |
           . /env/bin/activate
-          pip install .[tests]
+          pip install uv
+          uv pip install .[tests]
 
       - name: Set environment variable
         run: echo "ANSYSCL${{ needs.revn-variations.outputs.test_revn }}_DIR=/install/ansys_inc/v${{ needs.revn-variations.outputs.test_revn }}/licensingclient" >> $GITHUB_ENV
@@ -628,7 +633,8 @@ jobs:
       - name: Install Python requirements
         run: |
           . /env/bin/activate
-          pip install -e .[doc]
+          pip install uv
+          uv pip install -e .[doc]
 
       - name: Build docs
         env:
@@ -696,7 +702,7 @@ jobs:
 
   coverage:
     name: Merging coverage
-    needs: [remote-connect, embedding-tests, embedding-scripts-tests, launch-tests]
+    needs: [remote-connect, embedding-tests, embedding-scripts-tests, embedding-rpc-tests, launch-tests]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -709,7 +715,7 @@ jobs:
 
       - name: Install coverage
         run: |
-          rm -rf env
+          rm -rf ./env
           python -m pip install -U pip
           pip install coverage
           pip install -e .
@@ -793,7 +799,6 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
           files: .coverage-combined/xml
-
 
   package:
     name: Package library
