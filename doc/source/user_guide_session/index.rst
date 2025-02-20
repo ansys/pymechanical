@@ -47,7 +47,7 @@ to select the version of the product to launch.
         exec_file=exec_file_path, batch=False, cleanup_on_exit=False
     )
 
-If ``batch`` option is set ``True`` the Mechanical launches without GUI. The ``cleanup_on_exit``
+If ``batch`` option is set to ``True`` Mechanical is launched without GUI. The ``cleanup_on_exit``
 option decides whether product exits at the end of the PyMechanical script or not.
 
 .. note::
