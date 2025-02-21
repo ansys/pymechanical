@@ -77,22 +77,19 @@ class Client:
 
     def _connect(self):
         self._wait_until_ready()
-        self.connection = rpyc.connect(self.host, self.port)
         self.root = self.connection.root
         print(f"Connected to {self.host}:{self.port}")
-        print(f"Installed methods")
 
     def _wait_until_ready(self):
         t_max = time.time() + self.timeout
         while time.time() < t_max:
             try:
-                conn = rpyc.connect(self.host, self.port)
-                conn.ping()  # Simple ping to check if the connection is healthy
-                conn.close()
-                print("Server is ready to connect")
+                self.connection = rpyc.connect(self.host, self.port)
+                self.connection.ping()
+                print("Server is ready.")
                 break
             except:
-                time.sleep(2)
+                time.sleep(0.1)
         else:
             raise TimeoutError(
                 f"Server at {self.host}:{self.port} not ready within {self.timeout} seconds."
