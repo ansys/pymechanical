@@ -19,10 +19,10 @@ import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
 
 # necessary when building the sphinx gallery
-pymechanical.BUILDING_GALLERY = True
+pymechanical.BUILDING_GALLERY = False  # True
 
 # Whether or not to build the cheatsheet
-BUILD_CHEATSHEET = True
+BUILD_CHEATSHEET = False  # True
 
 # suppress annoying matplotlib bug
 warnings.filterwarnings(
@@ -316,6 +316,7 @@ linkcheck_ignore = [
     "../api/*",  # Remove this after release 0.10.12
     "api/*",
     "path.html",
+    "user_guide_embedding/*",
 ]
 
 linkcheck_anchors = False
