@@ -30,6 +30,7 @@ import shutil
 import typing
 import warnings
 
+from ansys.mechanical.core import LOG
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
@@ -37,7 +38,6 @@ from ansys.mechanical.core.embedding.imports import global_entry_points, global_
 from ansys.mechanical.core.embedding.poster import Poster
 from ansys.mechanical.core.embedding.ui import launch_ui
 from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
-from ansys.mechanical.core.logging import Logger
 
 if typing.TYPE_CHECKING:
     # Make sure to run ``ansys-mechanical-ideconfig`` to add the autocomplete settings to VS Code
@@ -137,6 +137,10 @@ class App:
         Configuration for addins. By default "Mechanical" is used and ACT Addins are disabled.
     copy_profile : bool, optional
         Whether to copy the user profile when private_appdata is True. Default is True.
+    enable_logging : bool, optional
+        Whether to enable logging. Default is True.
+    log_level : str, optional
+        The logging level for the application. Default is "WARNING".
 
     Examples
     --------
@@ -160,6 +164,13 @@ class App:
     >>> config = AddinConfiguration("Mechanical")
     >>> config.no_act_addins = True
     >>> app = App(config=config)
+
+    enable logging
+
+    >>> app = App(log_level='INFO')
+
+    ... INFO -  -  app - log_info - Starting Mechanical Application
+
     """
 
     def __init__(self, db_file=None, private_appdata=False, **kwargs):
@@ -167,10 +178,11 @@ class App:
         global INSTANCES
         from ansys.mechanical.core import BUILDING_GALLERY
 
-        self._disable_logging = False
-        self._log_level = kwargs.get("log_level", "WARNING")
-
-        self._log = Logger(level=self._log_level, to_file=False, to_stdout=True)
+        self._enable_logging = kwargs.get("enable_logging", True)
+        if self._enable_logging:
+            self._log = LOG
+            self._log_level = kwargs.get("log_level", "WARNING")
+            self._log.setLevel(self._log_level)
 
         self.log_info("Starting Mechanical Application")
 
@@ -646,37 +658,24 @@ This may corrupt the project file.",
 
     def log_debug(self, message):
         """Log the debug message."""
-        if self._disable_logging:
+        if not self._enable_logging:
             return
         self._log.debug(message)
 
     def log_info(self, message):
         """Log the info message."""
-        if self._disable_logging:
+        if not self._enable_logging:
             return
         self._log.info(message)
 
     def log_warning(self, message):
         """Log the warning message."""
-        if self._disable_logging:
+        if not self._enable_logging:
             return
         self._log.warning(message)
 
     def log_error(self, message):
         """Log the error message."""
-        if self._disable_logging:
+        if not self._enable_logging:
             return
         self._log.error(message)
-
-    # @property
-    # def log_level(self):-> str:
-    #     """Disable logging."""
-    #     return self._log_level
-
-    # @log_level.setter
-    # def log_level(self, log_level: str):
-    #     if self._disable_logging:
-    #         return
-    #     self.log.set_log_level(log_level)
-
-    # TODO enable or disable logging through a property
