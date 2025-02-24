@@ -35,7 +35,7 @@ interface to drive the software that facilitates the use of
         :link-type: doc
         :text-align: left
 
-        How to create Mechanical docker images.
+        How to run Mechanical Docker containers.
 
     .. grid-item-card:: Windows Subsystem for Linux (WSL)
         :padding: 2 2 2 2
