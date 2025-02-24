@@ -27,13 +27,14 @@ import time
 
 import rpyc
 
+from ansys.mechanical.core.embedding.rpc.server import PYMECHANICAL_DEFAULT_RPC_PORT
 from ansys.mechanical.core.mechanical import DEFAULT_CHUNK_SIZE
 
 
 class Client:
     """Client for connecting to Mechanical services."""
 
-    def __init__(self, host: str, port: int, timeout: float = 120.0):
+    def __init__(self, host: str, port: int, timeout: float = 60.0):
         """Initialize the client.
 
         Parameters
@@ -43,13 +44,17 @@ class Client:
             in which case ``localhost`` is used.
         port : int, optional
             Port to connect to the Mecahnical server. The default is ``None``,
-            in which case ``10000`` is used.
+            in which case ``20000`` is used.
         timeout : float, optional
             Maximum allowable time for connecting to the Mechanical server.
             The default is ``60.0``.
 
         """
+        if host is None:
+            host = "localhost"
         self.host = host
+        if port is None:
+            port = PYMECHANICAL_DEFAULT_RPC_PORT
         self.port = port
         self.timeout = timeout
         self.connection = None
@@ -80,20 +85,31 @@ class Client:
         self.root = self.connection.root
         print(f"Connected to {self.host}:{self.port}")
 
-    def _wait_until_ready(self):
-        t_max = time.time() + self.timeout
+    def _exponential_backoff(self, max_time=60.0, base_time=0.1, factor=2):
+        """Generate exponential backoff timing."""
+        t_max = time.time() + max_time
+        t = base_time
         while time.time() < t_max:
+            yield t
+            t = min(t * factor, max_time)
+
+    def _wait_until_ready(self):
+        """Wait until the server is ready."""
+        t_max = time.time() + self.timeout
+        for delay in self._exponential_backoff(max_time=self.timeout):
+            if time.time() >= t_max:
+                break  # Exit if the timeout is reached
             try:
                 self.connection = rpyc.connect(self.host, self.port)
                 self.connection.ping()
                 print("Server is ready.")
-                break
-            except:
-                time.sleep(0.1)
-        else:
-            raise TimeoutError(
-                f"Server at {self.host}:{self.port} not ready within {self.timeout} seconds."
-            )
+                return
+            except Exception:
+                time.sleep(delay)
+
+        raise TimeoutError(
+            f"Server at {self.host}:{self.port} not ready within {self.timeout} seconds."
+        )
 
     def close(self):
         """Close the connection."""
