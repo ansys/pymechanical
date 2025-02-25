@@ -165,7 +165,7 @@ class App:
     >>> config.no_act_addins = True
     >>> app = App(config=config)
 
-    enable logging
+    Set log level
 
     >>> app = App(log_level='INFO')
 
