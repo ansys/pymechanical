@@ -2048,7 +2048,7 @@ def launch_mechanical(
     cleanup_on_exit=True,
     version=None,
     keep_connection_alive=True,
-    rpc_type="grpc",
+    backend="mechanical",
 ) -> Mechanical:
     """Start Mechanical locally.
 
@@ -2131,8 +2131,9 @@ def launch_mechanical(
     keep_connection_alive : bool, optional
         Whether to keep the gRPC connection alive by running a background thread
         and making dummy calls for remote connections. The default is ``True``.
-    rpc_type : str, optional
-        Type of RPC to use. The default is ``"grpc"``. The other option is ``"rpyc"``.
+    backend : str, optional
+        Type of RPC to use. The default is ``"mechanical"`` which uses grpc.
+        The other option is ``"python"`` which uses RPyC.
 
     Returns
     -------
@@ -2286,7 +2287,7 @@ def launch_mechanical(
         "additional_envs": additional_envs,
     }
 
-    if rpc_type == "grpc":
+    if backend == "mechanical":
         try:
             port = launch_grpc(port=port, verbose=verbose_mechanical, **start_parm)
             start_parm["local"] = True
@@ -2304,7 +2305,7 @@ def launch_mechanical(
         except Exception as exception:  # pragma: no cover
             # pass
             raise exception
-    elif rpc_type == "rpyc":
+    elif backend == "python":
         port = launch_rpyc(port=port, **start_parm)
         from ansys.mechanical.core.embedding.rpc.client import Client
 
