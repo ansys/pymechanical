@@ -12,7 +12,8 @@ set BUILDDIR=_build
 set LINKCHECKDIR=\%BUILDDIR%\linkcheck
 
 if "%1" == "" goto help
-if "%1" == "html-noplot" goto html-noplot
+if "%1" == "html-plot" goto html-plot
+if "%1" == "html-cheatsheet" goto html-cheatsheet
 if "%1" == "clean" goto clean
 if "%1" == "pdf" goto pdf
 if "%1" == "linkcheck" goto linkcheck
@@ -29,11 +30,16 @@ if errorlevel 9009 (
 	echo.http://sphinx-doc.org/
 	exit /b 1
 )
+set BUILD_CHEATSHEET=False
+%SPHINXBUILD% -D plot_gallery=0 -b html %SOURCEDIR% %BUILDDIR%/html %SPHINXOPTS% %O%
+goto end
 
+:html-plot
+set BUILD_CHEATSHEET=False
 %SPHINXBUILD% -M %1 %SOURCEDIR% %BUILDDIR% %SPHINXOPTS% %O%
 goto end
 
-:html-noplot
+:html-cheatsheet
 %SPHINXBUILD% -D plot_gallery=0 -b html %SOURCEDIR% %BUILDDIR%/html %SPHINXOPTS% %O%
 goto end
 
