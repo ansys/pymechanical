@@ -30,7 +30,7 @@ import glob
 import os
 import pathlib
 import socket
-import subprocess
+import subprocess  # nosec: B404
 import sys
 import threading
 import time
@@ -1979,7 +1979,7 @@ server.start()
     try:
         embedded_server = subprocess.Popen(
             [sys.executable, "-c", server_script, str(port), str(_version)], env=env_copy
-        )
+        )  # nosec: B603
     except:
         raise RuntimeError("Unable to start the embedded server.")
 
