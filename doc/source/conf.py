@@ -19,7 +19,7 @@ import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
 
 # necessary when building the sphinx gallery
-pymechanical.BUILDING_GALLERY = False  # True
+pymechanical.BUILDING_GALLERY = True
 
 # Whether or not to build the cheatsheet
 BUILD_CHEATSHEET = False  # True
