@@ -257,14 +257,15 @@ pressure.Magnitude.Output.DiscreteValues = output_quantities_2
 # Solve model
 # ~~~~~~~~~~~
 
-Model.Solve()
+Model.Solve(True)
+solution = analysis.Solution
 
+assert str(solution.Status) == "Done"
 
 ###############################################################################
 # Add results
 # ~~~~~~~~~~~
 
-solution = analysis.Solution
 solution.AddTotalDeformation()
 solution.AddEquivalentStress()
 solution.EvaluateAllResults()
