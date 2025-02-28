@@ -260,7 +260,7 @@ pressure.Magnitude.Output.DiscreteValues = output_quantities_2
 Model.Solve(True)
 solution = analysis.Solution
 
-assert str(solution.Status) == "Done"
+assert solution.Status == SolutionStatusType.Done
 
 ###############################################################################
 # Add results
