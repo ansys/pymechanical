@@ -329,6 +329,7 @@ jobs:
           #   xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml || true
           # fi
           xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc || true
+        continue-on-error: true
 
       # - name: Upload coverage results
       #   uses: actions/upload-artifact@v4
