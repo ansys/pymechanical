@@ -330,23 +330,23 @@ jobs:
           # fi
           xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc || true
 
-      - name: Upload coverage results
-        uses: actions/upload-artifact@v4
-        if: env.MAIN_PYTHON_VERSION == matrix.python-version
-        with:
-          include-hidden-files: true
-          name: coverage-tests-embedding-rpc
-          path: .cov
-          retention-days: 7
+      # - name: Upload coverage results
+      #   uses: actions/upload-artifact@v4
+      #   if: env.MAIN_PYTHON_VERSION == matrix.python-version
+      #   with:
+      #     include-hidden-files: true
+      #     name: coverage-tests-embedding-rpc
+      #     path: .cov
+      #     retention-days: 7
 
-      - name: Upload coverage results (as .coverage)
-        uses: actions/upload-artifact@v4
-        if: env.MAIN_PYTHON_VERSION == matrix.python-version
-        with:
-          include-hidden-files: true
-          name: coverage-file-tests-embedding-rpc
-          path: .coverage
-          retention-days: 7
+      # - name: Upload coverage results (as .coverage)
+      #   uses: actions/upload-artifact@v4
+      #   if: env.MAIN_PYTHON_VERSION == matrix.python-version
+      #   with:
+      #     include-hidden-files: true
+      #     name: coverage-file-tests-embedding-rpc
+      #     path: .coverage
+      #     retention-days: 7
 
       # - name: Publish Test Report
       #   uses: mikepenz/action-junit-report@v5
@@ -702,7 +702,8 @@ jobs:
 
   coverage:
     name: Merging coverage
-    needs: [remote-connect, embedding-tests, embedding-scripts-tests, embedding-rpc-tests, launch-tests]
+    needs: [remote-connect, embedding-tests, embedding-scripts-tests, launch-tests]
+    # needs: [remote-connect, embedding-tests, embedding-scripts-tests, embedding-rpc-tests, launch-tests]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -728,10 +729,10 @@ jobs:
           name: coverage-file-tests-embedding
           path: cov-dir/embedding
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: coverage-file-tests-embedding-rpc
-          path: cov-dir/embedding-rpc
+      # - uses: actions/download-artifact@v4
+      #   with:
+      #     name: coverage-file-tests-embedding-rpc
+      #     path: cov-dir/embedding-rpc
 
       - uses: actions/download-artifact@v4
         with:
@@ -754,7 +755,7 @@ jobs:
       - name: Move files to common location
         run: |
           mv cov-dir/embedding/.coverage .coverage.Embedding
-          mv cov-dir/embedding-rpc/.coverage .coverage.EmbeddingRPC
+          # mv cov-dir/embedding-rpc/.coverage .coverage.EmbeddingRPC
           mv cov-dir/embedding-scripts/.coverage .coverage.EmbeddingScripts
           mv cov-dir/launch/.coverage .coverage.Launch
           mv cov-dir/normal/.coverage .coverage.Normal
