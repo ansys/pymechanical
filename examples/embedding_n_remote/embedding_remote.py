@@ -172,8 +172,7 @@ print(f"Downloaded the geometry file to: {geometry_path}")
 # Find the mechanical installation path & version.
 # Open an embedded instance of Mechanical and set global variables.
 
-app = mech.App()
-app.update_globals(globals())
+app = mech.App(globals=globals())
 print(app)
 
 

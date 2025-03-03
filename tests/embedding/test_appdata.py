@@ -36,12 +36,33 @@ from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 @pytest.mark.python_env
 def test_private_appdata(pytestconfig, run_subprocess, rootdir):
     """Test embedded instance does not save ShowTriad using a test-scoped Python environment."""
-
     version = pytestconfig.getoption("ansys_version")
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
-    run_subprocess([sys.executable, embedded_py, version, "True", "Set"])
-    process, stdout, stderr = run_subprocess([sys.executable, embedded_py, version, "True", "Run"])
+    run_subprocess(
+        [
+            sys.executable,
+            embedded_py,
+            "--version",
+            version,
+            "--private_appdata",
+            "True",
+            "--action",
+            "Set",
+        ]
+    )
+    process, stdout, stderr = run_subprocess(
+        [
+            sys.executable,
+            embedded_py,
+            "--version",
+            version,
+            "--private_appdata",
+            "True",
+            "--action",
+            "Run",
+        ]
+    )
     stdout = stdout.decode()
     assert "ShowTriad value is True" in stdout
 
@@ -54,9 +75,42 @@ def test_normal_appdata(pytestconfig, run_subprocess, rootdir):
 
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
 
-    run_subprocess([sys.executable, embedded_py, version, "False", "Set"])
-    process, stdout, stderr = run_subprocess([sys.executable, embedded_py, version, "False", "Run"])
-    run_subprocess([sys.executable, embedded_py, version, "False", "Reset"])
+    run_subprocess(
+        [
+            sys.executable,
+            embedded_py,
+            "--version",
+            version,
+            "--private_appdata",
+            "False",
+            "--action",
+            "Set",
+        ]
+    )
+    process, stdout, stderr = run_subprocess(
+        [
+            sys.executable,
+            embedded_py,
+            "--version",
+            version,
+            "--private_appdata",
+            "False",
+            "--action",
+            "Run",
+        ]
+    )
+    run_subprocess(
+        [
+            sys.executable,
+            embedded_py,
+            "--version",
+            version,
+            "--private_appdata",
+            "False",
+            "--action",
+            "Reset",
+        ]
+    )
 
     stdout = stdout.decode()
     # Assert ShowTriad was set to False for regular embedded session

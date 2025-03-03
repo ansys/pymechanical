@@ -27,13 +27,14 @@ import time
 
 import rpyc
 
+from ansys.mechanical.core.embedding.rpc.server import PYMECHANICAL_DEFAULT_RPC_PORT
 from ansys.mechanical.core.mechanical import DEFAULT_CHUNK_SIZE
 
 
 class Client:
     """Client for connecting to Mechanical services."""
 
-    def __init__(self, host: str, port: int, timeout: float = 120.0):
+    def __init__(self, host: str, port: int, timeout: float = 120.0, cleanup_on_exit=True):
         """Initialize the client.
 
         Parameters
@@ -43,18 +44,23 @@ class Client:
             in which case ``localhost`` is used.
         port : int, optional
             Port to connect to the Mecahnical server. The default is ``None``,
-            in which case ``10000`` is used.
+            in which case ``20000`` is used.
         timeout : float, optional
             Maximum allowable time for connecting to the Mechanical server.
             The default is ``60.0``.
 
         """
+        if host is None:
+            host = "localhost"
         self.host = host
+        if port is None:
+            port = PYMECHANICAL_DEFAULT_RPC_PORT
         self.port = port
         self.timeout = timeout
         self.connection = None
         self.root = None
         self._connect()
+        self._cleanup_on_exit = cleanup_on_exit
 
     def __getattr__(self, attr):
         """Get attribute from the root object."""
@@ -77,26 +83,34 @@ class Client:
 
     def _connect(self):
         self._wait_until_ready()
-        self.connection = rpyc.connect(self.host, self.port)
         self.root = self.connection.root
         print(f"Connected to {self.host}:{self.port}")
-        print(f"Installed methods")
+
+    def _exponential_backoff(self, max_time=60.0, base_time=0.1, factor=2):
+        """Generate exponential backoff timing."""
+        t_max = time.time() + max_time
+        t = base_time
+        while time.time() < t_max:
+            yield t
+            t = min(t * factor, max_time)
 
     def _wait_until_ready(self):
+        """Wait until the server is ready."""
         t_max = time.time() + self.timeout
-        while time.time() < t_max:
+        for delay in self._exponential_backoff(max_time=self.timeout):
+            if time.time() >= t_max:
+                break  # Exit if the timeout is reached
             try:
-                conn = rpyc.connect(self.host, self.port)
-                conn.ping()  # Simple ping to check if the connection is healthy
-                conn.close()
-                print("Server is ready to connect")
-                break
-            except:
-                time.sleep(2)
-        else:
-            raise TimeoutError(
-                f"Server at {self.host}:{self.port} not ready within {self.timeout} seconds."
-            )
+                self.connection = rpyc.connect(self.host, self.port)
+                self.connection.ping()
+                print("Server is ready.")
+                return
+            except Exception:
+                time.sleep(delay)
+
+        raise TimeoutError(
+            f"Server at {self.host}:{self.port} not ready within {self.timeout} seconds."
+        )
 
     def close(self):
         """Close the connection."""
@@ -232,6 +246,14 @@ class Client:
     def exit(self):
         """Shuts down the Mechanical instance."""
         print("Requesting server shutdown ...")
-        self.root.service_exit()
+        self.service_exit()
         self.connection.close()
         print("Disconnected from server")
+
+    def __del__(self):  # pragma: no cover
+        """Clean up on exit."""
+        if self._cleanup_on_exit:
+            try:
+                self.exit()
+            except Exception as e:
+                print(f"Failed to exit cleanly: {e}")

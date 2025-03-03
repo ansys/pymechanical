@@ -19,18 +19,33 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+"""A class to speed up bulk user interactions using Ansys ACT Mechanical Transaction."""
 
-"""Library to import Mechanical enums.
 
-A useful subset of what is imported by
-Ansys Inc/v{NNN}/ACT/apis/Mechanical.py
-"""
-import clr
+class Transaction:  # When ansys-pythonnet issue #14 is fixed, this class will be removed
+    """
+    A class to speed up bulk user interactions using Ansys ACT Mechanical Transaction.
 
-clr.AddReference("Ansys.Mechanical.DataModel")
-clr.AddReference("Ansys.ACT.Interfaces")
+    Example
+    -------
+    >>> with Transaction() as transaction:
+    ...     pass   # Perform bulk user interactions here
+    ...
+    """
 
-from Ansys.ACT.Interfaces.Common import *  # noqa isort: skip
-from Ansys.Mechanical.DataModel.Enums import *  # noqa isort: skip
-from Ansys.ACT.Interfaces.Analysis import *  # noqa isort: skip
-import Ansys  # noqa  isort: skip
+    def __init__(self):
+        """Initialize the Transaction class."""
+        import clr
+
+        clr.AddReference("Ansys.ACT.WB1")
+        import Ansys
+
+        self._transaction = Ansys.ACT.Mechanical.Transaction()
+
+    def __enter__(self):
+        """Enter the context of the transaction."""
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Exit the context of the transaction and disposes of resources."""
+        self._transaction.Dispose()
