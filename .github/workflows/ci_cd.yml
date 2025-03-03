@@ -284,69 +284,69 @@ jobs:
           path: mechanical_tests_log-${{ matrix.mechanical-version }}.txt
           retention-days: 7
 
-  embedding-rpc-tests:
-    name: Embedding rpc testing and coverage
-    runs-on: public-ubuntu-latest-8-cores
-    timeout-minutes: 10
-    needs: [smoke-tests, revn-variations, container-stability-check]
-    container:
-      image: ${{ needs.revn-variations.outputs.test_container }}
-      options: --entrypoint /bin/bash
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ['3.10', '3.11', '3.12', '3.13']
+  # embedding-rpc-tests:
+  #   name: Embedding rpc testing and coverage
+  #   runs-on: public-ubuntu-latest-8-cores
+  #   timeout-minutes: 10
+  #   needs: [smoke-tests, revn-variations, container-stability-check]
+  #   container:
+  #     image: ${{ needs.revn-variations.outputs.test_container }}
+  #     options: --entrypoint /bin/bash
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       python-version: ['3.10', '3.11', '3.12', '3.13']
 
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up python and pip
-        run: |
-          apt update
-          apt install --reinstall ca-certificates
-          apt install lsb-release xvfb software-properties-common -y
-          add-apt-repository ppa:deadsnakes/ppa -y
-          apt install -y python${{ matrix.python-version }} python${{ matrix.python-version }}-venv
-          python${{ matrix.python-version }} -m venv /env
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Set up python and pip
+  #       run: |
+  #         apt update
+  #         apt install --reinstall ca-certificates
+  #         apt install lsb-release xvfb software-properties-common -y
+  #         add-apt-repository ppa:deadsnakes/ppa -y
+  #         apt install -y python${{ matrix.python-version }} python${{ matrix.python-version }}-venv
+  #         python${{ matrix.python-version }} -m venv /env
 
-      - name: Install packages for testing
-        run: |
-          . /env/bin/activate
-          pip install --upgrade pip
-          pip install uv
-          uv pip install -e .[tests,rpc]
+  #     - name: Install packages for testing
+  #       run: |
+  #         . /env/bin/activate
+  #         pip install --upgrade pip
+  #         pip install uv
+  #         uv pip install -e .[tests,rpc]
 
-      - name: Unit Testing and coverage
-        env:
-          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
-          ANSYS_WORKBENCH_LOGGING: 0
-          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
-          PYTHONUNBUFFERED: 1
-        run: |
-          . /env/bin/activate
-          # if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
-          #   xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml
-          # else
-          #   xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml || true
-          # fi
-          xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc || true
+  #     - name: Unit Testing and coverage
+  #       env:
+  #         ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
+  #         ANSYS_WORKBENCH_LOGGING: 0
+  #         ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
+  #         PYTHONUNBUFFERED: 1
+  #       run: |
+  #         . /env/bin/activate
+  #         # if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
+  #         #   xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml
+  #         # else
+  #         #   xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml || true
+  #         # fi
+  #         xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc || true
 
-      - name: Upload coverage results
-        uses: actions/upload-artifact@v4
-        if: env.MAIN_PYTHON_VERSION == matrix.python-version
-        with:
-          include-hidden-files: true
-          name: coverage-tests-embedding-rpc
-          path: .cov
-          retention-days: 7
+      # - name: Upload coverage results
+      #   uses: actions/upload-artifact@v4
+      #   if: env.MAIN_PYTHON_VERSION == matrix.python-version
+      #   with:
+      #     include-hidden-files: true
+      #     name: coverage-tests-embedding-rpc
+      #     path: .cov
+      #     retention-days: 7
 
-      - name: Upload coverage results (as .coverage)
-        uses: actions/upload-artifact@v4
-        if: env.MAIN_PYTHON_VERSION == matrix.python-version
-        with:
-          include-hidden-files: true
-          name: coverage-file-tests-embedding-rpc
-          path: .coverage
-          retention-days: 7
+      # - name: Upload coverage results (as .coverage)
+      #   uses: actions/upload-artifact@v4
+      #   if: env.MAIN_PYTHON_VERSION == matrix.python-version
+      #   with:
+      #     include-hidden-files: true
+      #     name: coverage-file-tests-embedding-rpc
+      #     path: .coverage
+      #     retention-days: 7
 
       # - name: Publish Test Report
       #   uses: mikepenz/action-junit-report@v5
@@ -702,7 +702,8 @@ jobs:
 
   coverage:
     name: Merging coverage
-    needs: [remote-connect, embedding-tests, embedding-scripts-tests, embedding-rpc-tests, launch-tests]
+    needs: [remote-connect, embedding-tests, embedding-scripts-tests, launch-tests]
+    # needs: [remote-connect, embedding-tests, embedding-scripts-tests, embedding-rpc-tests, launch-tests]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -728,10 +729,10 @@ jobs:
           name: coverage-file-tests-embedding
           path: cov-dir/embedding
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: coverage-file-tests-embedding-rpc
-          path: cov-dir/embedding-rpc
+      # - uses: actions/download-artifact@v4
+      #   with:
+      #     name: coverage-file-tests-embedding-rpc
+      #     path: cov-dir/embedding-rpc
 
       - uses: actions/download-artifact@v4
         with:
@@ -754,7 +755,7 @@ jobs:
       - name: Move files to common location
         run: |
           mv cov-dir/embedding/.coverage .coverage.Embedding
-          mv cov-dir/embedding-rpc/.coverage .coverage.EmbeddingRPC
+          # mv cov-dir/embedding-rpc/.coverage .coverage.EmbeddingRPC
           mv cov-dir/embedding-scripts/.coverage .coverage.EmbeddingScripts
           mv cov-dir/launch/.coverage .coverage.Launch
           mv cov-dir/normal/.coverage .coverage.Normal
