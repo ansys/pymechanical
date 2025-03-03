@@ -51,6 +51,14 @@ class MechanicalService(rpyc.Service):
         self._install_functions(functions)
         self._install_classes(impl)
 
+    def on_connect(self, conn):
+        """Handle client connection."""
+        print("Client connected")
+
+    def on_disconnect(self, conn):
+        """Handle client disconnection."""
+        print("Client disconnected")
+
     def _install_functions(self, methods):
         """Install the given list of methods."""
         if not methods:
@@ -65,22 +73,13 @@ class MechanicalService(rpyc.Service):
 
     def _install_class(self, impl):
         """Install methods from the given implemented class."""
-        print(f"Installing methods from class : {impl}")
+        if impl is None:
+            return
         for methodname, method, methodtype in get_remote_methods(impl):
-            print(f"installing {methodname} of {impl}")
             if methodtype == MethodType.METHOD:
                 self._install_method(method)
             elif methodtype == MethodType.PROP:
                 self._install_property(method, methodname)
-
-    def on_connect(self, conn):
-        """Handle client connection."""
-        print("Client connected")
-        print(self._backgroundapp.app)
-
-    def on_disconnect(self, conn):
-        """Handle client disconnection."""
-        print("Client disconnected")
 
     def _curry_property(self, prop, propname, get: bool):
         """Curry the given property."""
@@ -163,7 +162,6 @@ class MechanicalService(rpyc.Service):
 
     def _install_function(self, function):
         """Install a functions with inner and exposed pairs."""
-        print(f"Installing {function}")
         exposed_name = f"exposed_{function.__name__}"
         inner_name = f"inner_{function.__name__}"
 
@@ -241,7 +239,6 @@ class MechanicalEmbeddedServer:
         self._service = service
         self._methods = methods if methods is not None else []
         self._exit_thread: threading.Thread = None
-        print("Initializing Mechanical ...")
 
         self._port = self.get_free_port(port)
 

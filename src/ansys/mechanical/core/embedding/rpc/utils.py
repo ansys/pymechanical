@@ -102,12 +102,10 @@ def get_remote_methods(
         A tuple containing the method name and the method itself
         for each remote method found in the object
     """
-    print(f"Getting remote methods on {obj}")
     objclass = obj.__class__
     for attrname in dir(obj):
         if attrname.startswith("__"):
             continue
-        print(attrname)
         if hasattr(objclass, attrname):
             class_attribute = getattr(objclass, attrname)
             if isinstance(class_attribute, property):
