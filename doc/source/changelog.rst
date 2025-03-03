@@ -9,6 +9,46 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.14 <https://github.com/ansys/pymechanical/releases/tag/v0.11.14>`_ - 2025-03-03
+=====================================================================================
+
+Added
+^^^^^
+
+- add `globals` kwarg to app and adjust `ideconfig` behavior `#1017 <https://github.com/ansys/pymechanical/pull/1017>`_
+- Add a Message Manager for App `#1068 <https://github.com/ansys/pymechanical/pull/1068>`_
+- add logging for app `#1091 <https://github.com/ansys/pymechanical/pull/1091>`_
+- Add rpyc option in `launch_mechanical` `#1101 <https://github.com/ansys/pymechanical/pull/1101>`_
+
+
+Fixed
+^^^^^
+
+- Emedding rpc server shutdown `#1088 <https://github.com/ansys/pymechanical/pull/1088>`_
+- Remove unnecessary prints from embedding rpc `#1090 <https://github.com/ansys/pymechanical/pull/1090>`_
+
+
+Documentation
+^^^^^^^^^^^^^
+
+- Add "what's new" fragment for the globals parameter in App `#1096 <https://github.com/ansys/pymechanical/pull/1096>`_
+- Fix typo for remote session documentation. `#1098 <https://github.com/ansys/pymechanical/pull/1098>`_
+- Update documentation for Mechanical container. `#1099 <https://github.com/ansys/pymechanical/pull/1099>`_
+- Adjust globals documentation `#1100 <https://github.com/ansys/pymechanical/pull/1100>`_
+
+
+Maintenance
+^^^^^^^^^^^
+
+- Integrate uv in CI/CD `#1085 <https://github.com/ansys/pymechanical/pull/1085>`_
+- update CHANGELOG for v0.11.13 `#1087 <https://github.com/ansys/pymechanical/pull/1087>`_
+- Bump the doc group with 3 updates `#1093 <https://github.com/ansys/pymechanical/pull/1093>`_, `#1103 <https://github.com/ansys/pymechanical/pull/1103>`_
+- Bump psutil from 6.1.1 to 7.0.0 `#1094 <https://github.com/ansys/pymechanical/pull/1094>`_
+- pre-commit automatic update `#1095 <https://github.com/ansys/pymechanical/pull/1095>`_, `#1102 <https://github.com/ansys/pymechanical/pull/1102>`_
+- Change main python version in CI/CD `#1104 <https://github.com/ansys/pymechanical/pull/1104>`_
+- Upload coverage to codacy `#1105 <https://github.com/ansys/pymechanical/pull/1105>`_
+- Disable rpc tests `#1107 <https://github.com/ansys/pymechanical/pull/1107>`_
+
 `0.11.13 <https://github.com/ansys/pymechanical/releases/tag/v0.11.13>`_ - 2025-02-07
 =====================================================================================
 
