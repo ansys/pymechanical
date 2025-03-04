@@ -115,7 +115,7 @@ class MechanicalService(rpyc.Service):
 
         def posted(*args, **kwargs):
             def curried():
-                return curried_method(self._app, *args, **kwargs)
+                return curried_method(self._backgroundapp.app, *args, **kwargs)
 
             return self._backgroundapp.try_post(curried)
 
