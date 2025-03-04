@@ -44,13 +44,12 @@ PYMECHANICAL_DEFAULT_RPC_PORT = 20000
 class MechanicalService(rpyc.Service):
     """Starts Mechanical app services."""
 
-    def __init__(self, backgroundapp, functions=[], impl=None):
+    def __init__(self, backgroundapp, functions=[], impl=[]):
         """Initialize the service."""
         super().__init__()
         self._backgroundapp = backgroundapp
         self._install_functions(functions)
-        self._install_class(impl)
-        self.EMBEDDED = True
+        self._install_classes(impl)
 
     def on_connect(self, conn):
         """Handle client connection."""
@@ -62,7 +61,15 @@ class MechanicalService(rpyc.Service):
 
     def _install_functions(self, methods):
         """Install the given list of methods."""
+        if not methods:
+            return
         [self._install_function(method) for method in methods]
+
+    def _install_classes(self, impl):
+        """Install the given list of classes."""
+        if not impl:
+            return
+        [self._install_class(_impl) for _impl in impl]
 
     def _install_class(self, impl):
         """Install methods from the given implemented class."""
@@ -108,7 +115,7 @@ class MechanicalService(rpyc.Service):
 
         def posted(*args, **kwargs):
             def curried():
-                return curried_method(self._app, *args, **kwargs)
+                return curried_method(self._backgroundapp.app, *args, **kwargs)
 
             return self._backgroundapp.try_post(curried)
 
@@ -224,20 +231,24 @@ class MechanicalEmbeddedServer:
         port: int = None,
         version: int = None,
         methods: typing.List[typing.Callable] = [],
-        impl=None,
+        impl: typing.List[typing.Callable] = [],
     ):
         """Initialize the server."""
         self._exited = False
         self._background_app = BackgroundApp(version=version)
         self._service = service
-        self._methods = methods
+        self._methods = methods if methods is not None else []
         self._exit_thread: threading.Thread = None
 
         self._port = self.get_free_port(port)
-        if impl is None:
-            self._impl = None
-        else:
-            self._impl = impl(self._background_app.app)
+
+        if methods and not isinstance(methods, list):
+            methods = [methods]
+        self._methods = methods if methods is not None else []
+
+        if impl and not isinstance(impl, list):
+            impl = [impl]
+        self._impl = [i(self._background_app.app) for i in impl] if impl else []
 
         my_service = self._service(self._background_app, self._methods, self._impl)
         self._server = ThreadedServer(my_service, port=self._port)
