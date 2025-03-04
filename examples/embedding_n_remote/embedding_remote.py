@@ -24,9 +24,7 @@
 
 Remote & Embedding Example
 --------------------------
-This code, which uses the same example, first demonstrates how to use
-a remote session and then demonstrates how to use an embedding instance.
-
+This code demonstrates how to use a remote session and an embedding instance.
 """
 
 ###############################################################################
@@ -61,11 +59,6 @@ print(f"Downloaded the script file to: {script_file_path}")
 # ``False``. To close this Mechanical session when finished, this example
 # must call  the ``mechanical.exit()`` method.
 
-import os
-
-from ansys.mechanical.core import launch_mechanical
-
-# Launch mechanical
 mechanical = launch_mechanical(batch=True, loglevel="DEBUG")
 print(mechanical)
 
@@ -111,19 +104,41 @@ for file in list_files:
 
 
 ###############################################################################
-# Write the file contents to console
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Download output file from solve and print contents
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Download the ``solve.out`` file from the server to the current working
+# directory and print the contents. Remove the ``solve.out`` fil
 
 
-def write_file_contents_to_console(path, number_lines=-1):
-    count = 1
+def get_solve_out_path(mechanical):
+    """Get the solve out path and return."""
+    solve_out_path = ""
+    for file_path in mechanical.list_files():
+        if file_path.find("solve.out") != -1:
+            solve_out_path = file_path
+            break
+
+    return solve_out_path
+
+
+def write_file_contents_to_console(path):
+    """Write file contents to console."""
     with open(path, "rt") as file:
         for line in file:
-            if number_lines == -1 or count <= number_lines:
-                print(line, end="")
-                count = count + 1
-            else:
-                break
+            print(line, end="")
+
+
+solve_out_path = get_solve_out_path(mechanical)
+
+if solve_out_path != "":
+    current_working_directory = os.getcwd()
+
+    mechanical.download(solve_out_path, target_dir=current_working_directory)
+    solve_out_local_path = os.path.join(current_working_directory, "solve.out")
+
+    write_file_contents_to_console(solve_out_local_path)
+
+    os.remove(solve_out_local_path)
 
 
 ###############################################################################
@@ -159,7 +174,7 @@ mechanical.exit()
 
 import os
 
-import ansys.mechanical.core as mech
+from ansys.mechanical.core import App
 from ansys.mechanical.core.examples import download_file
 
 geometry_path = download_file("Valve.pmdb", "pymechanical", "embedding")
@@ -172,7 +187,7 @@ print(f"Downloaded the geometry file to: {geometry_path}")
 # Find the mechanical installation path & version.
 # Open an embedded instance of Mechanical and set global variables.
 
-app = mech.App(globals=globals())
+app = App(globals=globals())
 print(app)
 
 
@@ -257,7 +272,7 @@ pressure.Magnitude.Output.DiscreteValues = output_quantities_2
 # Solve model
 # ~~~~~~~~~~~
 
-Model.Solve()
+Model.Solve(True)
 
 
 ###############################################################################
@@ -268,7 +283,7 @@ solution = analysis.Solution
 solution.AddTotalDeformation()
 solution.AddEquivalentStress()
 solution.EvaluateAllResults()
-
+print(str(solution.Status))
 
 ###############################################################################
 # Save model

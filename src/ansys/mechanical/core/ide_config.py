@@ -93,6 +93,7 @@ def _vscode_impl(
         If unspecified, it finds the default Mechanical version from ansys-tools-path.
     """
     # Update the user or workspace settings
+    settings_json = None
     if target == "user":
         # Get the path to the user's settings.json file depending on the platform
         if "win" in sys.platform:
