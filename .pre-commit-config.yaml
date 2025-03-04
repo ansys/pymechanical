@@ -24,7 +24,7 @@ repos:
     additional_dependencies: [black==24.10.0]
 
 - repo: https://github.com/pycqa/isort
-  rev: 6.0.0
+  rev: 6.0.1
   hooks:
   - id: isort
 
@@ -41,7 +41,7 @@ repos:
     args: ["--ignore-words", "doc/styles/config/vocabularies/ANSYS/accept.txt", "-w"]
 
 - repo: https://github.com/ansys/pre-commit-hooks
-  rev: v0.5.1
+  rev: v0.5.2
   hooks:
   - id: add-license-headers
     args:
