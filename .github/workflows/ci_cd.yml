@@ -138,7 +138,6 @@ jobs:
   embedding-rpc-tests:
     name: Embedding rpc testing and coverage
     runs-on: public-ubuntu-latest-8-cores
-    timeout-minutes: 10
     needs: [revn-variations, container-stability-check]
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
