@@ -24,7 +24,9 @@
 
 Remote & Embedding Example
 --------------------------
-This code demonstrates how to use a remote session and an embedding instance.
+This code, which uses the same example, first demonstrates how to use
+a remote session and then demonstrates how to use an embedding instance.
+
 """
 
 ###############################################################################
@@ -59,6 +61,11 @@ print(f"Downloaded the script file to: {script_file_path}")
 # ``False``. To close this Mechanical session when finished, this example
 # must call  the ``mechanical.exit()`` method.
 
+import os
+
+from ansys.mechanical.core import launch_mechanical
+
+# Launch mechanical
 mechanical = launch_mechanical(batch=True, loglevel="DEBUG")
 print(mechanical)
 
@@ -152,7 +159,7 @@ mechanical.exit()
 
 import os
 
-from ansys.mechanical.core import App
+import ansys.mechanical.core as mech
 from ansys.mechanical.core.examples import download_file
 
 geometry_path = download_file("Valve.pmdb", "pymechanical", "embedding")
@@ -165,7 +172,7 @@ print(f"Downloaded the geometry file to: {geometry_path}")
 # Find the mechanical installation path & version.
 # Open an embedded instance of Mechanical and set global variables.
 
-app = App(globals=globals())
+app = mech.App(globals=globals())
 print(app)
 
 
@@ -250,7 +257,7 @@ pressure.Magnitude.Output.DiscreteValues = output_quantities_2
 # Solve model
 # ~~~~~~~~~~~
 
-Model.Solve(True)
+Model.Solve()
 
 
 ###############################################################################
@@ -261,8 +268,8 @@ solution = analysis.Solution
 solution.AddTotalDeformation()
 solution.AddEquivalentStress()
 solution.EvaluateAllResults()
-print(str(solution.Status))
-app.messages.show()
+
+
 ###############################################################################
 # Save model
 # ~~~~~~~~~~
