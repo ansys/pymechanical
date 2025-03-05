@@ -24,9 +24,7 @@
 
 Remote & Embedding Example
 --------------------------
-This code, which uses the same example, first demonstrates how to use
-a remote session and then demonstrates how to use an embedding instance.
-
+This code demonstrates how to use a remote session and an embedding instance.
 """
 
 ###############################################################################
@@ -41,115 +39,110 @@ a remote session and then demonstrates how to use an embedding instance.
 # Download the required files. Print the file paths for the geometry file and
 # script file.
 
-import os
+# import os
 
-from ansys.mechanical.core import launch_mechanical
-from ansys.mechanical.core.examples import download_file
+# from ansys.mechanical.core import launch_mechanical
+# from ansys.mechanical.core.examples import download_file
 
-geometry_path = download_file("Valve.pmdb", "pymechanical", "embedding")
-print(f"Downloaded the geometry file to: {geometry_path}")
+# geometry_path = download_file("Valve.pmdb", "pymechanical", "embedding")
+# print(f"Downloaded the geometry file to: {geometry_path}")
 
-script_file_path = download_file("remote_script.py", "pymechanical", "embedding")
-print(f"Downloaded the script file to: {script_file_path}")
-
-
-###############################################################################
-#
-# Launch Mechanical
-# ~~~~~~~~~~~~~~~~~
-# Launch a new Mechanical session in batch, setting ``cleanup_on_exit`` to
-# ``False``. To close this Mechanical session when finished, this example
-# must call  the ``mechanical.exit()`` method.
-
-import os
-
-from ansys.mechanical.core import launch_mechanical
-
-# Launch mechanical
-mechanical = launch_mechanical(batch=True, loglevel="DEBUG")
-print(mechanical)
+# script_file_path = download_file("remote_script.py", "pymechanical", "embedding")
+# print(f"Downloaded the script file to: {script_file_path}")
 
 
-###############################################################################
-# Initialize variable for workflow
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Set the ``part_file_path`` variable on the server for later use.
-# Make this variable compatible for Windows, Linux, and Docker containers.
+# ###############################################################################
+# #
+# # Launch Mechanical
+# # ~~~~~~~~~~~~~~~~~
+# # Launch a new Mechanical session in batch, setting ``cleanup_on_exit`` to
+# # ``False``. To close this Mechanical session when finished, this example
+# # must call  the ``mechanical.exit()`` method.
 
-project_directory = mechanical.project_directory
-print(f"project directory = {project_directory}")
-
-# Upload the file to the project directory.
-mechanical.upload(file_name=geometry_path, file_location_destination=project_directory)
-
-# Build the path relative to project directory.
-base_name = os.path.basename(geometry_path)
-combined_path = os.path.join(project_directory, base_name)
-part_file_path = combined_path.replace("\\", "\\\\")
-mechanical.run_python_script(f"part_file_path='{part_file_path}'")
-
-# Verify the path
-result = mechanical.run_python_script("part_file_path")
-print(f"part_file_path on server: {result}")
+# mechanical = launch_mechanical(batch=True, loglevel="DEBUG")
+# print(mechanical)
 
 
-###############################################################################
-# Run mechanical automation script
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Run remote_script.py in the mechanical remote session.
+# ###############################################################################
+# # Initialize variable for workflow
+# # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# # Set the ``part_file_path`` variable on the server for later use.
+# # Make this variable compatible for Windows, Linux, and Docker containers.
 
-mechanical.run_python_script_from_file(script_file_path)
+# project_directory = mechanical.project_directory
+# print(f"project directory = {project_directory}")
 
+# # Upload the file to the project directory.
+# mechanical.upload(file_name=geometry_path, file_location_destination=project_directory)
 
-###############################################################################
-# Get list of generated files
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# # Build the path relative to project directory.
+# base_name = os.path.basename(geometry_path)
+# combined_path = os.path.join(project_directory, base_name)
+# part_file_path = combined_path.replace("\\", "\\\\")
+# mechanical.run_python_script(f"part_file_path='{part_file_path}'")
 
-list_files = mechanical.list_files()
-for file in list_files:
-    print(file)
-
-
-###############################################################################
-# Write the file contents to console
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-def write_file_contents_to_console(path, number_lines=-1):
-    count = 1
-    with open(path, "rt") as file:
-        for line in file:
-            if number_lines == -1 or count <= number_lines:
-                print(line, end="")
-                count = count + 1
-            else:
-                break
+# # Verify the path
+# result = mechanical.run_python_script("part_file_path")
+# print(f"part_file_path on server: {result}")
 
 
-###############################################################################
-# Download files back to local working directory
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ###############################################################################
+# # Run mechanical automation script
+# # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# # Run remote_script.py in the mechanical remote session.
 
-dest_dir = "download"
-dest_dir = os.path.join(os.getcwd(), dest_dir)
-for file in list_files:
-    downloaded = mechanical.download(file, target_dir=dest_dir)
-    if file.endswith(".out"):
-        print("contents of ", downloaded, " : ")
-        write_file_contents_to_console(downloaded[0], number_lines=-1)
+# mechanical.run_script(script_file_path)
 
 
-###############################################################################
-# Exit remote session
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Close the Mechanical instance.
+# ###############################################################################
+# # Get list of generated files
+# # ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-mechanical.exit()
+# list_files = mechanical.list_files()
+# for file in list_files:
+#     print(file)
 
-###############################################################################
-# -----------------
-# Embedded Instance
-# -----------------
+
+# ###############################################################################
+# # Write the file contents to console
+# # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+# def write_file_contents_to_console(path, number_lines=-1):
+#     count = 1
+#     with open(path, "rt") as file:
+#         for line in file:
+#             if number_lines == -1 or count <= number_lines:
+#                 print(line, end="")
+#                 count = count + 1
+#             else:
+#                 break
+
+
+# ###############################################################################
+# # Download files back to local working directory
+# # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# dest_dir = "download"
+# dest_dir = os.path.join(os.getcwd(), dest_dir)
+# for file in list_files:
+#     downloaded = mechanical.download(file, target_dir=dest_dir)
+#     if file.endswith(".out"):
+#         print("contents of ", downloaded, " : ")
+#         write_file_contents_to_console(downloaded[0], number_lines=-1)
+
+
+# ###############################################################################
+# # Exit remote session
+# # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# # Close the Mechanical instance.
+
+# mechanical.exit()
+
+# ###############################################################################
+# # -----------------
+# # Embedded Instance
+# # -----------------
 
 
 ###############################################################################
@@ -159,7 +152,7 @@ mechanical.exit()
 
 import os
 
-import ansys.mechanical.core as mech
+from ansys.mechanical.core import App
 from ansys.mechanical.core.examples import download_file
 
 geometry_path = download_file("Valve.pmdb", "pymechanical", "embedding")
@@ -172,7 +165,7 @@ print(f"Downloaded the geometry file to: {geometry_path}")
 # Find the mechanical installation path & version.
 # Open an embedded instance of Mechanical and set global variables.
 
-app = mech.App(globals=globals())
+app = App(globals=globals())
 print(app)
 
 
@@ -194,7 +187,6 @@ geometry_import_format = Ansys.Mechanical.DataModel.Enums.GeometryImportPreferen
 geometry_import_preferences = Ansys.ACT.Mechanical.Utilities.GeometryImportPreferences()
 geometry_import_preferences.ProcessNamedSelections = True
 geometry_import.Import(geometry_file, geometry_import_format, geometry_import_preferences)
-
 
 ###############################################################################
 # Assign material
@@ -257,8 +249,8 @@ pressure.Magnitude.Output.DiscreteValues = output_quantities_2
 # Solve model
 # ~~~~~~~~~~~
 
-Model.Solve()
-
+Model.Solve(True)
+app.messages.show()
 
 ###############################################################################
 # Add results
@@ -268,7 +260,6 @@ solution = analysis.Solution
 solution.AddTotalDeformation()
 solution.AddEquivalentStress()
 solution.EvaluateAllResults()
-
 
 ###############################################################################
 # Save model
