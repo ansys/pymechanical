@@ -104,41 +104,19 @@ for file in list_files:
 
 
 ###############################################################################
-# Download output file from solve and print contents
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Download the ``solve.out`` file from the server to the current working
-# directory and print the contents. Remove the ``solve.out`` fil
+# Write the file contents to console
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-def get_solve_out_path(mechanical):
-    """Get the solve out path and return."""
-    solve_out_path = ""
-    for file_path in mechanical.list_files():
-        if file_path.find("solve.out") != -1:
-            solve_out_path = file_path
-            break
-
-    return solve_out_path
-
-
-def write_file_contents_to_console(path):
-    """Write file contents to console."""
+def write_file_contents_to_console(path, number_lines=-1):
+    count = 1
     with open(path, "rt") as file:
         for line in file:
-            print(line, end="")
-
-
-solve_out_path = get_solve_out_path(mechanical)
-
-if solve_out_path != "":
-    current_working_directory = os.getcwd()
-
-    mechanical.download(solve_out_path, target_dir=current_working_directory)
-    solve_out_local_path = os.path.join(current_working_directory, "solve.out")
-
-    write_file_contents_to_console(solve_out_local_path)
-
-    os.remove(solve_out_local_path)
+            if number_lines == -1 or count <= number_lines:
+                print(line, end="")
+                count = count + 1
+            else:
+                break
 
 
 ###############################################################################
@@ -284,7 +262,7 @@ solution.AddTotalDeformation()
 solution.AddEquivalentStress()
 solution.EvaluateAllResults()
 print(str(solution.Status))
-
+app.messages.show()
 ###############################################################################
 # Save model
 # ~~~~~~~~~~
