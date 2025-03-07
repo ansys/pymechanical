@@ -163,9 +163,6 @@ def test_app_print_tree(embedded_app, capsys, assets):
 
 
 @pytest.mark.embedding
-@pytest.mark.skip(
-    reason="This test is not working on the CI (https://github.com/ansys/pymechanical/issues/1071 )"
-)
 def test_app_poster(embedded_app, printer):
     """The getters of app should be usable after a new().
 
