@@ -1204,9 +1204,9 @@ class Mechanical(object):
         if progress_bar:
             if not _HAS_TQDM:  # pragma: no cover
                 raise ModuleNotFoundError(
-                    f"To use the keyword argument 'progress_bar', you must have "
-                    f"installed the 'tqdm' package. To avoid this message, you can "
-                    f"set 'progress_bar=False'."
+                    "To use the keyword argument 'progress_bar', you must have "
+                    "installed the 'tqdm' package. To avoid this message, you can "
+                    "set 'progress_bar=False'."
                 )
 
             n_bytes = os.path.getsize(file_name)
