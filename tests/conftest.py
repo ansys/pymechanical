@@ -292,11 +292,11 @@ def connect_to_mechanical_instance(port=None, clear_on_connect=False):
 
 def launch_rpc_embedded_server(port: int, version: int, server_script: str):
     """Start the server as a subprocess using `port`."""
-    global embedded_server
     env_copy = os.environ.copy()
-    embedded_server = subprocess.Popen(
+    p = subprocess.Popen(
         [sys.executable, server_script, str(port), str(version)], env=env_copy
     )
+    return p
 
 
 def connect_rpc_embedded_server(port: int):
@@ -306,54 +306,86 @@ def connect_rpc_embedded_server(port: int):
     return client
 
 
+def _launch_mechanical_rpyc_server(version: int):
+    """Start rpyc server process, return the process object."""
+    from ansys.mechanical.core.embedding.rpc import MechanicalEmbeddedServer
+
+    server_py = os.path.join(rootdir, "tests", "scripts", "rpc_server_embedded.py")
+    _port = MechanicalEmbeddedServer.get_free_port()
+    embedded_server = launch_rpc_embedded_server(port=_port, version=version, server_script=server_py)
+
+def _get_mechanical_server():
+    if not pymechanical.mechanical.get_start_instance():
+        mechanical = connect_to_mechanical_instance()
+    else:
+        mechanical = launch_mechanical_instance()
+    return mechanical
+
+def _stop_python_server(mechanical, server_process):
+    mechanical.exit()
+    start_time = time.time()
+    while server_process.poll() is None:
+        if time.time() - start_time > 10:
+            try:
+                server_process.terminate()
+                server_process.wait()
+            except subprocess.TimeoutExpired:
+                server_process.kill()
+            break
+        time.sleep(0.5)
+
+
+def _stop_mechanical_server(mechanical):
+    assert "Ansys Mechanical" in str(mechanical)
+    if pymechanical.mechanical.get_start_instance():
+        print(f"get_start_instance() returned True. exiting mechanical.")
+        mechanical.exit(force=True)
+        assert mechanical.exited
+        assert "Mechanical exited" in str(mechanical)
+        with pytest.raises(MechanicalExitedError):
+            mechanical.run_python_script("3+4")
+
 @pytest.fixture(scope="session")
-def mechanical(pytestconfig, rootdir):
-    print("current working directory: ", os.getcwd())
-    is_embedded_server = pytestconfig.getoption("remote_server_type") == "rpyc"
-    if is_embedded_server:
-        from ansys.mechanical.core.embedding.rpc import MechanicalEmbeddedServer
-
-        _version = int(pytestconfig.getoption("ansys_version"))
-        server_py = os.path.join(rootdir, "tests", "scripts", "rpc_server_embedded.py")
-        _port = MechanicalEmbeddedServer.get_free_port()
-        launch_rpc_embedded_server(port=_port, version=_version, server_script=server_py)
+def mechanical_session(pytestconfig, rootdir, printer):
+    is_python_server = pytestconfig.getoption("remote_server_type") == "rpyc"
+    version = int(pytestconfig.getoption("ansys_version"))
+    if is_python_server:
+        server_process = _launch_mechanical_rpyc_server(version)
         mechanical = connect_rpc_embedded_server(port=_port)
-        setattr(mechanical, "_rpc_error_type", Exception)
-        setattr(mechanical, "_rpc_type", "rpyc")
     else:
-        if not pymechanical.mechanical.get_start_instance():
-            mechanical = connect_to_mechanical_instance()
-        else:
-            mechanical = launch_mechanical_instance()
-        setattr(mechanical, "_rpc_error_type", grpc.RpcError)
+        server_process = None
+        mechanical = _get_mechanical_server()
 
-    print(mechanical)
+    yield (mechanical, server_process)
+    printer("Stopping server")
+    if is_python_server:
+        _stop_python_server(mechanical, server_process)
+    else:
+        _stop_mechanical_server(mechanical)
+    printer("mechanical rpc session fixture exited cleanly")
+
+@pytest.fixture(autouse=True)
+def mke_app_reset(request, printer):
+    global EMBEDDED_APP
+    if EMBEDDED_APP is None:
+        # embedded app was not started - no need to do anything
+        return
+    printer(f"starting test {request.function.__name__} - file new")
+    EMBEDDED_APP.new()
+
+@pytest.fixture()
+def mechanical(request, printer, mechanical_session):
+    printer(f"before starting test {request.function.__name__} - file new")
+    mechanical, server_process = mechanical_session
+    if server_process is not None:
+        ret = server_process.poll()
+        if ret is not None:
+            raise Exception(f"The server process has terminated with error code {ret}")
+    assert mechanical.is_alive, "The server process has not terminated but connection has been lost"
+    mechanical.run_python_script("ExtAPI.DataModel.Project.New()")
+
     yield mechanical
-    if is_embedded_server:
-        print("\n Stopping embedded server")
-        global embedded_server
-        mechanical.exit()
-        start_time = time.time()
-        while embedded_server.poll() is None:
-            if time.time() - start_time > 10:
-                try:
-                    embedded_server.terminate()
-                    embedded_server.wait()
-                except subprocess.TimeoutExpired:
-                    embedded_server.kill()
-                break
-            time.sleep(0.5)
-    else:
-        assert "Ansys Mechanical" in str(mechanical)
-
-        if pymechanical.mechanical.get_start_instance():
-            print(f"get_start_instance() returned True. exiting mechanical.")
-            mechanical.exit(force=True)
-            assert mechanical.exited
-            assert "Mechanical exited" in str(mechanical)
-            with pytest.raises(MechanicalExitedError):
-                mechanical.run_python_script("3+4")
-
+    printer(f"after test {request.function.__name__}")
 
 # used only once
 @pytest.fixture(scope="function")
