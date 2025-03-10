@@ -30,7 +30,6 @@ import sys
 import time
 
 import ansys.tools.path as atp
-import grpc
 import pytest
 
 import ansys.mechanical.core as pymechanical
@@ -387,7 +386,7 @@ def mechanical(request, printer, mechanical_session):
         if ret is not None:
             raise Exception(f"The server process has terminated with error code {ret}")
     assert mechanical.is_alive, "The server process has not terminated but connection has been lost"
-    #mechanical.run_python_script("ExtAPI.DataModel.Project.New()")
+    # mechanical.run_python_script("ExtAPI.DataModel.Project.New()")
 
     yield mechanical
     printer(f"after test {request.function.__name__}")
