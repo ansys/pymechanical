@@ -293,9 +293,7 @@ def connect_to_mechanical_instance(port=None, clear_on_connect=False):
 def launch_rpc_embedded_server(port: int, version: int, server_script: str):
     """Start the server as a subprocess using `port`."""
     env_copy = os.environ.copy()
-    p = subprocess.Popen(
-        [sys.executable, server_script, str(port), str(version)], env=env_copy
-    )
+    p = subprocess.Popen([sys.executable, server_script, str(port), str(version)], env=env_copy)
     return p
 
 
@@ -312,8 +310,11 @@ def _launch_mechanical_rpyc_server(rootdir: str, version: int):
 
     server_py = os.path.join(rootdir, "tests", "scripts", "rpc_server_embedded.py")
     port = MechanicalEmbeddedServer.get_free_port()
-    embedded_server = launch_rpc_embedded_server(port=port, version=version, server_script=server_py)
+    embedded_server = launch_rpc_embedded_server(
+        port=port, version=version, server_script=server_py
+    )
     return embedded_server, port
+
 
 def _get_mechanical_server():
     if not pymechanical.mechanical.get_start_instance():
@@ -321,6 +322,7 @@ def _get_mechanical_server():
     else:
         mechanical = launch_mechanical_instance()
     return mechanical
+
 
 def _stop_python_server(mechanical, server_process):
     mechanical.exit()
@@ -346,6 +348,7 @@ def _stop_mechanical_server(mechanical):
         with pytest.raises(MechanicalExitedError):
             mechanical.run_python_script("3+4")
 
+
 @pytest.fixture(scope="session")
 def mechanical_session(pytestconfig, rootdir):
     print("Mechanical session fixture")
@@ -369,6 +372,7 @@ def mechanical_session(pytestconfig, rootdir):
         _stop_mechanical_server(mechanical)
     print("mechanical rpc session fixture exited cleanly")
 
+
 @pytest.fixture(autouse=True)
 def mke_app_reset(request, printer):
     global EMBEDDED_APP
@@ -377,6 +381,7 @@ def mke_app_reset(request, printer):
         return
     printer(f"starting test {request.function.__name__} - file new")
     EMBEDDED_APP.new()
+
 
 @pytest.fixture()
 def mechanical(request, printer, mechanical_session):
@@ -391,6 +396,7 @@ def mechanical(request, printer, mechanical_session):
 
     yield mechanical
     printer(f"after test {request.function.__name__}")
+
 
 # used only once
 @pytest.fixture(scope="function")
