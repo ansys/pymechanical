@@ -306,13 +306,14 @@ def connect_rpc_embedded_server(port: int):
     return client
 
 
-def _launch_mechanical_rpyc_server(version: int):
+def _launch_mechanical_rpyc_server(rootdir: str, version: int):
     """Start rpyc server process, return the process object."""
     from ansys.mechanical.core.embedding.rpc import MechanicalEmbeddedServer
 
     server_py = os.path.join(rootdir, "tests", "scripts", "rpc_server_embedded.py")
-    _port = MechanicalEmbeddedServer.get_free_port()
-    embedded_server = launch_rpc_embedded_server(port=_port, version=version, server_script=server_py)
+    port = MechanicalEmbeddedServer.get_free_port()
+    embedded_server = launch_rpc_embedded_server(port=port, version=version, server_script=server_py)
+    return embedded_server, port
 
 def _get_mechanical_server():
     if not pymechanical.mechanical.get_start_instance():
@@ -346,23 +347,27 @@ def _stop_mechanical_server(mechanical):
             mechanical.run_python_script("3+4")
 
 @pytest.fixture(scope="session")
-def mechanical_session(pytestconfig, rootdir, printer):
+def mechanical_session(pytestconfig, rootdir):
+    print("Mechanical session fixture")
     is_python_server = pytestconfig.getoption("remote_server_type") == "rpyc"
     version = int(pytestconfig.getoption("ansys_version"))
     if is_python_server:
-        server_process = _launch_mechanical_rpyc_server(version)
-        mechanical = connect_rpc_embedded_server(port=_port)
+        print("Mechanical session fixture - starting subprocess")
+        server_process, port = _launch_mechanical_rpyc_server(rootdir, version)
+        print(f"connecting to {port}")
+        mechanical = connect_rpc_embedded_server(port=port)
     else:
         server_process = None
         mechanical = _get_mechanical_server()
 
+    print("Yielding server")
     yield (mechanical, server_process)
-    printer("Stopping server")
+    print("Stopping server")
     if is_python_server:
         _stop_python_server(mechanical, server_process)
     else:
         _stop_mechanical_server(mechanical)
-    printer("mechanical rpc session fixture exited cleanly")
+    print("mechanical rpc session fixture exited cleanly")
 
 @pytest.fixture(autouse=True)
 def mke_app_reset(request, printer):
