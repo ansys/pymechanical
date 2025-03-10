@@ -33,7 +33,8 @@ class LicenseManager:
         """Initialize the message manager."""
         self._app = app
         if self._app.version < 252:
-            raise ValueError("License manager is only available in Ansys 2022 R1 or later.")
+            LOG.warning("License manager is only available in Ansys 2025 R2 and later.")
+            return
 
         self._license_preference = self._app.ExtAPI.Application.LicensePreference
 
