@@ -50,13 +50,17 @@ def _bind_assembly_for_explicit_interface(assembly_name: str):
     # if pythonnet is not installed, we can't bind the assembly
     try:
         distribution("pythonnet")
+        Logger.warning("Cannot bind for explicit interface because pythonnet is installed")
         return
     except ModuleNotFoundError:
         pass
 
+    Logger.debug(f"Binding assembly for explicit interface {assembly_name}")
     import clr
 
+    Logger.debug(f"Binding assembly for explicit interface, Loading {assembly_name}")
     assembly = clr.AddReference(assembly_name)
+    Logger.debug(f"Binding assembly for explicit interface, Loaded {assembly_name}")
     from Python.Runtime import BindingManager, BindingOptions
 
     binding_options = BindingOptions()
@@ -78,6 +82,8 @@ def initialize(version: int) -> None:
     if version >= 242 or os.name == "nt":
         # function codec is distributed with pymechanical on linux only
         # at version 242 or later
+        Logger.debug("Registering function codec")
         __register_function_codec()
+        Logger.debug("Registered function codec")
 
     _bind_assembly_for_explicit_interface("Ansys.ACT.WB1")
