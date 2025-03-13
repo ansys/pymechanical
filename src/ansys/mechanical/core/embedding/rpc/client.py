@@ -61,6 +61,7 @@ class Client:
         self.root = None
         self._connect()
         self._cleanup_on_exit = cleanup_on_exit
+        self._error_type = Exception
 
     def __getattr__(self, attr):
         """Get attribute from the root object."""
@@ -233,6 +234,11 @@ class Client:
             )
             list_of_files.extend(temp_files)
         return list_of_files
+
+    @property
+    def backend(self) -> str:
+        """Get the backend type."""
+        return "python"
 
     @property
     def is_alive(self):
