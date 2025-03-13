@@ -32,6 +32,7 @@ from rpyc.utils.server import ThreadedServer
 import toolz
 
 from ansys.mechanical.core.embedding.background import BackgroundApp
+from ansys.mechanical.core.embedding.app import App
 
 from .utils import MethodType, get_remote_methods, remote_method, get_free_port
 
@@ -46,6 +47,16 @@ class MechanicalService(rpyc.Service):
         self._backgroundapp = backgroundapp
         self._install_functions(functions)
         self._install_classes(impl)
+
+    def _try_post(self, callable: typing.Callable) -> typing.Any:
+        return self._backgroundapp.try_post(callable)
+
+    def _get_app(self) -> App:
+        return self._backgroundapp.app
+
+    def _stop_app(self) -> None:
+        self._backgroundapp.stop()
+        self._backgroundapp = None
 
     def on_connect(self, conn):
         """Handle client connection."""
@@ -87,7 +98,7 @@ class MechanicalService(rpyc.Service):
                 else:
                     setattr(prop._owner, propname, *arg)
 
-            return self._backgroundapp.try_post(curried)
+            return self._try_post(curried)
 
         return posted
 
@@ -100,7 +111,7 @@ class MechanicalService(rpyc.Service):
                 result = original_method(*args, **kwargs)
                 return result
 
-            return self._backgroundapp.try_post(curried)
+            return self._try_post(curried)
 
         return posted
 
@@ -111,9 +122,9 @@ class MechanicalService(rpyc.Service):
 
         def posted(*args, **kwargs):
             def curried():
-                return curried_method(self._backgroundapp.app, *args, **kwargs)
+                return curried_method(self._get_app(), *args, **kwargs)
 
-            return self._backgroundapp.try_post(curried)
+            return self._try_post(curried)
 
         return posted
 
@@ -212,8 +223,7 @@ class MechanicalService(rpyc.Service):
     def exposed_service_exit(self):
         """Exit the server."""
         print("Shutting down server ...")
-        self._backgroundapp.stop()
-        self._backgroundapp = None
+        self._stop_app()
         self._server.stop_async()
         print("Server stopped")
 
