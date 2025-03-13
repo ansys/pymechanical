@@ -199,8 +199,12 @@ doc/source/api/*
 !doc/source/api/path.rst
 
 # Examples files downloaded when building docs
-examples/embedding_n_remote/download/*
-
+# Results generated during doc build and example run locally
+examples/01_tips/out
+examples/02_simulation/out
+/out
+doc/source/sg_execution_times.rst
+doc/source/examples
 # pymechanical-specific
 mylocal.ip
 pymechanical_log.txt

@@ -63,7 +63,7 @@ repos:
           tests/scripts/run_python_error.py |
           tests/scripts/run_python_success.py |
           tests/scripts/log_message.py |
-          examples/embedding_n_remote/embedding_remote.py
+           examples/.*
         )$
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
