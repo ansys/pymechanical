@@ -384,17 +384,13 @@ def mke_app_reset(request, printer):
 
 @pytest.fixture()
 def mechanical(request, printer, mechanical_session):
-    printer(f"before starting test {request.function.__name__} - file new")
     mechanical, server_process = mechanical_session
     if server_process is not None:
         ret = server_process.poll()
         if ret is not None:
             raise Exception(f"The server process has terminated with error code {ret}")
     assert mechanical.is_alive, "The server process has not terminated but connection has been lost"
-    # mechanical.run_python_script("ExtAPI.DataModel.Project.New()")
-
     yield mechanical
-    printer(f"after test {request.function.__name__}")
 
 
 # used only once
