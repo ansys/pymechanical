@@ -252,8 +252,7 @@ class MechanicalEmbeddedServer:
     ):
         """Initialize the server."""
         self._exited = False
-        self._background_app = BackgroundApp(version=version)
-        self._backend = BackgroundAppBackend(self._background_app)
+        self._backend = BackgroundAppBackend(BackgroundApp(version=version))
         self._methods = methods if methods is not None else []
         self._exit_thread: threading.Thread = None
 
@@ -298,11 +297,12 @@ class MechanicalEmbeddedServer:
 
     def stop_async(self):
         """Return immediately but will stop the server."""
-
+        if self._backend is None:
+            raise Exception("Server already stopped!")
         def stop_f():  # wait for all connections to close
             while len(self._server.clients) > 0:
                 time.sleep(0.005)
-            self._background_app.stop()
+            self._backend.stop_app()
             self._server.close()
             self._exited = True
 
@@ -312,7 +312,8 @@ class MechanicalEmbeddedServer:
     def stop(self) -> None:
         """Stop the server."""
         print("Stopping the server...")
-        self._background_app.stop()
+        self._backend.stop_app()
+        self._backend = None
         self._server.close()
         self._exited = True
         print("Server stopped.")
