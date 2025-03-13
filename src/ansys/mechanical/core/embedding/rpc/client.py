@@ -34,7 +34,7 @@ from ansys.mechanical.core.mechanical import DEFAULT_CHUNK_SIZE
 class Client:
     """Client for connecting to Mechanical services."""
 
-    def __init__(self, host: str, port: int, timeout: float = 120.0, cleanup_on_exit=True):
+    def __init__(self, host: str, port: int, timeout: float = 120.0, cleanup_on_exit=True, process=None):
         """Initialize the client.
 
         Parameters
@@ -48,6 +48,8 @@ class Client:
         timeout : float, optional
             Maximum allowable time for connecting to the Mechanical server.
             The default is ``60.0``.
+        process: subprocess.Popen, optional
+            The process object that was connected to
 
         """
         if host is None:
@@ -56,6 +58,7 @@ class Client:
         if port is None:
             port = PYMECHANICAL_DEFAULT_RPC_PORT
         self.port = port
+        self._process = process
         self.timeout = timeout
         self.connection = None
         self.root = None

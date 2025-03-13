@@ -34,6 +34,7 @@ import subprocess  # nosec: B404
 import sys
 import threading
 import time
+import typing
 from typing import Optional
 import warnings
 import weakref
@@ -1957,11 +1958,12 @@ def launch_rpyc(
     additional_switches=None,
     additional_envs=None,
     verbose=False,
-) -> int:
+) -> typing.Tuple[int, subprocess.Popen]:
     """Start Mechanical locally in RPyC mode."""
     _version = atp.version_from_path("mechanical", exec_file)
-    if _version < 232:
-        raise VersionError("The Mechanical gRPC interface requires Mechanical 2023 R2 or later.")
+
+    if not batch:
+        raise Exception("The rpyc backend does not support graphical mode!")
 
     # get the next available port
     local_ports = pymechanical.LOCAL_PORTS
@@ -1975,21 +1977,21 @@ def launch_rpyc(
         port += 1
     local_ports.append(port)
 
+    # TODO - use multiprocessing
     server_script = """
 import sys
 from ansys.mechanical.core.embedding.rpc import MechanicalDefaultServer
 server = MechanicalDefaultServer(port=int(sys.argv[1]), version=int(sys.argv[2]))
 server.start()
 """
-    env_copy = os.environ.copy()
     try:
         embedded_server = subprocess.Popen(
-            [sys.executable, "-c", server_script, str(port), str(_version)], env=env_copy
+            [sys.executable, "-c", server_script, str(port), str(_version)]
         )  # nosec: B603
     except:
         raise RuntimeError("Unable to start the embedded server.")
 
-    return port
+    return port, embedded_server
 
 
 def launch_remote_mechanical(
@@ -2312,11 +2314,11 @@ def launch_mechanical(
             # pass
             raise exception
     elif backend == "python":
-        port = launch_rpyc(port=port, **start_parm)
+        port, process = launch_rpyc(port=port, **start_parm)
         from ansys.mechanical.core.embedding.rpc.client import Client
 
         mechanical = Client(
-            "localhost", port, timeout=start_timeout, cleanup_on_exit=cleanup_on_exit
+            "localhost", port, timeout=start_timeout, cleanup_on_exit=cleanup_on_exit, process=process
         )
 
     return mechanical
