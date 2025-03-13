@@ -21,7 +21,6 @@
 # SOFTWARE.
 """Remote Procedure Call (RPC) server."""
 
-import fnmatch
 import os
 import threading
 import time
@@ -34,7 +33,7 @@ import toolz
 from ansys.mechanical.core.embedding.background import BackgroundApp
 from ansys.mechanical.core.embedding.app import App
 
-from .utils import MethodType, get_remote_methods, remote_method, get_free_port
+from .utils import MethodType, get_remote_methods, get_free_port
 
 # TODO : implement logging
 
@@ -55,10 +54,10 @@ class BackgroundAppBackend():
 class MechanicalService(rpyc.Service):
     """Starts Mechanical app services."""
 
-    def __init__(self, backgroundapp, functions=[], impl=[]):
+    def __init__(self, backend, functions=[], impl=[]):
         """Initialize the service."""
         super().__init__()
-        self._backend = backgroundapp
+        self._backend = backend
         self._install_functions(functions)
         self._install_classes(impl)
 
@@ -254,6 +253,7 @@ class MechanicalEmbeddedServer:
         """Initialize the server."""
         self._exited = False
         self._background_app = BackgroundApp(version=version)
+        self._backend = BackgroundAppBackend(self._background_app)
         self._methods = methods if methods is not None else []
         self._exit_thread: threading.Thread = None
 
@@ -263,13 +263,13 @@ class MechanicalEmbeddedServer:
             methods = [methods]
         self._methods = methods if methods is not None else []
 
+
+        app = self._backend.get_app()
         if impl and not isinstance(impl, list):
             impl = [impl]
-        self._impl = [i(self._background_app.app) for i in impl] if impl else []
+        self._impl = [i(app) for i in impl] if impl else []
 
-        service_backend = BackgroundAppBackend(self._background_app)
-
-        my_service = MechanicalService(service_backend, self._methods, self._impl)
+        my_service = MechanicalService(self._backend, self._methods, self._impl)
         self._server = ThreadedServer(my_service, port=self._port)
         my_service._server = self
 
@@ -277,7 +277,7 @@ class MechanicalEmbeddedServer:
         """Start server on specified port."""
         print(
             f"Starting mechanical application in server.\n"
-            f"Listening on port {self._port}\n{self._background_app.app}"
+            f"Listening on port {self._port}\n{self._backend.get_app()}"
         )
         self._server.start()
         """try:
