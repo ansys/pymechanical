@@ -58,8 +58,7 @@ class MechanicalService(rpyc.Service):
     def __init__(self, backgroundapp, functions=[], impl=[]):
         """Initialize the service."""
         super().__init__()
-        self._backend = BackgroundAppBackend(backgroundapp)
-        self._backgroundapp = backgroundapp
+        self._backend = backgroundapp
         self._install_functions(functions)
         self._install_classes(impl)
 
@@ -247,7 +246,6 @@ class MechanicalEmbeddedServer:
 
     def __init__(
         self,
-        service: typing.Type[rpyc.Service] = MechanicalService,
         port: int = None,
         version: int = None,
         methods: typing.List[typing.Callable] = [],
@@ -256,7 +254,6 @@ class MechanicalEmbeddedServer:
         """Initialize the server."""
         self._exited = False
         self._background_app = BackgroundApp(version=version)
-        self._service = service
         self._methods = methods if methods is not None else []
         self._exit_thread: threading.Thread = None
 
@@ -270,7 +267,9 @@ class MechanicalEmbeddedServer:
             impl = [impl]
         self._impl = [i(self._background_app.app) for i in impl] if impl else []
 
-        my_service = self._service(self._background_app, self._methods, self._impl)
+        service_backend = BackgroundAppBackend(self._background_app)
+
+        my_service = MechanicalService(service_backend, self._methods, self._impl)
         self._server = ThreadedServer(my_service, port=self._port)
         my_service._server = self
 
@@ -417,4 +416,4 @@ class MechanicalDefaultServer(MechanicalEmbeddedServer):
 
     def __init__(self, **kwargs):
         """Initialize the MechanicalDefaultServer."""
-        super().__init__(service=MechanicalService, impl=DefaultServiceMethods, **kwargs)
+        super().__init__(impl=DefaultServiceMethods, **kwargs)
