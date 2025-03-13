@@ -38,25 +38,39 @@ from .utils import MethodType, get_remote_methods, remote_method, get_free_port
 
 # TODO : implement logging
 
+class BackgroundAppBackend():
+    def __init__(self, backgroundapp: BackgroundApp):
+        self._backgroundapp = backgroundapp
+
+    def try_post(self, callable: typing.Callable) -> typing.Any:
+        return self._backgroundapp.try_post(callable)
+
+    def get_app(self) -> App:
+        return self._backgroundapp.app
+
+    def stop_app(self) -> None:
+        self._backgroundapp.stop()
+        self._backgroundapp = None
+
 class MechanicalService(rpyc.Service):
     """Starts Mechanical app services."""
 
     def __init__(self, backgroundapp, functions=[], impl=[]):
         """Initialize the service."""
         super().__init__()
+        self._backend = BackgroundAppBackend(backgroundapp)
         self._backgroundapp = backgroundapp
         self._install_functions(functions)
         self._install_classes(impl)
 
     def _try_post(self, callable: typing.Callable) -> typing.Any:
-        return self._backgroundapp.try_post(callable)
+        return self._backend.try_post(callable)
 
     def _get_app(self) -> App:
-        return self._backgroundapp.app
+        return self._backend.get_app()
 
     def _stop_app(self) -> None:
-        self._backgroundapp.stop()
-        self._backgroundapp = None
+        self._backend.stop_app()
 
     def on_connect(self, conn):
         """Handle client connection."""
