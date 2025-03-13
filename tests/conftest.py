@@ -39,6 +39,7 @@ from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.errors import MechanicalExitedError
 from ansys.mechanical.core.examples import download_file
 from ansys.mechanical.core.misc import get_mechanical_bin
+from ansys.mechanical.core.embedding.rpc.utils import  get_free_port
 import ansys.mechanical.core.run
 
 # to run tests with multiple markers
@@ -307,10 +308,8 @@ def connect_rpc_embedded_server(port: int):
 
 def _launch_mechanical_rpyc_server(rootdir: str, version: int):
     """Start rpyc server process, return the process object."""
-    from ansys.mechanical.core.embedding.rpc import MechanicalEmbeddedServer
-
     server_py = os.path.join(rootdir, "tests", "scripts", "rpc_server_embedded.py")
-    port = MechanicalEmbeddedServer.get_free_port()
+    port = get_free_port()
     embedded_server = launch_rpc_embedded_server(port=port, version=version, server_script=server_py)
     return embedded_server, port
 

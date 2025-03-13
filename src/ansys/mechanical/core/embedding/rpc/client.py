@@ -27,7 +27,7 @@ import time
 
 import rpyc
 
-from ansys.mechanical.core.embedding.rpc.server import PYMECHANICAL_DEFAULT_RPC_PORT
+from ansys.mechanical.core.embedding.rpc.utils import PYMECHANICAL_DEFAULT_RPC_PORT
 from ansys.mechanical.core.mechanical import DEFAULT_CHUNK_SIZE
 
 
