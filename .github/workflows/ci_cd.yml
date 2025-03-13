@@ -323,12 +323,11 @@ jobs:
           PYTHONUNBUFFERED: 1
         run: |
           . /env/bin/activate
-          # if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
-          #   xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml
-          # else
-          #   xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml || true
-          # fi
-          xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc || true
+          if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
+            xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml
+          else
+            xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml || true
+          fi
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v4
@@ -702,8 +701,7 @@ jobs:
 
   coverage:
     name: Merging coverage
-    needs: [remote-connect, embedding-tests, embedding-scripts-tests, launch-tests]
-    # needs: [remote-connect, embedding-tests, embedding-scripts-tests, embedding-rpc-tests, launch-tests]
+    needs: [remote-connect, embedding-tests, embedding-scripts-tests, embedding-rpc-tests, launch-tests]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -729,10 +727,10 @@ jobs:
           name: coverage-file-tests-embedding
           path: cov-dir/embedding
 
-      # - uses: actions/download-artifact@v4
-      #   with:
-      #     name: coverage-file-tests-embedding-rpc
-      #     path: cov-dir/embedding-rpc
+      - uses: actions/download-artifact@v4
+        with:
+          name: coverage-file-tests-embedding-rpc
+          path: cov-dir/embedding-rpc
 
       - uses: actions/download-artifact@v4
         with:

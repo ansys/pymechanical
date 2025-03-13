@@ -43,7 +43,6 @@ def test_run_python_script_success(mechanical):
 @pytest.mark.remote_session_connect
 def test_run_python_script_success_return_empty(mechanical):
     result = str(mechanical.run_python_script("ExtAPI.DataModel.Project"))
-    # TODO: Investigate why the result is different for grpc
     if misc.is_windows() and mechanical.backend == "mechanical":
         assert result == ""
     else:
@@ -93,7 +92,6 @@ def test_run_python_script_from_file_error(mechanical):
 @pytest.mark.remote_session_connect
 @pytest.mark.parametrize("file_name", [r"hsec.x_t"])
 def test_upload(mechanical, file_name, assets):
-    mechanical.run_python_script("ExtAPI.DataModel.Project.New()")
     directory = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
     print(directory)
 
@@ -121,7 +119,6 @@ def test_upload(mechanical, file_name, assets):
 @pytest.mark.parametrize("chunk_size", [10, 50, 100])
 def test_upload_with_different_chunk_size(mechanical, chunk_size, assets):
     file_path = os.path.join(assets, "hsec.x_t")
-    mechanical.run_python_script("ExtAPI.DataModel.Project.New()")
     directory = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
     mechanical.upload(
         file_name=file_path, file_location_destination=directory, chunk_size=chunk_size
