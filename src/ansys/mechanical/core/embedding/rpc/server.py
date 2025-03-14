@@ -308,6 +308,7 @@ class MechanicalEmbeddedServer:
 
     def _stop_background_app(self):
         """Return immediately but will stop the server."""
+
         # Mechanical is running on the background but
         # the rpyc server is running on the main thread
         # this signals for the server to stop, and the main
