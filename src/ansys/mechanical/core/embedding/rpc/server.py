@@ -307,11 +307,14 @@ class MechanicalEmbeddedServer:
         self._exited = True
 
     def _stop_background_app(self):
-        """Return immediately but will stop the server."""
-        # Mechanical is running on the background but
-        # the rpyc server is running on the main thread
-        # this signals for the server to stop, and the main
-        # thread will wait until the server has stopped.
+        """Return immediately but will stop the server.
+
+        Mechanical is running on the background but
+        the rpyc server is running on the main thread
+        this signals for the server to stop, and the main
+        thread will wait until the server has stopped.
+        """
+
         def stop_f():  # wait for all connections to close
             while len(self._server.clients) > 0:
                 time.sleep(0.005)
