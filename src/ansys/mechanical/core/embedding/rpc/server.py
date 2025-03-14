@@ -32,10 +32,22 @@ import toolz
 
 from ansys.mechanical.core.embedding.background import BackgroundApp
 from ansys.mechanical.core.embedding.app import App
+import ansys.mechanical.core.embedding.utils
 
 from .utils import MethodType, get_remote_methods, get_free_port
 
 # TODO : implement logging
+
+class ForegroundAppBackend:
+    def __init__(self, app: App):
+        self._app = app
+        self._poster = app.poster
+
+    def try_post(self, callable: typing.Callable) -> typing.Any:
+        return self._poster.try_post(callable)
+
+    def get_app(self) -> App:
+        return self._app
 
 class BackgroundAppBackend():
     def __init__(self, backgroundapp: BackgroundApp):
@@ -243,64 +255,105 @@ class MechanicalEmbeddedServer:
     ):
         """Initialize the server."""
         self._exited = False
-        self._app_instance = BackgroundApp(version=version)
-        self._backend = BackgroundAppBackend(self._app_instance)
-        self._exit_thread: threading.Thread = None
+        BG = False
+        if BG:
+            self._app_instance = BackgroundApp(version=version)
+            self._backend = BackgroundAppBackend(self._app_instance)
+        else:
+            self._app_instance = App(version=version)
+            self._backend = ForegroundAppBackend(self._app_instance)
         self._port = get_free_port(port)
         self._install_methods(methods)
         self._install_classes(impl)
+        self._server = ThreadedServer(self._create_service(), port=self._port)
 
-        my_service = MechanicalService(self._backend, self._methods, self._impl)
-        self._server = ThreadedServer(my_service, port=self._port)
+    def _create_service(self):
+        service = MechanicalService(self._backend, self._methods, self._impl)
         def exit_f():
             self.stop()
-        my_service._exit_f = exit_f
+        service._exit_f = exit_f
+        return service
 
     def _is_stopped(self):
         return self._app_instance is None
-
-    def stop_app(self):
-        if self._is_stopped():
-             raise Exception("already stopped!")
-        if isinstance(self._app_instance, BackgroundApp):
-            self._app_instance.stop()
-            self._app_instance = None
-            self._backend = None
-
-    def start(self) -> None:
-        """Start server on specified port."""
-        print(
-            f"Starting mechanical application in server.\n"
-            f"Listening on port {self._port}\n{self._backend.get_app()}"
-        )
-        self._server.start()
-        print("Server exited!")
-        self._wait_exit()
-        self._exited = True
 
     def _wait_exit(self) -> None:
         if self._exit_thread is None:
             return
         self._exit_thread.join()
 
-    def stop_async(self):
+    def start_background_app(self) -> None:
+        """Start server on specified port."""
+        self._exit_thread: threading.Thread = None
+        self._server.start()
+        print("Server exited!")
+        self._wait_exit()
+        self._exited = True
+
+    def stop_background_app(self):
         """Return immediately but will stop the server."""
-        if self._is_stopped():
-            raise Exception("Server already stopped!")
+
+        # Mechanical is running on the background but
+        # the rpyc server is running on the main thread
+        # this signals for the server to stop, and the main
+        # thread will wait until the server has stopped.
         def stop_f():  # wait for all connections to close
             while len(self._server.clients) > 0:
                 time.sleep(0.005)
-            self.stop_app()
+            self._app_instance.stop()
+            self._app_instance = None
+            self._backend = None
             self._server.close()
             self._exited = True
 
         self._exit_thread = threading.Thread(target=stop_f)
         self._exit_thread.start()
 
-    def stop(self) -> None:
-        # Mechanical is on a background thread, use stop_async
+    def start_foreground_app(self):
+        self._server_stopped = False
+        def start_f():
+             print("Server started!")
+             self._server.start()
+             print("Server exited!")
+        self._server_thread = threading.Thread(target=start_f)
+        self._server_thread.start()
+        while True:
+            if self._server_stopped:
+                break
+            try:
+                ansys.mechanical.core.embedding.utils.sleep(40)
+            except:
+                pass
+        self._server_thread.join()
+
+    def stop_foreground_app(self):
+        self._server_stopped = True
+        self._server.close()
+        #self._server_thread.join()
+
+    def _get_app_repr(self) -> str:
+        def f():
+            return repr(self._backend.get_app())
+        return self._backend.try_post(f)
+
+    def start(self) -> None:
+        """Start server on specified port."""
+        print(
+            f"Starting mechanical application in server.\n"
+            f"Listening on port {self._port}\n{self._get_app_repr()}"
+        )
         if isinstance(self._app_instance, BackgroundApp):
-            return self.stop_async()
+            self.start_background_app()
+        else:
+            self.start_foreground_app()
+
+    def stop(self) -> None:
+        if self._is_stopped():
+             raise Exception("already stopped!")
+        if isinstance(self._app_instance, BackgroundApp):
+            self.stop_background_app()
+        else:
+            self.stop_foreground_app()
 
     def _install_classes(self, impl: typing.Union[typing.Any, typing.List]) -> None:
         app = self._backend.get_app()
