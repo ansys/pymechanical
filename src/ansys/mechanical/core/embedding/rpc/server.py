@@ -234,7 +234,7 @@ class MechanicalService(rpyc.Service):
     def exposed_service_exit(self):
         """Exit the server."""
         print("Shutting down server ...")
-        self._server.stop_async()
+        self._exit_f()
         print("Server stopped")
 
 class MechanicalEmbeddedServer:
@@ -258,7 +258,9 @@ class MechanicalEmbeddedServer:
 
         my_service = MechanicalService(self._backend, self._methods, self._impl)
         self._server = ThreadedServer(my_service, port=self._port)
-        my_service._server = self
+        def exit_f():
+            self.stop_async()
+        my_service._exit_f = exit_f
 
     def _install_classes(self, impl: typing.Union[typing.Any, typing.List]) -> None:
         app = self._backend.get_app()
