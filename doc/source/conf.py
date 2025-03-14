@@ -13,6 +13,8 @@ import os
 import warnings
 
 from ansys_sphinx_theme import ansys_favicon, get_version_match
+import pyvista
+from pyvista.plotting.utilities.sphinx_gallery import DynamicScraper
 from sphinx_gallery.sorting import FileNameSortKey
 
 import ansys.mechanical.core as pymechanical
@@ -20,9 +22,9 @@ from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMB
 
 # necessary when building the sphinx gallery
 pymechanical.BUILDING_GALLERY = True
-
+pyvista.BUILDING_GALLERY = True
 # Whether or not to build the cheatsheet
-BUILD_CHEATSHEET = True
+BUILD_CHEATSHEET = False
 
 # suppress annoying matplotlib bug
 warnings.filterwarnings(
@@ -61,6 +63,7 @@ extensions = [
     "sphinx_copybutton",
     "sphinx_design",
     "sphinxemoji.sphinxemoji",
+    "pyvista.ext.viewer_directive",
 ]
 
 if pymechanical.BUILDING_GALLERY:
@@ -164,7 +167,7 @@ sphinx_gallery_conf = {
     # path to your examples scripts
     "examples_dirs": ["../../examples/"],
     # path where to save gallery generated examples
-    "gallery_dirs": ["examples/gallery_examples"],
+    "gallery_dirs": ["examples"],
     # Pattern to search for example files
     "filename_pattern": r"\.py",
     # Remove the "Download all examples" button from the top level gallery
@@ -175,9 +178,9 @@ sphinx_gallery_conf = {
     "backreferences_dir": None,
     # Modules for which function level galleries are created.  In
     "doc_module": "ansys-mechanical-core",
-    "image_scrapers": ("matplotlib"),
+    "image_scrapers": (DynamicScraper(), "matplotlib"),
     "ignore_pattern": "flycheck*",
-    "thumbnail_size": (350, 350),
+    "thumbnail_size": (600, 300),
 }
 
 # -- Options for HTML output -------------------------------------------------
@@ -199,7 +202,6 @@ html_theme_options = {
     "github_url": "https://github.com/ansys/pymechanical",
     "show_prev_next": False,
     "show_breadcrumbs": True,
-    "collapse_navigation": True,
     "use_edit_page_button": True,
     "header_links_before_dropdown": 5,  # number of links before the dropdown menu
     "additional_breadcrumbs": [
@@ -234,7 +236,6 @@ htmlhelp_basename = "pymechanicaldoc"
 
 html_sidebars = {
     "changelog": [],
-    "examples/index": [],
     "contributing": [],
 }
 
