@@ -48,6 +48,8 @@ class BackgroundAppBackend():
         return self._backgroundapp.app
 
     def stop_app(self) -> None:
+        if self._backgroundapp is None:
+            raise Exception("already stopped!")
         self._backgroundapp.stop()
         self._backgroundapp = None
 
@@ -66,9 +68,6 @@ class MechanicalService(rpyc.Service):
 
     def _get_app(self) -> App:
         return self._backend.get_app()
-
-    def _stop_app(self) -> None:
-        self._backend.stop_app()
 
     def on_connect(self, conn):
         """Handle client connection."""
@@ -235,10 +234,8 @@ class MechanicalService(rpyc.Service):
     def exposed_service_exit(self):
         """Exit the server."""
         print("Shutting down server ...")
-        self._stop_app()
         self._server.stop_async()
         print("Server stopped")
-
 
 class MechanicalEmbeddedServer:
     """Start rpc server."""
@@ -248,29 +245,31 @@ class MechanicalEmbeddedServer:
         port: int = None,
         version: int = None,
         methods: typing.List[typing.Callable] = [],
-        impl: typing.List[typing.Callable] = [],
+        impl: typing.List = [],
     ):
         """Initialize the server."""
         self._exited = False
         self._backend = BackgroundAppBackend(BackgroundApp(version=version))
-        self._methods = methods if methods is not None else []
         self._exit_thread: threading.Thread = None
 
         self._port = get_free_port(port)
+        self._install_methods(methods)
+        self._install_classes(impl)
 
-        if methods and not isinstance(methods, list):
-            methods = [methods]
-        self._methods = methods if methods is not None else []
+        my_service = MechanicalService(self._backend, self._methods, self._impl)
+        self._server = ThreadedServer(my_service, port=self._port)
+        my_service._server = self
 
-
+    def _install_classes(self, impl: typing.Union[typing.Any, typing.List]) -> None:
         app = self._backend.get_app()
         if impl and not isinstance(impl, list):
             impl = [impl]
         self._impl = [i(app) for i in impl] if impl else []
 
-        my_service = MechanicalService(self._backend, self._methods, self._impl)
-        self._server = ThreadedServer(my_service, port=self._port)
-        my_service._server = self
+    def _install_methods(self, methods: typing.Union[typing.Callable, typing.List[typing.Callable]]) -> None:
+        if methods and not isinstance(methods, list):
+            methods = [methods]
+        self._methods = methods if methods is not None else []
 
     def start(self) -> None:
         """Start server on specified port."""
@@ -295,6 +294,10 @@ class MechanicalEmbeddedServer:
             return
         self._exit_thread.join()
 
+    def _stop_app(self):
+        self._backend.stop_app()
+        self._backend = None
+
     def stop_async(self):
         """Return immediately but will stop the server."""
         if self._backend is None:
@@ -302,7 +305,7 @@ class MechanicalEmbeddedServer:
         def stop_f():  # wait for all connections to close
             while len(self._server.clients) > 0:
                 time.sleep(0.005)
-            self._backend.stop_app()
+            self._stop_app()
             self._server.close()
             self._exited = True
 
@@ -312,8 +315,7 @@ class MechanicalEmbeddedServer:
     def stop(self) -> None:
         """Stop the server."""
         print("Stopping the server...")
-        self._backend.stop_app()
-        self._backend = None
+        self._stop_app()
         self._server.close()
         self._exited = True
         print("Server stopped.")

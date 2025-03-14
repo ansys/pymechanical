@@ -256,7 +256,8 @@ class Client:
         """Shuts down the Mechanical instance."""
         print("Requesting server shutdown ...")
         self.service_exit()
-        self.connection.close()
+        print("Closing connection ...")
+        self.close()
         print("Disconnected from server")
 
     def __del__(self):  # pragma: no cover
