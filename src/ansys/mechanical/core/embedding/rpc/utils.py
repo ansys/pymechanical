@@ -22,6 +22,10 @@
 """Utilities necessary for remote calls."""
 import typing
 
+from ansys.mechanical.core.mechanical import port_in_use
+
+PYMECHANICAL_DEFAULT_RPC_PORT = 20000
+
 
 class remote_method:
     """Decorator for passing remote methods."""
@@ -116,3 +120,17 @@ def get_remote_methods(
         if result != None:
             attrname, method = result
             yield attrname, method, MethodType.METHOD
+
+
+def get_free_port(port: int = None):
+    """Get free port.
+
+    If port is not given, it will find a free port starting from PYMECHANICAL_DEFAULT_RPC_PORT.
+    """
+    if port is None:
+        port = PYMECHANICAL_DEFAULT_RPC_PORT
+
+    while port_in_use(port):
+        port += 1
+
+    return port
