@@ -119,6 +119,7 @@ class Client:
 
     def close(self):
         """Close the connection."""
+        print("Closing the connection")
         self.connection.close()
         print(f"Connection to {self.host}:{self.port} closed")
 
@@ -257,9 +258,6 @@ class Client:
         """Shuts down the Mechanical instance."""
         if self._has_exited:
             return
-        print("Requesting server shutdown ...")
-        self.service_exit()
-        print("Closing connection ...")
         self.close()
         self._has_exited = True
         print("Disconnected from server")
