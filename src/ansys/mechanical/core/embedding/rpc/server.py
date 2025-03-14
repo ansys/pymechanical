@@ -47,12 +47,6 @@ class BackgroundAppBackend():
     def get_app(self) -> App:
         return self._backgroundapp.app
 
-    def stop_app(self) -> None:
-        if self._backgroundapp is None:
-            raise Exception("already stopped!")
-        self._backgroundapp.stop()
-        self._backgroundapp = None
-
 class MechanicalService(rpyc.Service):
     """Starts Mechanical app services."""
 
@@ -249,9 +243,9 @@ class MechanicalEmbeddedServer:
     ):
         """Initialize the server."""
         self._exited = False
-        self._backend = BackgroundAppBackend(BackgroundApp(version=version))
+        self._app_instance = BackgroundApp(version=version)
+        self._backend = BackgroundAppBackend(self._app_instance)
         self._exit_thread: threading.Thread = None
-
         self._port = get_free_port(port)
         self._install_methods(methods)
         self._install_classes(impl)
@@ -259,8 +253,54 @@ class MechanicalEmbeddedServer:
         my_service = MechanicalService(self._backend, self._methods, self._impl)
         self._server = ThreadedServer(my_service, port=self._port)
         def exit_f():
-            self.stop_async()
+            self.stop()
         my_service._exit_f = exit_f
+
+    def _is_stopped(self):
+        return self._app_instance is None
+
+    def stop_app(self):
+        if self._is_stopped():
+             raise Exception("already stopped!")
+        if isinstance(self._app_instance, BackgroundApp):
+            self._app_instance.stop()
+            self._app_instance = None
+            self._backend = None
+
+    def start(self) -> None:
+        """Start server on specified port."""
+        print(
+            f"Starting mechanical application in server.\n"
+            f"Listening on port {self._port}\n{self._backend.get_app()}"
+        )
+        self._server.start()
+        print("Server exited!")
+        self._wait_exit()
+        self._exited = True
+
+    def _wait_exit(self) -> None:
+        if self._exit_thread is None:
+            return
+        self._exit_thread.join()
+
+    def stop_async(self):
+        """Return immediately but will stop the server."""
+        if self._is_stopped():
+            raise Exception("Server already stopped!")
+        def stop_f():  # wait for all connections to close
+            while len(self._server.clients) > 0:
+                time.sleep(0.005)
+            self.stop_app()
+            self._server.close()
+            self._exited = True
+
+        self._exit_thread = threading.Thread(target=stop_f)
+        self._exit_thread.start()
+
+    def stop(self) -> None:
+        # Mechanical is on a background thread, use stop_async
+        if isinstance(self._app_instance, BackgroundApp):
+            return self.stop_async()
 
     def _install_classes(self, impl: typing.Union[typing.Any, typing.List]) -> None:
         app = self._backend.get_app()
@@ -273,51 +313,3 @@ class MechanicalEmbeddedServer:
             methods = [methods]
         self._methods = methods if methods is not None else []
 
-    def start(self) -> None:
-        """Start server on specified port."""
-        print(
-            f"Starting mechanical application in server.\n"
-            f"Listening on port {self._port}\n{self._backend.get_app()}"
-        )
-        self._server.start()
-        """try:
-            try:
-                conn.serve_all()
-            except KeyboardInterrupt:
-                print("User interrupt!")
-        finally:
-            conn.close()"""
-        print("Server exited!")
-        self._wait_exit()
-        self._exited = True
-
-    def _wait_exit(self) -> None:
-        if self._exit_thread is None:
-            return
-        self._exit_thread.join()
-
-    def _stop_app(self):
-        self._backend.stop_app()
-        self._backend = None
-
-    def stop_async(self):
-        """Return immediately but will stop the server."""
-        if self._backend is None:
-            raise Exception("Server already stopped!")
-        def stop_f():  # wait for all connections to close
-            while len(self._server.clients) > 0:
-                time.sleep(0.005)
-            self._stop_app()
-            self._server.close()
-            self._exited = True
-
-        self._exit_thread = threading.Thread(target=stop_f)
-        self._exit_thread.start()
-
-    def stop(self) -> None:
-        """Stop the server."""
-        print("Stopping the server...")
-        self._stop_app()
-        self._server.close()
-        self._exited = True
-        print("Server stopped.")
