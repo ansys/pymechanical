@@ -25,12 +25,13 @@ import fnmatch
 import os
 
 from .server import MechanicalEmbeddedServer
+from ansys.mechanical.core.embedding.app import App
 from .utils import remote_method
 
 class DefaultServiceMethods:
     """Default service methods for MechanicalEmbeddedServer."""
 
-    def __init__(self, app):
+    def __init__(self, app: App):
         """Initialize the DefaultServiceMethods."""
         self._app = app
 
@@ -66,16 +67,16 @@ class DefaultServiceMethods:
     @remote_method
     def project_directory(self):
         """Get the project directory."""
-        return self._app.execute_script("""ExtAPI.DataModel.Project.ProjectDirectory""")
+        return self._app.ExtAPI.DataModel.Project.ProjectDirectory
 
     @remote_method
     def list_files(self):
         """List all files in the project directory."""
         list = []
-        mechdbPath = self._app.execute_script("""ExtAPI.DataModel.Project.FilePath""")
+        mechdbPath = self._app.ExtAPI.DataModel.Project.FilePath
         if mechdbPath != "":
             list.append(mechdbPath)
-        rootDir = self._app.execute_script("""ExtAPI.DataModel.Project.ProjectDirectory""")
+        rootDir = self._app.ExtAPI.DataModel.Project.ProjectDirectory
 
         for dirPath, dirNames, fileNames in os.walk(rootDir):
             for fileName in fileNames:
