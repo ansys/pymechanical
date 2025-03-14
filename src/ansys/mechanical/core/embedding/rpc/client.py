@@ -65,6 +65,7 @@ class Client:
         self._connect()
         self._cleanup_on_exit = cleanup_on_exit
         self._error_type = Exception
+        self._has_exited = False
 
     def __getattr__(self, attr):
         """Get attribute from the root object."""
@@ -254,10 +255,13 @@ class Client:
 
     def exit(self):
         """Shuts down the Mechanical instance."""
+        if self._has_exited:
+            return
         print("Requesting server shutdown ...")
         self.service_exit()
         print("Closing connection ...")
         self.close()
+        self._has_exited = True
         print("Disconnected from server")
 
     def __del__(self):  # pragma: no cover
