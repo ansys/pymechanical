@@ -22,12 +22,11 @@
 
 """RPC and Mechanical service implementation."""
 from .client import Client
-
-# todo - combine Server and MechanicalService
-
+from .default_server import DefaultServiceMethods, MechanicalDefaultServer
 from .server import (
     MechanicalEmbeddedServer,
     MechanicalService,
 )
-from .default_server import DefaultServiceMethods, MechanicalDefaultServer
 from .utils import get_remote_methods, remote_method
+
+# todo - combine Server and MechanicalService

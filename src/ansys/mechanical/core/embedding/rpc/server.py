@@ -30,34 +30,47 @@ import rpyc
 from rpyc.utils.server import ThreadedServer
 import toolz
 
-from ansys.mechanical.core.embedding.background import BackgroundApp
 from ansys.mechanical.core.embedding.app import App
+from ansys.mechanical.core.embedding.background import BackgroundApp
 import ansys.mechanical.core.embedding.utils
 
-from .utils import MethodType, get_remote_methods, get_free_port
+from .utils import MethodType, get_free_port, get_remote_methods
 
 # TODO : implement logging
 
+
 class ForegroundAppBackend:
+    """Backend for the python server where mechanical uses the main thread."""
+
     def __init__(self, app: App):
+        """Create a new instance of ForegroundAppBackend."""
         self._app = app
         self._poster = app.poster
 
     def try_post(self, callable: typing.Callable) -> typing.Any:
+        """Try to post to mechanical's main thread."""
         return self._poster.try_post(callable)
 
     def get_app(self) -> App:
+        """Get the app object."""
         return self._app
 
-class BackgroundAppBackend():
+
+class BackgroundAppBackend:
+    """Backend for the python server where mechanical uses the background thread."""
+
     def __init__(self, backgroundapp: BackgroundApp):
+        """Create a new instance of BackgroundAppBackend."""
         self._backgroundapp = backgroundapp
 
     def try_post(self, callable: typing.Callable) -> typing.Any:
+        """Try to post to mechanical's main thread."""
         return self._backgroundapp.try_post(callable)
 
     def get_app(self) -> App:
+        """Get the app object."""
         return self._backgroundapp.app
+
 
 class MechanicalService(rpyc.Service):
     """Starts Mechanical app services."""
@@ -243,6 +256,7 @@ class MechanicalService(rpyc.Service):
         self._exit_f()
         print("Server stopped")
 
+
 class MechanicalEmbeddedServer:
     """Start rpc server."""
 
@@ -269,8 +283,10 @@ class MechanicalEmbeddedServer:
 
     def _create_service(self):
         service = MechanicalService(self._backend, self._methods, self._impl)
+
         def exit_f():
             self.stop()
+
         service._exit_f = exit_f
         return service
 
@@ -282,7 +298,7 @@ class MechanicalEmbeddedServer:
             return
         self._exit_thread.join()
 
-    def start_background_app(self) -> None:
+    def _start_background_app(self) -> None:
         """Start server on specified port."""
         self._exit_thread: threading.Thread = None
         self._server.start()
@@ -290,9 +306,8 @@ class MechanicalEmbeddedServer:
         self._wait_exit()
         self._exited = True
 
-    def stop_background_app(self):
+    def _stop_background_app(self):
         """Return immediately but will stop the server."""
-
         # Mechanical is running on the background but
         # the rpyc server is running on the main thread
         # this signals for the server to stop, and the main
@@ -309,12 +324,14 @@ class MechanicalEmbeddedServer:
         self._exit_thread = threading.Thread(target=stop_f)
         self._exit_thread.start()
 
-    def start_foreground_app(self):
+    def _start_foreground_app(self):
         self._server_stopped = False
+
         def start_f():
-             print("Server started!")
-             self._server.start()
-             print("Server exited!")
+            print("Server started!")
+            self._server.start()
+            print("Server exited!")
+
         self._server_thread = threading.Thread(target=start_f)
         self._server_thread.start()
         while True:
@@ -326,14 +343,15 @@ class MechanicalEmbeddedServer:
                 pass
         self._server_thread.join()
 
-    def stop_foreground_app(self):
+    def _stop_foreground_app(self):
         self._server_stopped = True
         self._server.close()
-        #self._server_thread.join()
+        # self._server_thread.join()
 
     def _get_app_repr(self) -> str:
         def f():
             return repr(self._backend.get_app())
+
         return self._backend.try_post(f)
 
     def start(self) -> None:
@@ -343,17 +361,18 @@ class MechanicalEmbeddedServer:
             f"Listening on port {self._port}\n{self._get_app_repr()}"
         )
         if isinstance(self._app_instance, BackgroundApp):
-            self.start_background_app()
+            self._start_background_app()
         else:
-            self.start_foreground_app()
+            self._start_foreground_app()
 
     def stop(self) -> None:
+        """Stop the server."""
         if self._is_stopped():
-             raise Exception("already stopped!")
+            raise Exception("already stopped!")
         if isinstance(self._app_instance, BackgroundApp):
-            self.stop_background_app()
+            self._stop_background_app()
         else:
-            self.stop_foreground_app()
+            self._stop_foreground_app()
 
     def _install_classes(self, impl: typing.Union[typing.Any, typing.List]) -> None:
         app = self._backend.get_app()
@@ -361,8 +380,9 @@ class MechanicalEmbeddedServer:
             impl = [impl]
         self._impl = [i(app) for i in impl] if impl else []
 
-    def _install_methods(self, methods: typing.Union[typing.Callable, typing.List[typing.Callable]]) -> None:
+    def _install_methods(
+        self, methods: typing.Union[typing.Callable, typing.List[typing.Callable]]
+    ) -> None:
         if methods and not isinstance(methods, list):
             methods = [methods]
         self._methods = methods if methods is not None else []
-

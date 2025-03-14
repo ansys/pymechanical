@@ -34,7 +34,9 @@ from ansys.mechanical.core.mechanical import DEFAULT_CHUNK_SIZE
 class Client:
     """Client for connecting to Mechanical services."""
 
-    def __init__(self, host: str, port: int, timeout: float = 120.0, cleanup_on_exit=True, process=None):
+    def __init__(
+        self, host: str, port: int, timeout: float = 120.0, cleanup_on_exit=True, process=None
+    ):
         """Initialize the client.
 
         Parameters

@@ -24,9 +24,11 @@
 import fnmatch
 import os
 
-from .server import MechanicalEmbeddedServer
 from ansys.mechanical.core.embedding.app import App
+
+from .server import MechanicalEmbeddedServer
 from .utils import remote_method
+
 
 class DefaultServiceMethods:
     """Default service methods for MechanicalEmbeddedServer."""

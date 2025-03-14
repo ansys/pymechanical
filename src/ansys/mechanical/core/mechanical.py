@@ -2318,7 +2318,11 @@ def launch_mechanical(
         from ansys.mechanical.core.embedding.rpc.client import Client
 
         mechanical = Client(
-            "localhost", port, timeout=start_timeout, cleanup_on_exit=cleanup_on_exit, process=process
+            "localhost",
+            port,
+            timeout=start_timeout,
+            cleanup_on_exit=cleanup_on_exit,
+            process=process,
         )
 
     return mechanical
