@@ -36,7 +36,6 @@ import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core import LocalMechanicalPool
 from ansys.mechanical.core._version import SUPPORTED_MECHANICAL_VERSIONS
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
-from ansys.mechanical.core.embedding.rpc.utils import get_free_port
 from ansys.mechanical.core.errors import MechanicalExitedError
 from ansys.mechanical.core.examples import download_file
 from ansys.mechanical.core.misc import get_mechanical_bin
@@ -306,6 +305,8 @@ def connect_rpc_embedded_server(port: int):
 
 def _launch_mechanical_rpyc_server(rootdir: str, version: int):
     """Start rpyc server process, return the process object."""
+    from ansys.mechanical.core.embedding.rpc.utils import get_free_port
+
     server_py = os.path.join(rootdir, "tests", "scripts", "rpc_server_embedded.py")
     port = get_free_port()
     embedded_server = launch_rpc_embedded_server(
