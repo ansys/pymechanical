@@ -47,7 +47,7 @@ print(app)
 
 # %%
 # Download and open mechdb file
-# ~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 mechdb_path = download_file("graphics_test.mechdb", "pymechanical", "test_files")
 app.open(mechdb_path)

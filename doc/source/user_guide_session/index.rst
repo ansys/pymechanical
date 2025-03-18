@@ -16,7 +16,6 @@ to a remote Mechanical session.
 
    self
    server-launcher
-   mechanical
    pool
 
 Overview
