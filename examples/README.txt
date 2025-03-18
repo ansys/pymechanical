@@ -13,5 +13,5 @@ Here is a series of examples using Mechanical with the ``ansys-mechanical-core``
     :maxdepth: 3
 
     examples/index.rst
-    Technology Showcase Examples<https://embedding.examples.mechanical.docs.pyansys.com/examples/index.html>
+    Advanced Simulation Examples<https://embedding.examples.mechanical.docs.pyansys.com/examples/index.html>
 

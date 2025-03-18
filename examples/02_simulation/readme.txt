@@ -1,4 +1,4 @@
-Basic Examples
-==============
+Analysis Examples
+=================
 
-This section demonstrates the basic capabilities of PyMechanical
+This section demonstrates the basic analyses that can be performed.
