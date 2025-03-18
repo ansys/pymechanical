@@ -634,7 +634,7 @@ jobs:
         run: |
           . /env/bin/activate
           pip install uv
-          uv pip install -e .[doc]
+          uv pip install -e .[doc,viz]
 
       - name: Build docs
         env:
@@ -645,10 +645,6 @@ jobs:
           # Make html or pdf doc
           make_doc() {
             # $1 is the type of file we are creating (html or pdf)
-
-            # Need to unset PYMECHANICAL_PORT and PYMECHANICAL_START_INSTANCE when running code containing remote sessions
-            unset PYMECHANICAL_PORT
-            unset PYMECHANICAL_START_INSTANCE
 
             output_file=doc_$1_output.txt
             if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
