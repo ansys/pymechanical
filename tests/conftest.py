@@ -32,6 +32,8 @@ import time
 import ansys.tools.path as atp
 import pytest
 
+from pathlib import Path
+
 import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core import LocalMechanicalPool
 from ansys.mechanical.core._version import SUPPORTED_MECHANICAL_VERSIONS
@@ -307,7 +309,7 @@ def _launch_mechanical_rpyc_server(rootdir: str, version: int):
     """Start rpyc server process, return the process object."""
     from ansys.mechanical.core.embedding.rpc.utils import get_free_port
 
-    server_py = os.path.join(rootdir, "tests", "scripts", "rpc_server_embedded.py")
+    server_py = Path(rootdir) / "tests" / "scripts" / "rpc_server_embedded.py"
     port = get_free_port()
     embedded_server = launch_rpc_embedded_server(
         port=port, version=version, server_script=server_py

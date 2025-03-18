@@ -25,6 +25,7 @@ import fnmatch
 import os
 
 from ansys.mechanical.core.embedding.app import App
+from pathlib import Path
 
 from .server import MechanicalEmbeddedServer
 from .utils import remote_method
@@ -74,16 +75,16 @@ class DefaultServiceMethods:
     @remote_method
     def list_files(self):
         """List all files in the project directory."""
-        list = []
-        mechdbPath = self._app.ExtAPI.DataModel.Project.FilePath
-        if mechdbPath != "":
-            list.append(mechdbPath)
-        rootDir = self._app.ExtAPI.DataModel.Project.ProjectDirectory
+        file_list = []
+        mechdb_path = self._app.ExtAPI.DataModel.Project.FilePath
+        if mechdb_path:
+            file_list.append(mechdb_path)
+        root_dir = self._app.ExtAPI.DataModel.Project.ProjectDirectory
 
-        for dirPath, dirNames, fileNames in os.walk(rootDir):
-            for fileName in fileNames:
-                list.append(os.path.join(dirPath, fileName))
-        files_out = "\n".join(list).splitlines()
+        for root, dir_names, file_names in Path(root_dir).walk():
+            for file_name in file_names:
+                file_list.append(os.path.join(root, file_name))
+        files_out = "\n".join(file_list).splitlines()
         if not files_out:  # pragma: no cover
             print("No files listed")
         return files_out

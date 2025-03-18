@@ -269,8 +269,8 @@ class MechanicalEmbeddedServer:
     ):
         """Initialize the server."""
         self._exited = False
-        BG = False
-        if BG:
+        use_background_app = False
+        if use_background_app:
             self._app_instance = BackgroundApp(version=version)
             self._backend = BackgroundAppBackend(self._app_instance)
         else:
