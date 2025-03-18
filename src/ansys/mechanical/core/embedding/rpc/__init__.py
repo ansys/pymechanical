@@ -22,15 +22,11 @@
 
 """RPC and Mechanical service implementation."""
 from .client import Client
-
-# todo - provide an implementation of Server (RemoteMechancial) that installs the below
-# from .default_server import RemoteMechanical
-#        and remove them from this import statement
-# todo - combine Server and MechanicalService
+from .default_server import DefaultServiceMethods, MechanicalDefaultServer
 from .server import (
-    DefaultServiceMethods,
-    MechanicalDefaultServer,
     MechanicalEmbeddedServer,
     MechanicalService,
 )
 from .utils import get_remote_methods, remote_method
+
+# todo - combine Server and MechanicalService
