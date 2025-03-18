@@ -23,9 +23,9 @@
 
 import fnmatch
 import os
+from pathlib import Path
 
 from ansys.mechanical.core.embedding.app import App
-from pathlib import Path
 
 from .server import MechanicalEmbeddedServer
 from .utils import remote_method

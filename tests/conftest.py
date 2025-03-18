@@ -23,6 +23,7 @@
 import datetime
 import os
 import pathlib
+from pathlib import Path
 import platform
 import shutil
 import subprocess
@@ -31,8 +32,6 @@ import time
 
 import ansys.tools.path as atp
 import pytest
-
-from pathlib import Path
 
 import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core import LocalMechanicalPool
