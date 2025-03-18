@@ -9,6 +9,93 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.14 <https://github.com/ansys/pymechanical/releases/tag/v0.11.14>`_ - 2025-03-03
+=====================================================================================
+
+Added
+^^^^^
+
+- add `globals` kwarg to app and adjust `ideconfig` behavior `#1017 <https://github.com/ansys/pymechanical/pull/1017>`_
+- Add a Message Manager for App `#1068 <https://github.com/ansys/pymechanical/pull/1068>`_
+- add logging for app `#1091 <https://github.com/ansys/pymechanical/pull/1091>`_
+- Add rpyc option in `launch_mechanical` `#1101 <https://github.com/ansys/pymechanical/pull/1101>`_
+
+
+Fixed
+^^^^^
+
+- Emedding rpc server shutdown `#1088 <https://github.com/ansys/pymechanical/pull/1088>`_
+- Remove unnecessary prints from embedding rpc `#1090 <https://github.com/ansys/pymechanical/pull/1090>`_
+
+
+Documentation
+^^^^^^^^^^^^^
+
+- Add "what's new" fragment for the globals parameter in App `#1096 <https://github.com/ansys/pymechanical/pull/1096>`_
+- Fix typo for remote session documentation. `#1098 <https://github.com/ansys/pymechanical/pull/1098>`_
+- Update documentation for Mechanical container. `#1099 <https://github.com/ansys/pymechanical/pull/1099>`_
+- Adjust globals documentation `#1100 <https://github.com/ansys/pymechanical/pull/1100>`_
+
+
+Maintenance
+^^^^^^^^^^^
+
+- Integrate uv in CI/CD `#1085 <https://github.com/ansys/pymechanical/pull/1085>`_
+- update CHANGELOG for v0.11.13 `#1087 <https://github.com/ansys/pymechanical/pull/1087>`_
+- Bump the doc group with 3 updates `#1093 <https://github.com/ansys/pymechanical/pull/1093>`_, `#1103 <https://github.com/ansys/pymechanical/pull/1103>`_
+- Bump psutil from 6.1.1 to 7.0.0 `#1094 <https://github.com/ansys/pymechanical/pull/1094>`_
+- pre-commit automatic update `#1095 <https://github.com/ansys/pymechanical/pull/1095>`_, `#1102 <https://github.com/ansys/pymechanical/pull/1102>`_
+- Change main python version in CI/CD `#1104 <https://github.com/ansys/pymechanical/pull/1104>`_
+- Upload coverage to codacy `#1105 <https://github.com/ansys/pymechanical/pull/1105>`_
+- Disable rpc tests `#1107 <https://github.com/ansys/pymechanical/pull/1107>`_
+
+`0.11.13 <https://github.com/ansys/pymechanical/releases/tag/v0.11.13>`_ - 2025-02-07
+=====================================================================================
+
+Added
+^^^^^
+
+- Add CPython feature flag for `ansys-mechanical`  cli `#1049 <https://github.com/ansys/pymechanical/pull/1049>`_
+- Rpyc integration `#1055 <https://github.com/ansys/pymechanical/pull/1055>`_
+- Add "what's new" sections to changelog `#1057 <https://github.com/ansys/pymechanical/pull/1057>`_
+- Create option for PyPIM to be installed separately `#1060 <https://github.com/ansys/pymechanical/pull/1060>`_
+
+
+Fixed
+^^^^^
+
+- Add explicit interface support `#1058 <https://github.com/ansys/pymechanical/pull/1058>`_
+- Disable app poster test `#1072 <https://github.com/ansys/pymechanical/pull/1072>`_
+
+
+Documentation
+^^^^^^^^^^^^^
+
+- Clarify support guidelines `#1061 <https://github.com/ansys/pymechanical/pull/1061>`_
+
+
+Maintenance
+^^^^^^^^^^^
+
+- update CHANGELOG for v0.11.12 `#1050 <https://github.com/ansys/pymechanical/pull/1050>`_
+- Bump the doc group with 4 updates `#1054 <https://github.com/ansys/pymechanical/pull/1054>`_
+- pre-commit automatic update `#1056 <https://github.com/ansys/pymechanical/pull/1056>`_, `#1067 <https://github.com/ansys/pymechanical/pull/1067>`_, `#1081 <https://github.com/ansys/pymechanical/pull/1081>`_
+- Raise error if Ansys has no attribute Mechanical `#1062 <https://github.com/ansys/pymechanical/pull/1062>`_
+- Bump grpcio from 1.69.0 to 1.70.0 in the core group `#1063 <https://github.com/ansys/pymechanical/pull/1063>`_
+- Bump panel from 1.5.5 to 1.6.0 in the doc group `#1064 <https://github.com/ansys/pymechanical/pull/1064>`_
+- Upgrade `ansys-pythonnet` version `#1066 <https://github.com/ansys/pymechanical/pull/1066>`_
+- Add gitattributes and renormalize files `#1069 <https://github.com/ansys/pymechanical/pull/1069>`_
+- Bump sphinx-notfound-page from 1.0.4 to 1.1.0 in the doc group `#1079 <https://github.com/ansys/pymechanical/pull/1079>`_
+- Bump plotly from 5.24.1 to 6.0.0 `#1080 <https://github.com/ansys/pymechanical/pull/1080>`_
+- Upgrade `ansys-sphinx-theme` `#1082 <https://github.com/ansys/pymechanical/pull/1082>`_
+- update clr loader version `#1083 <https://github.com/ansys/pymechanical/pull/1083>`_
+
+
+Test
+^^^^
+
+- update poster test `#1065 <https://github.com/ansys/pymechanical/pull/1065>`_
+
 `0.11.12 <https://github.com/ansys/pymechanical/releases/tag/v0.11.12>`_ - 2025-01-16
 =====================================================================================
 

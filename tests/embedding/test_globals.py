@@ -21,10 +21,13 @@
 # SOFTWARE.
 
 """Embedding tests for global variables associated with Mechanical"""
+import subprocess
+import sys
+
 import pytest
 
 from ansys.mechanical.core import global_variables
-from ansys.mechanical.core.embedding.imports import Transaction
+from ansys.mechanical.core.embedding.transaction import Transaction
 
 
 @pytest.mark.embedding
@@ -62,3 +65,20 @@ def test_global_variable_transaction(embedded_app):
         DataModel.Project.Name = "New Project"
     project_name = DataModel.Project.Name
     assert project_name == "New Project"
+
+
+@pytest.mark.embedding_scripts
+def test_global_importer_exception(rootdir):
+    """Test an exception is raised in global_importer when the embedded app is not initialized."""
+    # Path to global_importer.py
+    global_importer = (
+        rootdir / "src" / "ansys" / "mechanical" / "core" / "embedding" / "global_importer.py"
+    )
+
+    # Run the global_importer.py script without the app being initialized
+    stdout, stderr = subprocess.Popen(
+        [sys.executable, global_importer], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    ).communicate()
+
+    # Assert the exception is raised
+    assert "Globals cannot be imported until the embedded app is initialized." in stderr.decode()

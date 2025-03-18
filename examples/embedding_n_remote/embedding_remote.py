@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-""" .. _ref_embedding_remote:
+""".. _ref_embedding_remote:
 
 Remote & Embedding Example
 --------------------------
@@ -172,8 +172,7 @@ print(f"Downloaded the geometry file to: {geometry_path}")
 # Find the mechanical installation path & version.
 # Open an embedded instance of Mechanical and set global variables.
 
-app = mech.App()
-app.update_globals(globals())
+app = mech.App(globals=globals())
 print(app)
 
 
@@ -258,14 +257,15 @@ pressure.Magnitude.Output.DiscreteValues = output_quantities_2
 # Solve model
 # ~~~~~~~~~~~
 
-Model.Solve()
+Model.Solve(True)
+solution = analysis.Solution
 
+assert solution.Status == SolutionStatusType.Done
 
 ###############################################################################
 # Add results
 # ~~~~~~~~~~~
 
-solution = analysis.Solution
 solution.AddTotalDeformation()
 solution.AddEquivalentStress()
 solution.EvaluateAllResults()

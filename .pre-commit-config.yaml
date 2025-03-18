@@ -13,7 +13,7 @@ repos:
   -   id: check-pre-commit-ci-config
 
 - repo: https://github.com/psf/black
-  rev: 24.10.0  # IF VERSION CHANGES --> MODIFY "blacken-docs" MANUALLY AS WELL!!
+  rev: 25.1.0  # IF VERSION CHANGES --> MODIFY "blacken-docs" MANUALLY AS WELL!!
   hooks:
   - id: black
 
@@ -24,24 +24,24 @@ repos:
     additional_dependencies: [black==24.10.0]
 
 - repo: https://github.com/pycqa/isort
-  rev: 5.13.2
+  rev: 6.0.1
   hooks:
   - id: isort
 
 - repo: https://github.com/PyCQA/flake8
-  rev: 7.1.1
+  rev: 7.1.2
   hooks:
   - id: flake8
     additional_dependencies: [flake8-pyproject]
 
 - repo: https://github.com/codespell-project/codespell
-  rev: v2.4.0
+  rev: v2.4.1
   hooks:
   - id: codespell
     args: ["--ignore-words", "doc/styles/config/vocabularies/ANSYS/accept.txt", "-w"]
 
 - repo: https://github.com/ansys/pre-commit-hooks
-  rev: v0.5.1
+  rev: v0.5.2
   hooks:
   - id: add-license-headers
     args:
@@ -76,6 +76,6 @@ repos:
   - id: check-added-large-files
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.31.0
+  rev: 0.31.3
   hooks:
     - id: check-github-workflows

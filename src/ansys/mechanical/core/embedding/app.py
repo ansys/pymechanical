@@ -30,6 +30,7 @@ import shutil
 import typing
 import warnings
 
+from ansys.mechanical.core import LOG
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
@@ -89,6 +90,11 @@ def _start_application(configuration: AddinConfiguration, version, db_file) -> "
         return Ansys.Mechanical.Embedding.Application(db_file)
 
 
+def is_initialized():
+    """Check if the app has been initialized."""
+    return len(INSTANCES) != 0
+
+
 class GetterWrapper(object):
     """Wrapper class around an attribute of an object."""
 
@@ -124,10 +130,17 @@ class App:
     private_appdata : bool, optional
         Setting for a temporary AppData directory. Default is False.
         Enables running parallel instances of Mechanical.
+    globals : dict, optional
+        Global variables to be updated. For example, globals().
+        Replaces "app.update_globals(globals())".
     config : AddinConfiguration, optional
         Configuration for addins. By default "Mechanical" is used and ACT Addins are disabled.
     copy_profile : bool, optional
         Whether to copy the user profile when private_appdata is True. Default is True.
+    enable_logging : bool, optional
+        Whether to enable logging. Default is True.
+    log_level : str, optional
+        The logging level for the application. Default is "WARNING".
 
     Examples
     --------
@@ -140,6 +153,10 @@ class App:
 
     >>> app = App(private_appdata=True, copy_profile=False)
 
+    Update the global variables with globals
+
+    >>> app = App(globals=globals())
+
     Create App with "Mechanical" configuration and no ACT Addins
 
     >>> from ansys.mechanical.core.embedding import AddinConfiguration
@@ -147,12 +164,27 @@ class App:
     >>> config = AddinConfiguration("Mechanical")
     >>> config.no_act_addins = True
     >>> app = App(config=config)
+
+    Set log level
+
+    >>> app = App(log_level='INFO')
+
+    ... INFO -  -  app - log_info - Starting Mechanical Application
+
     """
 
     def __init__(self, db_file=None, private_appdata=False, **kwargs):
         """Construct an instance of the mechanical Application."""
         global INSTANCES
         from ansys.mechanical.core import BUILDING_GALLERY
+
+        self._enable_logging = kwargs.get("enable_logging", True)
+        if self._enable_logging:
+            self._log = LOG
+            self._log_level = kwargs.get("log_level", "WARNING")
+            self._log.setLevel(self._log_level)
+
+        self.log_info("Starting Mechanical Application")
 
         if BUILDING_GALLERY:
             if len(INSTANCES) != 0:
@@ -163,6 +195,7 @@ class App:
                 return
         if len(INSTANCES) > 0:
             raise Exception("Cannot have more than one embedded mechanical instance!")
+
         version = kwargs.get("version")
         if version is not None:
             try:
@@ -191,6 +224,11 @@ class App:
         INSTANCES.append(self)
         self._updated_scopes: typing.List[typing.Dict[str, typing.Any]] = []
         self._subscribe()
+        self._messages = None
+
+        globals = kwargs.get("globals")
+        if globals:
+            self.update_globals(globals)
 
     def __repr__(self):
         """Get the product info."""
@@ -227,6 +265,7 @@ class App:
         remove_lock : bool, optional
             Whether or not to remove the lock file if it exists before opening the project file.
         """
+        self.log_info(f"Opening {db_file} ...")
         if remove_lock:
             lock_file = Path(self.DataModel.Project.ProjectDirectory) / ".mech_lock"
             # Remove the lock file if it exists before opening the project file
@@ -437,6 +476,15 @@ This may corrupt the project file.",
         """Returns the current project directory."""
         return self.DataModel.Project.ProjectDirectory
 
+    @property
+    def messages(self):
+        """Lazy-load the MessageManager."""
+        if self._messages is None:
+            from ansys.mechanical.core.embedding.messages import MessageManager
+
+            self._messages = MessageManager(self._app)
+        return self._messages
+
     def _share(self, other) -> None:
         """Shares the state of self with other.
 
@@ -580,8 +628,7 @@ This may corrupt the project file.",
         Examples
         --------
         >>> from ansys.mechanical.core import App
-        >>> app = App()
-        >>> app.update_globals(globals())
+        >>> app = App(globals=globals())
         >>> app.print_tree()
         ... ├── Project
         ... |  ├── Model
@@ -608,3 +655,27 @@ This may corrupt the project file.",
             node = self.DataModel.Project
 
         self._print_tree(node, max_lines, lines_count, indentation)
+
+    def log_debug(self, message):
+        """Log the debug message."""
+        if not self._enable_logging:
+            return
+        self._log.debug(message)
+
+    def log_info(self, message):
+        """Log the info message."""
+        if not self._enable_logging:
+            return
+        self._log.info(message)
+
+    def log_warning(self, message):
+        """Log the warning message."""
+        if not self._enable_logging:
+            return
+        self._log.warning(message)
+
+    def log_error(self, message):
+        """Log the error message."""
+        if not self._enable_logging:
+            return
+        self._log.error(message)

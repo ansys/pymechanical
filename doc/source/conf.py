@@ -212,6 +212,11 @@ html_theme_options = {
             "icon": "fa fa-comment fa-fw",
         },
     ],
+    "whatsnew": {
+        "whatsnew_file_name": "../changelog.d/whatsnew.yml",
+        "changelog_file_name": "changelog.rst",
+        "sidebar_pages": ["changelog", "index"],
+    },
     "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
     "navigation_depth": 10,
 }
@@ -309,7 +314,9 @@ linkcheck_ignore = [
     "https://discuss.ansys.com/*",
     "https://www.ansys.com/*",
     "../api/*",  # Remove this after release 0.10.12
+    "api/*",
     "path.html",
+    "user_guide_embedding/*",
 ]
 
 linkcheck_anchors = False

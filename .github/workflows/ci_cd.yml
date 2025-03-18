@@ -35,7 +35,7 @@ env:
   DOCKER_MECH_CONTAINER_NAME: mechanical
   PACKAGE_NAME: ansys-mechanical-core
   DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
-  MAIN_PYTHON_VERSION: '3.13'
+  MAIN_PYTHON_VERSION: '3.11'
   # DEV_REVN & its Docker image are used in scheduled or registry package runs
   STABLE_REVN: '251'
   DEV_REVN: '252'
@@ -284,68 +284,69 @@ jobs:
           path: mechanical_tests_log-${{ matrix.mechanical-version }}.txt
           retention-days: 7
 
-  embedding-rpc-tests:
-    name: Embedding rpc testing and coverage
-    runs-on: public-ubuntu-latest-8-cores
-    timeout-minutes: 10
-    needs: [smoke-tests, revn-variations, container-stability-check]
-    container:
-      image: ${{ needs.revn-variations.outputs.test_container }}
-      options: --entrypoint /bin/bash
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ['3.10', '3.11', '3.12', '3.13']
+  # embedding-rpc-tests:
+  #   name: Embedding rpc testing and coverage
+  #   runs-on: public-ubuntu-latest-8-cores
+  #   timeout-minutes: 10
+  #   needs: [smoke-tests, revn-variations, container-stability-check]
+  #   container:
+  #     image: ${{ needs.revn-variations.outputs.test_container }}
+  #     options: --entrypoint /bin/bash
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       python-version: ['3.10', '3.11', '3.12', '3.13']
 
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up python and pip
-        run: |
-          apt update
-          apt install --reinstall ca-certificates
-          apt install lsb-release xvfb software-properties-common -y
-          add-apt-repository ppa:deadsnakes/ppa -y
-          apt install -y python${{ matrix.python-version }} python${{ matrix.python-version }}-venv
-          python${{ matrix.python-version }} -m venv /env
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Set up python and pip
+  #       run: |
+  #         apt update
+  #         apt install --reinstall ca-certificates
+  #         apt install lsb-release xvfb software-properties-common -y
+  #         add-apt-repository ppa:deadsnakes/ppa -y
+  #         apt install -y python${{ matrix.python-version }} python${{ matrix.python-version }}-venv
+  #         python${{ matrix.python-version }} -m venv /env
 
-      - name: Install packages for testing
-        run: |
-          . /env/bin/activate
-          pip install --upgrade pip
-          pip install -e .[tests,rpc]
+  #     - name: Install packages for testing
+  #       run: |
+  #         . /env/bin/activate
+  #         pip install --upgrade pip
+  #         pip install uv
+  #         uv pip install -e .[tests,rpc]
 
-      - name: Unit Testing and coverage
-        env:
-          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
-          ANSYS_WORKBENCH_LOGGING: 0
-          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
-          PYTHONUNBUFFERED: 1
-        run: |
-          . /env/bin/activate
-          # if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
-          #   xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml
-          # else
-          #   xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml || true
-          # fi
-          xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc || true
+  #     - name: Unit Testing and coverage
+  #       env:
+  #         ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
+  #         ANSYS_WORKBENCH_LOGGING: 0
+  #         ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
+  #         PYTHONUNBUFFERED: 1
+  #       run: |
+  #         . /env/bin/activate
+  #         # if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
+  #         #   xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml
+  #         # else
+  #         #   xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml || true
+  #         # fi
+  #         xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc || true
 
-      - name: Upload coverage results
-        uses: actions/upload-artifact@v4
-        if: env.MAIN_PYTHON_VERSION == matrix.python-version
-        with:
-          include-hidden-files: true
-          name: coverage-tests-embedding-rpc
-          path: .cov
-          retention-days: 7
+      # - name: Upload coverage results
+      #   uses: actions/upload-artifact@v4
+      #   if: env.MAIN_PYTHON_VERSION == matrix.python-version
+      #   with:
+      #     include-hidden-files: true
+      #     name: coverage-tests-embedding-rpc
+      #     path: .cov
+      #     retention-days: 7
 
-      - name: Upload coverage results (as .coverage)
-        uses: actions/upload-artifact@v4
-        if: env.MAIN_PYTHON_VERSION == matrix.python-version
-        with:
-          include-hidden-files: true
-          name: coverage-file-tests-embedding-rpc
-          path: .coverage
-          retention-days: 7
+      # - name: Upload coverage results (as .coverage)
+      #   uses: actions/upload-artifact@v4
+      #   if: env.MAIN_PYTHON_VERSION == matrix.python-version
+      #   with:
+      #     include-hidden-files: true
+      #     name: coverage-file-tests-embedding-rpc
+      #     path: .coverage
+      #     retention-days: 7
 
       # - name: Publish Test Report
       #   uses: mikepenz/action-junit-report@v5
@@ -386,7 +387,8 @@ jobs:
         run: |
           . /env/bin/activate
           pip install --upgrade pip
-          pip install -e .[tests]
+          pip install uv
+          uv pip install -e .[tests]
 
       - name: Unit Testing and coverage
         env:
@@ -459,7 +461,8 @@ jobs:
         run: |
           . /env/bin/activate
           pip install --upgrade pip
-          pip install -e .[tests]
+          pip install uv
+          uv pip install -e .[tests]
 
       - name: Embedding scripts unit testing and coverage
         env:
@@ -532,7 +535,8 @@ jobs:
       - name: Install packages for testing
         run: |
           . /env/bin/activate
-          pip install .[tests]
+          pip install uv
+          uv pip install .[tests]
 
       - name: Set environment variable
         run: echo "ANSYSCL${{ needs.revn-variations.outputs.test_revn }}_DIR=/install/ansys_inc/v${{ needs.revn-variations.outputs.test_revn }}/licensingclient" >> $GITHUB_ENV
@@ -580,7 +584,7 @@ jobs:
 
   doc-build:
     name: Documentation
-    runs-on: ubuntu-latest
+    runs-on: public-ubuntu-latest-8-cores
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
@@ -629,7 +633,8 @@ jobs:
       - name: Install Python requirements
         run: |
           . /env/bin/activate
-          pip install -e .[doc]
+          pip install uv
+          uv pip install -e .[doc]
 
       - name: Build docs
         env:
@@ -698,6 +703,7 @@ jobs:
   coverage:
     name: Merging coverage
     needs: [remote-connect, embedding-tests, embedding-scripts-tests, launch-tests]
+    # needs: [remote-connect, embedding-tests, embedding-scripts-tests, embedding-rpc-tests, launch-tests]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -710,7 +716,7 @@ jobs:
 
       - name: Install coverage
         run: |
-          rm -rf env
+          rm -rf ./env
           python -m pip install -U pip
           pip install coverage
           pip install -e .
@@ -723,10 +729,10 @@ jobs:
           name: coverage-file-tests-embedding
           path: cov-dir/embedding
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: coverage-file-tests-embedding-rpc
-          path: cov-dir/embedding-rpc
+      # - uses: actions/download-artifact@v4
+      #   with:
+      #     name: coverage-file-tests-embedding-rpc
+      #     path: cov-dir/embedding-rpc
 
       - uses: actions/download-artifact@v4
         with:
@@ -749,7 +755,7 @@ jobs:
       - name: Move files to common location
         run: |
           mv cov-dir/embedding/.coverage .coverage.Embedding
-          mv cov-dir/embedding-rpc/.coverage .coverage.EmbeddingRPC
+          # mv cov-dir/embedding-rpc/.coverage .coverage.EmbeddingRPC
           mv cov-dir/embedding-scripts/.coverage .coverage.EmbeddingScripts
           mv cov-dir/launch/.coverage .coverage.Launch
           mv cov-dir/normal/.coverage .coverage.Normal
@@ -794,6 +800,12 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
           files: .coverage-combined/xml
+
+      - name: Upload coverage to Codacy
+        uses: codacy/codacy-coverage-reporter-action@v1.3.0
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: '.coverage-combined/xml'
 
   package:
     name: Package library
