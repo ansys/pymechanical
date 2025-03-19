@@ -107,12 +107,10 @@ Python API to interact with `Ansys Mechanical`_ (FEA software for structural eng
 
 .. toctree::
    :hidden:
-   :maxdepth: 3
 
    getting_started/index
    examples/index
    user_guide_session/index
-   user_guide_embedding/index
    user_guide_scripting/index
    api/index
    contributing
