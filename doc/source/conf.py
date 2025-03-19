@@ -23,6 +23,8 @@ from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMB
 # necessary when building the sphinx gallery
 pymechanical.BUILDING_GALLERY = True
 pyvista.BUILDING_GALLERY = True
+pyvista.OFF_SCREEN = True
+
 # Whether or not to build the cheatsheet
 BUILD_CHEATSHEET = True
 
