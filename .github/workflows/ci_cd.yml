@@ -648,7 +648,7 @@ jobs:
           # Make html or pdf doc
           if ! command -v Xvfb &> /dev/null; then
               echo "Xvfb not found. Installing..."
-              apt-get update && apt-get install -y xvfb
+              apt-get update && apt-get install --reinstall -y xvfb x11-xserver-utils
           fi
 
           # Check for existing Xvfb processes
