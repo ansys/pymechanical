@@ -584,7 +584,7 @@ jobs:
 
   doc-build:
     name: Documentation
-    runs-on: ubuntu-latest
+    runs-on: public-ubuntu-latest-8-cores
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
