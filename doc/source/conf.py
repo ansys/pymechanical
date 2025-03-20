@@ -13,6 +13,8 @@ import os
 import warnings
 
 from ansys_sphinx_theme import ansys_favicon, get_version_match
+import pyvista
+from pyvista.plotting.utilities.sphinx_gallery import DynamicScraper
 from sphinx_gallery.sorting import FileNameSortKey
 
 import ansys.mechanical.core as pymechanical
@@ -20,6 +22,8 @@ from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMB
 
 # necessary when building the sphinx gallery
 pymechanical.BUILDING_GALLERY = True
+pyvista.BUILDING_GALLERY = True
+pyvista.OFF_SCREEN = True
 
 # Whether or not to build the cheatsheet
 BUILD_CHEATSHEET = True
@@ -175,7 +179,7 @@ sphinx_gallery_conf = {
     "backreferences_dir": None,
     # Modules for which function level galleries are created.  In
     "doc_module": "ansys-mechanical-core",
-    "image_scrapers": ("matplotlib"),
+    "image_scrapers": (DynamicScraper(), "matplotlib"),
     "ignore_pattern": "flycheck*",
     "thumbnail_size": (350, 350),
 }

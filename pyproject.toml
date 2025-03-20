@@ -81,6 +81,10 @@ doc = [
     "sphinx-notfound-page==1.1.0",
     "sphinxcontrib-websupport==2.0.0",
     "sphinxemoji==0.3.1",
+    "pyvista[jupyter]>=0.39.1",
+    "ipyvtklink==0.2.3",
+    "ansys-tools-visualization-interface>=0.2.6",
+    "usd-core==24.11"
 ]
 viz = [
     "ansys-tools-visualization-interface>=0.2.6",
