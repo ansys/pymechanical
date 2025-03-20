@@ -29,10 +29,6 @@ a remote session and then demonstrates how to use an embedding instance.
 
 """
 
-# -----------------
-# Embedded Instance
-# -----------------
-
 
 ###############################################################################
 # Download the geometry file
@@ -76,7 +72,7 @@ geometry_import_format = Ansys.Mechanical.DataModel.Enums.GeometryImportPreferen
 geometry_import_preferences = Ansys.ACT.Mechanical.Utilities.GeometryImportPreferences()
 geometry_import_preferences.ProcessNamedSelections = True
 geometry_import.Import(geometry_file, geometry_import_format, geometry_import_preferences)
-
+app.plot()
 
 ###############################################################################
 # Assign material
