@@ -32,7 +32,7 @@ Python API to interact with `Ansys Mechanical`_ (FEA software for structural eng
 
     .. grid-item-card:: Examples :fa:`scroll`
         :padding: 2 2 2 2
-        :link: examples/index
+        :link: examples/gallery_examples/index
         :link-type: doc
 
         Dive into examples created using PyMechanical.
@@ -110,7 +110,7 @@ Python API to interact with `Ansys Mechanical`_ (FEA software for structural eng
    :maxdepth: 3
 
    getting_started/index
-   examples/index
+   examples/gallery_examples/index
    user_guide_session/index
    user_guide_embedding/index
    user_guide_scripting/index
