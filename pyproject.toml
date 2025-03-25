@@ -57,7 +57,7 @@ tests = [
 ]
 doc = [
     "sphinx==8.2.3",
-    "ansys-sphinx-theme[autoapi,changelog]==1.3.3",
+    "ansys-sphinx-theme[autoapi,changelog] @ git+https://github.com/ansys/ansys-sphinx-theme.git@fix/sidebar",
     "grpcio==1.70.0",
     "imageio-ffmpeg==0.6.0",
     "imageio==2.37.0",

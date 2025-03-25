@@ -22,7 +22,7 @@ from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMB
 pymechanical.BUILDING_GALLERY = True
 
 # Whether or not to build the cheatsheet
-BUILD_CHEATSHEET = True
+BUILD_CHEATSHEET = True if os.getenv("BUILD_CHEATSHEET") == "True" else False
 
 # suppress annoying matplotlib bug
 warnings.filterwarnings(
@@ -219,6 +219,7 @@ html_theme_options = {
     },
     "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
     "navigation_depth": 10,
+    "sidebar_order": ["cheatsheet", "whatsnew"]
 }
 
 if BUILD_CHEATSHEET:
