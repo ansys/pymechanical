@@ -37,7 +37,7 @@ a remote session and then demonstrates how to use an embedding instance.
 
 import os
 
-import ansys.mechanical.core as mech
+from ansys.mechanical.core import App
 from ansys.mechanical.core.examples import download_file
 
 geometry_path = download_file("Valve.pmdb", "pymechanical", "embedding")
@@ -50,7 +50,8 @@ print(f"Downloaded the geometry file to: {geometry_path}")
 # Find the mechanical installation path & version.
 # Open an embedded instance of Mechanical and set global variables.
 
-app = mech.App(globals=globals())
+app = App()
+app.update_globals(globals())
 print(app)
 
 
