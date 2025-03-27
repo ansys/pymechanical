@@ -22,7 +22,7 @@ from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMB
 pymechanical.BUILDING_GALLERY = True
 
 # Whether or not to build the cheatsheet
-BUILD_CHEATSHEET = True if os.getenv("BUILD_CHEATSHEET") == "True" else False
+BUILD_CHEATSHEET = True if os.environ.get("BUILD_EXAMPLES", "true") == "true" else False
 
 # suppress annoying matplotlib bug
 warnings.filterwarnings(
