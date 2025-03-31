@@ -85,6 +85,8 @@ doc = [
     "ipyvtklink==0.2.3",
     "ansys-tools-visualization-interface>=0.2.6",
     "usd-core==24.11"
+    "pyvista[jupyter]>=0.39.1",
+    "ipyvtklink==0.2.3",
 ]
 viz = [
     "ansys-tools-visualization-interface>=0.2.6",
