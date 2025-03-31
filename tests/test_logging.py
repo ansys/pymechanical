@@ -26,10 +26,10 @@ import os
 import re
 
 import pytest
+from conftest import HAS_GRPC
 
 from ansys.mechanical.core import LOG  # Global logger
 from ansys.mechanical.core import logging
-from conftest import HAS_GRPC
 
 ## Notes
 # Use the next fixtures for:

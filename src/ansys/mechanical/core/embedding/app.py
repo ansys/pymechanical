@@ -25,19 +25,21 @@ from __future__ import annotations
 
 import atexit
 import os
-from pathlib import Path
 import shutil
 import typing
 import warnings
+from pathlib import Path
 
 from ansys.mechanical.core import LOG
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
-from ansys.mechanical.core.embedding.imports import global_entry_points, global_variables
+from ansys.mechanical.core.embedding.imports import (global_entry_points,
+                                                     global_variables)
 from ansys.mechanical.core.embedding.poster import Poster
 from ansys.mechanical.core.embedding.ui import launch_ui
-from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
+from ansys.mechanical.core.embedding.warnings import (connect_warnings,
+                                                      disconnect_warnings)
 
 if typing.TYPE_CHECKING:
     # Make sure to run ``ansys-mechanical-ideconfig`` to add the autocomplete settings to VS Code
@@ -403,7 +405,8 @@ This may corrupt the project file.",
 
         # TODO Check if anything loaded inside app or else show warning and return
 
-        from ansys.mechanical.core.embedding.viz.embedding_plotter import to_plotter
+        from ansys.mechanical.core.embedding.viz.embedding_plotter import \
+            to_plotter
 
         return to_plotter(self)
 

@@ -27,12 +27,12 @@ import time
 import typing
 
 import rpyc
-from rpyc.utils.server import ThreadedServer
 import toolz
+from rpyc.utils.server import ThreadedServer
 
+import ansys.mechanical.core.embedding.utils
 from ansys.mechanical.core.embedding.app import App
 from ansys.mechanical.core.embedding.background import BackgroundApp
-import ansys.mechanical.core.embedding.utils
 
 from .utils import MethodType, get_free_port, get_remote_methods
 

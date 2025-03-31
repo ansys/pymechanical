@@ -23,17 +23,18 @@
 """Convenience CLI to run mechanical."""
 
 import asyncio
-from asyncio.subprocess import PIPE
 import os
 import sys
 import typing
 import warnings
+from asyncio.subprocess import PIPE
 
 import ansys.tools.path as atp
 import click
 
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
-from ansys.mechanical.core.feature_flags import get_command_line_arguments, get_feature_flag_names
+from ansys.mechanical.core.feature_flags import (get_command_line_arguments,
+                                                 get_feature_flag_names)
 
 DRY_RUN = False
 """Dry run constant."""

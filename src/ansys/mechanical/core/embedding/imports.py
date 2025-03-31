@@ -55,16 +55,8 @@ def global_variables(app: "ansys.mechanical.core.App", enums: bool = False) -> t
     # Import modules if the app is initialized
     if is_initialized():
         from ansys.mechanical.core.embedding.global_importer import (
-            Ansys,
-            MechanicalEnums,
-            Point,
-            Point2D,
-            Point3D,
-            Quantity,
-            SectionPlane,
-            System,
-            Vector3D,
-        )
+            Ansys, MechanicalEnums, Point, Point2D, Point3D, Quantity,
+            SectionPlane, System, Vector3D)
 
         vars["Quantity"] = Quantity
         vars["System"] = System

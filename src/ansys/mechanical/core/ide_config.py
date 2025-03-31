@@ -24,11 +24,11 @@
 
 import json
 import os
-from pathlib import Path
 import re
 import site
 import sys
 import warnings
+from pathlib import Path
 
 import ansys.tools.path as atp
 import click

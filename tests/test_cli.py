@@ -21,16 +21,17 @@
 # SOFTWARE.
 
 import os
-from pathlib import Path
 import subprocess
 import sys
+from pathlib import Path
 
 import ansys.tools.path as atp
-from click.testing import CliRunner
 import pytest
+from click.testing import CliRunner
 
 from ansys.mechanical.core.ide_config import cli as ideconfig_cli
-from ansys.mechanical.core.ide_config import get_stubs_location, get_stubs_versions
+from ansys.mechanical.core.ide_config import (get_stubs_location,
+                                              get_stubs_versions)
 from ansys.mechanical.core.run import _cli_impl
 
 STUBS_LOC = get_stubs_location()

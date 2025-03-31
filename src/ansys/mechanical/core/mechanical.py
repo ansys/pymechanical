@@ -22,10 +22,8 @@
 
 """Connect to Mechanical gRPC server and issues commands."""
 import atexit
-from contextlib import closing
 import datetime
 import fnmatch
-from functools import wraps
 import glob
 import os
 import pathlib
@@ -35,9 +33,11 @@ import sys
 import threading
 import time
 import typing
-from typing import Optional
 import warnings
 import weakref
+from contextlib import closing
+from functools import wraps
+from typing import Optional
 
 import ansys.api.mechanical.v0.mechanical_pb2 as mechanical_pb2
 import ansys.api.mechanical.v0.mechanical_pb2_grpc as mechanical_pb2_grpc
@@ -46,19 +46,12 @@ import grpc
 
 import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core import LOG
-from ansys.mechanical.core.errors import (
-    MechanicalExitedError,
-    MechanicalRuntimeError,
-    VersionError,
-    protect_grpc,
-)
+from ansys.mechanical.core.errors import (MechanicalExitedError,
+                                          MechanicalRuntimeError, VersionError,
+                                          protect_grpc)
 from ansys.mechanical.core.launcher import MechanicalLauncher
-from ansys.mechanical.core.misc import (
-    check_valid_ip,
-    check_valid_port,
-    check_valid_start_instance,
-    threaded,
-)
+from ansys.mechanical.core.misc import (check_valid_ip, check_valid_port,
+                                        check_valid_start_instance, threaded)
 
 # Check if PyPIM is installed
 try:

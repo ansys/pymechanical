@@ -23,8 +23,8 @@
 """Embedding tests related to app data"""
 
 import os
-from pathlib import Path
 import sys
+from pathlib import Path
 from unittest import mock
 
 import pytest

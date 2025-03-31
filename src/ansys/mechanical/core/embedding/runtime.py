@@ -22,8 +22,8 @@
 
 """Runtime initialize for pythonnet in embedding."""
 
-from importlib.metadata import distribution
 import os
+from importlib.metadata import distribution
 
 from ansys.mechanical.core.embedding.logger import Logger
 

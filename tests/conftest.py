@@ -23,24 +23,24 @@
 import datetime
 import os
 import pathlib
-from pathlib import Path
 import platform
 import shutil
 import subprocess
 import sys
 import time
+from pathlib import Path
 
 import ansys.tools.path as atp
 import pytest
 
 import ansys.mechanical.core as pymechanical
+import ansys.mechanical.core.run
 from ansys.mechanical.core import LocalMechanicalPool
 from ansys.mechanical.core._version import SUPPORTED_MECHANICAL_VERSIONS
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.errors import MechanicalExitedError
 from ansys.mechanical.core.examples import download_file
 from ansys.mechanical.core.misc import get_mechanical_bin
-import ansys.mechanical.core.run
 
 # to run tests with multiple markers
 # pytest -q --collect-only -m "remote_session_launch"

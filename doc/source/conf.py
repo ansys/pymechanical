@@ -8,17 +8,18 @@
 
 # -- Path setup --------------------------------------------------------------
 
-from datetime import datetime
 import os
 import warnings
+from datetime import datetime
 
-from ansys_sphinx_theme import ansys_favicon, get_version_match
 import pyvista
+from ansys_sphinx_theme import ansys_favicon, get_version_match
 from pyvista.plotting.utilities.sphinx_gallery import DynamicScraper
 from sphinx_gallery.sorting import FileNameSortKey
 
 import ansys.mechanical.core as pymechanical
-from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
+from ansys.mechanical.core.embedding.initializer import \
+    SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
 
 # necessary when building the sphinx gallery
 pymechanical.BUILDING_GALLERY = True

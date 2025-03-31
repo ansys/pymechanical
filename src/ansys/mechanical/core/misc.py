@@ -22,9 +22,9 @@
 
 """Contain miscellaneous functions and methods at the module level."""
 
-from functools import wraps
 import os
 import socket
+from functools import wraps
 from threading import Thread
 
 

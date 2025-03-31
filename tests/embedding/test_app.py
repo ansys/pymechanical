@@ -22,19 +22,19 @@
 
 """Miscellaneous embedding tests"""
 import os
-from pathlib import Path
 import shutil
 import subprocess
 import sys
-from tempfile import NamedTemporaryFile
 import time
+from pathlib import Path
+from tempfile import NamedTemporaryFile
 
 import pytest
 
+import ansys.mechanical.core.embedding.utils as utils
 from ansys.mechanical.core.embedding.app import is_initialized
 from ansys.mechanical.core.embedding.cleanup_gui import cleanup_gui
 from ansys.mechanical.core.embedding.ui import _launch_ui
-import ansys.mechanical.core.embedding.utils as utils
 
 
 @pytest.mark.embedding
@@ -59,8 +59,8 @@ def test_deprecation_warning(embedded_app):
 @pytest.mark.embedding
 def test_app_save_open(embedded_app, tmp_path: pytest.TempPathFactory):
     """Test save and open of the Application class."""
-    import System
     import clr  # noqa: F401
+    import System
 
     # save without a save_as throws an exception
     with pytest.raises(System.Exception):

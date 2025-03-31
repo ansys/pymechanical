@@ -21,10 +21,10 @@
 # SOFTWARE.
 """Clean up temporary mechdb files after GUI is closed."""
 
-from pathlib import Path
 import shutil
 import sys
 import time
+from pathlib import Path
 
 import psutil
 

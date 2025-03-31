@@ -130,11 +130,11 @@ you would do in any other script. There are no conflicts between these loggers.
 
 """
 
-from copy import copy
-from datetime import datetime
 import logging
 import sys
 import weakref
+from copy import copy
+from datetime import datetime
 
 # Default configuration
 LOG_LEVEL = logging.DEBUG
