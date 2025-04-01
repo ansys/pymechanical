@@ -53,7 +53,7 @@ tests = [
     "pytest==8.3.5",
     "pytest-cov==6.0.0",
     "pytest-print==1.1.0",
-    "psutil==7.0.0"
+    "psutil==7.0.0",
 ]
 doc = [
     "sphinx==8.2.3",
@@ -84,9 +84,7 @@ doc = [
     "pyvista[jupyter]>=0.39.1",
     "ipyvtklink==0.2.3",
     "ansys-tools-visualization-interface>=0.2.6",
-    "usd-core==24.11"
-    "pyvista[jupyter]>=0.39.1",
-    "ipyvtklink==0.2.3",
+    "usd-core==24.11",
 ]
 viz = [
     "ansys-tools-visualization-interface>=0.2.6",
