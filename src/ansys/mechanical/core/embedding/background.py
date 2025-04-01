@@ -28,9 +28,9 @@ import time
 import typing
 
 import ansys.mechanical.core as mech
-import ansys.mechanical.core.embedding.utils as utils
 from ansys.mechanical.core.embedding import initializer
 from ansys.mechanical.core.embedding.poster import Poster
+import ansys.mechanical.core.embedding.utils as utils
 
 
 def _exit(background_app: "BackgroundApp"):

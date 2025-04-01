@@ -24,8 +24,8 @@
 import logging
 import os
 
-import appdirs
 from ansys.tools.path import find_mechanical
+import appdirs
 
 USER_DATA_PATH = appdirs.user_data_dir(appname="ansys_mechanical_core", appauthor="Ansys")
 """User data directory."""
@@ -46,13 +46,16 @@ LOG = Logger(level=logging.ERROR, to_file=False, to_stdout=True)
 
 
 from ansys.mechanical.core._version import __version__
+
 # import few classes / functions
-from ansys.mechanical.core.mechanical import (Mechanical,
-                                              change_default_mechanical_path,
-                                              close_all_local_instances,
-                                              connect_to_mechanical,
-                                              get_mechanical_path,
-                                              launch_mechanical)
+from ansys.mechanical.core.mechanical import (
+    Mechanical,
+    change_default_mechanical_path,
+    close_all_local_instances,
+    connect_to_mechanical,
+    get_mechanical_path,
+    launch_mechanical,
+)
 
 try:
     from ansys.mechanical.core.embedding import App, global_variables

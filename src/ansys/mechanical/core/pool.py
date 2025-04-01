@@ -29,10 +29,15 @@ import warnings
 from ansys.tools.path import version_from_path
 
 from ansys.mechanical.core.errors import VersionError
-from ansys.mechanical.core.mechanical import (_HAS_ANSYS_PIM, _HAS_TQDM, LOG,
-                                              MECHANICAL_DEFAULT_PORT,
-                                              get_mechanical_path,
-                                              launch_mechanical, port_in_use)
+from ansys.mechanical.core.mechanical import (
+    _HAS_ANSYS_PIM,
+    _HAS_TQDM,
+    LOG,
+    MECHANICAL_DEFAULT_PORT,
+    get_mechanical_path,
+    launch_mechanical,
+    port_in_use,
+)
 from ansys.mechanical.core.misc import threaded, threaded_daemon
 
 if _HAS_TQDM:
