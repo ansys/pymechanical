@@ -25,8 +25,8 @@
 import os
 import sys
 
-import pytest
 from ansys.tools.path import get_mechanical_path
+import pytest
 
 from ansys.mechanical.core.embedding import add_mechanical_python_libraries
 

@@ -23,6 +23,7 @@
 """Launch Mechanical in batch or UI mode."""
 import errno
 import os
+
 # Subprocess is needed to start the backend. Excluding bandit check.
 import subprocess  # nosec: B404
 

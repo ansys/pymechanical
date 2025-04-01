@@ -53,8 +53,7 @@ import os
 import typing
 
 from ansys.mechanical.core.embedding import initializer
-from ansys.mechanical.core.embedding.logger import (environ, linux_api, sinks,
-                                                    windows_api)
+from ansys.mechanical.core.embedding.logger import environ, linux_api, sinks, windows_api
 
 LOGGING_SINKS: typing.Set[int] = set()
 """Constant for logging sinks."""

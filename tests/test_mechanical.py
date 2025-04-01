@@ -26,12 +26,12 @@ import pathlib
 import re
 
 import ansys.tools.path
-import conftest
 import pytest
 
 import ansys.mechanical.core as pymechanical
 import ansys.mechanical.core.errors as errors
 import ansys.mechanical.core.misc as misc
+import conftest
 
 
 @pytest.mark.remote_session_connect

@@ -22,9 +22,9 @@
 
 """PyMechanical-specific errors."""
 
+from functools import wraps
 import signal
 import threading
-from functools import wraps
 
 from grpc._channel import _InactiveRpcError, _MultiThreadedRendezvous
 

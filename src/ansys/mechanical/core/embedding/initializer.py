@@ -21,12 +21,12 @@
 # SOFTWARE.
 
 """Initializer for Mechanical embedding. Sets up paths and resolvers."""
+from importlib.metadata import distribution
 import os
+from pathlib import Path
 import platform
 import sys
 import warnings
-from importlib.metadata import distribution
-from pathlib import Path
 
 from ansys.mechanical.core.embedding.loader import load_clr
 from ansys.mechanical.core.embedding.resolver import resolve

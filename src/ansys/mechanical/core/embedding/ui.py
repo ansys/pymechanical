@@ -21,13 +21,14 @@
 # SOFTWARE.
 """Run Mechanical UI from Python."""
 
-import sys
-import tempfile
-import typing
 from pathlib import Path
+
 # Subprocess is needed to launch the GUI and clean up the process on close.
 # Excluding bandit check.
 from subprocess import Popen  # nosec: B404
+import sys
+import tempfile
+import typing
 
 
 class UILauncher:
