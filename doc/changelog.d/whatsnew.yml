@@ -96,12 +96,12 @@ fragments:
   version: 0.11.4
   content: |
     The `app.plot()` function allows you to visualize imported geometry in 3D. This feature is
-    available only from 24R1 or later and requires the `ansys-mechanical-core[viz]` dependencies
+    available only from 24R1 or later and requires the `ansys-mechanical-core[graphics]` dependencies
     to be installed:
 
     .. code:: shell
 
-        pip install ansys-mechanical-core[viz]
+        pip install ansys-mechanical-core[graphics]
 
     Usage:
     .. code:: python
