@@ -82,3 +82,20 @@ def test_global_importer_exception(rootdir):
 
     # Assert the exception is raised
     assert "Globals cannot be imported until the embedded app is initialized." in stderr.decode()
+
+
+@pytest.mark.embedding_scripts
+def test_enum_importer_exception(rootdir):
+    """Test an exception is raised in enum_importer when the embedded app is not initialized."""
+    # Path to enum_importer.py
+    enum_importer = (
+        rootdir / "src" / "ansys" / "mechanical" / "core" / "embedding" / "enum_importer.py"
+    )
+
+    # Run the enum_importer.py script without the app being initialized
+    stdout, stderr = subprocess.Popen(
+        [sys.executable, enum_importer], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    ).communicate()
+
+    # Assert the exception is raised
+    assert "Enums cannot be imported until the embedded app is initialized." in stderr.decode()
