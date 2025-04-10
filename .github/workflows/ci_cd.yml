@@ -634,7 +634,7 @@ jobs:
         run: |
           . /env/bin/activate
           pip install uv
-          uv pip install -e .[doc,viz]
+          uv pip install -e .[doc,graphics]
 
       - name: Build docs
         env:
