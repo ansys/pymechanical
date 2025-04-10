@@ -65,6 +65,7 @@ extensions = [
     "sphinx_copybutton",
     "sphinx_design",
     "sphinxemoji.sphinxemoji",
+    "pyvista.ext.viewer_directive",
 ]
 
 if pymechanical.BUILDING_GALLERY:
