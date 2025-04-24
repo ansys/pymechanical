@@ -92,7 +92,7 @@ graphics = [
     "usd-core==25.2",
 ]
 rpc = [
-    "rpyc==6.0.1",
+    "rpyc==6.0.2",
     "toolz==1.0.0",
 ]
 pim = [
