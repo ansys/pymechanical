@@ -277,15 +277,15 @@ def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
         cwd=rootdir,
         env=test_env.env,
         stdout=stdout,
-        stderr=stderr
+        stderr=stderr,
     )
 
     # Install pythonnet
     subprocess.check_call(
         [test_env.python, "-m", "pip", "install", "pythonnet"],
         env=test_env.env,
-        stdout = stdout,
-        stderr = stderr
+        stdout=stdout,
+        stderr=stderr,
     )
 
     # Initialize with pythonnet
@@ -465,7 +465,12 @@ def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory):
 
     # Run process
     if os.name == "nt":
-        process = subprocess.Popen(["ping", "127.0.0.1", "-n", "2"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
+        process = subprocess.Popen(
+            ["ping", "127.0.0.1", "-n", "2"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            shell=True,
+        )
     else:
         process = subprocess.Popen(["sleep", "3"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
 
