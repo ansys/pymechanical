@@ -448,8 +448,9 @@ def test_launch_gui_exception(embedded_app):
 
 
 @pytest.mark.embedding_scripts
-def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory, run_subprocess):
+def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory):
     """Test cleanup function to remove the temporary mechdb file and folder."""
+    assert os.path.isdir(tmp_path)
     temp_file = tmp_path / "tempfiletest.mechdb"
     temp_folder = tmp_path / "tempfiletest_Mech_Files"
 
@@ -463,10 +464,16 @@ def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory, run_subprocess):
     assert temp_folder.exists()
 
     # Run process
-    process, stdout, stderr = run_subprocess(["sleep", "3"])
+    if os.name == "nt":
+        process = subprocess.Popen(["ping", "127.0.0.1", "-n", "2"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
+    else:
+        process = subprocess.check_call(["sleep", "3"])
+
+    pid = process.pid
+    assert process.wait() == 0
 
     # Remove the temporary file and folder
-    cleanup_gui(process.pid, temp_file)
+    cleanup_gui(pid, temp_file)
 
     # Assert the file and folder do not exist
     assert not temp_file.exists()
