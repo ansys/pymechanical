@@ -467,7 +467,7 @@ def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory):
     if os.name == "nt":
         process = subprocess.Popen(["ping", "127.0.0.1", "-n", "2"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
     else:
-        process = subprocess.check_call(["sleep", "3"])
+        process = subprocess.Popen(["sleep", "3"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
 
     pid = process.pid
     assert process.wait() == 0
