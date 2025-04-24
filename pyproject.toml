@@ -27,7 +27,7 @@ classifiers = [
 ]
 dependencies = [
     "ansys-api-mechanical==0.1.2",
-    "ansys-mechanical-env==0.1.9",
+    "ansys-mechanical-env==0.1.11",
     "ansys-mechanical-stubs==0.1.6",
     "ansys-pythonnet>=3.1.0rc6",
     "ansys-tools-path>=0.3.1",
@@ -64,7 +64,7 @@ doc = [
     "jupyter_sphinx==0.5.3",
     "jupyterlab>=3.2.8",
     "matplotlib==3.10.1",
-    "numpy==2.2.4",
+    "numpy==2.2.5",
     "numpydoc==1.8.0",
     "pandas==2.2.3",
     "panel==1.6.1",
