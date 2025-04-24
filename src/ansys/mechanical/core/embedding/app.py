@@ -47,10 +47,10 @@ if typing.TYPE_CHECKING:
 try:
     import ansys.tools.visualization_interface  # noqa: F401
 
-    HAS_ANSYS_VIZ = True
+    HAS_ANSYS_GRAPHICS = True
     """Whether or not PyVista exists."""
 except ImportError:
-    HAS_ANSYS_VIZ = False
+    HAS_ANSYS_GRAPHICS = False
 
 
 def _get_default_addin_configuration() -> AddinConfiguration:
@@ -391,27 +391,27 @@ This may corrupt the project file.",
 
     def plotter(self) -> None:
         """Return ``ansys.tools.visualization_interface.Plotter`` object."""
-        if not HAS_ANSYS_VIZ:
-            warnings.warn(
-                "Installation of viz option required! Use pip install ansys-mechanical-core[viz]"
+        if not HAS_ANSYS_GRAPHICS:
+            LOG.warning(
+                "Use ``pip install ansys-mechanical-core[graphics]`` to enable this option."
             )
             return
 
         if self.version < 242:
-            warnings.warn("Plotting is only supported with version 2024R2 and later!")
+            LOG.warning("Plotting is only supported with version 2024R2 and later!")
             return
 
         # TODO Check if anything loaded inside app or else show warning and return
 
-        from ansys.mechanical.core.embedding.viz.embedding_plotter import to_plotter
+        from ansys.mechanical.core.embedding.graphics.embedding_plotter import to_plotter
 
         return to_plotter(self)
 
     def plot(self) -> None:
         """Visualize the model in 3d.
 
-        Requires installation using the viz option. E.g.
-        pip install ansys-mechanical-core[viz]
+        Requires installation using the graphics option. E.g.
+        pip install ansys-mechanical-core[graphics]
 
         Examples
         --------
