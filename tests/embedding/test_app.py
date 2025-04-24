@@ -473,7 +473,7 @@ def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory):
         )
     else:
         process = subprocess.Popen(
-            ["sleep", "3"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True
+            ["sleep", "3"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
         )
 
     pid = process.pid
