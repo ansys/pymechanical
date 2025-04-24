@@ -264,6 +264,7 @@ def test_env():
 def graphics_test_mechdb_file():
     """Download mechdb files for graphics export test."""
     mechdb_file = download_file("graphics_test.mechdb", "pymechanical", "test_files")
+    print(mechdb_file)
     yield mechdb_file
 
 
