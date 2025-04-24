@@ -267,15 +267,26 @@ def test_app_getters_notstale(embedded_app):
 def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
     """Test Python.NET warning of the embedded instance using a test-scoped Python environment."""
 
+    # set these to None to see output in the terminal
+    stdout = subprocess.DEVNULL
+    stderr = subprocess.DEVNULL
+
     # Install pymechanical
     subprocess.check_call(
         [test_env.python, "-m", "pip", "install", "-e", "."],
         cwd=rootdir,
         env=test_env.env,
+        stdout=stdout,
+        stderr=stderr
     )
 
     # Install pythonnet
-    subprocess.check_call([test_env.python, "-m", "pip", "install", "pythonnet"], env=test_env.env)
+    subprocess.check_call(
+        [test_env.python, "-m", "pip", "install", "pythonnet"],
+        env=test_env.env,
+        stdout = stdout,
+        stderr = stderr
+    )
 
     # Initialize with pythonnet
     embedded_pythonnet_py = os.path.join(rootdir, "tests", "scripts", "pythonnet_warning.py")
