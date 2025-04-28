@@ -62,25 +62,11 @@ class UniqueUserProfile:
         if "win" in sys.platform:
             shutil.rmtree(self.location, ignore_errors=True)
         elif "lin" in sys.platform:
-
-            def linux_rmdir(directory: Path) -> None:
-                """Recursively remove a directory and its contents.
-
-                Parameters
-                ----------
-                directory : Path
-                    The directory to remove.
-                """
-                # Iterate through the directory contents
-                for item in directory.iterdir():
-                    if item.is_dir():
-                        # Recursively remove the directory and its contents
-                        linux_rmdir(item)
-                    else:
-                        # Remove the file
-                        item.unlink()
-
-            linux_rmdir(self.location)
+            for root, dirs, files in self.location.walk(top_down=False):
+                for name in files:
+                    (root / name).unlink()
+                for name in dirs:
+                    (root / name).rmdir()
 
         if self.location.is_dir():
             warnings.warn(
@@ -105,7 +91,7 @@ class UniqueUserProfile:
             env["TMP"] = appdata_local_temp
             env["TEMP"] = appdata_local_temp
         elif "lin" in sys.platform:
-            env["HOME"] = home
+            env["HOME"] = str(home)
 
     def exists(self) -> bool:
         """Check if unique profile name already exists."""
@@ -132,4 +118,5 @@ class UniqueUserProfile:
         for loc in locs:
             default_profile_loc = self._default_profile / loc
             temp_appdata_loc = self.location / loc
-            shutil.copytree(default_profile_loc, temp_appdata_loc)
+            if default_profile_loc.exists():
+                shutil.copytree(default_profile_loc, temp_appdata_loc)
