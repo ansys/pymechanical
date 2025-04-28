@@ -22,7 +22,7 @@
 
 """Temporary Appdata for Ansys Mechanical."""
 
-import os
+from pathlib import Path
 import shutil
 import sys
 import warnings
@@ -33,8 +33,8 @@ class UniqueUserProfile:
 
     def __init__(self, profile_name: str, copy_profile: bool = True, dry_run: bool = False):
         """Initialize UniqueUserProfile class."""
-        self._default_profile = os.path.expanduser("~")
-        self._location = os.path.join(self._default_profile, "PyMechanical-AppData", profile_name)
+        self._default_profile = Path("~").expanduser()
+        self._location = self._default_profile / "PyMechanical-AppData" / profile_name
         self._dry_run = dry_run
         self.copy_profile = copy_profile
         self.initialize()
@@ -59,12 +59,30 @@ class UniqueUserProfile:
         if self._dry_run:
             return
 
-        if os.name == "nt":
+        if "win" in sys.platform:
             shutil.rmtree(self.location, ignore_errors=True)
-        else:
-            os.system(f"rm -rf {self.location}")
+        elif "lin" in sys.platform:
 
-        if os.path.isdir(self.location):
+            def linux_rmdir(directory: Path) -> None:
+                """Recursively remove a directory and its contents.
+
+                Parameters
+                ----------
+                directory : Path
+                    The directory to remove.
+                """
+                # Iterate through the directory contents
+                for item in directory.iterdir():
+                    if item.is_dir():
+                        # Recursively remove the directory and its contents
+                        linux_rmdir(item)
+                    else:
+                        # Remove the file
+                        item.unlink()
+
+            linux_rmdir(self.location)
+
+        if self.location.is_dir():
             warnings.warn(
                 f"The `private appdata` option was used, but {self.location} was not removed"
             )
@@ -78,28 +96,32 @@ class UniqueUserProfile:
         """Set environment variables for new user profile."""
         home = self.location
         if "win" in sys.platform:
-            env["USERPROFILE"] = home
-            env["APPDATA"] = os.path.join(home, "AppData/Roaming")
-            env["LOCALAPPDATA"] = os.path.join(home, "AppData/Local")
-            env["TMP"] = os.path.join(home, "AppData/Local/Temp")
-            env["TEMP"] = os.path.join(home, "AppData/Local/Temp")
+            appdata_dir = home / "AppData"
+            appdata_local_temp = str(appdata_dir / "Local" / "Temp")
+
+            env["USERPROFILE"] = str(home)
+            env["APPDATA"] = str(appdata_dir / "Roaming")
+            env["LOCALAPPDATA"] = str(appdata_dir / "Local")
+            env["TMP"] = appdata_local_temp
+            env["TEMP"] = appdata_local_temp
         elif "lin" in sys.platform:
             env["HOME"] = home
 
     def exists(self) -> bool:
         """Check if unique profile name already exists."""
-        return os.path.exists(self.location)
+        return self.location.exists()
 
     def mkdirs(self) -> None:
         """Create a unique user profile & set up the directory tree."""
-        os.makedirs(self.location, exist_ok=True)
+        self.location.mkdir(parents=True, exist_ok=True)
         if "win" in sys.platform:
             locs = ["AppData/Roaming", "AppData/Local", "Documents"]
         elif "lin" in sys.platform:
             locs = [".config", "temp/reports"]
 
         for loc in locs:
-            os.makedirs(os.path.join(self.location, loc))
+            dir_name = self.location / loc
+            dir_name.mkdir(parents=True, exist_ok=True)
 
     def copy_profiles(self) -> None:
         """Copy current user directories into a new user profile."""
@@ -108,6 +130,6 @@ class UniqueUserProfile:
         elif "lin" in sys.platform:
             locs = [".mw/Application Data/Ansys", ".config/Ansys"]
         for loc in locs:
-            shutil.copytree(
-                os.path.join(self._default_profile, loc), os.path.join(self.location, loc)
-            )
+            default_profile_loc = self._default_profile / loc
+            temp_appdata_loc = self.location / loc
+            shutil.copytree(default_profile_loc, temp_appdata_loc)
