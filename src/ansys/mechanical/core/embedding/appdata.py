@@ -58,15 +58,14 @@ class UniqueUserProfile:
         """Cleanup unique user profile."""
         if self._dry_run:
             return
-        text = "The `private_appdata` option was used, but the following files were not removed: "
-        message = []
 
-        def onerror(function, path, excinfo):
-            if len(message) == 0:
-                message.append(f"{text}{path}")
-                warnings.warn(message[0])
+        if os.name == "nt":
+            shutil.rmtree(self.location, ignore_errors=True)
+        else:
+            os.system(f"rm -rf {self.location}")
 
-        shutil.rmtree(self.location, onerror=onerror)
+        if os.path.isdir(self.location):
+            warnings.warn(f"The `private appdata` option was used, but the directory {self.location} was not removed")
 
     @property
     def location(self) -> str:
