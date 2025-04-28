@@ -62,11 +62,12 @@ class UniqueUserProfile:
         if "win" in sys.platform:
             shutil.rmtree(self.location, ignore_errors=True)
         elif "lin" in sys.platform:
-            for root, dirs, files in self.location.walk(top_down=False):
-                for name in files:
-                    (root / name).unlink()
-                for name in dirs:
-                    (root / name).rmdir()
+            tmp_appdata_dir = self.location.rglob("*")
+            for item in reversed(sorted(tmp_appdata_dir)):
+                if item.is_file():
+                    item.unlink()
+                elif item.is_dir():
+                    item.rmdir()
 
         if self.location.is_dir():
             warnings.warn(
