@@ -66,7 +66,7 @@ class UniqueUserProfile:
 
         if os.path.isdir(self.location):
             warnings.warn(
-                f"The `private appdata` option was used, but the directory {self.location} was not removed"
+                f"The `private appdata` option was used, but {self.location} was not removed"
             )
 
     @property
