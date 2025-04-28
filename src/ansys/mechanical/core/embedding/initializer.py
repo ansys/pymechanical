@@ -112,6 +112,59 @@ def __check_python_interpreter_architecture() -> None:
         raise Exception("Mechanical Embedding requires a 64-bit Python environment.")
 
 
+def __windows_store_workaround(version: int) -> None:
+    """Workaround for windows store.
+
+    See https://github.com/ansys/pymechanical/issues/1136
+
+    Windows store python uses the win32 API SetDefaultDllDirectories
+    so that the PATH environment variable isn't scanned for any DLL
+    dependency.
+
+    PyMechanical loads the embedding library which automatically sets
+    these Paths, but this uses the PATH environment variable which doesn't
+    work for Windows store python.
+
+    We provide a workaround for versions 2024R2 and 2025R1 that sets
+    these paths using `os.add_dll_directory`.
+
+    Note:   This workaround does not include DLL paths used in FSI
+            mapping workflows.
+    """
+
+    # Nothing to do on linux
+    if os.name != "nt":
+        return
+
+    # Nothing to do if it isn't a windows store application
+    if r"AppData\Local\Programs\Python" not in sys.executable:
+        return
+
+    root = os.environ[f"AWP_ROOT{version}"]
+    paths = [
+            os.path.join(root, "aisol", "bin", "winx64"),
+            os.path.join(root, "Framework", "bin", "Win64"),
+    ]
+    if version == 242:
+        paths.extend([
+            os.path.join(root, "tp", "IntelCompiler", "2023.1.0", "winx64"),
+            os.path.join(root, "tp", "IntelMKL", "2023.1.0", "winx64"),
+            os.path.join(root, "tp", "hdf5", "1.12.2", "winx64"),
+            os.path.join(root, "tp", "qt", "5.15.16", "winx64", "bin"),
+        ])
+    elif version == 251:
+        paths.extend([
+            os.path.join(root, "tp", "IntelCompiler", "2023.1.0", "winx64"),
+            os.path.join(root, "tp", "IntelMKL", "2023.1.0", "winx64"),
+            os.path.join(root, "tp", "hdf5", "1.12.2", "winx64"),
+            os.path.join(root, "tp", "qt", "5.15.17", "winx64", "bin"),
+        ])
+    else:
+        return
+
+    for path in paths:
+        os.add_dll_directory(path)
+
 def __set_environment(version: int) -> None:
     """Set environment variables to configure embedding."""
     if os.name == "nt":  # pragma: no cover
@@ -187,6 +240,8 @@ def initialize(version: int = None):
     __check_for_mechanical_env()  # checks for mechanical-env in linux embedding
 
     __set_environment(version)
+
+    __windows_store_workaround(version)
 
     __check_loaded_libs(version)
 
