@@ -59,15 +59,8 @@ class UniqueUserProfile:
         if self._dry_run:
             return
 
-        if "win" in sys.platform:
-            shutil.rmtree(self.location, ignore_errors=True)
-        elif "lin" in sys.platform:
-            tmp_appdata_dir = self.location.rglob("*")
-            for item in reversed(sorted(tmp_appdata_dir)):
-                if item.is_file():
-                    item.unlink()
-                elif item.is_dir():
-                    item.rmdir()
+        # Remove the appdata directory if it exists
+        shutil.rmtree(self.location, ignore_errors=True)
 
         if self.location.is_dir():
             warnings.warn(
