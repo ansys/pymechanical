@@ -207,6 +207,12 @@ class App:
         self._version = initializer.initialize(version)
         configuration = kwargs.get("config", _get_default_addin_configuration())
 
+        if private_appdata:
+            copy_profile = kwargs.get("copy_profile", True)
+            new_profile_name = f"PyMechanical-{os.getpid()}"
+            profile = UniqueUserProfile(new_profile_name, copy_profile=copy_profile)
+            profile.update_environment(os.environ)
+
         runtime.initialize(self._version)
         self._app = _start_application(configuration, self._version, db_file)
         connect_warnings(self)
@@ -215,16 +221,14 @@ class App:
         self._disposed = False
         atexit.register(_dispose_embedded_app, INSTANCES)
         INSTANCES.append(self)
+
+        # Clean up the private appdata directory on exit if private_appdata is True
+        if private_appdata:
+            atexit.register(_cleanup_private_appdata, profile)
+
         self._updated_scopes: typing.List[typing.Dict[str, typing.Any]] = []
         self._subscribe()
         self._messages = None
-
-        if private_appdata:
-            copy_profile = kwargs.get("copy_profile", True)
-            new_profile_name = f"PyMechanical-{os.getpid()}"
-            profile = UniqueUserProfile(new_profile_name, copy_profile=copy_profile)
-            profile.update_environment(os.environ)
-            atexit.register(_cleanup_private_appdata, profile)
 
         globals = kwargs.get("globals")
         if globals:
