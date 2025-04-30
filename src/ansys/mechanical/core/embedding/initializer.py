@@ -131,7 +131,6 @@ def __windows_store_workaround(version: int) -> None:
     Note:   This workaround does not include DLL paths used in FSI
             mapping workflows.
     """
-
     # Nothing to do on linux
     if os.name != "nt":
         return
