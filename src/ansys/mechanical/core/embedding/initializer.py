@@ -137,7 +137,7 @@ def __windows_store_workaround(version: int) -> None:
         return
 
     # Nothing to do if it isn't a windows store application
-    if r"AppData\Local\Programs\Python" not in sys.executable:
+    if r"Microsoft\WindowsApps" not in sys.executable:
         return
 
     root = os.environ[f"AWP_ROOT{version}"]
