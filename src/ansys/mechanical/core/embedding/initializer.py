@@ -142,28 +142,33 @@ def __windows_store_workaround(version: int) -> None:
 
     root = os.environ[f"AWP_ROOT{version}"]
     paths = [
-            os.path.join(root, "aisol", "bin", "winx64"),
-            os.path.join(root, "Framework", "bin", "Win64"),
+        os.path.join(root, "aisol", "bin", "winx64"),
+        os.path.join(root, "Framework", "bin", "Win64"),
     ]
     if version == 242:
-        paths.extend([
-            os.path.join(root, "tp", "IntelCompiler", "2023.1.0", "winx64"),
-            os.path.join(root, "tp", "IntelMKL", "2023.1.0", "winx64"),
-            os.path.join(root, "tp", "hdf5", "1.12.2", "winx64"),
-            os.path.join(root, "tp", "qt", "5.15.16", "winx64", "bin"),
-        ])
+        paths.extend(
+            [
+                os.path.join(root, "tp", "IntelCompiler", "2023.1.0", "winx64"),
+                os.path.join(root, "tp", "IntelMKL", "2023.1.0", "winx64"),
+                os.path.join(root, "tp", "hdf5", "1.12.2", "winx64"),
+                os.path.join(root, "tp", "qt", "5.15.16", "winx64", "bin"),
+            ]
+        )
     elif version == 251:
-        paths.extend([
-            os.path.join(root, "tp", "IntelCompiler", "2023.1.0", "winx64"),
-            os.path.join(root, "tp", "IntelMKL", "2023.1.0", "winx64"),
-            os.path.join(root, "tp", "hdf5", "1.12.2", "winx64"),
-            os.path.join(root, "tp", "qt", "5.15.17", "winx64", "bin"),
-        ])
+        paths.extend(
+            [
+                os.path.join(root, "tp", "IntelCompiler", "2023.1.0", "winx64"),
+                os.path.join(root, "tp", "IntelMKL", "2023.1.0", "winx64"),
+                os.path.join(root, "tp", "hdf5", "1.12.2", "winx64"),
+                os.path.join(root, "tp", "qt", "5.15.17", "winx64", "bin"),
+            ]
+        )
     else:
         return
 
     for path in paths:
         os.add_dll_directory(path)
+
 
 def __set_environment(version: int) -> None:
     """Set environment variables to configure embedding."""
