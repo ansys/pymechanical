@@ -186,10 +186,13 @@ class App:
 
         self.log_info("Starting Mechanical Application")
 
+        globals = kwargs.get("globals")
+
         if BUILDING_GALLERY:
             if len(INSTANCES) != 0:
                 instance: App = INSTANCES[0]
                 instance._share(self)
+                self.init_update_globals(globals)
                 if db_file is not None:
                     self.open(db_file)
                 return
@@ -229,10 +232,7 @@ class App:
         self._updated_scopes: typing.List[typing.Dict[str, typing.Any]] = []
         self._subscribe()
         self._messages = None
-
-        globals = kwargs.get("globals")
-        if globals:
-            self.update_globals(globals)
+        self.init_update_globals(globals)
 
     def __repr__(self):
         """Get the product info."""
@@ -537,6 +537,18 @@ This may corrupt the project file.",
 
     def _on_workbench_ready(self, sender, args) -> None:
         self._update_all_globals()
+
+    def init_update_globals(self, globals: typing.Dict[str, typing.Any] = None) -> None:
+        """Update the global variables during the initialization.
+
+        Parameters
+        ----------
+        globals : dict, optional
+            Global variables to be updated. For example, globals().
+            Replaces "app.update_globals(globals())".
+        """
+        if globals:
+            self.update_globals(globals)
 
     def update_globals(
         self, globals_dict: typing.Dict[str, typing.Any], enums: bool = True
