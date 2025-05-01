@@ -43,7 +43,7 @@ def launch_app(args):
     app = pymechanical.App(
         version=int(args.version),
         private_appdata=args.private_appdata,
-        copy_profile=True,
+        copy_profile=False,
         globals=globals(),
     )
 
