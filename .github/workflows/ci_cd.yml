@@ -607,7 +607,7 @@ jobs:
       - name: Install system dependencies
         run: |
           apt update
-          apt install make lsb-release xvfb poppler-utils -y
+          apt install make lsb-release xvfb poppler-utils libjbig-dev -y
           apt install zip pandoc libgl1-mesa-glx mesa-utils texlive-latex-extra latexmk nodejs npm graphviz -y
 
       - name: Install gh cli
