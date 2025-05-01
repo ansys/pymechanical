@@ -113,23 +113,28 @@ def __check_python_interpreter_architecture() -> None:
 
 
 def __windows_store_workaround(version: int) -> None:
-    """Workaround for windows store.
+    """Workaround for Windows store.
 
     See https://github.com/ansys/pymechanical/issues/1136
 
-    Windows store python uses the win32 API SetDefaultDllDirectories
+    Windows store Python uses the Win32 API SetDefaultDllDirectories
     so that the PATH environment variable isn't scanned for any DLL
     dependency.
 
     PyMechanical loads the embedding library which automatically sets
     these Paths, but this uses the PATH environment variable which doesn't
-    work for Windows store python.
+    work for Windows store Python.
 
     We provide a workaround for versions 2024R2 and 2025R1 that sets
     these paths using `os.add_dll_directory`.
 
     Note:   This workaround does not include DLL paths used in FSI
             mapping workflows.
+
+    Parameters
+    ----------
+    version : int
+        The version of Mechanical to set the DLL paths for.
     """
     # Nothing to do on linux
     if os.name != "nt":
@@ -139,34 +144,34 @@ def __windows_store_workaround(version: int) -> None:
     if r"Microsoft\WindowsApps" not in sys.executable:
         return
 
-    root = os.environ[f"AWP_ROOT{version}"]
+    # Get the AWP_ROOT environment variable for the specified version
+    awp_root = Path(os.environ[f"AWP_ROOT{version}"])
+    # Set paths to the aisol and framework DLLs
     paths = [
-        os.path.join(root, "aisol", "bin", "winx64"),
-        os.path.join(root, "Framework", "bin", "Win64"),
+        awp_root / "aisol" / "bin" / "winx64",
+        awp_root / "Framework" / "bin" / "Win64",
     ]
-    if version == 242:
+    # Add paths to the IntelCompiler, IntelMKL, hdf5, and qt DLLs for 2024R2 and 2025R1
+    if version == 242 or version == 251:
+        # Set the path to the tp directory within the AWP_ROOTXYZ directory
+        awp_root_tp = awp_root / "tp"
         paths.extend(
             [
-                os.path.join(root, "tp", "IntelCompiler", "2023.1.0", "winx64"),
-                os.path.join(root, "tp", "IntelMKL", "2023.1.0", "winx64"),
-                os.path.join(root, "tp", "hdf5", "1.12.2", "winx64"),
-                os.path.join(root, "tp", "qt", "5.15.16", "winx64", "bin"),
+                awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
+                awp_root_tp / "IntelMKL" / "2023.1.0" / "winx64",
+                awp_root_tp / "hdf5" / "1.12.2" / "winx64",
             ]
         )
-    elif version == 251:
-        paths.extend(
-            [
-                os.path.join(root, "tp", "IntelCompiler", "2023.1.0", "winx64"),
-                os.path.join(root, "tp", "IntelMKL", "2023.1.0", "winx64"),
-                os.path.join(root, "tp", "hdf5", "1.12.2", "winx64"),
-                os.path.join(root, "tp", "qt", "5.15.17", "winx64", "bin"),
-            ]
-        )
+        if version == 242:
+            paths.append(awp_root_tp / "qt" / "5.15.16" / "winx64" / "bin")
+        elif version == 251:
+            paths.append(awp_root_tp / "qt" / "5.15.17" / "winx64" / "bin")
     else:
         return
 
+    # Add each path to the DLL search path
     for path in paths:
-        os.add_dll_directory(path)
+        os.add_dll_directory(str(path))
 
 
 def __set_environment(version: int) -> None:
