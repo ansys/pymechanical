@@ -155,17 +155,16 @@ def __windows_store_workaround(version: int) -> None:
     if version == 242 or version == 251:
         # Set the path to the tp directory within the AWP_ROOTXYZ directory
         awp_root_tp = awp_root / "tp"
+        # Set the qt version based on the version of Mechanical
+        qt_version = "5.15.16" if version == 242 else "5.15.17"
         paths.extend(
             [
                 awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
                 awp_root_tp / "IntelMKL" / "2023.1.0" / "winx64",
                 awp_root_tp / "hdf5" / "1.12.2" / "winx64",
+                awp_root_tp / "qt" / qt_version / "winx64" / "bin",
             ]
         )
-        if version == 242:
-            paths.append(awp_root_tp / "qt" / "5.15.16" / "winx64" / "bin")
-        elif version == 251:
-            paths.append(awp_root_tp / "qt" / "5.15.17" / "winx64" / "bin")
     else:
         return
 
