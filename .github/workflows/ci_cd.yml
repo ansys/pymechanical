@@ -610,6 +610,9 @@ jobs:
           apt install make lsb-release xvfb poppler-utils libjbig-dev -y
           apt install zip pandoc libgl1-mesa-glx mesa-utils texlive-latex-extra latexmk nodejs npm graphviz -y
 
+          # Add the /usr/lib/x86_64-linux-gnu/ path to the LD_LIBRARY_PATH (where libjbig-dev .so files are)
+          export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/
+
       - name: Install gh cli
         run: |
           (type -p wget >/dev/null || (apt update && apt-get install wget -y)) \
