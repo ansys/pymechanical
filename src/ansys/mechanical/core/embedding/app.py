@@ -199,7 +199,8 @@ class App:
                 instance._share(self)
                 # Update the globals if provided in kwargs
                 if globals:
-                    instance.update_globals(globals)
+                    # The next line is covered by test_globals_kwarg_building_gallery
+                    instance.update_globals(globals)  # pragma: nocover
                 # Open the mechdb file if provided
                 if db_file is not None:
                     self.open(db_file)
