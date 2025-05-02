@@ -614,12 +614,9 @@ jobs:
         run: |
           apt update
           apt install -y libjbig-dev
-          echo $LD_LIBRARY_PATH
-          find / -iname *libjbig*.so*
-
-
           # Add the /usr/lib/x86_64-linux-gnu/ path to the LD_LIBRARY_PATH (where libjbig-dev .so files are)
           export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/
+          echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> $GITHUB_ENV
 
       - name: Install gh cli
         run: |
