@@ -40,14 +40,33 @@ def launch_app(args):
         init_msg = "The app is initialized" if is_initialized() else "The app is not initialized"
         print(init_msg)
 
-    app = pymechanical.App(
-        version=int(args.version),
-        private_appdata=args.private_appdata,
-        copy_profile=False,
-        globals=globals(),
-    )
+    if args.update_globals_kwarg:
+        app = pymechanical.App(
+            version=int(args.version),
+            private_appdata=args.private_appdata,
+            copy_profile=False,
+            globals=globals(),
+        )
+    else:
+        app = pymechanical.App(
+            version=int(args.version),
+            private_appdata=args.private_appdata,
+            copy_profile=False,
+        )
+        app.update_globals(globals())
 
     return app
+
+
+def test_globals(args):
+    """Test ViewOrientationType doesn't throw an error when globals are updated."""
+    if args.build_gallery_flag:
+        pymechanical.BUILDING_GALLERY = True
+        print("Building gallery flag is set to True")
+
+    app = launch_app(args)
+    app.Graphics.Camera.SetSpecificViewOrientation(ViewOrientationType.Iso)
+    print("ViewOrientationType exists")
 
 
 def set_showtriad(args, value):
@@ -74,6 +93,12 @@ if __name__ == "__main__":
     parser.add_argument(
         "--test_not_initialized", action="store_true"
     )  # 'store_true' implies default=False
+    parser.add_argument(
+        "--update_globals_kwarg", action="store_false"
+    )  # 'store_false' implies default=True
+    parser.add_argument(
+        "--build_gallery_flag", action="store_true"
+    )  # 'store_true' implies default=False
 
     # Get and set args from subprocess
     args = parser.parse_args()
@@ -87,5 +112,7 @@ if __name__ == "__main__":
         print_showtriad(args)
     elif action == "Reset":
         set_showtriad(args, True)
+    elif action == "TestGlobals":
+        test_globals(args)
     else:
         launch_app(args)
