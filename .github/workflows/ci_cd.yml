@@ -677,6 +677,12 @@ jobs:
             fi
           }
 
+          # Install libjbig-dev so quarto doesn't fail its PDF build on v242
+          apt update
+          apt install -y libjbig-dev
+          # Add the /usr/lib/x86_64-linux-gnu/ path to the LD_LIBRARY_PATH (where libjbig-dev .so files are)
+          export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/
+
           # Make the html doc & validate results
           make_doc html
 
