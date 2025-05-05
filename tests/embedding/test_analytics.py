@@ -29,12 +29,10 @@ import pytest
 
 
 @pytest.mark.embedding_scripts
-def test_analytics(
-    rootdir, run_subprocess, pytestconfig, tmp_path: pytest.TempPathFactory
-):
+def test_analytics(rootdir, run_subprocess, pytestconfig, tmp_path: pytest.TempPathFactory):
     """Test that no output is written when an info is logged when configured at the error level."""
     version = pytestconfig.getoption("ansys_version")
-    #Analytics are only captured for 252+
+    # Analytics are only captured for 252+
     if int(version) < 252:
         return
 
@@ -57,8 +55,8 @@ def test_analytics(
 
     assert analytics_data["Application.Mode"] == "StandaloneMechanical"
     assert "SessionID" in analytics_data
-    assert analytics_data['Model.ModelAttributes.NamedSelections'] == 1.0
-    assert analytics_data['ApplicationVersion'].replace(".", "") == version
+    assert analytics_data["Model.ModelAttributes.NamedSelections"] == 1.0
+    assert analytics_data["ApplicationVersion"].replace(".", "") == version
 
-    #1.0 -> embedding
-    assert analytics_data['Application.SystemInfo.PyMechanicalMode'] == 1.0
+    # 1.0 -> embedding
+    assert analytics_data["Application.SystemInfo.PyMechanicalMode"] == 1.0
