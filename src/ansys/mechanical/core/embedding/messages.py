@@ -142,7 +142,31 @@ class MessageManager:
         _msg = self._messages[index]
         self._messages.Remove(_msg)
 
-    def show(self, filter="Severity;DisplayString"):
+    def _show_string(self, filter: str = "Severity;DisplayString") -> str:
+        if self._messages.Count == 0:
+            return "No messages to display."
+
+        if filter == "*":
+            selected_columns = [
+                "TimeStamp",
+                "Severity",
+                "DisplayString",
+                "Source",
+                "StringID",
+                "Location",
+                "RelatedObjects",
+            ]
+        else:
+            selected_columns = [col.strip() for col in filter.split(";")]
+
+        lines = []
+        for msg in self._messages:
+            for key in selected_columns:
+                line = f"{key}: {getattr(msg, key, 'Specified attribute not found.')}"
+                lines.append(line)
+        return "\n".join(lines)
+
+    def show(self, filter="Severity;DisplayString") -> None:
         """Print all messages with full details.
 
         Parameters
@@ -163,27 +187,8 @@ class MessageManager:
         ... severity: info
         ... message: Sample message.
         """
-        if self._messages.Count == 0:
-            print("No messages to display.")
-            return
-
-        if filter == "*":
-            selected_columns = [
-                "TimeStamp",
-                "Severity",
-                "DisplayString",
-                "Source",
-                "StringID",
-                "Location",
-                "RelatedObjects",
-            ]
-        else:
-            selected_columns = [col.strip() for col in filter.split(";")]
-
-        for msg in self._messages:
-            for key in selected_columns:
-                print(f"{key}: {getattr(msg, key, 'Specified attribute not found.')}")
-            print()
+        show_string = self._show_string(filter)
+        print(show_string)
 
     def clear(self):
         """Clear all messages."""
