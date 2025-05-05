@@ -21,14 +21,30 @@
 # SOFTWARE.
 
 """Run embedded instance for analytics."""
-import argparse
+import click
 
 import ansys.mechanical.core as pymechanical
 
-if __name__ == "__main__":
-    # Set up argparse for command line arguments from subprocess.
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--version", type=str, help="Mechanical version")
-    args = parser.parse_args()
-    app = pymechanical.App(version=int(args.version))
+
+@click.command()
+@click.help_option("--help", "-h")
+@click.option(
+    "--version",
+    default=252,
+    type=int,
+    help="Mechanical version. For example, 252.",
+)
+def analytics_cli(version: int):
+    """CLI tool to run analytics.
+
+    Parameters
+    ----------
+    version : int
+        The Mechanical version. For example, 252.
+    """
+    app = pymechanical.App(version=version)
     app.Model.AddNamedSelection()
+
+
+if __name__ == "__main__":
+    analytics_cli()

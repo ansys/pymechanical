@@ -23,33 +23,39 @@
 """Analytics embedding tests"""
 import json
 import os
+from pathlib import Path
 import sys
 
 import pytest
 
 
 @pytest.mark.embedding_scripts
+@pytest.mark.minimum_version(252)
 def test_analytics(rootdir, run_subprocess, pytestconfig, tmp_path: pytest.TempPathFactory):
     """Test that no output is written when an info is logged when configured at the error level."""
-    version = pytestconfig.getoption("ansys_version")
-    # Analytics are only captured for 252+
-    if int(version) < 252:
-        return
-
-    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_analytics.py")
-
+    # Copy the environment and set the analytics environment variables
     analytics_env = os.environ.copy()
     analytics_env["ANS_ENABLE_DATA_ANALYTICS"] = "1"
     analytics_env["ANS_DATA_ANALYTICS_DUMP_FOLDER"] = str(tmp_path)
 
-    args = [sys.executable, embedded_py, "--version", version]
+    # Get the path to the test script, the ansys version, and the args to run the script
+    test_analytics_script = Path(rootdir) / "tests" / "scripts" / "run_analytics.py"
+    version = pytestconfig.getoption("ansys_version")
+    args = [sys.executable, str(test_analytics_script), "--version", version]
     run_subprocess(args, analytics_env)
 
-    temp_files = os.listdir(tmp_path)
-    json_files = [file for file in temp_files if file.endswith(".json")]
+    # Assert there is one json file in the temp folder
+    tmp_path = Path(tmp_path)
+    temp_files = tmp_path.iterdir()
+    json_files = [file for file in temp_files if "json" in file.suffix]
     assert len(json_files) == 1
-    json_file = os.path.join(tmp_path, json_files[0])
-    assert os.path.isfile(json_file)
+
+    # Assert the json file exists and is not empty
+    json_file = tmp_path / json_files[0]
+    assert json_file.is_file()
+    assert json_file.stat().st_size > 0
+
+    # Open the json file and check its contents
     with open(json_file, "r", encoding="utf-8") as f:
         analytics_data = json.load(f)
 
