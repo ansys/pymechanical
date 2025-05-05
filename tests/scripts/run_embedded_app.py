@@ -21,28 +21,28 @@
 # SOFTWARE.
 
 """Launch embedded instance."""
-import argparse
+import click
 
 import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core.embedding.app import is_initialized
 
 
-def launch_app(args):
+def launch_app(version, private_appdata, test_not_initialized, debug):
     """Launch embedded instance of app."""
-    if args.debug:
+    if debug:
         import logging
 
         from ansys.mechanical.core.embedding.logger import Configuration
 
         Configuration.configure(level=logging.DEBUG, to_stdout=True, base_directory=None)
 
-    if args.test_not_initialized:
+    if test_not_initialized:
         init_msg = "The app is initialized" if is_initialized() else "The app is not initialized"
         print(init_msg)
 
     app = pymechanical.App(
-        version=int(args.version),
-        private_appdata=args.private_appdata,
+        version=int(version),
+        private_appdata=private_appdata,
         copy_profile=False,
         globals=globals(),
     )
@@ -50,42 +50,89 @@ def launch_app(args):
     return app
 
 
-def set_showtriad(args, value):
+def set_showtriad(version, private_appdata, test_not_initialized, debug, value):
     """Launch embedded instance of app & set ShowTriad to False."""
-    app = launch_app(args)
+    app = launch_app(version, private_appdata, test_not_initialized, debug)
     ExtAPI.Graphics.ViewOptions.ShowTriad = value
     app.close()
 
 
-def print_showtriad(args):
+def print_showtriad(version, private_appdata, test_not_initialized, debug):
     """Return ShowTriad value."""
-    app = launch_app(args)
+    app = launch_app(version, private_appdata, test_not_initialized, debug)
     print("ShowTriad value is " + str(app.ExtAPI.Graphics.ViewOptions.ShowTriad))
     app.close()
 
 
-if __name__ == "__main__":
-    # Set up argparse for command line arguments from subprocess.
-    parser = argparse.ArgumentParser(description="Launch embedded instance of app.")
-    parser.add_argument("--version", type=str, help="Mechanical version")
-    parser.add_argument("--private_appdata", type=str, help="Private appdata")
-    parser.add_argument("--action", type=str, help="Action to perform")
-    parser.add_argument("--debug", action="store_true")  # 'store_true' implies default=False
-    parser.add_argument(
-        "--test_not_initialized", action="store_true"
-    )  # 'store_true' implies default=False
+@click.command()
+@click.help_option("--help", "-h")
+@click.option(
+    "--version",
+    default=251,
+    type=int,
+    help="Mechanical version. For example, 251.",
+)
+@click.option(
+    "--action",
+    default="Run",
+    type=click.Choice(["Set", "Run", "Reset"], case_sensitive=False),
+    help=(
+        'The action to perform on the app. Can be "Set", "Run", or "Reset". '
+        '"Set" will set the ShowTriad value to False. '
+        '"Run" will print the ShowTriad value. '
+        '"Reset" will set the ShowTriad value to True.'
+    ),
+)
+@click.option(
+    "--private-appdata",
+    default="False",
+    type=str,
+    help="Whether to use a private AppData folder when launching the app.",
+)
+@click.option(
+    "--test_not_initialized",
+    is_flag=True,
+    default=False,
+    help="Test if the app is initialized.",
+)
+@click.option(
+    "--debug",
+    is_flag=True,
+    default=False,
+    help="Set the logging level to DEBUG and print to stdout.",
+)
+def test_embedded_app_cli(
+    version: int, action: str, private_appdata: str, test_not_initialized: bool, debug: bool
+):
+    """CLI tool to run embedded instance of app.
 
-    # Get and set args from subprocess
-    args = parser.parse_args()
-    action = args.action
-
-    args.private_appdata = args.private_appdata == "True"
+    Parameters
+    ----------
+    version : int
+        The Mechanical version. For example, 251.
+    action : str
+        The action to perform on the app. Can be "Set", "Run", or "Reset".
+        "Set" will set the ShowTriad value to False.
+        "Run" will print the ShowTriad value.
+        "Reset" will set the ShowTriad value to True.
+    private_appdata : str
+        Whether to use a private AppData folder when launching the app.
+    test_not_initialized : bool
+        Test if the app is initialized.
+    debug : bool
+        Set the logging level to DEBUG and print to stdout.
+    """
+    private_appdata = private_appdata == "True"
 
     if action == "Set":
-        set_showtriad(args, False)
+        set_showtriad(version, private_appdata, test_not_initialized, debug, False)
     elif action == "Run":
-        print_showtriad(args)
+        print_showtriad(version, private_appdata, test_not_initialized, debug)
     elif action == "Reset":
-        set_showtriad(args, True)
+        set_showtriad(version, private_appdata, test_not_initialized, debug, True)
     else:
-        launch_app(args)
+        launch_app(version, private_appdata, test_not_initialized, debug)
+
+
+if __name__ == "__main__":
+    test_embedded_app_cli()
