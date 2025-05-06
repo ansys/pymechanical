@@ -144,9 +144,9 @@ class Client:
         if file_location_destination:
             remote_path = file_location_destination / file_base_name
 
-            with open(file_name, "rb") as f:
+            with file_name.open("rb") as f:
                 file_data = f.read()
-                self.service_upload(remote_path, file_data)
+                self.service_upload(str(remote_path), file_data)
 
             print(f"File {file_name} uploaded to {file_location_destination}")
 
@@ -190,7 +190,7 @@ class Client:
         if local_file_path.exists() and not overwrite:
             print(f"File {local_file_path} already exists locally. Skipping download.")
             return
-        response = self.service_download(remote_file_path)
+        response = self.service_download(str(remote_file_path))
         if isinstance(response, dict):
             raise ValueError("Expected a file download, but got a directory response.")
         file_data = response
@@ -235,7 +235,7 @@ class Client:
                     else:
                         file_temp = _project_directory / "**" / f"*.{each_extension}"
 
-                    list_files = self._get_files(file_temp, recursive=False)
+                    list_files = self._get_files(str(file_temp), recursive=False)
 
                     files.extend(list_files)
 

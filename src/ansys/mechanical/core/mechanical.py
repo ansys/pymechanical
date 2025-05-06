@@ -825,7 +825,7 @@ class Mechanical(object):
         additional_switches = self._start_parm.get("additional_switches", None)
         additional_envs = self._start_parm.get("additional_envs", None)
         port = launch_grpc(
-            exec_file=exec_file,
+            exec_file=str(exec_file),
             batch=batch,
             additional_switches=additional_switches,
             additional_envs=additional_envs,
@@ -1874,19 +1874,19 @@ def get_start_instance(start_instance_default=True):
 
 
 def launch_grpc(
-    exec_file="",
-    batch=True,
-    port=MECHANICAL_DEFAULT_PORT,
-    additional_switches=None,
-    additional_envs=None,
-    verbose=False,
+    exec_file: typing.Union[str, Path] = "",
+    batch: bool = True,
+    port: int = MECHANICAL_DEFAULT_PORT,
+    additional_switches: list = None,
+    additional_envs: dict = None,
+    verbose: bool = False,
 ) -> int:
     """Start Mechanical locally in gRPC mode.
 
     Parameters
     ----------
-    exec_file : str, optional
-        Path for the Mechanical executable file.  The default is ``None``, in which
+    exec_file : str or Path optional
+        Path for the Mechanical executable file.  The default is "", in which
         case the cached location is used.
     batch : bool, optional
         Whether to launch Mechanical in batch mode. The default is ``True``.
@@ -1930,6 +1930,7 @@ def launch_grpc(
     >>> mechanical = launch_mechanical(exec_file_path)
 
     """
+    exec_file = str(exec_file)
     # verify version
     if atp.version_from_path("mechanical", exec_file) < 232:
         raise VersionError("The Mechanical gRPC interface requires Mechanical 2023 R2 or later.")
