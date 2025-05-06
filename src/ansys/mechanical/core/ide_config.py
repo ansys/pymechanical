@@ -70,9 +70,9 @@ def get_stubs_versions(stubs_location: Path):
     """
     # Get revision numbers in stubs folder
     revns = [
-        int(revision[1:])
-        for revision in stubs_location.iterdir()
-        if (stubs_location / revision).is_dir() and revision.name.startswith("v")
+        int(folder.name[1:])
+        for folder in stubs_location.iterdir()
+        if (stubs_location / folder).is_dir() and folder.name.startswith("v")
     ]
     return revns
 
