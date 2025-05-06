@@ -22,7 +22,7 @@
 
 """ "Testing of log module"""
 import logging as deflogging  # Default logging
-import os
+from pathlib import Path
 import re
 
 import pytest
@@ -283,7 +283,7 @@ def test_log_to_file(tmpdir):
     """Testing writing to log file.
     Since the default loglevel of LOG is error, debug are not normally recorded to it.
     """
-    file_path = os.path.join(tmpdir, "instance.log")
+    file_path = Path(tmpdir) / "instance.log"
     file_msg_error = "This is a error message"
     file_msg_debug = "This is a debug message"
 
@@ -298,7 +298,7 @@ def test_log_to_file(tmpdir):
     LOG.error(file_msg_error)
     LOG.debug(file_msg_debug)
 
-    with open(file_path, "r") as fid:
+    with file_path.open("r") as fid:
         text = "".join(fid.readlines())
 
     assert file_msg_error in text
@@ -345,7 +345,7 @@ def test_instance_log_to_file(mechanical, tmpdir):
     """Testing writing to log file.
     Since the default loglevel of LOG is error, debug are not normally recorded to it.
     """
-    file_path = os.path.join(tmpdir, "instance.log")
+    file_path = Path(tmpdir) / "instance.log"
     file_msg_error = "This is a error message"
     file_msg_debug = "This is a debug message"
 
@@ -355,7 +355,7 @@ def test_instance_log_to_file(mechanical, tmpdir):
     mechanical.log_message("ERROR", file_msg_error)
     mechanical.log_message("DEBUG", file_msg_debug)
 
-    with open(file_path, "r") as fid:
+    with file_path.open("r") as fid:
         text = "".join(fid.readlines())
 
     assert file_msg_error in text

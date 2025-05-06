@@ -76,9 +76,9 @@ you can add a file handler:
 
 .. code:: python
 
-   import os
+   from pathlib import Path
 
-   file_path = os.path.join(os.getcwd(), "pymechanical.log")
+   file_path = Path.cwd() / "pymechanical.log"
    LOG.log_to_file(file_path)
 
 The preceding code sets the logger to also be redirected to this file. If you
@@ -376,9 +376,9 @@ class Logger:
 
     Import the PyMechanical global logger and add a file output handler.
 
-    >>> import os
+    >>> from pathlib import Path
     >>> from ansys.mechanical.core import LOG
-    >>> file_path = os.path.join(os.getcwd(), 'pymechanical.log')
+    >>> file_path = Path.cwd() / 'pymechanical.log'
     >>> LOG.log_to_file(file_path)
 
     """
@@ -447,8 +447,8 @@ class Logger:
         Write to the ``pymechanical.log`` file in the current working directory.
 
         >>> from ansys.mechanical.core import LOG
-        >>> import os
-        >>> file_path = os.path.join(os.getcwd(), 'pymechanical.log')
+        >>> from pathlib import Path
+        >>> file_path = Path.cwd() / 'pymechanical.log'
         >>> LOG.log_to_file(file_path)
 
         """

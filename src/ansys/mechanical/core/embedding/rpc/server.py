@@ -21,7 +21,7 @@
 # SOFTWARE.
 """Remote Procedure Call (RPC) server."""
 
-import os
+from pathlib import Path
 import threading
 import time
 import typing
@@ -214,37 +214,36 @@ class MechanicalService(rpyc.Service):
         setattr(self, inner_name, inner_method)
         setattr(self, exposed_name, exposed_method)
 
-    def exposed_service_upload(self, remote_path, file_data):
+    def exposed_service_upload(self, remote_path: Path, file_data: str):
         """Handle file upload request from client."""
         if not remote_path:
             raise ValueError("The remote file path is empty.")
 
-        remote_dir = os.path.dirname(remote_path)
+        remote_dir = remote_path.parent
 
         if remote_dir:
-            os.makedirs(remote_dir, exist_ok=True)
+            remote_dir.mkdir(parents=True, exist_ok=True)
 
-        with open(remote_path, "wb") as f:
+        with remote_path.open("wb") as f:
             f.write(file_data)
 
         print(f"File {remote_path} uploaded successfully.")
 
-    def exposed_service_download(self, remote_path):
+    def exposed_service_download(self, remote_path: Path) -> str:
         """Handle file download request from client."""
         # Check if the remote file exists
-        if not os.path.exists(remote_path):
+        if not remote_path.exists():
             raise FileNotFoundError(f"The file {remote_path} does not exist on the server.")
 
-        if os.path.isdir(remote_path):
-            files = []
-            for dirpath, _, filenames in os.walk(remote_path):
-                for filename in filenames:
-                    full_path = os.path.join(dirpath, filename)
-                    relative_path = os.path.relpath(full_path, remote_path)
-                    files.append(relative_path)
+        if remote_path.is_dir():
+            files = [
+                str(child.relative_to(remote_path))
+                for child in remote_path.rglob("*")
+                if child.is_file()
+            ]
             return {"is_directory": True, "files": files}
 
-        with open(remote_path, "rb") as f:
+        with remote_path.open("rb") as f:
             file_data = f.read()
 
         print(f"File {remote_path} downloaded successfully.")

@@ -314,7 +314,8 @@ This may corrupt the project file.",
         For version 232, if `overwrite` is True, the existing file and its associated directory
         (if any) will be removed before saving the new file.
         """
-        if not os.path.exists(path):
+        path = Path(path)
+        if not path.exists():
             self.DataModel.Project.SaveAs(path)
             return
 
@@ -324,18 +325,18 @@ This may corrupt the project file.",
                 "replace the existing file."
             )
         if self.version < 241:  # pragma: no cover
-            file_name = os.path.basename(path)
-            file_dir = os.path.dirname(path)
-            associated_dir = os.path.join(file_dir, os.path.splitext(file_name)[0] + "_Mech_Files")
+            file_name = path.name
+            file_dir = path.parent
+            associated_dir = file_dir / file_name.stem + "_Mech_Files"
 
             # Remove existing files and associated folder
-            os.remove(path)
-            if os.path.exists(associated_dir):
+            path.unlink()
+            if associated_dir.exists():
                 shutil.rmtree(associated_dir)
             # Save the new file
-            self.DataModel.Project.SaveAs(path)
+            self.DataModel.Project.SaveAs(str(path))
         else:
-            self.DataModel.Project.SaveAs(path, overwrite)
+            self.DataModel.Project.SaveAs(str(path), overwrite)
 
     def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
         """Launch the GUI."""

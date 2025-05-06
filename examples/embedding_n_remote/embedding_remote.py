@@ -41,12 +41,12 @@ a remote session and then demonstrates how to use an embedding instance.
 # Download the required files. Print the file paths for the geometry file and
 # script file.
 
-import os
+from pathlib import Path
 
 from ansys.mechanical.core import launch_mechanical
 from ansys.mechanical.core.examples import download_file
 
-geometry_path = download_file("Valve.pmdb", "pymechanical", "embedding")
+geometry_path = Path(download_file("Valve.pmdb", "pymechanical", "embedding"))
 print(f"Downloaded the geometry file to: {geometry_path}")
 
 script_file_path = download_file("remote_script.py", "pymechanical", "embedding")
@@ -61,8 +61,6 @@ print(f"Downloaded the script file to: {script_file_path}")
 # ``False``. To close this Mechanical session when finished, this example
 # must call  the ``mechanical.exit()`` method.
 
-import os
-
 from ansys.mechanical.core import launch_mechanical
 
 # Launch mechanical
@@ -76,15 +74,15 @@ print(mechanical)
 # Set the ``part_file_path`` variable on the server for later use.
 # Make this variable compatible for Windows, Linux, and Docker containers.
 
-project_directory = mechanical.project_directory
+project_directory = Path(mechanical.project_directory)
 print(f"project directory = {project_directory}")
 
 # Upload the file to the project directory.
-mechanical.upload(file_name=geometry_path, file_location_destination=project_directory)
+mechanical.upload(file_name=str(geometry_path), file_location_destination=project_directory)
 
 # Build the path relative to project directory.
-base_name = os.path.basename(geometry_path)
-combined_path = os.path.join(project_directory, base_name)
+base_name = geometry_path.name
+combined_path = project_directory / base_name
 part_file_path = combined_path.replace("\\", "\\\\")
 mechanical.run_python_script(f"part_file_path='{part_file_path}'")
 
@@ -130,8 +128,7 @@ def write_file_contents_to_console(path, number_lines=-1):
 # Download files back to local working directory
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-dest_dir = "download"
-dest_dir = os.path.join(os.getcwd(), dest_dir)
+dest_dir = Path.cwd() / "download"
 for file in list_files:
     downloaded = mechanical.download(file, target_dir=dest_dir)
     if file.endswith(".out"):
@@ -156,8 +153,6 @@ mechanical.exit()
 # Download the geometry file
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Download Valve.pmdb.
-
-import os
 
 import ansys.mechanical.core as mech
 from ansys.mechanical.core.examples import download_file
@@ -275,9 +270,10 @@ solution.EvaluateAllResults()
 # Save model
 # ~~~~~~~~~~
 
-project_directory = ExtAPI.DataModel.Project.ProjectDirectory
+project_directory = Path(ExtAPI.DataModel.Project.ProjectDirectory)
 print(f"project directory = {project_directory}")
-ExtAPI.DataModel.Project.SaveAs(os.path.join(project_directory, "file.mechdb"))
+mechdb_file = str(project_directory / "file.mechdb")
+ExtAPI.DataModel.Project.SaveAs(mechdb_file)
 
 
 ###############################################################################
@@ -292,13 +288,13 @@ results = solution.GetChildren(
 for result in results:
     fileName = str(result.Name)
     print(f"filename: {fileName}")
-    path = os.path.join(project_directory, fileName + fileExtension)
+    path = project_directory / fileName + fileExtension
     print(path)
     result.ExportToTextFile(f"{path}")
     print("Exported Text file Contents", path)
     try:
         write_file_contents_to_console(path, number_lines=20)
     except:
-        print(os.listdir(project_directory))
+        print(project_directory.iterdir())
 
 app.close()

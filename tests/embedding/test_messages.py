@@ -22,7 +22,7 @@
 
 """Message manager test"""
 
-import os
+from pathlib import Path
 import re
 
 import pytest
@@ -98,7 +98,7 @@ def test_message_get(embedded_app, assets):
     with pytest.raises(IndexError):
         embedded_app.messages[10]
 
-    embedded_app.open(os.path.join(assets, "cube-hole.mechdb"))
+    embedded_app.open(str(Path(assets) / "cube-hole.mechdb"))
     _messages = embedded_app.messages
     _msg1 = None
     for _msg in _messages:

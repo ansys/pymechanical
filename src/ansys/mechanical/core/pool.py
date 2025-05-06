@@ -22,7 +22,7 @@
 
 """This module is for threaded implementations of the Mechanical interface."""
 
-import os
+from pathlib import Path
 import time
 import warnings
 
@@ -489,7 +489,7 @@ class LocalMechanicalPool:
         """
         # check all files exist before running
         for filename in files:
-            if not os.path.isfile(filename):
+            if not Path(filename).is_file():
                 raise FileNotFoundError("Unable to locate file %s" % filename)
 
         def run_file(mechanical, input_file):

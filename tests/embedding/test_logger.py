@@ -54,7 +54,7 @@ def _run_embedding_log_test(
 ) -> typing.Tuple[bytes, bytes]:
     """Runs the process and returns it after it finishes"""
     version = pytestconfig.getoption("ansys_version")
-    embedded_py = os.path.join(rootdir, "tests", "scripts", "embedding_log_test.py")
+    embedded_py = rootdir / "tests" / "scripts" / "embedding_log_test.py"
 
     subprocess_pass_expected = pass_expected
     if pass_expected == True:

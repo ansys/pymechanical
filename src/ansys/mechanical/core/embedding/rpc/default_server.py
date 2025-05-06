@@ -22,7 +22,7 @@
 """Remote Procedure Call (RPC) server."""
 
 import fnmatch
-import os
+from pathlib import Path
 
 from ansys.mechanical.core.embedding.app import App
 
@@ -74,16 +74,13 @@ class DefaultServiceMethods:
     @remote_method
     def list_files(self):
         """List all files in the project directory."""
-        list = []
         mechdbPath = self._app.ExtAPI.DataModel.Project.FilePath
         if mechdbPath != "":
-            list.append(mechdbPath)
+            file_list.append(mechdbPath)
         rootDir = self._app.ExtAPI.DataModel.Project.ProjectDirectory
 
-        for dirPath, dirNames, fileNames in os.walk(rootDir):
-            for fileName in fileNames:
-                list.append(os.path.join(dirPath, fileName))
-        files_out = "\n".join(list).splitlines()
+        file_list = [str(child) for child in Path(rootDir).rglob("*") if child.is_file()]
+        files_out = "\n".join(file_list).splitlines()
         if not files_out:  # pragma: no cover
             print("No files listed")
         return files_out

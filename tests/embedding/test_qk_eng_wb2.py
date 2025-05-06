@@ -22,7 +22,7 @@
 
 """Migration from QK_ENG_WB2 tests."""
 
-import os
+from pathlib import Path
 
 import pytest
 
@@ -44,7 +44,7 @@ def test_qk_eng_wb2_005(printer, embedded_app, assets):
     PRE_STRS_ENV = BUCK.Children[0]
     PRE_STRS_ENV.PreStressICEnvironment = STAT_STRUC
 
-    geometry_file = os.path.join(assets, "Eng157.x_t")
+    geometry_file = str(Path(assets) / "Eng157.x_t")
     printer(f"Setting up test - attaching geometry {geometry_file}")
     geometry_import = Model.GeometryImportGroup.AddGeometryImport()
     geometry_import.Import(geometry_file)
@@ -156,7 +156,7 @@ def test_qk_eng_wb2_007(printer, embedded_app, assets):
     printer("Set units system to MKS")
     ExtAPI.Application.ActiveUnitSystem = MechanicalUnitSystem.StandardMKS
 
-    geometry_file = os.path.join(assets, "longbar_sat_m.x_t")
+    geometry_file = str(Path(assets) / "longbar_sat_m.x_t")
     printer(f"Setting up test - attaching geometry {geometry_file}")
     geometry_import = Model.GeometryImportGroup.AddGeometryImport()
     geometry_import.Import(geometry_file)
@@ -165,7 +165,7 @@ def test_qk_eng_wb2_007(printer, embedded_app, assets):
     Model.AddStaticStructuralAnalysis()
     Model.AddStaticStructuralAnalysis()
 
-    material_file = os.path.join(assets, "eng200_material.xml")
+    material_file = str(Path(assets) / "eng200_material.xml")
     printer(f"Setting up test - import materials {material_file}")
     materials = Model.Materials
     materials.Import(material_file)

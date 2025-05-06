@@ -36,7 +36,7 @@ def _run_background_app_test(
     """Run the process and return stdout and stderr after it finishes."""
 
     version = pytestconfig.getoption("ansys_version")
-    script = os.path.join(rootdir, "tests", "scripts", "background_app_test.py")
+    script = rootdir / "tests" / "scripts" / "background_app_test.py"
 
     subprocess_pass_expected = pass_expected
     if pass_expected and os.name != "nt":

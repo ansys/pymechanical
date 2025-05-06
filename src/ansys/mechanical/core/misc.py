@@ -24,6 +24,7 @@
 
 from functools import wraps
 import os
+from pathlib import Path
 import socket
 from threading import Thread
 
@@ -41,7 +42,7 @@ def is_windows():
     return False
 
 
-def get_mechanical_bin(release_version):
+def get_mechanical_bin(release_version) -> Path:
     """Get the path for the Mechanical executable file based on the release version.
 
     Parameters
@@ -51,15 +52,17 @@ def get_mechanical_bin(release_version):
         2025 R1.
     """
     if is_windows():  # pragma: no cover
-        program_files = os.getenv("PROGRAMFILES", os.path.join("c:\\", "Program Files"))
-        ans_root = os.getenv(
-            f"AWP_ROOT{release_version}",
-            os.path.join(program_files, "ANSYS Inc", f"v{release_version}"),
+        program_files = Path(os.getenv("PROGRAMFILES", Path("C:\\", "Program Files")))
+        ans_root = Path(
+            os.getenv(
+                f"AWP_ROOT{release_version}",
+                program_files / "ANSYS Inc" / f"v{release_version}",
+            )
         )
-        mechanical_bin = os.path.join(ans_root, "aisol", "bin", "winx64", f"AnsysWBU.exe")
+        mechanical_bin = ans_root / "aisol" / "bin" / "winx64" / "AnsysWBU.exe"
     else:
-        ans_root = os.getenv(f"AWP_ROOT{release_version}", os.path.join("/", "usr", "ansys_inc"))
-        mechanical_bin = os.path.join(*ans_root, f"v{release_version}", "aisol", f".workbench")
+        ans_root = Path(os.getenv(f"AWP_ROOT{release_version}", Path("/") / "usr" / "ansys_inc"))
+        mechanical_bin = ans_root / f"v{release_version}" / "aisol" / ".workbench"
 
     return mechanical_bin
 

@@ -22,19 +22,19 @@
 
 """Graphics export tests"""
 
-import os
+from pathlib import Path
 
 import pytest
 
 
-def _is_readable(filepath: str):
+def _is_readable(filepath: Path):
     try:
-        with open(filepath, "rb") as file:
+        with filepath.open("rb") as file:
             file.read()
     except Exception as e:
         assert False, f"Failed to read file {filepath}: {e}"
     finally:
-        os.remove(filepath)
+        filepath.unlink()
 
 
 @pytest.mark.embedding
@@ -53,7 +53,7 @@ def test_graphics_export_image(printer, embedded_app, image_format, graphics_tes
     dir_deformation = DataModel.GetObjectsByType(DataModelObjectCategory.DeformationResult)[0]
     Tree.Activate([dir_deformation])
     ExtAPI.Graphics.Camera.SetFit()
-    image_file = os.path.join(os.getcwd(), f"image.{image_format}")
+    image_file = str(Path.cwd() / f"image.{image_format}")
     ExtAPI.Graphics.ExportImage(image_file, image_format, image_settings)
     _is_readable(image_file)
 
@@ -74,6 +74,6 @@ def test_graphics_export_animation(
     dir_deformation = DataModel.GetObjectsByType(DataModelObjectCategory.DeformationResult)[0]
     Tree.Activate([dir_deformation])
     ExtAPI.Graphics.Camera.SetFit()
-    animation_file = os.path.join(os.getcwd(), f"animation.{animation_format}")
+    animation_file = str(Path.getcwd() / f"animation.{animation_format}")
     dir_deformation.ExportAnimation(animation_file, animation_format, animation_settings)
     _is_readable(animation_file)

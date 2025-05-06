@@ -23,6 +23,7 @@
 """Testing app libraries"""
 
 import os
+from pathlib import Path
 import sys
 
 from ansys.tools.path import get_mechanical_path
@@ -37,11 +38,11 @@ def test_app_library(embedded_app):
     _version = embedded_app.version
 
     # Test with version as input
-    exe = get_mechanical_path(_version)
-    while os.path.basename(exe) != f"v{_version}":
-        exe = os.path.dirname(exe)
+    exe = Path(get_mechanical_path(_version))
+    while exe.name != f"v{_version}":
+        exe = exe.parent
     exe = exe.replace("\\\\", "\\")
-    location = os.path.join(exe, "Addins", "ACT", "libraries", "Mechanical")
+    location = exe / "Addins" / "ACT" / "libraries" / "Mechanical"
     add_mechanical_python_libraries(_version)
     assert location in sys.path
     sys.path.remove(location)
@@ -49,8 +50,8 @@ def test_app_library(embedded_app):
 
     # Test with app as input
     add_mechanical_python_libraries(embedded_app)
-    installdir = os.environ[f"AWP_ROOT{embedded_app.version}"]
-    location = os.path.join(installdir, "Addins", "ACT", "libraries", "Mechanical")
+    install_dir = os.environ[f"AWP_ROOT{embedded_app.version}"]
+    location = Path(install_dir) / "Addins" / "ACT" / "libraries" / "Mechanical"
     assert location in sys.path
 
     # import mechanical library and test a method

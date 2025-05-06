@@ -28,7 +28,7 @@ import fnmatch
 from functools import wraps
 import glob
 import os
-import pathlib
+from pathlib import Path
 import socket
 import subprocess  # nosec: B404
 import sys
@@ -227,7 +227,7 @@ def close_all_local_instances(port_range=None, use_thread=True):
 
 def create_ip_file(ip, path):
     """Create the ``mylocal.ip`` file needed to change the IP address of the gRPC server."""
-    file_name = os.path.join(path, "mylocal.ip")
+    file_name = Path(path) / "mylocal.ip"
     with open(file_name, "w", encoding="utf-8") as f:
         f.write(ip)
 
@@ -1168,7 +1168,9 @@ class Mechanical(object):
         """
         self.verify_valid_connection()
 
-        if not os.path.isfile(file_name):
+        file_name = Path(file_name)
+
+        if not file_name.is_file():
             raise FileNotFoundError(f"Unable to locate filename {file_name}.")
 
         self._log.debug(f"Uploading file '{file_name}' to the Mechanical instance.")
@@ -1191,7 +1193,7 @@ class Mechanical(object):
 
         if not response.is_ok:  # pragma: no cover
             raise IOError("File failed to upload.")
-        return os.path.basename(file_name)
+        return file_name.name
 
     def get_file_chunks(self, file_location, file_name, chunk_size, progress_bar):
         """Construct the file upload request for the server.
@@ -1207,6 +1209,7 @@ class Mechanical(object):
         progress_bar : bool
             Whether to show a progress bar using ``tqdm``.
         """
+        file_name = Path(file_name)
         pbar = None
         if progress_bar:
             if not _HAS_TQDM:  # pragma: no cover
@@ -1216,9 +1219,8 @@ class Mechanical(object):
                     "set 'progress_bar=False'."
                 )
 
-            n_bytes = os.path.getsize(file_name)
-
-            base_name = os.path.basename(file_name)
+            n_bytes = file_name.stat().st_size
+            base_name = file_name.name
             pbar = tqdm(
                 total=n_bytes,
                 desc=f"Uploading {base_name} to {self._channel_str}:{file_location}.",
@@ -1227,7 +1229,7 @@ class Mechanical(object):
                 unit_divisor=1024,
             )
 
-        with open(file_name, "rb") as f:
+        with file_name.open("rb") as f:
             while True:
                 piece = f.read(chunk_size)
                 length = len(piece)
@@ -1241,7 +1243,7 @@ class Mechanical(object):
 
                 chunk = mechanical_pb2.Chunk(payload=piece, size=length)
                 yield mechanical_pb2.FileUploadRequest(
-                    file_name=os.path.basename(file_name), file_location=file_location, chunk=chunk
+                    file_name=file_name.name, file_location=file_location, chunk=chunk
                 )
 
     @property
@@ -1283,14 +1285,15 @@ class Mechanical(object):
         return files_out
 
     def _get_files(self, files, recursive=False):
+        files = Path(files)
         self_files = self.list_files()  # to avoid calling it too much
 
         if isinstance(files, str):
             if self._local:  # pragma: no cover
                 # in local mode
-                if os.path.exists(files):
-                    if not os.path.isabs(files):
-                        list_files = [os.path.join(os.getcwd(), files)]
+                if files.exists():
+                    if not files.is_absolute():
+                        list_files = [Path.cwd() / files]
                     else:
                         # file exist
                         list_files = [files]
@@ -1423,16 +1426,16 @@ class Mechanical(object):
         list_files = self._get_files(files, recursive=recursive)
 
         if target_dir:
-            path = pathlib.Path(target_dir)
+            path = Path(target_dir)
             path.mkdir(parents=True, exist_ok=True)
         else:
-            target_dir = os.getcwd()
+            target_dir = Path.cwd()
 
         out_files = []
 
         for each_file in list_files:
             try:
-                file_name = os.path.basename(each_file)  # Getting only the name of the file.
+                file_name = Path(each_file).name  # Getting only the name of the file.
                 #  We try to avoid that when the full path is supplied. It crashes when trying
                 # to do `os.path.join(target_dir"os.getcwd()", file_name "full filename path"`
                 # This produces the file structure to flat out, but it is fine,
@@ -1440,7 +1443,7 @@ class Mechanical(object):
                 self._busy = True
                 out_file_path = self._download(
                     each_file,
-                    out_file_name=os.path.join(target_dir, file_name),
+                    out_file_name=(target_dir / file_name),
                     chunk_size=chunk_size,
                     progress_bar=progress_bar,
                 )
@@ -1594,23 +1597,23 @@ class Mechanical(object):
 
         # let us create the directory, if it doesn't exist
         if destination_directory:
-            path = pathlib.Path(destination_directory)
+            path = Path(destination_directory)
             path.mkdir(parents=True, exist_ok=True)
         else:
-            destination_directory = os.getcwd()
+            destination_directory = Path.cwd()
 
         # relative directory?
-        if os.path.isdir(destination_directory):
-            if not os.path.isabs(destination_directory):
+        if destination_directory.is_dir():
+            if not destination_directory.is_absolute():
                 # construct full path
-                destination_directory = os.path.join(os.getcwd(), destination_directory)
+                destination_directory = Path.cwd() / destination_directory
 
-        project_directory = self.project_directory
+        project_directory = Path(self.project_directory)
         # remove the trailing slash - server could be windows or linux
         project_directory = project_directory.rstrip("\\/")
 
-        # this is where .mechddb resides
-        parent_directory = os.path.dirname(project_directory)
+        # The directory where the mechdb resides
+        parent_directory = project_directory.parent
 
         list_of_files = []
 
@@ -1621,9 +1624,9 @@ class Mechanical(object):
             for each_extension in extensions:
                 # mechdb resides one level above project directory
                 if "mechdb" == each_extension.lower():
-                    file_temp = os.path.join(parent_directory, f"*.{each_extension}")
+                    file_temp = parent_directory / f"*.{each_extension}"
                 else:
-                    file_temp = os.path.join(project_directory, "**", f"*.{each_extension}")
+                    file_temp = project_directory / "**" / f"*.{each_extension}"
 
                 if self._local:
                     list_files_expanded = self._get_files(file_temp, recursive=True)
@@ -1647,9 +1650,9 @@ class Mechanical(object):
         for file in files:
             # create similar hierarchy locally
             new_path = file.replace(parent_directory, destination_directory)
-            new_path_dir = os.path.dirname(new_path)
+            new_path_dir = Path(new_path).parent
             temp_files = self.download(
-                files=file, target_dir=new_path_dir, progress_bar=progress_bar
+                files=file, target_dir=str(new_path_dir), progress_bar=progress_bar
             )
             list_of_files.extend(temp_files)
 
@@ -2267,7 +2270,7 @@ def launch_mechanical(
 
         # setting ip for the grpc server
         if ip != LOCALHOST:  # Default local ip is 127.0.0.1
-            create_ip_file(ip, os.getcwd())
+            create_ip_file(ip, Path.cwd())
 
         return mechanical
 
@@ -2281,7 +2284,7 @@ def launch_mechanical(
                 "'exec_file' parameter."
             )
     else:  # verify ansys exists at this location
-        if not os.path.isfile(exec_file):
+        if not Path(exec_file).exists():
             raise FileNotFoundError(
                 f'This path for the Mechanical executable is invalid: "{exec_file}"\n'
                 "Enter a path manually by specifying a value for the "

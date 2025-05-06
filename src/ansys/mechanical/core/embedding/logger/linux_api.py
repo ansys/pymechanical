@@ -31,14 +31,15 @@
 import ctypes
 import logging
 import os
+from pathlib import Path
 
 from ansys.mechanical.core.embedding import initializer
 from ansys.mechanical.core.embedding.logger import sinks
 
 
 def _get_dll():
-    installdir = os.environ[f"AWP_ROOT{initializer.INITIALIZED_VERSION}"]
-    dll = ctypes.CDLL(os.path.join(installdir, "aisol/dll/linx64/libAns.Common.WBLogger.so"))
+    install_dir = Path(os.environ[f"AWP_ROOT{initializer.INITIALIZED_VERSION}"])
+    dll = ctypes.CDLL(install_dir / "aisol/dll/linx64/libAns.Common.WBLogger.so")
 
     dll.wb_logger_enable_sink.argtypes = [ctypes.c_int32]
 

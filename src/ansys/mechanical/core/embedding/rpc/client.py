@@ -21,8 +21,7 @@
 # SOFTWARE.
 """Client for Mechanical services."""
 
-import os
-import pathlib
+from pathlib import Path
 import time
 
 import rpyc
@@ -133,19 +132,23 @@ class Client:
         progress_bar=False,
     ):
         """Upload a file to the server."""
-        print(f"arg: {file_name}, {file_location_destination}")
-        print()
-        if not os.path.exists(file_name):
+        file_name = Path(file_name)
+        file_location_destination = (
+            Path(file_location_destination) if file_location_destination else None
+        )
+        print(f"arg: {file_name}, {file_location_destination}\n")
+        if not file_name.exists():
             print(f"File {file_name} does not exist.")
             return
-        file_base_name = os.path.basename(file_name)
-        remote_path = os.path.join(file_location_destination, file_base_name)
+        file_base_name = file_name.name
+        if file_location_destination:
+            remote_path = file_location_destination / file_base_name
 
-        with open(file_name, "rb") as f:
-            file_data = f.read()
-            self.service_upload(remote_path, file_data)
+            with open(file_name, "rb") as f:
+                file_data = f.read()
+                self.service_upload(remote_path, file_data)
 
-        print(f"File {file_name} uploaded to {file_location_destination}")
+            print(f"File {file_name} uploaded to {file_location_destination}")
 
     def download(
         self,
@@ -157,30 +160,34 @@ class Client:
     ):
         """Download a file from the server."""
         out_files = []
-        os.makedirs(target_dir, exist_ok=True)
+        if target_dir:
+            Path(target_dir).mkdir(parents=True, exist_ok=True)
 
-        response = self.service_download(files)
+            response = self.service_download(files)
+            files = Path(files)
 
-        if isinstance(response, dict) and response["is_directory"]:
-            for relative_file_path in response["files"]:
-                full_remote_path = os.path.join(files, relative_file_path)
-                local_file_path = os.path.join(target_dir, relative_file_path)
-                local_file_dir = os.path.dirname(local_file_path)
-                os.makedirs(local_file_dir, exist_ok=True)
+            if isinstance(response, dict) and response["is_directory"]:
+                for relative_file_path in response["files"]:
+                    full_remote_path = files / relative_file_path
+                    local_file_path = target_dir / relative_file_path
+                    local_file_dir = local_file_path.parent
+                    local_file_dir.mkdir(parents=True, exist_ok=True)
 
+                    out_file_path = self._download_file(
+                        full_remote_path, local_file_path, chunk_size, overwrite=True
+                    )
+            else:
                 out_file_path = self._download_file(
-                    full_remote_path, local_file_path, chunk_size, overwrite=True
+                    files, target_dir / files.name, chunk_size, overwrite=True
                 )
-        else:
-            out_file_path = self._download_file(
-                files, os.path.join(target_dir, os.path.basename(files)), chunk_size, overwrite=True
-            )
-        out_files.append(out_file_path)
+            out_files.append(out_file_path)
 
         return out_files
 
-    def _download_file(self, remote_file_path, local_file_path, chunk_size=1024, overwrite=False):
-        if os.path.exists(local_file_path) and not overwrite:
+    def _download_file(
+        self, remote_file_path: Path, local_file_path: Path, chunk_size=1024, overwrite=False
+    ):
+        if local_file_path.exists() and not overwrite:
             print(f"File {local_file_path} already exists locally. Skipping download.")
             return
         response = self.service_download(remote_file_path)
@@ -189,7 +196,7 @@ class Client:
         file_data = response
 
         # Write the file data to the local path
-        with open(local_file_path, "wb") as f:
+        with local_file_path.open("wb") as f:
             f.write(file_data)
 
         print(f"File {remote_file_path} downloaded to {local_file_path}")
@@ -198,49 +205,49 @@ class Client:
 
     def download_project(self, extensions=None, target_dir=None, progress_bar=False):
         """Download all project files in the working directory of the Mechanical instance."""
-        destination_directory = target_dir.rstrip("\\/")
-        if destination_directory:
-            path = pathlib.Path(destination_directory)
-            path.mkdir(parents=True, exist_ok=True)
-        else:
-            destination_directory = os.getcwd()
-        # relative directory?
-        if os.path.isdir(destination_directory):
-            if not os.path.isabs(destination_directory):
-                # construct full path
-                destination_directory = os.path.join(os.getcwd(), destination_directory)
-        _project_directory = self.project_directory
-        _project_directory = _project_directory.rstrip("\\/")
+        if target_dir:
+            destination_directory = Path(target_dir).rstrip("\\/")
+            if destination_directory:
+                destination_directory.mkdir(parents=True, exist_ok=True)
+            else:
+                destination_directory = Path.cwd()
+            # relative directory?
+            if destination_directory.is_dir():
+                if not destination_directory.is_absolute():
+                    # construct full path
+                    destination_directory = Path.cwd() / destination_directory
+            _project_directory = Path(self.project_directory)
+            _project_directory = _project_directory.rstrip("\\/")
 
-        # this is where .mechddb resides
-        parent_directory = os.path.dirname(_project_directory)
+            # this is where .mechddb resides
+            parent_directory = _project_directory.parent
 
-        list_of_files = []
+            list_of_files = []
 
-        if not extensions:
-            files = self.list_files()
-        else:
-            files = []
-            for each_extension in extensions:
-                # mechdb resides one level above project directory
-                if "mechdb" == each_extension.lower():
-                    file_temp = os.path.join(parent_directory, f"*.{each_extension}")
-                else:
-                    file_temp = os.path.join(_project_directory, "**", f"*.{each_extension}")
+            if not extensions:
+                files = self.list_files()
+            else:
+                files = []
+                for each_extension in extensions:
+                    # mechdb resides one level above project directory
+                    if "mechdb" == each_extension.lower():
+                        file_temp = parent_directory / f"*.{each_extension}"
+                    else:
+                        file_temp = _project_directory / "**" / f"*.{each_extension}"
 
-                list_files = self._get_files(file_temp, recursive=False)
+                    list_files = self._get_files(file_temp, recursive=False)
 
-                files.extend(list_files)
+                    files.extend(list_files)
 
-        for file in files:
-            # create similar hierarchy locally
-            new_path = file.replace(parent_directory, destination_directory)
-            new_path_dir = os.path.dirname(new_path)
-            temp_files = self.download(
-                files=file, target_dir=new_path_dir, progress_bar=progress_bar
-            )
-            list_of_files.extend(temp_files)
-        return list_of_files
+            for file in files:
+                # create similar hierarchy locally
+                new_path = file.replace(parent_directory, destination_directory)
+                new_path_dir = Path(new_path).parent
+                temp_files = self.download(
+                    files=file, target_dir=new_path_dir, progress_bar=progress_bar
+                )
+                list_of_files.extend(temp_files)
+            return list_of_files
 
     @property
     def backend(self) -> str:

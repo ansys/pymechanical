@@ -63,8 +63,9 @@ valid_rver = [str(each) for each in SUPPORTED_MECHANICAL_VERSIONS]
 
 EXEC_FILE = None
 for rver in valid_rver:
-    if os.path.isfile(get_mechanical_bin(rver)):
-        EXEC_FILE = get_mechanical_bin(rver)
+    exec_file = get_mechanical_bin(rver)
+    if exec_file.is_file():
+        EXEC_FILE = exec_file
         break
 
 
@@ -220,7 +221,7 @@ def test_env():
     """Create a virtual environment scoped to the test."""
     venv_name = "test_env"
 
-    base = pathlib.Path(__file__).parent
+    base = Path(__file__).parent
 
     if "win" in sys.platform:
         exe_dir = "Scripts"
@@ -229,24 +230,24 @@ def test_env():
         exe_dir = "bin"
         exe_name = "python"
 
-    venv_dir = os.path.join(base, "." + venv_name)
-    venv_bin = os.path.join(venv_dir, exe_dir)
+    venv_dir = base / f".{venv_name}"
+    venv_bin = venv_dir / exe_dir
 
     # Set up path to use the virtual environment
     env_copy = os.environ.copy()
-    env_copy["PATH"] = venv_bin + os.pathsep + os.environ.get("PATH", "")
+    env_copy["PATH"] = str(venv_bin) + os.pathsep + os.environ.get("PATH", "")
 
     # object describing the python environment
     class TestEnv:
         # environment variable needed to run inside the environment
         env = env_copy
         # python executable inside the environment
-        python = os.path.join(venv_bin, exe_name)
+        python = venv_bin / exe_name
 
     test_env_object = TestEnv()
 
     # Create virtual environment
-    subprocess.run([sys.executable, "-m", "venv", venv_dir], env=env_copy)
+    subprocess.run([sys.executable, "-m", "venv", str(venv_dir)], env=env_copy)
     # print(f"created virtual environment in {venv_dir}")
 
     # Upgrade pip
@@ -397,7 +398,7 @@ def mechanical(request, printer, mechanical_session):
 # used only once
 @pytest.fixture(scope="function")
 def mechanical_meshing():
-    print("current working directory: ", os.getcwd())
+    print("Current working directory: ", Path.cwd())
 
     mechanical_meshing = pymechanical.launch_mechanical(
         additional_switches=["-AppModeMesh"],
@@ -415,7 +416,7 @@ def mechanical_meshing():
 # used only once
 @pytest.fixture(scope="function")
 def mechanical_result():
-    print("current working directory: ", os.getcwd())
+    print("Current working directory: ", Path.cwd())
 
     mechanical_result = pymechanical.launch_mechanical(
         additional_switches=["-AppModeRest"], verbose_mechanical=True

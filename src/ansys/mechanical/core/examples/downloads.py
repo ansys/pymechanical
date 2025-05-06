@@ -22,7 +22,7 @@
 
 """Functions to download sample datasets from the PyAnsys data repository."""
 
-import os
+from pathlib import Path
 import shutil
 from typing import Optional
 from urllib.parse import urljoin
@@ -66,8 +66,8 @@ def _retrieve_url(url: str, dest: str) -> str:
 def _retrieve_data(url: str, filename: str, dest: str = None, force: bool = False):
     if dest is None:
         dest = pymechanical.EXAMPLES_PATH
-    local_path = os.path.join(dest, os.path.basename(filename))
-    if not force and os.path.isfile(local_path):
+    local_path = Path(dest) / Path(filename).name
+    if not force and local_path.is_file():
         return local_path
     local_path = _retrieve_url(url, local_path)
     return local_path
@@ -127,6 +127,7 @@ def delete_downloads() -> bool:
     'True'
 
     """
-    shutil.rmtree(pymechanical.EXAMPLES_PATH)
-    os.makedirs(pymechanical.EXAMPLES_PATH)
+    examples_path = Path(pymechanical.EXAMPLES_PATH)
+    shutil.rmtree(examples_path)
+    examples_path.mkdir(parents=True)
     return True

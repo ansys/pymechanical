@@ -85,13 +85,13 @@ def _get_latest_default_version() -> int:
     For Linux it will be only one since ``mechanical-env`` takes care of that.
     If multiple versions are detected, select the latest one, as no specific version is provided.
     """
-    awp_roots = [value for key, value in os.environ.items() if key.startswith("AWP_ROOT")]
+    awp_roots = [Path(value) for key, value in os.environ.items() if key.startswith("AWP_ROOT")]
     if not awp_roots:
         raise Exception("No Mechanical installations found.")
 
     versions_found = []
     for path in awp_roots:
-        folder = os.path.basename(os.path.normpath(path))
+        folder = path.name
         version = folder.split("v")[-1]
         versions_found.append(int(version))
 
