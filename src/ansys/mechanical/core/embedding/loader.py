@@ -35,8 +35,8 @@ def __get_mono(assembly_dir: Path, config_dir: Path):
         mono = clr_loader.get_mono(
             set_signal_chaining=True,
             libmono=libmono,  # TODO: find_mono is broken on clr-loader v0.2.6
-            assembly_dir=assembly_dir,
-            config_dir=config_dir,
+            assembly_dir=str(assembly_dir),
+            config_dir=str(config_dir),
         )
     return mono
 

@@ -259,12 +259,12 @@ class App:
         self._app.Dispose()
         self._disposed = True
 
-    def open(self, db_file, remove_lock=False):
+    def open(self, db_file: typing.Union[str, Path], remove_lock: bool = False) -> None:
         """Open the db file.
 
         Parameters
         ----------
-        db_file : str
+        db_file : str or Path
             Path to a Mechanical database file (.mechdat or .mechdb).
         remove_lock : bool, optional
             Whether or not to remove the lock file if it exists before opening the project file.
@@ -282,16 +282,23 @@ This may corrupt the project file.",
                 )
                 lock_file.unlink()
 
-        self.DataModel.Project.Open(db_file)
+        self.DataModel.Project.Open(str(db_file))
 
-    def save(self, path=None):
-        """Save the project."""
+    def save(self, path: typing.Union[str, Path] = None) -> None:
+        """Save the project.
+
+        Parameters
+        ----------
+        path : str or Path, optional
+            The path where the file needs to be saved. If not provided, it is saved in the
+            current directory.
+        """
         if path is not None:
             self.DataModel.Project.Save(path)
         else:
             self.DataModel.Project.Save()
 
-    def save_as(self, path: str, overwrite: bool = False):
+    def save_as(self, path: typing.Union[str, Path], overwrite: bool = False) -> None:
         """
         Save the project as a new file.
 
@@ -299,8 +306,8 @@ This may corrupt the project file.",
 
         Parameters
         ----------
-        path : str
-            The path where the file needs to be saved.
+        path : str or Path
+            The path where the file is saved.
         overwrite : bool, optional
             Whether the file should be overwritten if it already exists (default is False).
 
@@ -316,7 +323,7 @@ This may corrupt the project file.",
         """
         path = Path(path)
         if not path.exists():
-            self.DataModel.Project.SaveAs(path)
+            self.DataModel.Project.SaveAs(str(path))
             return
 
         if not overwrite:
@@ -338,21 +345,29 @@ This may corrupt the project file.",
         else:
             self.DataModel.Project.SaveAs(str(path), overwrite)
 
-    def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
-        """Launch the GUI."""
+    def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False) -> None:
+        """Launch the GUI.
+
+        Parameters
+        ----------
+        delete_tmp_on_close : bool, optional
+            Whether to delete the temporary files on close. Default is True.
+        dry_run : bool, optional
+            Whether to run the application in dry run mode. Default is False.
+        """
         launch_ui(self, delete_tmp_on_close, dry_run)
 
-    def new(self):
+    def new(self) -> None:
         """Clear to a new application."""
         self.DataModel.Project.New()
 
-    def close(self):
+    def close(self) -> None:
         """Close the active project."""
         # Call New() to remove the lock file of the
         # current project on close.
         self.DataModel.Project.New()
 
-    def exit(self):
+    def exit(self) -> None:
         """Exit the application."""
         self._unsubscribe()
         if self.version < 241:
@@ -361,7 +376,13 @@ This may corrupt the project file.",
             self.ExtAPI.Application.Exit()
 
     def execute_script(self, script: str) -> typing.Any:
-        """Execute the given script with the internal IronPython engine."""
+        """Execute the given script with the internal IronPython engine.
+
+        Parameters
+        ----------
+        script : str
+            The script to be executed in IronPython.
+        """
         SCRIPT_SCOPE = "pymechanical-internal"
         if not hasattr(self, "script_engine"):
             import clr
@@ -387,9 +408,15 @@ This may corrupt the project file.",
             raise Exception(error_msg)
         return script_result.Value
 
-    def execute_script_from_file(self, file_path=None):
-        """Execute the given script from file with the internal IronPython engine."""
-        text_file = open(file_path, "r", encoding="utf-8")
+    def execute_script_from_file(self, file_path: typing.Union[str, Path] = None) -> typing.Any:
+        """Execute the given script from file with the internal IronPython engine.
+
+        Parameters
+        ----------
+        file_path : str or Path
+            The path to the script file to be executed in IronPython.
+        """
+        text_file = Path(file_path).open("r", encoding="utf-8")
         data = text_file.read()
         text_file.close()
         return self.execute_script(data)
@@ -413,7 +440,7 @@ This may corrupt the project file.",
         return to_plotter(self)
 
     def plot(self) -> None:
-        """Visualize the model in 3d.
+        """Visualize the model in 3D.
 
         Requires installation using the graphics option. E.g.
         pip install ansys-mechanical-core[graphics]
@@ -472,13 +499,25 @@ This may corrupt the project file.",
         return Ansys.ACT.Mechanical.MechanicalAPI.Instance.ReadOnlyMode
 
     @property
-    def version(self):
-        """Returns the version of the app."""
+    def version(self) -> int:
+        """Get the version of the app.
+
+        Returns
+        -------
+        int
+            The version of the app.
+        """
         return self._version
 
     @property
-    def project_directory(self):
-        """Returns the current project directory."""
+    def project_directory(self) -> str:
+        """Get the project directory of the project.
+
+        Returns
+        -------
+        str
+            The project directory of the current project.
+        """
         return self.DataModel.Project.ProjectDirectory
 
     @property
