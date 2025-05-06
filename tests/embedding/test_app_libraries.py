@@ -41,7 +41,6 @@ def test_app_library(embedded_app):
     exe = Path(get_mechanical_path(_version))
     while exe.name != f"v{_version}":
         exe = exe.parent
-    exe = exe.replace("\\\\", "\\")
     location = exe / "Addins" / "ACT" / "libraries" / "Mechanical"
     add_mechanical_python_libraries(_version)
     assert location in sys.path

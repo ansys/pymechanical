@@ -23,11 +23,13 @@
 """Graphics export tests"""
 
 from pathlib import Path
+import typing
 
 import pytest
 
 
-def _is_readable(filepath: Path):
+def _is_readable(filepath: typing.Union[str, Path]) -> None:
+    filepath = Path(filepath)
     try:
         with filepath.open("rb") as file:
             file.read()
@@ -74,6 +76,6 @@ def test_graphics_export_animation(
     dir_deformation = DataModel.GetObjectsByType(DataModelObjectCategory.DeformationResult)[0]
     Tree.Activate([dir_deformation])
     ExtAPI.Graphics.Camera.SetFit()
-    animation_file = str(Path.getcwd() / f"animation.{animation_format}")
+    animation_file = str(Path.cwd() / f"animation.{animation_format}")
     dir_deformation.ExportAnimation(animation_file, animation_format, animation_settings)
     _is_readable(animation_file)

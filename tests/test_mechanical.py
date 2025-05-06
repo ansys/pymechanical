@@ -98,10 +98,9 @@ def test_upload(mechanical, file_name, assets):
     base_name = file_path.name
     combined_path = directory / base_name
     file_path_modified = combined_path.replace("\\", "\\\\")
-    # we are working with iron python 2.7 on mechanical side
-    # use python 2.7 style formatting
-    # path = '%s' % file_path_modified
-    script = 'from pathlib import Path\nPath("%s").exists()' % file_path_modified
+    # We are working with iron python 2.7 on Mechanical's side
+    # Use Python 2.7 style formatting
+    script = 'import os\nos.path.exists("%s")' % file_path_modified
     print(script)
     result = mechanical.run_python_script(script)
     assert bool(result)
@@ -174,9 +173,9 @@ def solve_and_return_results(mechanical):
 
     # let us append the scripts to run
     func_to_call = """
-from pathlib import Path
-directory = Path(ExtAPI.DataModel.Project.ProjectDirectory)
-file_path_modified = directory /'hsec.x_t'
+import os
+directory = ExtAPI.DataModel.Project.ProjectDirectory
+file_path_modified = os.path.join(directory, 'hsec.x_t')
 attach_geometry(file_path_modified)
 generate_mesh()
 add_static_structural_analysis_bc_results()

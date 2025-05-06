@@ -22,7 +22,6 @@
 
 import datetime
 import os
-import pathlib
 from pathlib import Path
 import platform
 import shutil
@@ -121,7 +120,7 @@ def assets():
 
     TODO - share this with the mechanical remote tests.
     """
-    ROOT_FOLDER = pathlib.Path(__file__).parent
+    ROOT_FOLDER = Path(__file__).parent
     return ROOT_FOLDER / "assets"
 
 
@@ -205,7 +204,7 @@ def run_subprocess(pytestconfig):
 @pytest.fixture(scope="session")
 def rootdir():
     """Return the root directory of the local clone of the PyMechanical GitHub repository."""
-    base = pathlib.Path(__file__).parent
+    base = Path(__file__).parent
     yield base.parent
 
 
@@ -294,7 +293,9 @@ def connect_to_mechanical_instance(port=None, clear_on_connect=False):
 def launch_rpc_embedded_server(port: int, version: int, server_script: str):
     """Start the server as a subprocess using `port`."""
     env_copy = os.environ.copy()
-    p = subprocess.Popen([sys.executable, server_script, str(port), str(version)], env=env_copy)
+    p = subprocess.Popen(
+        [sys.executable, str(server_script), str(port), str(version)], env=env_copy
+    )
     return p
 
 
@@ -309,7 +310,7 @@ def _launch_mechanical_rpyc_server(rootdir: str, version: int):
     """Start rpyc server process, return the process object."""
     from ansys.mechanical.core.embedding.rpc.utils import get_free_port
 
-    server_py = Path(rootdir) / "tests" / "scripts" / "rpc_server_embedded.py"
+    server_py = rootdir / "tests" / "scripts" / "rpc_server_embedded.py"
     port = get_free_port()
     embedded_server = launch_rpc_embedded_server(
         port=port, version=version, server_script=server_py

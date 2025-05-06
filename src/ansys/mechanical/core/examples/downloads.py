@@ -104,8 +104,8 @@ def download_file(
     >>> filename
     'C:/Users/user/AppData/Local/ansys_mechanical_core/ansys_mechanical_core/examples/example_01_geometry.agdb'
     """
-    url = _get_filepath_on_default_server(filename, *directory)
-    local_path = _retrieve_data(url, filename, dest=destination, force=force)
+    url = _get_filepath_on_default_server(str(filename), *directory)
+    local_path = _retrieve_data(url, str(filename), dest=str(destination), force=force)
     return local_path
 
 
