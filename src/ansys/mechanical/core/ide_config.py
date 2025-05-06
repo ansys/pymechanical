@@ -72,7 +72,7 @@ def get_stubs_versions(stubs_location: Path):
     revns = [
         int(revision[1:])
         for revision in stubs_location.iterdir()
-        if (stubs_location / revision).is_dir() and revision.startswith("v")
+        if (stubs_location / revision).is_dir() and revision.name.startswith("v")
     ]
     return revns
 
