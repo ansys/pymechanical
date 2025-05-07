@@ -62,7 +62,7 @@ def test_globals(args):
     # Set BUILDING_GALLERY to True
     pymechanical.BUILDING_GALLERY = True
     # Launch an embedded instance of the app without updating globals
-    app = pymechanical.App()
+    app = pymechanical.App(version=int(args.version))
     # Launch an embedded instance of the app with updated globals
     app = launch_app(args)
     # Check that ViewOrientationType is valid
