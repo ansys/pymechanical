@@ -64,7 +64,7 @@ def test_globals(args):
     # Launch an embedded instance of the app without updating globals
     app = pymechanical.App(version=int(args.version))
     # Launch an embedded instance of the app with updated globals
-    app = launch_app(args)
+    app = pymechanical.App(globals=globals())
     # Check that ViewOrientationType is valid
     app.Graphics.Camera.SetSpecificViewOrientation(ViewOrientationType.Iso)
     print("ViewOrientationType exists")
