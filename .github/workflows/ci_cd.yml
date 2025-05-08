@@ -361,8 +361,8 @@ jobs:
 
   embedding-tests:
     name: Embedding testing and coverage
-    runs-on: ubuntu-latest
-    timeout-minutes: 11
+    runs-on: public-ubuntu-latest-8-cores
+    timeout-minutes: 10
     needs: [smoke-tests, revn-variations, container-stability-check]
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
