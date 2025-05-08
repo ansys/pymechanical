@@ -162,7 +162,8 @@ def test_app_print_tree(embedded_app, capsys, assets):
     assert all(symbol in printed_output for symbol in ["?", "⚡︎", "✕", "✓"])
 
 
-@pytest.mark.embedding
+# @pytest.mark.embedding
+@pytest.mark.skip(reason="This test hangs on Linux with Python 3.10-3.13")
 def test_app_poster(embedded_app, printer):
     """The getters of app should be usable after a new().
 

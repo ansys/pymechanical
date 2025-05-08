@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Embedding tests for global variables associated with Mechanical"""
+from pathlib import Path
 import subprocess
 import sys
 
@@ -99,3 +100,25 @@ def test_enum_importer_exception(rootdir):
 
     # Assert the exception is raised
     assert "Enums cannot be imported until the embedded app is initialized." in stderr.decode()
+
+
+@pytest.mark.embedding_scripts
+def test_globals_kwarg_building_gallery(run_subprocess, pytestconfig, rootdir):
+    """Test ViewOrientationType exists when BUILDING_GALLERY is True and globals are updated
+    during the app initialization."""
+    version = pytestconfig.getoption("ansys_version")
+    embedded_py = Path(rootdir) / "tests" / "scripts" / "run_embedded_app.py"
+
+    process, stdout, stderr = run_subprocess(
+        [
+            sys.executable,
+            str(embedded_py),
+            "--version",
+            version,
+            "--action",
+            "TestGlobals",
+        ]
+    )
+    stdout = stdout.decode()
+
+    assert "ViewOrientationType exists" in stdout

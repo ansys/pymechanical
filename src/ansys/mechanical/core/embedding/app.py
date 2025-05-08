@@ -186,10 +186,22 @@ class App:
 
         self.log_info("Starting Mechanical Application")
 
+        # Get the globals dictionary from kwargs
+        globals = kwargs.get("globals")
+
+        # If the building gallery flag is set, we need to share the instance
+        # This can apply to running the `make -C doc html` command
         if BUILDING_GALLERY:
             if len(INSTANCES) != 0:
+                # Get the first instance of the app
                 instance: App = INSTANCES[0]
+                # Point to the same underlying application object
                 instance._share(self)
+                # Update the globals if provided in kwargs
+                if globals:
+                    # The next line is covered by test_globals_kwarg_building_gallery
+                    instance.update_globals(globals)  # pragma: nocover
+                # Open the mechdb file if provided
                 if db_file is not None:
                     self.open(db_file)
                 return
@@ -229,8 +241,6 @@ class App:
         self._updated_scopes: typing.List[typing.Dict[str, typing.Any]] = []
         self._subscribe()
         self._messages = None
-
-        globals = kwargs.get("globals")
         if globals:
             self.update_globals(globals)
 

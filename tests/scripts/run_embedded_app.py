@@ -50,6 +50,19 @@ def launch_app(args):
     return app
 
 
+def test_globals(args):
+    """Test ViewOrientationType doesn't throw an error when globals are updated."""
+    # Set BUILDING_GALLERY to True
+    pymechanical.BUILDING_GALLERY = True
+    # Launch an embedded instance of the app without updating globals
+    app = pymechanical.App(version=int(args.version))
+    # Launch an embedded instance of the app with updated globals
+    app = pymechanical.App(globals=globals())
+    # Check that ViewOrientationType is valid
+    app.Graphics.Camera.SetSpecificViewOrientation(ViewOrientationType.Iso)
+    print("ViewOrientationType exists")
+
+
 def set_showtriad(args, value):
     """Launch embedded instance of app & set ShowTriad to False."""
     app = launch_app(args)
@@ -87,5 +100,7 @@ if __name__ == "__main__":
         print_showtriad(args)
     elif action == "Reset":
         set_showtriad(args, True)
+    elif action == "TestGlobals":
+        test_globals(args)
     else:
         launch_app(args)
