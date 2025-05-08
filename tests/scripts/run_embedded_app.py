@@ -40,19 +40,12 @@ def launch_app(args):
         init_msg = "The app is initialized" if is_initialized() else "The app is not initialized"
         print(init_msg)
 
-    if args.no_globals_update:
-        app = pymechanical.App(
-            version=int(args.version),
-            private_appdata=args.private_appdata,
-            copy_profile=False,
-        )
-    else:
-        app = pymechanical.App(
-            version=int(args.version),
-            private_appdata=args.private_appdata,
-            copy_profile=False,
-            globals=globals(),
-        )
+    app = pymechanical.App(
+        version=int(args.version),
+        private_appdata=args.private_appdata,
+        copy_profile=False,
+        globals=globals(),
+    )
 
     return app
 
@@ -94,9 +87,6 @@ if __name__ == "__main__":
     parser.add_argument(
         "--test_not_initialized", action="store_true"
     )  # 'store_true' implies default=False
-    parser.add_argument(
-        "--no_globals_update", action="store_true"
-    )  # 'store_false' implies default=False
 
     # Get and set args from subprocess
     args = parser.parse_args()
