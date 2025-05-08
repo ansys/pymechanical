@@ -217,7 +217,17 @@ html_theme_options = {
         "changelog_file_name": "changelog.rst",
         "sidebar_pages": ["changelog", "index"],
     },
-    "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
+    "ansys_sphinx_theme_autoapi": {
+        "project": project,
+        "templates": "_templates/autoapi",
+        "options": [
+            "members",
+            "undoc-members",
+            "show-inheritance",
+            "show-module-summary",
+        ],
+        "ignore": ["*/appdata.py"],
+    },
     "navigation_depth": 10,
 }
 

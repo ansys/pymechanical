@@ -72,7 +72,9 @@ def _cleanup_private_appdata(profile: UniqueUserProfile):
     profile.cleanup()
 
 
-def _start_application(configuration: AddinConfiguration, version, db_file) -> "App":
+def _start_application(
+    configuration: AddinConfiguration, version: typing.Union[str, int], db_file: str
+) -> "App":
     import clr
 
     clr.AddReference("Ansys.Mechanical.Embedding")
@@ -90,8 +92,14 @@ def _start_application(configuration: AddinConfiguration, version, db_file) -> "
         return Ansys.Mechanical.Embedding.Application(db_file)
 
 
-def is_initialized():
-    """Check if the app has been initialized."""
+def is_initialized() -> bool:
+    """Check if the app has been initialized.
+
+    Returns
+    -------
+    bool
+        True if the app has been initialized, False otherwise.
+    """
     return len(INSTANCES) != 0
 
 
@@ -119,12 +127,12 @@ class GetterWrapper(object):
 
 
 class App:
-    """Mechanical embedding Application.
+    """Mechanical embedding application.
 
     Parameters
     ----------
-    db_file : str, optional
-        Path to a mechanical database file (.mechdat or .mechdb).
+    db_file : str or Path, optional
+        Path to a Mechanical database file (``.mechdat`` or ``.mechdb``).
     version : int, optional
         Version number of the Mechanical application.
     private_appdata : bool, optional
@@ -168,13 +176,22 @@ class App:
     Set log level
 
     >>> app = App(log_level='INFO')
-
     ... INFO -  -  app - log_info - Starting Mechanical Application
-
     """
 
-    def __init__(self, db_file=None, private_appdata=False, **kwargs):
-        """Construct an instance of the mechanical Application."""
+    def __init__(
+        self, db_file: typing.Union[str, Path] = None, private_appdata: bool = False, **kwargs
+    ) -> None:
+        """Construct an instance of the Mechanical application.
+
+        Parameters
+        ----------
+        db_file : str or Path, optional
+            Path to a Mechanical database file (``.mechdat`` or ``.mechdb``).
+        private_appdata : bool, optional
+            Setting for a temporary AppData directory. Default is False.
+            Enables running parallel instances of Mechanical.
+        """
         global INSTANCES
         from ansys.mechanical.core import BUILDING_GALLERY
 
@@ -186,12 +203,14 @@ class App:
 
         self.log_info("Starting Mechanical Application")
 
+        str_db_file = str(db_file) if db_file is not None else None
+
         if BUILDING_GALLERY:
             if len(INSTANCES) != 0:
                 instance: App = INSTANCES[0]
                 instance._share(self)
                 if db_file is not None:
-                    self.open(db_file)
+                    self.open(str_db_file)
                 return
         if len(INSTANCES) > 0:
             raise Exception("Cannot have more than one embedded mechanical instance!")
@@ -214,7 +233,7 @@ class App:
             profile.update_environment(os.environ)
 
         runtime.initialize(self._version)
-        self._app = _start_application(configuration, self._version, db_file)
+        self._app = _start_application(configuration, self._version, str_db_file)
         connect_warnings(self)
         self._poster = None
 
@@ -234,8 +253,14 @@ class App:
         if globals:
             self.update_globals(globals)
 
-    def __repr__(self):
-        """Get the product info."""
+    def __repr__(self) -> str:
+        """Get the product information.
+
+        Returns
+        -------
+        str
+            The product information string.
+        """
         import clr
 
         clr.AddReference("Ansys.Mechanical.Application")
@@ -243,15 +268,16 @@ class App:
 
         return Ansys.Mechanical.Application.ProductInfo.ProductInfoAsString
 
-    def __enter__(self):  # pragma: no cover
+    def __enter__(self) -> "App":  # pragma: no cover
         """Enter the scope."""
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):  # pragma: no cover
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:  # pragma: no cover
         """Exit the scope."""
         self._dispose()
 
-    def _dispose(self):
+    def _dispose(self) -> None:
+        """Dispose the application."""
         if self._disposed:
             return
         self._unsubscribe()
@@ -259,17 +285,32 @@ class App:
         self._app.Dispose()
         self._disposed = True
 
-    def open(self, db_file, remove_lock=False):
-        """Open the db file.
+    def open(self, db_file: typing.Union[str, Path], remove_lock: bool = False) -> None:
+        """Open a Mechanical database file (``.mechdat`` or ``.mechdb``).
 
         Parameters
         ----------
-        db_file : str
-            Path to a Mechanical database file (.mechdat or .mechdb).
+        db_file : str or Path
+            Path to a ``.mechdb`` or ``.mechdat`` file.
         remove_lock : bool, optional
             Whether or not to remove the lock file if it exists before opening the project file.
+
+        Examples
+        --------
+        Open the project file
+
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
+        >>> app.open("path/to/file.mechdat")
+
+        Open the project file and remove the lock file if it exists
+
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
+        >>> app.open("path/to/file.mechdat", remove_lock=True)
         """
-        self.log_info(f"Opening {db_file} ...")
+        str_db_file = str(db_file)
+        self.log_info(f"Opening {str_db_file} ...")
         if remove_lock:
             lock_file = Path(self.DataModel.Project.ProjectDirectory) / ".mech_lock"
             # Remove the lock file if it exists before opening the project file
@@ -281,25 +322,51 @@ This may corrupt the project file.",
                     stacklevel=2,
                 )
                 lock_file.unlink()
+        self.DataModel.Project.Open(str_db_file)
 
-        self.DataModel.Project.Open(db_file)
-
-    def save(self, path=None):
-        """Save the project."""
-        if path is not None:
-            self.DataModel.Project.Save(path)
-        else:
-            self.DataModel.Project.Save()
-
-    def save_as(self, path: str, overwrite: bool = False):
-        """
-        Save the project as a new file.
-
-        If the `overwrite` flag is enabled, the current saved file is replaced with the new file.
+    def save(self, path: typing.Union[str, Path] = "") -> None:
+        """Save the project.
 
         Parameters
         ----------
-        path : str
+        path : str or Path, optional
+            The path where the file needs to be saved.
+            If not provided, the current project will be saved.
+
+        Examples
+        --------
+        The app is saved using the ``DataModel.Project.Save()`` method in Mechanical.
+
+        Save the project to a specific path
+
+        >>> from ansys.mechanical.core import App
+        >>> from pathlib import Path
+        >>> app = App()
+        ... # project code
+        >>> filename = Path.cwd() / "new_file.mechdat"
+        >>> app.save(str(filename))
+
+        Save the project without specifying the path
+
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
+        ... # project code
+        >>> app.save()
+        """
+        if path:
+            self.DataModel.Project.Save(str(path))
+        else:
+            self.DataModel.Project.Save()
+
+    def save_as(self, path: typing.Union[str, Path], overwrite: bool = False) -> None:
+        """
+        Save the project as a new file.
+
+        If the ``overwrite`` flag is enabled, the current saved file is replaced with the new file.
+
+        Parameters
+        ----------
+        path : str or Path
             The path where the file needs to be saved.
         overwrite : bool, optional
             Whether the file should be overwritten if it already exists (default is False).
@@ -307,52 +374,128 @@ This may corrupt the project file.",
         Raises
         ------
         Exception
-            If the file already exists at the specified path and `overwrite` is False.
+            If the file already exists at the specified path and ``overwrite`` is False.
+
+        Examples
+        --------
+        Save the project as a new file that does not exist
+
+        >>> from ansys.mechanical.core import App
+        >>> from pathlib import Path
+        >>> app = App()
+        >>> filename = Path.cwd() / "new_file.mechdat"
+        >>> app.save_as(filename)
+
+        Save the project and overwrite the file if it exists
+
+        >>> from ansys.mechanical.core import App
+        >>> from pathlib import Path
+        >>> app = App()
+        >>> filename = Path.cwd() / "new_file.mechdat"
+        >>> app.save_as(filename, overwrite=True)
 
         Notes
         -----
         For version 232, if `overwrite` is True, the existing file and its associated directory
         (if any) will be removed before saving the new file.
         """
-        if not os.path.exists(path):
-            self.DataModel.Project.SaveAs(path)
+        pathlib_path, str_path = Path(path), str(path)
+
+        if not pathlib_path.exists():
+            self.DataModel.Project.SaveAs(str_path)
             return
 
         if not overwrite:
             raise Exception(
-                f"File already exists in {path}, Use ``overwrite`` flag to "
+                f"File already exists in {str_path}, Use ``overwrite`` flag to "
                 "replace the existing file."
             )
         if self.version < 241:  # pragma: no cover
-            file_name = os.path.basename(path)
-            file_dir = os.path.dirname(path)
-            associated_dir = os.path.join(file_dir, os.path.splitext(file_name)[0] + "_Mech_Files")
+            file_name = pathlib_path.name
+            file_dir = pathlib_path.parent
+            associated_dir = file_dir / file_name.stem + "_Mech_Files"
 
             # Remove existing files and associated folder
-            os.remove(path)
-            if os.path.exists(associated_dir):
+            pathlib_path.unlink()
+            if associated_dir.exists():
                 shutil.rmtree(associated_dir)
             # Save the new file
-            self.DataModel.Project.SaveAs(path)
+            self.DataModel.Project.SaveAs(str_path)
         else:
-            self.DataModel.Project.SaveAs(path, overwrite)
+            self.DataModel.Project.SaveAs(str_path, overwrite)
 
-    def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
-        """Launch the GUI."""
+    def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False) -> None:
+        """Launch the Mechanical GUI.
+
+        Parameters
+        ----------
+        delete_tmp_on_close : bool, optional
+            Whether to delete the temporary ``.mechdb`` file when the GUI is closed.
+            By default, this is ``True``.
+        dry_run : bool, optional
+            Whether or not to launch the GUI. By default, this is ``False``.
+
+        Examples
+        --------
+        Launch the GUI and delete the temporary ``.mechdb`` file when the GUI is closed
+
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
+        >>> app.save()
+        >>> app.launch_gui()
+
+        Launch the GUI and keep the temporary ``.mechdb`` file when the GUI is closed
+
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
+        >>> app.save()
+        >>> app.launch_gui(delete_tmp_on_close=False)
+        """
         launch_ui(self, delete_tmp_on_close, dry_run)
 
-    def new(self):
-        """Clear to a new application."""
+    def new(self) -> None:
+        """Clear to a new application.
+
+        Examples
+        --------
+        `app.new()` uses `DataModel.Project.New()` to remove the lock file of the current project
+        and open a new project.
+
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
+        ... code to perform actions on project
+        >>> app.save()
+        >>> app.new()
+        """
         self.DataModel.Project.New()
 
-    def close(self):
-        """Close the active project."""
+    def close(self) -> None:
+        """Close the active project.
+
+        Examples
+        --------
+        `app.close()` uses `DataModel.Project.New()` to remove the lock file of the current project.
+
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
+        >>> app.close()
+        """
         # Call New() to remove the lock file of the
         # current project on close.
         self.DataModel.Project.New()
 
-    def exit(self):
-        """Exit the application."""
+    def exit(self) -> None:
+        """Exit the application.
+
+        Examples
+        --------
+        `app.exit()` uses `ExtAPI.Application.Close()` for versions < 241 and
+        `ExtAPI.Application.Exit()` for versions >= 241.
+
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
+        >>> app.exit()
+        """
         self._unsubscribe()
         if self.version < 241:
             self.ExtAPI.Application.Close()
@@ -360,7 +503,22 @@ This may corrupt the project file.",
             self.ExtAPI.Application.Exit()
 
     def execute_script(self, script: str) -> typing.Any:
-        """Execute the given script with the internal IronPython engine."""
+        """Execute the given script with the internal IronPython engine.
+
+        Parameters
+        ----------
+        script : str
+            The IronPython script to execute.
+
+        Examples
+        --------
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
+        >>> script = 'execute_script("2+3")'
+        >>> result = app.execute_script(script)
+        >>> print(result)
+        ... 5
+        """
         SCRIPT_SCOPE = "pymechanical-internal"
         if not hasattr(self, "script_engine"):
             import clr
@@ -386,12 +544,32 @@ This may corrupt the project file.",
             raise Exception(error_msg)
         return script_result.Value
 
-    def execute_script_from_file(self, file_path=None):
-        """Execute the given script from file with the internal IronPython engine."""
-        text_file = open(file_path, "r", encoding="utf-8")
-        data = text_file.read()
-        text_file.close()
-        return self.execute_script(data)
+    def execute_script_from_file(self, file_path: typing.Union[str, Path]) -> typing.Any:
+        """Execute the given script from file with the internal IronPython engine.
+
+        Parameters
+        ----------
+        file_path : str or Path
+            Path to the script file.
+
+        Examples
+        --------
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
+        >>> file_path = "path/to/script.py"
+        >>> result = app.execute_script_from_file(file_path)
+        >>> print(result)
+        """
+        pathlib_path = Path(file_path)
+        if pathlib_path.exists():
+            text_file = file_path.open("r", encoding="utf-8")
+            data = text_file.read()
+            text_file.close()
+            return self.execute_script(data)
+        else:
+            raise FileNotFoundError(
+                f"Cannot execute the script. The {pathlib_path} file does not exist."
+            )
 
     def plotter(self) -> None:
         """Return ``ansys.tools.visualization_interface.Plotter`` object."""
@@ -412,10 +590,12 @@ This may corrupt the project file.",
         return to_plotter(self)
 
     def plot(self) -> None:
-        """Visualize the model in 3d.
+        """Visualize the model in 3D.
 
-        Requires installation using the graphics option. E.g.
-        pip install ansys-mechanical-core[graphics]
+        Notes
+        -----
+        Requires installation using the graphics option:
+        ``pip install ansys-mechanical-core[graphics]``
 
         Examples
         --------
@@ -450,39 +630,87 @@ This may corrupt the project file.",
 
     @property
     def Tree(self) -> Ansys.ACT.Automation.Mechanical.Tree:
-        """Return the Tree object."""
+        """Return the DataModel.Tree object."""
         return GetterWrapper(self._app, lambda app: app.DataModel.Tree)
 
     @property
     def Model(self) -> Ansys.ACT.Automation.Mechanical.Model:
-        """Return the Model object."""
+        """Return the DataModel.Project.Model object."""
         return GetterWrapper(self._app, lambda app: app.DataModel.Project.Model)
 
     @property
     def Graphics(self) -> Ansys.ACT.Common.Graphics.MechanicalGraphicsWrapper:
-        """Return the Graphics object."""
+        """Return the ExtAPI.Graphics object."""
         return GetterWrapper(self._app, lambda app: app.ExtAPI.Graphics)
 
     @property
-    def readonly(self):
-        """Return whether the Mechanical object is read-only."""
+    def readonly(self) -> bool:
+        """Whether the Mechanical object is read-only.
+
+        Returns
+        -------
+        bool
+            True if the Mechanical object is read-only, False otherwise.
+
+        Examples
+        --------
+        Check if the Mechanical object is read-only. In this case, it is not read-only.
+
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
+        >>> print(app.readonly)
+        ... False
+        """
         import Ansys
 
         return Ansys.ACT.Mechanical.MechanicalAPI.Instance.ReadOnlyMode
 
     @property
-    def version(self):
-        """Returns the version of the app."""
+    def version(self) -> int:
+        """Retrieve the version of the Mechanical application in the format of 251 for 2025R1, etc.
+
+        Returns
+        -------
+        int
+            The version of the Mechanical application.
+
+        Examples
+        --------
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
+        >>> print(app.version)
+        ... 251
+        """
         return self._version
 
     @property
-    def project_directory(self):
-        """Returns the current project directory."""
+    def project_directory(self) -> str:
+        """Get the current project directory. Equivalent to ``DataModel.Project.ProjectDirectory``.
+
+        Returns
+        -------
+        str
+            The current project directory.
+
+        Examples
+        --------
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
+        >>> app.open("path/to/file.mechdat")
+        >>> print(app.project_directory)
+        ... "path/to/file_Mech_Files"
+        """
         return self.DataModel.Project.ProjectDirectory
 
     @property
-    def messages(self):
-        """Lazy-load the MessageManager."""
+    def messages(self) -> "ExtAPI.Application.Messages":
+        """Lazy-load the MessageManager.
+
+        Returns
+        -------
+        ExtAPI.Application.Messages
+            Messages from the application.
+        """
         if self._messages is None:
             from ansys.mechanical.core.embedding.messages import MessageManager
 
@@ -492,13 +720,17 @@ This may corrupt the project file.",
     def _share(self, other) -> None:
         """Shares the state of self with other.
 
-        Other is another instance of App.
         This is used when the BUILDING_GALLERY flag is on.
         In that mode, multiple instance of App are used, but
         they all point to the same underlying application
         object. Because of that, special care needs to be
         taken to properly share the state. Other will be
         a "weak reference", which doesn't own anything.
+
+        Parameters
+        ----------
+        other : App
+            The other instance of App to share the state with.
         """
         # the other app is not expecting to have a project
         # already loaded
@@ -520,7 +752,8 @@ This may corrupt the project file.",
         # so that the shutdown sequence isn't duplicated
         other._disposed = True
 
-    def _subscribe(self):
+    def _subscribe(self) -> None:
+        """Connect to the OnWorkbenchReady event so Workbench can receive information."""
         try:
             # This will throw an error when using pythonnet because
             # EventSource isn't defined on the IApplication interface
@@ -529,13 +762,16 @@ This may corrupt the project file.",
         except:
             self._subscribed = False
 
-    def _unsubscribe(self):
+    def _unsubscribe(self) -> None:
+        """Disconnect from the OnWorkbenchReady event so Workbench cannot receive information."""
         if not self._subscribed:
             return
         self._subscribed = False
         self.ExtAPI.Application.EventSource.OnWorkbenchReady -= self._on_workbench_ready
 
     def _on_workbench_ready(self, sender, args) -> None:
+        """Event handler for when the Workbench is ready."""
+        # Update the global entry points for all scopes
         self._update_all_globals()
 
     def update_globals(
@@ -548,7 +784,7 @@ This may corrupt the project file.",
         but this method can be used.
 
         By default, all enums will be imported too. To avoid including enums, set
-        the `enums` argument to False.
+        the ``enums`` argument to False.
 
         Examples
         --------
@@ -560,20 +796,27 @@ This may corrupt the project file.",
         globals_dict.update(global_variables(self, enums))
 
     def _update_all_globals(self) -> None:
+        """Update the global entry points for all scopes."""
         for scope in self._updated_scopes:
             scope.update(global_entry_points(self))
 
-    def _print_tree(self, node, max_lines, lines_count, indentation):
-        """Recursively print till provided maximum lines limit.
+    def _print_tree(
+        self, node: "DataModel.Project", max_lines: int, lines_count: int = 0, indentation: str = ""
+    ) -> int:
+        """Recursively print the tree until the provided maximum lines limit.
 
         Each object in the tree is expected to have the following attributes:
          - Name: The name of the object.
          - Suppressed : Print as suppressed, if object is suppressed.
-         - Children: Checks if object have children.
-           Each child node is expected to have the all these attributes.
+         - Children: Checks if the object has children.
+           Each child node is expected to have the all of the aforementioned attributes.
 
         Parameters
         ----------
+        node: DataModel.Project
+            The starting object of the tree.
+        max_lines: int
+            The maximum number of lines to print. If set to -1, no limit is applied.
         lines_count: int, optional
             The current count of lines printed. Default is 0.
         indentation: str, optional
@@ -613,16 +856,26 @@ This may corrupt the project file.",
 
         return lines_count
 
-    def print_tree(self, node=None, max_lines=80, lines_count=0, indentation=""):
+    def print_tree(
+        self,
+        node: "DataModel.Project" = None,
+        max_lines: int = 80,
+        lines_count: int = 0,
+        indentation: str = "",
+    ) -> None:
         """
         Print the hierarchical tree representation of the Mechanical project structure.
 
         Parameters
         ----------
-        node: DataModel object, optional
+        node: DataModel.Project, optional
             The starting object of the tree.
         max_lines: int, optional
             The maximum number of lines to print. Default is 80. If set to -1, no limit is applied.
+        lines_count: int, optional
+            The current count of lines printed. Default is 0.
+        indentation: str, optional
+            The indentation string used for printing the tree structure. Default is "".
 
         Raises
         ------
@@ -660,26 +913,78 @@ This may corrupt the project file.",
 
         self._print_tree(node, max_lines, lines_count, indentation)
 
-    def log_debug(self, message):
-        """Log the debug message."""
+    def log_debug(self, message: str) -> None:
+        """Log the message with the severity 'DEBUG'.
+
+        Parameters
+        ----------
+        message : str
+            The message to log.
+
+        Examples
+        --------
+        >>> from ansys.mechanical.core import App
+        >>> app = App(log_level='DEBUG')
+        >>> app.log_debug("This is a debug message.")
+        ... DEBUG -  -  app - log_debug - This is a debug message.
+        """
         if not self._enable_logging:
             return
         self._log.debug(message)
 
-    def log_info(self, message):
-        """Log the info message."""
+    def log_info(self, message: str) -> None:
+        """Log the message with the severity 'INFO'.
+
+        Parameters
+        ----------
+        message : str
+            The message to log.
+
+        Examples
+        --------
+        >>> from ansys.mechanical.core import App
+        >>> app = App(log_level='INFO')
+        >>> app.log_info("This is an info message.")
+        ... INFO -  -  app - log_info - This is an info message.
+        """
         if not self._enable_logging:
             return
         self._log.info(message)
 
-    def log_warning(self, message):
-        """Log the warning message."""
+    def log_warning(self, message: str) -> None:
+        """Log the message with the severity 'WARNING'.
+
+        Parameters
+        ----------
+        message : str
+            The message to log.
+
+        Examples
+        --------
+        >>> from ansys.mechanical.core import App
+        >>> app = App(log_level='WARNING')
+        >>> app.log_warning("This is a warning message.")
+        ... WARNING -  -  app - log_warning - This is a warning message.
+        """
         if not self._enable_logging:
             return
         self._log.warning(message)
 
-    def log_error(self, message):
-        """Log the error message."""
+    def log_error(self, message: str) -> None:
+        """Log the message with the severity 'ERROR'.
+
+        Parameters
+        ----------
+        message : str
+            The message to log.
+
+        Examples
+        --------
+        >>> from ansys.mechanical.core import App
+        >>> app = App(log_level='ERROR')
+        >>> app.log_error("This is an error message.")
+        ... ERROR -  -  app - log_error - This is an error message.
+        """
         if not self._enable_logging:
             return
         self._log.error(message)

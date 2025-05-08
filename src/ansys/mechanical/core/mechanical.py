@@ -618,7 +618,7 @@ class Mechanical(object):
 
         self.log_debug("Established a connection to the Mechanical gRPC server.")
 
-        self.wait_till_mechanical_is_ready(timeout)
+        self._wait_till_mechanical_is_ready(timeout)
 
         # keeps Mechanical session alive
         self._timer = None
@@ -766,7 +766,7 @@ class Mechanical(object):
             loglevel = loglevel.upper()
         setup_logger(loglevel=loglevel)
 
-    def get_product_info(self):
+    def _get_product_info(self):
         """Get product information by running a script on the Mechanical gRPC server."""
 
         def _get_jscript_product_info_command():
@@ -799,7 +799,7 @@ class Mechanical(object):
         try:
             if self._exited:
                 return "Mechanical exited."
-            return self.get_product_info()
+            return self._get_product_info()
         except grpc.RpcError:
             return "Error getting product info."
 
@@ -839,7 +839,7 @@ class Mechanical(object):
 
         self.log_info("Mechanical is ready to accept gRPC calls.")
 
-    def wait_till_mechanical_is_ready(self, wait_time=-1):
+    def _wait_till_mechanical_is_ready(self, wait_time=-1):
         """Wait until Mechanical is ready.
 
         Parameters
