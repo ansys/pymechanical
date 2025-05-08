@@ -29,24 +29,20 @@ import pytest
 
 
 @pytest.mark.embedding
-def test_message_manager(embedded_app, capsys):
+def test_message_manager(embedded_app):
     """Test message manager"""
     # if license checkout takes time then there is a warning message
     # get added to app. So, clear the messages before starting the test
     embedded_app.messages.clear()
     assert len(embedded_app.messages) == 0
 
-    print(embedded_app.messages)
-    captured = capsys.readouterr()
-    printed_output = captured.out.strip()
-    assert "No messages to display." in printed_output
+    messages_str = str(embedded_app.messages)
+    assert "No messages to display." in messages_str
 
     embedded_app.messages.add("info", "Info message")
 
-    print(embedded_app.messages)
-    captured = capsys.readouterr()
-    printed_output = captured.out.strip()
-    assert "Info message" in printed_output
+    messages_str = str(embedded_app.messages)
+    assert "Info message" in messages_str
 
 
 @pytest.mark.embedding
@@ -73,35 +69,32 @@ def test_message_add_and_clear(embedded_app):
 
 
 @pytest.mark.embedding
-def test_message_show(embedded_app, capsys):
+def test_message_show(embedded_app):
     """Test showing messages"""
     embedded_app.messages.clear()
-    print(embedded_app.messages.show())
-    captured = capsys.readouterr()
-    printed_output = captured.out.strip()
-    assert "No messages to display." in printed_output
+    messages_str = str(embedded_app.messages._show_string())
+    assert "No messages to display." in messages_str
 
     embedded_app.messages.add("info", "Info message")
-    embedded_app.messages.show()
-    captured = capsys.readouterr()
-    printed_output = captured.out.strip()
-    assert "Severity" in printed_output
-    assert "DisplayString" in printed_output
-    assert "Info message" in printed_output
-    embedded_app.messages.show(filter="TimeStamp")
-    captured = capsys.readouterr()
-    printed_output = captured.out.strip()
-    assert "TimeStamp" in printed_output
+    messages_str = str(embedded_app.messages._show_string())
+    assert "Severity" in messages_str
+    assert "DisplayString" in messages_str
+    assert "Info message" in messages_str
+    messages_str = str(embedded_app.messages._show_string(filter="TimeStamp"))
+    assert "TimeStamp" in messages_str
 
-    embedded_app.messages.show(filter="unknown")
-    captured = capsys.readouterr()
-    printed_output = captured.out.strip()
-    assert "Specified attribute not found" in printed_output
+    messages_str = str(embedded_app.messages._show_string(filter="unknown"))
+    assert "Specified attribute not found" in messages_str
 
 
 @pytest.mark.embedding
-def test_message_get(embedded_app, assets, capsys):
+def test_message_get(embedded_app, assets):
     """Test getting a message"""
+    from ansys.mechanical.core.embedding.enum_importer import (
+        DataModelObjectCategory,
+        MessageSeverityType,
+    )
+
     with pytest.raises(IndexError):
         embedded_app.messages[10]
 
@@ -109,26 +102,25 @@ def test_message_get(embedded_app, assets, capsys):
     _messages = embedded_app.messages
     _msg1 = None
     for _msg in _messages:
-        print(_msg.DisplayString)
         if "Image file not found" in _msg.DisplayString:
             _msg1 = _msg
             break
     assert _msg1 is not None, "Expected message not found in messages"
+    assert _msg1.Severity == MessageSeverityType.Warning
 
-    print(_msg1)
-    captured = capsys.readouterr()
-    printed_output = captured.out.strip()
-    assert "Ansys.Mechanical.Application.Message" in printed_output
+    message_str = str(_msg1)
+    type_str = "Ansys.Mechanical.Application.Message"
+    if embedded_app.version < 252:
+        # The __repr__ string of previous versions was the type name
+        assert type_str in message_str
+    else:
+        assert type_str not in message_str
 
-    assert str(_msg1.Severity) == "Warning"
     assert "Image file not found" in _msg1.DisplayString
     assert re.search(r"\d", str(_msg1.TimeStamp))
-    print(_msg1.StringID, _msg1.Source, _msg1.Location, _msg1.RelatedObjects)
-    captured = capsys.readouterr()
-    printed_output = captured.out.strip()
-    assert "Ansys.ACT.Automation.Mechanical.Image" in printed_output
-    assert "Ansys.Mechanical.DataModel.Interfaces.IDataModelObject" in printed_output
-    assert "Ansys.ACT.Core.Utilities.SelectionInf" in printed_output
+    assert _msg1.Source.DataModelObjectCategory == DataModelObjectCategory.Image
+    assert len(_msg1.RelatedObjects) == 0
+    assert len(_msg1.Location.Ids) == 0
 
     with pytest.raises(IndexError):
         embedded_app.messages[10]

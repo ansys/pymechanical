@@ -162,10 +162,8 @@ def test_app_print_tree(embedded_app, capsys, assets):
     assert all(symbol in printed_output for symbol in ["?", "⚡︎", "✕", "✓"])
 
 
-@pytest.mark.embedding
-@pytest.mark.skip(
-    reason="This test is not working on the CI (https://github.com/ansys/pymechanical/issues/1071 )"
-)
+# @pytest.mark.embedding
+@pytest.mark.skip(reason="This test hangs on Linux with Python 3.10-3.13")
 def test_app_poster(embedded_app, printer):
     """The getters of app should be usable after a new().
 
@@ -270,15 +268,26 @@ def test_app_getters_notstale(embedded_app):
 def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
     """Test Python.NET warning of the embedded instance using a test-scoped Python environment."""
 
+    # set these to None to see output in the terminal
+    stdout = subprocess.DEVNULL
+    stderr = subprocess.DEVNULL
+
     # Install pymechanical
     subprocess.check_call(
         [test_env.python, "-m", "pip", "install", "-e", "."],
         cwd=rootdir,
         env=test_env.env,
+        stdout=stdout,
+        stderr=stderr,
     )
 
     # Install pythonnet
-    subprocess.check_call([test_env.python, "-m", "pip", "install", "pythonnet"], env=test_env.env)
+    subprocess.check_call(
+        [test_env.python, "-m", "pip", "install", "pythonnet"],
+        env=test_env.env,
+        stdout=stdout,
+        stderr=stderr,
+    )
 
     # Initialize with pythonnet
     embedded_pythonnet_py = os.path.join(rootdir, "tests", "scripts", "pythonnet_warning.py")
@@ -440,8 +449,9 @@ def test_launch_gui_exception(embedded_app):
 
 
 @pytest.mark.embedding_scripts
-def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory, run_subprocess):
+def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory):
     """Test cleanup function to remove the temporary mechdb file and folder."""
+    assert os.path.isdir(tmp_path)
     temp_file = tmp_path / "tempfiletest.mechdb"
     temp_folder = tmp_path / "tempfiletest_Mech_Files"
 
@@ -455,10 +465,23 @@ def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory, run_subprocess):
     assert temp_folder.exists()
 
     # Run process
-    process, stdout, stderr = run_subprocess(["sleep", "3"])
+    if os.name == "nt":
+        process = subprocess.Popen(
+            ["ping", "127.0.0.1", "-n", "2"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            shell=True,
+        )
+    else:
+        process = subprocess.Popen(
+            ["sleep", "3"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        )
+
+    pid = process.pid
+    assert process.wait() == 0
 
     # Remove the temporary file and folder
-    cleanup_gui(process.pid, temp_file)
+    cleanup_gui(pid, temp_file)
 
     # Assert the file and folder do not exist
     assert not temp_file.exists()

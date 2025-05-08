@@ -21,7 +21,6 @@
 # SOFTWARE.
 """Remote Procedure Call (RPC) server."""
 
-import fnmatch
 import os
 import threading
 import time
@@ -31,26 +30,63 @@ import rpyc
 from rpyc.utils.server import ThreadedServer
 import toolz
 
+from ansys.mechanical.core.embedding.app import App
 from ansys.mechanical.core.embedding.background import BackgroundApp
-from ansys.mechanical.core.mechanical import port_in_use
+import ansys.mechanical.core.embedding.utils
 
-from .utils import MethodType, get_remote_methods, remote_method
+from .utils import MethodType, get_free_port, get_remote_methods
 
 # TODO : implement logging
 
-PYMECHANICAL_DEFAULT_RPC_PORT = 20000
+
+class ForegroundAppBackend:
+    """Backend for the python server where mechanical uses the main thread."""
+
+    def __init__(self, app: App):
+        """Create a new instance of ForegroundAppBackend."""
+        self._app = app
+        self._poster = app.poster
+
+    def try_post(self, callable: typing.Callable) -> typing.Any:
+        """Try to post to mechanical's main thread."""
+        return self._poster.try_post(callable)
+
+    def get_app(self) -> App:
+        """Get the app object."""
+        return self._app
+
+
+class BackgroundAppBackend:
+    """Backend for the python server where mechanical uses the background thread."""
+
+    def __init__(self, backgroundapp: BackgroundApp):
+        """Create a new instance of BackgroundAppBackend."""
+        self._backgroundapp = backgroundapp
+
+    def try_post(self, callable: typing.Callable) -> typing.Any:
+        """Try to post to mechanical's main thread."""
+        return self._backgroundapp.try_post(callable)
+
+    def get_app(self) -> App:
+        """Get the app object."""
+        return self._backgroundapp.app
 
 
 class MechanicalService(rpyc.Service):
     """Starts Mechanical app services."""
 
-    def __init__(self, backgroundapp, functions=[], impl=None):
+    def __init__(self, backend, functions=[], impl=[]):
         """Initialize the service."""
         super().__init__()
-        self._backgroundapp = backgroundapp
+        self._backend = backend
         self._install_functions(functions)
-        self._install_class(impl)
-        self.EMBEDDED = True
+        self._install_classes(impl)
+
+    def _try_post(self, callable: typing.Callable) -> typing.Any:
+        return self._backend.try_post(callable)
+
+    def _get_app(self) -> App:
+        return self._backend.get_app()
 
     def on_connect(self, conn):
         """Handle client connection."""
@@ -62,7 +98,15 @@ class MechanicalService(rpyc.Service):
 
     def _install_functions(self, methods):
         """Install the given list of methods."""
+        if not methods:
+            return
         [self._install_function(method) for method in methods]
+
+    def _install_classes(self, impl):
+        """Install the given list of classes."""
+        if not impl:
+            return
+        [self._install_class(_impl) for _impl in impl]
 
     def _install_class(self, impl):
         """Install methods from the given implemented class."""
@@ -84,7 +128,7 @@ class MechanicalService(rpyc.Service):
                 else:
                     setattr(prop._owner, propname, *arg)
 
-            return self._backgroundapp.try_post(curried)
+            return self._try_post(curried)
 
         return posted
 
@@ -97,7 +141,7 @@ class MechanicalService(rpyc.Service):
                 result = original_method(*args, **kwargs)
                 return result
 
-            return self._backgroundapp.try_post(curried)
+            return self._try_post(curried)
 
         return posted
 
@@ -108,9 +152,9 @@ class MechanicalService(rpyc.Service):
 
         def posted(*args, **kwargs):
             def curried():
-                return curried_method(self._app, *args, **kwargs)
+                return curried_method(self._get_app(), *args, **kwargs)
 
-            return self._backgroundapp.try_post(curried)
+            return self._try_post(curried)
 
         return posted
 
@@ -209,9 +253,7 @@ class MechanicalService(rpyc.Service):
     def exposed_service_exit(self):
         """Exit the server."""
         print("Shutting down server ...")
-        self._backgroundapp.stop()
-        self._backgroundapp = None
-        self._server.stop_async()
+        self._exit_f()
         print("Server stopped")
 
 
@@ -220,184 +262,130 @@ class MechanicalEmbeddedServer:
 
     def __init__(
         self,
-        service: typing.Type[rpyc.Service] = MechanicalService,
         port: int = None,
         version: int = None,
         methods: typing.List[typing.Callable] = [],
-        impl=None,
+        impl: typing.List = [],
     ):
         """Initialize the server."""
         self._exited = False
-        self._background_app = BackgroundApp(version=version)
-        self._service = service
-        self._methods = methods
-        self._exit_thread: threading.Thread = None
-
-        self._port = self.get_free_port(port)
-        if impl is None:
-            self._impl = None
+        use_background_app = False
+        if use_background_app:
+            self._app_instance = BackgroundApp(version=version)
+            self._backend = BackgroundAppBackend(self._app_instance)
         else:
-            self._impl = impl(self._background_app.app)
+            self._app_instance = App(version=version)
+            self._backend = ForegroundAppBackend(self._app_instance)
+        self._port = get_free_port(port)
+        self._install_methods(methods)
+        self._install_classes(impl)
+        self._server = ThreadedServer(self._create_service(), port=self._port)
 
-        my_service = self._service(self._background_app, self._methods, self._impl)
-        self._server = ThreadedServer(my_service, port=self._port)
-        my_service._server = self
+    def _create_service(self):
+        service = MechanicalService(self._backend, self._methods, self._impl)
 
-    @staticmethod
-    def get_free_port(port=None):
-        """Get free port.
+        def exit_f():
+            self.stop()
 
-        If port is not given, it will find a free port starting from PYMECHANICAL_DEFAULT_RPC_PORT.
-        """
-        if port is None:
-            port = PYMECHANICAL_DEFAULT_RPC_PORT
+        service._exit_f = exit_f
+        return service
 
-        while port_in_use(port):
-            port += 1
-
-        return port
-
-    def start(self) -> None:
-        """Start server on specified port."""
-        print(
-            f"Starting mechanical application in server.\n"
-            f"Listening on port {self._port}\n{self._background_app.app}"
-        )
-        self._server.start()
-        """try:
-            try:
-                conn.serve_all()
-            except KeyboardInterrupt:
-                print("User interrupt!")
-        finally:
-            conn.close()"""
-        print("Server exited!")
-        self._wait_exit()
-        self._exited = True
+    def _is_stopped(self):
+        return self._app_instance is None
 
     def _wait_exit(self) -> None:
         if self._exit_thread is None:
             return
         self._exit_thread.join()
 
-    def stop_async(self):
-        """Return immediately but will stop the server."""
+    def _start_background_app(self) -> None:
+        """Start server on specified port."""
+        self._exit_thread: threading.Thread = None
+        self._server.start()
+        print("Server exited!")
+        self._wait_exit()
+        self._exited = True
+
+    def _stop_background_app(self):
+        """Return immediately but will stop the server.
+
+        Mechanical is running on the background but
+        the rpyc server is running on the main thread
+        this signals for the server to stop, and the main
+        thread will wait until the server has stopped.
+        """
 
         def stop_f():  # wait for all connections to close
             while len(self._server.clients) > 0:
                 time.sleep(0.005)
-            self._background_app.stop()
+            self._app_instance.stop()
+            self._app_instance = None
+            self._backend = None
             self._server.close()
             self._exited = True
 
         self._exit_thread = threading.Thread(target=stop_f)
         self._exit_thread.start()
 
+    def _start_foreground_app(self):
+        self._server_stopped = False
+
+        def start_f():
+            print("Server started!")
+            self._server.start()
+            print("Server exited!")
+
+        self._server_thread = threading.Thread(target=start_f)
+        self._server_thread.start()
+        while True:
+            if self._server_stopped:
+                break
+            try:
+                ansys.mechanical.core.embedding.utils.sleep(40)
+            except Exception as e:
+                print(f"An error occurred: {e}")
+        self._server_thread.join()
+
+    def _stop_foreground_app(self):
+        self._server_stopped = True
+        self._server.close()
+        # self._server_thread.join()
+
+    def _get_app_repr(self) -> str:
+        def f():
+            return repr(self._backend.get_app())
+
+        return self._backend.try_post(f)
+
+    def start(self) -> None:
+        """Start server on specified port."""
+        print(
+            f"Starting mechanical application in server.\n"
+            f"Listening on port {self._port}\n{self._get_app_repr()}"
+        )
+        if isinstance(self._app_instance, BackgroundApp):
+            self._start_background_app()
+        else:
+            self._start_foreground_app()
+
     def stop(self) -> None:
         """Stop the server."""
-        print("Stopping the server...")
-        self._background_app.stop()
-        self._server.close()
-        self._exited = True
-        print("Server stopped.")
-
-
-class DefaultServiceMethods:
-    """Default service methods for MechanicalEmbeddedServer."""
-
-    def __init__(self, app):
-        """Initialize the DefaultServiceMethods."""
-        self._app = app
-
-    def __repr__(self):
-        """Return the representation of the instance."""
-        return '"ServiceMethods instance"'
-
-    @remote_method
-    def run_python_script(
-        self, script: str, enable_logging=False, log_level="WARNING", progress_interval=2000
-    ):
-        """Run scripts using Internal python engine."""
-        result = self._app.execute_script(script)
-        return result
-
-    @remote_method
-    def run_python_script_from_file(
-        self,
-        file_path: str,
-        enable_logging=False,
-        log_level="WARNING",
-        progress_interval=2000,
-    ):
-        """Run scripts using Internal python engine."""
-        return self._app.execute_script_from_file(file_path)
-
-    @remote_method
-    def clear(self):
-        """Clear the current project."""
-        self._app.new()
-
-    @property
-    @remote_method
-    def project_directory(self):
-        """Get the project directory."""
-        return self._app.execute_script("""ExtAPI.DataModel.Project.ProjectDirectory""")
-
-    @remote_method
-    def list_files(self):
-        """List all files in the project directory."""
-        list = []
-        mechdbPath = self._app.execute_script("""ExtAPI.DataModel.Project.FilePath""")
-        if mechdbPath != "":
-            list.append(mechdbPath)
-        rootDir = self._app.execute_script("""ExtAPI.DataModel.Project.ProjectDirectory""")
-
-        for dirPath, dirNames, fileNames in os.walk(rootDir):
-            for fileName in fileNames:
-                list.append(os.path.join(dirPath, fileName))
-        files_out = "\n".join(list).splitlines()
-        if not files_out:  # pragma: no cover
-            print("No files listed")
-        return files_out
-
-    @remote_method
-    def _get_files(self, files, recursive=False):
-        self_files = self.list_files()  # to avoid calling it too much
-
-        if isinstance(files, str):
-            if files in self_files:
-                list_files = [files]
-            elif "*" in files:
-                list_files = fnmatch.filter(self_files, files)
-                if not list_files:
-                    raise ValueError(
-                        f"The `'files'` parameter ({files}) didn't match any file using "
-                        f"glob expressions in the remote server."
-                    )
-            else:
-                raise ValueError(
-                    f"The `'files'` parameter ('{files}') does not match any file or pattern."
-                )
-
-        elif isinstance(files, (list, tuple)):
-            if not all([isinstance(each, str) for each in files]):
-                raise ValueError(
-                    "The parameter `'files'` can be a list or tuple, but it "
-                    "should only contain strings."
-                )
-            list_files = files
+        if self._is_stopped():
+            raise Exception("already stopped!")
+        if isinstance(self._app_instance, BackgroundApp):
+            self._stop_background_app()
         else:
-            raise ValueError(
-                f"The `file` parameter type ({type(files)}) is not supported."
-                "Only strings, tuple of strings, or list of strings are allowed."
-            )
+            self._stop_foreground_app()
 
-        return list_files
+    def _install_classes(self, impl: typing.Union[typing.Any, typing.List]) -> None:
+        app = self._backend.get_app()
+        if impl and not isinstance(impl, list):
+            impl = [impl]
+        self._impl = [i(app) for i in impl] if impl else []
 
-
-class MechanicalDefaultServer(MechanicalEmbeddedServer):
-    """Default server with default service methods."""
-
-    def __init__(self, **kwargs):
-        """Initialize the MechanicalDefaultServer."""
-        super().__init__(service=MechanicalService, impl=DefaultServiceMethods, **kwargs)
+    def _install_methods(
+        self, methods: typing.Union[typing.Callable, typing.List[typing.Callable]]
+    ) -> None:
+        if methods and not isinstance(methods, list):
+            methods = [methods]
+        self._methods = methods if methods is not None else []
