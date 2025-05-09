@@ -9,6 +9,23 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.16 <https://github.com/ansys/pymechanical/releases/tag/v0.11.16>`_ - May 09, 2025
+=======================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add token for release to github ansys/actions v9
+          - `#1162 <https://github.com/ansys/pymechanical/pull/1162>`_
+
+
+
 `0.11.15 <https://github.com/ansys/pymechanical/releases/tag/v0.11.16>`_ - May 09, 2025
 =======================================================================================
 
@@ -495,7 +512,6 @@ Dependencies
 - MAINT: Bump ansys/actions from 6 to 7 `#868 <https://github.com/ansys/pymechanical/pull/868>`_
 - MAINT: Bump matplotlib from 3.9.1 to 3.9.1.post1 `#869 <https://github.com/ansys/pymechanical/pull/869>`_
 - [pre-commit.ci] pre-commit autoupdate `#870 <https://github.com/ansys/pymechanical/pull/870>`_
-
 
 `0.11.4 <https://github.com/ansys/pymechanical/releases/tag/v0.11.4>`_ - 2024-08-06
 ===================================================================================
