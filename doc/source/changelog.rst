@@ -9,6 +9,22 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.16 <https://github.com/ansys/pymechanical/releases/tag/v0.11.16>`_ - May 09, 2025
+=======================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add token for release to github ansys/actions v9
+          - `#1162 <https://github.com/ansys/pymechanical/pull/1162>`_
+
+
 `0.11.15 <https://github.com/ansys/pymechanical/releases/tag/v0.11.15>`_ - May 08, 2025
 =======================================================================================
 
