@@ -25,7 +25,8 @@ This document contains the release notes for the project.
           - `#1162 <https://github.com/ansys/pymechanical/pull/1162>`_
 
 
-`0.11.15 <https://github.com/ansys/pymechanical/releases/tag/v0.11.15>`_ - May 08, 2025
+
+`0.11.15 <https://github.com/ansys/pymechanical/releases/tag/v0.11.16>`_ - May 09, 2025
 =======================================================================================
 
 .. tab-set::
