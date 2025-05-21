@@ -104,8 +104,8 @@ def test_enum_importer_exception(rootdir):
 
 @pytest.mark.embedding_scripts
 def test_globals_kwarg_building_gallery(run_subprocess, pytestconfig, rootdir):
-    """Test ViewOrientationType exists when BUILDING_GALLERY is True and globals are updated
-    during the app initialization."""
+    """Test ViewOrientationType exists and messages are printed when BUILDING_GALLERY is True
+    and globals are updated during the app initialization."""
     version = pytestconfig.getoption("ansys_version")
     embedded_py = Path(rootdir) / "tests" / "scripts" / "run_embedded_app.py"
 
@@ -122,3 +122,4 @@ def test_globals_kwarg_building_gallery(run_subprocess, pytestconfig, rootdir):
     stdout = stdout.decode()
 
     assert "ViewOrientationType exists" in stdout
+    assert "The app cannot print messages in the building gallery" not in stdout

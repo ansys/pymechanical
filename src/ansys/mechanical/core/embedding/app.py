@@ -201,6 +201,8 @@ class App:
                 if globals:
                     # The next line is covered by test_globals_kwarg_building_gallery
                     instance.update_globals(globals)  # pragma: nocover
+                # Set messages to None
+                self._messages = None
                 # Open the mechdb file if provided
                 if db_file is not None:
                     self.open(db_file)
