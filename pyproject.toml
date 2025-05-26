@@ -85,11 +85,11 @@ doc = [
 # Viz option will be removed in future versions
 viz = [
     "ansys-tools-visualization-interface>=0.2.6",
-    "usd-core==25.5",
+    "usd-core==25.5.1",
 ]
 graphics = [
     "ansys-tools-visualization-interface>=0.2.6",
-    "usd-core==25.5",
+    "usd-core==25.5.1",
 ]
 rpc = [
     "rpyc==6.0.2",
