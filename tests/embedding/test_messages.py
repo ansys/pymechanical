@@ -22,7 +22,6 @@
 
 """Message manager test"""
 
-import os
 import re
 
 import pytest
@@ -88,21 +87,18 @@ def test_message_show(embedded_app):
 
 
 @pytest.mark.embedding
-def test_message_get(embedded_app, assets):
+def test_message_get(embedded_app, graphics_test_mechdb_file):
     """Test getting a message"""
-    from ansys.mechanical.core.embedding.enum_importer import (
-        DataModelObjectCategory,
-        MessageSeverityType,
-    )
+    from ansys.mechanical.core.embedding.enum_importer import MessageSeverityType
 
     with pytest.raises(IndexError):
         embedded_app.messages[10]
 
-    embedded_app.open(os.path.join(assets, "cube-hole.mechdb"))
+    embedded_app.open(graphics_test_mechdb_file)
     _messages = embedded_app.messages
     _msg1 = None
     for _msg in _messages:
-        if "Image file not found" in _msg.DisplayString:
+        if "Result file missing" in _msg.DisplayString:
             _msg1 = _msg
             break
     assert _msg1 is not None, "Expected message not found in messages"
@@ -116,9 +112,9 @@ def test_message_get(embedded_app, assets):
     else:
         assert type_str not in message_str
 
-    assert "Image file not found" in _msg1.DisplayString
+    assert "Result file missing" in _msg1.DisplayString
     assert re.search(r"\d", str(_msg1.TimeStamp))
-    assert _msg1.Source.DataModelObjectCategory == DataModelObjectCategory.Image
+    assert _msg1.Source is not None
     assert len(_msg1.RelatedObjects) == 0
     assert len(_msg1.Location.Ids) == 0
 

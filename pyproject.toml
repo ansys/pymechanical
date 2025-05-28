@@ -68,7 +68,7 @@ doc = [
     "numpydoc==1.8.0",
     "pandas==2.2.3",
     "panel==1.6.1",
-    "plotly==6.0.1",
+    "plotly==6.1.1",
     "pypandoc==1.15",
     "pytest-sphinx==0.6.3",
     "pythreejs==2.4.2",
@@ -85,11 +85,11 @@ doc = [
 # Viz option will be removed in future versions
 viz = [
     "ansys-tools-visualization-interface>=0.2.6",
-    "usd-core==25.5",
+    "usd-core==25.5.1",
 ]
 graphics = [
     "ansys-tools-visualization-interface>=0.2.6",
-    "usd-core==25.5",
+    "usd-core==25.5.1",
 ]
 rpc = [
     "rpyc==6.0.2",
