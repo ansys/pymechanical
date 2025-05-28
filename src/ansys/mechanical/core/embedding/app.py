@@ -189,6 +189,9 @@ class App:
         # Get the globals dictionary from kwargs
         globals = kwargs.get("globals")
 
+        # Set messages to None before BUILDING_GALLERY check
+        self._messages = None
+
         # If the building gallery flag is set, we need to share the instance
         # This can apply to running the `make -C doc html` command
         if BUILDING_GALLERY:
@@ -240,7 +243,6 @@ class App:
 
         self._updated_scopes: typing.List[typing.Dict[str, typing.Any]] = []
         self._subscribe()
-        self._messages = None
         if globals:
             self.update_globals(globals)
 
