@@ -189,6 +189,9 @@ class App:
         # Get the globals dictionary from kwargs
         globals = kwargs.get("globals")
 
+        # Set messages to None before BUILDING_GALLERY check
+        self._messages = None
+
         # If the building gallery flag is set, we need to share the instance
         # This can apply to running the `make -C doc html` command
         if BUILDING_GALLERY:
@@ -201,8 +204,6 @@ class App:
                 if globals:
                     # The next line is covered by test_globals_kwarg_building_gallery
                     instance.update_globals(globals)  # pragma: nocover
-                # Set messages to None
-                self._messages = None
                 # Open the mechdb file if provided
                 if db_file is not None:
                     self.open(db_file)
@@ -242,7 +243,6 @@ class App:
 
         self._updated_scopes: typing.List[typing.Dict[str, typing.Any]] = []
         self._subscribe()
-        self._messages = None
         if globals:
             self.update_globals(globals)
 
