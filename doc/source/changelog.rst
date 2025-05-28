@@ -9,6 +9,47 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.17 <https://github.com/ansys/pymechanical/releases/tag/v0.11.17>`_ - May 28, 2025
+=======================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add `self._messages` to BUILDING_GALLERY section in app initialization
+          - `#1171 <https://github.com/ansys/pymechanical/pull/1171>`_
+
+        * - Embedding message get test
+          - `#1174 <https://github.com/ansys/pymechanical/pull/1174>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - update CHANGELOG for v0.11.15
+          - `#1161 <https://github.com/ansys/pymechanical/pull/1161>`_
+
+        * - update CHANGELOG for v0.11.16
+          - `#1163 <https://github.com/ansys/pymechanical/pull/1163>`_
+
+        * - Bump the doc group across 1 directory with 3 updates
+          - `#1169 <https://github.com/ansys/pymechanical/pull/1169>`_
+
+        * - Bump plotly from 6.0.1 to 6.1.1 in the doc group
+          - `#1175 <https://github.com/ansys/pymechanical/pull/1175>`_
+
+        * - Bump usd-core from 25.5 to 25.5.1
+          - `#1176 <https://github.com/ansys/pymechanical/pull/1176>`_
+
+
 `0.11.16 <https://github.com/ansys/pymechanical/releases/tag/v0.11.16>`_ - May 09, 2025
 =======================================================================================
 
