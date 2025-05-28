@@ -62,6 +62,12 @@ def test_globals(args):
     app.Graphics.Camera.SetSpecificViewOrientation(ViewOrientationType.Iso)
     print("ViewOrientationType exists")
 
+    # Check that the app can print messages in the building gallery
+    try:
+        app.messages.show()
+    except AssertionError:
+        print("The app cannot print messages in the building gallery")
+
 
 def set_showtriad(args, value):
     """Launch embedded instance of app & set ShowTriad to False."""
