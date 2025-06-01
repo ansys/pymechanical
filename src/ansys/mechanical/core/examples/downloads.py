@@ -43,7 +43,7 @@ def _joinurl(base, *paths):
 
 
 def _get_default_server_and_joiner():
-    return "https://github.com/ansys/example-data/raw/master", _joinurl
+    return "https://github.com/ansys/example-data/raw/main", _joinurl
 
 
 def _get_filepath_on_default_server(filename: str, *directory: str):
