@@ -57,7 +57,7 @@ tests = [
 ]
 doc = [
     "sphinx==8.2.3",
-    "ansys-sphinx-theme[autoapi,changelog]==1.4.4",
+    "ansys-sphinx-theme[autoapi,changelog]==1.5.2",
     "grpcio==1.70.0",
     "imageio-ffmpeg==0.6.0",
     "imageio==2.37.0",
@@ -68,7 +68,7 @@ doc = [
     "numpydoc==1.8.0",
     "pandas==2.2.3",
     "panel==1.6.1",
-    "plotly==6.1.1",
+    "plotly==6.1.2",
     "pypandoc==1.15",
     "pytest-sphinx==0.6.3",
     "pythreejs==2.4.2",
