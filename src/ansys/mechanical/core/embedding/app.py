@@ -47,10 +47,10 @@ if typing.TYPE_CHECKING:
 try:
     import ansys.tools.visualization_interface  # noqa: F401
 
-    HAS_ANSYS_VIZ = True
+    HAS_ANSYS_GRAPHICS = True
     """Whether or not PyVista exists."""
 except ImportError:
-    HAS_ANSYS_VIZ = False
+    HAS_ANSYS_GRAPHICS = False
 
 
 def _get_default_addin_configuration() -> AddinConfiguration:
@@ -186,10 +186,25 @@ class App:
 
         self.log_info("Starting Mechanical Application")
 
+        # Get the globals dictionary from kwargs
+        globals = kwargs.get("globals")
+
+        # Set messages to None before BUILDING_GALLERY check
+        self._messages = None
+
+        # If the building gallery flag is set, we need to share the instance
+        # This can apply to running the `make -C doc html` command
         if BUILDING_GALLERY:
             if len(INSTANCES) != 0:
+                # Get the first instance of the app
                 instance: App = INSTANCES[0]
+                # Point to the same underlying application object
                 instance._share(self)
+                # Update the globals if provided in kwargs
+                if globals:
+                    # The next line is covered by test_globals_kwarg_building_gallery
+                    instance.update_globals(globals)  # pragma: nocover
+                # Open the mechdb file if provided
                 if db_file is not None:
                     self.open(db_file)
                 return
@@ -212,7 +227,6 @@ class App:
             new_profile_name = f"PyMechanical-{os.getpid()}"
             profile = UniqueUserProfile(new_profile_name, copy_profile=copy_profile)
             profile.update_environment(os.environ)
-            atexit.register(_cleanup_private_appdata, profile)
 
         runtime.initialize(self._version)
         self._app = _start_application(configuration, self._version, db_file)
@@ -222,11 +236,13 @@ class App:
         self._disposed = False
         atexit.register(_dispose_embedded_app, INSTANCES)
         INSTANCES.append(self)
+
+        # Clean up the private appdata directory on exit if private_appdata is True
+        if private_appdata:
+            atexit.register(_cleanup_private_appdata, profile)
+
         self._updated_scopes: typing.List[typing.Dict[str, typing.Any]] = []
         self._subscribe()
-        self._messages = None
-
-        globals = kwargs.get("globals")
         if globals:
             self.update_globals(globals)
 
@@ -391,27 +407,27 @@ This may corrupt the project file.",
 
     def plotter(self) -> None:
         """Return ``ansys.tools.visualization_interface.Plotter`` object."""
-        if not HAS_ANSYS_VIZ:
-            warnings.warn(
-                "Installation of viz option required! Use pip install ansys-mechanical-core[viz]"
+        if not HAS_ANSYS_GRAPHICS:
+            LOG.warning(
+                "Use ``pip install ansys-mechanical-core[graphics]`` to enable this option."
             )
             return
 
         if self.version < 242:
-            warnings.warn("Plotting is only supported with version 2024R2 and later!")
+            LOG.warning("Plotting is only supported with version 2024R2 and later!")
             return
 
         # TODO Check if anything loaded inside app or else show warning and return
 
-        from ansys.mechanical.core.embedding.viz.embedding_plotter import to_plotter
+        from ansys.mechanical.core.embedding.graphics.embedding_plotter import to_plotter
 
         return to_plotter(self)
 
     def plot(self) -> None:
         """Visualize the model in 3d.
 
-        Requires installation using the viz option. E.g.
-        pip install ansys-mechanical-core[viz]
+        Requires installation using the graphics option. E.g.
+        pip install ansys-mechanical-core[graphics]
 
         Examples
         --------

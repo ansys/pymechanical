@@ -82,7 +82,7 @@ def to_plotter(app: "ansys.mechanical.core.embedding.App"):
         if np_coordinates is None or np_indices is None:
             continue
         pv_transform = _transform_to_pyvista(scenegraph_node.Transform)
-        polydata = pv.PolyData(np_coordinates, np_indices).transform(pv_transform)
+        polydata = pv.PolyData(np_coordinates, np_indices).transform(pv_transform, inplace=True)
         color = pv.Color(bgr_to_rgb_tuple(body.Color))
         plotter.plot(polydata, color=color, smooth_shading=True)
     return plotter

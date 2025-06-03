@@ -20,23 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Library to import Mechanical enums.
+"""Run embedded instance for analytics."""
+import argparse
 
-A useful subset of what is imported by
-Ansys Inc/v{NNN}/ACT/apis/Mechanical.py
-"""
+import ansys.mechanical.core as pymechanical
 
-from ansys.mechanical.core.embedding.app import is_initialized
-
-if not is_initialized():
-    raise Exception("Enums cannot be imported until the embedded app is initialized.")
-
-import clr
-
-clr.AddReference("Ansys.Mechanical.DataModel")
-clr.AddReference("Ansys.ACT.Interfaces")
-
-from Ansys.ACT.Interfaces.Common import *  # noqa isort: skip
-from Ansys.Mechanical.DataModel.Enums import *  # noqa isort: skip
-from Ansys.ACT.Interfaces.Analysis import *  # noqa isort: skip
-import Ansys  # noqa  isort: skip
+if __name__ == "__main__":
+    # Set up argparse for command line arguments from subprocess.
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--version", type=str, help="Mechanical version")
+    args = parser.parse_args()
+    app = pymechanical.App(version=int(args.version))
+    app.Model.AddNamedSelection()
