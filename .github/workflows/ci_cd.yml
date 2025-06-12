@@ -7,6 +7,7 @@ on:
       revn:
         type: choice
         options:
+        - '261'
         - '252'
         - '251'
         - '242'
@@ -38,7 +39,7 @@ env:
   MAIN_PYTHON_VERSION: '3.11'
   # DEV_REVN & its Docker image are used in scheduled or registry package runs
   STABLE_REVN: '251'
-  DEV_REVN: '252'
+  DEV_REVN: '261'
   LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
   ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
 
