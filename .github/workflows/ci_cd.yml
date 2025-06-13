@@ -635,21 +635,34 @@ jobs:
         run: |
           . /env/bin/activate
           pip install uv
-          uv pip install -e .[doc]
+          uv pip install -e .[doc,viz]
 
       - name: Build docs
         env:
           NUM_CORES: 1
-          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 0
+          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
+          ANSYS_WORKBENCH_LOGGING: 0
+          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
+          PYTHONUNBUFFERED: 1
         run: |
           . /env/bin/activate
           # Make html or pdf doc
+          if ! command -v Xvfb &> /dev/null; then
+              echo "Xvfb not found. Installing..."
+              apt-get update && apt-get install --reinstall -y xvfb x11-xserver-utils
+          fi
+
+          # Check for existing Xvfb processes
+          if pgrep -x "Xvfb" > /dev/null; then
+              echo "Xvfb is already running. Using existing instance."
+              DISPLAY=:99
+          else
+              # Start Xvfb with delay for stability
+              (Xvfb :99 &) && sleep 2
+              export DISPLAY=:99
+          fi
           make_doc() {
             # $1 is the type of file we are creating (html or pdf)
-
-            # Need to unset PYMECHANICAL_PORT and PYMECHANICAL_START_INSTANCE when running code containing remote sessions
-            unset PYMECHANICAL_PORT
-            unset PYMECHANICAL_START_INSTANCE
 
             output_file=doc_$1_output.txt
             if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
