@@ -50,7 +50,7 @@ Changelog = "https://mechanical.docs.pyansys.com/version/stable/changelog.html"
 
 [project.optional-dependencies]
 tests = [
-    "pytest==8.3.5",
+    "pytest==8.4.0",
     "pytest-cov==6.1.1",
     "pytest-print==1.1.0",
     "psutil==7.0.0"
@@ -58,7 +58,7 @@ tests = [
 doc = [
     "sphinx==8.2.3",
     "ansys-sphinx-theme[autoapi,changelog]==1.5.2",
-    "grpcio==1.70.0",
+    "grpcio==1.72.1",
     "imageio-ffmpeg==0.6.0",
     "imageio==2.37.0",
     "jupyter_sphinx==0.5.3",
@@ -66,7 +66,7 @@ doc = [
     "matplotlib==3.10.3",
     "numpy==2.2.6",
     "numpydoc==1.8.0",
-    "pandas==2.2.3",
+    "pandas==2.3.0",
     "panel==1.6.1",
     "plotly==6.1.2",
     "pypandoc==1.15",
