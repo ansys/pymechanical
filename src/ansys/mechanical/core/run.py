@@ -176,7 +176,7 @@ def _cli_impl(
         profile.update_environment(env)
 
     if not DRY_RUN:
-        version_name = atp.SUPPORTED_ANSYS_VERSIONS[version]
+        version_name = atp.SUPPORTED_ANSYS_VERSIONS.get(version, version)
         if graphical:
             mode = "Graphical"
         else:
