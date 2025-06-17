@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -25,6 +25,19 @@
 import typing
 
 
+class PosterError(Exception):
+    """Class which holds errors from the background thread posting system."""
+
+    def __init__(self, error: Exception):
+        """Create an instance to hold the given error."""
+        self._error = error
+
+    @property
+    def error(self) -> Exception:
+        """Get the underlying exception."""
+        return self._error
+
+
 class Poster:
     """Class which can post a python callable function to Mechanical's main thread."""
 
@@ -37,7 +50,26 @@ class Poster:
 
         self._poster = Ans.Common.WB1ManagedUtils.TaskPoster
 
-    def post(self, callable: typing.Callable):
+    def try_post(self, callable: typing.Callable) -> typing.Any:
+        """Post the callable to Mechanical's main thread.
+
+        This does the same thing as `post` but if `callable`
+        raises an exception, try_post will raise the same
+        exception to the caller of `try_post`.
+        """
+
+        def wrapped():
+            try:
+                return callable()
+            except Exception as e:
+                return PosterError(e)
+
+        result = self.post(wrapped)
+        if isinstance(result, PosterError):
+            raise result.error
+        return result
+
+    def post(self, callable: typing.Callable) -> typing.Any:
         """Post the callable to Mechanical's main thread.
 
         The main thread needs to be receiving posted messages

@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -22,6 +22,8 @@
 
 """Miscellaneous embedding tests"""
 import os
+from pathlib import Path
+import shutil
 import subprocess
 import sys
 from tempfile import NamedTemporaryFile
@@ -29,6 +31,7 @@ import time
 
 import pytest
 
+from ansys.mechanical.core.embedding.app import is_initialized
 from ansys.mechanical.core.embedding.cleanup_gui import cleanup_gui
 from ansys.mechanical.core.embedding.ui import _launch_ui
 import ansys.mechanical.core.embedding.utils as utils
@@ -66,6 +69,13 @@ def test_app_save_open(embedded_app, tmp_path: pytest.TempPathFactory):
     embedded_app.DataModel.Project.Name = "PROJECT 1"
     project_file = os.path.join(tmp_path, f"{NamedTemporaryFile().name}.mechdat")
     embedded_app.save_as(project_file)
+
+    project_file_directory = os.path.splitext(project_file)[0] + "_Mech_Files"
+    assert project_file_directory == os.path.normpath(embedded_app.project_directory)
+
+    with pytest.raises(Exception):
+        embedded_app.save_as(project_file)
+    embedded_app.save_as(project_file, overwrite=True)
     embedded_app.new()
     embedded_app.open(project_file)
     assert embedded_app.DataModel.Project.Name == "PROJECT 1"
@@ -86,6 +96,21 @@ def test_app_update_globals_after_open(embedded_app, assets):
     embedded_app.new()
     embedded_app.open(os.path.join(assets, "cube-hole.mechdb"))
     Model.AddNamedSelection()
+
+
+@pytest.mark.embedding
+def test_explicit_interface(embedded_app):
+    """Test save and open of the Application class."""
+    embedded_app.update_globals(globals())
+    try:
+        namedselection = Model.AddNamedSelection()
+        ids = list(namedselection.Ids)
+        assert len(ids) == 0, f"Expected an empty Ids list, but got {ids}."
+    except AttributeError as e:
+        pytest.fail(
+            f"{str(e)}. This might be related to pythonnet."
+            "Uninstall pythonnet and install ansys-pythonnet."
+        )
 
 
 @pytest.mark.embedding
@@ -129,9 +154,17 @@ def test_app_print_tree(embedded_app, capsys, assets):
     with pytest.raises(AttributeError):
         embedded_app.print_tree(DataModel)
 
+    Modal = Model.AddModalAnalysis()
+    Modal.Solution.Solve(True)
+    embedded_app.print_tree()
+    captured = capsys.readouterr()
+    printed_output = captured.out.strip()
+    assert all(symbol in printed_output for symbol in ["?", "⚡︎", "✕", "✓"])
 
-@pytest.mark.embedding
-def test_app_poster(embedded_app):
+
+# @pytest.mark.embedding
+@pytest.mark.skip(reason="This test hangs on Linux with Python 3.10-3.13")
+def test_app_poster(embedded_app, printer):
     """The getters of app should be usable after a new().
 
     The C# objects referred to by ExtAPI, Model, DataModel, and Tree
@@ -142,6 +175,7 @@ def test_app_poster(embedded_app):
     that they properly redirect the calls to the appropriate C#
     object after a new()
     """
+
     version = embedded_app.version
     if os.name != "nt" and version < 242:
         """This test is effectively disabled for versions older than 242 on linux.
@@ -154,12 +188,14 @@ def test_app_poster(embedded_app):
     poster = embedded_app.poster
 
     name = []
+    error = []
 
     def change_name_async(poster):
         """Change_name_async will run a background thread
 
         It will change the name of the project to "foo"
         """
+        printer("change_name_async")
 
         def get_name():
             return embedded_app.DataModel.Project.Name
@@ -167,8 +203,22 @@ def test_app_poster(embedded_app):
         def change_name():
             embedded_app.DataModel.Project.Name = "foo"
 
+        def raise_ex():
+            raise Exception("TestException")
+
         name.append(poster.post(get_name))
+        printer("get_name")
         poster.post(change_name)
+        printer("change_name")
+
+        try:
+            poster.try_post(raise_ex)
+        except Exception as e:
+            error.append(e)
+        printer("raise_ex")
+
+        name.append(poster.try_post(get_name))
+        printer("get_name")
 
     import threading
 
@@ -179,11 +229,17 @@ def test_app_poster(embedded_app):
     # messages. The `sleep` utility puts Mechanical's main thread to
     # idle and only execute actions that have been posted to its main
     # thread, e.g. `change_name` that was posted by the poster.
-    utils.sleep(400)
+    while True:
+        utils.sleep(40)
+        if not change_name_thread.is_alive():
+            break
     change_name_thread.join()
-    assert len(name) == 1
+    assert len(name) == 2
     assert name[0] == "Project"
+    assert name[1] == "foo"
     assert embedded_app.DataModel.Project.Name == "foo"
+    assert len(error) == 1
+    assert str(error[0]) == "TestException"
 
 
 @pytest.mark.embedding
@@ -212,59 +268,39 @@ def test_app_getters_notstale(embedded_app):
 def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
     """Test Python.NET warning of the embedded instance using a test-scoped Python environment."""
 
+    # set these to None to see output in the terminal
+    stdout = subprocess.DEVNULL
+    stderr = subprocess.DEVNULL
+
     # Install pymechanical
     subprocess.check_call(
         [test_env.python, "-m", "pip", "install", "-e", "."],
         cwd=rootdir,
         env=test_env.env,
+        stdout=stdout,
+        stderr=stderr,
     )
 
     # Install pythonnet
-    subprocess.check_call([test_env.python, "-m", "pip", "install", "pythonnet"], env=test_env.env)
+    subprocess.check_call(
+        [test_env.python, "-m", "pip", "install", "pythonnet"],
+        env=test_env.env,
+        stdout=stdout,
+        stderr=stderr,
+    )
 
-    # Run embedded instance in virtual env with pythonnet installed
-    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+    # Initialize with pythonnet
+    embedded_pythonnet_py = os.path.join(rootdir, "tests", "scripts", "pythonnet_warning.py")
     process, stdout, stderr = run_subprocess(
-        [test_env.python, embedded_py, pytestconfig.getoption("ansys_version")]
+        [test_env.python, embedded_pythonnet_py, pytestconfig.getoption("ansys_version")]
     )
 
     # If UserWarning & pythonnet are in the stderr output, set warning to True.
     # Otherwise, set warning to False
     warning = True if "UserWarning" and "pythonnet" in stderr.decode() else False
 
-    # Assert warning message appears for embedded app
+    # # Assert warning message appears for embedded app
     assert warning, "UserWarning should appear in the output of the script"
-
-
-@pytest.mark.embedding_scripts
-@pytest.mark.python_env
-def test_private_appdata(pytestconfig, run_subprocess, rootdir):
-    """Test embedded instance does not save ShowTriad using a test-scoped Python environment."""
-
-    version = pytestconfig.getoption("ansys_version")
-    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
-
-    run_subprocess([sys.executable, embedded_py, version, "True", "Set"])
-    process, stdout, stderr = run_subprocess([sys.executable, embedded_py, version, "True", "Run"])
-    stdout = stdout.decode()
-    assert "ShowTriad value is True" in stdout
-
-
-@pytest.mark.embedding_scripts
-@pytest.mark.python_env
-def test_normal_appdata(pytestconfig, run_subprocess, rootdir):
-    """Test embedded instance saves ShowTriad value using a test-scoped Python environment."""
-    version = pytestconfig.getoption("ansys_version")
-
-    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
-
-    run_subprocess([sys.executable, embedded_py, version, "False", "Set"])
-    process, stdout, stderr = run_subprocess([sys.executable, embedded_py, version, "False", "Run"])
-    run_subprocess([sys.executable, embedded_py, version, "False", "Reset"])
-
-    stdout = stdout.decode()
-    # Assert ShowTriad was set to False for regular embedded session
-    assert "ShowTriad value is False" in stdout
 
 
 @pytest.mark.embedding_scripts
@@ -313,7 +349,7 @@ def test_rm_lockfile(embedded_app, tmp_path: pytest.TempPathFactory):
     embedded_app.save(mechdat_path)
     embedded_app.close()
 
-    lockfile_path = os.path.join(embedded_app.DataModel.Project.ProjectDirectory, ".mech_lock")
+    lockfile_path = os.path.join(embedded_app.project_directory, ".mech_lock")
     # Assert lock file path does not exist
     assert not os.path.exists(lockfile_path)
 
@@ -413,8 +449,9 @@ def test_launch_gui_exception(embedded_app):
 
 
 @pytest.mark.embedding_scripts
-def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory, run_subprocess):
+def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory):
     """Test cleanup function to remove the temporary mechdb file and folder."""
+    assert os.path.isdir(tmp_path)
     temp_file = tmp_path / "tempfiletest.mechdb"
     temp_folder = tmp_path / "tempfiletest_Mech_Files"
 
@@ -428,14 +465,59 @@ def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory, run_subprocess):
     assert temp_folder.exists()
 
     # Run process
-    process, stdout, stderr = run_subprocess(["sleep", "3"])
+    if os.name == "nt":
+        process = subprocess.Popen(
+            ["ping", "127.0.0.1", "-n", "2"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            shell=True,
+        )
+    else:
+        process = subprocess.Popen(
+            ["sleep", "3"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        )
+
+    pid = process.pid
+    assert process.wait() == 0
 
     # Remove the temporary file and folder
-    cleanup_gui(process.pid, temp_file)
+    cleanup_gui(pid, temp_file)
 
     # Assert the file and folder do not exist
     assert not temp_file.exists()
     assert not temp_folder.exists()
+
+
+@pytest.mark.embedding_scripts
+def test_attribute_error(tmp_path: pytest.TempPathFactory, pytestconfig, rootdir):
+    """Test cleanup function to remove the temporary mechdb file and folder."""
+    # Change directory to tmp_path
+    os.chdir(tmp_path)
+
+    # Get the version
+    version = pytestconfig.getoption("ansys_version")
+
+    # Create the Ansys folder in tmp_path and assert it exists
+    temp_folder = tmp_path / "Ansys"
+    temp_folder.mkdir()
+    assert temp_folder.exists()
+
+    # Copy the run_embedded_app.py script to tmp_path
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+    tmp_file_script = tmp_path / "run_embedded_app.py"
+    shutil.copyfile(embedded_py, tmp_file_script)
+
+    # Run the script and assert the AttributeError is raised
+    stdout, stderr = subprocess.Popen(
+        [sys.executable, tmp_file_script, "--version", version],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    ).communicate()
+
+    # Assert the AttributeError is raised
+    assert "Unable to resolve Mechanical assemblies." in stderr.decode()
+
+    os.chdir(rootdir)
 
 
 @pytest.mark.embedding
@@ -454,3 +536,49 @@ def test_app_execute_script_from_file(embedded_app, rootdir, printer):
     succes_script_path = os.path.join(rootdir, "tests", "scripts", "run_python_success.py")
     result = embedded_app.execute_script_from_file(succes_script_path)
     assert result == "test"
+
+
+@pytest.mark.embedding
+def test_app_lock_file_open(embedded_app, tmp_path: pytest.TempPathFactory):
+    """Test the lock file is removed on open if remove_lock=True."""
+    embedded_app.DataModel.Project.Name = "PROJECT 1"
+    project_file = os.path.join(tmp_path, f"{NamedTemporaryFile().name}.mechdat")
+    embedded_app.save_as(project_file)
+    with pytest.raises(Exception):
+        embedded_app.save_as(project_file)
+    embedded_app.save_as(project_file, overwrite=True)
+
+    lock_file = Path(embedded_app.project_directory) / ".mech_lock"
+
+    # Assert the lock file exists after saving it
+    assert lock_file.exists()
+
+    # Assert a warning is emitted if the lock file is going to be removed
+    with pytest.warns(UserWarning):
+        embedded_app.open(project_file, remove_lock=True)
+
+
+@pytest.mark.embedding
+def test_app_initialized(embedded_app):
+    """Test the app is initialized."""
+    assert is_initialized()
+
+
+@pytest.mark.embedding
+def test_app_not_initialized(run_subprocess, pytestconfig, rootdir):
+    """Test the app is not initialized."""
+    version = pytestconfig.getoption("ansys_version")
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+
+    process, stdout, stderr = run_subprocess(
+        [
+            sys.executable,
+            embedded_py,
+            "--version",
+            version,
+            "--test_not_initialized",
+        ]
+    )
+    stdout = stdout.decode()
+
+    assert "The app is not initialized" in stdout

@@ -21,6 +21,9 @@ from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMB
 # necessary when building the sphinx gallery
 pymechanical.BUILDING_GALLERY = True
 
+# Whether or not to build the cheatsheet
+BUILD_CHEATSHEET = True if os.environ.get("BUILD_EXAMPLES", "true") == "true" else False
+
 # suppress annoying matplotlib bug
 warnings.filterwarnings(
     "ignore",
@@ -92,9 +95,11 @@ extensions = [
     "sphinx_autodoc_typehints",
     "sphinx_copybutton",
     "sphinx_design",
-    "sphinx_gallery.gen_gallery",
     "sphinxemoji.sphinxemoji",
 ]
+
+if pymechanical.BUILDING_GALLERY:
+    extensions.append("sphinx_gallery.gen_gallery")
 
 # Intersphinx mapping
 intersphinx_mapping = {
@@ -249,19 +254,20 @@ html_theme_options = {
             "icon": "fa fa-comment fa-fw",
         },
     ],
-    "use_meilisearch": {
-        "api_key": os.getenv("MEILISEARCH_PUBLIC_API_KEY", ""),
-        "index_uids": {
-            f"pymechanical-v{get_version_match(version).replace('.', '-')}": "PyMechanical",
-        },
-    },
-    "cheatsheet": {
-        "file": "cheatsheet/cheat_sheet.qmd",
-        "title": "PyMechanical cheat sheet",
+    "whatsnew": {
+        "whatsnew_file_name": "../changelog.d/whatsnew.yml",
+        "changelog_file_name": "changelog.rst",
+        "sidebar_pages": ["changelog", "index"],
     },
     "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
     "navigation_depth": 10,
 }
+
+if BUILD_CHEATSHEET:
+    html_theme_options["cheatsheet"] = {
+        "file": "cheatsheet/cheat_sheet.qmd",
+        "title": "PyMechanical cheat sheet",
+    }
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
@@ -350,7 +356,9 @@ linkcheck_ignore = [
     "https://discuss.ansys.com/*",
     "https://www.ansys.com/*",
     "../api/*",  # Remove this after release 0.10.12
+    "api/*",
     "path.html",
+    "user_guide_embedding/*",
 ]
 
 linkcheck_anchors = False
@@ -362,17 +370,3 @@ if switcher_version != "dev":
     linkcheck_ignore.append(
         f"https://github.com/ansys/pymechanical/releases/tag/v{pymechanical.__version__}"
     )
-
-
-def replace_version_in_qmd(file_path, version):
-    """Update the version in cheatsheet."""
-    with open(file_path, "r") as file:
-        content = file.read()
-
-    content = content.replace("version: main", f"version: {version}")
-
-    with open(file_path, "w") as file:
-        file.write(content)
-
-
-replace_version_in_qmd("cheatsheet/cheat_sheet.qmd", version)

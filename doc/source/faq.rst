@@ -131,16 +131,16 @@ This section provides answers to frequently asked questions.
             .. code-block:: shell
 
                 Ansys Mechanical [Ansys Mechanical Enterprise]
-                Product Version:242
-                Software build date: 06/03/2024 09:35:09
+                Product Version:251
+                Software build date: 11/27/2024 09:34:44
 
         .. tab-item:: Without License
 
             .. code-block:: shell
 
                 Ansys Mechanical []
-                Product Version:242
-                Software build date: 06/03/2024 09:35:09
+                Product Version:251
+                Software build date: 11/27/2024 09:34:44
 
     Alternatively, once the ``app`` is created ``readonly`` method can be used to see if license is active.
     If license is not checked out then it is in read only mode.
@@ -156,7 +156,7 @@ This section provides answers to frequently asked questions.
 
         $ mechanical-env python
         >>> import ansys.mechanical.core as mech
-        >>> app=mech.App(version=42)
+        >>> app=mech.App(version=251)
 
     or
 

@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Delete untagged package versions"
-        uses: ansys/actions/hk-package-clean-untagged@v7
+        uses: ansys/actions/hk-package-clean-untagged@v10
         with:
           package-org: 'ansys'
           package-name: 'mechanical'

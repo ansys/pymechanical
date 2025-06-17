@@ -70,8 +70,7 @@ The scripting occurs inside Mechanical's command line interface. For instance, c
 
   from ansys.mechanical.core import App
 
-  app = App()
-  app.update_globals(globals())
+  app = App(globals=globals())
   ns = DataModel.Project.Model.AddNamedSelection()
   ns.Name = "Jarvis"
 
@@ -106,7 +105,7 @@ versions can be specified using ``-r`` flag. Use ``-h`` for more information.
 
    .. code::
 
-      "C:/Program Files/ANSYS Inc/v242/aisol/bin/winx64/AnsysWBU.exe -DSApplet -AppModeMech -script file.py"
+      "C:/Program Files/ANSYS Inc/v251/aisol/bin/winx64/AnsysWBU.exe -DSApplet -AppModeMech -script file.py"
 
    PowerShell users can run the preceding command without including the opening and
    closing quotation marks.
@@ -115,6 +114,6 @@ versions can be specified using ``-r`` flag. Use ``-h`` for more information.
 
    .. code::
 
-      /usr/ansys_inc/v242/aisol/.workbench -DSApplet -AppModeMech -script file.py
+      /usr/ansys_inc/v251/aisol/.workbench -DSApplet -AppModeMech -script file.py
 
    On either Windows or Linux, add the command line argument ``-b`` to run the script in batch mode.

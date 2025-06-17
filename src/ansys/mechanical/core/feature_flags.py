@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -31,6 +31,7 @@ class FeatureFlags:
 
     ThermalShells = "Mechanical.ThermalShells"
     MultistageHarmonic = "Mechanical.MultistageHarmonic"
+    CPython = "Mechanical.CPython.Capability"
 
 
 def get_feature_flag_names() -> typing.List[str]:

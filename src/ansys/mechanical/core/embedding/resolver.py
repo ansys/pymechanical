@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -23,8 +23,8 @@
 """This is the .NET assembly resolving for embedding Ansys Mechanical.
 
 Note that for some Mechanical Addons - additional resolving may be
-necessary. A resolve handler is shipped with Ansys Mechanical on windows
-starting in version 23.1 and on linux starting in version 23.2
+necessary. A resolve handler is shipped with Ansys Mechanical on Windows
+starting in version 23.1 and on Linux starting in version 23.2
 """
 
 
@@ -36,6 +36,13 @@ def resolve(version):
     clr.AddReference("Ansys.Mechanical.Embedding")
     import Ansys  # isort: skip
 
-    assembly_resolver = Ansys.Mechanical.Embedding.AssemblyResolver
-    resolve_handler = assembly_resolver.MechanicalResolveEventHandler
-    System.AppDomain.CurrentDomain.AssemblyResolve += resolve_handler
+    try:
+        assembly_resolver = Ansys.Mechanical.Embedding.AssemblyResolver
+        resolve_handler = assembly_resolver.MechanicalResolveEventHandler
+        System.AppDomain.CurrentDomain.AssemblyResolve += resolve_handler
+    except AttributeError:
+        error_msg = """Unable to resolve Mechanical assemblies. Please ensure the following:
+    1. Mechanical is installed.
+    2. A folder with the name "Ansys" does not exist in the same directory as the script being run.
+    """
+        raise AttributeError(error_msg)

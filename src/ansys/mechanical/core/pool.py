@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -26,11 +26,11 @@ import os
 import time
 import warnings
 
-import ansys.platform.instancemanagement as pypim
 from ansys.tools.path import version_from_path
 
 from ansys.mechanical.core.errors import VersionError
 from ansys.mechanical.core.mechanical import (
+    _HAS_ANSYS_PIM,
     _HAS_TQDM,
     LOG,
     MECHANICAL_DEFAULT_PORT,
@@ -111,19 +111,19 @@ class LocalMechanicalPool:
 
     On Windows, create a pool while specifying the Mechanical executable file.
 
-    >>> exec_file = 'C:/Program Files/ANSYS Inc/v242/aisol/bin/winx64/AnsysWBU.exe'
+    >>> exec_file = 'C:/Program Files/ANSYS Inc/v251/aisol/bin/winx64/AnsysWBU.exe'
     >>> pool = LocalMechanicalPool(10, exec_file=exec_file)
     Creating Pool: 100%|########| 10/10 [00:01<00:00,  1.43it/s]
 
     On Linux, create a pool while specifying the Mechanical executable file.
 
-    >>> exec_file = '/ansys_inc/v242/aisol/.workbench'
+    >>> exec_file = '/ansys_inc/v251/aisol/.workbench'
     >>> pool = LocalMechanicalPool(10, exec_file=exec_file)
     Creating Pool: 100%|########| 10/10 [00:01<00:00,  1.43it/s]
 
     In the PyPIM environment, create a pool.
 
-    >>> pool = LocalMechanicalPool(10, version="242")
+    >>> pool = LocalMechanicalPool(10, version="251")
     Creating Pool: 100%|########| 10/10 [00:01<00:00,  1.43it/s]
 
     """
@@ -170,17 +170,17 @@ class LocalMechanicalPool:
         self._spawn_kwargs = kwargs
         self._remote = False
 
-        # verify that mechanical is 2023R2 or newer
+        # Verify that Mechanical is 2023R2 or newer
         exec_file = None
         if "exec_file" in kwargs:
             exec_file = kwargs["exec_file"]
         else:
-            if pypim.is_configured():  # pragma: no cover
+            if _HAS_ANSYS_PIM and pypim.is_configured():  # pragma: no cover
                 if "version" in kwargs:
                     version = kwargs["version"]
                     self._remote = True
                 else:
-                    raise "Pypim is configured. But version is not passed."
+                    raise ValueError("Pypim is configured, but version is not passed.")
             else:  # get default executable
                 exec_file = get_mechanical_path()
                 if exec_file is None:  # pragma: no cover
@@ -342,8 +342,8 @@ class LocalMechanicalPool:
         if progress_bar:
             if not _HAS_TQDM:  # pragma: no cover
                 raise ModuleNotFoundError(
-                    f"To use the keyword argument 'progress_bar', you must have installed "
-                    f"the 'tqdm' package. To avoid this message, you can set 'progress_bar=False'."
+                    "To use the keyword argument 'progress_bar', you must have installed "
+                    "the 'tqdm' package. To avoid this message, you can set 'progress_bar=False'."
                 )
 
             pbar = tqdm(total=jobs_count, desc="Mechanical Running")
@@ -386,11 +386,11 @@ class LocalMechanicalPool:
             else:
                 run_thread.join()
                 if not complete[0]:  # pragma: no cover
-                    LOG.error(f"Stopped instance because running failed.")
+                    LOG.error("Stopped instance because running failed.")
                     try:
                         obj.exit()
-                    except:
-                        pass
+                    except Exception as e:
+                        LOG.error(f"Unexpected error while exiting: {e}")
 
             obj.locked = False
             if pbar:
@@ -529,8 +529,8 @@ class LocalMechanicalPool:
         >>> mechanical = pool.next_available()
         >>> mechanical
         Ansys Mechanical [Ansys Mechanical Enterprise]
-        Product Version:242
-        Software build date: 06/03/2024 14:47:58
+        Product Version:251
+        Software build date: 11/27/2024 09:34:44
         """
         # loop until the next instance is available
         while True:
@@ -583,8 +583,8 @@ class LocalMechanicalPool:
             if instance_local:
                 try:
                     instance_local.exit()
-                except:  # pragma: no cover
-                    pass
+                except Exception as e:  # pragma: no cover
+                    LOG.error(f"Error while exiting instance {str(instance_local)}: {str(e)}")
                 self._instances[index] = None
                 LOG.debug(f"Exited instance: {str(instance_local)}")
 

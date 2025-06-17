@@ -21,22 +21,24 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
 dependencies = [
     "ansys-api-mechanical==0.1.2",
-    "ansys-mechanical-env==0.1.8",
-    "ansys-platform-instancemanagement>=1.0.1",
-    "ansys-pythonnet>=3.1.0rc2",
+    "ansys-mechanical-env==0.1.12",
+    "ansys-mechanical-stubs==0.1.6",
+    "ansys-pythonnet>=3.1.0rc6",
     "ansys-tools-path>=0.3.1",
     "appdirs>=1.4.0",
     "click>=8.1.3", # for CLI interface
-    "clr-loader==0.2.6",
+    "clr-loader>=0.2.6",
     "grpcio>=1.30.0",
     "protobuf>=3.12.2,<6",
-    "psutil==6.0.0",
+    "psutil>=6",
     "tqdm>=4.45.0",
+    "requests>=2,<3",
 ]
 
 [project.urls]
@@ -48,45 +50,58 @@ Changelog = "https://mechanical.docs.pyansys.com/version/stable/changelog.html"
 
 [project.optional-dependencies]
 tests = [
-    "pytest==8.3.3",
-    "pytest-cov==5.0.0",
-    "pytest-print==1.0.2",
-    "psutil==6.0.0"
+    "pytest==8.4.0",
+    "pytest-cov==6.2.1",
+    "pytest-print==1.1.0",
+    "psutil==7.0.0"
 ]
 doc = [
-    "sphinx==8.0.2",
-    "ansys-sphinx-theme[autoapi]==1.0.11",
-    "grpcio==1.66.1",
-    "imageio-ffmpeg==0.5.1",
-    "imageio==2.35.1",
+    "sphinx==8.2.3",
+    "ansys-sphinx-theme[autoapi,changelog]==1.5.2",
+    "grpcio==1.72.1",
+    "imageio-ffmpeg==0.6.0",
+    "imageio==2.37.0",
     "jupyter_sphinx==0.5.3",
     "jupyterlab>=3.2.8",
-    "matplotlib==3.9.2",
-    "numpy==2.1.1",
+    "matplotlib==3.10.3",
+    "numpy==2.2.6",
     "numpydoc==1.8.0",
-    "pandas==2.2.3",
-    "panel==1.5.0",
-    "plotly==5.24.1",
-    "pypandoc==1.13",
+    "pandas==2.3.0",
+    "panel==1.6.1",
+    "plotly==6.1.2",
+    "pypandoc==1.15",
     "pytest-sphinx==0.6.3",
     "pythreejs==2.4.2",
     "pyvista>=0.39.1",
-    "sphinx-autobuild==2024.9.19",
-    "sphinx-autodoc-typehints==2.4.4",
+    "sphinx-autobuild==2024.10.3",
+    "sphinx-autodoc-typehints==3.1.0",
     "sphinx-copybutton==0.5.2",
     "sphinx_design==0.6.1",
-    "sphinx-gallery==0.17.1",
-    "sphinx-notfound-page==1.0.4",
+    "sphinx-gallery==0.19.0",
+    "sphinx-notfound-page==1.1.0",
     "sphinxcontrib-websupport==2.0.0",
     "sphinxemoji==0.3.1",
 ]
+# Viz option will be removed in future versions
 viz = [
     "ansys-tools-visualization-interface>=0.2.6",
-    "usd-core==24.8",
+    "usd-core==25.5.1",
+]
+graphics = [
+    "ansys-tools-visualization-interface>=0.2.6",
+    "usd-core==25.5.1",
+]
+rpc = [
+    "rpyc==6.0.2",
+    "toolz==1.0.0",
+]
+pim = [
+    "ansys-platform-instancemanagement>=1.0.1",
 ]
 
 [project.scripts]
 ansys-mechanical = "ansys.mechanical.core.run:cli"
+ansys-mechanical-ideconfig = "ansys.mechanical.core.ide_config:cli"
 
 [tool.flit.module]
 name = "ansys.mechanical.core"
@@ -129,6 +144,7 @@ addopts = """-ra -s --durations=0 --cov=ansys.mechanical --cov-report html:.cov/
 # addopts = """-ra -s -m 'remote_session_launch or remote_session_connect or embedding' --durations=0
 # --cov=ansys.mechanical --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report \
 # term -vv --print --print-relative-time"""
+
 testpaths = [
     "tests",
 ]
@@ -139,9 +155,12 @@ markers = [
     "remote_session_launch: tests that launch Mechanical and work with gRPC server inside it",
     "remote_session_connect: tests that connect to Mechanical and work with gRPC server inside it",
     "minimum_version(num): tests that run if ansys-version is greater than or equal to the minimum version provided",
+    "version_range(min_revn,max_revn): tests that run if ansys-version is in the range of the minimum and maximum revision numbers inclusive.",
     "windows_only: tests that run if the testing platform is on Windows",
     "linux_only: tests that run if the testing platform is on Linux",
     "cli: tests for the Command Line Interface",
+    "embedding_backgroundapp: tests for the BackgroundApp",
+    "embedding_logging: tests for the logging with Embedded App",
 ]
 xfail_strict = true
 
@@ -220,6 +239,7 @@ python =
     3.10: style,py310-coverage,doc
     3.11: style,py311-coverage,doc
     3.12: style,py311-coverage,doc
+    3.13: style,py311-coverage,doc
 
 [testenv]
 description = Checks for project unit tests and coverage (if desired)
@@ -227,6 +247,7 @@ basepython =
     py310: python3.10
     py311: python3.11
     py312: python3.12
+    py313: python3.13
     py: python3
     {style,reformat,doc,build}: python3
 passenv = *

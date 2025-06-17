@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -37,7 +37,7 @@ Configuring the logger can be done using the :class:`Configuration <ansys.mechan
   from ansys.mechanical.core.embedding.logger import Configuration, Logger
 
   Configuration.configure(level=logging.INFO, to_stdout=True, base_directory=None)
-  app = mech.App(version=242)
+  app = mech.App(version=251)
 
 Then, the :class:`Logger <ansys.mechanical.core.embedding.logger.Logger>` class can be used to write messages to the log:
 
@@ -78,7 +78,7 @@ def _get_backend() -> (
     Actually logging a message or flushing the log only works after initializing.
     """
     # TODO - use abc instead of a union type?
-    embedding_initialized = initializer.INITIALIZED_VERSION != None
+    embedding_initialized = initializer.INITIALIZED_VERSION is not None
     if not embedding_initialized:
         return environ.EnvironBackend()
     if os.name == "nt":
@@ -115,7 +115,7 @@ class Configuration:
 
         # Set up the sink-specific log configuration and store to global state.
         cls._store_stdout_sink_enabled(to_stdout)
-        file_sink_enabled = directory != None or base_directory != None
+        file_sink_enabled = directory is not None or base_directory is not None
         cls._store_file_sink_enabled(file_sink_enabled)
 
         # Commit the sink-specific log configuration global state to the backend.
@@ -144,14 +144,14 @@ class Configuration:
     @classmethod
     def set_log_directory(cls, value: str) -> None:
         """Configure logging to write to a directory."""
-        if value == None:
+        if value is None:
             return
         _get_backend().set_directory(value)
 
     @classmethod
     def set_log_base_directory(cls, directory: str) -> None:
         """Configure logging to write in a time-stamped subfolder in this directory."""
-        if directory == None:
+        if directory is None:
             return
         _get_backend().set_base_directory(directory)
 

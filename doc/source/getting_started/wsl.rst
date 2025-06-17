@@ -70,7 +70,7 @@ To install Ansys products in WSL, perform these steps:
 
    .. code:: bash
 
-       tar xvzf STRUCTURES_2022R2_LINX64.tgz
+       tar xvzf STRUCTURES_2025R1_LINX64.tgz
 
 
 3. To install Mechanical, go into the folder where the files have been extracted

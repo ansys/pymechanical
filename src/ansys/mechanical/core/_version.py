@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -40,6 +40,7 @@ except ModuleNotFoundError:  # pragma: no cover
 __version__ = importlib_metadata.version("ansys-mechanical-core")
 
 SUPPORTED_MECHANICAL_VERSIONS = {
+    251: "2025R1",
     242: "2024R2",
     241: "2024R1",
     232: "2023R2",

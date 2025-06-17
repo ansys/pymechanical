@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -22,7 +22,10 @@
 """Run Mechanical UI from Python."""
 
 from pathlib import Path
-from subprocess import Popen
+
+# Subprocess is needed to launch the GUI and clean up the process on close.
+# Excluding bandit check.
+from subprocess import Popen  # nosec: B404
 import sys
 import tempfile
 import typing
@@ -56,7 +59,7 @@ class UILauncher:
             A Mechanical embedding application.
         """
         # Identify the mechdb of the saved session from save_original()
-        project_directory = Path(app.DataModel.Project.ProjectDirectory)
+        project_directory = Path(app.project_directory)
         project_directory_parent = project_directory.parent
         mechdb_file = (
             project_directory_parent / f"{project_directory.parts[-1].split('_')[0]}.mechdb"
@@ -113,7 +116,7 @@ class UILauncher:
         if not self._dry_run:
             # The subprocess that uses ansys-mechanical to launch the GUI of the temporary
             # mechdb file
-            process = Popen(args)
+            process = Popen(args)  # nosec: B603 # pragma: no cover
             return process
         else:
             # Return a string containing the args
@@ -136,7 +139,7 @@ class UILauncher:
             # Open a subprocess to remove the temporary mechdb file and folder when the process ends
             Popen(
                 [sys.executable, cleanup_script, str(process.pid), temp_mechdb_path]
-            )  # pragma: no cover
+            )  # pragma: no cover # nosec: B603
 
 
 def _is_saved(app: "ansys.mechanical.core.embedding.App") -> bool:

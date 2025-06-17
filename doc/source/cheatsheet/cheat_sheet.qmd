@@ -1,7 +1,8 @@
 ---
 title: PyMechanical cheat sheet
 format: cheat_sheet-pdf
-version: main
+params:
+  version: main
 footer: PyMechanical
 footerlinks:
   - urls: 'https://mechanical.docs.pyansys.com/version/stable/'
@@ -58,7 +59,7 @@ Launch a specific version of Mechanical:
 ```{python}
 #| eval: false
 from ansys.mechanical.core import find_mechanical
-wb_exe = find_mechanical(242)[0]
+wb_exe = find_mechanical(251)[0]
 # 'Ansys Inc\\....\\winx64\\AnsysWBU.exe'
 mechanical = launch_mechanical(
   exec_file=wb_exe, verbose_mechanical=True,
@@ -69,17 +70,17 @@ print(mechanical)
 ## Launch Mechanical using the CLI
 ```{python}
 #| eval: false
-ansys-mechanical -r 242 --port 10000 -g
+ansys-mechanical -r 251 --port 10000 -g
 ```
 ## Manually connect to the Mechanical session
 ```{python}
 #| eval: false
-import ansys.mechanical.core as pymechanical
+from ansys.mechanical.core import connect_to_mechanical
 # Connect locally
-mechanical = pymechanical.Mechanical(port=10000)
+mechanical = connect_to_mechanical(port=10000)
           # Or
 # Connect remotely, to the IP address or hostname
-mechanical = pymechanical.Mechanical(
+mechanical = connect_to_mechanical(
   "192.168.0.1", port=10000
   )
 ```
@@ -146,20 +147,16 @@ mechanical.exit(force=True)
 # Load a Mechanical embedded instance
 
 
-## Start an instance of App
+## Start an instance of App with global API entry points
 ```{python}
 #| eval: false
 from ansys.mechanical.core import App
-app = App(version=242)
-print(app)
-```
-Extract and merge global API entry points:
-```{python}
-#| eval: false
 
+# Create an instance of the app
 # Extract global API entry points from Mechanical
 # Merge them into your Python global variables
-app.update_globals(globals())
+app = App(version=251, globals=globals())
+print(app)
 ```
 Access entry points from Python:
 ```{python}
@@ -177,7 +174,6 @@ Import a file and print the count of bodies
 
 file = r"D:\\Workdir\\bracket.mechdb"
 app.open(file)
-app.update_globals(globals())
 allbodies = Model.GetChildren(
   DataModelObjectCategory.Body, True)
 print(allbodies.Count)
@@ -192,7 +188,7 @@ from ansys.mechanical.core.embedding.logger
 import Configuration,Logger
 Configuration.configure(level=logging.WARNING,
 to_stdout=True)
-app = App(version=242)
+app = App(version=251)
 Logger.error("Test Error Message")
 ```
 ## Visualize geometry in 3D:

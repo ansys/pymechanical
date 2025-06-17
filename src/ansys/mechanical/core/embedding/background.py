@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -28,6 +28,7 @@ import time
 import typing
 
 import ansys.mechanical.core as mech
+from ansys.mechanical.core.embedding import initializer
 from ansys.mechanical.core.embedding.poster import Poster
 import ansys.mechanical.core.embedding.utils as utils
 
@@ -35,7 +36,6 @@ import ansys.mechanical.core.embedding.utils as utils
 def _exit(background_app: "BackgroundApp"):
     """Stop the thread serving the Background App."""
     background_app.stop()
-    atexit.unregister(_exit)
 
 
 class BackgroundApp:
@@ -49,7 +49,8 @@ class BackgroundApp:
 
     def __init__(self, **kwargs):
         """Construct an instance of BackgroundApp."""
-        if BackgroundApp.__app_thread == None:
+        if BackgroundApp.__app_thread is None:
+            initializer.initialize(kwargs.get("version"))
             BackgroundApp.__app_thread = threading.Thread(
                 target=self._start_app, kwargs=kwargs, daemon=True
             )
@@ -59,16 +60,13 @@ class BackgroundApp:
                 time.sleep(0.05)
                 continue
         else:
-            assert (
-                not BackgroundApp.__stopped
-            ), "Cannot initialize a BackgroundApp once it has been stopped!"
+            if BackgroundApp.__stopped:
+                raise RuntimeError("Cannot initialize a BackgroundApp once it has been stopped!")
 
             def new():
                 BackgroundApp.__app.new()
 
             self.post(new)
-
-        atexit.register(_exit, self)
 
     @property
     def app(self) -> mech.App:
@@ -78,10 +76,20 @@ class BackgroundApp:
         """
         return BackgroundApp.__app
 
+    def _post(self, callable: typing.Callable, try_post: bool = False):
+        if BackgroundApp.__stopped:
+            raise RuntimeError("Cannot use BackgroundApp after stopping it.")
+        if try_post:
+            return BackgroundApp.__poster.try_post(callable)
+        return BackgroundApp.__poster.post(callable)
+
     def post(self, callable: typing.Callable):
         """Post callable method to the background app thread."""
-        assert not BackgroundApp.__stopped, "Cannot use background app after stopping it."
-        return BackgroundApp.__poster.post(callable)
+        return self._post(callable)
+
+    def try_post(self, callable: typing.Callable):
+        """Try post callable method to the background app thread."""
+        return self._post(callable, try_post=True)
 
     def stop(self) -> None:
         """Stop the background app thread."""
@@ -96,11 +104,12 @@ class BackgroundApp:
     def _start_app(self, **kwargs) -> None:
         BackgroundApp.__app = mech.App(**kwargs)
         BackgroundApp.__poster = BackgroundApp.__app.poster
+        atexit.register(_exit, self)
         while True:
             if BackgroundApp.__stop_signaled:
                 break
             try:
                 utils.sleep(40)
             except:
-                pass
+                raise Exception("BackgroundApp cannot sleep.")  # pragma: no cover
         BackgroundApp.__stopped = True

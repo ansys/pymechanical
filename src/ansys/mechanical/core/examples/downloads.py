@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -26,7 +26,8 @@ import os
 import shutil
 from typing import Optional
 from urllib.parse import urljoin
-import urllib.request
+
+import requests
 
 import ansys.mechanical.core as pymechanical
 
@@ -42,7 +43,7 @@ def _joinurl(base, *paths):
 
 
 def _get_default_server_and_joiner():
-    return "https://github.com/ansys/example-data/raw/master", _joinurl
+    return "https://github.com/ansys/example-data/raw/main", _joinurl
 
 
 def _get_filepath_on_default_server(filename: str, *directory: str):
@@ -53,9 +54,13 @@ def _get_filepath_on_default_server(filename: str, *directory: str):
         return joiner(server, filename)
 
 
-def _retrieve_url(url, dest):
-    saved_file, _ = urllib.request.urlretrieve(url, filename=dest)
-    return saved_file
+def _retrieve_url(url: str, dest: str) -> str:
+    with requests.get(url, stream=True, timeout=10) as r:
+        r.raise_for_status()
+        with open(dest, "wb") as f:
+            for chunk in r.iter_content(chunk_size=4096):
+                f.write(chunk)
+    return dest
 
 
 def _retrieve_data(url: str, filename: str, dest: str = None, force: bool = False):

@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -74,7 +74,7 @@ def add_mechanical_python_libraries(app_or_version):
     elif isinstance(app_or_version, App):
         installdir.append(os.environ[f"AWP_ROOT{app_or_version.version}"])
     else:
-        raise ValueError(f"Invalid input: expected an integer (version) or an instance of App().")
+        raise ValueError("Invalid input: expected an integer (version) or an instance of App().")
 
     location = os.path.join(installdir[0], "Addins", "ACT", "libraries", "Mechanical")
     sys.path.append(location)

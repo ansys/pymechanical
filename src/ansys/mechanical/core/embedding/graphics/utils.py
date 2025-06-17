@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -41,7 +41,8 @@ def _reshape_3cols(arr: np.array, name: str = "array"):
     """
     err = f"{name} must be of the form (x0,y0,z0,x1,y1,z1,...,xn,yn,zn).\
         Given {name} are not divisible by 3!"
-    assert arr.size % 3 == 0, err
+    if arr.size % 3 != 0:
+        raise ValueError(err)
     numrows = int(arr.size / 3)
     numcols = 3
     arr = np.reshape(arr, (numrows, numcols))

@@ -23,8 +23,19 @@ You could already perform scripting of Mechanical with Python from inside
 Mechanical. PyMechanical leverages the same APIs but allows you to run your
 automation from outside Mechanical.
 
-For comprehensive information on these APIs, see the `Scripting in Mechanical Guide`_ in the
-Ansys Help.
+For comprehensive information on these APIs, refer to the following documentation:
+
+PyMechanical documentation:
+
+* `Mechanical API Documentation`_ - Lists Mechanical APIs that can be used with PyMechanical.
+
+Developer portal:
+
+* `Mechanical scripting interface APIs`_ - Contains the same information as the `Mechanical API Documentation`_ but is located on the developer portal.
+
+ACT API Reference Guide:
+
+* `ACT API Reference Guide`_ - Provides descriptions of the objects, methods, and properties for all namespaces.
 
 Recording
 ---------
@@ -86,9 +97,3 @@ When running scripts inside of Mechanical, you can access the APIs via these ent
 
 You also have access to several types and namespaces that are included in the scripting scope but are not available
 from those entry points.
-
-Additional resources
---------------------
-
-The `ACT API Reference Guide`_
-provides descriptions of the objects, methods, and properties for all namespaces.

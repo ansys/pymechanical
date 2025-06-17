@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2024 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-""""Testing of log module"""
+""" "Testing of log module"""
 import logging as deflogging  # Default logging
 import os
 import re
@@ -165,9 +165,12 @@ def test_global_logger_debug_mode():
 @pytest.mark.remote_session_launch
 def test_global_logger_exception_handling(caplog):
     exc = "Unexpected exception"
-    with pytest.raises(Exception):
-        raise Exception(exc)
-        assert exc in caplog.text
+    with caplog.at_level(logging.ERROR):
+        with pytest.raises(Exception):
+            LOG.error(exc)  # Log the exception before raising
+            raise Exception(exc)
+
+    assert exc in caplog.text
 
 
 @pytest.mark.remote_session_launch
