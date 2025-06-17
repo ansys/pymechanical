@@ -112,6 +112,74 @@ def __check_python_interpreter_architecture() -> None:
         raise Exception("Mechanical Embedding requires a 64-bit Python environment.")
 
 
+def __windows_store_workaround(version: int) -> None:
+    """Workaround for Windows store.
+
+    See https://github.com/ansys/pymechanical/issues/1136
+
+    Windows store Python uses the Win32 API SetDefaultDllDirectories
+    so that the PATH environment variable isn't scanned for any DLL
+    dependency.
+
+    PyMechanical loads the embedding library which automatically sets
+    these Paths, but this uses the PATH environment variable which doesn't
+    work for Windows store Python.
+
+    We provide a workaround for versions 2024R2 and 2025R1 that sets
+    these paths using `os.add_dll_directory`.
+
+    Note:   This workaround does not include DLL paths used in FSI
+            mapping workflows.
+
+    Parameters
+    ----------
+    version : int
+        The version of Mechanical to set the DLL paths for.
+    """
+    # Nothing to do on Linux
+    if os.name != "nt":
+        return
+
+    # Nothing to do if it isn't a Windows store application
+    if r"Microsoft\WindowsApps" not in sys.executable:
+        return
+
+    # Get the AWP_ROOT environment variable for the specified version
+    awp_root = Path(os.environ[f"AWP_ROOT{version}"])
+    # Set paths to the aisol and framework DLLs
+    paths = [
+        awp_root / "aisol" / "bin" / "winx64",
+        awp_root / "Framework" / "bin" / "Win64",
+    ]
+    # Set the path to the tp directory within the AWP_ROOTXYZ directory
+    awp_root_tp = awp_root / "tp"
+    # Add paths to the IntelCompiler, IntelMKL, HDF5, and Qt DLLs for 2024R2 and 2025R1
+    if version == 242:
+        paths.extend(
+            [
+                awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
+                awp_root_tp / "IntelMKL" / "2023.1.0" / "winx64",
+                awp_root_tp / "hdf5" / "1.12.2" / "winx64",
+                awp_root_tp / "qt" / "5.15.16" / "winx64" / "bin",
+            ]
+        )
+    elif version == 251:
+        paths.extend(
+            [
+                awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
+                awp_root_tp / "IntelMKL" / "2023.1.0" / "winx64",
+                awp_root_tp / "hdf5" / "1.12.2" / "winx64",
+                awp_root_tp / "qt" / "5.15.17" / "winx64" / "bin",
+            ]
+        )
+    else:
+        return
+
+    # Add each path to the DLL search path
+    for path in paths:
+        os.add_dll_directory(str(path))
+
+
 def __set_environment(version: int) -> None:
     """Set environment variables to configure embedding."""
     if os.name == "nt":  # pragma: no cover
@@ -187,6 +255,8 @@ def initialize(version: int = None):
     __check_for_mechanical_env()  # checks for mechanical-env in linux embedding
 
     __set_environment(version)
+
+    __windows_store_workaround(version)
 
     __check_loaded_libs(version)
 
