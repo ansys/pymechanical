@@ -1,10 +1,6 @@
 
 .. title:: PyMechanical
 
-.. meta::
-    :physics: Structure
-
-
 .. image:: /_static/logo/pymechanical-logo-light.png
    :class: only-light
    :alt: PyMechanical Logo Light
