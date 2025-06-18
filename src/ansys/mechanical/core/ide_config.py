@@ -47,7 +47,7 @@ def get_stubs_location():
     site_packages_regex = re.compile(f"{prefix_path}.*site-packages$")
     site_packages_paths = list(filter(site_packages_regex.match, site_packages))
 
-    if len(site_packages_paths) == 1:
+    if len(site_packages_paths) >= 1:
         # Get the stubs location
         stubs_location = Path(site_packages_paths[0]) / "ansys" / "mechanical" / "stubs"
         return stubs_location
