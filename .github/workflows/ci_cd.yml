@@ -7,6 +7,7 @@ on:
       revn:
         type: choice
         options:
+        - '261'
         - '252'
         - '251'
         - '242'
@@ -35,10 +36,10 @@ env:
   DOCKER_MECH_CONTAINER_NAME: mechanical
   PACKAGE_NAME: ansys-mechanical-core
   DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
-  MAIN_PYTHON_VERSION: '3.11'
+  MAIN_PYTHON_VERSION: '3.12'
   # DEV_REVN & its Docker image are used in scheduled or registry package runs
   STABLE_REVN: '251'
-  DEV_REVN: '252'
+  DEV_REVN: '261'
   LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
   ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
 
@@ -55,7 +56,7 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: ansys/actions/doc-deploy-changelog@v9
+      - uses: ansys/actions/doc-deploy-changelog@v10
         with:
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
           bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
@@ -66,7 +67,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: PyAnsys code style checks
-        uses: ansys/actions/code-style@v9
+        uses: ansys/actions/code-style@v10
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
@@ -75,7 +76,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: PyAnsys documentation style checks
-        uses: ansys/actions/doc-style@v9
+        uses: ansys/actions/doc-style@v10
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -85,7 +86,7 @@ jobs:
     steps:
       - name: PyAnsys Vulnerability check (on main)
         if: github.ref == 'refs/heads/main'
-        uses: ansys/actions/check-vulnerabilities@v9
+        uses: ansys/actions/check-vulnerabilities@v10
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           python-package-name: ${{ env.PACKAGE_NAME }}
@@ -93,7 +94,7 @@ jobs:
 
       - name: PyAnsys Vulnerability check (on dev mode)
         if: github.ref != 'refs/heads/main'
-        uses: ansys/actions/check-vulnerabilities@v9
+        uses: ansys/actions/check-vulnerabilities@v10
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           python-package-name: ${{ env.PACKAGE_NAME }}
@@ -116,7 +117,7 @@ jobs:
             os: macos-latest
     steps:
       - name: Build wheelhouse and perform smoke test
-        uses: ansys/actions/build-wheelhouse@v9
+        uses: ansys/actions/build-wheelhouse@v10
         with:
           library-name: ${{ env.PACKAGE_NAME }}
           operating-system: ${{ matrix.os }}
@@ -234,7 +235,7 @@ jobs:
           echo "::endgroup::"
 
       - name: Testing
-        uses: ansys/actions/tests-pytest@v9
+        uses: ansys/actions/tests-pytest@v10
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           pytest-markers: '-m remote_session_connect'
@@ -819,7 +820,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build library source and wheel artifacts
-        uses: ansys/actions/build-library@v9
+        uses: ansys/actions/build-library@v10
         with:
           library-name: ${{ env.PACKAGE_NAME }}
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
@@ -831,16 +832,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Release to the public PyPI repository
-        uses: ansys/actions/release-pypi-public@v9
+        uses: ansys/actions/release-pypi-public@v10
         with:
           library-name: ${{ env.PACKAGE_NAME }}
           twine-username: "__token__"
           twine-token: ${{ secrets.PYPI_TOKEN }}
 
       - name: Release to GitHub
-        uses: ansys/actions/release-github@v9
+        uses: ansys/actions/release-github@v10
         with:
           library-name: ${{ env.PACKAGE_NAME }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   upload_dev_docs:
     name: Upload dev documentation
@@ -849,7 +851,7 @@ jobs:
     needs: [package]
     steps:
       - name: Deploy the latest documentation
-        uses: ansys/actions/doc-deploy-dev@v9
+        uses: ansys/actions/doc-deploy-dev@v10
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -863,7 +865,7 @@ jobs:
     needs: [release]
     steps:
       - name: Deploy the stable documentation
-        uses: ansys/actions/doc-deploy-stable@v9
+        uses: ansys/actions/doc-deploy-stable@v10
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
