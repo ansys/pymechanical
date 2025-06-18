@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2023 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -25,41 +25,41 @@
 3D visualization
 ----------------
 
-Visualize 3D imported geometry
+The following example demonstrates how to visualize imported geometry in 3D.
 """
 
 # %%
-# Import necessary libraries
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+# Import the necessary libraries
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 from ansys.mechanical.core import App
 from ansys.mechanical.core.examples import delete_downloads, download_file
 
 # %%
-# Embed mechanical and set global variables
+# Initialize the embedded application
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-app = App()
-app.update_globals(globals())
+app = App(globals=globals())
 print(app)
 
+# %%
+# Download and import the geometry file
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # %%
-# Download and import geometry
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Download geometry
-
+# Download the geometry file
 geometry_path = download_file("Valve.pmdb", "pymechanical", "embedding")
 
 # %%
-# Import geometry
+# Define the model and import the geometry file
+model = app.Model
 
-geometry_import = Model.GeometryImportGroup.AddGeometryImport()
+geometry_import = model.GeometryImportGroup.AddGeometryImport()
 geometry_import.Import(geometry_path)
 
 # %%
-# Visualize in 3D
-# ~~~~~~~~~~~~~~~
+# Visualize the model in 3D
+# ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 app.plot()
 
@@ -68,8 +68,11 @@ app.plot()
 #     This visualization is currently available only for geometry and on version 24R2 or later
 
 # %%
-# Cleanup
-# ~~~~~~~
+# Clean up the files and app
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+# Delete the downloaded files
 delete_downloads()
-app.new()
+
+# Close the app
+app.close()

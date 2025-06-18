@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2023 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -25,35 +25,42 @@
 Export image
 ------------
 
-Export image and display
+The following example demonstrates how to export an image of the imported geometry
+and display it using matplotlib.
 """
 
 # %%
-# Import necessary libraries
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Import the necessary libraries
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-import os
+from pathlib import Path
 
 from ansys.mechanical.core import App
 from ansys.mechanical.core.examples import delete_downloads, download_file
 
 # %%
-# Embed Mechanical and set global variables
+# Initialize the embedded application
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+# Create an instance of the App class
 app = App()
+
+# Update the global variables
 app.update_globals(globals())
+
+# Print the app to ensure it is working
 print(app)
 
+# %%
+# Download and import the geometry file
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # %%
-# Download and import geometry
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Download geometry
-
+# Download the geometry file
 geometry_path = download_file("Valve.pmdb", "pymechanical", "embedding")
 
 # %%
-# Import geometry
+# Import the geometry file
 
 geometry_import = Model.GeometryImportGroup.AddGeometryImport()
 geometry_import.Import(geometry_path)
@@ -62,13 +69,13 @@ geometry_import.Import(geometry_path)
 # Configure graphics for image export
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Orientation
-Graphics.Camera.SetSpecificViewOrientation(ViewOrientationType.Iso)
+# Set the orientation of the camera
+ExtAPI.Graphics.Camera.SetSpecificViewOrientation(ViewOrientationType.Iso)
 
-# Export format
+# Set the image export format
 image_export_format = GraphicsImageExportFormat.PNG
 
-# Resolution and background
+# Configure the export settings for the image
 settings_720p = Ansys.Mechanical.Graphics.GraphicsImageExportSettings()
 settings_720p.Resolution = GraphicsResolutionType.EnhancedResolution
 settings_720p.Background = GraphicsBackgroundType.White
@@ -76,24 +83,34 @@ settings_720p.Width = 1280
 settings_720p.Height = 720
 settings_720p.CurrentGraphicsDisplay = False
 
-# Rotate the geometry if needed
-ExtAPI.Graphics.Camera.Rotate(180, CameraAxisType.ScreenY)
-
+# Rotate the geometry on the Y-axis
+Graphics.Camera.Rotate(180, CameraAxisType.ScreenY)
 
 # %%
-# Custom function for displaying the image
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Create a function to display the image
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 from matplotlib import image as mpimg
 from matplotlib import pyplot as plt
 
-# Temporary directory to save the image
-cwd = os.path.join(os.getcwd(), "out")
+# Directory to save the image
+output_path = Path.cwd() / "out"
 
 
-def display_image(image_name):
+def display_image(image_name) -> None:
+    """Display the image using matplotlib.
+
+    Parameters
+    ----------
+    image_name : str
+        The name of the image file to display.
+    """
+    # Create the full path to the image
+    image_path = output_path / image_name
+
+    # Plot the figure and display the image
     plt.figure(figsize=(16, 9))
-    plt.imshow(mpimg.imread(os.path.join(cwd, image_name)))
+    plt.imshow(mpimg.imread(str(image_path)))
     plt.xticks([])
     plt.yticks([])
     plt.axis("off")
@@ -104,17 +121,22 @@ def display_image(image_name):
 # Export and display the image
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Fits the geometry in the viewing area
+# Fit the geometry in the viewing area
 Graphics.Camera.SetFit()
 
-Graphics.ExportImage(os.path.join(cwd, "geometry.png"), image_export_format, settings_720p)
+# Export the image
+geometry_image = output_path / "geometry.png"
+Graphics.ExportImage(str(geometry_image), image_export_format, settings_720p)
 
-# Display the image using matplotlib
-display_image("geometry.png")
+# Display the image
+display_image(geometry_image.name)
 
 # %%
-# Cleanup
-# ~~~~~~~
+# Clean up the downloaded files and app
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+# Delete the downloaded files
 delete_downloads()
-app.new()
+
+# Close the app
+app.close()
