@@ -27,7 +27,7 @@ classifiers = [
 ]
 dependencies = [
     "ansys-api-mechanical==0.1.2",
-    "ansys-mechanical-env==0.1.12",
+    "ansys-mechanical-env==0.1.14",
     "ansys-mechanical-stubs==0.1.6",
     "ansys-pythonnet>=3.1.0rc6",
     "ansys-tools-path>=0.3.1",
@@ -58,7 +58,7 @@ tests = [
 doc = [
     "sphinx==8.2.3",
     "ansys-sphinx-theme[autoapi,changelog]==1.5.2",
-    "grpcio==1.72.1",
+    "grpcio==1.73.0",
     "imageio-ffmpeg==0.6.0",
     "imageio==2.37.0",
     "jupyter_sphinx==0.5.3",
