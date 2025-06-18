@@ -331,11 +331,13 @@ if switcher_version != "dev":
 
 # -- Add meta directive for structure physics --------------------------------
 
+
 def add_meta_directive(app, docname, source):
     meta_line = "\n.. meta::\n   :physics: Structure\n"
 
     if ":physics: Structure" not in source[0]:
         source[0] = meta_line + source[0]
+
 
 def setup(app):
     app.connect("source-read", add_meta_directive)
