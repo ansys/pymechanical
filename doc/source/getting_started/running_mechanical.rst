@@ -192,7 +192,7 @@ for the `launch_mechanical()`_ method.
     from ansys.mechanical.core import launch_mechanical
 
     exec_loc = "C:/Program Files/ANSYS Inc/v251/aisol/bin/winx64/AnsysWBU.exe"
-    mechanical = launch_mechanical(exec_loc)
+    mechanical = launch_mechanical(exec_file=exec_loc)
 
 **On Linux**
 
@@ -201,7 +201,7 @@ for the `launch_mechanical()`_ method.
     from ansys.mechanical.core import launch_mechanical
 
     exec_loc = "/usr/ansys_inc/v251/aisol/.workbench"
-    mechanical = launch_mechanical(exec_loc)
+    mechanical = launch_mechanical(exec_file=exec_loc)
 
 If, when using the `launch_mechanical()`_
 method, Mechanical still fails to launch or hangs while launching, pass the
