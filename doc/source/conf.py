@@ -60,7 +60,6 @@ extensions = [
     "sphinx_autodoc_typehints",
     "sphinx_copybutton",
     "sphinx_design",
-    "sphinxemoji.sphinxemoji",
 ]
 
 if pymechanical.BUILDING_GALLERY:
