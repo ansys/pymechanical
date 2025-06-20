@@ -75,6 +75,11 @@ doc = [
     "sphinx-notfound-page==1.1.0",
     "sphinxcontrib-websupport==2.0.0",
 ]
+# Viz option will be removed in future versions
+viz = [
+    "ansys-tools-visualization-interface>=0.2.6",
+    "usd-core==25.5.1",
+]
 graphics = [
     "ansys-tools-visualization-interface>=0.2.6",
     "usd-core==25.5.1",
