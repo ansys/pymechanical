@@ -9,6 +9,81 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.20 <https://github.com/ansys/pymechanical/releases/tag/v0.11.20>`_ - June 23, 2025
+========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Consider multiple `site-packages` folders
+          - `#1187 <https://github.com/ansys/pymechanical/pull/1187>`_
+
+        * - Use the version number if the release name is not found
+          - `#1191 <https://github.com/ansys/pymechanical/pull/1191>`_
+
+
+  .. tab-item:: Documentation
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add physics meta tag
+          - `#1196 <https://github.com/ansys/pymechanical/pull/1196>`_
+
+        * - Update `launch_mechanical` api usage examples
+          - `#1197 <https://github.com/ansys/pymechanical/pull/1197>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - update CHANGELOG for v0.11.18
+          - `#1179 <https://github.com/ansys/pymechanical/pull/1179>`_
+
+        * - Bump grpcio from 1.70.0 to 1.72.1 in the core group
+          - `#1180 <https://github.com/ansys/pymechanical/pull/1180>`_
+
+        * - Bump pytest from 8.3.5 to 8.4.0 in the tests group
+          - `#1181 <https://github.com/ansys/pymechanical/pull/1181>`_
+
+        * - Bump the doc group with 2 updates
+          - `#1182 <https://github.com/ansys/pymechanical/pull/1182>`_
+
+        * - Bump ansys/actions from 9 to 10
+          - `#1185 <https://github.com/ansys/pymechanical/pull/1185>`_
+
+        * - Bump pandas from 2.2.3 to 2.3.0 in the doc group
+          - `#1186 <https://github.com/ansys/pymechanical/pull/1186>`_
+
+        * - Update docker image version for nightly run
+          - `#1188 <https://github.com/ansys/pymechanical/pull/1188>`_
+
+        * - Bump pytest-cov from 6.1.1 to 6.2.1 in the tests group
+          - `#1192 <https://github.com/ansys/pymechanical/pull/1192>`_
+
+        * - Bump the core group with 2 updates
+          - `#1193 <https://github.com/ansys/pymechanical/pull/1193>`_
+
+        * - Bump panel from 1.6.1 to 1.7.1 in the doc group
+          - `#1194 <https://github.com/ansys/pymechanical/pull/1194>`_
+
+        * - Increase timeout for pytests in ci/cd
+          - `#1198 <https://github.com/ansys/pymechanical/pull/1198>`_
+
+        * - Upload docs using the bot's token
+          - `#1200 <https://github.com/ansys/pymechanical/pull/1200>`_
+
+
 `0.11.18 <https://github.com/ansys/pymechanical/releases/tag/v0.11.18>`_ - June 01, 2025
 ========================================================================================
 
