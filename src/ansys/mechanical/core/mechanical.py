@@ -1924,7 +1924,7 @@ def launch_grpc(
     Launch Mechanical using a specified executable file.
 
     >>> exec_file_path = 'C:/Program Files/ANSYS Inc/v251/aisol/bin/win64/AnsysWBU.exe'
-    >>> mechanical = launch_mechanical(exec_file_path)
+    >>> mechanical = launch_mechanical(exec_file=exec_file_path)
 
     """
     # verify version
@@ -2165,7 +2165,7 @@ def launch_mechanical(
     Launch Mechanical using a specified executable file.
 
     >>> exec_file_path = 'C:/Program Files/ANSYS Inc/v251/aisol/bin/win64/AnsysWBU.exe'
-    >>> mech = launch_mechanical(exec_file_path)
+    >>> mech = launch_mechanical(exec_file=exec_file_path)
 
     Connect to an existing Mechanical instance at IP address ``192.168.1.30`` on port
     ``50001``.
