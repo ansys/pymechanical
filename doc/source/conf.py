@@ -333,9 +333,9 @@ if switcher_version != "dev":
 
 def add_meta_directive(app, docname, source):
     """Add a meta directive for structure physics to the first line of the source."""
-    meta_line = "\n.. meta::\n   :physics: Structure\n"
+    meta_line = "\n.. meta::\n   :physics: Structures\n"
 
-    if ":physics: Structure" not in source[0]:
+    if ":physics: Structures" not in source[0]:
         source[0] = meta_line + source[0]
 
 
