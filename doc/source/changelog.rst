@@ -9,6 +9,41 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.21 <https://github.com/ansys/pymechanical/releases/tag/v0.11.21>`_ - June 24, 2025
+========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Documentation
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update the meta tag typo
+          - `#1204 <https://github.com/ansys/pymechanical/pull/1204>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update doc dependencies
+          - `#1199 <https://github.com/ansys/pymechanical/pull/1199>`_
+
+        * - Update changelog for v0.11.20
+          - `#1201 <https://github.com/ansys/pymechanical/pull/1201>`_
+
+        * - Pre-commit automatic update
+          - `#1202 <https://github.com/ansys/pymechanical/pull/1202>`_
+
+        * - Bump pytest from 8.4.0 to 8.4.1 in the tests group
+          - `#1203 <https://github.com/ansys/pymechanical/pull/1203>`_
+
+
 `0.11.20 <https://github.com/ansys/pymechanical/releases/tag/v0.11.20>`_ - June 23, 2025
 ========================================================================================
 
