@@ -1,5 +1,4 @@
 # Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
-
 # SPDX-License-Identifier: MIT
 #
 #
@@ -21,40 +20,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .geo import GeometryGroup
 
-"""Model and geometry apis."""
-
-
-class Model:
-    """Model object."""
+class MaterialManager:
+    """Handles material imports for the project."""
 
     def __init__(self, app):
-        """Initialize the model with the application instance."""
         self.app = app
+        self.materials_obj = "ExtAPI.DataModel.Project.Model.Materials"
 
-    def add_geometry_group(self, name: str):
-        """Add a geometry import group to the model."""
-        self.app.run_python_script(f"{name} = Model.GeometryImportGroup.AddGeometryImport()")
-        return GeometryGroup(self.app, name)
+    def import_material(self, file_path: str):
+        """Import a single material file."""
+        script = f"{self.materials_obj}.Import(r'{file_path}')"
+        self.app.run_python_script(script)
 
-    def add_static_structural_analysis(self):
-        """Add a static structural analysis to the model."""
-        self.app.run_python_script("analysis = Model.AddStaticStructuralAnalysis()")
-        return Analysis(self.app, "StaticStructural")
-
-    def add_steady_state_thermal_analysis(self):
-        """Add a steady state thermal analysis to the model."""
-        self.app.run_python_script("analysis = Model.AddSteadyStateThermalAnalysis()")
-        return Analysis(self.app, "SteadyStateThermal")
-
-
-class Analysis:
-    """Represents an analysis in the model."""
-
-    def __init__(self, app, analysis_type: str):
-        self.app = app
-        self.analysis_type = analysis_type
-
-    def __repr__(self):
-        return f"<Analysis: {self.analysis_type}>"
+    def import_multiple(self, *file_paths: str):
+        """Import multiple material files."""
+        for path in file_paths:
+            self.import_material(path)

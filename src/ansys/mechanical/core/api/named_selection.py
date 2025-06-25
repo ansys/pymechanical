@@ -1,5 +1,4 @@
 # Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
-
 # SPDX-License-Identifier: MIT
 #
 #
@@ -21,40 +20,40 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .geo import GeometryGroup
-
-"""Model and geometry apis."""
-
-
-class Model:
-    """Model object."""
+class NamedSelectionManager:
+    """Handles creation of named selections."""
 
     def __init__(self, app):
-        """Initialize the model with the application instance."""
         self.app = app
 
-    def add_geometry_group(self, name: str):
-        """Add a geometry import group to the model."""
-        self.app.run_python_script(f"{name} = Model.GeometryImportGroup.AddGeometryImport()")
-        return GeometryGroup(self.app, name)
+    def create_from_ids(self, name: str, body_ids: list[int]):
+        """
+        Create a named selection using a list of body IDs, directly passed into script.
+        """
+        script = f"""
+body_ids = {body_ids}  # Injected directly
 
-    def add_static_structural_analysis(self):
-        """Add a static structural analysis to the model."""
-        self.app.run_python_script("analysis = Model.AddStaticStructuralAnalysis()")
-        return Analysis(self.app, "StaticStructural")
+selection = ExtAPI.SelectionManager.CreateSelectionInfo(SelectionTypeEnum.GeometryEntities)
+selection.Ids = body_ids
+ExtAPI.SelectionManager.NewSelection(selection)
 
-    def add_steady_state_thermal_analysis(self):
-        """Add a steady state thermal analysis to the model."""
-        self.app.run_python_script("analysis = Model.AddSteadyStateThermalAnalysis()")
-        return Analysis(self.app, "SteadyStateThermal")
+named_sel = ExtAPI.DataModel.Project.Model.AddNamedSelection()
+named_sel.Name = "{name}"
+named_sel.Location = selection
 
+ExtAPI.SelectionManager.ClearSelection()
+"""
+        self.app.run_python_script(script)
 
-class Analysis:
-    """Represents an analysis in the model."""
+    def list_all(self) -> list[str]:
+        import json
 
-    def __init__(self, app, analysis_type: str):
-        self.app = app
-        self.analysis_type = analysis_type
-
-    def __repr__(self):
-        return f"<Analysis: {self.analysis_type}>"
+        script = """
+import json
+ns_list = ExtAPI.DataModel.Project.Model.NamedSelections.GetChildren[
+    Ansys.ACT.Automation.Mechanical.NamedSelection
+](True)
+json.dumps([ns.Name for ns in ns_list])
+"""
+        json_str = self.app.run_python_script(script)
+        return json.loads(json_str)

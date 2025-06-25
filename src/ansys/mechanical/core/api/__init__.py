@@ -23,4 +23,4 @@
 """public apis."""
 
 
-from .model import Model
+from .project import Project
