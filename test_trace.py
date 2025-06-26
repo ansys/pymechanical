@@ -77,3 +77,8 @@ delete_downloads()
 # Cons
 # - Unable to interact with objects in the UI
 # - File transfer is complicated
+
+
+#TODO
+# similar to act apis ( model.named_selections)
+# add error handling
