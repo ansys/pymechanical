@@ -37,7 +37,7 @@ def test_app_library(embedded_app):
     _version = embedded_app.version
 
     # Test with version as input
-    exe = get_mechanical_path(_version)
+    exe = get_mechanical_path(version=embedded_app.version)
     while os.path.basename(exe) != f"v{_version}":
         exe = os.path.dirname(exe)
     exe = exe.replace("\\\\", "\\")

@@ -75,7 +75,7 @@ You can use the ``additional_switches`` keyword argument to specify additional a
 
     custom_exec = "/usr/ansys_inc/v251/aisol/.workbench"
     add_switch = f"-featureflags mechanical.material.import;"
-    mechanical = launch_mechanical(additional_switches=add_switch)
+    mechanical = launch_mechanical(exec_file=custom_exec, additional_switches=add_switch)
 
 API reference
 ~~~~~~~~~~~~~
