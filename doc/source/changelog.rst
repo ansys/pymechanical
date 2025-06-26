@@ -9,6 +9,35 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.22 <https://github.com/ansys/pymechanical/releases/tag/v0.11.22>`_ - June 26, 2025
+========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add more versions to lite host
+          - `#1208 <https://github.com/ansys/pymechanical/pull/1208>`_
+
+        * - Change the name of the `warnings.py` file in embedding
+          - `#1209 <https://github.com/ansys/pymechanical/pull/1209>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update changelog for v0.11.21
+          - `#1206 <https://github.com/ansys/pymechanical/pull/1206>`_
+
+
 `0.11.21 <https://github.com/ansys/pymechanical/releases/tag/v0.11.21>`_ - June 24, 2025
 ========================================================================================
 
