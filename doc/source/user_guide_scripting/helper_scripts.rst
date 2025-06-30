@@ -338,24 +338,24 @@ Result Postprocessing
 ------------------------
 
 
-- `Clear Generated Data <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/v251/en/act_script/act_script_demo_post1.html>`_
-- `Evaluate all results <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/v251/en/act_script/act_script_demo_post2.html>`_
-- `Duplicate a Harmonic Result Object <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_duplicate_result_object.html>`_
-- `Scan Results, Suppress Any with Invalid Display Times, and Evaluate <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_scan_results.html>`_
-- `Rename Results Based on Definition <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/v251/en/act_script/act_script_demo_post2.html>`_
-- `Modify display options for inserted results <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/v251/en/act_script/act_script_demo_post2.html>`_
-- `Modify display options for user defined results <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/v251/en/act_script/act_script_demo_post2.html>`_
-- `Add Figure <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/v251/en/act_script/act_script_demo_post2.html>`_
-- `Work with Solution Combinations <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_solution_combinations.html>`_
-- `Retrieving Stress Results <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_retreive_stress_resutls.html>`_
-- `Tag and Group Result Objects Based on Scoping and Load Steps <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_result_objecdts_tag_and_group.html>`_
-- `Use an Existing Graphics Selection on a Result Object <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_use_graphics_selection.html>`_
-- `Rescope a Solved Result Based on the Active Node or Element Selection <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_rescope.html>`_
-- `Creating Probe Principal Stresses from a Node Selection <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_probe_principal.html>`_
-- `Finding Hot Spots <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_hot_spot.html>`_
-- `Working with Line Charts <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_line_chart.html>`_
-- `Access Contour Results for an Evaluated Result <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_access_contour_results_for_evaluated_result.html>`_
-- `Access Contour Results at Individual Nodes or Elements <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_access_contour_results_at_indiv_nodes_elements.html>`_
+- `Clear generated data <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_post1.html>`_
+- `Evaluate all results <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_post2.html>`_
+- `Duplicate a harmonic result object <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_duplicate_result_object.html>`_
+- `Scan results, suppress results with invalid display times, and evaluate the results <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_scan_results.html>`_
+- `Rename results based on definition <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_post2.html>`_
+- `Modify display options for inserted results <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_post2.html>`_
+- `Modify display options for user defined results <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_post2.html>`_
+- `Add a figure<https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_post2.html>`_
+- `Work with solution combinations <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_solution_combinations.html>`_
+- `Retrieve stress results <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_retreive_stress_resutls.html>`_
+- `Tag and group result objects based on scoping and load steps <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_result_objecdts_tag_and_group.html>`_
+- `Use an existing graphics selection on a result object <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_use_graphics_selection.html>`_
+- `Rescope a solved result based on the active node or element selection <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_rescope.html>`_
+- `Create probe principal stresses from a node selection <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_probe_principal.html>`_
+- `Find hot spots <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_hot_spot.html>`_
+- `Work with line charts <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_line_chart.html>`_
+- `Access contour results for an evaluated result <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_access_contour_results_for_evaluated_result.html>`_
+- `Access contour results at individual nodes or elements <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_access_contour_results_at_indiv_nodes_elements.html>`_
 
 
 
