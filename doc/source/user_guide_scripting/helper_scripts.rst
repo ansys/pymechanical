@@ -6,10 +6,10 @@ Script helpers
 This section provides a collection of scripting helpers in Ansys Mechanical, with quick links to relevant examples in the Mechanical Scripting Guide.
 
 
-General Setup
---------
-- `Set up the Display Unit System <https://ansyshelp.ansys.com/public/account/secured?returnurl=////Views/Secured/corp/v251/en/act_script/act_script_demo_rbd_contact.html>`_
-- `Logging an error message <https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v251/en/act_script/act_script_examples_suppress_duplicate_contacts.html>`_
+General setup
+-------------
+- `Set up the display unit system <https://ansyshelp.ansys.com/public/account/secured?returnurl=////Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_rbd_contact.html>`_
+- `Log an error message <https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_suppress_duplicate_contacts.html>`_
 
 Tree and Object Management
 --------
