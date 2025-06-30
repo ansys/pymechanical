@@ -383,7 +383,3 @@ Export and Visualization
 - `Export a result object to an STL file <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_export_result_object.html>`_
 - `Write contour results to a text file <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_write_contour_results_onto_file.html>`_
 
-
-
-
-
