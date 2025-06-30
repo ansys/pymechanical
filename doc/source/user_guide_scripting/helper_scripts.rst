@@ -1,7 +1,7 @@
 .. _ref_mechanical_scripting_guide_script_helpers:
 
-Script Helpers
-====================
+Script helpers
+==============
 
 This section provides a collection of a few scripting helpers in Ansys Mechanical, with quick links to relevant examples in the Mechanical Scripting Guide.
 
