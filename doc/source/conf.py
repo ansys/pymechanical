@@ -220,11 +220,11 @@ html_theme_options = {
     "navigation_depth": 10,
 }
 
-if BUILD_CHEATSHEET:
-    html_theme_options["cheatsheet"] = {
-        "file": "cheatsheet/cheat_sheet.qmd",
-        "title": "PyMechanical cheat sheet",
-    }
+# if BUILD_CHEATSHEET:
+#     html_theme_options["cheatsheet"] = {
+#         "file": "cheatsheet/cheat_sheet.qmd",
+#         "title": "PyMechanical cheat sheet",
+#     }
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
@@ -328,3 +328,15 @@ if switcher_version != "dev":
         f"https://github.com/ansys/pymechanical/releases/tag/v{pymechanical.__version__}"
     )
 
+
+def append_metatags(app, pagename, templatename, context, doctree):
+    # Make sure the context already has metatags
+    context["metatags"] = context.get("metatags", "")
+
+    # Append your custom tag
+    context["metatags"] += '    <meta name="physics" content="Structures" />'
+    
+    
+def setup(app):
+    """Add custom setup for the Sphinx application."""
+    app.connect("html-page-context", append_metatags)
