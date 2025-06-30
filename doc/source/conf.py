@@ -60,7 +60,6 @@ extensions = [
     "sphinx_autodoc_typehints",
     "sphinx_copybutton",
     "sphinx_design",
-    "sphinxemoji.sphinxemoji",
 ]
 
 if pymechanical.BUILDING_GALLERY:
@@ -221,11 +220,11 @@ html_theme_options = {
     "navigation_depth": 10,
 }
 
-# if BUILD_CHEATSHEET:
-#     html_theme_options["cheatsheet"] = {
-#         "file": "cheatsheet/cheat_sheet.qmd",
-#         "title": "PyMechanical cheat sheet",
-#     }
+if BUILD_CHEATSHEET:
+    html_theme_options["cheatsheet"] = {
+        "file": "cheatsheet/cheat_sheet.qmd",
+        "title": "PyMechanical cheat sheet",
+    }
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
