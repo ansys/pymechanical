@@ -22,7 +22,7 @@ from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMB
 pymechanical.BUILDING_GALLERY = True
 
 # Whether or not to build the cheatsheet
-BUILD_CHEATSHEET = True if os.environ.get("BUILD_CHEATSHEET", "true") == "true" else False
+BUILD_CHEATSHEET = True if os.environ.get("BUILD_EXAMPLES", "true") == "true" else False
 
 # suppress annoying matplotlib bug
 warnings.filterwarnings(
@@ -331,14 +331,14 @@ if switcher_version != "dev":
 # -- Add meta directive for structure physics --------------------------------
 
 
-def add_physics_meta_tag(app, pagename, templatename, context, doctree):
-    """Inject a <meta name="physics" content="Structures" /> tag into the page context."""
-    tag = '\n<meta name="physics" content="Structures" />'
-    if "metatags" in context and tag not in context["metatags"]:
-        # Insert our meta tag on its own line, before the others
-        context["metatags"] = tag + "\n" + context["metatags"].lstrip()
+def add_meta_directive(app, docname, source):
+    """Add a meta directive for structure physics to the first line of the source."""
+    meta_line = "\n.. meta::\n   :physics: Structures\n"
+
+    if ":physics: Structures" not in source[0]:
+        source[0] = meta_line + source[0]
 
 
 def setup(app):
     """Sphinx setup function."""
-    app.connect("html-page-context", add_physics_meta_tag)
+    app.connect("source-read", add_meta_directive)
