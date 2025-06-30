@@ -25,14 +25,14 @@ Tree and object management
 
 Geometry
 --------
-- `Get all parts <https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/v251/en/act_script/act_script_demo_Cyclic.html>`_
-- `Get the first body whose name contains the specified number <https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v251/en/act_script/act_script_examples_select_by_name.html>`_
-- `Find a Body by Name <https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/v251/en/act_script/act_script_demo_Cyclic.html>`_
-- `Select Geometry by IDs <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_select_geom_or_mesh.html>`_
-- `Given a GeoData body Id, Get the tree object of the body <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_get_tree_obj.html>`_
-- `Given a Tree Object of a Body, Get GeoData Body <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_get_GeoData.html>`_
-- `Suppress a body <https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/v251/en/act_script/act_script_demo_harmonic_acoustic.html>`_
-- `Get  Volume, Area, and Length in CAD units <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_calc_sum.html>`_
+- `Get all parts <https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_Cyclic.html>`_
+- `Get the first body whose name contains the specified number <https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_select_by_name.html>`_
+- `Find a body by name <https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_Cyclic.html>`_
+- `Select geometry by IDs <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_select_geom_or_mesh.html>`_
+- `Given a geodata body ID, get the tree object of the body <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_get_tree_obj.html>`_
+- `Given a tree object of a body, get the geodata body <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_get_GeoData.html>`_
+- `Suppress a body <https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_harmonic_acoustic.html>`_
+- `Get the volume, area, and length in CAD units <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_calc_sum.html>`_
 
 ------------------------
 
