@@ -73,7 +73,7 @@ Python API to interact with `Ansys Mechanical`_ (FEA software for structural eng
 
         Overview of Ansys Mechanical scripting.
 
-        :bdg-primary-line:`ACT` :bdg-primary-line:`Threading`
+        :bdg-primary-line:`ACT` :bdg-primary-line:`Threading` :bdg-primary-line:`Script Helpers`
 
     .. grid-item-card:: FAQs :fa:`fa-solid fa-circle-question`
         :padding: 2 2 2 2
