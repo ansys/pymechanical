@@ -60,6 +60,7 @@ extensions = [
     "sphinx_autodoc_typehints",
     "sphinx_copybutton",
     "sphinx_design",
+    "sphinxemoji.sphinxemoji",
 ]
 
 if pymechanical.BUILDING_GALLERY:
@@ -220,11 +221,11 @@ html_theme_options = {
     "navigation_depth": 10,
 }
 
-if BUILD_CHEATSHEET:
-    html_theme_options["cheatsheet"] = {
-        "file": "cheatsheet/cheat_sheet.qmd",
-        "title": "PyMechanical cheat sheet",
-    }
+# if BUILD_CHEATSHEET:
+#     html_theme_options["cheatsheet"] = {
+#         "file": "cheatsheet/cheat_sheet.qmd",
+#         "title": "PyMechanical cheat sheet",
+#     }
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
@@ -330,15 +331,12 @@ if switcher_version != "dev":
 
 # -- Add meta directive for structure physics --------------------------------
 
-
-def add_meta_directive(app, docname, source):
-    """Add a meta directive for structure physics to the first line of the source."""
-    meta_line = "\n.. meta::\n   :physics: Structures\n"
-
-    if ":physics: Structures" not in source[0]:
-        source[0] = meta_line + source[0]
-
+def add_physics_meta_tag(app, pagename, templatename, context, doctree):
+    """Inject a <meta name="physics" content="Structures" /> tag into the page context."""
+    tag = '\n<meta name="physics" content="Structures" />'
+    if 'metatags' in context and tag not in context['metatags']:
+        # Insert our meta tag on its own line, before the others
+        context['metatags'] = tag + '\n' + context['metatags'].lstrip()
 
 def setup(app):
-    """Sphinx setup function."""
-    app.connect("source-read", add_meta_directive)
+    app.connect("html-page-context", add_physics_meta_tag)
