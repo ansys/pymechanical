@@ -360,28 +360,28 @@ Result Postprocessing
 
 
 Export and Visualization
---------
+------------------------
 
-- `Graphics Settings <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/v251/en/act_script/act_script_demo_post1.html>`_
-- `Set Legend direction,ruler,triad <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/v251/en/act_script/act_script_demo_post1.html>`_
-- `Change Legend bands <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/v251/en/act_script/act_script_demo_post1.html>`_
-- `Add Section Plane <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/v251/en/act_script/act_script_demo_post1.html>`_
-- `Set View Orientation <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/v251/en/act_script/act_script_demo_post1.html>`_
-- `Modify Export Setting <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_modfiy_export_settings.html>`_
+- `Set graphics settings <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_post1.html>`_
+- `Set the legend direction, ruler, and triad <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_post1.html>`_
+- `Change legend bands <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_post1.html>`_
+- `Add a section plane <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_post1.html>`_
+- `Set the view orientation <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_post1.html>`_
+- `Modify export settings <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_modfiy_export_settings.html>`_
 
 ------------------------
 
 
-- `Export Figures <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_export_figures.html>`_
-- `Export Result Images to Files <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_export_result_images.html>`_
+- `Export figures <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_export_figures.html>`_
+- `Export result images to files <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_export_result_images.html>`_
 
 ------------------------
 
 
-- `Search for Keyword and Export <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_seach_keyword.html>`_
-- `Export All Result Animations <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_export_result_animations.html>`_
-- `Export a Result Object to an STL File <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_export_result_object.html>`_
-- `Write Contour Results to a Text File <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_write_contour_results_onto_file.html>`_
+- `Search for a keyword and export <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_seach_keyword.html>`_
+- `Export all result animations <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_export_result_animations.html>`_
+- `Export a result object to an STL file <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_export_result_object.html>`_
+- `Write contour results to a text file <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_write_contour_results_onto_file.html>`_
 
 
 
