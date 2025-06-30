@@ -327,4 +327,3 @@ if switcher_version != "dev":
     linkcheck_ignore.append(
         f"https://github.com/ansys/pymechanical/releases/tag/v{pymechanical.__version__}"
     )
-
