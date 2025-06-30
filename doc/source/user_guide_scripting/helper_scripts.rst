@@ -11,16 +11,16 @@ General setup
 - `Set up the display unit system <https://ansyshelp.ansys.com/public/account/secured?returnurl=////Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_rbd_contact.html>`_
 - `Log an error message <https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_suppress_duplicate_contacts.html>`_
 
-Tree and Object Management
---------
-- `Find a tree object by name using AllObjects <https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/v251/en/act_script/act_script_demo_steady_state_therm.html>`_
-- `Find a tree object by name using GetObjectsbyName <https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/v251/en/act_script/act_script_demo_steady_state_therm.html>`_
-- `Get objects whose name contains the specified string <https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v251/en/act_script/act_script_examples_select_by_name.html>`_
-- `Select Objects By Name <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_select_by_name.html>`_
-- `Get All Visible Properties for a Tree Object <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/mech_script_GetVisiblePropertiesForTreeObject.html>`_
-- `Parametrize a Property for a Tree Object <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/mech_script_ParameterizePropertyForTreeObject.html>`_
-- `Delete an Object <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_tree_delete_object.html>`_
-- `Refresh Tree and Pause Tree <https://ansyshelp.ansys.com/public/Views/Secured/corp/v251/en/act_script/act_script_examples_tree_refresh.html>`_
+Tree and object management
+--------------------------
+- `Find a tree object by name using AllObjects <https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_steady_state_therm.html>`_
+- `Find a tree object by name using GetObjectsbyName <https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_steady_state_therm.html>`_
+- `Get objects whose name contains the specified string <https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_select_by_name.html>`_
+- `Select objects by name <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_select_by_name.html>`_
+- `Get all visible properties for a tree object <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/mech_script_GetVisiblePropertiesForTreeObject.html>`_
+- `Parametrize a property for a tree object <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/mech_script_ParameterizePropertyForTreeObject.html>`_
+- `Delete an object <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_tree_delete_object.html>`_
+- `Refresh and pause a tree <https://ansyshelp.ansys.com/public/Views/Secured/corp/%%VERSION%%/en/act_script/act_script_examples_tree_refresh.html>`_
 
 
 Geometry
