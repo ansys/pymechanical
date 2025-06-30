@@ -330,12 +330,14 @@ if switcher_version != "dev":
 
 # -- Add meta directive for structure physics --------------------------------
 
+
 def add_physics_meta_tag(app, pagename, templatename, context, doctree):
     """Inject a <meta name="physics" content="Structures" /> tag into the page context."""
     tag = '\n<meta name="physics" content="Structures" />'
-    if 'metatags' in context and tag not in context['metatags']:
+    if "metatags" in context and tag not in context["metatags"]:
         # Insert our meta tag on its own line, before the others
-        context['metatags'] = tag + '\n' + context['metatags'].lstrip()
+        context["metatags"] = tag + "\n" + context["metatags"].lstrip()
+
 
 def setup(app):
     app.connect("html-page-context", add_physics_meta_tag)
