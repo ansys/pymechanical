@@ -330,6 +330,7 @@ if switcher_version != "dev":
 
 
 def append_metatags(app, pagename, templatename, context, doctree):
+    """Append custom metatags to the HTML context."""
     # Make sure the context already has metatags
     context["metatags"] = context.get("metatags", "")
 
