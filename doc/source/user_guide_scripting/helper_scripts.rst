@@ -321,19 +321,19 @@ Result Postprocessing
 ------------------------
 
 
-- `Add Acoustic Pressure Result <https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/v251/en/act_script/act_script_demo_harmonic_acoustic.html>`_
-- `Add Acoustic SPL Result <https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/v251/en/act_script/act_script_demo_harmonic_acoustic.html>`_
-- `Add Acoustic Far Field  SPL Result <https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/v251/en/act_script/act_script_demo_harmonic_acoustic.html>`_
-- `Add Acoustic Far Field  weighted SPL Result <https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/v251/en/act_script/act_script_demo_harmonic_acoustic.html>`_
+- `Add an acoustic pressure result <https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_harmonic_acoustic.html>`_
+- `Add an acoustic SPL result <https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_harmonic_acoustic.html>`_
+- `Add an acoustic far field SPL result <https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_harmonic_acoustic.html>`_
+- `Add an acoustic far field weighted SPL result <https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_harmonic_acoustic.html>`_
 
 ------------------------
 
 
-- `Add Directional Efield Intensity - Electric <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/v251/en/act_script/act_script_demo_electric.html>`_
-- `Add Directional Current Density - Electric <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/v251/en/act_script/act_script_demo_electric.html>`_
-- `Add Directional EMAG Reaction Force - Electric <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/v251/en/act_script/act_script_demo_electric.html>`_
-- `Add Voltage result - Electric <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/v251/en/act_script/act_script_demo_electric.html>`_
-- `Add Joule Heat - Electric <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/v251/en/act_script/act_script_demo_electric.html>`_
+- `Add an electric directional e-field intensity <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_electric.html>`_
+- `Add an electric directional current density <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_electric.html>`_
+- `Add an electric directional EMAG reaction force <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_electric.html>`_
+- `Add an electric voltage result <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_electric.html>`_
+- `Add electric joule heat <https://ansyshelp.ansys.com/public/account/secured?returnurl=///Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_electric.html>`_
 
 ------------------------
 
