@@ -313,10 +313,10 @@ Result Postprocessing
 
 
 
-- `Add Radiation Probe <https://ansyshelp.ansys.com/public/account/secured?returnurl=////Views/Secured/corp/v251/en/act_script/act_script_demo_thermal_electric.html>`_
-- `Add Temperature Result <https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/v251/en/act_script/act_script_demo_steady_state_therm.html>`_
-- `Add Total Heat Flux Result <https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/v251/en/act_script/act_script_demo_steady_state_therm.html>`_
-- `Add Reaction Probe - Convection BC <https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/v251/en/act_script/act_script_demo_steady_state_therm.html>`_
+- `Add a radiation probe <https://ansyshelp.ansys.com/public/account/secured?returnurl=////Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_thermal_electric.html>`_
+- `Add a temperature result <https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_steady_state_therm.html>`_
+- `Add a total heat flux result <https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_steady_state_therm.html>`_
+- `Add a convection BC reaction probe <https://ansyshelp.ansys.com/public/account/secured?returnurl=//Views/Secured/corp/%%VERSION%%/en/act_script/act_script_demo_steady_state_therm.html>`_
 
 ------------------------
 
