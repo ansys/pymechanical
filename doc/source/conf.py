@@ -328,17 +328,3 @@ if switcher_version != "dev":
         f"https://github.com/ansys/pymechanical/releases/tag/v{pymechanical.__version__}"
     )
 
-# -- Add meta directive for structure physics --------------------------------
-
-
-def add_meta_directive(app, docname, source):
-    """Add a meta directive for structure physics to the first line of the source."""
-    meta_line = "\n.. meta::\n   :physics: Structures\n"
-
-    if ":physics: Structures" not in source[0]:
-        source[0] = meta_line + source[0]
-
-
-def setup(app):
-    """Sphinx setup function."""
-    app.connect("source-read", add_meta_directive)
