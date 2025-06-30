@@ -335,8 +335,8 @@ def append_metatags(app, pagename, templatename, context, doctree):
 
     # Append your custom tag
     context["metatags"] += '    <meta name="physics" content="Structures" />'
-    
-    
+
+
 def setup(app):
     """Add custom setup for the Sphinx application."""
     app.connect("html-page-context", append_metatags)
