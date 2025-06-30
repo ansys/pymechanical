@@ -338,4 +338,5 @@ def add_physics_meta_tag(app, pagename, templatename, context, doctree):
         context['metatags'] = tag + '\n' + context['metatags'].lstrip()
 
 def setup(app):
+    """Sphinx setup function."""
     app.connect("html-page-context", add_physics_meta_tag)
