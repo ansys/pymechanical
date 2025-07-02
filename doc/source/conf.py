@@ -327,17 +327,3 @@ if switcher_version != "dev":
     linkcheck_ignore.append(
         f"https://github.com/ansys/pymechanical/releases/tag/v{pymechanical.__version__}"
     )
-
-
-def append_metatags(app, pagename, templatename, context, doctree):
-    """Append custom metatags to the HTML context."""
-    # Make sure the context already has metatags
-    context["metatags"] = context.get("metatags", "")
-
-    # Append your custom tag
-    context["metatags"] += '    <meta name="physics" content="Structures" />'
-
-
-def setup(app):
-    """Add custom setup for the Sphinx application."""
-    app.connect("html-page-context", append_metatags)
