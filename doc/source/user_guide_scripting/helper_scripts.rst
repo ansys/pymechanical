@@ -238,8 +238,8 @@ Solution setup
 - :ansyshelp:`Perform a solution while specifying the solution handler and the number of cores <act_script_examples_solve_track_core.html>`
 - :ansyshelp:`Solve <act_script_demo_static_struct.html>`
 
-Result post-processing
-----------------------
+Result postprocessing
+---------------------
 
 - :ansyshelp:`Add directional deformation <act_script_demo_general_joint.html>`
 - :ansyshelp:`Add directional deformation (scope to named selection) <act_script_demo_static_struct.html>`
@@ -251,7 +251,7 @@ Result post-processing
 - :ansyshelp:`Add equivalent plastic strain <act_script_demo_coupled_field_transient.html>`
 - :ansyshelp:`Add normal elastic strain <act_script_demo_random_vib.html>`
 - :ansyshelp:`Add a stress tool <act_script_demo_trans_struct.html>`
-- :ansyshelp:`Add a user defined result <act_script_demo_post2.html>`
+- :ansyshelp:`Add a user-defined result <act_script_demo_post2.html>`
 
 ------------------------
 
@@ -306,7 +306,7 @@ Result post-processing
 - :ansyshelp:`Scan results, suppress results with invalid display times, and evaluate the results <act_script_examples_scan_results.html>`
 - :ansyshelp:`Rename results based on definition <act_script_demo_post2.html>`
 - :ansyshelp:`Modify display options for inserted results <act_script_demo_post2.html>`
-- :ansyshelp:`Modify display options for user defined results <act_script_demo_post2.html>`
+- :ansyshelp:`Modify display options for user-defined results <act_script_demo_post2.html>`
 - :ansyshelp:`Add a figure <act_script_demo_post2.html>`
 - :ansyshelp:`Work with solution combinations <act_script_examples_solution_combinations.html>`
 - :ansyshelp:`Retrieve stress results <act_script_examples_retreive_stress_resutls.html>`
@@ -319,7 +319,7 @@ Result post-processing
 - :ansyshelp:`Access contour results for an evaluated result <act_script_examples_access_contour_results_for_evaluated_result.html>`
 - :ansyshelp:`Access contour results at individual nodes or elements <act_script_examples_access_contour_results_at_indiv_nodes_elements.html>`
 
-Export and Visualization
+Export and visualization
 ------------------------
 
 - :ansyshelp:`Set graphics settings <act_script_demo_post1.html>`
