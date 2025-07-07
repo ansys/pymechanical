@@ -41,6 +41,7 @@ mutexes
 namespaces
 OptiSLang
 pessimizations
+postprocessing
 PyAnsys
 pyansys
 PyMechanical
