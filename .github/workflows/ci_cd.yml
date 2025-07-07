@@ -379,7 +379,7 @@ jobs:
         run: |
           apt update
           apt install --reinstall ca-certificates
-          apt install lsb-release xvfb software-properties-common -y
+          apt install lsb-release xvfb software-properties-common git -y
           add-apt-repository ppa:deadsnakes/ppa -y
           apt install -y python${{ matrix.python-version }} python${{ matrix.python-version }}-venv
           python${{ matrix.python-version }} -m venv /env
@@ -390,6 +390,7 @@ jobs:
           pip install --upgrade pip
           pip install uv
           uv pip install -e .[tests]
+          uv pip install git+https://github.com/ansys/pymechanical-env.git@fix/return
 
       - name: Unit Testing and coverage
         env:
@@ -453,7 +454,7 @@ jobs:
         run: |
           apt update
           apt install --reinstall ca-certificates
-          apt install lsb-release xvfb software-properties-common -y
+          apt install lsb-release xvfb software-properties-common git -y
           add-apt-repository ppa:deadsnakes/ppa -y
           apt install -y python${{ matrix.python-version }} python${{ matrix.python-version }}-venv
           python${{ matrix.python-version }} -m venv /env
@@ -464,6 +465,7 @@ jobs:
           pip install --upgrade pip
           pip install uv
           uv pip install -e .[tests]
+          uv pip install git+https://github.com/ansys/pymechanical-env.git@fix/return
 
       - name: Embedding scripts unit testing and coverage
         env:
