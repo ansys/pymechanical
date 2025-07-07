@@ -57,14 +57,14 @@ tests = [
 ]
 doc = [
     "sphinx==8.2.3",
-    "ansys-sphinx-theme[autoapi,changelog]==1.5.2",
+    "ansys-sphinx-theme[autoapi,changelog]==1.5.3",
     "imageio-ffmpeg==0.6.0",
     "imageio==2.37.0",
     "jupyter_sphinx==0.5.3",
     "jupyterlab>=3.2.8",
     "matplotlib==3.10.3",
     "numpy==2.2.6",
-    "numpydoc==1.8.0",
+    "numpydoc==1.9.0",
     "pypandoc==1.15",
     "pyvista>=0.39.1",
     "sphinx-autobuild==2024.10.3",
