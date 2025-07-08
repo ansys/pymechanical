@@ -9,6 +9,41 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.26 <https://github.com/ansys/pymechanical/releases/tag/v0.11.26>`_ - July 08, 2025
+========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Documentation
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add page with script helpers
+          - `#1214 <https://github.com/ansys/pymechanical/pull/1214>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update changelog for v0.11.24
+          - `#1218 <https://github.com/ansys/pymechanical/pull/1218>`_
+
+        * - Add security file
+          - `#1219 <https://github.com/ansys/pymechanical/pull/1219>`_
+
+        * - Bump ansys-mechanical-env from 0.1.14 to 0.1.15 in the core group
+          - `#1221 <https://github.com/ansys/pymechanical/pull/1221>`_
+
+        * - Update changelog for v0.11.25
+          - `#1224 <https://github.com/ansys/pymechanical/pull/1224>`_
+
+
 `0.11.25 <https://github.com/ansys/pymechanical/releases/tag/v0.11.25>`_ - July 03, 2025
 ========================================================================================
 
