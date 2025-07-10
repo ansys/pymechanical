@@ -2,8 +2,6 @@ from ansys.mechanical.core import launch_mechanical
 from ansys.mechanical.core.api import Project
 from ansys.mechanical.core.examples import delete_downloads, download_file
 
-# Download the required files
-# ---------------------------
 all_input_files = {
     "geometry_file_name": "example_09_pcb.agdb",
     "def_file": "example_09_edb.def",
