@@ -210,6 +210,10 @@ class App:
                 # Open the mechdb file if provided
                 if db_file is not None:
                     self.open(db_file)
+                num_cores = os.environ.get("NUM_CORES", None)
+                if num_cores is not None:
+                    config = instance.ExtAPI.Application.SolveConfigurations["My Computer"]
+                    config.SolveProcessSettings.MaxNumberOfCores = int(num_cores)
                 return
         if len(INSTANCES) > 0:
             raise Exception("Cannot have more than one embedded mechanical instance!")
