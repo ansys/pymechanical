@@ -65,6 +65,7 @@ def _bind_assembly_for_explicit_interface(assembly_name: str):
 
     binding_options = BindingOptions()
     binding_options.AllowExplicitInterfaceImplementation = True
+    binding_options.Pep8Aliases = True
     BindingManager.SetBindingOptions(assembly, binding_options)
 
 

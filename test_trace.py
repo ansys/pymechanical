@@ -16,7 +16,7 @@ for file_type, file_name in all_input_files.items():
 
 # Launch the Mechanical application
 # ---------------------------------
-app = launch_mechanical(exec_file=r"D:\ANSYSDev\Product\NoBackup\ANSYS Inc\v251\aisol\bin\winx64\AnsysWBU.exe", batch=False, cleanup_on_exit=False)
+app = launch_mechanical(batch=False, cleanup_on_exit=False)
 print(app)
 project = Project(app)
 
@@ -69,16 +69,3 @@ project.externaldata.import_ecad_trace(
 
 # Delete downloads to clean up
 delete_downloads()
-
-
-# Pros
-# - UI support
-
-# Cons
-# - Unable to interact with objects in the UI
-# - File transfer is complicated
-
-
-#TODO
-# similar to act apis ( model.named_selections)
-# add error handling
