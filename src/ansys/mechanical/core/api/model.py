@@ -40,12 +40,12 @@ class Model:
 
     def add_static_structural_analysis(self):
         """Add a static structural analysis to the model."""
-        self.app.run_python_script("analysis = Model.AddStaticStructuralAnalysis()")
+        self.app.run_python_script("Model.AddStaticStructuralAnalysis()")
         return Analysis(self.app, "StaticStructural")
 
     def add_steady_state_thermal_analysis(self):
         """Add a steady state thermal analysis to the model."""
-        self.app.run_python_script("analysis = Model.AddSteadyStateThermalAnalysis()")
+        self.app.run_python_script("Model.AddSteadyStateThermalAnalysis()")
         return Analysis(self.app, "SteadyStateThermal")
 
 
@@ -58,3 +58,4 @@ class Analysis:
 
     def __repr__(self):
         return f"<Analysis: {self.analysis_type}>"
+    
