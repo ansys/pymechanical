@@ -469,6 +469,11 @@ This may corrupt the project file.",
     def Model(self) -> Ansys.ACT.Automation.Mechanical.Model:
         """Return the Model object."""
         return GetterWrapper(self._app, lambda app: app.DataModel.Project.Model)
+    
+    @property
+    def model(self) -> Ansys.ACT.Automation.Mechanical.Model:
+        """Return the Model object."""
+        return GetterWrapper(self._app, lambda app: app.DataModel.Project.Model)
 
     @property
     def Graphics(self) -> Ansys.ACT.Common.Graphics.MechanicalGraphicsWrapper:

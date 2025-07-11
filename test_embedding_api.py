@@ -29,10 +29,6 @@ geometry_path = download_file(
     "example_06_bolt_pret_geom.agdb", "pymechanical", "00_basic"
 )
 
-# Import/reload the geometry from the CAD (.agdb) file using the provided preferences
-geometry_import.Import(
-    geometry_path, Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.Format.Automatic, geometry_import_preferences
-)
 
 # This wont work
 geometry_import.import(

@@ -32,6 +32,13 @@ def global_entry_points(app: "ansys.mechanical.core.App") -> typing.Dict:
     vars["Model"] = app.DataModel.Project.Model
     vars["Tree"] = app.DataModel.Tree
     vars["Graphics"] = app.ExtAPI.Graphics
+    vars["model"] = vars["Model"]
+    vars["graphics"] = vars["Graphics"]
+    vars["tree"] = vars["Tree"]
+    vars["extapi"] = vars["ExtAPI"]
+    vars["data_model"] = vars["DataModel"]
+
+    #vars["model"] = app.DataModel.Project.Model
     return vars
 
 
