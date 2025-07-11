@@ -45,8 +45,20 @@ def __register_function_codec():
     Ansys.Mechanical.CPython.Codecs.FunctionCodec.Register()
 
 
-def _bind_assembly_for_explicit_interface(assembly_name: str):
-    """Bind the assembly for explicit interface implementation."""
+def _bind_assembly(
+    assembly_name: str, explicit_interface: bool = False, pep8_aliases: bool = False
+) -> None:
+    """Bind the assembly for explicit interface and/or pep8 aliases.
+
+    Parameters
+    ----------
+    assembly_name : str
+        The name of the assembly to bind.
+    explicit_interface : bool, optional
+        If True, allows explicit interface implementation. Default is False.
+    pep8_aliases : bool, optional
+        If True, enables PEP 8 aliases. Default is False.
+    """
     # if pythonnet is not installed, we can't bind the assembly
     try:
         distribution("pythonnet")
@@ -64,7 +76,10 @@ def _bind_assembly_for_explicit_interface(assembly_name: str):
     from Python.Runtime import BindingManager, BindingOptions
 
     binding_options = BindingOptions()
-    binding_options.AllowExplicitInterfaceImplementation = True
+    if explicit_interface:
+        binding_options.AllowExplicitInterfaceImplementation = True
+    if pep8_aliases:
+        binding_options.Pep8Aliases = True
     BindingManager.SetBindingOptions(assembly, binding_options)
 
 
@@ -86,4 +101,4 @@ def initialize(version: int) -> None:
         __register_function_codec()
         Logger.debug("Registered function codec")
 
-    _bind_assembly_for_explicit_interface("Ansys.ACT.WB1")
+    _bind_assembly("Ansys.ACT.WB1", True, True)
