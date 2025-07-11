@@ -28,7 +28,6 @@ import os
 from pathlib import Path
 import shutil
 import typing
-import warnings
 
 from ansys.mechanical.core import LOG
 from ansys.mechanical.core.embedding import initializer, runtime
@@ -289,11 +288,9 @@ class App:
             lock_file = Path(self.DataModel.Project.ProjectDirectory) / ".mech_lock"
             # Remove the lock file if it exists before opening the project file
             if lock_file.exists():
-                warnings.warn(
-                    f"Removing the lock file, {lock_file}, before opening the project. \
-This may corrupt the project file.",
-                    UserWarning,
-                    stacklevel=2,
+                self.log_warning(
+                    f"Removing the lock file, {lock_file}, before opening the project. "
+                    "This may corrupt the project file."
                 )
                 lock_file.unlink()
 
@@ -306,7 +303,7 @@ This may corrupt the project file.",
         else:
             self.DataModel.Project.Save()
 
-    def save_as(self, path: str, overwrite: bool = False):
+    def save_as(self, path: str, overwrite: bool = False, remove_lock: bool = False):
         """
         Save the project as a new file.
 
@@ -318,6 +315,8 @@ This may corrupt the project file.",
             The path where the file needs to be saved.
         overwrite : bool, optional
             Whether the file should be overwritten if it already exists (default is False).
+        remove_lock : bool, optional
+            Whether to remove the lock file if it exists before saving the project file.
 
         Raises
         ------
@@ -350,7 +349,30 @@ This may corrupt the project file.",
             # Save the new file
             self.DataModel.Project.SaveAs(path)
         else:
-            self.DataModel.Project.SaveAs(path, overwrite)
+            if remove_lock:
+                file_name = os.path.basename(path)
+                file_dir = os.path.dirname(path)
+                associated_dir = os.path.join(
+                    file_dir, os.path.splitext(file_name)[0] + "_Mech_Files"
+                )
+                lock_file = Path(associated_dir) / ".mech_lock"
+                # Remove the lock file if it exists before saving the project file
+                if lock_file.exists():
+                    self.log_warning(f"Removing the lock file, {lock_file}... ")
+                    lock_file.unlink()
+            try:
+                self.DataModel.Project.SaveAs(path, overwrite)
+            except Exception as e:
+                error_msg = str(e)
+                if "The project is locked by" in error_msg:
+                    self.log_error(
+                        f"Failed to save project as {path}: {error_msg}\n"
+                        "Hint: The project file is locked. "
+                        "Try using the 'remove_lock=True' option when saving the project."
+                    )
+                else:
+                    self.log_error(f"Failed to save project as {path}: {error_msg}")
+                raise e
 
     def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
         """Launch the GUI."""
