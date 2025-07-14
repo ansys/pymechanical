@@ -84,6 +84,8 @@ def global_variables(app: "ansys.mechanical.core.App", enums: bool = False) -> t
         vars["Point2D"] = Point2D
         vars["Point3D"] = Point3D
         vars["Vector3D"] = Vector3D
+        vars["quantity"] = Quantity
+        vars["ansys"] = Ansys
 
     if enums:
         vars.update(get_all_enums())

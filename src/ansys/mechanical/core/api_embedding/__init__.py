@@ -20,24 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Library to import Mechanical enums.
+"""public apis."""
 
-A useful subset of what is imported by
-Ansys Inc/v{NNN}/ACT/apis/Mechanical.py
-"""
 
-from ansys.mechanical.core.embedding.app import is_initialized
-
-if not is_initialized():
-    raise Exception("Enums cannot be imported until the embedded app is initialized.")
-
-import clr
-
-clr.AddReference("Ansys.Mechanical.DataModel")
-clr.AddReference("Ansys.ACT.Interfaces")
-
-from Ansys.ACT.Interfaces.Common import *  # noqa isort: skip
-from Ansys.Mechanical.DataModel.Enums import *  # noqa isort: skip
-from Ansys.Mechanical.DataModel.Enums.GeometryImportPreference import Format  # noqa isort: skip
-from Ansys.ACT.Interfaces.Analysis import *  # noqa isort: skip
-import Ansys  # noqa  isort: skip
+from .geo import Model

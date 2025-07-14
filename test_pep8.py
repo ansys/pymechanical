@@ -1,9 +1,8 @@
 
-from statistics import mode
 from ansys.mechanical.core import App
 from ansys.mechanical.core.examples import delete_downloads, download_file
 
-app = App()
+app = App(version=251)
 app.update_globals(globals())
 print(app)
 
@@ -18,16 +17,11 @@ for file_type, file_name in all_input_files.items():
     downloaded_file_paths[file_type] = download_file(file_name, "pymechanical", "00_basic")
 
 
-# CamelCase
-geometry_import = Model.GeometryImportGroup.AddGeometryImport()
-# pep8 formatting
-geometry_import = model.geometry_import_group.add_geometry_import()
+geometry_import = model.geometry_import_group.add_geometry_import() # Model.GeometryImportGroup.AddGeometryImport()
 
-geometry_import_format = (
-    Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.Format.Automatic
-)
-geometry_import_preferences = Ansys.ACT.Mechanical.Utilities.GeometryImportPreferences()
-geometry_import_preferences.process_named_selections = True
+geometry_import_format = Format.Automatic
+geometry_import_preferences = Ansys.ACT.Mechanical.Utilities.GeometryImportPreferences() # Not sure how this should be modified
+geometry_import_preferences.process_named_selections = True # geometry_import_preferences.ProcessNamedSelections = True
 geometry_import_preferences.named_selection_key = "NS"
 geometry_import.Import(
     downloaded_file_paths["geometry_file_name"], geometry_import_format, geometry_import_preferences
@@ -36,11 +30,10 @@ geometry_import.Import(
 
 # Insert a Static Structural Analysis
 
-analysis = app.model.add_static_structural_analysis()
+analysis = app.model.add_static_structural_analysis() # Model.AddStaticStructuralAnalysis()
 print(analysis.name)
 
-#ExtAPI.DataModel.Project.UnitSystem = UserUnitSystemType.StandardNMM
-extapi.data_model.project.unit_system = UserUnitSystemType.StandardNMM
+extapi.data_model.project.unit_system = UserUnitSystemType.StandardNMM # ExtAPI.DataModel.Project.UnitSystem = UserUnitSystemType.StandardNMM
 # Import Materials
 
 materials = app.model.materials #ExtAPI.DataModel.Project.Model.Materials
@@ -53,37 +46,37 @@ materials.Import(downloaded_file_paths["fr4_material_file"])
 board_bodyids = []
 component_bodyids = []
 geo = extapi.data_model.geo_data #  ExtAPI.DataModel.GeoData
-mesh = model.mesh
-for asm in geo.Assemblies:
-    for part in asm.Parts:
-        for body in part.Bodies:
-            if body.Name[:9] != "Component":
-                board_bodyids.append(body.Id)
+mesh = model.mesh # Model.Mesh
+for asm in geo.assemblies:
+    for part in asm.parts:
+        for body in part.bodies:
+            if body.name[:9] != "Component":
+                board_bodyids.append(body.id)
             else:
-                component_bodyids.append(body.Id)
+                component_bodyids.append(body.id)
 
 # Assign  Materials based on Body Names
 
 parts = model.children #ExtAPI.DataModel.Project.Model.Geometry.Children  # list of parts
 for part in parts:
-    for body in part.Children:
-        body.Material = "Copper Alloy" if body.Name[:9] == "Component" else "FR-4"
+    for body in part.children:
+        body.material = "Copper Alloy" if body.name[:9] == "Component" else "FR-4"
 
 
 # Function to create named selection from list of body ids
 
 def create_named_selection_from_id_list(ns_name, list_of_body_ids):
 
-    selection_manager = extapi.selection_manager# ExtAPI.SelectionManager
+    selection_manager = extapi.selection_manager # ExtAPI.SelectionManager
     selection = extapi.selection_manager.create_selection_info(
         SelectionTypeEnum.GeometryEntities
     )
-    selection.ids = list_of_body_ids
-    selection_manager.new_selection(selection)
-    named_sel = model.add_named_selection()
-    named_sel.name = ns_name
-    named_sel.location = selection
-    selection_manager.clear_selection()
+    selection.ids = list_of_body_ids # selection.Ids = list_of_body_ids
+    selection_manager.new_selection(selection) # selection_manager.NewSelection(selection)
+    named_sel = model.add_named_selection() # Model.AddNamedSelection()
+    named_sel.name = ns_name # named_sel.Name = ns_name
+    named_sel.location = selection # named_sel.Location = selection
+    selection_manager.clear_selection() # selection_manager.ClearSelection()
 
 
 create_named_selection_from_id_list("board_layers", board_bodyids)
@@ -91,24 +84,24 @@ create_named_selection_from_id_list("components", component_bodyids)
 
 # make a selection to be used with mesh methods
 
-selection_manager = extapi.selection_manager# ExtAPI.SelectionManager
-selection = ExtAPI.SelectionManager.CreateSelectionInfo(
+selection_manager = extapi.selection_manager # ExtAPI.SelectionManager
+selection = extapi.selection_manager.create_selection_info(
     SelectionTypeEnum.GeometryEntities
 )
-selection.ids = board_bodyids
-selection_manager.new_selection(selection)
+selection.ids = board_bodyids # selection.Ids = board_bodyids
+selection_manager.new_selection(selection) # selection_manager.NewSelection(selection)
 
-mesh = model.mesh
+mesh = model.mesh  # Model.Mesh
 
-mesh_method = mesh.add_automatic_method()
-mesh_method.location = selection
-mesh_method.method = MethodType.Sweep
-mesh_method.element_order = ElementOrder.Linear
-mesh_method.sweep_number_divisions = 1
+mesh_method = mesh.add_automatic_method() # mesh.AddAutomaticMethod()
+mesh_method.location = selection # mesh_method.Location = selection
+mesh_method.method = MethodType.Sweep # mesh_method.Method = MethodType.Sweep
+mesh_method.element_order = ElementOrder.Linear # mesh_method.ElementOrder = ElementOrder.Linear
+mesh_method.sweep_number_divisions = 1 # mesh_method.SweepNumberDivisions = 1
 
-mesh_sizing = mesh.add_sizing()
-mesh_sizing.element_size = Quantity("0.25 [mm]")
-mesh.generate_mesh()
+mesh_sizing = mesh.add_sizing() # mesh.AddSizing()
+mesh_sizing.element_size = quantity("0.25 [mm]") # mesh_sizing.ElementSize = Quantity("0.25 [mm]")
+mesh.generate_mesh() # mesh.GenerateMesh()
 
 
 # Defining External Data Object  for Importing Trace
@@ -127,18 +120,18 @@ external_data_file.import_settings = (
     )
 )
 import_settings = external_data_file.ImportSettings
-import_settings.UseDummyNetData = False
-imported_trace_group = Model.Materials.AddImportedTraceExternalData()
+import_settings.use_dummy_net_data = False
+imported_trace_group = model.materials.add_imported_trace_external_data()  # Model.Materials.AddImportedTraceExternalData()
 imported_trace_group.ImportExternalDataFiles(external_data_files)
 
-allImpTraces = ExtAPI.DataModel.GetObjectsByType(
+allImpTraces = extapi.data_model.get_objects_by_type(
     Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.ImportedTrace
 )
 
 imp_trace = [
     x for x in allImpTraces if x.Parent.ObjectId == imported_trace_group.ObjectId
 ][0]
-imp_trace.Activate()
+imp_trace.activate()
 # imp_trace.InternalObject.GeometryDefineBy = 1
 
 NSall = model.named_selections.get_children[
@@ -165,7 +158,7 @@ import os
 out = os.path.join(os.getcwd(), "trace_map_snapshot.png")
 graphics.camera.set_fit()
 set2d = Ansys.Mechanical.Graphics.GraphicsImageExportSettings()
-set2d.CurrentGraphicsDisplay = False
+set2d.current_graphics_display = False
 graphics.export_image(out, GraphicsImageExportFormat.PNG, set2d)
 
 app.print_tree()
