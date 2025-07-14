@@ -350,12 +350,9 @@ class App:
             self.DataModel.Project.SaveAs(path)
         else:
             if remove_lock:
-                file_name = os.path.basename(path)
-                file_dir = os.path.dirname(path)
-                associated_dir = os.path.join(
-                    file_dir, os.path.splitext(file_name)[0] + "_Mech_Files"
-                )
-                lock_file = Path(associated_dir) / ".mech_lock"
+                file_path = Path(path)
+                associated_dir = file_path.parent / f"{file_path.stem}_Mech_Files"
+                lock_file = associated_dir / ".mech_lock"
                 # Remove the lock file if it exists before saving the project file
                 if lock_file.exists():
                     self.log_warning(f"Removing the lock file, {lock_file}... ")
