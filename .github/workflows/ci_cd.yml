@@ -399,6 +399,7 @@ jobs:
           NUM_CORES: 1
           PYTHONUNBUFFERED: 1
         run: |
+          mkdir /root/Documents # work around bug #1301340
           . /env/bin/activate
           if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
             xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml
@@ -642,6 +643,7 @@ jobs:
           NUM_CORES: 1
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 0
         run: |
+          mkdir /root/Documents # work around #1301340
           . /env/bin/activate
           # Make html or pdf doc
           make_doc() {
