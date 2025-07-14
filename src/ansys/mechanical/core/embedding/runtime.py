@@ -66,24 +66,23 @@ def _bind_assembly(
         return
     except ModuleNotFoundError:
         pass
-
-    Logger.debug(f"Binding assembly for explicit interface {assembly_name}")
     import clr
 
-    Logger.debug(f"Binding assembly for explicit interface, Loading {assembly_name}")
+    Logger.debug(f"Binding assembly {assembly_name}")
     assembly = clr.AddReference(assembly_name)
-    Logger.debug(f"Binding assembly for explicit interface, Loaded {assembly_name}")
     from Python.Runtime import BindingManager, BindingOptions
 
     binding_options = BindingOptions()
     if explicit_interface:
+        Logger.debug(f"Binding explicit interface for {assembly_name}")
         binding_options.AllowExplicitInterfaceImplementation = True
     if pep8_aliases:
+        Logger.debug(f"Setting PEP 8 aliases for {assembly_name}")
         binding_options.Pep8Aliases = True
     BindingManager.SetBindingOptions(assembly, binding_options)
 
 
-def initialize(version: int) -> None:
+def initialize(version: int, pep8_aliases: bool = False) -> None:
     """Initialize the runtime.
 
     Pythonnet is already initialized but we need to
@@ -101,4 +100,16 @@ def initialize(version: int) -> None:
         __register_function_codec()
         Logger.debug("Registered function codec")
 
-    _bind_assembly("Ansys.ACT.WB1", True, True)
+    explicit_interface = True  # Currently no option to disable this
+    pep8_aliases = pep8_aliases
+    if os.environ.get("PYMECHANICAL_BINDING", "0") == "1":
+        pep8_aliases = True
+        explicit_interface = True
+    if os.environ.get("PYMECHANICAL_EXPLICIT_INTERFACE", "0") == "1":
+        explicit_interface = True
+    if os.environ.get("PYMECHANICAL_PEP8_ALIASES", "0") == "1":
+        pep8_aliases = True
+
+    _bind_assembly(
+        "Ansys.ACT.WB1", explicit_interface=explicit_interface, pep8_aliases=pep8_aliases
+    )
