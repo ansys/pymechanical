@@ -24,9 +24,9 @@ Requirements
 
 * These files are provided:
 
-  * `Dockerfile <https://github.com/ansys/pymechanical/tree/main/docker/251/Dockerfile>`_
+  * `Dockerfile <https://github.com/ansys/pymechanical/tree/main/docker/252/Dockerfile>`_
 
-  * `.dockerignore <https://github.com/ansys/pymechanical/tree/main/docker/251/.dockerignore>`_
+  * `.dockerignore <https://github.com/ansys/pymechanical/tree/main/docker/252/.dockerignore>`_
 
 
 Procedure
@@ -88,13 +88,13 @@ which you should modify to adapt it to your needs.
 
     # Create env vars for the Dockerfile
     export ANS_MAJOR_VERSION=25
-    export ANS_MINOR_VERSION=1
+    export ANS_MINOR_VERSION=2
     export ANS_VERSION=${ANS_MAJOR_VERSION}${ANS_MINOR_VERSION}
 
     export TAG=mechanical:${ANS_MAJOR_VERSION}.${ANS_MINOR_VERSION}
-    # example: if Mechanical v251 is installed under /install/ansys_inc/v251
 
-    # use /install for path_to_mechanical_installation
+    # example: if Mechanical v252 is installed under usr/install/ansys_inc/v252
+    # use export MECHANICAL_INSTALL_LOCATION=usr/install/
     export MECHANICAL_INSTALL_LOCATION=/path_to_mechanical_installation/
 
     # example: if pymechanical is cloned under /some_location/pymechanical
@@ -117,10 +117,10 @@ Take note of the these paths:
 * ``path_to_mechanical_installation`` is the path to where you have locally installed Mechanical.
 
 Not all installation files are copied. In fact, the files ignored during the copying
-are described in the `.dockerignore file <https://github.com/ansys/pymechanical/tree/main/docker/251/.dockerignore>`_.
+are described in the `.dockerignore file <https://github.com/ansys/pymechanical/tree/main/docker/252/.dockerignore>`_.
 
 The Docker container configuration needed to build the container is described in the
-`Dockerfile <https://github.com/ansys/pymechanical/tree/main/docker/251/Dockerfile>`_.
+`Dockerfile <https://github.com/ansys/pymechanical/tree/main/docker/252/Dockerfile>`_.
 
 
 Summary
