@@ -100,15 +100,13 @@ def initialize(version: int, pep8_aliases: bool = False) -> None:
         __register_function_codec()
         Logger.debug("Registered function codec")
 
-    explicit_interface = True  # set true by default
-    pep8_aliases = pep8_aliases
-    if os.environ.get("PYMECHANICAL_BINDING", "0") == "1":
-        pep8_aliases = True
-        explicit_interface = True
+    explicit_interface = True
+
     if os.environ.get("PYMECHANICAL_EXPLICIT_INTERFACE") == "0":
         explicit_interface = False
-    if os.environ.get("PYMECHANICAL_PEP8_ALIASES", "0") == "1":
-        pep8_aliases = True
+
+    # TODO: When the pep8_aliases option is enabled (True by default),
+    # keep three environment variables to turn explicit, pep8, and both off.
 
     _bind_assembly(
         "Ansys.ACT.WB1", explicit_interface=explicit_interface, pep8_aliases=pep8_aliases
