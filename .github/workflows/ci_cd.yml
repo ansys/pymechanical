@@ -12,9 +12,8 @@ on:
         - '251'
         - '242'
         - '241'
-        - '232'
         description: 'The Mechanical revision number to run tests on.'
-        default: '251' #stable version is 251, must match $stable_container
+        default: '252' #stable version is 252, must match $stable_container
   schedule:
     - cron: '00 22 * * *'  # UTC time, may start 5-15 mins later than scheduled time
   # registry_package:
@@ -38,7 +37,7 @@ env:
   DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
   MAIN_PYTHON_VERSION: '3.12'
   # DEV_REVN & its Docker image are used in scheduled or registry package runs
-  STABLE_REVN: '251'
+  STABLE_REVN: '252'
   DEV_REVN: '261'
   LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
   ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
@@ -173,7 +172,7 @@ jobs:
         run: |
           # if a tag(release) is pushed, test all versions
           if ${{ github.event_name == 'push' }} && ${{ contains(github.ref, 'refs/tags') }}; then
-            echo "matrix={\"mechanical-version\":['23.2.0', '24.1.0', '24.2.0', '25.1.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
+            echo "matrix={\"mechanical-version\":['24.1.0', '24.2.0', '25.1.0', '25.2.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           else
             echo "matrix={\"mechanical-version\":['${{ needs.revn-variations.outputs.test_docker_image_version }}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           fi
