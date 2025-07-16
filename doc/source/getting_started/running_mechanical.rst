@@ -45,8 +45,8 @@ Launch Mechanical locally with this code:
     >>> mechanical
 
     Ansys Mechanical [Ansys Mechanical Enterprise]
-    Product Version:251
-    Software build date: 11/27/2024 09:34:44
+    Product Version:252
+    Software build date: 06/13/2025 15:54:58
 
 Launch Mechanical from the command line
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,7 +67,7 @@ usage, type the following command:
 
         The following example demonstrates the main use of this tool:
 
-            $ ansys-mechanical -r 251 -g
+            $ ansys-mechanical -r 252 -g
 
             Starting Ansys Mechanical version 2025R1 in graphical mode...
 
@@ -96,7 +96,7 @@ usage, type the following command:
                                     application when in graphical mode.
         --debug                    Show a debug dialog window at the start of the
                                     process.
-        -r, --revision INTEGER     Ansys Revision number, e.g. "232", "241", "242" or "251".
+        -r, --revision INTEGER     Ansys Revision number, e.g. "241", "242", "251" or "252".
                                     If none is specified, uses the default from ansys-
                                     tools-path
         -g, --graphical            Graphical mode
@@ -191,7 +191,7 @@ for the `launch_mechanical()`_ method.
 
     from ansys.mechanical.core import launch_mechanical
 
-    exec_loc = "C:/Program Files/ANSYS Inc/v251/aisol/bin/winx64/AnsysWBU.exe"
+    exec_loc = "C:/Program Files/ANSYS Inc/v252/aisol/bin/winx64/AnsysWBU.exe"
     mechanical = launch_mechanical(exec_file=exec_loc)
 
 **On Linux**
@@ -200,7 +200,7 @@ for the `launch_mechanical()`_ method.
 
     from ansys.mechanical.core import launch_mechanical
 
-    exec_loc = "/usr/ansys_inc/v251/aisol/.workbench"
+    exec_loc = "/usr/ansys_inc/v252/aisol/.workbench"
     mechanical = launch_mechanical(exec_file=exec_loc)
 
 If, when using the `launch_mechanical()`_
@@ -247,8 +247,8 @@ Python code
     >>> mechanical = App()
     >>> mechanical
     Ansys Mechanical [Ansys Mechanical Enterprise]
-    Product Version:251
-    Software build date: 11/27/2024 09:34:44
+    Product Version:252
+    Software build date: 06/13/2025 15:54:58
 
 Additional information for Linux
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

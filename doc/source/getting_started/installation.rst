@@ -67,10 +67,10 @@ This package is required to use PyMechanical.
 
    or
 
-   >>> find_mechanical(version=251)  # for specific version
+   >>> find_mechanical(version=252)  # for specific version
 
-   ('C:/Program Files/ANSYS Inc/v251/aisol/bin/winx64/AnsysWBU.exe', 25.1)  # windows
-   ('/usr/ansys_inc/v251/aisol/.workbench', 25.1) # Linux
+   ('C:/Program Files/ANSYS Inc/v252/aisol/bin/winx64/AnsysWBU.exe', 25.2)  # windows
+   ('/usr/ansys_inc/v252/aisol/.workbench', 25.2) # Linux
 
 If you install Ansys in a directory other than the default or typical location,
 you can save this directory path using the
@@ -82,15 +82,15 @@ and ``version_from_path`` functions to verify the path and version.
 .. code:: pycon
 
    >>> from ansys.tools.path import save_mechanical_path, find_mechanical
-   >>> save_mechanical_path("home/username/ansys_inc/v251/aisol/.workbench")
+   >>> save_mechanical_path("home/username/ansys_inc/v252/aisol/.workbench")
    >>> path = get_mechanical_path()
    >>> print(path)
 
-   /home/username/ansys_inc/v251/aisol/.workbench
+   /home/username/ansys_inc/v252/aisol/.workbench
 
    >>> version = version_from_path("mechanical", path)
 
-   251
+   252
 
 Verify a remote session
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -104,8 +104,8 @@ Verify your installation by starting a remote session of Mechanical from Python:
     >>> mechanical
 
     Ansys Mechanical [Ansys Mechanical Enterprise]
-    Product Version:251
-    Software build date: 11/27/2024 09:34:44
+    Product Version:252
+    Software build date: 06/13/2025 15:54:58
 
 If you see a response from the server, you can begin using Mechanical
 as a service.
@@ -135,8 +135,8 @@ Inside of Python, use the following commands to load an embedded instance:
    >>> app = App()
    >>> print(app)
    Ansys Mechanical [Ansys Mechanical Enterprise]
-   Product Version:251
-   Software build date: 11/27/2024 09:34:44
+   Product Version:252
+   Software build date: 06/13/2025 15:54:58
 
 .. LINKS AND REFERENCES
 .. _ansys_tools_path_api: https://github.com/psf/black
