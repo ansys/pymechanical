@@ -233,8 +233,8 @@ class App:
             profile = UniqueUserProfile(new_profile_name, copy_profile=copy_profile)
             profile.update_environment(os.environ)
 
-        _pep8_alias = kwargs.get("pep8", False)
-        runtime.initialize(self._version, pep8_aliases=_pep8_alias)
+        pep8_alias = kwargs.get("pep8", False)
+        runtime.initialize(self._version, pep8_aliases=pep8_alias)
         self._app = _start_application(configuration, self._version, db_file)
         connect_warnings(self)
         self._poster = None
