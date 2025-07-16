@@ -111,19 +111,19 @@ class LocalMechanicalPool:
 
     On Windows, create a pool while specifying the Mechanical executable file.
 
-    >>> exec_file = 'C:/Program Files/ANSYS Inc/v251/aisol/bin/winx64/AnsysWBU.exe'
+    >>> exec_file = 'C:/Program Files/ANSYS Inc/v252/aisol/bin/winx64/AnsysWBU.exe'
     >>> pool = LocalMechanicalPool(10, exec_file=exec_file)
     Creating Pool: 100%|########| 10/10 [00:01<00:00,  1.43it/s]
 
     On Linux, create a pool while specifying the Mechanical executable file.
 
-    >>> exec_file = '/ansys_inc/v251/aisol/.workbench'
+    >>> exec_file = '/ansys_inc/v252/aisol/.workbench'
     >>> pool = LocalMechanicalPool(10, exec_file=exec_file)
     Creating Pool: 100%|########| 10/10 [00:01<00:00,  1.43it/s]
 
     In the PyPIM environment, create a pool.
 
-    >>> pool = LocalMechanicalPool(10, version="251")
+    >>> pool = LocalMechanicalPool(10, version="252")
     Creating Pool: 100%|########| 10/10 [00:01<00:00,  1.43it/s]
 
     """
@@ -529,7 +529,7 @@ class LocalMechanicalPool:
         >>> mechanical = pool.next_available()
         >>> mechanical
         Ansys Mechanical [Ansys Mechanical Enterprise]
-        Product Version:251
+        Product Version:252
         Software build date: 11/27/2024 09:34:44
         """
         # loop until the next instance is available
