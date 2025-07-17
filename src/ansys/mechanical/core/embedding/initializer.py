@@ -36,10 +36,10 @@ INITIALIZED_VERSION = None
 """Constant for the initialized version."""
 
 SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS = {
+    252: "2025R2",
     251: "2025R1",
     242: "2024R2",
     241: "2024R1",
-    232: "2023R2",
 }
 """Supported Mechanical embedding versions on Windows."""
 

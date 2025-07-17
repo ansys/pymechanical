@@ -90,13 +90,10 @@ ENV ANSYS_VERSION=${VERSION} \
     ANSYS_WORKBENCH_LOGGING_CONSOLE=1 \
     ANSYS_WORKBENCH_LOGGING_DIRECTORY=/tmp \
     LANG=POSIX \
-    # Ans.EDServices.MaterialCOM.dll dependencies
     LD_LIBRARY_PATH=/install/ansys_inc/v${VERSION}/tp/IntelCompiler/2023.1.0/linx64:${LD_LIBRARY_PATH} \
     LD_LIBRARY_PATH=/install/ansys_inc/v${VERSION}/tp/qt/5.15.16//Linux64:${LD_LIBRARY_PATH} \
-    #umpe dependencies for Ans.Post.UmpeCOM.dll
     LD_LIBRARY_PATH=/install/ansys_inc/v${VERSION}/aisol/umpe/common/bin/linx64:${LD_LIBRARY_PATH} \
     LD_LIBRARY_PATH=/install/ansys_inc/v${VERSION}/tp/hdf5/1_12_2/linx64:${LD_LIBRARY_PATH} \
-    # need to use EGL with this image's version of Mesa (version might be fine but I think the package was compiled with some flags set differently than what is required, causing offscreen renderings to only show the background blue-white gradient; need to use EGL to overcome it)
     ANS_WB_FORCE_EGL=1 \
     MECHANICAL_ON_DOCKER=TRUE \
     OMPI_ALLOW_RUN_AS_ROOT=1 \
