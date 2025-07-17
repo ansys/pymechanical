@@ -69,7 +69,7 @@ This package is required to use PyMechanical.
 
    >>> find_mechanical(version=252)  # for specific version
 
-   ('C:/Program Files/ANSYS Inc/v252/aisol/bin/winx64/AnsysWBU.exe', 25.2)  # windows
+   ('C:/Program Files/ANSYS Inc/v252/aisol/bin/winx64/AnsysWBU.exe', 25.2)  # Windows
    ('/usr/ansys_inc/v252/aisol/.workbench', 25.2) # Linux
 
 If you install Ansys in a directory other than the default or typical location,
