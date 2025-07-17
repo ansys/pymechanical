@@ -94,7 +94,7 @@ which you should modify to adapt it to your needs.
     export TAG=mechanical:${ANS_MAJOR_VERSION}.${ANS_MINOR_VERSION}
 
     # example: if Mechanical v252 is installed under usr/install/ansys_inc/v252
-    # use export MECHANICAL_INSTALL_LOCATION=usr/install/
+    # use export MECHANICAL_INSTALL_LOCATION=/usr/install/
     export MECHANICAL_INSTALL_LOCATION=/path_to_mechanical_installation/
 
     # example: if pymechanical is cloned under /some_location/pymechanical
