@@ -9,6 +9,73 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.27 <https://github.com/ansys/pymechanical/releases/tag/v0.11.27>`_ - July 21, 2025
+========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add option for pep8 aliases in binding
+          - `#1234 <https://github.com/ansys/pymechanical/pull/1234>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add important section to script helpers page for clarification
+          - `#1232 <https://github.com/ansys/pymechanical/pull/1232>`_
+
+        * - Workaround 261 bug requiring documents folder
+          - `#1235 <https://github.com/ansys/pymechanical/pull/1235>`_
+
+        * - Create document folder  under  home
+          - `#1242 <https://github.com/ansys/pymechanical/pull/1242>`_
+
+
+  .. tab-item:: Documentation
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update main product version
+          - `#1241 <https://github.com/ansys/pymechanical/pull/1241>`_
+
+        * - Update ``contributors.md`` with the latest contributors
+          - `#1243 <https://github.com/ansys/pymechanical/pull/1243>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Pre-commit automatic update
+          - `#1228 <https://github.com/ansys/pymechanical/pull/1228>`_
+
+        * - Update changelog for v0.11.26
+          - `#1229 <https://github.com/ansys/pymechanical/pull/1229>`_
+
+        * - Update ci/cd to use 25r2
+          - `#1237 <https://github.com/ansys/pymechanical/pull/1237>`_
+
+        * - Update docker files
+          - `#1238 <https://github.com/ansys/pymechanical/pull/1238>`_
+
+        * - Update stable version to  25r2
+          - `#1240 <https://github.com/ansys/pymechanical/pull/1240>`_
+
+
 `0.11.26 <https://github.com/ansys/pymechanical/releases/tag/v0.11.26>`_ - July 08, 2025
 ========================================================================================
 
