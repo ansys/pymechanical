@@ -91,7 +91,7 @@ Python API to interact with `Ansys Mechanical`_ (FEA software for structural eng
 
         Issues and limitations on both PyMechanical and Mechanical.
 
-        :bdg-primary-line:`23R2` :bdg-primary-line:`24R1` :bdg-primary-line:`24R2` :bdg-primary-line:`25R1`
+        :bdg-primary-line:`24R1` :bdg-primary-line:`24R2` :bdg-primary-line:`25R1` :bdg-primary-line:`25R2`
 
     .. grid-item-card:: Contribute :fa:`people-group`
         :padding: 2 2 2 2
