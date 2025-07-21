@@ -3,7 +3,13 @@
 Script helpers
 ==============
 
-This section provides a collection of scripting helpers in Ansys Mechanical, with quick links to relevant examples in the Mechanical Scripting Guide.
+This section provides a collection of scripting helpers for Ansys Mechanical. Click the links to see relevant examples in the *Mechanical Scripting Guide*.
+
+.. important::
+
+   The links do not only contain what is described in the bullet points but also additional information.
+   For examples of what is being described in the bullet points, refer to the code sections in the
+   linked content.
 
 
 General setup
