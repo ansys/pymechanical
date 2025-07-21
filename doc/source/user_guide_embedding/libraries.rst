@@ -26,10 +26,10 @@ To use the above function, run the following:
    from ansys.mechanical.core import App
    from ansys.mechanical.core.embedding import add_mechanical_python_libraries
 
-   app = App(version=251)
+   app = App(version=252)
 
    add_mechanical_python_libraries(app)
-   import materials  # This is materials.py that's shipped with Mechanical v251
+   import materials  # This is materials.py that's shipped with Mechanical v252
 
 .. warning::
 

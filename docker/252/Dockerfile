@@ -60,8 +60,15 @@ RUN apt-get update && apt-get install -y \
     tini \
     ca-certificates \
     libgomp1 \
+    libtirpc3 \
+    locales \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && locale-gen en_US.UTF-8 \
+    && locale-gen fr_FR.utf8 \
+    && locale-gen de_DE.utf8 \
+    && locale-gen ja_JP.utf8 \
+    && locale-gen zh_CN.utf8
 
 # Copying files
 WORKDIR /install/
@@ -83,17 +90,19 @@ ENV ANSYS_VERSION=${VERSION} \
     ANSYS_WORKBENCH_LOGGING_CONSOLE=1 \
     ANSYS_WORKBENCH_LOGGING_DIRECTORY=/tmp \
     LANG=POSIX \
-    # Ans.EDServices.MaterialCOM.dll dependencies
-    LD_LIBRARY_PATH=/install/ansys_inc/v${VERSION}/tp/IntelCompiler/2019.3.199/linx64:${LD_LIBRARY_PATH} \
-    LD_LIBRARY_PATH=/install/ansys_inc/v${VERSION}/tp/qt_fw/5.9.6/Linux64:${LD_LIBRARY_PATH} \
-    #umpe dependencies for Ans.Post.UmpeCOM.dll
+    LD_LIBRARY_PATH=/install/ansys_inc/v${VERSION}/tp/IntelCompiler/2023.1.0/linx64:${LD_LIBRARY_PATH} \
+    LD_LIBRARY_PATH=/install/ansys_inc/v${VERSION}/tp/qt/5.15.18/Linux64:${LD_LIBRARY_PATH} \
     LD_LIBRARY_PATH=/install/ansys_inc/v${VERSION}/aisol/umpe/common/bin/linx64:${LD_LIBRARY_PATH} \
-    LD_LIBRARY_PATH=/install/ansys_inc/v${VERSION}/tp/hdf5/1_10_5/linx64:${LD_LIBRARY_PATH} \
-    # need to use EGL with this image's version of Mesa
+    LD_LIBRARY_PATH=/install/ansys_inc/v${VERSION}/tp/hdf5/1_14_5/linx64:${LD_LIBRARY_PATH} \
     ANS_WB_FORCE_EGL=1 \
-    MECHANICAL_ON_DOCKER=TRUE
+    MECHANICAL_ON_DOCKER=TRUE \
+    OMPI_ALLOW_RUN_AS_ROOT=1 \
+    OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1 \
+    ANSYSLS_CLIENT_CA_PATH=/etc/ssl/certs/ca-certificates.crt \
+    MESA_GL_VERSION_OVERRIDE=4.5 \
+    MESA_GLSL_VERSION_OVERRIDE=430
 
-# expose port for gRPC
+# expose port for grpc
 EXPOSE 10000
 
 # Set working directory
