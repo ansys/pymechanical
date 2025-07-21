@@ -60,7 +60,6 @@ extensions = [
     "sphinx_autodoc_typehints",
     "sphinx_copybutton",
     "sphinx_design",
-    "sphinxemoji.sphinxemoji",
 ]
 
 if pymechanical.BUILDING_GALLERY:
@@ -138,14 +137,26 @@ exclude_patterns = [
     "links.rst",
 ]
 
-# make rst_epilog a variable, so you can add other epilog parts to it
+# Get the current Mechanical version
+current_mechanical_version = next(iter(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS.keys()))
+
+# Create a link directive to the Ansys help documentation to be used in ``helper_scripts.rst``
+extlinks = {
+    "ansyshelp": (
+        "https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/"
+        f"v{current_mechanical_version}/en/act_script/%s",
+        "ansyshelp %s",
+    )
+}
+
+# Create the rst_epilog a variable, so you can add other epilog parts to it
 rst_epilog = ""
 # Read link all targets from file
 with open("links.rst") as f:
     rst_epilog += f.read()
-
-current_mechanical_version = next(iter(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS.keys()))
+# Replace the version placeholder in rst_epilog with the current Mechanical version
 rst_epilog = rst_epilog.replace("%%VERSION%%", f"v{current_mechanical_version}")
+
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"
 

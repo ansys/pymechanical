@@ -9,6 +9,456 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.26 <https://github.com/ansys/pymechanical/releases/tag/v0.11.26>`_ - July 08, 2025
+========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Documentation
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add page with script helpers
+          - `#1214 <https://github.com/ansys/pymechanical/pull/1214>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update changelog for v0.11.24
+          - `#1218 <https://github.com/ansys/pymechanical/pull/1218>`_
+
+        * - Add security file
+          - `#1219 <https://github.com/ansys/pymechanical/pull/1219>`_
+
+        * - Bump ansys-mechanical-env from 0.1.14 to 0.1.15 in the core group
+          - `#1221 <https://github.com/ansys/pymechanical/pull/1221>`_
+
+        * - Update changelog for v0.11.25
+          - `#1224 <https://github.com/ansys/pymechanical/pull/1224>`_
+
+
+`0.11.25 <https://github.com/ansys/pymechanical/releases/tag/v0.11.25>`_ - July 03, 2025
+========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Remove duplication of metatag
+          - `#1223 <https://github.com/ansys/pymechanical/pull/1223>`_
+
+
+`0.11.24 <https://github.com/ansys/pymechanical/releases/tag/v0.11.24>`_ - June 30, 2025
+========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Meta tag order in doc
+          - `#1217 <https://github.com/ansys/pymechanical/pull/1217>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update changelog for v0.11.23
+          - `#1215 <https://github.com/ansys/pymechanical/pull/1215>`_
+
+
+`0.11.23 <https://github.com/ansys/pymechanical/releases/tag/v0.11.23>`_ - June 30, 2025
+========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Metatag order
+          - `#1213 <https://github.com/ansys/pymechanical/pull/1213>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update changelog for v0.11.22
+          - `#1211 <https://github.com/ansys/pymechanical/pull/1211>`_
+
+
+`0.11.22 <https://github.com/ansys/pymechanical/releases/tag/v0.11.22>`_ - June 26, 2025
+========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add more versions to lite host
+          - `#1208 <https://github.com/ansys/pymechanical/pull/1208>`_
+
+        * - Change the name of the `warnings.py` file in embedding
+          - `#1209 <https://github.com/ansys/pymechanical/pull/1209>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update changelog for v0.11.21
+          - `#1206 <https://github.com/ansys/pymechanical/pull/1206>`_
+
+
+`0.11.21 <https://github.com/ansys/pymechanical/releases/tag/v0.11.21>`_ - June 24, 2025
+========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Documentation
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update the meta tag typo
+          - `#1204 <https://github.com/ansys/pymechanical/pull/1204>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update doc dependencies
+          - `#1199 <https://github.com/ansys/pymechanical/pull/1199>`_
+
+        * - Update changelog for v0.11.20
+          - `#1201 <https://github.com/ansys/pymechanical/pull/1201>`_
+
+        * - Pre-commit automatic update
+          - `#1202 <https://github.com/ansys/pymechanical/pull/1202>`_
+
+        * - Bump pytest from 8.4.0 to 8.4.1 in the tests group
+          - `#1203 <https://github.com/ansys/pymechanical/pull/1203>`_
+
+
+`0.11.20 <https://github.com/ansys/pymechanical/releases/tag/v0.11.20>`_ - June 23, 2025
+========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Consider multiple `site-packages` folders
+          - `#1187 <https://github.com/ansys/pymechanical/pull/1187>`_
+
+        * - Use the version number if the release name is not found
+          - `#1191 <https://github.com/ansys/pymechanical/pull/1191>`_
+
+
+  .. tab-item:: Documentation
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add physics meta tag
+          - `#1196 <https://github.com/ansys/pymechanical/pull/1196>`_
+
+        * - Update `launch_mechanical` api usage examples
+          - `#1197 <https://github.com/ansys/pymechanical/pull/1197>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - update CHANGELOG for v0.11.18
+          - `#1179 <https://github.com/ansys/pymechanical/pull/1179>`_
+
+        * - Bump grpcio from 1.70.0 to 1.72.1 in the core group
+          - `#1180 <https://github.com/ansys/pymechanical/pull/1180>`_
+
+        * - Bump pytest from 8.3.5 to 8.4.0 in the tests group
+          - `#1181 <https://github.com/ansys/pymechanical/pull/1181>`_
+
+        * - Bump the doc group with 2 updates
+          - `#1182 <https://github.com/ansys/pymechanical/pull/1182>`_
+
+        * - Bump ansys/actions from 9 to 10
+          - `#1185 <https://github.com/ansys/pymechanical/pull/1185>`_
+
+        * - Bump pandas from 2.2.3 to 2.3.0 in the doc group
+          - `#1186 <https://github.com/ansys/pymechanical/pull/1186>`_
+
+        * - Update docker image version for nightly run
+          - `#1188 <https://github.com/ansys/pymechanical/pull/1188>`_
+
+        * - Bump pytest-cov from 6.1.1 to 6.2.1 in the tests group
+          - `#1192 <https://github.com/ansys/pymechanical/pull/1192>`_
+
+        * - Bump the core group with 2 updates
+          - `#1193 <https://github.com/ansys/pymechanical/pull/1193>`_
+
+        * - Bump panel from 1.6.1 to 1.7.1 in the doc group
+          - `#1194 <https://github.com/ansys/pymechanical/pull/1194>`_
+
+        * - Increase timeout for pytests in ci/cd
+          - `#1198 <https://github.com/ansys/pymechanical/pull/1198>`_
+
+        * - Upload docs using the bot's token
+          - `#1200 <https://github.com/ansys/pymechanical/pull/1200>`_
+
+
+`0.11.18 <https://github.com/ansys/pymechanical/releases/tag/v0.11.18>`_ - June 01, 2025
+========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - update CHANGELOG for v0.11.17
+          - `#1177 <https://github.com/ansys/pymechanical/pull/1177>`_
+
+        * - Update the branch name to main
+          - `#1178 <https://github.com/ansys/pymechanical/pull/1178>`_
+
+
+`0.11.17 <https://github.com/ansys/pymechanical/releases/tag/v0.11.17>`_ - May 28, 2025
+=======================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add `self._messages` to BUILDING_GALLERY section in app initialization
+          - `#1171 <https://github.com/ansys/pymechanical/pull/1171>`_
+
+        * - Embedding message get test
+          - `#1174 <https://github.com/ansys/pymechanical/pull/1174>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - update CHANGELOG for v0.11.15
+          - `#1161 <https://github.com/ansys/pymechanical/pull/1161>`_
+
+        * - update CHANGELOG for v0.11.16
+          - `#1163 <https://github.com/ansys/pymechanical/pull/1163>`_
+
+        * - Bump the doc group across 1 directory with 3 updates
+          - `#1169 <https://github.com/ansys/pymechanical/pull/1169>`_
+
+        * - Bump plotly from 6.0.1 to 6.1.1 in the doc group
+          - `#1175 <https://github.com/ansys/pymechanical/pull/1175>`_
+
+        * - Bump usd-core from 25.5 to 25.5.1
+          - `#1176 <https://github.com/ansys/pymechanical/pull/1176>`_
+
+
+`0.11.16 <https://github.com/ansys/pymechanical/releases/tag/v0.11.16>`_ - May 09, 2025
+=======================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add token for release to github ansys/actions v9
+          - `#1162 <https://github.com/ansys/pymechanical/pull/1162>`_
+
+
+
+`0.11.15 <https://github.com/ansys/pymechanical/releases/tag/v0.11.16>`_ - May 09, 2025
+=======================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Rpc bg switch
+          - `#1122 <https://github.com/ansys/pymechanical/pull/1122>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add option on rpc server for accepting multiple services
+          - `#1074 <https://github.com/ansys/pymechanical/pull/1074>`_
+
+        * - Minor code issues
+          - `#1114 <https://github.com/ansys/pymechanical/pull/1114>`_
+
+        * - Add exception to the enum importer file if the app isn't initialized
+          - `#1131 <https://github.com/ansys/pymechanical/pull/1131>`_
+
+        * - message string changes in 2025 R2
+          - `#1149 <https://github.com/ansys/pymechanical/pull/1149>`_
+
+        * - Improve windows tests
+          - `#1151 <https://github.com/ansys/pymechanical/pull/1151>`_
+
+        * - Appdata test maintenance and pyvista deprecation warning
+          - `#1152 <https://github.com/ansys/pymechanical/pull/1152>`_
+
+        * - add workaround for windows store
+          - `#1153 <https://github.com/ansys/pymechanical/pull/1153>`_
+
+        * - Install `libjbig-dev` for quarto build to succeed in 252 documentation build
+          - `#1154 <https://github.com/ansys/pymechanical/pull/1154>`_
+
+        * - Update globals when BUILDING_GALLERY is True
+          - `#1155 <https://github.com/ansys/pymechanical/pull/1155>`_
+
+
+  .. tab-item:: Documentation
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - add cheatsheet env and update theme
+          - `#1129 <https://github.com/ansys/pymechanical/pull/1129>`_
+
+        * - Update ``CONTRIBUTORS.md`` with the latest contributors
+          - `#1137 <https://github.com/ansys/pymechanical/pull/1137>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add solution status assert in example
+          - `#1106 <https://github.com/ansys/pymechanical/pull/1106>`_
+
+        * - update CHANGELOG for v0.11.14
+          - `#1109 <https://github.com/ansys/pymechanical/pull/1109>`_
+
+        * - Bump the tests group with 2 updates
+          - `#1110 <https://github.com/ansys/pymechanical/pull/1110>`_
+
+        * - Bump the doc group with 2 updates
+          - `#1111 <https://github.com/ansys/pymechanical/pull/1111>`_
+
+        * - pre-commit automatic update
+          - `#1112 <https://github.com/ansys/pymechanical/pull/1112>`_, `#1119 <https://github.com/ansys/pymechanical/pull/1119>`_, `#1135 <https://github.com/ansys/pymechanical/pull/1135>`_
+
+        * - Bump the doc group with 3 updates
+          - `#1127 <https://github.com/ansys/pymechanical/pull/1127>`_
+
+        * - Bump usd-core from 24.11 to 25.2
+          - `#1128 <https://github.com/ansys/pymechanical/pull/1128>`_
+
+        * - Change `viz` to `graphics`
+          - `#1133 <https://github.com/ansys/pymechanical/pull/1133>`_
+
+        * - Bump ansys-sphinx-theme[autoapi,changelog] from 1.4.1 to 1.4.2 in the doc group
+          - `#1134 <https://github.com/ansys/pymechanical/pull/1134>`_
+
+        * - Bump pytest-cov from 6.0.0 to 6.1.1 in the tests group
+          - `#1138 <https://github.com/ansys/pymechanical/pull/1138>`_
+
+        * - Bump ansys/actions from 8 to 9
+          - `#1141 <https://github.com/ansys/pymechanical/pull/1141>`_
+
+        * - Bump ansys-mechanical-env from 0.1.9 to 0.1.11 in the core group
+          - `#1142 <https://github.com/ansys/pymechanical/pull/1142>`_
+
+        * - Bump numpy from 2.2.4 to 2.2.5 in the doc group
+          - `#1147 <https://github.com/ansys/pymechanical/pull/1147>`_
+
+        * - Bump rpyc from 6.0.1 to 6.0.2
+          - `#1148 <https://github.com/ansys/pymechanical/pull/1148>`_
+
+        * - update to latest mechanical-env
+          - `#1150 <https://github.com/ansys/pymechanical/pull/1150>`_
+
+        * - Bump usd-core from 25.2 to 25.5
+          - `#1157 <https://github.com/ansys/pymechanical/pull/1157>`_
+
+
+  .. tab-item:: Test
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - enable poster test
+          - `#1117 <https://github.com/ansys/pymechanical/pull/1117>`_
+
+        * - add test case for analytics capture
+          - `#1156 <https://github.com/ansys/pymechanical/pull/1156>`_
+
+
 `0.11.14 <https://github.com/ansys/pymechanical/releases/tag/v0.11.14>`_ - 2025-03-03
 =====================================================================================
 
@@ -364,7 +814,6 @@ Dependencies
 - MAINT: Bump ansys/actions from 6 to 7 `#868 <https://github.com/ansys/pymechanical/pull/868>`_
 - MAINT: Bump matplotlib from 3.9.1 to 3.9.1.post1 `#869 <https://github.com/ansys/pymechanical/pull/869>`_
 - [pre-commit.ci] pre-commit autoupdate `#870 <https://github.com/ansys/pymechanical/pull/870>`_
-
 
 `0.11.4 <https://github.com/ansys/pymechanical/releases/tag/v0.11.4>`_ - 2024-08-06
 ===================================================================================

@@ -35,9 +35,12 @@ from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 from ansys.mechanical.core.embedding.imports import global_entry_points, global_variables
+from ansys.mechanical.core.embedding.mechanical_warnings import (
+    connect_warnings,
+    disconnect_warnings,
+)
 from ansys.mechanical.core.embedding.poster import Poster
 from ansys.mechanical.core.embedding.ui import launch_ui
-from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
 
 if typing.TYPE_CHECKING:
     # Make sure to run ``ansys-mechanical-ideconfig`` to add the autocomplete settings to VS Code
@@ -141,13 +144,15 @@ class App:
         Whether to enable logging. Default is True.
     log_level : str, optional
         The logging level for the application. Default is "WARNING".
+    pep8 : bool, optional
+        Whether to enable PEP 8 style binding for the assembly. Default is False.
 
     Examples
     --------
     Create App with Mechanical project file and version:
 
     >>> from ansys.mechanical.core import App
-    >>> app = App(db_file="path/to/file.mechdat", version=251)
+    >>> app = App(db_file="path/to/file.mechdat", version=252)
 
     Disable copying the user profile when private appdata is enabled
 
@@ -186,10 +191,25 @@ class App:
 
         self.log_info("Starting Mechanical Application")
 
+        # Get the globals dictionary from kwargs
+        globals = kwargs.get("globals")
+
+        # Set messages to None before BUILDING_GALLERY check
+        self._messages = None
+
+        # If the building gallery flag is set, we need to share the instance
+        # This can apply to running the `make -C doc html` command
         if BUILDING_GALLERY:
             if len(INSTANCES) != 0:
+                # Get the first instance of the app
                 instance: App = INSTANCES[0]
+                # Point to the same underlying application object
                 instance._share(self)
+                # Update the globals if provided in kwargs
+                if globals:
+                    # The next line is covered by test_globals_kwarg_building_gallery
+                    instance.update_globals(globals)  # pragma: nocover
+                # Open the mechdb file if provided
                 if db_file is not None:
                     self.open(db_file)
                 return
@@ -212,9 +232,9 @@ class App:
             new_profile_name = f"PyMechanical-{os.getpid()}"
             profile = UniqueUserProfile(new_profile_name, copy_profile=copy_profile)
             profile.update_environment(os.environ)
-            atexit.register(_cleanup_private_appdata, profile)
 
-        runtime.initialize(self._version)
+        pep8_alias = kwargs.get("pep8", False)
+        runtime.initialize(self._version, pep8_aliases=pep8_alias)
         self._app = _start_application(configuration, self._version, db_file)
         connect_warnings(self)
         self._poster = None
@@ -222,11 +242,13 @@ class App:
         self._disposed = False
         atexit.register(_dispose_embedded_app, INSTANCES)
         INSTANCES.append(self)
+
+        # Clean up the private appdata directory on exit if private_appdata is True
+        if private_appdata:
+            atexit.register(_cleanup_private_appdata, profile)
+
         self._updated_scopes: typing.List[typing.Dict[str, typing.Any]] = []
         self._subscribe()
-        self._messages = None
-
-        globals = kwargs.get("globals")
         if globals:
             self.update_globals(globals)
 

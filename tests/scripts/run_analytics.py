@@ -20,29 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Version of ansys-mechanical-core module.
+"""Run embedded instance for analytics."""
+import argparse
 
-On the ``main`` branch, use 'dev0' to denote a development version.
-For example:
+import ansys.mechanical.core as pymechanical
 
-# major, minor, patch
-version_info = 0, 58, 'dev0'
-
-"""
-
-try:
-    import importlib.metadata as importlib_metadata
-except ModuleNotFoundError:  # pragma: no cover
-    import importlib_metadata
-
-# Read from the pyproject.toml
-# major, minor, patch
-__version__ = importlib_metadata.version("ansys-mechanical-core")
-
-SUPPORTED_MECHANICAL_VERSIONS = {
-    252: "2025R2",
-    251: "2025R1",
-    242: "2024R2",
-    241: "2024R1",
-}
-"""Supported mechanical versions in descending order."""
+if __name__ == "__main__":
+    # Set up argparse for command line arguments from subprocess.
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--version", type=str, help="Mechanical version")
+    args = parser.parse_args()
+    app = pymechanical.App(version=int(args.version))
+    app.Model.AddNamedSelection()
