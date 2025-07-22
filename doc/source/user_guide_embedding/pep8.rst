@@ -14,7 +14,7 @@ When PEP 8 aliases are enabled, you can use both the original Pascal Case names 
 Snake Case aliases interchangeably, providing backward compatibility while offering a more
 Python-friendly API.
 
-Enabling pep8 aliases
+Enabling pep8 Aliases
 ---------------------
 
 To enable PEP 8 aliases, use the ``pep8_aliases`` parameter when creating an ``App`` instance:
