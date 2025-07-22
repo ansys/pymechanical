@@ -17,6 +17,7 @@ an instance of Mechanical in Python.
    self
    configuration
    globals
+   pep8
    logging
    libraries
 
