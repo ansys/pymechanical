@@ -6,8 +6,8 @@ PEP 8 aliases
 Overview
 --------
 
-PyMechanical provides `PEP 8 Style <https://peps.python.org/pep-0008/>`_ aliases for Mechanical API,
-converting traditional Pascal Case method and property names to Snake Case following Python naming conventions.
+PyMechanical provides `PEP 8 Style <https://peps.python.org/pep-0008/>`_ aliases for Mechanical APIs. 
+This enables you to convert traditional Pascal Case methods and property names to Snake Case that follow Python naming conventions.
 This feature makes the Mechanical API more pythonic and consistent with standard Python coding practices.
 
 When PEP 8 aliases are enabled, you can use both the original Pascal Case names and the new
