@@ -46,6 +46,7 @@ PyAnsys
 pyansys
 PyMechanical
 Pythonically
+Pythonic
 Python.NET
 pythonnet
 Remoting

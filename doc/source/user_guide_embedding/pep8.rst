@@ -1,17 +1,17 @@
 .. _ref_pep8aliases:
 
-PEP 8 Aliases
+PEP 8 aliases
 =============
 
 Overview
 --------
 
 PyMechanical provides `PEP 8 Style <https://peps.python.org/pep-0008/>`_ aliases for Mechanical API,
-converting traditional PascalCase method and property names to snake_case following Python naming conventions.
-This feature makes the Mechanical API more Pythonic and consistent with standard Python coding practices.
+converting traditional Pascal Case method and property names to Snake Case following Python naming conventions.
+This feature makes the Mechanical API more pythonic and consistent with standard Python coding practices.
 
-When PEP 8 aliases are enabled, you can use both the original PascalCase names and the new
-snake_case aliases interchangeably, providing backward compatibility while offering a more
+When PEP 8 aliases are enabled, you can use both the original Pascal Case names and the new
+Snake Case aliases interchangeably, providing backward compatibility while offering a more
 Python-friendly API.
 
 Enabling pep8 aliases
@@ -26,12 +26,12 @@ To enable PEP 8 aliases, use the ``pep8_aliases`` parameter when creating an ``A
    # Create an app instance with PEP 8 aliases enabled
    app = App(pep8_aliases=True, globals=globals())
 
-   # Now you can use both PascalCase and snake_case
-   # Traditional way (PascalCase)
+   # Now you can use both Pascal Case and Snake Case
+   # Traditional way (Pascal Case)
    analysis = Model.AddStaticStructuralAnalysis()
    analysis.Name = "test"
 
-   # Pythonic way (snake_case)
+   # Pythonic way (Snake Case)
    analysis = Model.add_static_structural_analysis()
    analysis.name = "test"
 
@@ -58,5 +58,5 @@ The following examples illustrate how to use PEP 8 aliases in practice:
 
 Limitations
 -----------
-- Enum values retain their original PascalCase style; for example, ``Format.Automatic`` does not become ``Format.AUTOMATIC``.
+- Enum values retain their original Pascal Case style; for example, ``Format.Automatic`` does not become ``Format.AUTOMATIC``.
 - PEP 8 aliases are not included in type hints provided by pymechanical stubs.
