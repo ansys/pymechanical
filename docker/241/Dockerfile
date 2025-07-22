@@ -83,13 +83,10 @@ ENV ANSYS_VERSION=${VERSION} \
     ANSYS_WORKBENCH_LOGGING_CONSOLE=1 \
     ANSYS_WORKBENCH_LOGGING_DIRECTORY=/tmp \
     LANG=POSIX \
-    # Ans.EDServices.MaterialCOM.dll dependencies
     LD_LIBRARY_PATH=/install/ansys_inc/v${VERSION}/tp/IntelCompiler/2019.3.199/linx64:${LD_LIBRARY_PATH} \
     LD_LIBRARY_PATH=/install/ansys_inc/v${VERSION}/tp/qt_fw/5.9.6/Linux64:${LD_LIBRARY_PATH} \
-    #umpe dependencies for Ans.Post.UmpeCOM.dll
     LD_LIBRARY_PATH=/install/ansys_inc/v${VERSION}/aisol/umpe/common/bin/linx64:${LD_LIBRARY_PATH} \
     LD_LIBRARY_PATH=/install/ansys_inc/v${VERSION}/tp/hdf5/1_10_5/linx64:${LD_LIBRARY_PATH} \
-    # need to use EGL with this image's version of Mesa
     ANS_WB_FORCE_EGL=1 \
     MECHANICAL_ON_DOCKER=TRUE
 

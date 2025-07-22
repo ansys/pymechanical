@@ -144,13 +144,15 @@ class App:
         Whether to enable logging. Default is True.
     log_level : str, optional
         The logging level for the application. Default is "WARNING".
+    pep8 : bool, optional
+        Whether to enable PEP 8 style binding for the assembly. Default is False.
 
     Examples
     --------
     Create App with Mechanical project file and version:
 
     >>> from ansys.mechanical.core import App
-    >>> app = App(db_file="path/to/file.mechdat", version=251)
+    >>> app = App(db_file="path/to/file.mechdat", version=252)
 
     Disable copying the user profile when private appdata is enabled
 
@@ -231,7 +233,8 @@ class App:
             profile = UniqueUserProfile(new_profile_name, copy_profile=copy_profile)
             profile.update_environment(os.environ)
 
-        runtime.initialize(self._version)
+        pep8_alias = kwargs.get("pep8", False)
+        runtime.initialize(self._version, pep8_aliases=pep8_alias)
         self._app = _start_application(configuration, self._version, db_file)
         connect_warnings(self)
         self._poster = None
