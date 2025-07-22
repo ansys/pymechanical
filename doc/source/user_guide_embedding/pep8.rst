@@ -59,4 +59,4 @@ The following examples illustrate how to use PEP 8 aliases in practice:
 Limitations
 -----------
 - Enum values retain their original Pascal Case style; for example, ``Format.Automatic`` does not become ``Format.AUTOMATIC``.
-- PEP 8 aliases are not included in type hints provided by pymechanical stubs.
+- PEP 8 aliases are not included in type hints provided by PyMechanical stubs.
