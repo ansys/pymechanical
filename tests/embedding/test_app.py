@@ -118,7 +118,7 @@ def test_app_version(embedded_app):
     """Test version of the Application class."""
     version = embedded_app.version
     assert type(version) is int
-    assert version >= 232
+    assert version >= 241
 
 
 @pytest.mark.embedding
@@ -539,7 +539,7 @@ def test_app_execute_script_from_file(embedded_app, rootdir, printer):
 
 
 @pytest.mark.embedding
-def test_app_lock_file_open(embedded_app, tmp_path: pytest.TempPathFactory):
+def test_app_lock_file_open(embedded_app, tmp_path: pytest.TempPathFactory, caplog):
     """Test the lock file is removed on open if remove_lock=True."""
     embedded_app.DataModel.Project.Name = "PROJECT 1"
     project_file = os.path.join(tmp_path, f"{NamedTemporaryFile().name}.mechdat")
@@ -554,8 +554,11 @@ def test_app_lock_file_open(embedded_app, tmp_path: pytest.TempPathFactory):
     assert lock_file.exists()
 
     # Assert a warning is emitted if the lock file is going to be removed
-    with pytest.warns(UserWarning):
+
+    with caplog.at_level("WARNING"):
         embedded_app.open(project_file, remove_lock=True)
+
+    assert any("Removing the lock file" in message for message in caplog.messages)
 
 
 @pytest.mark.embedding
