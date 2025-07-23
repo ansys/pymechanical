@@ -9,6 +9,48 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.28 <https://github.com/ansys/pymechanical/releases/tag/v0.11.28>`_ - July 23, 2025
+========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add lock option removal for `save_as` method
+          - `#1233 <https://github.com/ansys/pymechanical/pull/1233>`_
+
+        * - Add stale issue label
+          - `#1246 <https://github.com/ansys/pymechanical/pull/1246>`_
+
+
+  .. tab-item:: Documentation
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add pep8 aliases documentation
+          - `#1249 <https://github.com/ansys/pymechanical/pull/1249>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update changelog for v0.11.27
+          - `#1245 <https://github.com/ansys/pymechanical/pull/1245>`_
+
+        * - Minor fixes on dropping 23r2 support
+          - `#1247 <https://github.com/ansys/pymechanical/pull/1247>`_
+
+
 `0.11.27 <https://github.com/ansys/pymechanical/releases/tag/v0.11.27>`_ - July 21, 2025
 ========================================================================================
 
