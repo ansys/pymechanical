@@ -188,10 +188,13 @@ def __set_environment(version: int) -> None:
 
     # Set an environment variable to use the custom CLR host
     # for embedding.
-    # In the future (>251), it would always be used.
-    if version == 251 or version == 252 or version == 261:
+    # In the future (>252), it would always be used.
+    if version == 251 or version == 252:
         if "PYMECHANICAL_NO_CLR_HOST_LITE" not in os.environ:
             os.environ["ANSYS_MECHANICAL_EMBEDDING_CLR_HOST"] = "1"
+    if version > 252:
+        if "PYMECHANICAL_NO_CLR_HOST_LITE" in os.environ:
+            os.environ["ANSYS_MECHANICAL_EMBEDDING_CLR_HOST"] = "0"
 
 
 def __check_for_mechanical_env():
