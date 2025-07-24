@@ -29,6 +29,7 @@ import ansys.tools.path as atp
 from click.testing import CliRunner
 import pytest
 
+from ansys.mechanical.core.embedding import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
 from ansys.mechanical.core.ide_config import cli as ideconfig_cli
 from ansys.mechanical.core.ide_config import get_stubs_location, get_stubs_versions
 from ansys.mechanical.core.run import _cli_impl
@@ -232,25 +233,31 @@ def test_cli_exit(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_batch_required_args(disable_cli):
-    # ansys-mechanical -r 252 => exception
+    # ansys-mechanical -r <version> => exception
     with pytest.raises(Exception):
-        _cli_impl(exe="AnsysWBU.exe", version=252)
+        _cli_impl(exe="AnsysWBU.exe", version=max(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS))
 
-    # ansys-mechanical -r 252 -g => no exception
+    # ansys-mechanical -r <version> -g => no exception
     try:
-        _cli_impl(exe="AnsysWBU.exe", version=252, graphical=True)
+        _cli_impl(
+            exe="AnsysWBU.exe", version=max(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS), graphical=True
+        )
     except Exception as e:
         assert False, f"cli raised an exception: {e}"
 
-    # ansys-mechanical -r 252 -i input.py => no exception
+    # ansys-mechanical -r <version> -i input.py => no exception
     try:
-        _cli_impl(exe="AnsysWBU.exe", version=252, input_script="input.py")
+        _cli_impl(
+            exe="AnsysWBU.exe",
+            version=max(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS),
+            input_script="input.py",
+        )
     except Exception as e:
         assert False, f"cli raised an exception: {e}"
 
-    # ansys-mechanical -r 252 -port 11 => no exception
+    # ansys-mechanical -r <version> -port 11 => no exception
     try:
-        _cli_impl(exe="AnsysWBU.exe", version=252, port=11)
+        _cli_impl(exe="AnsysWBU.exe", version=max(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS), port=11)
     except Exception as e:
         assert False, f"cli raised an exception: {e}"
 
