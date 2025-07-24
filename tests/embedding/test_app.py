@@ -31,9 +31,9 @@ import time
 
 import pytest
 
-from ansys.mechanical.core.embedding import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
 from ansys.mechanical.core.embedding.app import is_initialized
 from ansys.mechanical.core.embedding.cleanup_gui import cleanup_gui
+from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
 from ansys.mechanical.core.embedding.ui import _launch_ui
 import ansys.mechanical.core.embedding.utils as utils
 

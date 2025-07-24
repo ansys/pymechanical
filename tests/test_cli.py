@@ -29,7 +29,7 @@ import ansys.tools.path as atp
 from click.testing import CliRunner
 import pytest
 
-from ansys.mechanical.core.embedding import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
+from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
 from ansys.mechanical.core.ide_config import cli as ideconfig_cli
 from ansys.mechanical.core.ide_config import get_stubs_location, get_stubs_versions
 from ansys.mechanical.core.run import _cli_impl
