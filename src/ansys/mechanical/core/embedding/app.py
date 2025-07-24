@@ -302,9 +302,15 @@ class App:
     def save(self, path=None):
         """Save the project."""
         if path is not None:
+            if os.path.isabs(path):
+                self.DataModel.Project.Save(path)
+            else:
+                cwd = os.getcwd()
+                path = os.path.join(cwd, path)
             self.DataModel.Project.Save(path)
         else:
             self.DataModel.Project.Save()
+        LOG.info(f"Project saved to {path}")
 
     def save_as(self, path: str, overwrite: bool = False, remove_lock: bool = False):
         """
@@ -331,6 +337,9 @@ class App:
         For version 232, if `overwrite` is True, the existing file and its associated directory
         (if any) will be removed before saving the new file.
         """
+        if not os.path.isabs(path):
+            cwd = os.getcwd()
+            path = os.path.join(cwd, path)
         if not os.path.exists(path):
             self.DataModel.Project.SaveAs(path)
             return
@@ -373,6 +382,7 @@ class App:
                 else:
                     self.log_error(f"Failed to save project as {path}: {error_msg}")
                 raise e
+        LOG.info(f"Project saved as {path}")
 
     def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
         """Launch the GUI."""
