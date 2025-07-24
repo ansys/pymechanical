@@ -105,13 +105,6 @@ def test_cli_appmode(disable_cli, pytestconfig):
 
 
 @pytest.mark.cli
-def test_cli_231(disable_cli):
-    args, _ = _cli_impl(exe="AnsysWBU.exe", version=231, port=11)
-    assert "-nosplash" in args
-    assert "-notabctrl" in args
-
-
-@pytest.mark.cli
 def test_cli_port(disable_cli, pytestconfig):
     version = int(pytestconfig.getoption("ansys_version"))
     args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, port=11)
@@ -216,17 +209,9 @@ def test_cli_features(disable_cli, pytestconfig):
 @pytest.mark.cli
 def test_cli_exit(disable_cli, pytestconfig):
     version = int(pytestconfig.getoption("ansys_version"))
-    # Regardless of version, `exit` does nothing on its own
-    args, _ = _cli_impl(exe="AnsysWBU.exe", version=232, exit=True, port=11)
-    assert "-x" not in args
 
     args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, exit=True, port=11)
     assert "-x" not in args
-
-    # On versions earlier than 2024R1, `exit` throws a warning but does nothing
-    with pytest.warns(UserWarning):
-        args, _ = _cli_impl(exe="AnsysWBU.exe", version=232, exit=True, input_script="foo.py")
-        assert "-x" not in args
 
     # In UI mode, exit must be manually specified
     args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, input_script="foo.py", graphical=True)
@@ -247,25 +232,25 @@ def test_cli_exit(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_batch_required_args(disable_cli):
-    # ansys-mechanical -r 241 => exception
+    # ansys-mechanical -r 252 => exception
     with pytest.raises(Exception):
-        _cli_impl(exe="AnsysWBU.exe", version=241)
+        _cli_impl(exe="AnsysWBU.exe", version=252)
 
-    # ansys-mechanical -r 241 -g => no exception
+    # ansys-mechanical -r 252 -g => no exception
     try:
-        _cli_impl(exe="AnsysWBU.exe", version=241, graphical=True)
+        _cli_impl(exe="AnsysWBU.exe", version=252, graphical=True)
     except Exception as e:
         assert False, f"cli raised an exception: {e}"
 
-    # ansys-mechanical -r 241 -i input.py => no exception
+    # ansys-mechanical -r 252 -i input.py => no exception
     try:
-        _cli_impl(exe="AnsysWBU.exe", version=241, input_script="input.py")
+        _cli_impl(exe="AnsysWBU.exe", version=252, input_script="input.py")
     except Exception as e:
         assert False, f"cli raised an exception: {e}"
 
-    # ansys-mechanical -r 241 -port 11 => no exception
+    # ansys-mechanical -r 252 -port 11 => no exception
     try:
-        _cli_impl(exe="AnsysWBU.exe", version=241, port=11)
+        _cli_impl(exe="AnsysWBU.exe", version=252, port=11)
     except Exception as e:
         assert False, f"cli raised an exception: {e}"
 
