@@ -192,7 +192,7 @@ def __set_environment(version: int) -> None:
     if version == 251 or version == 252:
         if "PYMECHANICAL_NO_CLR_HOST_LITE" not in os.environ:
             os.environ["ANSYS_MECHANICAL_EMBEDDING_CLR_HOST"] = "1"
-    if version == 261:
+    if version > 252:
         if "PYMECHANICAL_NO_CLR_HOST_LITE" in os.environ:
             os.environ["ANSYS_MECHANICAL_EMBEDDING_CLR_HOST"] = "0"
 
