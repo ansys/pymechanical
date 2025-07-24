@@ -2322,9 +2322,12 @@ def launch_mechanical(
 
             # TODO - version argument is ignored...
             version = atp.version_from_path("mechanical", exec_file)
-            if version >= 261:
+
+            # TODO - only do this when the development version supports the new
+            # python script api
+            #if version >= 261:
                 # default the new python script api = 1
-                start_parm["new_python_script_api"] = 1
+                #start_parm["new_python_script_api"] = 1
             start_parm["local"] = True
             mechanical = Mechanical(
                 ip=ip,
