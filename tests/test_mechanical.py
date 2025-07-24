@@ -410,7 +410,7 @@ def test_find_mechanical_path():
         else:
             assert ".workbench" in path
 
-        assert re.match(r"\d{3}", str(version)) and version >= 232
+        assert re.match(r"\d{3}", str(version)) and version >= 241
 
 
 @pytest.mark.remote_session_launch

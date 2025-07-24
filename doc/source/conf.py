@@ -16,7 +16,7 @@ from ansys_sphinx_theme import ansys_favicon, get_version_match
 from sphinx_gallery.sorting import FileNameSortKey
 
 import ansys.mechanical.core as pymechanical
-from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
+from ansys.mechanical.core.embedding import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
 
 # necessary when building the sphinx gallery
 pymechanical.BUILDING_GALLERY = True
@@ -138,7 +138,7 @@ exclude_patterns = [
 ]
 
 # Get the current Mechanical version
-current_mechanical_version = next(iter(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS.keys()))
+current_mechanical_version = max(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS)
 
 # Create a link directive to the Ansys help documentation to be used in ``helper_scripts.rst``
 extlinks = {

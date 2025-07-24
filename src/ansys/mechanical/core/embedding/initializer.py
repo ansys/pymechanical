@@ -28,20 +28,13 @@ import platform
 import sys
 import warnings
 
+from ansys.mechanical.core.embedding import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
 from ansys.mechanical.core.embedding.loader import load_clr
 from ansys.mechanical.core.embedding.resolver import resolve
 from ansys.mechanical.core.mechanical import LOG
 
 INITIALIZED_VERSION = None
 """Constant for the initialized version."""
-
-SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS = {
-    252: "2025R2",
-    251: "2025R1",
-    242: "2024R2",
-    241: "2024R1",
-}
-"""Supported Mechanical embedding versions on Windows."""
 
 
 def __add_sys_path(version: int) -> str:

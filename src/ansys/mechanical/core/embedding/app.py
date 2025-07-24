@@ -320,11 +320,6 @@ class App:
         ------
         Exception
             If the file already exists at the specified path and `overwrite` is False.
-
-        Notes
-        -----
-        For version 232, if `overwrite` is True, the existing file and its associated directory
-        (if any) will be removed before saving the new file.
         """
         if not os.path.exists(path):
             self.DataModel.Project.SaveAs(path)
