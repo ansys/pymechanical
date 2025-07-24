@@ -27,7 +27,6 @@ from asyncio.subprocess import PIPE
 import os
 import sys
 import typing
-import warnings
 
 import ansys.tools.path as atp
 import click
@@ -130,10 +129,6 @@ def _cli_impl(
     if (not graphical) or (not show_welcome_screen):
         args.append("-AppModeMech")
 
-    if version < 232:
-        args.append("-nosplash")
-        args.append("-notabctrl")
-
     if not graphical:
         args.append("-b")
 
@@ -159,14 +154,8 @@ def _cli_impl(
 
     if (not graphical) and input_script:
         exit = True
-        if version < 241:
-            warnings.warn(
-                "Please ensure ExtAPI.Application.Close() is at the end of your script. "
-                "Without this command, Batch mode will not terminate.",
-                stacklevel=2,
-            )
 
-    if exit and input_script and version >= 241:
+    if exit and input_script:
         args.append("-x")
 
     profile: UniqueUserProfile = None
