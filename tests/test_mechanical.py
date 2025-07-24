@@ -43,7 +43,7 @@ def test_run_python_script_success(mechanical):
 @pytest.mark.remote_session_connect
 def test_run_python_script_success_return_empty(mechanical):
     result = str(mechanical.run_python_script("ExtAPI.DataModel.Project"))
-    if misc.is_windows() and mechanical.backend == "mechanical":
+    if not mechanical.new_python_script_api:
         assert result == ""
     else:
         assert result == "Ansys.ACT.Automation.Mechanical.Project"

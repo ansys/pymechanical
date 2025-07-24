@@ -422,6 +422,15 @@ class Mechanical(object):
 
         self._version = None
 
+        new_python_script_api = kwargs.get("new_python_script_api", None)
+        old_python_script_api = kwargs.get("old_python_script_api", None)
+        if new_python_script_api:
+            self._python_script_api_version = 1
+        elif old_python_script_api:
+            self._python_script_api_version = 0
+        else:
+            self._python_script_api_version = -1
+
         if port is None:
             port = MECHANICAL_DEFAULT_PORT
             self._port = port
@@ -1688,6 +1697,15 @@ class Mechanical(object):
 
         return data
 
+    @property
+    def new_python_script_api(self) -> bool:
+        if self._python_script_api_version == -1:
+            # current default - use the old API
+            # this can switch to the new API without checking the version
+            # older versions will just ignore it
+            return False
+        return self._python_script_api_version == 1
+
     def __call_run_python_script(
         self, script_code: str, enable_logging, log_level, progress_interval
     ):
@@ -1717,6 +1735,9 @@ class Mechanical(object):
         request.enable_logging = enable_logging
         request.logger_severity = log_level_server
         request.progress_interval = progress_interval
+
+        if self.new_python_script_api:
+            request.python_behavior = 1
 
         result = ""
         self._busy = True
@@ -2298,6 +2319,12 @@ def launch_mechanical(
     if backend == "mechanical":
         try:
             port = launch_grpc(port=port, verbose=verbose_mechanical, **start_parm)
+
+            # TODO - version argument is ignored...
+            version = atp.version_from_path("mechanical", exec_file)
+            if version >= 261:
+                # default the new python script api = 1
+                start_parm["new_python_script_api"] = 1
             start_parm["local"] = True
             mechanical = Mechanical(
                 ip=ip,
