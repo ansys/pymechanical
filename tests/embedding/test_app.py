@@ -31,6 +31,7 @@ import time
 
 import pytest
 
+from ansys.mechanical.core.embedding import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
 from ansys.mechanical.core.embedding.app import is_initialized
 from ansys.mechanical.core.embedding.cleanup_gui import cleanup_gui
 from ansys.mechanical.core.embedding.ui import _launch_ui
@@ -47,7 +48,6 @@ def test_app_repr(embedded_app):
 
 
 @pytest.mark.embedding
-@pytest.mark.minimum_version(241)
 def test_deprecation_warning(embedded_app):
     harmonic_acoustic = embedded_app.Model.AddHarmonicAcousticAnalysis()
     with pytest.warns(UserWarning):
@@ -118,7 +118,7 @@ def test_app_version(embedded_app):
     """Test version of the Application class."""
     version = embedded_app.version
     assert type(version) is int
-    assert version >= 241
+    assert version >= min(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS)
 
 
 @pytest.mark.embedding
