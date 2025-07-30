@@ -14,8 +14,9 @@ This section provides an overview of Mechanical scripting.
    :hidden:
 
    self
-   helper_scripts
+   scripts/index
    threading
+   helper_scripts
 
 Overview
 --------
