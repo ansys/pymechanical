@@ -31,7 +31,7 @@ pyvista.BUILDING_GALLERY = True
 
 
 # Whether or not to build the cheatsheet
-BUILD_CHEATSHEET = False
+BUILD_CHEATSHEET = True if os.environ.get("BUILD_EXAMPLES", "true") == "true" else False
 
 # suppress annoying matplotlib bug
 warnings.filterwarnings(
