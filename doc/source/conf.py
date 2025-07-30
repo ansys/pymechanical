@@ -13,6 +13,7 @@ import os
 import warnings
 
 from ansys_sphinx_theme import ansys_favicon, get_version_match
+import pyvista
 from pyvista.plotting.utilities.sphinx_gallery import DynamicScraper
 from sphinx_gallery.sorting import FileNameSortKey
 
@@ -21,6 +22,13 @@ from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMB
 
 # necessary when building the sphinx gallery
 pymechanical.BUILDING_GALLERY = True
+
+# Ensure that offscreen rendering is used for docs generation
+pyvista.OFF_SCREEN = True
+
+# necessary when building the sphinx gallery
+pyvista.BUILDING_GALLERY = True
+
 
 # Whether or not to build the cheatsheet
 BUILD_CHEATSHEET = False
