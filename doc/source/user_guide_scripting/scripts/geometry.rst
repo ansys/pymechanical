@@ -32,7 +32,7 @@ Get all bodies
 
 
 Find Body with Largest Volume
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code:: python
 
     ExtAPI.Application.ActiveUnitSystem = MechanicalUnitSystem.StandardNMM
@@ -52,7 +52,7 @@ Find Body with Largest Volume
 
 
 Find Body by its ID
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
 .. code:: python
 
     b2 = ExtAPI.DataModel.GeoData.GeoEntityById(bodyid)
@@ -60,7 +60,7 @@ Find Body by its ID
 
 
 Find the Part that the body belongs to
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code:: python
 
     # Get Body Name
@@ -73,7 +73,7 @@ Find the Part that the body belongs to
 
 
 Find Body by its ID AND print its Faces, Centroid etc
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code:: python
 
     body2 = ExtAPI.DataModel.GeoData.GeoEntityById(bodyid)
@@ -89,7 +89,7 @@ Find Body by its ID AND print its Faces, Centroid etc
 
 
 Get all Vertices
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^
 .. code:: python
 
 
@@ -105,7 +105,7 @@ Get all Vertices
 
 
 Get all edges of a given length
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code:: python
 
     ExtAPI.Application.ActiveUnitSystem = MechanicalUnitSystem.StandardNMM
@@ -125,7 +125,7 @@ Get all edges of a given length
 
 
 Get all circular edges of a given radius
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code:: python
 
     radius = 10
@@ -152,7 +152,7 @@ Get all circular edges of a given radius
 
 
 Get Radius of a selected edge
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code:: python
 
 
@@ -162,7 +162,7 @@ Get Radius of a selected edge
 
 
 Create a Named Selection from  a list of body Ids
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code:: python
 
     mylist = [bodyid]
@@ -180,7 +180,7 @@ Create a Named Selection from  a list of body Ids
 
 
 Find a Named Selections with a prefix
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code:: python
 
 
@@ -192,7 +192,7 @@ Find a Named Selections with a prefix
 
 
 Create a Named Selection of all bodies with a cylindrical face
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code:: python
     
 
@@ -228,7 +228,7 @@ Create a Named Selection of all bodies with a cylindrical face
 
 
 Modify  material assignment
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code:: python
     
 
@@ -241,7 +241,7 @@ Modify  material assignment
 
 
 Get  all Coordinate Systems
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code:: python
     
 
@@ -250,7 +250,7 @@ Get  all Coordinate Systems
 
 
 Create a Coordinate System by Global Coordinates
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code:: python
     
 
@@ -263,7 +263,7 @@ Create a Coordinate System by Global Coordinates
 
 
 Create a Coordinate System Scoped to Named Selection
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code:: python
     
 
@@ -279,7 +279,7 @@ Create a Coordinate System Scoped to Named Selection
 
 
 Create a Coordinate System by defining Directional Vectors
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code:: python
     
 
@@ -298,7 +298,7 @@ Create a Coordinate System by defining Directional Vectors
 
 
 Create Coordinate System at an Edge
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code:: python
     
 
@@ -313,7 +313,7 @@ Create Coordinate System at an Edge
 
 
 Coordinate System Definition : More Options
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code:: python
     
 
@@ -346,7 +346,7 @@ Coordinate System Definition : More Options
 
 
 Coordinate Systems : Find Distance of a point from a local Coordinate System's  origin
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code:: python
     
@@ -363,7 +363,7 @@ Coordinate Systems : Find Distance of a point from a local Coordinate System's  
 
 
 Insert a Remote Point using a  Coordinate System , Scoping to a known face
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code:: python
     
 
@@ -382,7 +382,7 @@ Insert a Remote Point using a  Coordinate System , Scoping to a known face
 
 
 Insert a Point Mass
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
 .. code:: python
     
 
@@ -403,7 +403,7 @@ Insert a Point Mass
 
 
 Find all Unsuppressed Point Masses
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code:: python
     
 
