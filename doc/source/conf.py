@@ -23,6 +23,7 @@ pymechanical.BUILDING_GALLERY = True
 
 # Whether or not to build the cheatsheet
 BUILD_CHEATSHEET = True if os.environ.get("BUILD_EXAMPLES", "true") == "true" else False
+BUILD_CHEATSHEET = False
 
 # suppress annoying matplotlib bug
 warnings.filterwarnings(

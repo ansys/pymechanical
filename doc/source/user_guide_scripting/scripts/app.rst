@@ -6,8 +6,12 @@ App
 This section has helper scripts for  Embedded App .
 
 
-Create an embedded instance of Ansys Mechanical(and open an existing Mechanical File)
+.. contents::
+   :local:
+   :depth: 4
 
+Create an embedded instance of Ansys Mechanical(and open an existing Mechanical File)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code:: python
 
     from ansys.mechanical.core import App
@@ -22,7 +26,7 @@ Create an embedded instance of Ansys Mechanical(and open an existing Mechanical 
 
 
 Create an embedded instance of Ansys Mechanical(and import a Geometry File)
-
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code:: python
 
     import os
@@ -48,8 +52,8 @@ Create an embedded instance of Ansys Mechanical(and import a Geometry File)
 
     app.save(os.path.join(os.getcwd(),"temp", "frame.mechdb" ))
 
-### To Plot and Print the Tree (To check model so far) 
-
+To Plot and Print the Tree (To check model so far)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. code:: python
 
     app.plot()
@@ -58,7 +62,9 @@ Create an embedded instance of Ansys Mechanical(and import a Geometry File)
 
     app.print_tree(Model)
 
+
 To Launch UI (To check model so far)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code:: python
 
