@@ -642,6 +642,12 @@ jobs:
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 0
         run: |
           . /env/bin/activate
+
+          apt update
+          apt install -y libjbig-dev
+          # Add the /usr/lib/x86_64-linux-gnu/ path to the LD_LIBRARY_PATH (where libjbig-dev .so files are)
+          export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/
+
           if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
             xvfb-run mechanical-env make -C doc html
           else
