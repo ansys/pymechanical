@@ -642,50 +642,21 @@ jobs:
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 0
         run: |
           . /env/bin/activate
-          # Make html or pdf doc
-          make_doc() {
-            # $1 is the type of file we are creating (html or pdf)
-            output_file=doc_$1_output.txt
-            if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
-              xvfb-run mechanical-env make -C doc $1
-            else
-              xvfb-run -terminate mechanical-env make -C doc $1 > $output_file 2>&1 || true
-              cat $output_file
-              echo done running make
-              validate_output $output_file
-            fi
-          }
-
-          # Validate that the html or pdf build succeeded
-          validate_output() {
-            echo "validating output of build"
-            # $1 is the file we are checking
-            # cat $1
-            #
-            # Check if "build succeeded" string is present in doc_build_output.txt
-            #
-            if grep -q "build succeeded" $1; then
+          if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
+            xvfb-run mechanical-env make -C doc html
+          else
+            xvfb-run mechanical-env make -C doc html > output.txt 2>&1 || true
+            cat output.txt
+            if grep -q "build succeeded" output.txt; then
               echo "Documentation building succeeded"
             else
               echo "Documentation building failed"
               exit 1
             fi
-          }
-
-          # Install libjbig-dev so quarto doesn't fail its PDF build on v242
-          apt update
-          apt install -y libjbig-dev
-          # Add the /usr/lib/x86_64-linux-gnu/ path to the LD_LIBRARY_PATH (where libjbig-dev .so files are)
-          export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/
-
-          # Make the html doc & validate results
-          make_doc html
-
-          # Make the pdf doc & validate results
-          make_doc pdf
-
-          # Make the pdf doc & validate results
-          make_doc linkcheck
+      - name: Check links
+        run: |
+          . /env/bin/activate
+          make -C doc linkcheck
 
       - name: Upload HTML Documentation
         uses: actions/upload-artifact@v4
