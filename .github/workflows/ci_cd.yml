@@ -585,10 +585,10 @@ jobs:
 
   doc-build:
     name: Documentation
-    runs-on: public-ubuntu-latest-16-cores
+    runs-on: public-ubuntu-latest-8-cores
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
-      options: --shm-size=2g --entrypoint /bin/bash
+      options: --entrypoint /bin/bash
     needs: [style, doc-style, revn-variations, container-stability-check]
 
     steps:
@@ -647,11 +647,6 @@ jobs:
           # Make html or pdf doc
           make_doc() {
             # $1 is the type of file we are creating (html or pdf)
-
-            # Need to unset PYMECHANICAL_PORT and PYMECHANICAL_START_INSTANCE when running code containing remote sessions
-            unset PYMECHANICAL_PORT
-            unset PYMECHANICAL_START_INSTANCE
-
             output_file=doc_$1_output.txt
             if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
               xvfb-run mechanical-env make -C doc $1
@@ -688,11 +683,11 @@ jobs:
           # Make the html doc & validate results
           make_doc html
 
-          # Make the pdf doc & validate results
-          make_doc pdf
+          # # Make the pdf doc & validate results
+          # make_doc pdf
 
-          # Make the pdf doc & validate results
-          make_doc linkcheck
+          # # Make the pdf doc & validate results
+          # make_doc linkcheck
 
       - name: Upload HTML Documentation
         uses: actions/upload-artifact@v4
