@@ -8,8 +8,10 @@ This section provides details about Code Snippets for PyMechanical.
 
    app
    geometry
+   nsel
    connections
    mesh
    objects
    loads
    results
+
