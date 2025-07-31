@@ -653,6 +653,7 @@ jobs:
               echo "Documentation building failed"
               exit 1
             fi
+          fi
       - name: Check links
         run: |
           . /env/bin/activate
