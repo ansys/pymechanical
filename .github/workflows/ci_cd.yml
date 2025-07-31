@@ -651,7 +651,7 @@ jobs:
             if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
               xvfb-run mechanical-env make -C doc $1
             else
-              xvfb-run mechanical-env make -C doc $1 > $output_file 2>&1 || true
+              xvfb-run -terminate mechanical-env make -C doc $1 > $output_file 2>&1 || true
               cat $output_file
               echo done running make
               validate_output $output_file

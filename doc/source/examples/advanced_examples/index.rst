@@ -1,4 +1,4 @@
-.. _ref_remote_session_examples:
+.. _ref_remote_examples:
 
 Advanced Examples
 -----------------
