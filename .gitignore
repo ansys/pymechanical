@@ -199,7 +199,7 @@ doc/source/api/*
 !doc/source/api/path.rst
 
 # Examples files downloaded when building docs
-examples/embedding_n_remote/download/*
+examples/01_basic/out/*
 
 # pymechanical-specific
 mylocal.ip

@@ -683,11 +683,11 @@ jobs:
           # Make the html doc & validate results
           make_doc html
 
-          # # Make the pdf doc & validate results
-          # make_doc pdf
+          # Make the pdf doc & validate results
+          make_doc pdf
 
-          # # Make the pdf doc & validate results
-          # make_doc linkcheck
+          # Make the pdf doc & validate results
+          make_doc linkcheck
 
       - name: Upload HTML Documentation
         uses: actions/upload-artifact@v4
