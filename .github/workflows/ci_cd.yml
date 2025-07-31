@@ -588,7 +588,7 @@ jobs:
     runs-on: public-ubuntu-latest-16-cores
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
-      options: --entrypoint /bin/bash
+      options: --shm-size=2g --entrypoint /bin/bash
     needs: [style, doc-style, revn-variations, container-stability-check]
 
     steps:
