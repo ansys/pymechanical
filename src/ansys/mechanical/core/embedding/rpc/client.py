@@ -69,6 +69,10 @@ class Client:
         self._error_type = Exception
         self._has_exited = False
 
+    @property
+    def new_python_script_api(self) -> bool:
+        return True
+
     def __getattr__(self, attr):
         """Get attribute from the root object."""
         if hasattr(self.root, attr):
