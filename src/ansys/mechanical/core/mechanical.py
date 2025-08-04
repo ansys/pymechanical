@@ -518,7 +518,7 @@ class Mechanical(object):
                     "config = Ansys.Utilities.ApplicationConfiguration.DefaultConfiguration\n"
                     "config.VersionInfo.VersionString"
                 )
-                self._version = self.run_python_script(script)
+                self._version = self.run_python_script(script, python_api_version=1)
             except grpc.RpcError:  # pragma: no cover
                 raise
             finally:
@@ -933,7 +933,7 @@ class Mechanical(object):
         )
 
     def run_python_script(
-        self, script_block: str, enable_logging=False, log_level="WARNING", progress_interval=2000
+        self, script_block: str, enable_logging=False, log_level="WARNING", progress_interval=2000, python_api_version=-1
     ):
         """Run a Python script block inside Mechanical.
 
@@ -1011,8 +1011,10 @@ class Mechanical(object):
 
         """
         self.verify_valid_connection()
+        if python_api_version == -1:
+            python_api_version = self.python_script_api_version
         result_as_string = self.__call_run_python_script(
-            script_block, enable_logging, log_level, progress_interval
+            script_block, enable_logging, log_level, progress_interval, python_api_version
         )
         return result_as_string
 
@@ -1698,16 +1700,17 @@ class Mechanical(object):
         return data
 
     @property
-    def new_python_script_api(self) -> bool:
+    def python_script_api_version(self) -> int:
         if self._python_script_api_version == -1:
-            # current default - use the old API
-            # this can switch to the new API without checking the version
-            # older versions will just ignore it
-            return False
-        return self._python_script_api_version == 1
+            # current default - <261 old, >=261 new
+            if int(self.version) >= 261:
+                self._python_script_api_version = 1
+            else:
+                self._python_script_api_version = 0
+        return self._python_script_api_version
 
     def __call_run_python_script(
-        self, script_code: str, enable_logging, log_level, progress_interval
+        self, script_code: str, enable_logging, log_level, progress_interval, run_python_api_version: int
     ):
         """Run the Python script block on the server.
 
@@ -1735,9 +1738,7 @@ class Mechanical(object):
         request.enable_logging = enable_logging
         request.logger_severity = log_level_server
         request.progress_interval = progress_interval
-
-        if self.new_python_script_api:
-            request.python_behavior = 1
+        request.python_behavior = run_python_api_version
 
         result = ""
         self._busy = True
@@ -2323,11 +2324,6 @@ def launch_mechanical(
             # TODO - version argument is ignored...
             version = atp.version_from_path("mechanical", exec_file)
 
-            # TODO - only do this when the development version supports the new
-            # python script api
-            #if version >= 261:
-                # default the new python script api = 1
-                #start_parm["new_python_script_api"] = 1
             start_parm["local"] = True
             mechanical = Mechanical(
                 ip=ip,
