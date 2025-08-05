@@ -62,10 +62,12 @@ def get_nodes_and_coords(tri_tessellation: "Ansys.Mechanical.Scenegraph.TriTesse
     return np_coordinates, np_indices
 
 
-def get_scene(
-    app: "ansys.mechanical.core.embedding.App",
-) -> "Ansys.Mechanical.Scenegraph.GroupNode":
-    """Get the scene of the model."""
+def _get_geometry_scene(
+        app: "ansys.mechanical.core.embedding.App"
+    ) -> "Ansys.Mechanical.Scenegraph.GroupNode":
+    """Get the scene for the geometry.
+
+    using the undocumented apis under ScenegraphHelpers."""
     import clr
 
     clr.AddReference("Ansys.Mechanical.DataModel")
@@ -89,3 +91,26 @@ def get_scene(
         )
         group_node.AddChild(attribute_node)
     return group_node.Build()
+
+
+def get_scene(
+    app: "ansys.mechanical.core.embedding.App",
+) -> "Ansys.Mechanical.Scenegraph.GroupNode":
+    """Get the scene of the model."""
+    return _get_geometry_scene(app)
+
+
+def get_scene_for_object(
+        app: "ansys.mechanical.core.embedding.App", obj)-> "Ansys.Mechanical.Scenegraph.Node":
+    import Ansys
+    if (
+        obj.DataModelObjectCategory
+        == Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Geometry
+    ):
+        scene = get_scene(app)
+        return scene
+    active_objects = app.Tree.ActiveObjects
+    app.Tree.Activate([obj])
+    scenegraph_node = app.Graphics.GetScenegraphForActiveObject()
+    app.Tree.Activate(active_objects)
+    return scenegraph_node

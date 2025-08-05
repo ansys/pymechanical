@@ -23,6 +23,8 @@
 """PyVista plotter."""
 
 import clr
+import dataclasses
+import typing
 
 clr.AddReference("Ansys.Mechanical.DataModel")
 clr.AddReference("Ansys.ACT.Interfaces")
@@ -33,8 +35,21 @@ from ansys.tools.visualization_interface import Plotter
 import numpy as np
 import pyvista as pv
 
-from .utils import bgr_to_rgb_tuple, get_nodes_and_coords, get_scene
+from .utils import bgr_to_rgb_tuple, get_nodes_and_coords, get_scene_for_object
 
+@dataclasses.dataclass
+class Plottable:
+    """Plottable object."""
+    polydata: typing.Optional[pv.PolyData] = None
+
+    # TODO - make this a list of overridable attributes
+    color: typing.Optional[pv.Color] = None
+    transform: np.ndarray = None
+    children: typing.List["Plottable"] = None
+    def __post_init__(self):
+        self.transform = np.identity(4)
+        #pv.transform.Transform(np.identity(4))
+        self.children = list()
 
 def _transform_to_pyvista(transform: "Ansys.ACT.Math.Matrix4D"):
     """Convert the Transformation matrix to a numpy array."""
@@ -63,104 +78,98 @@ def _get_nodes_and_coords(node: "Ansys.Mechanical.Scenegraph.Node"):
     """
     if isinstance(node, Ansys.Mechanical.Scenegraph.TriTessellationNode):
         return _get_tri_nodes_and_coords(node)
-
     # TODO - support line tessellation node. See issue #809
     # if isinstance(node, Ansys.Mechanical.Scenegraph.LineTessellationNode):
     return None, None
 
 
-def _tri_tessellation_to_mesh(
+def _visit_tri_tessellation_node(
     node: "Ansys.Mechanical.Scenegraph.TriTessellationNode",
-) -> pv.PolyData:
+) -> Plottable:
     np_coordinates, np_indices = _get_nodes_and_coords(node)
     if np_coordinates is None or np_indices is None:
         return None
-    polydata = pv.PolyData(np_coordinates, np_indices)
-    return polydata
+    plottable = Plottable(pv.PolyData(np_coordinates, np_indices))
+    return plottable
 
 
-def _get_mesh(node: "Ansys.Mechanical.Scenegraph.Node") -> pv.PolyData:
-    import Ansys
 
-    if isinstance(node, Ansys.Mechanical.Scenegraph.TriTessellationNode):
-        polydata = _tri_tessellation_to_mesh(node)
-        return polydata
-    else:
-        print(f"Cannot get mesh from {type(node)}")
-    return None
-
-
-def _handle_transform_node(node: "Ansys.Mechanical.Scenegraph.TransformNode") -> pv.PolyData:
-    polydata = _get_mesh(node.Child)
-    if polydata is None:
+def _visit_transform_node(node: "Ansys.Mechanical.Scenegraph.TransformNode") -> Plottable:
+    plottable = _visit_node(node.Child)
+    if plottable is None:
         return None
-    pv_transform = _transform_to_pyvista(node.Transform)
-    polydata = polydata.transform(pv_transform, inplace=True)
-    return polydata
+    plottable.transform = _transform_to_pyvista(node.Transform)
+    return plottable
 
 
-def _get_polydata(node: "Ansys.Mechanical.Scenegraph.Node") -> pv.PolyData:
-    import Ansys
-
-    if isinstance(node, Ansys.Mechanical.Scenegraph.TransformNode):
-        polydata = _handle_transform_node(node)
-        return polydata
-    else:
-        print(f"unexpected attribute node: {node}")
-        return None
-
-
-def _visit_attribute_node(plotter: Plotter, node: "Ansys.Mechanical.Scenegraph.AttributeNode"):
-    scenegraph_node = node.Child
+def _get_color(node: "Ansys.Mechanical.Scenegraph.AttributeNode") -> pv.Color:
     node_color = node.Property(Ansys.Mechanical.Scenegraph.ScenegraphIntAttributes.Color)
-    polydata = _get_polydata(scenegraph_node)
-    if polydata is None:
-        return
     color = pv.Color(bgr_to_rgb_tuple(node_color))
-    plotter.plot(polydata, color=color, smooth_shading=True)
+    return color
 
 
-def _visit_group_node(plotter: Plotter, node: "Ansys.Mechanical.Scenegraph.GroupNode"):
+def _visit_attribute_node(node: "Ansys.Mechanical.Scenegraph.AttributeNode") -> Plottable:
+    """Return the plottable of the child node with the color attached."""
+    plottable = _visit_node(node.Child)
+    if plottable is None:
+        return None
+    plottable.color = _get_color(node)
+    return plottable
+
+
+def _visit_group_node(node: "Ansys.Mechanical.Scenegraph.GroupNode") -> Plottable:
+    """Return a new plottable grouping all the children of the group node."""
+    plottable = Plottable()
     for child in node.Children:
-        _visit_node(plotter, child)
+        child_plottable = _visit_node(child)
+        if child_plottable is not None:
+            plottable.children.append(child_plottable)
+    return plottable
 
 
-def _visit_node(plotter: Plotter, node: "Ansys.Mechanical.Scenegraph.Node"):
-    import Ansys  # the reference to the scenegraph assembly has already been added in `get_scene`
-
+def _visit_node(node: "Ansys.Mechanical.Scenegraph.Node") -> Plottable:
     if not isinstance(node, Ansys.Mechanical.Scenegraph.Node):
         raise Exception("Node is not a scenegraph node!")
 
     if isinstance(node, Ansys.Mechanical.Scenegraph.GroupNode):
-        _visit_group_node(plotter, node)
+        return _visit_group_node(node)
     if isinstance(node, Ansys.Mechanical.Scenegraph.AttributeNode):
-        _visit_attribute_node(plotter, node)
+        return _visit_attribute_node(node)
+    if isinstance(node, Ansys.Mechanical.Scenegraph.TransformNode):
+        return _visit_transform_node(node)
+    if isinstance(node, Ansys.Mechanical.Scenegraph.TriTessellationNode):
+        return _visit_tri_tessellation_node(node)
+    return None
 
 
-def _get_scene_for_object(app, obj):
-    import Ansys
+def _add_plottable(plotter: Plotter, plottable: Plottable):
+    for child in plottable.children:
+        child.transform *= plottable.transform
+        if child.color is None:
+            child.color = plottable.color
+        _add_plottable(plotter, child)
 
-    if (
-        obj.DataModelObjectCategory
-        == Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Geometry
-    ):
-        scene = get_scene(app)
-        return scene
-    active_objects = app.Tree.ActiveObjects
-    app.Tree.Activate([obj])
-    scenegraph_node = app.Graphics.GetScenegraphForActiveObject()
-    app.Tree.Activate(active_objects)
-    return scenegraph_node
+    if plottable.polydata is None:
+        return
+
+    polydata = plottable.polydata.transform(plottable.transform, inplace=True)
+    plotter.plot(polydata, color=plottable.color, smooth_shading=True)
+
+
+def _get_plotter_for_scene(node: "Ansys.Mechanical.Scenegraph.Node") -> Plotter:
+    plottable = _visit_node(node)
+    plotter = Plotter()
+    _add_plottable(plotter, plottable)
+    return plotter
 
 
 def _plot_object(app, obj) -> Plotter:
     """Convert the scenegraph for obj to an ``ansys.tools.visualization_interface.Plotter`` instance."""
-    scene = _get_scene_for_object(app, obj)
+    scene = get_scene_for_object(app, obj)
     if scene is None:
-        print(f"No scene available for object {obj}")
+        print(f"No scene available for object {obj}!")
         return None
-    plotter = Plotter()
-    _visit_node(plotter, scene)
+    plotter = _get_plotter_for_scene(scene)
     return plotter
 
 
