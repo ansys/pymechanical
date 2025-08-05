@@ -91,8 +91,23 @@ def _plot_geometry(app) -> Plotter:
 
     return plotter
 
+def _get_scenegraph_node_for_object(app, obj):
+    active_objects = app.Tree.ActiveObjects
+    app.Tree.Activate([obj])
+    scenegraph_node = app.Graphics.GetScenegraphForActiveObject()
+    app. Tree.Activate(active_objects)
+    return scenegraph_node
+
+def _plot_object(app, obj) -> Plotter:
+    """Convert the scenegraph for obj to an ``ansys.tools.visualization_interface.Plotter`` instance."""
+    scenegraph_node = _get_scenegraph_node_for_object(app, obj)
+
+    plotter = Plotter()
+    return plotter
+
 def to_plotter(app: "ansys.mechanical.core.embedding.App", obj = None) -> Plotter:
     """Convert the app's geometry to an ``ansys.tools.visualization_interface.Plotter`` instance."""
 
     if obj is None:
         return _plot_geometry(app)
+    return _plot_object(app, obj)
