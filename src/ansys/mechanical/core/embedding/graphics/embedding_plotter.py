@@ -33,7 +33,7 @@ from ansys.tools.visualization_interface import Plotter
 import numpy as np
 import pyvista as pv
 
-from .utils import bgr_to_rgb_tuple, get_nodes_and_coords
+from .utils import bgr_to_rgb_tuple, get_nodes_and_coords, get_scene
 
 
 def _transform_to_pyvista(transform: "Ansys.ACT.Math.Matrix4D"):
@@ -68,21 +68,31 @@ def _get_nodes_and_coords(node: "Ansys.Mechanical.Scenegraph.Node"):
     # if isinstance(node, Ansys.Mechanical.Scenegraph.LineTessellationNode):
     return None, None
 
+def _add_attribute_node(plotter: Plotter, node: "Ansys.Mechanical.Scenegraph.AttributeNode"):
+    scenegraph_node: "Ansys.Mechanical.Scenegraph.TransformNode" = node.Child
+    node_color = node.Property(Ansys.Mechanical.Scenegraph.ScenegraphIntAttributes.Color)
+    np_coordinates, np_indices = _get_nodes_and_coords(scenegraph_node.Child)
+    if np_coordinates is None or np_indices is None:
+        return
+    pv_transform = _transform_to_pyvista(scenegraph_node.Transform)
+    polydata = pv.PolyData(np_coordinates, np_indices).transform(pv_transform, inplace=True)
+    color = pv.Color(bgr_to_rgb_tuple(node_color))
+    plotter.plot(polydata, color=color, smooth_shading=True)
 
-def to_plotter(app: "ansys.mechanical.core.embedding.App"):
+def _plot_geometry(app) -> Plotter:
     """Convert the app's geometry to an ``ansys.tools.visualization_interface.Plotter`` instance."""
     plotter = Plotter()
 
-    # TODO - use get_scene from utils instead of looping over bodies directly here.
-    for body in app.DataModel.GetObjectsByType(
-        Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Body
-    ):
-        scenegraph_node = Ansys.ACT.Mechanical.Tools.ScenegraphHelpers.GetScenegraph(body)
-        np_coordinates, np_indices = _get_nodes_and_coords(scenegraph_node.Child)
-        if np_coordinates is None or np_indices is None:
-            continue
-        pv_transform = _transform_to_pyvista(scenegraph_node.Transform)
-        polydata = pv.PolyData(np_coordinates, np_indices).transform(pv_transform, inplace=True)
-        color = pv.Color(bgr_to_rgb_tuple(body.Color))
-        plotter.plot(polydata, color=color, smooth_shading=True)
+    scene = get_scene(app)
+    for child in scene.Children:
+        # get_scene will always return a group of attribute nodes for now
+        child: "Ansys.Mechanical.Scenegraph.AttributeNode" = child
+        _add_attribute_node(plotter, child)
+
     return plotter
+
+def to_plotter(app: "ansys.mechanical.core.embedding.App", obj = None) -> Plotter:
+    """Convert the app's geometry to an ``ansys.tools.visualization_interface.Plotter`` instance."""
+
+    if obj is None:
+        return _plot_geometry(app)
