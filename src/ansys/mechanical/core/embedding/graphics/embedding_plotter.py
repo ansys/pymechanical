@@ -68,27 +68,69 @@ def _get_nodes_and_coords(node: "Ansys.Mechanical.Scenegraph.Node"):
     # if isinstance(node, Ansys.Mechanical.Scenegraph.LineTessellationNode):
     return None, None
 
-def _add_attribute_node(plotter: Plotter, node: "Ansys.Mechanical.Scenegraph.AttributeNode"):
-    scenegraph_node: "Ansys.Mechanical.Scenegraph.TransformNode" = node.Child
-    node_color = node.Property(Ansys.Mechanical.Scenegraph.ScenegraphIntAttributes.Color)
-    np_coordinates, np_indices = _get_nodes_and_coords(scenegraph_node.Child)
+def _tri_tessellation_to_mesh(node: "Ansys.Mechanical.Scenegraph.TriTessellationNode") -> pv.PolyData:
+    np_coordinates, np_indices = _get_nodes_and_coords(node)
     if np_coordinates is None or np_indices is None:
+        return None
+    polydata = pv.PolyData(np_coordinates, np_indices)
+    return polydata
+
+def _get_mesh(node: "Ansys.Mechanical.Scenegraph.Node") -> pv.PolyData:
+    import Ansys
+    if isinstance(node, Ansys.Mechanical.Scenegraph.TriTessellationNode):
+        polydata = _tri_tessellation_to_mesh(node)
+        return polydata
+    else:
+        print(f"Cannot get mesh from {type(node)}")
+    return None
+
+def _handle_transform_node(node: "Ansys.Mechanical.Scenegraph.TransformNode") -> pv.PolyData:
+    polydata = _get_mesh(node.Child)
+    if polydata is None:
+        return None
+    pv_transform = _transform_to_pyvista(node.Transform)
+    polydata = polydata.transform(pv_transform, inplace=True)
+    return polydata
+
+def _get_polydata(node:"Ansys.Mechanical.Scenegraph.Node") -> pv.PolyData:
+    import Ansys
+    if isinstance(node, Ansys.Mechanical.Scenegraph.TransformNode):
+        polydata = _handle_transform_node(node)
+        return polydata
+    else:
+        print(f"unexpected attribute node: {node}")
+        return None
+
+def _visit_attribute_node(plotter: Plotter, node: "Ansys.Mechanical.Scenegraph.AttributeNode"):
+    scenegraph_node = node.Child
+    node_color = node.Property(Ansys.Mechanical.Scenegraph.ScenegraphIntAttributes.Color)
+    polydata = _get_polydata(scenegraph_node)
+    if polydata is None:
         return
-    pv_transform = _transform_to_pyvista(scenegraph_node.Transform)
-    polydata = pv.PolyData(np_coordinates, np_indices).transform(pv_transform, inplace=True)
     color = pv.Color(bgr_to_rgb_tuple(node_color))
     plotter.plot(polydata, color=color, smooth_shading=True)
+
+def _visit_group_node(plotter: Plotter, node: "Ansys.Mechanical.Scenegraph.GroupNode"):
+    for child in node.Children:
+        _visit_node(plotter, child)
+
+def _visit_node(plotter: Plotter, node: "Ansys.Mechanical.Scenegraph.Node"):
+    import Ansys # the reference to the scenegraph assembly has already been added in `get_scene`
+    if not isinstance(node, Ansys.Mechanical.Scenegraph.Node):
+        raise Exception("Node is not a scenegraph node!")
+
+    if isinstance(node, Ansys.Mechanical.Scenegraph.GroupNode):
+        _visit_group_node(plotter, node)
+    if isinstance(node, Ansys.Mechanical.Scenegraph.AttributeNode):
+        _visit_attribute_node(plotter, node)
 
 def _plot_geometry(app) -> Plotter:
     """Convert the app's geometry to an ``ansys.tools.visualization_interface.Plotter`` instance."""
     plotter = Plotter()
 
+    # get_scene will always return a group of attribute nodes
     scene = get_scene(app)
-    for child in scene.Children:
-        # get_scene will always return a group of attribute nodes for now
-        child: "Ansys.Mechanical.Scenegraph.AttributeNode" = child
-        _add_attribute_node(plotter, child)
-
+    _visit_node(plotter, scene)
     return plotter
 
 def _get_scenegraph_node_for_object(app, obj):
