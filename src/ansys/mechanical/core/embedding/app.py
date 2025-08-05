@@ -406,7 +406,7 @@ class App:
         text_file.close()
         return self.execute_script(data)
 
-    def plotter(self, obj = None) -> None:
+    def plotter(self, obj=None) -> None:
         """Return ``ansys.tools.visualization_interface.Plotter`` object."""
         if not HAS_ANSYS_GRAPHICS:
             LOG.warning(
@@ -424,7 +424,7 @@ class App:
 
         return to_plotter(self, obj)
 
-    def plot(self, obj = None) -> None:
+    def plot(self, obj=None) -> None:
         """Visualize the model in 3d.
 
         Requires installation using the graphics option. E.g.
@@ -437,9 +437,10 @@ class App:
         >>> app.open("path/to/file.mechdat")
         >>> app.plot()
         """
-        _plotter = self.plotter()
+        _plotter = self.plotter(obj)
 
         if _plotter is None:
+            print("nothing to plot!")
             return
 
         return _plotter.show()

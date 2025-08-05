@@ -68,21 +68,27 @@ def _get_nodes_and_coords(node: "Ansys.Mechanical.Scenegraph.Node"):
     # if isinstance(node, Ansys.Mechanical.Scenegraph.LineTessellationNode):
     return None, None
 
-def _tri_tessellation_to_mesh(node: "Ansys.Mechanical.Scenegraph.TriTessellationNode") -> pv.PolyData:
+
+def _tri_tessellation_to_mesh(
+    node: "Ansys.Mechanical.Scenegraph.TriTessellationNode",
+) -> pv.PolyData:
     np_coordinates, np_indices = _get_nodes_and_coords(node)
     if np_coordinates is None or np_indices is None:
         return None
     polydata = pv.PolyData(np_coordinates, np_indices)
     return polydata
 
+
 def _get_mesh(node: "Ansys.Mechanical.Scenegraph.Node") -> pv.PolyData:
     import Ansys
+
     if isinstance(node, Ansys.Mechanical.Scenegraph.TriTessellationNode):
         polydata = _tri_tessellation_to_mesh(node)
         return polydata
     else:
         print(f"Cannot get mesh from {type(node)}")
     return None
+
 
 def _handle_transform_node(node: "Ansys.Mechanical.Scenegraph.TransformNode") -> pv.PolyData:
     polydata = _get_mesh(node.Child)
@@ -92,14 +98,17 @@ def _handle_transform_node(node: "Ansys.Mechanical.Scenegraph.TransformNode") ->
     polydata = polydata.transform(pv_transform, inplace=True)
     return polydata
 
-def _get_polydata(node:"Ansys.Mechanical.Scenegraph.Node") -> pv.PolyData:
+
+def _get_polydata(node: "Ansys.Mechanical.Scenegraph.Node") -> pv.PolyData:
     import Ansys
+
     if isinstance(node, Ansys.Mechanical.Scenegraph.TransformNode):
         polydata = _handle_transform_node(node)
         return polydata
     else:
         print(f"unexpected attribute node: {node}")
         return None
+
 
 def _visit_attribute_node(plotter: Plotter, node: "Ansys.Mechanical.Scenegraph.AttributeNode"):
     scenegraph_node = node.Child
@@ -110,12 +119,15 @@ def _visit_attribute_node(plotter: Plotter, node: "Ansys.Mechanical.Scenegraph.A
     color = pv.Color(bgr_to_rgb_tuple(node_color))
     plotter.plot(polydata, color=color, smooth_shading=True)
 
+
 def _visit_group_node(plotter: Plotter, node: "Ansys.Mechanical.Scenegraph.GroupNode"):
     for child in node.Children:
         _visit_node(plotter, child)
 
+
 def _visit_node(plotter: Plotter, node: "Ansys.Mechanical.Scenegraph.Node"):
-    import Ansys # the reference to the scenegraph assembly has already been added in `get_scene`
+    import Ansys  # the reference to the scenegraph assembly has already been added in `get_scene`
+
     if not isinstance(node, Ansys.Mechanical.Scenegraph.Node):
         raise Exception("Node is not a scenegraph node!")
 
@@ -124,32 +136,38 @@ def _visit_node(plotter: Plotter, node: "Ansys.Mechanical.Scenegraph.Node"):
     if isinstance(node, Ansys.Mechanical.Scenegraph.AttributeNode):
         _visit_attribute_node(plotter, node)
 
-def _plot_geometry(app) -> Plotter:
-    """Convert the app's geometry to an ``ansys.tools.visualization_interface.Plotter`` instance."""
-    plotter = Plotter()
 
-    # get_scene will always return a group of attribute nodes
-    scene = get_scene(app)
-    _visit_node(plotter, scene)
-    return plotter
+def _get_scene_for_object(app, obj):
+    import Ansys
 
-def _get_scenegraph_node_for_object(app, obj):
+    if (
+        obj.DataModelObjectCategory
+        == Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Geometry
+    ):
+        scene = get_scene(app)
+        return scene
     active_objects = app.Tree.ActiveObjects
     app.Tree.Activate([obj])
     scenegraph_node = app.Graphics.GetScenegraphForActiveObject()
-    app. Tree.Activate(active_objects)
+    app.Tree.Activate(active_objects)
     return scenegraph_node
+
 
 def _plot_object(app, obj) -> Plotter:
     """Convert the scenegraph for obj to an ``ansys.tools.visualization_interface.Plotter`` instance."""
-    scenegraph_node = _get_scenegraph_node_for_object(app, obj)
-
+    scene = _get_scene_for_object(app, obj)
+    if scene is None:
+        print(f"No scene available for object {obj}")
+        return None
     plotter = Plotter()
+    _visit_node(plotter, scene)
     return plotter
 
-def to_plotter(app: "ansys.mechanical.core.embedding.App", obj = None) -> Plotter:
-    """Convert the app's geometry to an ``ansys.tools.visualization_interface.Plotter`` instance."""
 
+def to_plotter(app: "ansys.mechanical.core.embedding.App", obj=None) -> Plotter:
+    """Convert the scene for `obj` to an ``ansys.tools.visualization_interface.Plotter`` instance.
+
+    If the `obj` is None, default to the Geometry object."""
     if obj is None:
-        return _plot_geometry(app)
+        obj = app.Model.Geometry
     return _plot_object(app, obj)
