@@ -228,7 +228,7 @@ class ScenegraphNodeVisitor:
         point_indices = np.array(node.Indices, dtype=np.int32)
         points = np.zeros(shape=(len(point_indices),3))
         for loop_index, point_index in enumerate(point_indices):
-            point = point_coords[point_index:point_index+3]
+            point = point_coords[point_index*3:point_index*3+3]
             points[loop_index] = point
         plottable = Plottable(pv.PolyData(points), is_points=True)
         return plottable

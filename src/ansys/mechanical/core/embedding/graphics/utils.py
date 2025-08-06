@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Common plotting utilities."""
+import os
 import typing
 
 import numpy as np
@@ -116,20 +117,12 @@ def get_scene(
     return _get_geometry_scene(app)
 
 
-def get_scene_for_object(
+def _get_scene_for_object(
     app: "ansys.mechanical.core.embedding.App", obj
 ) -> "Ansys.Mechanical.Scenegraph.Node":
-    """Get the scene for the given object.
+    from Ansys.Mechanical.DataModel.Enums import DataModelObjectCategory
 
-    2025R2 and before: only geometry is supported
-    later, Mesh and some Results will be supported.
-    """
-    import Ansys
-
-    if (
-        obj.DataModelObjectCategory
-        == Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Geometry
-    ):
+    if obj.DataModelObjectCategory == DataModelObjectCategory.Geometry:
         scene = get_scene(app)
         return scene
     if app.version < 261:
@@ -139,3 +132,19 @@ def get_scene_for_object(
     scenegraph_node = app.Graphics.GetScenegraphForActiveObject()
     app.Tree.Activate(active_objects)
     return scenegraph_node
+
+def get_scene_for_object(
+    app: "ansys.mechanical.core.embedding.App", obj
+) -> "Ansys.Mechanical.Scenegraph.Node":
+    """Get the scene for the given object.
+
+    2025R2 and before: only geometry is supported
+    later, Mesh and some Results will be supported.
+    """
+    node = _get_scene_for_object(app, obj)
+    if node is not None:
+        save_file = os.environ.get("PYMECHANICAL_SAVE_SCENE_FILE", None)
+        if save_file is not None:
+            import Ansys
+            Ansys.Mechanical.Scenegraph.Persistence.SaveToFile(save_file, node)
+    return node
