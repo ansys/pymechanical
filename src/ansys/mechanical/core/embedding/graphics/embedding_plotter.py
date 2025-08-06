@@ -223,12 +223,14 @@ class ScenegraphNodeVisitor:
         plottable.transform = xform
         return plottable
 
-    def _visit_point_cloud_node(self, node: "Ansys.Mechanical.Scenegraph.PointCloudNod") -> Plottable:
+    def _visit_point_cloud_node(
+        self, node: "Ansys.Mechanical.Scenegraph.PointCloudNod"
+    ) -> Plottable:
         point_coords = np.array(node.Coordinates, dtype=np.double)
         point_indices = np.array(node.Indices, dtype=np.int32)
-        points = np.zeros(shape=(len(point_indices),3))
+        points = np.zeros(shape=(len(point_indices), 3))
         for loop_index, point_index in enumerate(point_indices):
-            point = point_coords[point_index*3:point_index*3+3]
+            point = point_coords[point_index * 3 : point_index * 3 + 3]
             points[loop_index] = point
         plottable = Plottable(pv.PolyData(points), is_points=True)
         return plottable
@@ -275,7 +277,7 @@ def _add_plottable(plotter: Plotter, plottable: Plottable, plot_settings: PlotSe
         "color": plottable.color,
         "smooth_shading": True,
         "render_points_as_spheres": plottable.is_points,
-        "point_size": plot_settings.point_size
+        "point_size": plot_settings.point_size,
     }
     plotter.plot(polydata, **kwargs)
 
