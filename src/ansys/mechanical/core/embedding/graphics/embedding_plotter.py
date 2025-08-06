@@ -47,7 +47,7 @@ class Plottable:
 
     # TODO - make this a list of overridable attributes
     color: typing.Optional[pv.Color] = None
-    transform: np.ndarray = None
+    transform: pv.transform.Transform = None
     children: typing.List["Plottable"] = None
 
     def __post_init__(self):
@@ -57,17 +57,17 @@ class Plottable:
         The children will be an empty list.
         """
         self.transform = np.identity(4)
-        # pv.transform.Transform(np.identity(4))
+        self.transform = pv.transform.Transform(np.identity(4))
         self.children = list()
 
 
-def _transform_to_pyvista(transform: "Ansys.ACT.Math.Matrix4D"):
+def _transform_to_pyvista(transform: "Ansys.ACT.Math.Matrix4D") ->  pv.transform.Transform:
     """Convert the Transformation matrix to a numpy array."""
     np_transform = np.array([transform[i] for i in range(16)]).reshape(4, 4)
 
     # The mechanical scenegraph transform node is the transpose of the pyvista transform matrix
     np_transform = np_transform.transpose()
-    return np_transform
+    return pv.transform.Transform(np_transform)
 
 
 def _get_color(node: "Ansys.Mechanical.Scenegraph.AttributeNode") -> pv.Color:
