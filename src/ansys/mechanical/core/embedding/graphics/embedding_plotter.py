@@ -56,6 +56,7 @@ class Plottable:
     color: typing.Optional[pv.Color] = None
     transform: pv.transform.Transform = None
     children: typing.List["Plottable"] = None
+    is_points: bool = False
 
     def __post_init__(self):
         """Initialize the plottable.
@@ -98,8 +99,10 @@ class PlotSettings:
     """Settings for a plot."""
 
     mesh_oriented_transform_resize_style: MeshOrientedTransformResizeStyle = (
-        MeshOrientedTransformResizeStyle.NONE
+        MeshOrientedTransformResizeStyle.STRETCHING
     )
+    displacement_scale_factor: float = 1.0
+    point_size = 5
 
 
 class ScenegraphNodeVisitor:
@@ -216,12 +219,18 @@ class ScenegraphNodeVisitor:
                 xform *= pv.transform.Transform(
                     [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, s, 0], [0, 0, 0, 1]]
                 )
-            elif resize_style == MeshOrientedTransformResizeStyle.NONE:
-                xform *= pv.transform.Transform(
-                    [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
-                )
 
         plottable.transform = xform
+        return plottable
+
+    def _visit_point_cloud_node(self, node: "Ansys.Mechanical.Scenegraph.PointCloudNod") -> Plottable:
+        point_coords = np.array(node.Coordinates, dtype=np.double)
+        point_indices = np.array(node.Indices, dtype=np.int32)
+        points = np.zeros(shape=(len(point_indices),3))
+        for loop_index, point_index in enumerate(point_indices):
+            point = point_coords[point_index:point_index+3]
+            points[loop_index] = point
+        plottable = Plottable(pv.PolyData(points), is_points=True)
         return plottable
 
     def visit_node(self, node: "Ansys.Mechanical.Scenegraph.Node") -> Plottable:
@@ -244,23 +253,31 @@ class ScenegraphNodeVisitor:
             return self._visit_line_tessellation_node(node)
         elif isinstance(node, Ansys.Mechanical.Scenegraph.MeshOrientedTransformNode):
             return self._visit_mesh_oriented_transform_node(node)
+        elif isinstance(node, Ansys.Mechanical.Scenegraph.PointCloudNode):
+            return self._visit_point_cloud_node(node)
         else:
             self._app.log_warning(f"Unexpected node: {node}")
         return None
 
 
-def _add_plottable(plotter: Plotter, plottable: Plottable):
+def _add_plottable(plotter: Plotter, plottable: Plottable, plot_settings: PlotSettings):
     for child in plottable.children:
         child.transform *= plottable.transform
         if child.color is None:
             child.color = plottable.color
-        _add_plottable(plotter, child)
+        _add_plottable(plotter, child, plot_settings)
 
     if plottable.polydata is None:
         return
 
     polydata = plottable.polydata.transform(plottable.transform, inplace=True)
-    plotter.plot(polydata, color=plottable.color, smooth_shading=True)
+    kwargs = {
+        "color": plottable.color,
+        "smooth_shading": True,
+        "render_points_as_spheres": plottable.is_points,
+        "point_size": plot_settings.point_size
+    }
+    plotter.plot(polydata, **kwargs)
 
 
 def _get_plotter_for_scene(
@@ -271,7 +288,7 @@ def _get_plotter_for_scene(
     visitor = ScenegraphNodeVisitor(app, plot_settings)
     plottable = visitor.visit_node(node)
     plotter = Plotter()
-    _add_plottable(plotter, plottable)
+    _add_plottable(plotter, plottable, plot_settings)
     return plotter
 
 
