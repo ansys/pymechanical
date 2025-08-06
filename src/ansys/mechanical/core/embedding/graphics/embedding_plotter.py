@@ -70,37 +70,6 @@ def _transform_to_pyvista(transform: "Ansys.ACT.Math.Matrix4D"):
     return np_transform
 
 
-def _visit_line_tessellation_node(
-    node: "Ansys.Mechanical.Scenegraph.LineTessellationNode",
-) -> Plottable:
-    np_coordinates, np_indices = get_line_nodes_and_coords(node)
-    np_indices = np.insert(np_indices, 0, 2, axis=1)
-    line_mesh = pv.PolyData()
-    line_mesh.points = np_coordinates
-    line_mesh.lines = np_indices
-    plottable = Plottable(line_mesh)
-    return plottable
-
-
-def _visit_tri_tessellation_node(
-    node: "Ansys.Mechanical.Scenegraph.TriTessellationNode",
-) -> Plottable:
-    np_coordinates, np_indices = get_tri_nodes_and_coords(node)
-    if np_coordinates is None or np_indices is None:
-        return None
-    np_indices = np.insert(np_indices, 0, 3, axis=1)
-    plottable = Plottable(pv.PolyData(np_coordinates, np_indices))
-    return plottable
-
-
-def _visit_transform_node(node: "Ansys.Mechanical.Scenegraph.TransformNode") -> Plottable:
-    plottable = _visit_node(node.Child)
-    if plottable is None:
-        return None
-    plottable.transform = _transform_to_pyvista(node.Transform)
-    return plottable
-
-
 def _get_color(node: "Ansys.Mechanical.Scenegraph.AttributeNode") -> pv.Color:
     node_color = node.Property(Ansys.Mechanical.Scenegraph.ScenegraphIntAttributes.Color)
     if node_color is None:
@@ -109,43 +78,75 @@ def _get_color(node: "Ansys.Mechanical.Scenegraph.AttributeNode") -> pv.Color:
     return color
 
 
-def _visit_attribute_node(node: "Ansys.Mechanical.Scenegraph.AttributeNode") -> Plottable:
-    """Return the plottable of the child node with the color attached."""
-    plottable = _visit_node(node.Child)
-    if plottable is None:
+class ScenegraphNodeVisitor:
+    def __init__(self, app):
+        self._app = app
+
+    def _visit_group_node(self, node: "Ansys.Mechanical.Scenegraph.GroupNode") -> Plottable:
+        """Return a new plottable grouping all the children of the group node."""
+        plottable = Plottable()
+        for child in node.Children:
+            child_plottable = self.visit_node(child)
+            if child_plottable is not None:
+                plottable.children.append(child_plottable)
+        return plottable
+
+    def _visit_line_tessellation_node(
+        self,
+        node: "Ansys.Mechanical.Scenegraph.LineTessellationNode",
+    ) -> Plottable:
+        np_coordinates, np_indices = get_line_nodes_and_coords(node)
+        np_indices = np.insert(np_indices, 0, 2, axis=1)
+        line_mesh = pv.PolyData()
+        line_mesh.points = np_coordinates
+        line_mesh.lines = np_indices
+        plottable = Plottable(line_mesh)
+        return plottable
+
+
+    def _visit_tri_tessellation_node(
+        self,
+        node: "Ansys.Mechanical.Scenegraph.TriTessellationNode",
+    ) -> Plottable:
+        np_coordinates, np_indices = get_tri_nodes_and_coords(node)
+        if np_coordinates is None or np_indices is None:
+            return None
+        np_indices = np.insert(np_indices, 0, 3, axis=1)
+        plottable = Plottable(pv.PolyData(np_coordinates, np_indices))
+        return plottable
+
+    def _visit_transform_node(self, node: "Ansys.Mechanical.Scenegraph.TransformNode") -> Plottable:
+        plottable = self.visit_node(node.Child)
+        if plottable is None:
+            return None
+        plottable.transform = _transform_to_pyvista(node.Transform)
+        return plottable
+
+    def _visit_attribute_node(self, node: "Ansys.Mechanical.Scenegraph.AttributeNode") -> Plottable:
+        """Return the plottable of the child node with the color attached."""
+        plottable = self.visit_node(node.Child)
+        if plottable is None:
+            return None
+        plottable.color = _get_color(node)
+        return plottable
+
+    def visit_node(self, node: "Ansys.Mechanical.Scenegraph.Node") -> Plottable:
+        if not isinstance(node, Ansys.Mechanical.Scenegraph.Node):
+            raise Exception("Node is not a scenegraph node!")
+
+        if isinstance(node, Ansys.Mechanical.Scenegraph.GroupNode):
+            return self._visit_group_node(node)
+        elif isinstance(node, Ansys.Mechanical.Scenegraph.AttributeNode):
+            return self._visit_attribute_node(node)
+        elif isinstance(node, Ansys.Mechanical.Scenegraph.TransformNode):
+            return self._visit_transform_node(node)
+        elif isinstance(node, Ansys.Mechanical.Scenegraph.TriTessellationNode):
+            return self._visit_tri_tessellation_node(node)
+        elif isinstance(node, Ansys.Mechanical.Scenegraph.LineTessellationNode):
+            return self._visit_line_tessellation_node(node)
+        else:
+            self._app.log_warning(f"Unexpected node: {node}")
         return None
-    plottable.color = _get_color(node)
-    return plottable
-
-
-def _visit_group_node(node: "Ansys.Mechanical.Scenegraph.GroupNode") -> Plottable:
-    """Return a new plottable grouping all the children of the group node."""
-    plottable = Plottable()
-    for child in node.Children:
-        child_plottable = _visit_node(child)
-        if child_plottable is not None:
-            plottable.children.append(child_plottable)
-    return plottable
-
-
-def _visit_node(node: "Ansys.Mechanical.Scenegraph.Node") -> Plottable:
-    if not isinstance(node, Ansys.Mechanical.Scenegraph.Node):
-        raise Exception("Node is not a scenegraph node!")
-
-    if isinstance(node, Ansys.Mechanical.Scenegraph.GroupNode):
-        return _visit_group_node(node)
-    elif isinstance(node, Ansys.Mechanical.Scenegraph.AttributeNode):
-        return _visit_attribute_node(node)
-    elif isinstance(node, Ansys.Mechanical.Scenegraph.TransformNode):
-        return _visit_transform_node(node)
-    elif isinstance(node, Ansys.Mechanical.Scenegraph.TriTessellationNode):
-        return _visit_tri_tessellation_node(node)
-    elif isinstance(node, Ansys.Mechanical.Scenegraph.LineTessellationNode):
-        return _visit_line_tessellation_node(node)
-    else:
-        #app.log_warning
-        print(f"Unexpected node: {node}")
-    return None
 
 
 def _add_plottable(plotter: Plotter, plottable: Plottable):
@@ -162,8 +163,9 @@ def _add_plottable(plotter: Plotter, plottable: Plottable):
     plotter.plot(polydata, color=plottable.color, smooth_shading=True)
 
 
-def _get_plotter_for_scene(node: "Ansys.Mechanical.Scenegraph.Node") -> Plotter:
-    plottable = _visit_node(node)
+def _get_plotter_for_scene(app: "ansys.mechanical.core.embedding.App", node: "Ansys.Mechanical.Scenegraph.Node") -> Plotter:
+    visitor = ScenegraphNodeVisitor(app)
+    plottable = visitor.visit_node(node)
     plotter = Plotter()
     _add_plottable(plotter, plottable)
     return plotter
@@ -175,7 +177,7 @@ def _plot_object(app: "ansys.mechanical.core.embedding.App", obj) -> Plotter:
     if scene is None:
         app.log_warning(f"No scene available for object {obj}!")
         return None
-    plotter = _get_plotter_for_scene(scene)
+    plotter = _get_plotter_for_scene(app, scene)
     return plotter
 
 
