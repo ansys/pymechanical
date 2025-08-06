@@ -22,9 +22,10 @@
 
 """PyVista plotter."""
 
-import clr
 import dataclasses
 import typing
+
+import clr
 
 clr.AddReference("Ansys.Mechanical.DataModel")
 clr.AddReference("Ansys.ACT.Interfaces")
@@ -35,21 +36,30 @@ from ansys.tools.visualization_interface import Plotter
 import numpy as np
 import pyvista as pv
 
-from .utils import bgr_to_rgb_tuple, get_nodes_and_coords, get_scene_for_object
+from .utils import bgr_to_rgb_tuple, get_tri_nodes_and_coords, get_line_nodes_and_coords, get_scene_for_object
+
 
 @dataclasses.dataclass
 class Plottable:
     """Plottable object."""
+
     polydata: typing.Optional[pv.PolyData] = None
 
     # TODO - make this a list of overridable attributes
     color: typing.Optional[pv.Color] = None
     transform: np.ndarray = None
     children: typing.List["Plottable"] = None
+
     def __post_init__(self):
+        """Initialize the plottable.
+
+        The transform will be identity.
+        The children will be an empty list.
+        """
         self.transform = np.identity(4)
-        #pv.transform.Transform(np.identity(4))
+        # pv.transform.Transform(np.identity(4))
         self.children = list()
+
 
 def _transform_to_pyvista(transform: "Ansys.ACT.Math.Matrix4D"):
     """Convert the Transformation matrix to a numpy array."""
@@ -60,38 +70,27 @@ def _transform_to_pyvista(transform: "Ansys.ACT.Math.Matrix4D"):
     return np_transform
 
 
-def _get_tri_nodes_and_coords(tri_tessellation: "Ansys.Mechanical.Scenegraph.TriTessellationNode"):
-    """Get the nodes and indices of the TriTessellationNode.
-
-    pyvista format expects a number of vertices per facet which is always 3
-    from this kind of node.
-    """
-    np_coordinates, np_indices = get_nodes_and_coords(tri_tessellation)
-    np_indices = np.insert(np_indices, 0, 3, axis=1)
-    return np_coordinates, np_indices
-
-
-def _get_nodes_and_coords(node: "Ansys.Mechanical.Scenegraph.Node"):
-    """Get the nodes and indices of the Scenegraph node.
-
-    Currently only supported for tri tessellation nodes
-    """
-    if isinstance(node, Ansys.Mechanical.Scenegraph.TriTessellationNode):
-        return _get_tri_nodes_and_coords(node)
-    # TODO - support line tessellation node. See issue #809
-    # if isinstance(node, Ansys.Mechanical.Scenegraph.LineTessellationNode):
-    return None, None
+def _visit_line_tessellation_node(
+    node: "Ansys.Mechanical.Scenegraph.LineTessellationNode",
+) -> Plottable:
+    np_coordinates, np_indices = get_line_nodes_and_coords(node)
+    np_indices = np.insert(np_indices, 0, 2, axis=1)
+    line_mesh = pv.PolyData()
+    line_mesh.points = np_coordinates
+    line_mesh.lines = np_indices
+    plottable = Plottable(line_mesh)
+    return plottable
 
 
 def _visit_tri_tessellation_node(
     node: "Ansys.Mechanical.Scenegraph.TriTessellationNode",
 ) -> Plottable:
-    np_coordinates, np_indices = _get_nodes_and_coords(node)
+    np_coordinates, np_indices = get_tri_nodes_and_coords(node)
     if np_coordinates is None or np_indices is None:
         return None
+    np_indices = np.insert(np_indices, 0, 3, axis=1)
     plottable = Plottable(pv.PolyData(np_coordinates, np_indices))
     return plottable
-
 
 
 def _visit_transform_node(node: "Ansys.Mechanical.Scenegraph.TransformNode") -> Plottable:
@@ -104,6 +103,8 @@ def _visit_transform_node(node: "Ansys.Mechanical.Scenegraph.TransformNode") -> 
 
 def _get_color(node: "Ansys.Mechanical.Scenegraph.AttributeNode") -> pv.Color:
     node_color = node.Property(Ansys.Mechanical.Scenegraph.ScenegraphIntAttributes.Color)
+    if node_color is None:
+        return None
     color = pv.Color(bgr_to_rgb_tuple(node_color))
     return color
 
@@ -133,12 +134,17 @@ def _visit_node(node: "Ansys.Mechanical.Scenegraph.Node") -> Plottable:
 
     if isinstance(node, Ansys.Mechanical.Scenegraph.GroupNode):
         return _visit_group_node(node)
-    if isinstance(node, Ansys.Mechanical.Scenegraph.AttributeNode):
+    elif isinstance(node, Ansys.Mechanical.Scenegraph.AttributeNode):
         return _visit_attribute_node(node)
-    if isinstance(node, Ansys.Mechanical.Scenegraph.TransformNode):
+    elif isinstance(node, Ansys.Mechanical.Scenegraph.TransformNode):
         return _visit_transform_node(node)
-    if isinstance(node, Ansys.Mechanical.Scenegraph.TriTessellationNode):
+    elif isinstance(node, Ansys.Mechanical.Scenegraph.TriTessellationNode):
         return _visit_tri_tessellation_node(node)
+    elif isinstance(node, Ansys.Mechanical.Scenegraph.LineTessellationNode):
+        return _visit_line_tessellation_node(node)
+    else:
+        #app.log_warning
+        print(f"Unexpected node: {node}")
     return None
 
 
@@ -163,11 +169,11 @@ def _get_plotter_for_scene(node: "Ansys.Mechanical.Scenegraph.Node") -> Plotter:
     return plotter
 
 
-def _plot_object(app, obj) -> Plotter:
-    """Convert the scenegraph for obj to an ``ansys.tools.visualization_interface.Plotter`` instance."""
+def _plot_object(app: "ansys.mechanical.core.embedding.App", obj) -> Plotter:
+    """Get a ``ansys.tools.visualization_interface.Plotter`` instance for `obj`."""
     scene = get_scene_for_object(app, obj)
     if scene is None:
-        print(f"No scene available for object {obj}!")
+        app.log_warning(f"No scene available for object {obj}!")
         return None
     plotter = _get_plotter_for_scene(scene)
     return plotter
@@ -176,7 +182,9 @@ def _plot_object(app, obj) -> Plotter:
 def to_plotter(app: "ansys.mechanical.core.embedding.App", obj=None) -> Plotter:
     """Convert the scene for `obj` to an ``ansys.tools.visualization_interface.Plotter`` instance.
 
-    If the `obj` is None, default to the Geometry object."""
+    If the `obj` is None, default to the Geometry object.
+    Geometry, Mesh, and some Results are currently supported.
+    """
     if obj is None:
         obj = app.Model.Geometry
     return _plot_object(app, obj)
