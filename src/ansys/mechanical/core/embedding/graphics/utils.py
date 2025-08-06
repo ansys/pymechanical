@@ -133,6 +133,7 @@ def _get_scene_for_object(
     app.Tree.Activate(active_objects)
     return scenegraph_node
 
+
 def get_scene_for_object(
     app: "ansys.mechanical.core.embedding.App", obj
 ) -> "Ansys.Mechanical.Scenegraph.Node":
@@ -146,5 +147,6 @@ def get_scene_for_object(
         save_file = os.environ.get("PYMECHANICAL_SAVE_SCENE_FILE", None)
         if save_file is not None:
             import Ansys
+
             Ansys.Mechanical.Scenegraph.Persistence.SaveToFile(save_file, node)
     return node
