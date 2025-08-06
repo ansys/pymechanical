@@ -33,6 +33,7 @@ def bgr_to_rgb_tuple(bgr_int: int) -> typing.Tuple[int, int, int]:
     b = (bgr_int >> 16) & 255
     return r, g, b
 
+
 def _reshape_ncols(arr: np.array, ncols: int, name: str = "array"):
     """Reshapes the given array into `ncols` columns.
 
@@ -47,7 +48,9 @@ def _reshape_ncols(arr: np.array, ncols: int, name: str = "array"):
     return arr
 
 
-def get_line_nodes_and_coords(line_tessellation: "Ansys.Mechanical.Scenegraph.LineTessellationNode"):
+def get_line_nodes_and_coords(
+    line_tessellation: "Ansys.Mechanical.Scenegraph.LineTessellationNode",
+):
     """Extract the nodes and coordinates from the LineTessellationNode.
 
     The TriTessellationNode contains "Coordinates" and "Indices"

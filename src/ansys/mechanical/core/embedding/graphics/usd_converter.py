@@ -26,7 +26,7 @@ import typing
 
 from pxr import Gf, Usd, UsdGeom
 
-from .utils import bgr_to_rgb_tuple, get_tri_nodes_and_coords, get_scene
+from .utils import bgr_to_rgb_tuple, get_scene, get_tri_nodes_and_coords
 
 
 def _transform_to_rotation_translation(
