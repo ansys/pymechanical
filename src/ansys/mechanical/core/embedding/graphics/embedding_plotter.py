@@ -43,6 +43,7 @@ from .utils import (
     get_line_nodes_and_coords,
     get_scene_for_object,
     get_tri_nodes_and_coords,
+    get_tri_result_disp_and_results,
 )
 
 
@@ -56,7 +57,7 @@ class Plottable:
     color: typing.Optional[pv.Color] = None
     transform: pv.transform.Transform = None
     children: typing.List["Plottable"] = None
-    is_points: bool = False
+    kwargs: typing.Dict = None
 
     def __post_init__(self):
         """Initialize the plottable.
@@ -143,6 +144,23 @@ class ScenegraphNodeVisitor:
             return None
         np_indices = np.insert(np_indices, 0, 3, axis=1)
         plottable = Plottable(pv.PolyData(np_coordinates, np_indices))
+        return plottable
+
+    def _visit_tri_tessellation_result_node(
+        self,
+        node: "Ansys.Mechanical.Scenegraph.TriTessellationResultNode",
+    ) -> Plottable:
+        coords, indices = get_tri_nodes_and_coords(node)
+        if coords is None or indices is None:
+            return None
+        indices = np.insert(indices, 0, 3, axis=1)
+
+        disps, results = get_tri_result_disp_and_results(node)
+        deformed_coords = coords + disps
+
+        plottable = Plottable(pv.PolyData(deformed_coords, indices))
+        plottable.polydata.point_data["Results"] = results
+        plottable.kwargs = {"cmap": "viridis", "show_edges": True, "remove_color": 1}
         return plottable
 
     def _visit_transform_node(self, node: "Ansys.Mechanical.Scenegraph.TransformNode") -> Plottable:
@@ -232,7 +250,8 @@ class ScenegraphNodeVisitor:
         for loop_index, point_index in enumerate(point_indices):
             point = point_coords[point_index * 3 : point_index * 3 + 3]
             points[loop_index] = point
-        plottable = Plottable(pv.PolyData(points), is_points=True)
+        plottable = Plottable(pv.PolyData(points))
+        plottable.kwargs = {"render_points_as_spheres": True}
         return plottable
 
     def visit_node(self, node: "Ansys.Mechanical.Scenegraph.Node") -> Plottable:
@@ -242,6 +261,8 @@ class ScenegraphNodeVisitor:
         """
         if not isinstance(node, Ansys.Mechanical.Scenegraph.Node):
             raise Exception("Node is not a scenegraph node!")
+
+        self._app.log_info(f"Visiting {node}")
 
         if isinstance(node, Ansys.Mechanical.Scenegraph.GroupNode):
             return self._visit_group_node(node)
@@ -253,6 +274,8 @@ class ScenegraphNodeVisitor:
             return self._visit_tri_tessellation_node(node)
         elif isinstance(node, Ansys.Mechanical.Scenegraph.LineTessellationNode):
             return self._visit_line_tessellation_node(node)
+        elif isinstance(node, Ansys.Mechanical.Scenegraph.TriTessellationResultNode):
+            return self._visit_tri_tessellation_result_node(node)
         elif isinstance(node, Ansys.Mechanical.Scenegraph.MeshOrientedTransformNode):
             return self._visit_mesh_oriented_transform_node(node)
         elif isinstance(node, Ansys.Mechanical.Scenegraph.PointCloudNode):
@@ -276,9 +299,16 @@ def _add_plottable(plotter: Plotter, plottable: Plottable, plot_settings: PlotSe
     kwargs = {
         "color": plottable.color,
         "smooth_shading": True,
-        "render_points_as_spheres": plottable.is_points,
         "point_size": plot_settings.point_size,
     }
+    print("adding plottable with", kwargs)
+    if plottable.kwargs != None:
+        kwargs.update(plottable.kwargs)
+    if kwargs.get("remove_color", None):
+        kwargs.pop("remove_color")
+        if "color" in kwargs:
+            kwargs.pop("color")
+    print("after update: adding plottable with", kwargs)
     plotter.plot(polydata, **kwargs)
 
 

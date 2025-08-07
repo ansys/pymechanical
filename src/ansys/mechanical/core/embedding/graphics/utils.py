@@ -69,13 +69,28 @@ def get_tri_nodes_and_coords(tri_tessellation: "Ansys.Mechanical.Scenegraph.TriT
     """Extract the nodes and coordinates from the TriTessellationNode.
 
     The TriTessellationNode contains "Coordinates" and "Indices"
-    that are flat arrays. This function converts them to numpy arrays
+    that are flat arrays. This function converts them to numpy arrays of the appropriate shape.
     """
     np_coordinates = _reshape_ncols(
         np.array(tri_tessellation.Coordinates, dtype=np.double), 3, "coordinates"
     )
     np_indices = _reshape_ncols(np.array(tri_tessellation.Indices, dtype=np.int32), 3, "indices")
     return np_coordinates, np_indices
+
+
+def get_tri_result_disp_and_results(
+    tri_tessellation: "Ansys.Mechanical.Scenegraph.TriTessellationResultNode",
+):
+    """Extract the defomation and results from the TriTessellationResultNode.
+
+    The TriTessellationResultNode contains "Displacements" and "Results"
+    that are flat arrays. This function converts them to numpy arrays of the appropriate shape.
+    """
+    np_disp = _reshape_ncols(
+        np.array(tri_tessellation.Displacements, dtype=np.double), 3, "deformation"
+    )
+    np_results = np.array(tri_tessellation.Results, dtype=np.double)
+    return np_disp, np_results
 
 
 def _get_geometry_scene(
@@ -133,6 +148,7 @@ def _get_scene_for_object(
     app.Tree.Activate(active_objects)
     return scenegraph_node
 
+
 def get_scene_for_object(
     app: "ansys.mechanical.core.embedding.App", obj
 ) -> "Ansys.Mechanical.Scenegraph.Node":
@@ -146,5 +162,6 @@ def get_scene_for_object(
         save_file = os.environ.get("PYMECHANICAL_SAVE_SCENE_FILE", None)
         if save_file is not None:
             import Ansys
+
             Ansys.Mechanical.Scenegraph.Persistence.SaveToFile(save_file, node)
     return node
