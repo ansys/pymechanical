@@ -331,9 +331,11 @@ linkcheck_ignore = [
     "https://support.ansys.com/*",
     "https://discuss.ansys.com/*",
     "https://www.ansys.com/*",
+    "../api/*",  # Remove this after release 0.10.12
     "api/*",
-    "changelog.html"
+    "path.html",
     "user_guide_embedding/*",
+    "changelog.html",
 ]
 
 linkcheck_anchors = False
