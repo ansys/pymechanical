@@ -808,6 +808,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           library-name: ${{ env.PACKAGE_NAME }}
+          only-code: true
 
   release-pypi:
     name: Release project to PyPI
