@@ -99,9 +99,6 @@ class MeshOrientedTransformResizeStyle(Enum):
 class PlotSettings:
     """Settings for a plot."""
 
-    mesh_oriented_transform_resize_style: MeshOrientedTransformResizeStyle = (
-        MeshOrientedTransformResizeStyle.STRETCHING
-    )
     displacement_scale_factor: float = 1.0
     point_size = 5
 
@@ -189,56 +186,10 @@ class ScenegraphNodeVisitor:
         if plottable is None:
             return None
 
-        # TODO - use a method on the scenegraph node to compute the mesh oriented transform
-        def as_np(point):
-            return np.array([point.x, point.y, point.z])
-
-        if node.HasDisplacement:
-            # these are all Vector3D objects
-            disp1, disp2, orientation_disp = node.GetMeshDisplacement()
-
-        point1, point2, orientation_point = node.GetMeshLocation()
-        point1, point2, orientation_point = (
-            as_np(point1),
-            as_np(point2),
-            as_np(orientation_point),
+        xform2 = _transform_to_pyvista(
+            node.GetComputedTransform(self._plot_settings.displacement_scale_factor)
         )
-        z = point2 - point1
-        dist = np.sqrt(np.sum(z**2))
-        if dist == 0:
-            self._app.log_warning("computed z axis for MeshOrientedTransformNode is zero")
-        z = z / np.linalg.norm(z)
-
-        up = orientation_point - point1
-        x = np.cross(up, z)
-        x = x / np.linalg.norm(x)
-        length = np.linalg.norm(x)
-        if length <= 0:
-            self._app.log_warning("error computing transformation from orientation node")
-            return None
-
-        y = np.cross(z, x)
-        xform = pv.transform.Transform(
-            [
-                [x[0], y[0], z[0], point1[0]],
-                [x[1], y[1], z[1], point1[1]],
-                [x[2], y[2], z[2], point1[2]],
-                [0, 0, 0, 1],
-            ]
-        )
-        resize_style = self._plot_settings.mesh_oriented_transform_resize_style
-        if dist != 1.0:
-            s = dist
-            if resize_style == MeshOrientedTransformResizeStyle.SCALING:
-                xform *= pv.transform.Transform(
-                    [[s, 0, 0, 0], [0, s, 0, 0], [0, 0, s, 0], [0, 0, 0, 1]]
-                )
-            elif resize_style == MeshOrientedTransformResizeStyle.STRETCHING:
-                xform *= pv.transform.Transform(
-                    [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, s, 0], [0, 0, 0, 1]]
-                )
-
-        plottable.transform = xform
+        plottable.transform = xform2
         return plottable
 
     def _visit_point_cloud_node(
@@ -301,14 +252,12 @@ def _add_plottable(plotter: Plotter, plottable: Plottable, plot_settings: PlotSe
         "smooth_shading": True,
         "point_size": plot_settings.point_size,
     }
-    print("adding plottable with", kwargs)
     if plottable.kwargs != None:
         kwargs.update(plottable.kwargs)
     if kwargs.get("remove_color", None):
         kwargs.pop("remove_color")
         if "color" in kwargs:
             kwargs.pop("color")
-    print("after update: adding plottable with", kwargs)
     plotter.plot(polydata, **kwargs)
 
 
