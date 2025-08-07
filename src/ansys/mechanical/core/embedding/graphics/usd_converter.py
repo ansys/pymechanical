@@ -26,7 +26,7 @@ import typing
 
 from pxr import Gf, Usd, UsdGeom
 
-from .utils import bgr_to_rgb_tuple, get_nodes_and_coords, get_scene
+from .utils import bgr_to_rgb_tuple, get_scene, get_tri_nodes_and_coords
 
 
 def _transform_to_rotation_translation(
@@ -58,7 +58,7 @@ def _convert_tri_tessellation_node(
 ) -> Usd.Prim:
     """Convert a mechanical TriTessellationNode node into a Usd Mesh prim."""
     mesh_prim = UsdGeom.Mesh.Define(stage, path)
-    np_coordinates, np_indices = get_nodes_and_coords(node)
+    np_coordinates, np_indices = get_tri_nodes_and_coords(node)
     mesh_prim.CreatePointsAttr(np_coordinates)
     mesh_prim.CreateFaceVertexCountsAttr([3] * len(np_indices))
     mesh_prim.CreateFaceVertexIndicesAttr(np_indices)
