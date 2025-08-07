@@ -933,7 +933,12 @@ class Mechanical(object):
         )
 
     def run_python_script(
-        self, script_block: str, enable_logging=False, log_level="WARNING", progress_interval=2000, python_api_version=-1
+        self,
+        script_block: str,
+        enable_logging=False,
+        log_level="WARNING",
+        progress_interval=2000,
+        python_api_version=-1,
     ):
         """Run a Python script block inside Mechanical.
 
@@ -1710,7 +1715,12 @@ class Mechanical(object):
         return self._python_script_api_version
 
     def __call_run_python_script(
-        self, script_code: str, enable_logging, log_level, progress_interval, run_python_api_version: int
+        self,
+        script_code: str,
+        enable_logging,
+        log_level,
+        progress_interval,
+        run_python_api_version: int,
     ):
         """Run the Python script block on the server.
 
