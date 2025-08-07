@@ -186,7 +186,9 @@ class ScenegraphNodeVisitor:
         if plottable is None:
             return None
 
-        xform2 = _transform_to_pyvista(node.GetComputedTransform(self._plot_settings.displacement_scale_factor))
+        xform2 = _transform_to_pyvista(
+            node.GetComputedTransform(self._plot_settings.displacement_scale_factor)
+        )
         plottable.transform = xform2
         return plottable
 
