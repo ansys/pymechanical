@@ -332,8 +332,7 @@ linkcheck_ignore = [
     "https://discuss.ansys.com/*",
     "https://www.ansys.com/*",
     "api/*",
-    "changelog.html"
-    "user_guide_embedding/*",
+    "changelog.html" "user_guide_embedding/*",
 ]
 
 linkcheck_anchors = False
