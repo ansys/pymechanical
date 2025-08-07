@@ -333,7 +333,7 @@ linkcheck_ignore = [
     "https://www.ansys.com/*",
     "../api/*",  # Remove this after release 0.10.12
     "api/*",
-    "path.html", 
+    "path.html",
     "user_guide_embedding/*",
     "changelog.html",
 ]
