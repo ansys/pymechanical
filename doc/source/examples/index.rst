@@ -1,30 +1,41 @@
 .. _ref_examples:
 
+========
 Examples
 ========
 
-Here are examples using Mechanical with the ``ansys-mechanical-core`` library through
-an embedded instance or remote session.
+Here is a series of examples using Mechanical with the ``ansys-mechanical-core`` library.
 
-.. grid:: 1 2 2 2
+.. === EXAMPLES Gallery ===
 
-   .. grid-item-card:: Embedding Examples
-      :padding: 2 2 2 2
-      :link: https://embedding.examples.mechanical.docs.pyansys.com/examples/index.html
+..
+   We have to include this rather than include it in a tree.
 
-      Uses PyMechanical to embed an instance of Mechanical directly within Python as a Python object.
+.. include:: gallery_examples/index.rst
+   :start-line: 2
 
-   .. grid-item-card:: Remote Session Examples
-      :padding: 2 2 2 2
-      :link: https://examples.mechanical.docs.pyansys.com/examples/index.html
 
-      Uses PyMechanical as a client to a remote Mechanical instance.
+.. === ADVANCED EXAMPLES ===
 
-.. grid:: 1
+.. toctree::
+    :hidden:
+    :maxdepth: 3
 
-   .. grid-item-card:: Embedding Instance & Remote Session Example
-      :padding: 2 2 2 2
-      :link: gallery_examples/embedding_n_remote/embedding_remote.html
+    Advanced Examples <https://embedding.examples.mechanical.docs.pyansys.com/examples/index.html>
 
-      Demonstrates the same model setup in both an embedded instance and remote session,
-      as well as examples using a combination of embedded instances and remote sessions.
+
+.. include:: advanced_examples/index.rst
+   :start-line: 2
+
+
+.. === REMOTE EXAMPLES ===
+
+.. toctree::
+    :hidden:
+    :maxdepth: 3
+
+    Remote Sessions <https://examples.mechanical.docs.pyansys.com/index.html>
+
+
+.. include:: remote_examples/index.rst
+   :start-line: 2

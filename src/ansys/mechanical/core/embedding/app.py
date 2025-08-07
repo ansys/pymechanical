@@ -26,7 +26,6 @@ from __future__ import annotations
 import atexit
 import os
 from pathlib import Path
-import shutil
 import typing
 
 from ansys.mechanical.core import LOG
@@ -84,12 +83,8 @@ def _start_application(configuration: AddinConfiguration, version, db_file) -> "
         os.environ["ANSYS_MECHANICAL_STANDALONE_NO_ACT_EXTENSIONS"] = "1"
 
     addin_configuration_name = configuration.addin_configuration
-    # Starting with version 241 we can pass a configuration name to the constructor
-    # of Application
-    if int(version) >= 241:
-        return Ansys.Mechanical.Embedding.Application(db_file, addin_configuration_name)
-    else:
-        return Ansys.Mechanical.Embedding.Application(db_file)
+
+    return Ansys.Mechanical.Embedding.Application(db_file, addin_configuration_name)
 
 
 def is_initialized():
@@ -325,11 +320,6 @@ class App:
         ------
         Exception
             If the file already exists at the specified path and `overwrite` is False.
-
-        Notes
-        -----
-        For version 232, if `overwrite` is True, the existing file and its associated directory
-        (if any) will be removed before saving the new file.
         """
         if not os.path.exists(path):
             self.DataModel.Project.SaveAs(path)
@@ -340,39 +330,28 @@ class App:
                 f"File already exists in {path}, Use ``overwrite`` flag to "
                 "replace the existing file."
             )
-        if self.version < 241:  # pragma: no cover
-            file_name = os.path.basename(path)
-            file_dir = os.path.dirname(path)
-            associated_dir = os.path.join(file_dir, os.path.splitext(file_name)[0] + "_Mech_Files")
 
-            # Remove existing files and associated folder
-            os.remove(path)
-            if os.path.exists(associated_dir):
-                shutil.rmtree(associated_dir)
-            # Save the new file
-            self.DataModel.Project.SaveAs(path)
-        else:
-            if remove_lock:
-                file_path = Path(path)
-                associated_dir = file_path.parent / f"{file_path.stem}_Mech_Files"
-                lock_file = associated_dir / ".mech_lock"
-                # Remove the lock file if it exists before saving the project file
-                if lock_file.exists():
-                    self.log_warning(f"Removing the lock file, {lock_file}... ")
-                    lock_file.unlink()
-            try:
-                self.DataModel.Project.SaveAs(path, overwrite)
-            except Exception as e:
-                error_msg = str(e)
-                if "The project is locked by" in error_msg:
-                    self.log_error(
-                        f"Failed to save project as {path}: {error_msg}\n"
-                        "Hint: The project file is locked. "
-                        "Try using the 'remove_lock=True' option when saving the project."
-                    )
-                else:
-                    self.log_error(f"Failed to save project as {path}: {error_msg}")
-                raise e
+        if remove_lock:
+            file_path = Path(path)
+            associated_dir = file_path.parent / f"{file_path.stem}_Mech_Files"
+            lock_file = associated_dir / ".mech_lock"
+            # Remove the lock file if it exists before saving the project file
+            if lock_file.exists():
+                self.log_warning(f"Removing the lock file, {lock_file}... ")
+                lock_file.unlink()
+        try:
+            self.DataModel.Project.SaveAs(path, overwrite)
+        except Exception as e:
+            error_msg = str(e)
+            if "The project is locked by" in error_msg:
+                self.log_error(
+                    f"Failed to save project as {path}: {error_msg}\n"
+                    "Hint: The project file is locked. "
+                    "Try using the 'remove_lock=True' option when saving the project."
+                )
+            else:
+                self.log_error(f"Failed to save project as {path}: {error_msg}")
+            raise e
 
     def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
         """Launch the GUI."""
@@ -391,10 +370,7 @@ class App:
     def exit(self):
         """Exit the application."""
         self._unsubscribe()
-        if self.version < 241:
-            self.ExtAPI.Application.Close()
-        else:
-            self.ExtAPI.Application.Exit()
+        self.ExtAPI.Application.Exit()
 
     def execute_script(self, script: str) -> typing.Any:
         """Execute the given script with the internal IronPython engine."""
@@ -430,7 +406,7 @@ class App:
         text_file.close()
         return self.execute_script(data)
 
-    def plotter(self) -> None:
+    def plotter(self, obj=None) -> None:
         """Return ``ansys.tools.visualization_interface.Plotter`` object."""
         if not HAS_ANSYS_GRAPHICS:
             LOG.warning(
@@ -446,9 +422,9 @@ class App:
 
         from ansys.mechanical.core.embedding.graphics.embedding_plotter import to_plotter
 
-        return to_plotter(self)
+        return to_plotter(self, obj)
 
-    def plot(self) -> None:
+    def plot(self, obj=None) -> None:
         """Visualize the model in 3d.
 
         Requires installation using the graphics option. E.g.
@@ -461,9 +437,10 @@ class App:
         >>> app.open("path/to/file.mechdat")
         >>> app.plot()
         """
-        _plotter = self.plotter()
+        _plotter = self.plotter(obj)
 
         if _plotter is None:
+            print("nothing to plot!")
             return
 
         return _plotter.show()

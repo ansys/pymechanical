@@ -13,6 +13,8 @@ import os
 import warnings
 
 from ansys_sphinx_theme import ansys_favicon, get_version_match
+import pyvista
+from pyvista.plotting.utilities.sphinx_gallery import DynamicScraper
 from sphinx_gallery.sorting import FileNameSortKey
 
 import ansys.mechanical.core as pymechanical
@@ -20,6 +22,13 @@ from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMB
 
 # necessary when building the sphinx gallery
 pymechanical.BUILDING_GALLERY = True
+
+# Ensure that offscreen rendering is used for docs generation
+pyvista.OFF_SCREEN = True
+
+# necessary when building the sphinx gallery
+pyvista.BUILDING_GALLERY = True
+
 
 # Whether or not to build the cheatsheet
 BUILD_CHEATSHEET = True if os.environ.get("BUILD_EXAMPLES", "true") == "true" else False
@@ -60,6 +69,8 @@ extensions = [
     "sphinx_autodoc_typehints",
     "sphinx_copybutton",
     "sphinx_design",
+    "pyvista.ext.plot_directive",
+    "pyvista.ext.viewer_directive",
 ]
 
 if pymechanical.BUILDING_GALLERY:
@@ -175,8 +186,7 @@ sphinx_gallery_conf = {
     # path to your examples scripts
     "examples_dirs": ["../../examples/"],
     # path where to save gallery generated examples
-    "gallery_dirs": ["examples/gallery_examples"],
-    # Pattern to search for example files
+    "gallery_dirs": ["examples/gallery_examples"],  # Pattern to search for example files
     "filename_pattern": r"\.py",
     # Remove the "Download all examples" button from the top level gallery
     "download_all_examples": False,
@@ -186,7 +196,7 @@ sphinx_gallery_conf = {
     "backreferences_dir": None,
     # Modules for which function level galleries are created.  In
     "doc_module": "ansys-mechanical-core",
-    "image_scrapers": ("matplotlib"),
+    "image_scrapers": (DynamicScraper(), "matplotlib"),
     "ignore_pattern": "flycheck*",
     "thumbnail_size": (350, 350),
 }
@@ -229,7 +239,6 @@ html_theme_options = {
         "sidebar_pages": ["changelog", "index"],
     },
     "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
-    "navigation_depth": 10,
 }
 
 if BUILD_CHEATSHEET:
@@ -245,7 +254,6 @@ htmlhelp_basename = "pymechanicaldoc"
 
 html_sidebars = {
     "changelog": [],
-    "examples/index": [],
     "contributing": [],
 }
 
