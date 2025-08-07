@@ -34,6 +34,10 @@ import ansys.mechanical.core.misc as misc
 import conftest
 
 
+def new_python_script_api(mechanical):
+    return mechanical._get_python_script_api_version() >= 0
+
+
 @pytest.mark.remote_session_connect
 def test_run_python_script_success(mechanical):
     result = str(mechanical.run_python_script("2+3"))
@@ -43,7 +47,7 @@ def test_run_python_script_success(mechanical):
 @pytest.mark.remote_session_connect
 def test_run_python_script_success_return_empty(mechanical):
     result = str(mechanical.run_python_script("ExtAPI.DataModel.Project"))
-    if not mechanical.new_python_script_api:
+    if not new_python_script_api(mechanical):
         assert result == ""
     else:
         assert result == "Ansys.ACT.Automation.Mechanical.Project"
@@ -56,7 +60,7 @@ def test_run_python_script_error(mechanical):
         mechanical.run_python_script("import test")
 
     # TODO : we can do custom error with currying poster
-    if not mechanical.new_python_script_api:
+    if not new_python_script_api(mechanical):
         assert exc_info.value.details() == "No module named test"
     else:
         assert "No module named test" in str(exc_info.value)
@@ -83,7 +87,7 @@ def test_run_python_script_from_file_error(mechanical):
         )
         print("running python script : ", script_path)
         mechanical.run_python_script_from_file(script_path)
-    if not mechanical.new_python_script_api:
+    if not new_python_script_api(mechanical):
         assert exc_info.value.details() == "name 'get_myname' is not defined"
     else:
         assert "name 'get_myname' is not defined" in str(exc_info.value)
@@ -293,8 +297,7 @@ def test_upload_attach_mesh_solve_use_api_non_distributed_solve(mechanical, tmpd
     print(f"min_value = {min_value} max_value = {max_value} avg_value = {avg_value}")
 
     result = mechanical.run_python_script("ExtAPI.DataModel.Project.Model.Analyses[0].ObjectState")
-    # TODO: Investigate why the result is different for grpc
-    if not mechanical.new_python_script_api:
+    if not new_python_script_api(mechanical):
         assert "5" == result
     else:
         assert "Solved" == str(result)
@@ -315,7 +318,7 @@ def test_upload_attach_mesh_solve_use_api_distributed_solve(mechanical, tmpdir):
     print(f"min_value = {min_value} max_value = {max_value} avg_value = {avg_value}")
 
     result = mechanical.run_python_script("ExtAPI.DataModel.Project.Model.Analyses[0].ObjectState")
-    if not mechanical.new_python_script_api:
+    if not new_python_script_api(mechanical):
         assert "5" == result
     else:
         assert "Solved" == str(result)
