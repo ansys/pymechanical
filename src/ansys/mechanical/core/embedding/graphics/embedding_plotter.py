@@ -22,6 +22,11 @@
 
 """PyVista plotter."""
 
+import dataclasses
+from enum import Enum
+import os
+import typing
+
 import clr
 
 clr.AddReference("Ansys.Mechanical.DataModel")
@@ -33,56 +38,314 @@ from ansys.tools.visualization_interface import Plotter
 import numpy as np
 import pyvista as pv
 
-from .utils import bgr_to_rgb_tuple, get_nodes_and_coords
+from .utils import (
+    bgr_to_rgb_tuple,
+    get_line_nodes_and_coords,
+    get_scene_for_object,
+    get_tri_nodes_and_coords,
+    get_tri_result_disp_and_results,
+)
 
 
-def _transform_to_pyvista(transform: "Ansys.ACT.Math.Matrix4D"):
+@dataclasses.dataclass
+class Plottable:
+    """Plottable object."""
+
+    polydata: typing.Optional[pv.PolyData] = None
+
+    # TODO - make this a list of overridable attributes
+    color: typing.Optional[pv.Color] = None
+    transform: pv.transform.Transform = None
+    children: typing.List["Plottable"] = None
+    kwargs: typing.Dict = None
+
+    def __post_init__(self):
+        """Initialize the plottable.
+
+        The transform will be identity.
+        The children will be an empty list.
+        """
+        self.transform = np.identity(4)
+        self.transform = pv.transform.Transform(np.identity(4))
+        self.children = list()
+
+
+def _transform_to_pyvista(transform: "Ansys.ACT.Math.Matrix4D") -> pv.transform.Transform:
     """Convert the Transformation matrix to a numpy array."""
     np_transform = np.array([transform[i] for i in range(16)]).reshape(4, 4)
 
     # The mechanical scenegraph transform node is the transpose of the pyvista transform matrix
     np_transform = np_transform.transpose()
-    return np_transform
+    return pv.transform.Transform(np_transform)
 
 
-def _get_tri_nodes_and_coords(tri_tessellation: "Ansys.Mechanical.Scenegraph.TriTessellationNode"):
-    """Get the nodes and indices of the TriTessellationNode.
-
-    pyvista format expects a number of vertices per facet which is always 3
-    from this kind of node.
-    """
-    np_coordinates, np_indices = get_nodes_and_coords(tri_tessellation)
-    np_indices = np.insert(np_indices, 0, 3, axis=1)
-    return np_coordinates, np_indices
+def _get_color(node: "Ansys.Mechanical.Scenegraph.AttributeNode") -> pv.Color:
+    node_color = node.Property(Ansys.Mechanical.Scenegraph.ScenegraphIntAttributes.Color)
+    if node_color is None:
+        return None
+    color = pv.Color(bgr_to_rgb_tuple(node_color))
+    return color
 
 
-def _get_nodes_and_coords(node: "Ansys.Mechanical.Scenegraph.Node"):
-    """Get the nodes and indices of the Scenegraph node.
+class MeshOrientedTransformResizeStyle(Enum):
+    """Dynamic resize style flag for mesh oriented transform nodes."""
 
-    Currently only supported for tri tessellation nodes
-    """
-    if isinstance(node, Ansys.Mechanical.Scenegraph.TriTessellationNode):
-        return _get_tri_nodes_and_coords(node)
-
-    # TODO - support line tessellation node. See issue #809
-    # if isinstance(node, Ansys.Mechanical.Scenegraph.LineTessellationNode):
-    return None, None
+    NONE = 0
+    SCALING = 1
+    STRETCHING = 2
 
 
-def to_plotter(app: "ansys.mechanical.core.embedding.App"):
-    """Convert the app's geometry to an ``ansys.tools.visualization_interface.Plotter`` instance."""
-    plotter = Plotter()
+@dataclasses.dataclass
+class PlotSettings:
+    """Settings for a plot."""
 
-    # TODO - use get_scene from utils instead of looping over bodies directly here.
-    for body in app.DataModel.GetObjectsByType(
-        Ansys.Mechanical.DataModel.Enums.DataModelObjectCategory.Body
-    ):
-        scenegraph_node = Ansys.ACT.Mechanical.Tools.ScenegraphHelpers.GetScenegraph(body)
-        np_coordinates, np_indices = _get_nodes_and_coords(scenegraph_node.Child)
+    mesh_oriented_transform_resize_style: MeshOrientedTransformResizeStyle = (
+        MeshOrientedTransformResizeStyle.STRETCHING
+    )
+    displacement_scale_factor: float = 1.0
+    point_size = 5
+
+
+class ScenegraphNodeVisitor:
+    """Class to visit the Mechanical scenegraph nodes."""
+
+    def __init__(self, app, plot_settings: PlotSettings):
+        """Construct a new instance of the visitor class."""
+        self._app = app
+        self._plot_settings = plot_settings
+
+    def _visit_group_node(self, node: "Ansys.Mechanical.Scenegraph.GroupNode") -> Plottable:
+        """Return a new plottable grouping all the children of the group node."""
+        plottable = Plottable()
+        for child in node.Children:
+            child_plottable = self.visit_node(child)
+            if child_plottable is not None:
+                plottable.children.append(child_plottable)
+        return plottable
+
+    def _visit_line_tessellation_node(
+        self,
+        node: "Ansys.Mechanical.Scenegraph.LineTessellationNode",
+    ) -> Plottable:
+        np_coordinates, np_indices = get_line_nodes_and_coords(node)
+        np_indices = np.insert(np_indices, 0, 2, axis=1)
+        line_mesh = pv.PolyData()
+        line_mesh.points = np_coordinates
+        line_mesh.lines = np_indices
+        plottable = Plottable(line_mesh)
+        return plottable
+
+    def _visit_tri_tessellation_node(
+        self,
+        node: "Ansys.Mechanical.Scenegraph.TriTessellationNode",
+    ) -> Plottable:
+        np_coordinates, np_indices = get_tri_nodes_and_coords(node)
         if np_coordinates is None or np_indices is None:
-            continue
-        pv_transform = _transform_to_pyvista(scenegraph_node.Transform)
-        polydata = pv.PolyData(np_coordinates, np_indices).transform(pv_transform, inplace=True)
-        color = pv.Color(bgr_to_rgb_tuple(body.Color))
-        plotter.plot(polydata, color=color, smooth_shading=True)
+            return None
+        np_indices = np.insert(np_indices, 0, 3, axis=1)
+        plottable = Plottable(pv.PolyData(np_coordinates, np_indices))
+        return plottable
+
+    def _visit_tri_tessellation_result_node(
+        self,
+        node: "Ansys.Mechanical.Scenegraph.TriTessellationResultNode",
+    ) -> Plottable:
+        coords, indices = get_tri_nodes_and_coords(node)
+        if coords is None or indices is None:
+            return None
+        indices = np.insert(indices, 0, 3, axis=1)
+
+        disps, results = get_tri_result_disp_and_results(node)
+        deformed_coords = coords + disps
+
+        plottable = Plottable(pv.PolyData(deformed_coords, indices))
+        plottable.polydata.point_data["Results"] = results
+        plottable.kwargs = {"cmap": "viridis", "show_edges": True, "remove_color": 1}
+        return plottable
+
+    def _visit_transform_node(self, node: "Ansys.Mechanical.Scenegraph.TransformNode") -> Plottable:
+        plottable = self.visit_node(node.Child)
+        if plottable is None:
+            return None
+        plottable.transform = _transform_to_pyvista(node.Transform)
+        return plottable
+
+    def _visit_attribute_node(self, node: "Ansys.Mechanical.Scenegraph.AttributeNode") -> Plottable:
+        """Return the plottable of the child node with the color attached."""
+        plottable = self.visit_node(node.Child)
+        if plottable is None:
+            return None
+        plottable.color = _get_color(node)
+        return plottable
+
+    def _visit_mesh_oriented_transform_node(
+        self, node: "Ansys.Mechanical.Scenegraph.MeshOrientedTransformNode"
+    ) -> Plottable:
+        if "PYMECHANICAL_SCENE_VISIT_MESH_ORIENTED_TRANSFORM_NODE" not in os.environ:
+            self._app.log_warning(f"Ignoring MeshOrientedTransformNode")
+            return None
+
+        plottable = self.visit_node(node.Child)
+        if plottable is None:
+            return None
+
+        # TODO - use a method on the scenegraph node to compute the mesh oriented transform
+        def as_np(point):
+            return np.array([point.x, point.y, point.z])
+
+        if node.HasDisplacement:
+            # these are all Vector3D objects
+            disp1, disp2, orientation_disp = node.GetMeshDisplacement()
+
+        point1, point2, orientation_point = node.GetMeshLocation()
+        point1, point2, orientation_point = (
+            as_np(point1),
+            as_np(point2),
+            as_np(orientation_point),
+        )
+        z = point2 - point1
+        dist = np.sqrt(np.sum(z**2))
+        if dist == 0:
+            self._app.log_warning("computed z axis for MeshOrientedTransformNode is zero")
+        z = z / np.linalg.norm(z)
+
+        up = orientation_point - point1
+        x = np.cross(up, z)
+        x = x / np.linalg.norm(x)
+        length = np.linalg.norm(x)
+        if length <= 0:
+            self._app.log_warning("error computing transformation from orientation node")
+            return None
+
+        y = np.cross(z, x)
+        xform = pv.transform.Transform(
+            [
+                [x[0], y[0], z[0], point1[0]],
+                [x[1], y[1], z[1], point1[1]],
+                [x[2], y[2], z[2], point1[2]],
+                [0, 0, 0, 1],
+            ]
+        )
+        resize_style = self._plot_settings.mesh_oriented_transform_resize_style
+        if dist != 1.0:
+            s = dist
+            if resize_style == MeshOrientedTransformResizeStyle.SCALING:
+                xform *= pv.transform.Transform(
+                    [[s, 0, 0, 0], [0, s, 0, 0], [0, 0, s, 0], [0, 0, 0, 1]]
+                )
+            elif resize_style == MeshOrientedTransformResizeStyle.STRETCHING:
+                xform *= pv.transform.Transform(
+                    [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, s, 0], [0, 0, 0, 1]]
+                )
+
+        plottable.transform = xform
+        return plottable
+
+    def _visit_point_cloud_node(
+        self, node: "Ansys.Mechanical.Scenegraph.PointCloudNod"
+    ) -> Plottable:
+        point_coords = np.array(node.Coordinates, dtype=np.double)
+        point_indices = np.array(node.Indices, dtype=np.int32)
+        points = np.zeros(shape=(len(point_indices), 3))
+        for loop_index, point_index in enumerate(point_indices):
+            point = point_coords[point_index * 3 : point_index * 3 + 3]
+            points[loop_index] = point
+        plottable = Plottable(pv.PolyData(points))
+        plottable.kwargs = {"render_points_as_spheres": True}
+        return plottable
+
+    def visit_node(self, node: "Ansys.Mechanical.Scenegraph.Node") -> Plottable:
+        """Visit an arbitrary node.
+
+        Return a plottable object of that node.
+        """
+        if not isinstance(node, Ansys.Mechanical.Scenegraph.Node):
+            raise Exception("Node is not a scenegraph node!")
+
+        self._app.log_info(f"Visiting {node}")
+
+        if isinstance(node, Ansys.Mechanical.Scenegraph.GroupNode):
+            return self._visit_group_node(node)
+        elif isinstance(node, Ansys.Mechanical.Scenegraph.AttributeNode):
+            return self._visit_attribute_node(node)
+        elif isinstance(node, Ansys.Mechanical.Scenegraph.TransformNode):
+            return self._visit_transform_node(node)
+        elif isinstance(node, Ansys.Mechanical.Scenegraph.TriTessellationNode):
+            return self._visit_tri_tessellation_node(node)
+        elif isinstance(node, Ansys.Mechanical.Scenegraph.LineTessellationNode):
+            return self._visit_line_tessellation_node(node)
+        elif isinstance(node, Ansys.Mechanical.Scenegraph.TriTessellationResultNode):
+            return self._visit_tri_tessellation_result_node(node)
+        elif isinstance(node, Ansys.Mechanical.Scenegraph.MeshOrientedTransformNode):
+            return self._visit_mesh_oriented_transform_node(node)
+        elif isinstance(node, Ansys.Mechanical.Scenegraph.PointCloudNode):
+            return self._visit_point_cloud_node(node)
+        else:
+            self._app.log_warning(f"Unexpected node: {node}")
+        return None
+
+
+def _add_plottable(plotter: Plotter, plottable: Plottable, plot_settings: PlotSettings):
+    for child in plottable.children:
+        child.transform *= plottable.transform
+        if child.color is None:
+            child.color = plottable.color
+        _add_plottable(plotter, child, plot_settings)
+
+    if plottable.polydata is None:
+        return
+
+    polydata = plottable.polydata.transform(plottable.transform, inplace=True)
+    kwargs = {
+        "color": plottable.color,
+        "smooth_shading": True,
+        "point_size": plot_settings.point_size,
+    }
+    print("adding plottable with", kwargs)
+    if plottable.kwargs != None:
+        kwargs.update(plottable.kwargs)
+    if kwargs.get("remove_color", None):
+        kwargs.pop("remove_color")
+        if "color" in kwargs:
+            kwargs.pop("color")
+    print("after update: adding plottable with", kwargs)
+    plotter.plot(polydata, **kwargs)
+
+
+def _get_plotter_for_scene(
+    app: "ansys.mechanical.core.embedding.App",
+    node: "Ansys.Mechanical.Scenegraph.Node",
+    plot_settings: PlotSettings,
+) -> Plotter:
+    visitor = ScenegraphNodeVisitor(app, plot_settings)
+    plottable = visitor.visit_node(node)
+    plotter = Plotter()
+    _add_plottable(plotter, plottable, plot_settings)
     return plotter
+
+
+def _plot_object(
+    app: "ansys.mechanical.core.embedding.App", obj, plot_settings: PlotSettings
+) -> Plotter:
+    """Get a ``ansys.tools.visualization_interface.Plotter`` instance for `obj`."""
+    scene = get_scene_for_object(app, obj)
+    if scene is None:
+        app.log_warning(f"No scene available for object {obj}!")
+        return None
+    plotter = _get_plotter_for_scene(app, scene, plot_settings)
+    return plotter
+
+
+def to_plotter(
+    app: "ansys.mechanical.core.embedding.App", obj=None, plot_settings: PlotSettings = None
+) -> Plotter:
+    """Convert the scene for `obj` to an ``ansys.tools.visualization_interface.Plotter`` instance.
+
+    If the `obj` is None, default to the Geometry object.
+    Geometry, Mesh, and some Results are currently supported.
+    """
+    if obj is None:
+        obj = app.Model.Geometry
+    if plot_settings is None:
+        plot_settings = PlotSettings()
+    return _plot_object(app, obj, plot_settings)
