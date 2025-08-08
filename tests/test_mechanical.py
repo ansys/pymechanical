@@ -35,7 +35,8 @@ import conftest
 
 
 def new_python_script_api(mechanical):
-    return mechanical._get_python_script_api_version() >= 0
+    api_version = mechanical._get_python_script_api_version()
+    return api_version > 0
 
 
 @pytest.mark.remote_session_connect
