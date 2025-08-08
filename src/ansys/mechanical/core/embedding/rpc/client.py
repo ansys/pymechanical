@@ -69,6 +69,10 @@ class Client:
         self._error_type = Exception
         self._has_exited = False
 
+    def _get_python_script_api_version(self) -> bool:
+        """Get the python api version."""
+        return 1
+
     def __getattr__(self, attr):
         """Get attribute from the root object."""
         if hasattr(self.root, attr):
