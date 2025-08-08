@@ -9,6 +9,99 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.30 <https://github.com/ansys/pymechanical/releases/tag/v0.11.30>`_ - August 08, 2025
+==========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add plot option for mesh
+          - `#1268 <https://github.com/ansys/pymechanical/pull/1268>`_
+
+        * - Use new API for mesh oriented transform
+          - `#1270 <https://github.com/ansys/pymechanical/pull/1270>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update release action
+          - `#1271 <https://github.com/ansys/pymechanical/pull/1271>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.11.29
+          - `#1269 <https://github.com/ansys/pymechanical/pull/1269>`_
+
+
+`0.11.29 <https://github.com/ansys/pymechanical/releases/tag/v0.11.29>`_ - August 06, 2025
+==========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Invert clr lite host flag for dev version
+          - `#1254 <https://github.com/ansys/pymechanical/pull/1254>`_
+
+        * - Remove workaround for Documents folder
+          - `#1259 <https://github.com/ansys/pymechanical/pull/1259>`_
+
+        * - Update latest release action
+          - `#1267 <https://github.com/ansys/pymechanical/pull/1267>`_
+
+
+  .. tab-item:: Documentation
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Refactor examples
+          - `#1260 <https://github.com/ansys/pymechanical/pull/1260>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update changelog for v0.11.28
+          - `#1252 <https://github.com/ansys/pymechanical/pull/1252>`_
+
+        * - Remove support of version 23r2
+          - `#1255 <https://github.com/ansys/pymechanical/pull/1255>`_
+
+        * - Update codacy ignore file
+          - `#1261 <https://github.com/ansys/pymechanical/pull/1261>`_
+
+        * - Bump usd-core from 25.5.1 to 25.8
+          - `#1265 <https://github.com/ansys/pymechanical/pull/1265>`_
+
+        * - Bump ansys-api-mechanical from 0.1.2 to 0.1.3 in the core group
+          - `#1266 <https://github.com/ansys/pymechanical/pull/1266>`_
+
+
 `0.11.28 <https://github.com/ansys/pymechanical/releases/tag/v0.11.28>`_ - July 23, 2025
 ========================================================================================
 

@@ -324,7 +324,6 @@ epub_exclude_files = ["search.html"]
 
 linkcheck_ignore = [
     "https://github.com/ansys/pymechanical/pkgs/container/.*",
-    "gallery_examples/embedding_n_remote/embedding_remote.html",
     "https://ansyshelp.ansys.com/*",
     "https://ansysaccount.b2clogin.com/*",
     "https://answers.microsoft.com/en-us/windows/forum/all/*",
@@ -336,6 +335,7 @@ linkcheck_ignore = [
     "api/*",
     "path.html",
     "user_guide_embedding/*",
+    "changelog.html",
 ]
 
 linkcheck_anchors = False
