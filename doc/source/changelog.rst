@@ -9,6 +9,45 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.30 <https://github.com/ansys/pymechanical/releases/tag/v0.11.30>`_ - August 08, 2025
+==========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add plot option for mesh
+          - `#1268 <https://github.com/ansys/pymechanical/pull/1268>`_
+
+        * - Use new API for mesh oriented transform
+          - `#1270 <https://github.com/ansys/pymechanical/pull/1270>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update release action
+          - `#1271 <https://github.com/ansys/pymechanical/pull/1271>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.11.29
+          - `#1269 <https://github.com/ansys/pymechanical/pull/1269>`_
+
+
 `0.11.29 <https://github.com/ansys/pymechanical/releases/tag/v0.11.29>`_ - August 06, 2025
 ==========================================================================================
 
