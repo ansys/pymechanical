@@ -34,6 +34,7 @@ import subprocess  # nosec: B404
 import sys
 import threading
 import time
+import typing
 from typing import Optional
 import warnings
 import weakref
@@ -247,7 +248,7 @@ def check_valid_mechanical():
 
     >>> from ansys.mechanical.core import mechanical
     >>> from ansys.tools.path import change_default_mechanical_path
-    >>> mechanical_path = 'C:/Program Files/ANSYS Inc/v251/aisol/bin/win64/AnsysWBU.exe'
+    >>> mechanical_path = 'C:/Program Files/ANSYS Inc/v252/aisol/bin/win64/AnsysWBU.exe'
     >>> change_default_mechanical_path(mechanical_pth)
     >>> mechanical.check_valid_mechanical()
     True
@@ -421,6 +422,15 @@ class Mechanical(object):
 
         self._version = None
 
+        new_python_script_api = kwargs.get("new_python_script_api", None)
+        old_python_script_api = kwargs.get("old_python_script_api", None)
+        if new_python_script_api:
+            self._python_script_api_version = 1
+        elif old_python_script_api:
+            self._python_script_api_version = 0
+        else:
+            self._python_script_api_version = -1
+
         if port is None:
             port = MECHANICAL_DEFAULT_PORT
             self._port = port
@@ -460,10 +470,11 @@ class Mechanical(object):
         else:
             self.log_info("Mechanical connection is treated as remote.")
 
+        self._error_type = grpc.RpcError
+
         # connect and validate to the channel
         self._multi_connect(timeout=timeout)
         self.log_info("Mechanical is ready to accept grpc calls.")
-        self._rpc_type = "grpc"
 
     def __del__(self):  # pragma: no cover
         """Clean up on exit."""
@@ -483,6 +494,11 @@ class Mechanical(object):
         return self._log
 
     @property
+    def backend(self) -> str:
+        """Return the backend type."""
+        return "mechanical"
+
+    @property
     def version(self) -> str:
         """Get the Mechanical version based on the instance.
 
@@ -491,7 +507,7 @@ class Mechanical(object):
         Get the version of the connected Mechanical instance.
 
         >>> mechanical.version
-        '251'
+        '252'
         """
         if self._version is None:
             try:
@@ -502,7 +518,7 @@ class Mechanical(object):
                     "config = Ansys.Utilities.ApplicationConfiguration.DefaultConfiguration\n"
                     "config.VersionInfo.VersionString"
                 )
-                self._version = self.run_python_script(script)
+                self._version = self.run_python_script(script, python_api_version=1)
             except grpc.RpcError:  # pragma: no cover
                 raise
             finally:
@@ -917,7 +933,12 @@ class Mechanical(object):
         )
 
     def run_python_script(
-        self, script_block: str, enable_logging=False, log_level="WARNING", progress_interval=2000
+        self,
+        script_block: str,
+        enable_logging=False,
+        log_level="WARNING",
+        progress_interval=2000,
+        python_api_version=-1,
     ):
         """Run a Python script block inside Mechanical.
 
@@ -952,7 +973,7 @@ class Mechanical(object):
         Return a string value from Project object.
 
         >>> mechanical.run_python_script('ExtAPI.DataModel.Project.ProductVersion')
-        '2025 R1'
+        '2025 R2'
 
         Return an empty string, when you try to return the Project object.
 
@@ -995,8 +1016,10 @@ class Mechanical(object):
 
         """
         self.verify_valid_connection()
+        if python_api_version == -1:
+            python_api_version = self._get_python_script_api_version()
         result_as_string = self.__call_run_python_script(
-            script_block, enable_logging, log_level, progress_interval
+            script_block, enable_logging, log_level, progress_interval, python_api_version
         )
         return result_as_string
 
@@ -1681,8 +1704,22 @@ class Mechanical(object):
 
         return data
 
+    def _get_python_script_api_version(self) -> int:
+        if self._python_script_api_version == -1:
+            # current default - <261 old, >=261 new
+            if int(self.version) >= 261:
+                self._python_script_api_version = 1
+            else:
+                self._python_script_api_version = 0
+        return self._python_script_api_version
+
     def __call_run_python_script(
-        self, script_code: str, enable_logging, log_level, progress_interval
+        self,
+        script_code: str,
+        enable_logging,
+        log_level,
+        progress_interval,
+        run_python_api_version: int,
     ):
         """Run the Python script block on the server.
 
@@ -1710,6 +1747,7 @@ class Mechanical(object):
         request.enable_logging = enable_logging
         request.logger_severity = log_level_server
         request.progress_interval = progress_interval
+        request.python_behavior = run_python_api_version
 
         result = ""
         self._busy = True
@@ -1916,8 +1954,8 @@ def launch_grpc(
 
     Launch Mechanical using a specified executable file.
 
-    >>> exec_file_path = 'C:/Program Files/ANSYS Inc/v251/aisol/bin/win64/AnsysWBU.exe'
-    >>> mechanical = launch_mechanical(exec_file_path)
+    >>> exec_file_path = 'C:/Program Files/ANSYS Inc/v252/aisol/bin/win64/AnsysWBU.exe'
+    >>> mechanical = launch_mechanical(exec_file=exec_file_path)
 
     """
     # verify version
@@ -1951,11 +1989,12 @@ def launch_rpyc(
     additional_switches=None,
     additional_envs=None,
     verbose=False,
-) -> int:
+) -> typing.Tuple[int, subprocess.Popen]:
     """Start Mechanical locally in RPyC mode."""
     _version = atp.version_from_path("mechanical", exec_file)
-    if _version < 232:
-        raise VersionError("The Mechanical gRPC interface requires Mechanical 2023 R2 or later.")
+
+    if not batch:
+        raise Exception("The rpyc backend does not support graphical mode!")
 
     # get the next available port
     local_ports = pymechanical.LOCAL_PORTS
@@ -1969,21 +2008,21 @@ def launch_rpyc(
         port += 1
     local_ports.append(port)
 
+    # TODO - use multiprocessing
     server_script = """
 import sys
 from ansys.mechanical.core.embedding.rpc import MechanicalDefaultServer
 server = MechanicalDefaultServer(port=int(sys.argv[1]), version=int(sys.argv[2]))
 server.start()
 """
-    env_copy = os.environ.copy()
     try:
         embedded_server = subprocess.Popen(
-            [sys.executable, "-c", server_script, str(port), str(_version)], env=env_copy
+            [sys.executable, "-c", server_script, str(port), str(_version)]
         )  # nosec: B603
     except:
         raise RuntimeError("Unable to start the embedded server.")
 
-    return port
+    return port, embedded_server
 
 
 def launch_remote_mechanical(
@@ -1999,8 +2038,8 @@ def launch_remote_mechanical(
     Parameters
     ----------
     version : str, optional
-        Mechanical version to run in the three-digit format. For example, ``"251"`` to
-        run 2025 R1. The default is ``None``, in which case the server runs the latest
+        Mechanical version to run in the three-digit format. For example, ``"252"`` to
+        run 2025 R2. The default is ``None``, in which case the server runs the latest
         installed version.
 
     Returns
@@ -2124,8 +2163,8 @@ def launch_mechanical(
         When ``False``, Mechanical is not exited when the garbage for this Mechanical
         instance is collected.
     version : str, optional
-        Mechanical version to run in the three-digit format. For example, ``"251"``
-        for 2025 R1. The default is ``None``, in which case the server runs the
+        Mechanical version to run in the three-digit format. For example, ``"252"``
+        for 2025 R2. The default is ``None``, in which case the server runs the
         latest installed version. If PyPIM is configured and ``exec_file=None``,
         PyPIM launches Mechanical using its ``version`` parameter.
     keep_connection_alive : bool, optional
@@ -2156,8 +2195,8 @@ def launch_mechanical(
 
     Launch Mechanical using a specified executable file.
 
-    >>> exec_file_path = 'C:/Program Files/ANSYS Inc/v251/aisol/bin/win64/AnsysWBU.exe'
-    >>> mech = launch_mechanical(exec_file_path)
+    >>> exec_file_path = 'C:/Program Files/ANSYS Inc/v252/aisol/bin/win64/AnsysWBU.exe'
+    >>> mech = launch_mechanical(exec_file=exec_file_path)
 
     Connect to an existing Mechanical instance at IP address ``192.168.1.30`` on port
     ``50001``.
@@ -2290,6 +2329,10 @@ def launch_mechanical(
     if backend == "mechanical":
         try:
             port = launch_grpc(port=port, verbose=verbose_mechanical, **start_parm)
+
+            # TODO - version argument is ignored...
+            version = atp.version_from_path("mechanical", exec_file)
+
             start_parm["local"] = True
             mechanical = Mechanical(
                 ip=ip,
@@ -2306,11 +2349,15 @@ def launch_mechanical(
             # pass
             raise exception
     elif backend == "python":
-        port = launch_rpyc(port=port, **start_parm)
+        port, process = launch_rpyc(port=port, **start_parm)
         from ansys.mechanical.core.embedding.rpc.client import Client
 
         mechanical = Client(
-            "localhost", port, timeout=start_timeout, cleanup_on_exit=cleanup_on_exit
+            "localhost",
+            port,
+            timeout=start_timeout,
+            cleanup_on_exit=cleanup_on_exit,
+            process=process,
         )
 
     return mechanical

@@ -27,7 +27,6 @@ from asyncio.subprocess import PIPE
 import os
 import sys
 import typing
-import warnings
 
 import ansys.tools.path as atp
 import click
@@ -130,10 +129,6 @@ def _cli_impl(
     if (not graphical) or (not show_welcome_screen):
         args.append("-AppModeMech")
 
-    if version < 232:
-        args.append("-nosplash")
-        args.append("-notabctrl")
-
     if not graphical:
         args.append("-b")
 
@@ -159,14 +154,8 @@ def _cli_impl(
 
     if (not graphical) and input_script:
         exit = True
-        if version < 241:
-            warnings.warn(
-                "Please ensure ExtAPI.Application.Close() is at the end of your script. "
-                "Without this command, Batch mode will not terminate.",
-                stacklevel=2,
-            )
 
-    if exit and input_script and version >= 241:
+    if exit and input_script:
         args.append("-x")
 
     profile: UniqueUserProfile = None
@@ -176,7 +165,7 @@ def _cli_impl(
         profile.update_environment(env)
 
     if not DRY_RUN:
-        version_name = atp.SUPPORTED_ANSYS_VERSIONS[version]
+        version_name = atp.SUPPORTED_ANSYS_VERSIONS.get(version, version)
         if graphical:
             mode = "Graphical"
         else:
@@ -269,7 +258,7 @@ The ``exit`` command is only supported in version 2024 R1 or later.",
     "--revision",
     default=None,
     type=int,
-    help='Ansys Revision number, e.g. "251" or "242". If none is specified\
+    help='Ansys Revision number, e.g. "251" or "252". If none is specified\
 , uses the default from ansys-tools-path',
 )
 @click.option(
@@ -298,9 +287,9 @@ def cli(
 
     The following example demonstrates the main use of this tool:
 
-        $ ansys-mechanical -r 251 -g
+        $ ansys-mechanical -r 252 -g
 
-        Starting Ansys Mechanical version 2025R1 in graphical mode...
+        Starting Ansys Mechanical version 2025R2 in graphical mode...
     """
     exe = atp.get_mechanical_path(allow_input=False, version=revision)
     version = atp.version_from_path("mechanical", exe)

@@ -41,10 +41,12 @@ mutexes
 namespaces
 OptiSLang
 pessimizations
+postprocessing
 PyAnsys
 pyansys
 PyMechanical
 Pythonically
+Pythonic
 Python.NET
 pythonnet
 Remoting

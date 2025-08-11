@@ -29,7 +29,7 @@ repos:
   - id: isort
 
 - repo: https://github.com/PyCQA/flake8
-  rev: 7.1.2
+  rev: 7.3.0
   hooks:
   - id: flake8
     additional_dependencies: [flake8-pyproject]
@@ -63,7 +63,7 @@ repos:
           tests/scripts/run_python_error.py |
           tests/scripts/run_python_success.py |
           tests/scripts/log_message.py |
-          examples/embedding_n_remote/embedding_remote.py
+          examples/.*$
         )$
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -76,6 +76,6 @@ repos:
   - id: check-added-large-files
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.31.2
+  rev: 0.33.2
   hooks:
     - id: check-github-workflows

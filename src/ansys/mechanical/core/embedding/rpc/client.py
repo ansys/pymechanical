@@ -27,14 +27,16 @@ import time
 
 import rpyc
 
-from ansys.mechanical.core.embedding.rpc.server import PYMECHANICAL_DEFAULT_RPC_PORT
+from ansys.mechanical.core.embedding.rpc.utils import PYMECHANICAL_DEFAULT_RPC_PORT
 from ansys.mechanical.core.mechanical import DEFAULT_CHUNK_SIZE
 
 
 class Client:
     """Client for connecting to Mechanical services."""
 
-    def __init__(self, host: str, port: int, timeout: float = 120.0, cleanup_on_exit=True):
+    def __init__(
+        self, host: str, port: int, timeout: float = 120.0, cleanup_on_exit=True, process=None
+    ):
         """Initialize the client.
 
         Parameters
@@ -48,6 +50,8 @@ class Client:
         timeout : float, optional
             Maximum allowable time for connecting to the Mechanical server.
             The default is ``60.0``.
+        process: subprocess.Popen, optional
+            The process object that was connected to
 
         """
         if host is None:
@@ -56,11 +60,18 @@ class Client:
         if port is None:
             port = PYMECHANICAL_DEFAULT_RPC_PORT
         self.port = port
+        self._process = process
         self.timeout = timeout
         self.connection = None
         self.root = None
         self._connect()
         self._cleanup_on_exit = cleanup_on_exit
+        self._error_type = Exception
+        self._has_exited = False
+
+    def _get_python_script_api_version(self) -> bool:
+        """Get the python api version."""
+        return 1
 
     def __getattr__(self, attr):
         """Get attribute from the root object."""
@@ -114,6 +125,7 @@ class Client:
 
     def close(self):
         """Close the connection."""
+        print("Closing the connection")
         self.connection.close()
         print(f"Connection to {self.host}:{self.port} closed")
 
@@ -235,6 +247,11 @@ class Client:
         return list_of_files
 
     @property
+    def backend(self) -> str:
+        """Get the backend type."""
+        return "python"
+
+    @property
     def is_alive(self):
         """Check if the Mechanical instance is alive."""
         try:
@@ -245,9 +262,10 @@ class Client:
 
     def exit(self):
         """Shuts down the Mechanical instance."""
-        print("Requesting server shutdown ...")
-        self.service_exit()
-        self.connection.close()
+        if self._has_exited:
+            return
+        self.close()
+        self._has_exited = True
         print("Disconnected from server")
 
     def __del__(self):  # pragma: no cover

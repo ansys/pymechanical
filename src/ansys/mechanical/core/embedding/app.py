@@ -26,9 +26,7 @@ from __future__ import annotations
 import atexit
 import os
 from pathlib import Path
-import shutil
 import typing
-import warnings
 
 from ansys.mechanical.core import LOG
 from ansys.mechanical.core.embedding import initializer, runtime
@@ -36,9 +34,12 @@ from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 from ansys.mechanical.core.embedding.imports import global_entry_points, global_variables
 from ansys.mechanical.core.embedding.license_manager import LicenseManager
+from ansys.mechanical.core.embedding.mechanical_warnings import (
+    connect_warnings,
+    disconnect_warnings,
+)
 from ansys.mechanical.core.embedding.poster import Poster
 from ansys.mechanical.core.embedding.ui import launch_ui
-from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
 
 if typing.TYPE_CHECKING:
     # Make sure to run ``ansys-mechanical-ideconfig`` to add the autocomplete settings to VS Code
@@ -48,10 +49,10 @@ if typing.TYPE_CHECKING:
 try:
     import ansys.tools.visualization_interface  # noqa: F401
 
-    HAS_ANSYS_VIZ = True
+    HAS_ANSYS_GRAPHICS = True
     """Whether or not PyVista exists."""
 except ImportError:
-    HAS_ANSYS_VIZ = False
+    HAS_ANSYS_GRAPHICS = False
 
 
 def _get_default_addin_configuration() -> AddinConfiguration:
@@ -83,12 +84,8 @@ def _start_application(configuration: AddinConfiguration, version, db_file) -> "
         os.environ["ANSYS_MECHANICAL_STANDALONE_NO_ACT_EXTENSIONS"] = "1"
 
     addin_configuration_name = configuration.addin_configuration
-    # Starting with version 241 we can pass a configuration name to the constructor
-    # of Application
-    if int(version) >= 241:
-        return Ansys.Mechanical.Embedding.Application(db_file, addin_configuration_name)
-    else:
-        return Ansys.Mechanical.Embedding.Application(db_file)
+
+    return Ansys.Mechanical.Embedding.Application(db_file, addin_configuration_name)
 
 
 def is_initialized():
@@ -142,13 +139,15 @@ class App:
         Whether to enable logging. Default is True.
     log_level : str, optional
         The logging level for the application. Default is "WARNING".
+    pep8 : bool, optional
+        Whether to enable PEP 8 style binding for the assembly. Default is False.
 
     Examples
     --------
     Create App with Mechanical project file and version:
 
     >>> from ansys.mechanical.core import App
-    >>> app = App(db_file="path/to/file.mechdat", version=251)
+    >>> app = App(db_file="path/to/file.mechdat", version=252)
 
     Disable copying the user profile when private appdata is enabled
 
@@ -187,10 +186,25 @@ class App:
 
         self.log_info("Starting Mechanical Application")
 
+        # Get the globals dictionary from kwargs
+        globals = kwargs.get("globals")
+
+        # Set messages to None before BUILDING_GALLERY check
+        self._messages = None
+
+        # If the building gallery flag is set, we need to share the instance
+        # This can apply to running the `make -C doc html` command
         if BUILDING_GALLERY:
             if len(INSTANCES) != 0:
+                # Get the first instance of the app
                 instance: App = INSTANCES[0]
+                # Point to the same underlying application object
                 instance._share(self)
+                # Update the globals if provided in kwargs
+                if globals:
+                    # The next line is covered by test_globals_kwarg_building_gallery
+                    instance.update_globals(globals)  # pragma: nocover
+                # Open the mechdb file if provided
                 if db_file is not None:
                     self.open(db_file)
                 return
@@ -213,9 +227,9 @@ class App:
             new_profile_name = f"PyMechanical-{os.getpid()}"
             profile = UniqueUserProfile(new_profile_name, copy_profile=copy_profile)
             profile.update_environment(os.environ)
-            atexit.register(_cleanup_private_appdata, profile)
 
-        runtime.initialize(self._version)
+        pep8_alias = kwargs.get("pep8", False)
+        runtime.initialize(self._version, pep8_aliases=pep8_alias)
         self._app = _start_application(configuration, self._version, db_file)
         connect_warnings(self)
         self._poster = None
@@ -223,6 +237,11 @@ class App:
         self._disposed = False
         atexit.register(_dispose_embedded_app, INSTANCES)
         INSTANCES.append(self)
+
+        # Clean up the private appdata directory on exit if private_appdata is True
+        if private_appdata:
+            atexit.register(_cleanup_private_appdata, profile)
+
         self._updated_scopes: typing.List[typing.Dict[str, typing.Any]] = []
         self._subscribe()
         self._messages = None
@@ -272,11 +291,9 @@ class App:
             lock_file = Path(self.DataModel.Project.ProjectDirectory) / ".mech_lock"
             # Remove the lock file if it exists before opening the project file
             if lock_file.exists():
-                warnings.warn(
-                    f"Removing the lock file, {lock_file}, before opening the project. \
-This may corrupt the project file.",
-                    UserWarning,
-                    stacklevel=2,
+                self.log_warning(
+                    f"Removing the lock file, {lock_file}, before opening the project. "
+                    "This may corrupt the project file."
                 )
                 lock_file.unlink()
 
@@ -289,7 +306,7 @@ This may corrupt the project file.",
         else:
             self.DataModel.Project.Save()
 
-    def save_as(self, path: str, overwrite: bool = False):
+    def save_as(self, path: str, overwrite: bool = False, remove_lock: bool = False):
         """
         Save the project as a new file.
 
@@ -301,16 +318,13 @@ This may corrupt the project file.",
             The path where the file needs to be saved.
         overwrite : bool, optional
             Whether the file should be overwritten if it already exists (default is False).
+        remove_lock : bool, optional
+            Whether to remove the lock file if it exists before saving the project file.
 
         Raises
         ------
         Exception
             If the file already exists at the specified path and `overwrite` is False.
-
-        Notes
-        -----
-        For version 232, if `overwrite` is True, the existing file and its associated directory
-        (if any) will be removed before saving the new file.
         """
         if not os.path.exists(path):
             self.DataModel.Project.SaveAs(path)
@@ -321,19 +335,28 @@ This may corrupt the project file.",
                 f"File already exists in {path}, Use ``overwrite`` flag to "
                 "replace the existing file."
             )
-        if self.version < 241:  # pragma: no cover
-            file_name = os.path.basename(path)
-            file_dir = os.path.dirname(path)
-            associated_dir = os.path.join(file_dir, os.path.splitext(file_name)[0] + "_Mech_Files")
 
-            # Remove existing files and associated folder
-            os.remove(path)
-            if os.path.exists(associated_dir):
-                shutil.rmtree(associated_dir)
-            # Save the new file
-            self.DataModel.Project.SaveAs(path)
-        else:
+        if remove_lock:
+            file_path = Path(path)
+            associated_dir = file_path.parent / f"{file_path.stem}_Mech_Files"
+            lock_file = associated_dir / ".mech_lock"
+            # Remove the lock file if it exists before saving the project file
+            if lock_file.exists():
+                self.log_warning(f"Removing the lock file, {lock_file}... ")
+                lock_file.unlink()
+        try:
             self.DataModel.Project.SaveAs(path, overwrite)
+        except Exception as e:
+            error_msg = str(e)
+            if "The project is locked by" in error_msg:
+                self.log_error(
+                    f"Failed to save project as {path}: {error_msg}\n"
+                    "Hint: The project file is locked. "
+                    "Try using the 'remove_lock=True' option when saving the project."
+                )
+            else:
+                self.log_error(f"Failed to save project as {path}: {error_msg}")
+            raise e
 
     def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
         """Launch the GUI."""
@@ -352,10 +375,7 @@ This may corrupt the project file.",
     def exit(self):
         """Exit the application."""
         self._unsubscribe()
-        if self.version < 241:
-            self.ExtAPI.Application.Close()
-        else:
-            self.ExtAPI.Application.Exit()
+        self.ExtAPI.Application.Exit()
 
     def execute_script(self, script: str) -> typing.Any:
         """Execute the given script with the internal IronPython engine."""
@@ -391,29 +411,29 @@ This may corrupt the project file.",
         text_file.close()
         return self.execute_script(data)
 
-    def plotter(self) -> None:
+    def plotter(self, obj=None) -> None:
         """Return ``ansys.tools.visualization_interface.Plotter`` object."""
-        if not HAS_ANSYS_VIZ:
-            warnings.warn(
-                "Installation of viz option required! Use pip install ansys-mechanical-core[viz]"
+        if not HAS_ANSYS_GRAPHICS:
+            LOG.warning(
+                "Use ``pip install ansys-mechanical-core[graphics]`` to enable this option."
             )
             return
 
         if self.version < 242:
-            warnings.warn("Plotting is only supported with version 2024R2 and later!")
+            LOG.warning("Plotting is only supported with version 2024R2 and later!")
             return
 
         # TODO Check if anything loaded inside app or else show warning and return
 
-        from ansys.mechanical.core.embedding.viz.embedding_plotter import to_plotter
+        from ansys.mechanical.core.embedding.graphics.embedding_plotter import to_plotter
 
-        return to_plotter(self)
+        return to_plotter(self, obj)
 
-    def plot(self) -> None:
+    def plot(self, obj=None) -> None:
         """Visualize the model in 3d.
 
-        Requires installation using the viz option. E.g.
-        pip install ansys-mechanical-core[viz]
+        Requires installation using the graphics option. E.g.
+        pip install ansys-mechanical-core[graphics]
 
         Examples
         --------
@@ -422,9 +442,10 @@ This may corrupt the project file.",
         >>> app.open("path/to/file.mechdat")
         >>> app.plot()
         """
-        _plotter = self.plotter()
+        _plotter = self.plotter(obj)
 
         if _plotter is None:
+            print("nothing to plot!")
             return
 
         return _plotter.show()

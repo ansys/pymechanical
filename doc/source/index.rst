@@ -1,7 +1,6 @@
 
 .. title:: PyMechanical
 
-
 .. image:: /_static/logo/pymechanical-logo-light.png
    :class: only-light
    :alt: PyMechanical Logo Light
@@ -15,7 +14,7 @@
    :align: center
 
 
-Python API to interact with `Ansys Mechanical`_ (FEA software for structural engineering) from **2023R2** and later versions.
+Python API to interact with `Ansys Mechanical`_ (FEA software for structural engineering) from **2024R1** and later versions.
 
 .. grid:: 3
 
@@ -74,7 +73,7 @@ Python API to interact with `Ansys Mechanical`_ (FEA software for structural eng
 
         Overview of Ansys Mechanical scripting.
 
-        :bdg-primary-line:`ACT` :bdg-primary-line:`Threading`
+        :bdg-primary-line:`ACT` :bdg-primary-line:`Threading` :bdg-primary-line:`Script helpers`
 
     .. grid-item-card:: FAQs :fa:`fa-solid fa-circle-question`
         :padding: 2 2 2 2
@@ -92,7 +91,7 @@ Python API to interact with `Ansys Mechanical`_ (FEA software for structural eng
 
         Issues and limitations on both PyMechanical and Mechanical.
 
-        :bdg-primary-line:`23R2` :bdg-primary-line:`24R1` :bdg-primary-line:`24R2` :bdg-primary-line:`25R1`
+        :bdg-primary-line:`24R1` :bdg-primary-line:`24R2` :bdg-primary-line:`25R1` :bdg-primary-line:`25R2`
 
     .. grid-item-card:: Contribute :fa:`people-group`
         :padding: 2 2 2 2

@@ -33,6 +33,7 @@ import pytest
 
 from ansys.mechanical.core.embedding.app import is_initialized
 from ansys.mechanical.core.embedding.cleanup_gui import cleanup_gui
+from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
 from ansys.mechanical.core.embedding.ui import _launch_ui
 import ansys.mechanical.core.embedding.utils as utils
 
@@ -47,7 +48,6 @@ def test_app_repr(embedded_app):
 
 
 @pytest.mark.embedding
-@pytest.mark.minimum_version(241)
 def test_deprecation_warning(embedded_app):
     harmonic_acoustic = embedded_app.Model.AddHarmonicAcousticAnalysis()
     with pytest.warns(UserWarning):
@@ -118,7 +118,7 @@ def test_app_version(embedded_app):
     """Test version of the Application class."""
     version = embedded_app.version
     assert type(version) is int
-    assert version >= 232
+    assert version >= min(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS)
 
 
 @pytest.mark.embedding
@@ -162,7 +162,8 @@ def test_app_print_tree(embedded_app, capsys, assets):
     assert all(symbol in printed_output for symbol in ["?", "⚡︎", "✕", "✓"])
 
 
-@pytest.mark.embedding
+# @pytest.mark.embedding
+@pytest.mark.skip(reason="This test hangs on Linux with Python 3.10-3.13")
 def test_app_poster(embedded_app, printer):
     """The getters of app should be usable after a new().
 
@@ -267,15 +268,26 @@ def test_app_getters_notstale(embedded_app):
 def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
     """Test Python.NET warning of the embedded instance using a test-scoped Python environment."""
 
+    # set these to None to see output in the terminal
+    stdout = subprocess.DEVNULL
+    stderr = subprocess.DEVNULL
+
     # Install pymechanical
     subprocess.check_call(
         [test_env.python, "-m", "pip", "install", "-e", "."],
         cwd=rootdir,
         env=test_env.env,
+        stdout=stdout,
+        stderr=stderr,
     )
 
     # Install pythonnet
-    subprocess.check_call([test_env.python, "-m", "pip", "install", "pythonnet"], env=test_env.env)
+    subprocess.check_call(
+        [test_env.python, "-m", "pip", "install", "pythonnet"],
+        env=test_env.env,
+        stdout=stdout,
+        stderr=stderr,
+    )
 
     # Initialize with pythonnet
     embedded_pythonnet_py = os.path.join(rootdir, "tests", "scripts", "pythonnet_warning.py")
@@ -437,8 +449,9 @@ def test_launch_gui_exception(embedded_app):
 
 
 @pytest.mark.embedding_scripts
-def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory, run_subprocess):
+def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory):
     """Test cleanup function to remove the temporary mechdb file and folder."""
+    assert os.path.isdir(tmp_path)
     temp_file = tmp_path / "tempfiletest.mechdb"
     temp_folder = tmp_path / "tempfiletest_Mech_Files"
 
@@ -452,10 +465,23 @@ def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory, run_subprocess):
     assert temp_folder.exists()
 
     # Run process
-    process, stdout, stderr = run_subprocess(["sleep", "3"])
+    if os.name == "nt":
+        process = subprocess.Popen(
+            ["ping", "127.0.0.1", "-n", "2"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            shell=True,
+        )
+    else:
+        process = subprocess.Popen(
+            ["sleep", "3"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        )
+
+    pid = process.pid
+    assert process.wait() == 0
 
     # Remove the temporary file and folder
-    cleanup_gui(process.pid, temp_file)
+    cleanup_gui(pid, temp_file)
 
     # Assert the file and folder do not exist
     assert not temp_file.exists()
@@ -513,7 +539,7 @@ def test_app_execute_script_from_file(embedded_app, rootdir, printer):
 
 
 @pytest.mark.embedding
-def test_app_lock_file_open(embedded_app, tmp_path: pytest.TempPathFactory):
+def test_app_lock_file_open(embedded_app, tmp_path: pytest.TempPathFactory, caplog):
     """Test the lock file is removed on open if remove_lock=True."""
     embedded_app.DataModel.Project.Name = "PROJECT 1"
     project_file = os.path.join(tmp_path, f"{NamedTemporaryFile().name}.mechdat")
@@ -528,8 +554,11 @@ def test_app_lock_file_open(embedded_app, tmp_path: pytest.TempPathFactory):
     assert lock_file.exists()
 
     # Assert a warning is emitted if the lock file is going to be removed
-    with pytest.warns(UserWarning):
+
+    with caplog.at_level("WARNING"):
         embedded_app.open(project_file, remove_lock=True)
+
+    assert any("Removing the lock file" in message for message in caplog.messages)
 
 
 @pytest.mark.embedding
