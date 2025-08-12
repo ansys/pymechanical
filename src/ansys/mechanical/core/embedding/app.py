@@ -33,7 +33,6 @@ from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 from ansys.mechanical.core.embedding.imports import global_entry_points, global_variables
-from ansys.mechanical.core.embedding.license_manager import LicenseManager
 from ansys.mechanical.core.embedding.mechanical_warnings import (
     connect_warnings,
     disconnect_warnings,
@@ -244,10 +243,6 @@ class App:
 
         self._updated_scopes: typing.List[typing.Dict[str, typing.Any]] = []
         self._subscribe()
-        self._messages = None
-        self._license_manager = LicenseManager(self)
-
-        globals = kwargs.get("globals")
         if globals:
             self.update_globals(globals)
 
@@ -507,11 +502,6 @@ class App:
 
             self._messages = MessageManager(self._app)
         return self._messages
-
-    @property
-    def license_manager(self):
-        """Return license manager."""
-        return self._license_manager
 
     def _share(self, other) -> None:
         """Shares the state of self with other.
