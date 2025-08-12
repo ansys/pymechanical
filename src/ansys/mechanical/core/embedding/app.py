@@ -33,6 +33,7 @@ from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 from ansys.mechanical.core.embedding.imports import global_entry_points, global_variables
+from ansys.mechanical.core.embedding.license_manager import LicenseManager
 from ansys.mechanical.core.embedding.mechanical_warnings import (
     connect_warnings,
     disconnect_warnings,
@@ -245,6 +246,11 @@ class App:
         self._subscribe()
         if globals:
             self.update_globals(globals)
+
+        # Licensing API is available only for version 2025R2 and later
+        self._license_manager = None
+        if self.version >= 252:
+            self._license_manager = LicenseManager(self)
 
     def __repr__(self):
         """Get the product info."""
@@ -502,6 +508,13 @@ class App:
 
             self._messages = MessageManager(self._app)
         return self._messages
+
+    @property
+    def license_manager(self):
+        """Return license manager."""
+        if self._license_manager is None:
+            raise Exception("LicenseManager is only available for version 252 and later.")
+        return self._license_manager
 
     def _share(self, other) -> None:
         """Shares the state of self with other.
