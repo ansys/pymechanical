@@ -141,7 +141,7 @@ def __windows_store_workaround(version: int) -> None:
         return
 
     # Nothing to do if it isn't a Windows store application
-    if r"Microsoft\WindowsApps" not in sys.executable:
+    if r"WindowsApps\PythonSoftwareFoundation" not in sys.base_prefix:
         return
 
     # Get the AWP_ROOT environment variable for the specified version
@@ -170,6 +170,15 @@ def __windows_store_workaround(version: int) -> None:
                 awp_root_tp / "IntelMKL" / "2023.1.0" / "winx64",
                 awp_root_tp / "hdf5" / "1.12.2" / "winx64",
                 awp_root_tp / "qt" / "5.15.17" / "winx64" / "bin",
+            ]
+        )
+    elif version == 252:
+        paths.extend(
+            [
+                awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
+                awp_root_tp / "IntelMKL" / "2024.2.3" / "winx64",
+                awp_root_tp / "hdf5" / "winx64",
+                awp_root_tp / "qt" / "5.15.18" / "winx64" / "bin",
             ]
         )
     else:
