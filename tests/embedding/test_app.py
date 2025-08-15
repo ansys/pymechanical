@@ -177,7 +177,6 @@ def test_app_poster(embedded_app, printer):
     """
 
     version = embedded_app.version
-    printer(embedded_app.license_manager.show())
     if os.name != "nt" and version < 242:
         """This test is effectively disabled for versions older than 242 on linux.
 
@@ -525,7 +524,7 @@ def test_attribute_error(tmp_path: pytest.TempPathFactory, pytestconfig, rootdir
 def test_app_execute_script_from_file(embedded_app, rootdir, printer):
     """Test execute_script_from_file method."""
     embedded_app.update_globals(globals())
-
+    printer(embedded_app.license_manager.show())
     printer("Running run_python_error.py")
     error_script_path = os.path.join(rootdir, "tests", "scripts", "run_python_error.py")
     with pytest.raises(Exception) as exc_info:
