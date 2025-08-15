@@ -524,6 +524,7 @@ def test_attribute_error(tmp_path: pytest.TempPathFactory, pytestconfig, rootdir
 def test_app_execute_script_from_file(embedded_app, rootdir, printer):
     """Test execute_script_from_file method."""
     embedded_app.update_globals(globals())
+
     printer("Running run_python_error.py")
     error_script_path = os.path.join(rootdir, "tests", "scripts", "run_python_error.py")
     with pytest.raises(Exception) as exc_info:
