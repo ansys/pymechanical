@@ -104,14 +104,14 @@ class LicenseManager:
             If a list of strings, activates all specified licenses in the order provided.
         """
         from System import String
-        from System.Collections.Generic import List
+        from System.Collections.Generic import List as DotNetList
 
         if license is None:
             self._license_preference.ActivateLicense()
         elif isinstance(license, str):
             self._license_preference.ActivateLicense(String(license))
         elif isinstance(license, list):
-            licenses = List[String]()
+            licenses = DotNetList[String]()
             for lic in license:
                 licenses.Add(String(lic))
             self._license_preference.ActivateLicense(licenses)
