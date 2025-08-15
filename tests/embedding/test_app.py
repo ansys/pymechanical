@@ -177,6 +177,7 @@ def test_app_poster(embedded_app, printer):
     """
 
     version = embedded_app.version
+    printer(embedded_app.license_manager.show())
     if os.name != "nt" and version < 242:
         """This test is effectively disabled for versions older than 242 on linux.
 
