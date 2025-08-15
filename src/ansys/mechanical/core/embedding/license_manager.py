@@ -144,7 +144,10 @@ class LicenseManager:
         self._license_preference.Save()
 
     def reset_preference(self) -> None:
-        """Reset the license location order and the status of all licenses
-        to the default state."""
+        """Reset the license preference.
+
+        This method will reset the license location order and the status of all licenses
+        to the default state.
+        """
         LOG.info("Resetting license preferences to default state.")
         self._license_preference.Reset()
