@@ -21,58 +21,109 @@
 # SOFTWARE.
 
 """License Manager."""
-from ansys.mechanical.core import LOG
+from typing import List, Optional, Union
 
-# TODO: enable logging
+from ansys.mechanical.core import LOG
 
 
 class LicenseManager:
-    """Message manager for adding, fetching, and printing messages."""
+    """Class to manage licenses in Ansys Mechanical.
+
+    This class provides methods to enable, disable, and check the status of licenses.
+    It also allows for moving licenses to specific indices in the license preference list.
+    It is initialized with an instance of the Ansys Mechanical application.
+    """
 
     def __init__(self, app):
         """Initialize the message manager."""
         self._app = app
-        if self._app.version < 252:
-            LOG.warning("License manager is only available in Ansys 2025 R2 and later.")
-            return
-
         self._license_preference = self._app.ExtAPI.Application.LicensePreference
+        import Ansys
 
-    def _get_all_licenses(self):
-        """Return all active licenses."""
+        self._license_status = Ansys.Mechanical.DataModel.Enums.LicenseStatus
+
+    def get_all_licenses(self) -> list[str]:
+        """Return list of all licenses."""
         return self._license_preference.GetAllLicenses()
 
-    def get_license_status(self, license_name: str):
-        """Return the status of a license."""
+    def get_license_status(
+        self, license_name: str
+    ) -> "Ansys.Mechanical.DataModel.Enums.LicenseStatus":
+        """Return status of the specific license.
+
+        Parameters
+        ----------
+        license_name : str
+            Name of the license to check.
+
+        Returns
+        -------
+        "Ansys.Mechanical.DataModel.Enums.LicenseStatus"
+            The status of the license.
+        """
+        LOG.info(
+            f"{license_name} status: {self._license_preference.GetLicenseStatus(license_name)}"
+        )
         return self._license_preference.GetLicenseStatus(license_name)
 
-    def set_license_status(self, license_name: str, status: bool):
-        """Set the status of a license."""
-        _status = Ansys.Mechanical.DataModel.Enums.LicenseStatus
+    def set_license_status(self, license_name: str, status: bool) -> None:
+        """Set the status of a license and save the preference.
+
+        Parameters
+        ----------
+        license_name : str
+            Name of the license to set the status for.
+        status : bool
+            True to enable the license, False to disable it.
+        """
         if status:
-            self._license_preference.SetLicenseStatus(license_name, _status.Enabled)
+            self._license_preference.SetLicenseStatus(license_name, self._license_status.Enabled)
             LOG.info(f"{license_name} is enabled.")
         else:
-            self._license_preference.SetLicenseStatus(license_name, _status.Disabled)
+            self._license_preference.SetLicenseStatus(license_name, self._license_status.Disabled)
             LOG.info(f"{license_name} is disabled.")
+        self._license_preference.Save()
 
-    def show(self):
+    def show(self) -> None:
         """Print all active licenses."""
-        for lic in self._get_all_licenses():
-            print(f"{lic} - {self.get_license_status(lic)}")
+        for lic in self.get_all_licenses():
+            print(f"{lic} - {self._license_preference.GetLicenseStatus(lic)}")
 
-    def activate(self):
-        """Activate a license."""
-        self._license_preference.ActivateLicense()
-
-    def deactivate(self):
-        """Deactivate a license."""
+    def disable_session_license(self) -> None:
+        """Disable all licenses for current session."""
         self._license_preference.DeActivateLicense()
 
-    def switch_preference(self, license_name, location):
-        """Switch a license preference.
+    def enable_session_license(self, license: Optional[Union[str, List[str]]] = None) -> None:
+        """Enable license(s) for the current session.
 
-        Move license to in priority order.
+        Parameters
+        ----------
+        license : Optional[Union[str, List[str]]], optional
+            If None, activates the first enabled license in the priority order.
+            If a string, activates that specific license.
+            If a list of strings, activates all specified licenses in the order provided.
+        """
+        from System import String
+        from System.Collections.Generic import List
+
+        if license is None:
+            self._license_preference.ActivateLicense()
+        elif isinstance(license, str):
+            self._license_preference.ActivateLicense(String(license))
+        elif isinstance(license, list):
+            licenses = List[String]()
+            for lic in license:
+                licenses.Add(String(lic))
+            self._license_preference.ActivateLicense(licenses)
+        else:
+            raise TypeError("License must be None, a string, or a list of strings.")
+        LOG.info(f"License(s) {license} enabled for the current session.")
+
+    def move_to_index(self, license_name: str, location: int) -> None:
+        """Move a license preference.
+
+        Move license to zero-based index location in the license preference list.
+        This is useful for setting the preferred license location.
 
         Parameters
         ----------
@@ -86,12 +137,12 @@ class LicenseManager:
         Move Ansys Mechanical Premium to the first location.
 
         >>> license_manager = LicenseManager(app)
-        >>> license_manager.switch_preference('Ansys Mechanical Premium', 0)
+        >>> license_manager.move_to_index('Ansys Mechanical Premium', 0)
         """
-        LOG.info(f"Switching license preference for {license_name} to location {location}")
+        LOG.info(f"Moving license preference for {license_name} to location {location}")
         self._license_preference.MoveLicenseToLocation(license_name, location)
         self._license_preference.Save()
 
-    def reset(self):
+    def reset_preference(self) -> None:
         """Reset the license preference."""
         self._license_preference.Reset()
