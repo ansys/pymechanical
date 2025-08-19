@@ -90,7 +90,7 @@ class LicenseManager:
             print(f"{lic} - {self._license_preference.GetLicenseStatus(lic)}")
 
     def disable_session_license(self) -> None:
-        """Disable all licenses for current session."""
+        """Disable active license for current session."""
         self._license_preference.DeActivateLicense()
 
     def enable_session_license(self, license: Optional[Union[str, List[str]]] = None) -> None:
