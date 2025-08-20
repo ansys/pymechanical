@@ -25,7 +25,7 @@ print(app)
 app.new()
 # sphinx_gallery_end_ignore
 
-geom_file_path = download_file("Contact_Debonding_Example.agdb", "pymechanical", "embedding")
+geom_file_path = download_file("example_06_bolt_pret_geom.agdb", "pymechanical", "00_basic")
 geometry_import = Model.GeometryImportGroup.AddGeometryImport()
 geometry_import_format = (Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.Format.Automatic)
 geometry_import_preferences = Ansys.ACT.Mechanical.Utilities.GeometryImportPreferences()
