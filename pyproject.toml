@@ -96,7 +96,8 @@ ansys-mechanical = "ansys.mechanical.core.run:cli"
 ansys-mechanical-ideconfig = "ansys.mechanical.core.ide_config:cli"
 
 [tool.pdm.build]
-include = ["src/ansys/mechanical/core"]
+includes = ["src"]
+excludes = ["tests"]
 
 # ========================================================
 
@@ -196,6 +197,22 @@ directory = "miscellaneous"
 name = "Miscellaneous"
 showcontent = true
 
+[[tool.towncrier.type]]
+directory = "documentation"
+name = "Documentation"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "maintenance"
+name = "Maintenance"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "test"
+name = "Test"
+showcontent = true
+
+
 # ========================================================
 # Flake8 Configuration
 # ========================================================
@@ -269,17 +286,3 @@ extras = doc
 commands =
     sphinx-build -d "{toxworkdir}/doc_doctree" doc/source "{toxinidir}/doc/_build/html" --color -vW -bhtml
 """
-[[tool.towncrier.type]]
-directory = "documentation"
-name = "Documentation"
-showcontent = true
-
-[[tool.towncrier.type]]
-directory = "maintenance"
-name = "Maintenance"
-showcontent = true
-
-[[tool.towncrier.type]]
-directory = "test"
-name = "Test"
-showcontent = true
