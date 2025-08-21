@@ -6,11 +6,10 @@ Tree Objects
 This section has helper scripts for Tree Objects.
 """
 
-
-
 # sphinx_gallery_start_ignore
 from ansys.mechanical.core import App
 from ansys.mechanical.core.examples import delete_downloads, download_file
+
 app = App(globals=globals())
 geom_file_path = download_file("Valve.pmdb", "pymechanical", "embedding")
 geometry_import = Model.GeometryImportGroup.AddGeometryImport()
@@ -29,7 +28,6 @@ app.plot()
 
 # Print the tree
 app.print_tree()
-
 
 
 # %%
@@ -63,7 +61,9 @@ ns_all = ExtAPI.DataModel.GetObjectsByType(DataModelObjectCategory.NamedSelectio
 
 # All contact regions
 abc = ExtAPI.DataModel.GetObjectsByType(DataModelObjectCategory.ContactRegion)
-all_contacts = ExtAPI.DataModel.Project.Model.Connections.GetChildren(DataModelObjectCategory.ContactRegion, True)
+all_contacts = ExtAPI.DataModel.Project.Model.Connections.GetChildren(
+    DataModelObjectCategory.ContactRegion, True
+)
 
 # A specific contact region
 my_contact = [contact for contact in all_contacts if contact.Name == "Contact Region"][0]
@@ -76,9 +76,15 @@ all_remote_points = ExtAPI.DataModel.GetObjectsByType(DataModelObjectCategory.Re
 ana = ExtAPI.DataModel.Tree.GetObjectsByType(DataModelObjectCategory.Analysis)
 
 # Using ACT Automation API
-all_contacts2 = ExtAPI.DataModel.Project.Model.Connections.GetChildren[Ansys.ACT.Automation.Mechanical.Connections.ContactRegion](True)
-all_remote_points2 = ExtAPI.DataModel.Project.Model.GetChildren[Ansys.ACT.Automation.Mechanical.RemotePoint](True)
-all_folders = ExtAPI.DataModel.Project.Model.GetChildren[Ansys.ACT.Automation.Mechanical.TreeGroupingFolder](True)
+all_contacts2 = ExtAPI.DataModel.Project.Model.Connections.GetChildren[
+    Ansys.ACT.Automation.Mechanical.Connections.ContactRegion
+](True)
+all_remote_points2 = ExtAPI.DataModel.Project.Model.GetChildren[
+    Ansys.ACT.Automation.Mechanical.RemotePoint
+](True)
+all_folders = ExtAPI.DataModel.Project.Model.GetChildren[
+    Ansys.ACT.Automation.Mechanical.TreeGroupingFolder
+](True)
 
 # %%
 # Finding Duplicate Objects by Name
@@ -92,14 +98,21 @@ AllObjNames = [x.Name for x in AllObj]
 duplicates_by_name = [item for item, count in collections.Counter(AllObjNames).items() if count > 1]
 print(duplicates_by_name)
 
+
+# sphinx_gallery_start_ignore
+static_struct = Model.AddStaticStructuralAnalysis()
+static_struct.Solution.AddEquivalentStress()
+# sphinx_gallery_end_ignore
+
+
 # %%
 # Using DataObjects and GetByName
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Example of using DataObjects and GetByName.
 
-c1 = 'Solution'
-c2 = 'Far-field Sound Power Level Waterfall Diagram'
-c = ExtAPI.DataModel.AnalysisList[0].DataObjects.GetByName(c1).DataObjects.GetByName(c2)
+c1 = "Solution"
+c2 = "Equivalent Stress"
+c = DataModel.AnalysisList[0].DataObjects.GetByName(c1).DataObjects.GetByName(c2)
 
 # %%
 # Using DataObjects, NamesByType, and GetByName
@@ -110,17 +123,27 @@ new_contact_list = []
 dataobjects = ExtAPI.DataModel.AnalysisList[0].DataObjects
 for group in dataobjects:
     print(group.Type)
-names = dataobjects.NamesByType('ContactGroup')
+names = dataobjects.NamesByType("ContactGroup")
 for name in names:
     connet_data_objects = dataobjects.GetByName(name).DataObjects
     c_names = connet_data_objects.Names
     for c_name in c_names:
         type_c = connet_data_objects.GetByName(c_name).Type
-        if type_c == 'ConnectionGroup':
-            contacts_list = connet_data_objects.GetByName(c_name).DataObjects.NamesByType('ContactRegion')
+        if type_c == "ConnectionGroup":
+            contacts_list = connet_data_objects.GetByName(c_name).DataObjects.NamesByType(
+                "ContactRegion"
+            )
             for contact in contacts_list:
-                contact_type = connet_data_objects.GetByName(c_name).DataObjects.GetByName(contact).PropertyValue('ContactType')
-                contact_state = connet_data_objects.GetByName(c_name).DataObjects.GetByName(contact).PropertyValue("Suppressed")
+                contact_type = (
+                    connet_data_objects.GetByName(c_name)
+                    .DataObjects.GetByName(contact)
+                    .PropertyValue("ContactType")
+                )
+                contact_state = (
+                    connet_data_objects.GetByName(c_name)
+                    .DataObjects.GetByName(contact)
+                    .PropertyValue("Suppressed")
+                )
                 if contact_state == 0 and contact_type == 1:
                     new_contact_list.append(contact)
 print(new_contact_list)
@@ -130,16 +153,18 @@ print(new_contact_list)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 # Example of using GetObjectsByName.
 
-bb = ExtAPI.DataModel.GetObjectsByName("Gray Cast Iron")[0]
+bb = ExtAPI.DataModel.GetObjectsByName("Connector\Solid1")[0]
 
 # %%
 # Accessing a Named Selection
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Example of accessing a named selection.
 
-NSall = ExtAPI.DataModel.Project.Model.NamedSelections.GetChildren[Ansys.ACT.Automation.Mechanical.NamedSelection](True)
-my_nsel = [i for i in NSall if i.Name.startswith("b")][0]
-my_nsel2 = [i for i in NSall if i.Name == "aaa"][0]
+NSall = ExtAPI.DataModel.Project.Model.NamedSelections.GetChildren[
+    Ansys.ACT.Automation.Mechanical.NamedSelection
+](True)
+my_nsel = [i for i in NSall if i.Name.startswith("NSF")][0]
+my_nsel2 = [i for i in NSall if i.Name == "NSInsideFaces"][0]
 
 # %%
 # Get All Unsuppressed Bodies and Point Masses
@@ -152,8 +177,6 @@ print(len(all_bodies))
 
 all_pm = ExtAPI.DataModel.Project.Model.GetChildren(DataModelObjectCategory.PointMass, True)
 all_pm = [i for i in all_pm if not i.Suppressed]
-
-
 
 
 # sphinx_gallery_start_ignore
