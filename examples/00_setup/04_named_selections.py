@@ -6,14 +6,13 @@ Named Selections
 This section has helper scripts for Named Selections.
 """
 
-# %%
-# Import Geometry
-# ~~~~~~~~~~~~~~~
 
+
+# sphinx_gallery_start_ignore
 from ansys.mechanical.core import App
 from ansys.mechanical.core.examples import delete_downloads, download_file
 app = App(globals=globals())
-geom_file_path = download_file("example_06_bolt_pret_geom.agdb", "pymechanical", "00_basic")
+geom_file_path = download_file("example_05_td26_Rubber_Boot_Seal.agdb", "pymechanical", "00_basic")
 geometry_import = Model.GeometryImportGroup.AddGeometryImport()
 geometry_import_format = Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.Format.Automatic
 geometry_import_preferences = Ansys.ACT.Mechanical.Utilities.GeometryImportPreferences()
@@ -22,6 +21,7 @@ geometry_import_preferences.NamedSelectionKey = ""
 geometry_import_preferences.ProcessNamedSelections = True
 geometry_import_preferences.ProcessMaterialProperties = True
 geometry_import.Import(geom_file_path, geometry_import_format, geometry_import_preferences)
+# sphinx_gallery_end_ignore
 
 # Plot
 app.plot()
@@ -36,33 +36,27 @@ app.print_tree()
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # ALL NAMED SELECTIONS
-nsall = ExtAPI.DataModel.GetObjectsByType(
-    DataModelObjectCategory.NamedSelections.NamedSelection
-)
+nsall = ExtAPI.DataModel.GetObjectsByType(DataModelObjectCategory.NamedSelections.NamedSelection)
 
 # %%
 # Delete a named selection
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-NSall = ExtAPI.DataModel.Project.Model.NamedSelections.GetChildren[
-    Ansys.ACT.Automation.Mechanical.NamedSelection
-](True)
+NSall = ExtAPI.DataModel.Project.Model.NamedSelections.GetChildren[Ansys.ACT.Automation.Mechanical.NamedSelection](True)
 
 # Delete a named selection by name
-a = [i for i in NSall if i.Name == "S1"][0]
+a = [i for i in NSall if i.Name == "Top_Face"][0]
 a.Delete()
 
 # Alternative way to delete by name
-b = ExtAPI.DataModel.Tree.GetObjectsByName("S1")[0]
+b = ExtAPI.DataModel.GetObjectsByName("Bottom_Face")[0]
 b.Delete()
 
 # %%
 # Create a named selection
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 selection_manager = ExtAPI.SelectionManager
-selection = ExtAPI.SelectionManager.CreateSelectionInfo(
-    SelectionTypeEnum.GeometryEntities
-)
-selection.Ids = [1, 2, 3, 4]
+selection = ExtAPI.SelectionManager.CreateSelectionInfo(SelectionTypeEnum.GeometryEntities)
+selection.Ids = [216,221,224]
 
 model = ExtAPI.DataModel.Project.Model
 ns2 = model.AddNamedSelection()
@@ -98,36 +92,32 @@ NS1.Generate()
 # %%
 # Find a Named Selection
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-NSall = ExtAPI.DataModel.Project.Model.NamedSelections.GetChildren[
-    Ansys.ACT.Automation.Mechanical.NamedSelection
-](True)
+NSall = ExtAPI.DataModel.Project.Model.NamedSelections.GetChildren[Ansys.ACT.Automation.Mechanical.NamedSelection](True)
 
 # Find a named selection by name
-a = [i for i in NSall if i.Name == "bodies2"][0]
+a = [i for i in NSall if i.Name == "Rubber_Bodies30"][0]
 
 # Access entities in the named selection
 entities = a.Entities
-print(entities)
+print(entities[0].Volume)
 
 # %%
 # Identify Named Selections based on Name and Type
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-NSall = ExtAPI.DataModel.Project.Model.NamedSelections.GetChildren[
-    Ansys.ACT.Automation.Mechanical.NamedSelection
-](True)
+NSall = ExtAPI.DataModel.Project.Model.NamedSelections.GetChildren[Ansys.ACT.Automation.Mechanical.NamedSelection](True)
 
 # Filter named selections based on keywords in their names
-keywords = ["fix", "bushing", "roller"]
+keywords = ["Rubber_Bodies30", "Inner_Faces30","Outer_Faces30"]
 ns1 = [i for i in NSall if keywords[0] in i.Name]
 ns2 = [i for i in NSall if keywords[1] in i.Name]
 ns3 = [i for i in NSall if keywords[2] in i.Name]
 filtered = ns1 + ns2 + ns3
 
 # Further filter based on entity type
-VertexNsels = [
+FaceNsels = [
     i
     for i in filtered
-    if str(ExtAPI.DataModel.GeoData.GeoEntityById(i.Ids[0]).Type) == "GeoVertex"
+    if str(ExtAPI.DataModel.GeoData.GeoEntityById(i.Ids[0]).Type) == "GeoFace"
 ]
 
 
