@@ -6,6 +6,10 @@ Geometry
 This section has helper scripts for Geometry
 """
 
+# %%
+# Import Geometry
+# ~~~~~~~~~~~~~~~
+
 from ansys.mechanical.core import App
 from ansys.mechanical.core.examples import delete_downloads, download_file
 app = App(globals=globals())
