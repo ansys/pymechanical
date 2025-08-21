@@ -26,6 +26,8 @@ geometry_import.Import(geom_file_path, geometry_import_format, geometry_import_p
 # Plot
 app.plot()
 
+# Print the tree
+app.print_tree()
 
 
 # %%
