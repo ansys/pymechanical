@@ -5,16 +5,23 @@ Geometry
 
 This section has helper scripts for Geometry
 """
-# %%
-# Create an embedded instance and open an existing Mechanical File
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 from ansys.mechanical.core import App
 from ansys.mechanical.core.examples import delete_downloads, download_file
+app = App(globals=globals())
+geom_file_path = download_file("example_06_bolt_pret_geom.agdb", "pymechanical", "00_basic")
+geometry_import = Model.GeometryImportGroup.AddGeometryImport()
+geometry_import_format = Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.Format.Automatic
+geometry_import_preferences = Ansys.ACT.Mechanical.Utilities.GeometryImportPreferences()
+geometry_import_preferences.ProcessLines = True
+geometry_import_preferences.NamedSelectionKey = ""
+geometry_import_preferences.ProcessNamedSelections = True
+geometry_import_preferences.ProcessMaterialProperties = True
+geometry_import.Import(geom_file_path, geometry_import_format, geometry_import_preferences)
 
-mechdat_path = download_file("cantilever.mechdat", "pymechanical", "embedding")
-app = App(db_file=mechdat_path, globals=globals())
-print(app)
+# Plot
+app.plot()
+
 
 
 # %%
@@ -59,8 +66,8 @@ print(f"Body Name: {b2.Name}, Body Id: {b2.Id}")
 # %%
 # Find the Part that the body belongs to
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-body_name = ExtAPI.DataModel.GeoData.GeoEntityById(363).Name
-part_name = ExtAPI.DataModel.GeoData.GeoEntityById(363).Part.Name
+body_name = ExtAPI.DataModel.GeoData.GeoEntityById(59).Name
+part_name = ExtAPI.DataModel.GeoData.GeoEntityById(59).Part.Name
 print(f"The Body named '{body_name}' belongs to the part named '{part_name}'")
 
 # %%
@@ -85,14 +92,13 @@ for asm in geo.Assemblies:
         for body in part.Bodies:
             for i in range(0, body.Vertices.Count):
                 vertices.append(body.Vertices[i].Id)
-
 print(vertices)
 
 # %%
 # Get all edges of a given length
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ExtAPI.Application.ActiveUnitSystem = MechanicalUnitSystem.StandardNMM
-use_length = 75
+use_length = 0.100
 
 geo = ExtAPI.DataModel.GeoData
 edgelist = []
@@ -110,7 +116,7 @@ print(edgelist)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 import math
 
-radius = 10
+radius = 0.018
 circumference = 2 * math.pi * radius
 
 geo = ExtAPI.DataModel.GeoData
@@ -130,7 +136,7 @@ print(circlelist)
 # %%
 # Get Radius of a selected edge
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-my_edge = ExtAPI.DataModel.GeoData.GeoEntityById(185)
+my_edge = ExtAPI.DataModel.GeoData.GeoEntityById(27)
 my_edge_radius = my_edge.Radius if str(my_edge.CurveType) == "GeoCurveCircle" else 0.0
 print(my_edge_radius)
 
