@@ -122,6 +122,14 @@ brg.MobileLocation = [i for i in NSall if i.Name == "shank_surface"][0]
 
 
 # sphinx_gallery_start_ignore
+# Save the mechdat
+from pathlib import Path
+
+output_path = Path.cwd() / "out"
+test_mechdat_path = str(output_path / "test.mechdat")
+# app.save_as(test_mechdat_path, overwrite=True)
+
+
 # Close the app
 app.close()
 # Delete the downloaded files
