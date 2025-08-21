@@ -1,3 +1,25 @@
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 """.. _ref_results:
 
 Results
@@ -6,19 +28,18 @@ Results
 This section has helper scripts for Results.
 """
 
-
 # sphinx_gallery_start_ignore
 import os
+
 from ansys.mechanical.core import App
 from ansys.mechanical.core.examples import delete_downloads, download_file
 
 mechdat_path = download_file("example_03_simple_bolt_new.mechdat", "pymechanical", "00_basic")
-app = App(db_file = mechdat_path, globals=globals())
+app = App(db_file=mechdat_path, globals=globals())
 print(app)
 
 
 # sphinx_gallery_end_ignore
-
 
 
 # Plot
@@ -50,7 +71,7 @@ print("Available Results:", ", ".join(result_names))
 # List Result Objects that can be added
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-all_results = [x for x in dir(static_struct) if str(x)[:3]=="Add"]
+all_results = [x for x in dir(static_struct) if str(x)[:3] == "Add"]
 print(all_results)
 
 # %%
@@ -116,7 +137,6 @@ result_set_count = reader.ListTimeFreq.Count
 print("Number of Result Sets:", result_set_count)
 
 
-
 # %%
 # Export all results in the tree to PNG (2D image) files
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -124,10 +144,13 @@ results = DataModel.GetObjectsByType(DataModelObjectCategory.Result)
 for result in results:
     result.Activate()
     Graphics.Camera.SetSpecificViewOrientation(ViewOrientationType.Front)
-    image_path = os.path.join(os.getcwd(),"out",result.Name+".png")
-    Graphics.ExportImage(str(image_path), GraphicsImageExportFormat.PNG, Ansys.Mechanical.Graphics.GraphicsImageExportSettings())
+    image_path = os.path.join(os.getcwd(), "out", result.Name + ".png")
+    Graphics.ExportImage(
+        str(image_path),
+        GraphicsImageExportFormat.PNG,
+        Ansys.Mechanical.Graphics.GraphicsImageExportSettings(),
+    )
 print("Done with Exporting Results")
-
 
 
 # sphinx_gallery_start_ignore
