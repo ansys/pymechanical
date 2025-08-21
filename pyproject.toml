@@ -95,6 +95,11 @@ pim = [
 ansys-mechanical = "ansys.mechanical.core.run:cli"
 ansys-mechanical-ideconfig = "ansys.mechanical.core.ide_config:cli"
 
+[tool.pdm.build]
+include = ["src/ansys/mechanical/core"]
+
+# ========================================================
+
 [tool.black]
 line-length = 100
 
