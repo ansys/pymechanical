@@ -94,10 +94,14 @@ pim = [
 [project.scripts]
 ansys-mechanical = "ansys.mechanical.core.run:cli"
 ansys-mechanical-ideconfig = "ansys.mechanical.core.ide_config:cli"
+find-mechanical = "ansys.mechanical.core.embedding.find-mechanical:cli"
 
 [tool.pdm.build]
 includes = ["src"]
 excludes = ["tests"]
+
+[tool.pdm.build.wheel-data]
+scripts = ["mechanical-env"]
 
 # ========================================================
 
