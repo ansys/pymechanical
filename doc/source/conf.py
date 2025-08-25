@@ -239,6 +239,7 @@ html_theme_options = {
         "sidebar_pages": ["changelog", "index"],
     },
     "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
+    "show_nav_level": 0,
 }
 
 if BUILD_CHEATSHEET:
