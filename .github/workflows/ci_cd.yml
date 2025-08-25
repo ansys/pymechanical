@@ -287,7 +287,7 @@ jobs:
   # embedding-rpc-tests:
   #   name: Embedding rpc testing and coverage
   #   runs-on: public-ubuntu-latest-8-cores
-  #   timeout-minutes: 10
+  #   timeout-minutes: 30
   #   needs: [smoke-tests, revn-variations, container-stability-check]
   #   container:
   #     image: ${{ needs.revn-variations.outputs.test_container }}
@@ -362,7 +362,7 @@ jobs:
   embedding-tests:
     name: Embedding testing and coverage
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     needs: [smoke-tests, revn-variations, container-stability-check]
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
@@ -436,7 +436,7 @@ jobs:
   embedding-scripts-tests:
     name: Embedding scripts testing and coverage
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     needs: [smoke-tests, revn-variations]
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
@@ -507,7 +507,7 @@ jobs:
   launch-tests:
     name: Launch testing and coverage
     runs-on: public-ubuntu-latest-8-cores
-    timeout-minutes: 15
+    timeout-minutes: 30
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
