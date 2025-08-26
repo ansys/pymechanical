@@ -1,0 +1,215 @@
+#!/bin/bash
+
+# Copyright (C) 2023 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+# Check if the script is running on a Linux system
+if [ "$(uname)" != "Linux" ]; then
+  echo "This script is intended for Linux environments only."
+  exit 1
+fi
+
+# Check if at least one argument was provided
+if [ $# -lt 1 ]; then
+    echo "Usage:"
+    echo "    mechanical-env [-r version] [-p <path to installation>] [COMMAND]"
+    echo "Example:"
+    echo "    mechanical-env -r 251 python"
+    echo "    mechanical-env -p /usr/install/ansys_inc/251 python"
+    exit 1
+fi
+
+# Initialize variables
+version=""
+path=""
+command=""
+
+# Process command line arguments
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        -r|--version)
+            version="$2"
+            shift 2
+            ;;
+        -p|--path)
+            path="$2"
+            shift 2
+            ;;
+        *)
+            command="$@"
+            break
+            ;;
+    esac
+done
+
+# Check if a command was provided
+if [ -z "$command" ]; then
+    echo "Usage: mechanical-env [-r version] [-p <path to installation>] [COMMAND]"
+    exit 1
+fi
+
+
+# Determine the appropriate command to run the find-mechanical command
+if [ -n "$version" ] && [ -n "$path" ]; then
+    find_mechanical_command="find-mechanical -r $version -p $path"
+elif [ -n "$version" ]; then
+    find_mechanical_command="find-mechanical -r $version"
+elif [ -n "$path" ]; then
+    find_mechanical_command="find-mechanical -p $path"
+else
+    find_mechanical_command="find-mechanical"
+fi
+
+# Run the find-mechanical command and capture its output
+output="$($find_mechanical_command)"
+
+# Check if there was an error
+if [ $? -ne 0 ]; then
+    echo "Error running the find-mechanical."
+    exit 1
+fi
+
+# Extract and print the captured values
+read -r version DS_INSTALL_DIR <<< "$output"
+
+# Set Workbench (Mechanical) installation directory
+awp_root="AWP_ROOT${version}"
+eval ${awp_root}=$DS_INSTALL_DIR/..
+export $awp_root
+
+# Set environment variables used by Workbench (Mechanical) code
+awp_locale="AWP_LOCALE${version}"
+eval ${awp_locale}=en-us
+export $awp_locale
+cadoe_libdir="CADOE_LIBDIR${version}"
+eval ${cadoe_libdir}=${!awp_root}/commonfiles/language/${!awp_locale}
+export $cadoe_libdir
+ANSYSLIC_DIR=${!awp_root}/../shared_files/licensing
+export ANSYSLIC_DIR
+ANSYSCOMMON_DIR=${!awp_root}/commonfiles
+export ANSYSCOMMON_DIR
+ansyscl="ANSYSCL${version}_DIR"
+eval ${ansyscl}=${!awp_root}/licensingclient
+export $ansyscl
+
+# Set MainWin variables
+ANSISMAINWINLITEMODE=1
+export ANSISMAINWINLITEMODE
+MWCONFIG_NAME=amd64_linux
+export MWCONFIG_NAME
+MWDEBUG_LEVEL=0
+export MWDEBUG_LEVEL
+MWHOME=${!awp_root}/commonfiles/MainWin/linx64/mw
+export MWHOME
+MWOS=linux
+export MWOS
+MWREGISTRY=${DS_INSTALL_DIR}/WBMWRegistry/hklm_${MWCONFIG_NAME}.bin
+export MWREGISTRY
+MWRT_MODE=classic
+export MWRT_MODE
+MWRUNTIME=1
+export MWRUNTIME
+MWUSER_DIRECTORY="${HOME}/.mw"
+export MWUSER_DIRECTORY
+MWDONT_XCLOSEDISPLAY=1
+export MWDONT_XCLOSEDISPLAY
+
+# Set dynamic library preload
+SysLibStdCpp="$(find /usr/lib64 /usr/lib -maxdepth 2 -type f -name libstdc++.so.6.\* 2>/dev/null | head -1)"
+SysLibVersion="$(echo $SysLibStdCpp | sed -e 's/^.*so.6/6/')"
+AnsLibStdCpp="$(find ${!awp_root}/tp/ -maxdepth 2 -type f -name libstdc++.so.6.\* 2>/dev/null | head -1)"
+AnsLibVersion="$(echo $AnsLibStdCpp | sed -e 's/^.*so.6/6/')"
+if [ "$SysLibVersion" != "$AnsLibVersion" -a "$SysLibVersion" '>' "$AnsLibVersion" ] ; then
+  LD_PRELOAD="${SysLibStdCpp##*/}":"$LD_PRELOAD"
+  # if preload was previously empty/nonexistent, delete trailing colon
+  export LD_PRELOAD="${LD_PRELOAD%:}"
+fi
+
+# Set dynamic library load path
+LD_LIBRARY_PATH=${!awp_root}/tp/stdc++\
+:${MWHOME}/lib-amd64_linux\
+:${MWHOME}/lib-amd64_linux_optimized\
+:${LD_LIBRARY_PATH}\
+:${!awp_root}/Tools/mono/Linux64/lib\
+:${DS_INSTALL_DIR}/lib/linx64\
+:${DS_INSTALL_DIR}/dll/linx64\
+:${DS_INSTALL_DIR}/libshared/linx64\
+:${!awp_root}/commonfiles/CAD/Acis/linx64\
+:${!awp_root}/commonfiles/fluids/lib/linx64\
+:${!awp_root}/Framework/bin/Linux64
+
+# Add extra path to the dynamic library load path depending on version
+# For version 251, 252 or greater
+if [ "$version" = "252" ] || [ "$version" -gt "252" ]; then
+    LD_LIBRARY_PATH=${LD_LIBRARY_PATH}\
+:${!awp_root}/tp/IntelMKL/2024.2.0/linx64/lib/intel64\
+:${!awp_root}/tp/nss/3.89/lib\
+:${!awp_root}/tp/IntelCompiler/2023.1.0/linx64/lib/intel64\
+:${!awp_root}/tp/qt/5.15.18/linx64/lib\
+:${!awp_root}/tp/openssl/3.0/linx64/lib
+elif [ "$version" = "251" ]; then # For version 242
+    LD_LIBRARY_PATH=${LD_LIBRARY_PATH}\
+:${!awp_root}/tp/IntelMKL/2023.1.0/linx64/lib/intel64\
+:${!awp_root}/tp/nss/3.89/lib\
+:${!awp_root}/tp/IntelCompiler/2023.1.0/linx64/lib/intel64\
+:${!awp_root}/tp/qt/5.15.17/linx64/lib\
+:${!awp_root}/tp/openssl/3.0/linx64/lib
+elif [ "$version" = "242" ]; then # For version 242
+    LD_LIBRARY_PATH=${LD_LIBRARY_PATH}\
+:${!awp_root}/tp/IntelMKL/2023.1.0/linx64/lib/intel64\
+:${!awp_root}/tp/nss/3.89/lib\
+:${!awp_root}/tp/IntelCompiler/2023.1.0/linx64/lib/intel64\
+:${!awp_root}/tp/qt/5.15.16/linx64/lib\
+:${!awp_root}/tp/openssl/3.0/linx64/lib
+elif [ "$version" = "241" ]; then # For version 241
+    LD_LIBRARY_PATH=${LD_LIBRARY_PATH}\
+:${!awp_root}/tp/IntelMKL/2020.0.166/linx64/lib/intel64\
+:${!awp_root}/tp/nss/3.89/lib\
+:${!awp_root}/tp/IntelCompiler/2023.1.0/linx64/lib/intel64\
+:${!awp_root}/tp/qt_fw/5.9.6/Linux64/lib\
+:${!awp_root}/tp/openssl/1.1.1/linx64/lib
+else  # For version < 241 (mainly 232)
+    LD_LIBRARY_PATH=${LD_LIBRARY_PATH}\
+:${!awp_root}/tp/IntelMKL/2020.0.166/linx64/lib/intel64\
+:${!awp_root}/tp/IntelCompiler/2019.3.199/linx64/lib/intel64\
+:${!awp_root}/tp/qt_fw/5.9.6/Linux64/lib\
+:${!awp_root}/tp/openssl/1.1.1/linx64/lib
+fi
+export LD_LIBRARY_PATH
+
+# Set system path
+PATH=${MWHOME}/bin-amd64_linux_optimized\
+:${DS_INSTALL_DIR}/CommonFiles/linx64\
+:${DS_INSTALL_DIR}/CADIntegration/linx64\
+:${!awp_root}/Tools/mono/Linux64/bin\
+:${PATH}
+export PATH
+
+# Adding dummy variable to check if mechanical-env is used
+# when performing embedding with pymechanical in linux
+PYMECHANICAL_EMBEDDING=TRUE
+export PYMECHANICAL_EMBEDDING
+
+# Evaluate the command and get the return code of the process
+eval $@
+returnCode=$?
+exit $returnCode
