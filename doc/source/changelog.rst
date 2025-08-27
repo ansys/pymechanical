@@ -9,6 +9,131 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.32 <https://github.com/ansys/pymechanical/releases/tag/v0.11.32>`_ - August 26, 2025
+==========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Documentation
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update docstring
+          - `#1282 <https://github.com/ansys/pymechanical/pull/1282>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.11.31
+          - `#1281 <https://github.com/ansys/pymechanical/pull/1281>`_
+
+        * - Pre-commit automatic update
+          - `#1283 <https://github.com/ansys/pymechanical/pull/1283>`_
+
+        * - Update the build backend
+          - `#1285 <https://github.com/ansys/pymechanical/pull/1285>`_
+
+        * - Move `mechanical-env` script to PyMechanical
+          - `#1286 <https://github.com/ansys/pymechanical/pull/1286>`_
+
+        * - Increase timeout for tests
+          - `#1288 <https://github.com/ansys/pymechanical/pull/1288>`_
+
+
+`0.11.31 <https://github.com/ansys/pymechanical/releases/tag/v0.11.31>`_ - August 15, 2025
+==========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add license_manager
+          - `#1118 <https://github.com/ansys/pymechanical/pull/1118>`_
+
+        * - New python script option
+          - `#1256 <https://github.com/ansys/pymechanical/pull/1256>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update windows store python workaround
+          - `#1278 <https://github.com/ansys/pymechanical/pull/1278>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.11.30
+          - `#1272 <https://github.com/ansys/pymechanical/pull/1272>`_
+
+        * - Pre-commit automatic update
+          - `#1274 <https://github.com/ansys/pymechanical/pull/1274>`_
+
+        * - Bump actions/checkout from 4 to 5
+          - `#1275 <https://github.com/ansys/pymechanical/pull/1275>`_
+
+        * - Bump actions/download-artifact from 4 to 5
+          - `#1276 <https://github.com/ansys/pymechanical/pull/1276>`_
+
+
+`0.11.30 <https://github.com/ansys/pymechanical/releases/tag/v0.11.30>`_ - August 08, 2025
+==========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add plot option for mesh
+          - `#1268 <https://github.com/ansys/pymechanical/pull/1268>`_
+
+        * - Use new API for mesh oriented transform
+          - `#1270 <https://github.com/ansys/pymechanical/pull/1270>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update release action
+          - `#1271 <https://github.com/ansys/pymechanical/pull/1271>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.11.29
+          - `#1269 <https://github.com/ansys/pymechanical/pull/1269>`_
+
+
 `0.11.29 <https://github.com/ansys/pymechanical/releases/tag/v0.11.29>`_ - August 06, 2025
 ==========================================================================================
 
