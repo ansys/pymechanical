@@ -31,7 +31,7 @@ pyvista.BUILDING_GALLERY = True
 
 
 # Whether or not to build the cheatsheet
-BUILD_CHEATSHEET = True if os.environ.get("BUILD_EXAMPLES", "true") == "true" else False
+BUILD_CHEATSHEET = False
 
 # suppress annoying matplotlib bug
 warnings.filterwarnings(
@@ -71,6 +71,7 @@ extensions = [
     "sphinx_design",
     "pyvista.ext.plot_directive",
     "pyvista.ext.viewer_directive",
+    "sphinx_click",
 ]
 
 if pymechanical.BUILDING_GALLERY:
