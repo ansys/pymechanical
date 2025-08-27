@@ -209,6 +209,9 @@ html_context = {
     "github_repo": "pymechanical",
     "github_version": "main",
     "doc_path": "doc/source",
+    "pyansys_tags": [
+        "Structures"
+    ]
 }
 html_theme_options = {
     "logo": "pyansys",
