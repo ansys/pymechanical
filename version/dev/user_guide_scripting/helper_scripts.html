@@ -1,0 +1,1127 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Script helpers &#8212; PyMechanical</title>
+  
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/ansys-sphinx-theme.css?v=300e4a82" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/ansys-sphinx-theme.css?v=300e4a82" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://www.nerdfonts.com/assets/css/webfont.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+
+  <!-- Include desired assets -->
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  
+
+  
+    <link href="../_static/css/breadcrumbs.css" rel="stylesheet" />
+  
+    <script src="../_static/documentation_options.js?v=142dd74e"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/thebelab-helper.js"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=49e1bf35"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide_scripting/helper_scripts';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://mechanical.docs.pyansys.com/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'dev';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+    <link rel="icon" href="../_static/ansys-favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Threading" href="threading.html" />
+    <link rel="prev" title="Mechanical scripting" href="index.html" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.12.dev0" />
+  <meta name="physics" content="Structures" />
+
+  <link rel="canonical" href="https://mechanical.docs.pyansys.com/version/stable/user_guide_scripting/helper_scripts.html" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="https://docs.pyansys.com/">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/pyansys_logo_transparent_black.png" class="logo__image only-light" alt="PyMechanical - Home"/>
+    <img src="../_static/pyansys_logo_transparent_white.png" class="logo__image only-dark pst-js-only" alt="PyMechanical - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="index.html" title="PyMechanical home">
+    Home
+</a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started/index.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide_session/index.html">
+    Remote session
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide_embedding/index.html">
+    Embedded instance
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="index.html">
+    Mechanical scripting
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../api/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../contributing.html">
+    Contribute
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../kil/index.html">
+    Known issues and limitations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../faq.html">
+    Frequently asked questions
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../changelog.html">
+    Release notes
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav>
+</div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+<div class="search-bar pst-js-only" id="search-bar">
+  <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="search" class="form-control" name="q" placeholder="Search the docs ..."
+      aria-label="Search the docs ..." autocomplete="off" autocorrect="off"
+      autocapitalize="off" spellcheck="false" />
+    <span class="search-button__kbd-shortcut">
+      <kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd>
+    </span>
+  </form>
+  <div id="static-search-results" class="static-search-results" style="display:none;" tabindex="0"></div>
+</div></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical/discussions" title="Support" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa fa-comment fa-fw fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Support</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+  
+    <div id="announcement_msg"></div>
+<script>
+  fetch("announcement.html")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(
+      (text) => (document.getElementById("announcement_msg").innerHTML = text),
+    )
+    .catch((error) => console.error(`Fetch problem: ${error.message}`));
+</script>
+  
+
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="index.html" title="PyMechanical home">
+    Home
+</a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started/index.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide_session/index.html">
+    Remote session
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide_embedding/index.html">
+    Embedded instance
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Mechanical scripting
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../contributing.html">
+    Contribute
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../kil/index.html">
+    Known issues and limitations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../faq.html">
+    Frequently asked questions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../changelog.html">
+    Release notes
+  </a>
+</li>
+
+  </ul>
+</nav>
+</div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="search-bar pst-js-only" id="search-bar">
+  <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="search" class="form-control" name="q" placeholder="Search the docs ..."
+      aria-label="Search the docs ..." autocomplete="off" autocorrect="off"
+      autocapitalize="off" spellcheck="false" />
+    <span class="search-button__kbd-shortcut">
+      <kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd>
+    </span>
+  </form>
+  <div id="static-search-results" class="static-search-results" style="display:none;" tabindex="0"></div>
+</div></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical/discussions" title="Support" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa fa-comment fa-fw fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Support</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Mechanical scripting</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Script helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="threading.html">Threading</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+         
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="https://docs.pyansys.com/" class="nav-link">PyAnsys</a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a
+        href="../index.html"
+        class="nav-link"
+        aria-label="Home"
+      >
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a href="index.html" class="nav-link">Mechanical scripting</a>
+    </li>
+      
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Script helpers</span></li>
+    
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="script-helpers">
+<span id="ref-mechanical-scripting-guide-script-helpers"></span><h1>Script helpers<a class="headerlink" href="#script-helpers" title="Link to this heading">#</a></h1>
+<p>This section provides a collection of scripting helpers for Ansys Mechanical. Click the links to see relevant examples in the <em>Mechanical Scripting Guide</em>.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The links do not only contain what is described in the bullet points but also additional information.
+For examples of what is being described in the bullet points, refer to the code sections in the
+linked content.</p>
+</div>
+<section id="general-setup">
+<h2>General setup<a class="headerlink" href="#general-setup" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_rbd_contact.html">Set up the display unit system</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_suppress_duplicate_contacts.html">Log an error message</a></p></li>
+</ul>
+</section>
+<section id="tree-and-object-management">
+<h2>Tree and object management<a class="headerlink" href="#tree-and-object-management" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_steady_state_therm.html">Find a tree object by name using AllObjects</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_steady_state_therm.html">Find a tree object by name using GetObjectsbyName</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_select_by_name.html">Get objects whose name contains the specified string</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_select_by_name.html">Select objects by name</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/mech_script_GetVisiblePropertiesForTreeObject.html">Get all visible properties for a tree object</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/mech_script_ParameterizePropertyForTreeObject.html">Parametrize a property for a tree object</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_tree_delete_object.html">Delete an object</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_tree_refresh.html">Refresh and pause a tree</a></p></li>
+</ul>
+</section>
+<section id="geometry">
+<h2>Geometry<a class="headerlink" href="#geometry" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_Cyclic.html">Get all parts</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_select_by_name.html">Get the first body whose name contains the specified number</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_Cyclic.html">Find a body by name</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_select_geom_or_mesh.html">Select geometry by IDs</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_get_tree_obj.html">Given a GeoData body ID, get the tree object of the body</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_get_GeoData.html">Given a tree object of a body, get the GeoData body</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_harmonic_acoustic.html">Suppress a body</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_calc_sum.html">Get the volume, area, and length in CAD units</a></p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_cylindrical_joint.html">Set the stiffness behavior of bodies as rigid</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_rbd_flexible.html">Set the stiffness behavior of bodies as flexible</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_random_vib.html">Set the integration scheme for bodies (element control)</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_transient_therm.html">Set the 2D behaviour as plane stress</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_transient_therm.html">Set the geometry thickness of a surface body</a></p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_static_struct.html">Add a remote point</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_random_vib.html">Add a deformable remote point</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_001.html">Create a construction surface</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_update_construct_line.html">Update the geometries for all construction lines</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_create_construct_line.html">Create construction lines from cylindrical faces</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_External_Model.html">Get all point masses imported from the external model</a></p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_transient_therm.html">Assign materials to bodies</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_create_mat_assign.html">Create material assignment from body materials</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_random_vib.html">Find material using Name(GetChildren)</a></p></li>
+</ul>
+</section>
+<section id="coordinate-system">
+<h2>Coordinate system<a class="headerlink" href="#coordinate-system" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_Cyclic.html">Add a cylindrical coordinate system</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_Symmetric.html">Add a coordinate system for applying symmetric symmetry</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_create_aligned_coordinate_systems_in_motor.html">Create aligned coordinate systems in a motor</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_arbitrary_cs.html">Set arbitrary coordinate system properties</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_coordinate_system_math.html">Transform coordinate systems with Math</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_random_vib.html">Find a coordinate system using Name(GetChildren)</a></p></li>
+</ul>
+</section>
+<section id="connections">
+<h2>Connections<a class="headerlink" href="#connections" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_rbd_contact.html">Add a contact region</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_trans_struct.html">Add frictionless contact</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_001.html">Add frictional contact</a></p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_cylindrical_joint.html">Add a fixed joint</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_cylindrical_joint.html">Add a cylindrical joint</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_rbd_flexible.html">Add a revolute joint</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_general_joint.html">Add a general joint as translational</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_rbd_flexible.html">Add general joint with 6 DOF</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_add_joint_based_two_named_selections.html">Add a joint based on proximity of two named selections</a></p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_verify_contact_size.html">Verify the size and flip contact and target</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_post1.html">Set the contact formulation</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_set_pinball.html">Set a pinball radius to 5mm for all frictionless contacts</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_trans_struct.html">Set the interface treatment for a contact</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_create_named_selection.html">Create a named selection from the scoping of a contact</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_count_contacts.html">Count the number of contacts</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_suppress_duplicate_contacts.html">Suppress duplicate contacts</a></p></li>
+</ul>
+</section>
+<section id="symmetry">
+<h2>Symmetry<a class="headerlink" href="#symmetry" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_Cyclic.html">Add a cyclic region</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_Symmetric.html">Add symmetric symmetry</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_Cyclic.html">Add a pre-meshed cyclic region</a></p></li>
+</ul>
+</section>
+<section id="named-selection">
+<h2>Named selection<a class="headerlink" href="#named-selection" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_create_named_selection_faces.html">Create a named selection using a worksheet</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_trans_struct.html">Create a named selection using Worksheet 2</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_cylindrical_joint.html">Get a named selection using Name(GetObjectsByName)</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_random_vib.html">Get a named selection using Name(GetChildren)</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_select_by_name.html">Get named selections whose name contains the specified string</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_select_by_name.html">Get the first named selection whose name contains the specified string</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_rename_named_sel.html">Rename a named selection based on scoping</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_suppress_bodies.html">Suppress bodies contained in a given named selection</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_scope_BC.html">Scope a boundary condition to a named selection</a></p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_add_joint_based_two_named_selections.html">Add a joint based on proximity of two named selections</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_create_named_selection.html">Create a named selection from the scoping of a contact</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_Linear_Periodic.html">Add face meshing to a named selection</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_Symmetric.html">Use a named selection for pressure</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_varying_load.html">Apply spatially varying pressure on a named selection</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_Symmetric.html">Use a named selection for a fixed support</a></p></li>
+</ul>
+</section>
+<section id="mesh">
+<h2>Mesh<a class="headerlink" href="#mesh" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_001.html">Set the global mesh size</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_001.html">Set the element order</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_rbd_contact.html">Set the mesh physics preference</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_Linear_Periodic.html">Add mesh sizing (number of divisions)</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_transient.html">Set the mesh sizing behavior as hard</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_Linear_Periodic.html">Set the mesh sizing behavior as free</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_trans_struct.html">Add the mesh refinement</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_Linear_Periodic.html">Add face meshing to a named selection</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_Cyclic.html">Add match control</a></p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_steady_state_therm.html">Add a sweep method</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_001.html">Add a hex dominant method</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_transient_therm.html">Add a quad dominant method</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_select_geom_or_mesh.html">Select nodes by IDs</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_query_mesh.html">Given a node ID, get the node’s information</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_create_selection_based_on_Location_of_nodes_in_Y.html">Create a selection based on the location of nodes in Y</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_harmonic_acoustic.html">Add a node merge group</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_create_node_merage_object.html">Create a node merge object at a symmetry plane</a></p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_Cyclic.html">Suppress or un-suppress meshing objects</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_remesh_model.html">Mesh a model multiple times and track its metrics</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_clear_mesh.html">Clear the mesh</a></p></li>
+</ul>
+</section>
+<section id="loads-and-boundary-conditions">
+<h2>Loads and boundary conditions<a class="headerlink" href="#loads-and-boundary-conditions" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_create_pressure_load.html">Create a pressure load</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_Symmetric.html">Use a named selection for a pressure</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_varying_load.html">Apply spatially varying pressure on a named selection</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_change_tabular_data.html">Change the tabular data values of loading condition</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_NamedSelection_as_Scoping.html">Use a named selection as scoping of a load or support</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_static_struct.html">Add a remote force</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_static_struct.html">Add a thermal condition</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_Cyclic.html">Add imported body temperature</a></p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_trans_struct.html">Add compression-only support</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_Symmetric.html">Use a named selection for a fixed support</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_static_struct.html">Add a fixed or frictionless support</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_trans_struct.html">Add displacement BC</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_harmonic.html">Add displacement BC 2</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_001.html">Add remote displacement</a></p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_trans_struct.html">Add a bearing load</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_rbd_contact.html">Add Earth gravity</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_transient.html">Add a command snippet</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_random_vib.html">Add PSD Acceleration</a></p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_convection.html">Add convection</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_steady_state_therm.html">Add internal heat generation</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_thermal_electric.html">Add radiation</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_transient_therm.html">Add initial temperature - thermal transient</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_transient_therm.html">Add heat flux - thermal</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_steady_state_therm.html">Add convection 2</a></p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_harmonic_acoustic.html">Add a physics region - Acoustic</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_harmonic_acoustic.html">Add an acoustic mass source</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_harmonic_acoustic.html">Add acoustic pressure</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_modal_acoustic.html">Add a fluid solid interface</a></p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_001.html">Add a coupled field static physics region</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_electric.html">Add an electric voltage</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_electric.html">Add an electric current</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_electric.html">Add an electric thermal condition</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_harmonic.html">Add voltage coupling</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_harmonic.html">Add voltage ground</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_harmonic.html">Add voltage</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_transient.html">Add plastic heating</a></p></li>
+</ul>
+</section>
+<section id="solution-setup">
+<h2>Solution setup<a class="headerlink" href="#solution-setup" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_trans_struct.html">Set transient analysis settings containing multiple steps</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_modal.html">Set modal analysis settings</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_random_vib.html">Set random vibration analysis settings</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_modal_acoustic.html">Set modal acoustic analysis settings</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_harmonic_acoustic.html">Set harmonic acoustic analysis settings</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_transient_therm.html">Set transient thermal analysis settings</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_steady_state_therm.html">Set steady state thermal analysis settings</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_rbd_flexible.html">Set RBD analysis settings</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_electric.html">Set electric analysis settings</a></p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_harmonic.html">Set the harmonic range maximum and solution intervals</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_modal.html">Set the modal max modes to find and search the range</a></p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_transient.html">Set convergence settings</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_steady_state_therm.html">Set sub-steps</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_Cyclic.html">Set the step end time</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_cylindrical_joint.html">Set automatic time stepping</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_modal.html">Set the solver type</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_solve_track_core.html">Perform a solution while specifying the solution handler and the number of cores</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_static_struct.html">Solve</a></p></li>
+</ul>
+</section>
+<section id="result-postprocessing">
+<h2>Result postprocessing<a class="headerlink" href="#result-postprocessing" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_general_joint.html">Add directional deformation</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_static_struct.html">Add directional deformation (scope to named selection)</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_static_struct.html">Get the maximum or minimum value of a result</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_trans_struct.html">Add equivalent stress</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_001.html">Add normal stress</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_001.html">Add thermal strain</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_rbd_flexible.html">Add middle principal elastic strain</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_transient.html">Add equivalent plastic strain</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_random_vib.html">Add normal elastic strain</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_trans_struct.html">Add a stress tool</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_post2.html">Add a user-defined result</a></p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_rbd_contact.html">Add a contact force reaction</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_static_struct.html">Add a force reaction probe scoped to BC</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_evaluate_spring_reaction_forces.html">Evaluate spring reaction forces</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_Linear_Periodic.html">Add a force reaction probe scoped to BC 2</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_general_joint.html">Add a joint probe</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_cylindrical_joint.html">Get a joint probe’s relative deformation, velocity, acceleration, rotation, angular velocity, and angular acceleration</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_cylindrical_joint.html">Get the movement and force of a joint probe</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_rbd_contact.html">Add an energy probe (RBD)</a></p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_random_vib.html">Get modal natural frequencies</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_harmonic.html">Add the deformation frequency response</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_harmonic.html">Add the voltage frequency response</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_harmonic.html">Add the charge reaction frequency response</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_harmonic.html">Add the impedance frequency response</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_coupled_field_harmonic.html">Get the maximum value from a frequency response</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_random_vib.html">Add PSD results - Directional Deformation, Velocity, Acceleration</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_random_vib.html">Add response PSD</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_random_vib.html">Add response PSD tool</a></p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_thermal_electric.html">Add a radiation probe</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_steady_state_therm.html">Add a temperature result</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_steady_state_therm.html">Add a total heat flux result</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_steady_state_therm.html">Add a convection BC reaction probe</a></p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_harmonic_acoustic.html">Add an acoustic pressure result</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_harmonic_acoustic.html">Add an acoustic SPL result</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_harmonic_acoustic.html">Add an acoustic far field SPL result</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_harmonic_acoustic.html">Add an acoustic far field weighted SPL result</a></p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_electric.html">Add an electric directional e-field intensity</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_electric.html">Add an electric directional current density</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_electric.html">Add an electric directional EMAG reaction force</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_electric.html">Add an electric voltage result</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_electric.html">Add electric joule heat</a></p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_post1.html">Clear generated data</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_post2.html">Evaluate all results</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_duplicate_result_object.html">Duplicate a harmonic result object</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_scan_results.html">Scan results, suppress results with invalid display times, and evaluate the results</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_post2.html">Rename results based on definition</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_post2.html">Modify display options for inserted results</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_post2.html">Modify display options for user-defined results</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_post2.html">Add a figure</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_solution_combinations.html">Work with solution combinations</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_retreive_stress_resutls.html">Retrieve stress results</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_result_objecdts_tag_and_group.html">Tag and group result objects based on scoping and load steps</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_use_graphics_selection.html">Use an existing graphics selection on a result object</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_rescope.html">Rescope a solved result based on the active node or element selection</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_probe_principal.html">Create probe principal stresses from a node selection</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_hot_spot.html">Find hot spots</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_line_chart.html">Work with line charts</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_access_contour_results_for_evaluated_result.html">Access contour results for an evaluated result</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_access_contour_results_at_indiv_nodes_elements.html">Access contour results at individual nodes or elements</a></p></li>
+</ul>
+</section>
+<section id="export-and-visualization">
+<h2>Export and visualization<a class="headerlink" href="#export-and-visualization" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_post1.html">Set graphics settings</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_post1.html">Set the legend direction, ruler, and triad</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_post1.html">Change legend bands</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_post1.html">Add a section plane</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_demo_post1.html">Set the view orientation</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_modfiy_export_settings.html">Modify export settings</a></p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_export_figures.html">Export figures</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_export_result_images.html">Export result images to files</a></p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_seach_keyword.html">Search for a keyword and export</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_export_result_animations.html">Export all result animations</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_export_result_object.html">Export a result object to an STL file</a></p></li>
+<li><p><a class="extlink-ansyshelp reference external" href="https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/v252/en/act_script/act_script_examples_write_contour_results_onto_file.html">Write contour results to a text file</a></p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#general-setup">General setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tree-and-object-management">Tree and object management</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#geometry">Geometry</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coordinate-system">Coordinate system</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#connections">Connections</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#symmetry">Symmetry</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#named-selection">Named selection</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mesh">Mesh</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#loads-and-boundary-conditions">Loads and boundary conditions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solution-setup">Solution setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#result-postprocessing">Result postprocessing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#export-and-visualization">Export and visualization</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item"> 
+<div class="tocsection editthispage">
+  <a href="https://github.com/pyansys/pymechanical/edit/main/doc/source/user_guide_scripting/helper_scripts.rst">
+    <i class="fa-solid fa-pencil"></i>
+       Edit
+    on GitHub  
+  </a>
+</div>
+
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+
+  <!-- Include desired assets -->
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.7/require.min.js"></script>
+
+<script>
+// Passing the search options to the search.js file
+const SEARCH_OPTIONS = JSON.parse('{"keys": ["title", "text", "objectID"], "limit": 10, "threshold": 0.2}');
+const SEARCH_FILE = "../_static/search.json";
+const ADVANCE_SEARCH_PATH = "../search.html";
+const EXTRA_SOURCES = JSON.parse('""');
+</script>
+
+
+<script src="../_static/js/search.js"></script>
+
+  
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright (c) 2025 ANSYS, Inc. All rights reserved.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the
+  <a href="https://sphinxdocs.ansys.com/version/stable/index.html"
+    >Ansys Sphinx Theme</a
+  >
+  1.6.0. <br />Last updated on
+  <span id="ast_build_date"></span>
+</p>
+<script>
+  var options = { day: "numeric", month: "long", year: "numeric" };
+  var ast_lastModifiedDate = new Date(document.lastModified);
+  var ast_build_date = ast_lastModifiedDate.toLocaleDateString("en-US", options);
+  document.getElementById("ast_build_date").innerHTML = ast_build_date;
+</script></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
