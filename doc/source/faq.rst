@@ -1,7 +1,7 @@
 .. _faq:
 
-Frequently asked questions
-==========================
+FAQs
+====
 
 This section provides answers to frequently asked questions.
 

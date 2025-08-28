@@ -1,25 +1,3 @@
-.. _ref_user_guide_embedding:
-
-Embedded instance
-=================
-
-This section provides an overview of how you use PyMechanical to embed
-an instance of Mechanical in Python.
-
-..
-   This toctree must be a top-level index to get it to show up in
-   pydata_sphinx_theme.
-
-.. toctree::
-   :maxdepth: 1
-   :hidden:
-
-   self
-   configuration
-   globals
-   pep8
-   logging
-   libraries
 
 Overview
 --------
@@ -47,18 +25,6 @@ Besides scripting entry points, many other types and objects are available from
 built-in Mechanical scripting. To learn how to import scripting entry points,
 namespaces, and types, see :ref:`ref_embedding_user_guide_globals`.
 
-Additional configuration
-------------------------
-
-By default, an instance of the `App`_ class
-uses the same Addin configuration as standalone Mechanical. To customize Addins, see
-:ref:`ref_embedding_user_guide_addin_configuration`.
-
-Diagnosing problems with embedding
-----------------------------------
-
-In some cases, debugging the embedded Mechanical instance may require additional logging.
-For information on how to configure logging, see :ref:`ref_embedding_user_guide_logging`.
 
 Running PyMechanical embedding scripts inside Mechanical with IronPython
 ------------------------------------------------------------------------

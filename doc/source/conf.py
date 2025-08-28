@@ -71,6 +71,7 @@ extensions = [
     "sphinx_design",
     "pyvista.ext.plot_directive",
     "pyvista.ext.viewer_directive",
+    "sphinx_click",
 ]
 
 if pymechanical.BUILDING_GALLERY:

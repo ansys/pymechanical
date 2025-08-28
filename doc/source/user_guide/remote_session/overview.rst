@@ -1,25 +1,8 @@
 .. _ref_user_guide_session:
 
-Remote session
-==============
-
-This section  provides an overview of how you use PyMechanical as a client
-to a remote Mechanical session.
-
-..
-   This toctreemust be a top level index to get it to show up in
-   pydata_sphinx_theme
-
-.. toctree::
-   :maxdepth: 1
-   :hidden:
-
-   self
-   server-launcher
-   pool
 
 Overview
---------
+========
 
 The `launch_mechanical() <../api/ansys/mechanical/core/mechanical/index.html#mechanical.launch_mechanical>`_ method
 creates an instance of the `Mechanical <../api/ansys/mechanical/core/mechanical/Mechanical.html>`_
