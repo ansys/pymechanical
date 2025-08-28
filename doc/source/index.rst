@@ -95,7 +95,7 @@ Python API to interact with `Ansys Mechanical`_ (FEA software for structural eng
 
     .. grid-item-card:: Contribute :fa:`people-group`
         :padding: 2 2 2 2
-        :link: contributing
+        :link: contribute
         :link-type: doc
 
         Learn how to contribute to the PyMechanical codebase
@@ -114,7 +114,7 @@ Python API to interact with `Ansys Mechanical`_ (FEA software for structural eng
    user_guide_embedding/index
    user_guide_scripting/index
    api/index
-   contributing
+   contribute
    kil/index
    faq
    changelog
