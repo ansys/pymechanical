@@ -374,15 +374,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
-      - name: Set up python and pip
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Create virtual environment
         run: |
-          apt update
-          apt install --reinstall ca-certificates
-          apt install lsb-release xvfb software-properties-common -y
-          add-apt-repository ppa:deadsnakes/ppa -y
-          apt install -y python${{ matrix.python-version }} python${{ matrix.python-version }}-venv
-          python${{ matrix.python-version }} -m venv /env
-
+          python -m venv /env
+    
       - name: Install packages for testing
         run: |
           . /env/bin/activate
