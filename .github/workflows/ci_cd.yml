@@ -381,7 +381,7 @@ jobs:
       - name: Create virtual environment
         run: |
           python -m venv /env
-    
+
       - name: Install packages for testing
         run: |
           . /env/bin/activate
