@@ -26,8 +26,6 @@ on:
       - main
       - release/*
 
-
-
 env:
   PYMECHANICAL_PORT: 10000  # default won't work on GitHub runners
   PYMECHANICAL_START_INSTANCE: false
@@ -672,6 +670,20 @@ jobs:
           name: documentation-html
           path: doc/_build/html
           retention-days: 7
+
+  doc-deploy-pr:
+    name: "Deploy PR documentation"
+    runs-on: ubuntu-latest
+    needs: [doc-build]
+    if: contains(github.event.pull_request.labels.*.name, 'documentation') && (needs.doc-build.result == 'success' || needs.doc-build.result == 'skipped')
+    steps:
+      - uses: ansys/actions/doc-deploy-pr@v10
+        with:
+          cname: ${{ env.DOCUMENTATION_CNAME }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
+          bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}
+          maximum-pr-doc-deployments: 10
 
   coverage:
     name: Merging coverage
