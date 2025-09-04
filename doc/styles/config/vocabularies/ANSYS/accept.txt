@@ -1,5 +1,7 @@
+24R2
+24R1
 ACT
-addin
+[aA]ddin
 Addins
 ans
 ANSYS
@@ -22,6 +24,7 @@ enum
 ethernet
 ethernet's
 Fowler
+FAQs
 generateHosts
 github
 Globals
@@ -30,11 +33,9 @@ hostname
 Hostname
 idempotency
 isort
-linux
-Linux
+[lL]inux
 Martin
-Mechanical
-mechanical
+[mM]echanical
 middleware
 multiphysics
 mutexes
@@ -42,8 +43,8 @@ namespaces
 OptiSLang
 pessimizations
 postprocessing
-PyAnsys
-pyansys
+PEP 8
+[pP]y[aA]nsys
 PyMechanical
 Pythonically
 Pythonic
@@ -55,6 +56,7 @@ RPCs
 spaceclaim
 stdout
 venv
+v0.11
 VPN
 Windows
 windows
