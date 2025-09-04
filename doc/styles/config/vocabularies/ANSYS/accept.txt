@@ -1,7 +1,7 @@
 24R2
 24R1
 ACT
-[aA]ddin
+[a|A]ddin
 Addins
 ans
 ANSYS
@@ -33,9 +33,9 @@ hostname
 Hostname
 idempotency
 isort
-[lL]inux
+[l|L]inux
 Martin
-[mM]echanical
+[m|M]echanical
 middleware
 multiphysics
 mutexes
@@ -44,7 +44,7 @@ OptiSLang
 pessimizations
 postprocessing
 PEP 8
-[pP]y[aA]nsys
+[p|P]y[a|A]nsys
 PyMechanical
 Pythonically
 Pythonic
@@ -58,7 +58,6 @@ stdout
 venv
 v0.11
 VPN
-Windows
-windows
+[w|W]indows
 WSL
 wsl
