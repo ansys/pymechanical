@@ -14,17 +14,17 @@ When PEP 8 aliases are enabled, you can use both the original Pascal Case names 
 Snake Case aliases interchangeably, providing backward compatibility while offering a more
 Python-friendly API.
 
-Enabling pep8 Aliases
+Enabling pep8 aliases
 ---------------------
 
-To enable PEP 8 aliases, use the ``pep8`` parameter when creating an ``App`` instance:
+To enable PEP 8 aliases, use the ``pep8_aliases`` parameter when creating an ``App`` instance:
 
 .. code:: python
 
    from ansys.mechanical.core import App
 
    # Create an app instance with PEP 8 aliases enabled
-   app = App(pep8=True, globals=globals())
+   app = App(pep8_aliases=True, globals=globals())
 
    # Now you can use both Pascal Case and Snake Case
    # Traditional way (Pascal Case)
@@ -60,5 +60,3 @@ Limitations
 -----------
 - Enum values retain their original Pascal Case style; for example, ``Format.Automatic`` does not become ``Format.AUTOMATIC``.
 - PEP 8 aliases are not included in type hints provided by PyMechanical stubs.
-- Python reserves certain names as built-ins. One common case is methods starting with `Import`.
-  These methods are not converted to snake case to avoid conflicts with Python's built-in functions.
