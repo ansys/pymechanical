@@ -22,7 +22,7 @@ For example:
     _ = mech.App()
 
 After the embedded application has been created, you can write messages to the same
-log using the `Logger <../api/ansys/mechanical/core/embedding/logger/Logger.html>` class like this:
+log using the `Logger <../api/ansys/mechanical/core/embedding/logger/Logger.html>`_ class like this:
 
 .. code:: python
 

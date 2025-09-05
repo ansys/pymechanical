@@ -37,7 +37,7 @@ Support
 =======
 
 If you encounter any issues or limitations with PyMechanical that hinder your work, please create
-an issue or discussion so our team can address them promptly:
+an issue or discussion so the team can address them promptly:
 
 * `PyMechanical Issues <https://github.com/ansys/pymechanical/issues>`_: Report bugs and request new features.
 * `PyMechanical Discussions <https://github.com/ansys/pymechanical/discussions>`_: Post questions, share ideas, and get community feedback.
