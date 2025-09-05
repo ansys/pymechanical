@@ -1,67 +1,161 @@
-.. _ref_contributing:
+Contributing as a developer
+===========================
 
-Contribute
-==========
+.. grid:: 1 1 3 3
 
-Overall guidance on contributing to a PyAnsys library appears in
-`Contributing <https://dev.docs.pyansys.com/how-to/contributing.html>`_
-in the *PyAnsys Developer's Guide*. Ensure that you are thoroughly familiar
-with this guide before attempting to contribute to PyMechanical.
+    .. grid-item-card:: :fa:`code-fork` Fork the repository
+        :padding: 2 2 2 2
+        :link: fork-the-repository
+        :link-type: ref
 
-The following contribution information is specific to PyMechanical.
+        Learn how to fork the project and get your own copy.
 
-Clone the repository and install project dependencies
------------------------------------------------------
+    .. grid-item-card:: :fa:`download` Clone the repository
+        :padding: 2 2 2 2
+        :link: clone-the-repository
+        :link-type: ref
 
-To clone and install the latest PyMechanical release in development mode, run
-these commands:
+        Download your own copy in your local machine.
 
-Clone the repository and create a virtual environment:
+    .. grid-item-card:: :fa:`download` Install for developers
+        :padding: 2 2 2 2
+        :link: install-for-developers
+        :link-type: ref
 
-.. code::
+        Install the project in editable mode.
 
-  # Clone the repository
-  git clone https://github.com/ansys/pymechanical
-  cd pymechanical
+    .. grid-item-card:: :fab:`docker` Adhere to coding style
+        :padding: 2 2 2 2
+        :link: coding-style
+        :link-type: ref
 
-  # Create a virtual environment
-  python -m venv .venv
+        Adhere to the coding style guidelines using pre-commit hooks.
 
-Activate the virtual environment:
+    .. grid-item-card:: :fa:`vial-circle-check` Run the tests
+        :padding: 2 2 2 2
+        :link: run-tests
+        :link-type: ref
+
+        Verify your changes by testing the project.
+
+
+
+.. _fork-the-repository:
+
+Fork the repository
+===================
+
+Forking the repository is the first step to contributing to the project. This
+allows you to have your own copy of the project so you can make changes without
+affection the main project. Once you have made your changes, you can submit a
+pull-request to the main project to have your changes reviewed and merged.
+
+.. button-link:: https://github.com/ansys/pymechanical/fork
+    :color: primary
+    :align: center
+
+    :fa:`code-fork` Fork this project
+
+.. note::
+
+    If you are an Ansys employee, you can skip this step.
+
+.. _clone-the-repository:
+
+Clone the repository
+====================
+
+Make sure you `configure SSH`_ with your GitHub
+account. This allows you to clone the repository without having to use tokens
+or passwords. Also, make sure you have `git`_ installed in your machine.
+
+To clone the repository using SSH, run:
+
+.. code-block:: bash
+
+    git clone git@github.com:ansys/pymechanical
+
+.. note::
+
+    If you are not an Ansys employee, you need to :ref:`fork the repository <fork-the-repository>` and
+    replace ``ansys`` with your GitHub user name in the ``git clone``
+    command.
+
+.. _install-for-developers:
+
+Install for developers
+======================
+
+Installing PyMechanical in development mode allows you to perform changes to the code
+and see the changes reflected in your environment without having to reinstall
+the library every time you make a change.
+
+Virtual environment
+-------------------
+
+Start by navigating to the project's root directory by running:
+
+.. code-block::
+
+    cd pymechanical
+
+Then, create a new virtual environment named ``.venv`` to isolate your system's
+Python environment by running:
+
+.. code-block:: text
+
+    python -m venv .venv
+
+Finally, activate this environment by running:
 
 .. tab-set::
 
     .. tab-item:: Windows
 
-       .. code::
+        .. tab-set::
 
-          .venv\Scripts\activate.bat
+            .. tab-item:: CMD
 
-    .. tab-item:: PowerShell
+                .. code-block:: text
 
-       .. code::
+                    .venv\Scripts\activate.bat
 
-          .venv\Scripts\Activate.ps1
+            .. tab-item:: PowerShell
 
-    .. tab-item:: Linux/UNIX
+                .. code-block:: text
 
-       .. code::
+                    .venv\Scripts\Activate.ps1
 
-          source .venv/bin/activate
+    .. tab-item:: macOS/Linux/UNIX
 
-Install tools and dependencies:
+        .. code-block:: text
 
-.. code::
+            source .venv/bin/activate
 
-  # Install build system tools
-  python -m pip install --upgrade pip tox flit twine
+Development mode
+----------------
 
-  # Install the project, documentation, and test dependencies in editable mode
-  python -m pip install -e .[doc,tests]
+Now, install PyMechanical in editable mode by running:
+
+.. code-block:: text
+
+    python -m pip install --editable .
+
+Verify the installation by checking the version of the library:
 
 
-Test PyMechanical
------------------
+.. code-block:: python
+
+    from ansys.mechanical.core import __version__
+
+
+    print(f"PyMechanical version is {__version__}")
+
+
+.. _run-tests:
+
+Run the tests
+=============
 
 PyMechanical uses `PyTest`_ and `tox`_ for unit testing. Prior to running the tests,
 ensure Mechanical is installed on your system with a valid license and the test
@@ -69,8 +163,9 @@ dependencies are installed. Run this command to install the test dependencies::
 
   pip install -e .[tests]
 
+
 Using ``pytest``
-^^^^^^^^^^^^^^^^
+----------------
 
 To run the tests, navigate to the root directory of the repository and run this command::
 
@@ -100,8 +195,9 @@ To run specific tests based on a keyword, use the ``-k`` argument::
     # This would run ``test_private_appdata`` and ``test_normal_appdata`` only
     pytest -k appdata
 
+
 Using ``tox``
-^^^^^^^^^^^^^
+-------------
 
 This project takes advantage of `tox`_. This tool automates common development
 tasks (similar to ``Makefile``), but it is oriented towards Python development.
@@ -117,8 +213,10 @@ The following environment commands are provided:
 - ``tox -e py-coverage``: Checks for unit testing and code coverage.
 - ``tox -e doc``: Checks for documentation-building process.
 
+
 Remote testing
-^^^^^^^^^^^^^^
+--------------
+
 If you do not have a licensed copy of Mechanical installed locally but want to
 run PyMechanical unit tests on a remote instance, you must set up environment
 variables.
@@ -144,8 +242,11 @@ to attempt to connect to the existing Mechanical service by default
 when you use the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>`
 method.
 
+
+.. _coding-style:
+
 Adhere to coding style
-----------------------
+======================
 
 As indicated in `Coding style <https://dev.docs.pyansys.com/coding-style/index.html>`_
 in the *PyAnsys Developer's Guide*, PyMechanical follows PEP8 guidelines. PyMechanical
@@ -179,61 +280,3 @@ This way, it's not possible for you to push code that fails the style checks::
   trim trailing whitespace.................................................Passed
   check for added large files..............................................Passed
   Validate GitHub Workflows................................................Passed
-
-Documentation
--------------
-
-For building documentation, you can run the usual rules provided in the
-`Sphinx`_ ``make`` file:
-
-.. code:: bash
-
-    #  build and view the doc from the POSIX system
-    make -C doc html && your_browser_name doc/html/index.html
-
-    # build and view the doc from a Windows environment
-    make -C doc clean
-    make -C doc html
-    start .\doc\_build\html\index.html
-
-However, the recommended way of checking documentation integrity is to use
-``tox``:
-
-.. code:: bash
-
-    tox -e doc && your_browser_name .tox/doc_out/index.html
-
-View documentation
-------------------
-
-Documentation for the latest stable release of PyMechanical is hosted at
-`PyMechanical Documentation <https://mechanical.docs.pyansys.com>`_.
-
-In the upper right corner of the documentation's title bar, there is an option
-for switching from viewing the documentation for the latest stable release
-to viewing the documentation for the development version or previously
-released versions.
-
-Post issues
------------
-
-Use the `PyMechanical Issues <https://github.com/ansys/pymechanical/issues>`_
-page to submit questions, report bugs, and request new features. When possible,
-use these templates:
-
-* `File a bug report <https://github.com/ansys/pymechanical/issues/new?assignees=&labels=bug&projects=&template=bug.yml&title=Bug+located+in+...>`_
-* `File a documentation issue <https://github.com/ansys/pymechanical/issues/new?assignees=&labels=documentation&projects=&template=documentation.yml&title=Modify+...>`_
-* `Request a feature <https://github.com/ansys/pymechanical/issues/new?assignees=&labels=enhancement&projects=&template=feature.yml&title=Add+...>`_
-* `Add an example <https://github.com/ansys/pymechanical/issues/new?assignees=&labels=example&projects=&template=examples.yml&title=Example+proposal%3A+...>`_
-* `Post all other issues <https://github.com/ansys/pymechanical/issues/new>`_
-
-If your issue does not fit into one of these template categories, create your own issue.
-
-.. LINKS AND REFERENCES
-.. _PyAnsys Developer's Guide: https://dev.docs.pyansys.com/
-.. _PyTest: https://docs.pytest.org/en/stable/
-.. _Sphinx: https://www.sphinx-doc.org/en/master/
-.. _black: https://github.com/psf/black
-.. _flake8: https://flake8.pycqa.org/en/latest/
-.. _isort: https://github.com/PyCQA/isort
-.. _tox: https://tox.wiki/
