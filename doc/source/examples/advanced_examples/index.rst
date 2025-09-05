@@ -1,6 +1,6 @@
 .. _ref_remote_examples:
 
-Advanced Examples
+Advanced examples
 -----------------
 
 This section contains examples that demonstrates advanced capabilities of Mechanical
