@@ -88,6 +88,12 @@ Test a new feature
 It is possible to test a new feature before it is officially released. To do
 so, you can install PyMechanical from the source code.
 
+.. code-block:: bash
+
+   git clone https://github.com/pyansys/pymechanical.git
+   cd pymechanical
+   pip install -e .
+
 .. _start-a-discussion:
 
 Start a discussion

@@ -31,7 +31,7 @@ Write documentation
 
 The documentation generator used in PyMechanical is `Sphinx`_. Most of the documents
 are written in `reStructuredText`_. Some parts of the documentation, like the
-:ref:`examples <Examples>`, use Python files. If
+:ref:`Examples <ref_examples>`, use Python files. If
 you are interested in writing examples, see the :ref:`writing examples <write-examples>`
 section.
 
@@ -78,7 +78,7 @@ is declared.
 Write a new example
 ===================
 
-The :ref:`examples <Examples>` section of the documentation showcases different
+The :ref:`Examples <ref_examples>` section of the documentation showcases different
 capabilities of PyMechanical. Each example is a standalone Python script. Despite
 being ``*.py`` files, they are written in a mix of `reStructuredText`_ and Python.
 
@@ -89,21 +89,18 @@ Jupyter Notebook gets stored as a Python file automatically.
 
 Finally, here are some tips for writing examples:
 
-- Start the example with an explanation of the main topic. For example, if you
-  are discussing a certain orbital maneuver, explain what that maneuver
-  entails. Similarly, if an example is centered around satellite coverage,
-  provide an explanation of what coverage is. Try to use as many relevant
-  keywords as possible in this section to optimize for Search Engine
-  Optimization.
+- Begin your PyMechanical example by briefly describing the feature or workflow being demonstrated.
+  For instance, clarify if the example covers geometry creation, simulation setup, or result extraction.
 
-- The second section of the example should be a problem statement. This
-  statement should include all of the parameters needed in the example, as well
-  as a description of what the example aims to determine. Write this section in
-  an imperative form.
+- Next, clearly state the objective of the example.
+  Define the problem, list all required parameters (such as geometry details, material properties,
+  boundary conditions), and specify what the example will accomplish
+  (e.g., running a modal analysis, extracting displacement results).
 
-- Include an explanation with each code cell. In a Jupyter notebook, this
-  entails adding a markdown cell before each code cell. The explanations should
-  be included before, not after, the corresponding code.
+- For each code cell, precede it with a concise explanation. In Jupyter notebooks,
+  use a markdown cell before each code cell to describe its purpose—such as importing modules,
+  configuring the simulation, or visualizing results. This helps readers understand the context
+  and reasoning behind each step.
 
 
 .. _build-documentation:
