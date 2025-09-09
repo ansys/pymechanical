@@ -1,4 +1,28 @@
 fragments:
+- title: Pep8 aliases for Mechanical APIs
+  version: 0.11.30
+  content: |
+    Mechanical APIs now support PEP8 aliases for improved usability and consistency when used with PyMechanical.
+
+    To enable pep8 aliases
+
+    .. code:: python
+
+      from ansys.mechanical.core import App
+
+      # Initialize the app and update globals
+      app = App(globals=globals(), pep8=True)
+
+    Example on how to use the pep8 aliases are given below
+
+    .. code:: python
+
+      from ansys.mechanical.core import App
+
+      app = App(globals=globals(), pep8=True)
+      Model.add_static_structural_analysis()  # Model.AddStaticStructuralAnalysis
+      Model.name = "Test"  # Model.Name = "Test"
+
 - title: Globals parameter in the embedded app
   version: 0.11.14
   content: |
