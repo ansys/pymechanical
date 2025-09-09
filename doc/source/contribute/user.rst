@@ -90,7 +90,7 @@ so, you can install PyMechanical from the source code.
 
 .. code-block:: bash
 
-   git clone https://github.com/pyansys/pymechanical.git
+   git clone https://github.com/ansys/pymechanical.git
    cd pymechanical
    pip install -e .
 

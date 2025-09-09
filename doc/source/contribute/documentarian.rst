@@ -95,7 +95,7 @@ Finally, here are some tips for writing examples:
 - Next, clearly state the objective of the example.
   Define the problem, list all required parameters (such as geometry details, material properties,
   boundary conditions), and specify what the example will accomplish
-  (e.g., running a modal analysis, extracting displacement results).
+  (for example, running a modal analysis, extracting displacement results).
 
 - For each code cell, precede it with a concise explanation. In Jupyter notebooks,
   use a markdown cell before each code cell to describe its purpose—such as importing modules,
