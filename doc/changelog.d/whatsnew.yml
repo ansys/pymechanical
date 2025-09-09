@@ -4,7 +4,8 @@ fragments:
   content: |
     Mechanical APIs now support PEP8 aliases for improved usability and consistency when used with PyMechanical.
 
-    To enable pep8 aliases
+    To enable PEP8 aliases
+
 
     .. code:: python
 
@@ -13,7 +14,8 @@ fragments:
       # Initialize the app and update globals
       app = App(globals=globals(), pep8=True)
 
-    Example on how to use the pep8 aliases are given below
+    Example on how to use the PEP8 aliases are given below
+
 
     .. code:: python
 
