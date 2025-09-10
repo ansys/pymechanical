@@ -1,3 +1,25 @@
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 """.. _ref_loads:
 
 Loads and BCs
@@ -72,7 +94,7 @@ pretension.Preload.Output.SetDiscreteValue(0, Quantity("1500[N]"))
 for i in range(2, analysis_settings.NumberOfSteps + 1):
     pretension.SetDefineBy(int(i), BoltLoadDefineBy.Lock)
 
-# %% 
+# %%
 # Apply a Fixed Support
 # ~~~~~~~~~~~~~~~~~~~~~
 support = Model.Analyses[0].AddFixedSupport()
@@ -111,7 +133,7 @@ force_scoping.Ids = [63]
 force.Location = force_scoping
 force.Magnitude.Output.DiscreteValues = [Quantity("11.3 [N]"), Quantity("12.85 [N]")]
 
-# %% 
+# %%
 # Apply Force by Components
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 force = Model.Analyses[0].AddForce()
@@ -121,7 +143,7 @@ force.Location = force_scoping
 force.DefineBy = LoadDefineBy.Components
 force.ZComponent.Output.DiscreteValues = [Quantity("0 [N]"), Quantity("-9 [N]")]
 
-# %% 
+# %%
 # Apply Nodal Forces by Components
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nodes_list = [16,2329]
@@ -211,10 +233,21 @@ pressureLoad.Magnitude.Output.DiscreteValues = [
 # %%
 # Applying Direct FE Type Boundary Conditions
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<<<<<<< HEAD
 CSall = Model.CoordinateSystems.GetChildren[Ansys.ACT.Automation.Mechanical.CoordinateSystem](True)
 a = [i for i in CSall if i.Name == "cyl"][0]
 NSall = Model.NamedSelections.GetChildren[Ansys.ACT.Automation.Mechanical.NamedSelection](True)
 n = [i for i in NSall if i.Name == "force"][0]
+=======
+CSall = ExtAPI.DataModel.Project.Model.CoordinateSystems.GetChildren[
+    Ansys.ACT.Automation.Mechanical.CoordinateSystem
+](True)
+a = [i for i in CSall if i.Name == "cyl"][0]
+NSall = ExtAPI.DataModel.Project.Model.NamedSelections.GetChildren[
+    Ansys.ACT.Automation.Mechanical.NamedSelection
+](True)
+n = [i for i in NSall if i.Name == "ns"][0]
+>>>>>>> 4bb69913da3412206fa308dab61c7ba54f4421c8
 
 nf = Model.Analyses[0].AddNodalForce()
 nf.Location = n
