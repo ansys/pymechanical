@@ -7,11 +7,11 @@ This script contains helper examples for applying loads and boundary conditions 
 """
 
 # sphinx_gallery_start_ignore
+
 from ansys.mechanical.core import App
 from ansys.mechanical.core.examples import delete_downloads, download_file
-
 app = App(globals=globals())
-geom_file_path = download_file("example_geometry.agdb", "pymechanical", "00_basic")
+geom_file_path = download_file("example_06_bolt_pret_geom.agdb", "pymechanical", "00_basic")
 geometry_import = Model.GeometryImportGroup.AddGeometryImport()
 geometry_import_format = Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.Format.Automatic
 geometry_import_preferences = Ansys.ACT.Mechanical.Utilities.GeometryImportPreferences()
@@ -20,8 +20,27 @@ geometry_import_preferences.NamedSelectionKey = ""
 geometry_import_preferences.ProcessNamedSelections = True
 geometry_import_preferences.ProcessMaterialProperties = True
 geometry_import.Import(geom_file_path, geometry_import_format, geometry_import_preferences)
-# sphinx_gallery_end_ignore
+Model.Mesh.GenerateMesh()
 
+selection_manager = ExtAPI.SelectionManager
+selection = ExtAPI.SelectionManager.CreateSelectionInfo(SelectionTypeEnum.GeometryEntities)
+selection.Ids = [30]
+
+ns2 = Model.AddNamedSelection()
+ns2.Name = "fixed"
+ns2.Location = selection
+selection_manager.ClearSelection()
+
+selection_manager = ExtAPI.SelectionManager
+selection = ExtAPI.SelectionManager.CreateSelectionInfo(SelectionTypeEnum.GeometryEntities)
+selection.Ids = [94]
+
+ns2 = Model.AddNamedSelection()
+ns2.Name = "force"
+ns2.Location = selection
+selection_manager.ClearSelection()
+
+# sphinx_gallery_end_ignore
 
 # Plot
 app.plot()
@@ -40,9 +59,10 @@ analysis_settings = Model.Analyses[0].AnalysisSettings
 analysis_settings.NumberOfSteps = 6
 
 selection = ExtAPI.SelectionManager.CreateSelectionInfo(SelectionTypeEnum.GeometryEntities)
-selection.Ids = [312]
+selection.Ids = [39]
 csys1 = Model.CoordinateSystems.AddCoordinateSystem()
 csys1.OriginLocation = selection
+csys1.Name="cyl"
 
 pretension = Model.Analyses[0].AddBoltPretension()
 pretension.Location = selection
@@ -57,7 +77,7 @@ for i in range(2, analysis_settings.NumberOfSteps + 1):
 # ~~~~~~~~~~~~~~~~~~~~~
 support = Model.Analyses[0].AddFixedSupport()
 support_scoping = ExtAPI.SelectionManager.CreateSelectionInfo(SelectionTypeEnum.GeometryEntities)
-support_scoping.Ids = [67]
+support_scoping.Ids = [30]
 support.Location = support_scoping
 
 # %%
@@ -78,7 +98,7 @@ pressure.Magnitude.Output.DiscreteValues = [Quantity("10 [Pa]"), Quantity("20 [P
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 pressure = Model.Analyses[0].AddPressure()
 pressure_scoping = ExtAPI.SelectionManager.CreateSelectionInfo(SelectionTypeEnum.GeometryEntities)
-pressure_scoping.Ids = [196]
+pressure_scoping.Ids = [95]
 pressure.Location = pressure_scoping
 pressure.Magnitude.Output.Formula = "10*time"
 
@@ -87,7 +107,7 @@ pressure.Magnitude.Output.Formula = "10*time"
 # ~~~~~~~~~~~~~
 force = Model.Analyses[0].AddForce()
 force_scoping = ExtAPI.SelectionManager.CreateSelectionInfo(SelectionTypeEnum.GeometryEntities)
-force_scoping.Ids = [31]
+force_scoping.Ids = [63]
 force.Location = force_scoping
 force.Magnitude.Output.DiscreteValues = [Quantity("11.3 [N]"), Quantity("12.85 [N]")]
 
@@ -96,7 +116,7 @@ force.Magnitude.Output.DiscreteValues = [Quantity("11.3 [N]"), Quantity("12.85 [
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 force = Model.Analyses[0].AddForce()
 force_scoping = ExtAPI.SelectionManager.CreateSelectionInfo(SelectionTypeEnum.GeometryEntities)
-force_scoping.Ids = [31]
+force_scoping.Ids = [63]
 force.Location = force_scoping
 force.DefineBy = LoadDefineBy.Components
 force.ZComponent.Output.DiscreteValues = [Quantity("0 [N]"), Quantity("-9 [N]")]
@@ -104,18 +124,18 @@ force.ZComponent.Output.DiscreteValues = [Quantity("0 [N]"), Quantity("-9 [N]")]
 # %% 
 # Apply Nodal Forces by Components
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nodes_list = [66, 89, 105, 315, 470]
-force_quantities_list = ["100 [N]", "-200 [N]", "300 [N]", "-400 [N]", "500 [N]"]
+nodes_list = [16,2329]
+force_quantities_list = ["100 [N]", "-200 [N]"]
 
 for i in range(len(nodes_list)):
     N1 = ExtAPI.SelectionManager.CreateSelectionInfo(SelectionTypeEnum.MeshNodes)
     N1.Ids = [nodes_list[i]]
     ExtAPI.SelectionManager.NewSelection(N1)
 
-    NS = ExtAPI.DataModel.Project.Model.AddNamedSelection()
+    NS = Model.AddNamedSelection()
     NS.Name = "Node_" + str(nodes_list[i])
 
-    Force1 = ExtAPI.DataModel.Project.Model.Analyses[0].AddNodalForce()
+    Force1 = Model.Analyses[0].AddNodalForce()
     Force1.Location = NS
     Force1.Name = "NodeAtNode_" + str(nodes_list[i])
     Force1.YComponent.Output.DiscreteValues = [Quantity(force_quantities_list[i])]
@@ -126,18 +146,17 @@ for i in range(len(nodes_list)):
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 selection_manager = ExtAPI.SelectionManager
 selection = ExtAPI.SelectionManager.CreateSelectionInfo(SelectionTypeEnum.GeometryEntities)
-selection.Ids = [312]
+selection.Ids = [65]
 
-model = ExtAPI.DataModel.Project.Model
-ns2 = model.AddNamedSelection()
+ns2 = Model.AddNamedSelection()
 ns2.Name = "fixed"
 ns2.Location = selection
 selection_manager.ClearSelection()
 
 selection = ExtAPI.SelectionManager.CreateSelectionInfo(SelectionTypeEnum.GeometryEntities)
-selection.Ids = [312]
+selection.Ids = [65]
 
-ns2 = model.AddNamedSelection()
+ns2 = Model.AddNamedSelection()
 ns2.Name = "force"
 ns2.Location = selection
 selection_manager.ClearSelection()
@@ -151,14 +170,15 @@ f.Location = for_force
 f.Name = "Force1"
 f.Magnitude.Output.DiscreteValues = [Quantity("10 [N]")]
 
-fs = model.Analyses[0].AddFixedSupport()
+fs = Model.Analyses[0].AddFixedSupport()
 fs.Location = for_fixed_supp
 fs.Name = "FixedSupport1"
 
 # %%
 # Apply Radiation - Thermal Analysis
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-radn = Model.Analyses[1].AddRadiation()
+analysis2 = Model.AddSteadyStateThermalAnalysis()
+radn = analysis2.AddRadiation()
 
 e = radn.Emissivity
 e.Output.DiscreteValues = [Quantity("0.36")]
@@ -170,7 +190,7 @@ t.Output.DiscreteValues = [Quantity("22 [C]"), Quantity("2302 [C]")]
 # %%
 # Apply Tabular Pressure for 5 Load Steps
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-pressureLoad = ExtAPI.DataModel.Project.Model.Analyses[0].AddPressure()
+pressureLoad = Model.Analyses[0].AddPressure()
 pressureLoad.Magnitude.Inputs[0].DiscreteValues = [
     Quantity("0 [sec]"),
     Quantity("1 [sec]"),
@@ -191,26 +211,26 @@ pressureLoad.Magnitude.Output.DiscreteValues = [
 # %%
 # Applying Direct FE Type Boundary Conditions
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-CSall = ExtAPI.DataModel.Project.Model.CoordinateSystems.GetChildren[Ansys.ACT.Automation.Mechanical.CoordinateSystem](True)
+CSall = Model.CoordinateSystems.GetChildren[Ansys.ACT.Automation.Mechanical.CoordinateSystem](True)
 a = [i for i in CSall if i.Name == "cyl"][0]
-NSall = ExtAPI.DataModel.Project.Model.NamedSelections.GetChildren[Ansys.ACT.Automation.Mechanical.NamedSelection](True)
-n = [i for i in NSall if i.Name == "ns"][0]
+NSall = Model.NamedSelections.GetChildren[Ansys.ACT.Automation.Mechanical.NamedSelection](True)
+n = [i for i in NSall if i.Name == "force"][0]
 
-nf = ExtAPI.DataModel.Project.Model.Analyses[0].AddNodalForce()
+nf = Model.Analyses[0].AddNodalForce()
 nf.Location = n
 nf.YComponent.Inputs[0].DiscreteValues = [Quantity("0 [sec]"), Quantity("1 [sec]")]
 nf.IndependentVariable = LoadVariableVariationType.YValue
 nf.XYZFunctionCoordinateSystem = a
 nf.YComponent.Output.DiscreteValues = [Quantity("0 [N]"), Quantity("100[N]")]
 
-nd = ExtAPI.DataModel.Project.Model.Analyses[0].AddNodalDisplacement()
+nd = Model.Analyses[0].AddNodalDisplacement()
 nd.Location = n
 nd.YComponent.Inputs[0].DiscreteValues = [Quantity("0 [sec]"), Quantity("1 [sec]")]
 nd.IndependentVariable = LoadVariableVariationType.YValue
 nd.XYZFunctionCoordinateSystem = a
 nd.YComponent.Output.DiscreteValues = [Quantity("0 [mm]"), Quantity("100[mm]")]
 
-np = ExtAPI.DataModel.Project.Model.Analyses[0].AddNodalPressure()
+np = Model.Analyses[0].AddNodalPressure()
 np.Location = n
 np.Magnitude.Inputs[0].DiscreteValues = [Quantity("0 [sec]"), Quantity("1 [sec]")]
 np.IndependentVariable = LoadVariableVariationType.YValue
