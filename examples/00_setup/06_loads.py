@@ -233,21 +233,10 @@ pressureLoad.Magnitude.Output.DiscreteValues = [
 # %%
 # Applying Direct FE Type Boundary Conditions
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<<<<<<< HEAD
 CSall = Model.CoordinateSystems.GetChildren[Ansys.ACT.Automation.Mechanical.CoordinateSystem](True)
 a = [i for i in CSall if i.Name == "cyl"][0]
 NSall = Model.NamedSelections.GetChildren[Ansys.ACT.Automation.Mechanical.NamedSelection](True)
 n = [i for i in NSall if i.Name == "force"][0]
-=======
-CSall = ExtAPI.DataModel.Project.Model.CoordinateSystems.GetChildren[
-    Ansys.ACT.Automation.Mechanical.CoordinateSystem
-](True)
-a = [i for i in CSall if i.Name == "cyl"][0]
-NSall = ExtAPI.DataModel.Project.Model.NamedSelections.GetChildren[
-    Ansys.ACT.Automation.Mechanical.NamedSelection
-](True)
-n = [i for i in NSall if i.Name == "ns"][0]
->>>>>>> 4bb69913da3412206fa308dab61c7ba54f4421c8
 
 nf = Model.Analyses[0].AddNodalForce()
 nf.Location = n
