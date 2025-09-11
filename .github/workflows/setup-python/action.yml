@@ -1,0 +1,73 @@
+name: >
+  Set up Python
+
+description: |
+  Sets up Python on the Mechanical containers.
+
+inputs:
+
+  # Required inputs
+  python-version:
+    description: >
+      Python version to set up. For example, 3.10
+    required: true
+    type: string
+
+  # Optional inputs
+  python-version-patch:
+    description: >
+      The Python version to set up with the patch specified. For example, 3.10.0
+    required: false
+    type: string
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Get most recent Python version
+      shell: bash
+      run: |
+          declare -A python_versions=(["3.10"]="3.10.18" ["3.11"]="3.11.13" ["3.12"]="3.12.11" ["3.13"]="3.13.7")
+
+          # Get the Python version inputs
+          python_version_input="${{ inputs.python-version }}"
+          python_version_patch_input="${{ inputs.python-version-patch }}"
+
+          if [ -n "$python_version_patch_input" ]; then
+            echo "PYTHON_VERSION_PATCH=$python_version_patch_input" >> "$GITHUB_ENV"
+          else
+            if [[ -v python_versions["$python_version_input"] ]]; then
+              echo "PYTHON_VERSION_PATCH=${python_versions[$python_version_input]}" >> "$GITHUB_ENV"
+            else
+              echo "Key '$python_version_input' does not exist in the hashmap."
+              echo "The available Python versions are: ${!python_versions[@]}"
+              exit 1
+            fi
+          fi
+
+    - name: Manually set up Python
+      shell: bash
+      run: |
+        # Update package lists
+        apt update
+
+        # Install dependencies to build Python
+        apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev -y
+
+        # Download the specified Python version from python.org
+        version=${{ env.PYTHON_VERSION_PATCH }}
+        wget https://www.python.org/ftp/python/$version/Python-$version.tgz
+
+        # Extract the downloaded tarball
+        tar -xf Python-$version.tgz
+
+        # Check the required dependencies of the Python install
+        cd Python-$version/
+        ./configure --enable-optimizations
+
+        # Build Python
+        make -j $(nproc)
+
+        # Install Python
+        make altinstall

@@ -383,10 +383,9 @@ jobs:
           # Link python to the installed version
           ln -s /usr/local/bin/python${{ matrix.python-version }} /usr/bin/python
           # Verify Python installation
-          # python -m ensurepip --default-pip
+          python -m ensurepip --default-pip
           python -m pip install --upgrade pip
-          python -m pip install --user virtualenv
-          virtualenv /env
+          python${{ matrix.python-version }} -m venv /env
 
       - name: Install packages for testing
         run: |
