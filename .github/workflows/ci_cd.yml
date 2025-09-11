@@ -67,13 +67,13 @@ jobs:
         uses: ansys/actions/code-style@33399106dc8b62d83c8aad1fb2c333c8055df180 # v10.0.20
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
-  
+
   # doc-style:
   #   name: Documentation Style Check
   #   runs-on: ubuntu-latest
   #   steps:
   #     - name: PyAnsys documentation style checks
-  #       uses: ansys/actions/doc-style@v10
+  #       uses: ansys/actions/doc-style@33399106dc8b62d83c8aad1fb2c333c8055df180 # v10.0.20
   #       with:
   #         token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -83,7 +83,7 @@ jobs:
   #   steps:
   #     - name: PyAnsys Vulnerability check (on main)
   #       if: github.ref == 'refs/heads/main'
-  #       uses: ansys/actions/check-vulnerabilities@v10
+  #       uses: ansys/actions/check-vulnerabilities@33399106dc8b62d83c8aad1fb2c333c8055df180 # v10.0.20
   #       with:
   #         python-version: ${{ env.MAIN_PYTHON_VERSION }}
   #         python-package-name: ${{ env.PACKAGE_NAME }}
@@ -91,7 +91,7 @@ jobs:
 
   #     - name: PyAnsys Vulnerability check (on dev mode)
   #       if: github.ref != 'refs/heads/main'
-  #       uses: ansys/actions/check-vulnerabilities@v10
+  #       uses: ansys/actions/check-vulnerabilities@33399106dc8b62d83c8aad1fb2c333c8055df180 # v10.0.20
   #       with:
   #         python-version: ${{ env.MAIN_PYTHON_VERSION }}
   #         python-package-name: ${{ env.PACKAGE_NAME }}
@@ -232,7 +232,7 @@ jobs:
   #         echo "::endgroup::"
 
   #     - name: Testing
-  #       uses: ansys/actions/tests-pytest@v10
+  #       uses: ansys/actions/tests-pytest@33399106dc8b62d83c8aad1fb2c333c8055df180 # v10.0.20
   #       with:
   #         python-version: ${{ env.MAIN_PYTHON_VERSION }}
   #         pytest-markers: '-m remote_session_connect'
@@ -443,7 +443,7 @@ jobs:
 
   #   steps:
   #     - uses: actions/checkout@v5
-  
+
   #     - name: "Set up Python"
   #       uses: ./.github/workflows/setup-python/
   #       with:
@@ -671,7 +671,7 @@ jobs:
   #   needs: [doc-build]
   #   if: contains(github.event.pull_request.labels.*.name, 'documentation') && (needs.doc-build.result == 'success' || needs.doc-build.result == 'skipped')
   #   steps:
-  #     - uses: ansys/actions/doc-deploy-pr@v10
+  #     - uses: ansys/actions/doc-deploy-pr@33399106dc8b62d83c8aad1fb2c333c8055df180 # v10.0.20
   #       with:
   #         cname: ${{ env.DOCUMENTATION_CNAME }}
   #         token: ${{ secrets.GITHUB_TOKEN }}
@@ -687,7 +687,7 @@ jobs:
   #   steps:
   #     - name: Checkout repository
   #       uses: actions/checkout@v5
-  # 
+  #
   #     - name: Set up Python
   #       uses: actions/setup-python@v6
   #       with:
@@ -795,7 +795,7 @@ jobs:
   #     id-token: write
   #   steps:
   #     - name: Build library source and wheel artifacts
-  #       uses: ansys/actions/build-library@2031be5b84d9f8c1d56a54912209aa489b469a0f # v10.0.13
+  #       uses: ansys/actions/build-library@33399106dc8b62d83c8aad1fb2c333c8055df180 # v10.0.20
   #       with:
   #         library-name: ${{ env.PACKAGE_NAME }}
   #         python-version: ${{ env.MAIN_PYTHON_VERSION }}
@@ -810,7 +810,7 @@ jobs:
   #     contents: write
   #   steps:
   #     - name: Release to GitHub
-  #       uses: ansys/actions/release-github@2031be5b84d9f8c1d56a54912209aa489b469a0f # v10.0.13
+  #       uses: ansys/actions/release-github@33399106dc8b62d83c8aad1fb2c333c8055df180 # v10.0.20
   #       with:
   #         token: ${{ secrets.GITHUB_TOKEN }}
   #         library-name: ${{ env.PACKAGE_NAME }}
@@ -846,7 +846,7 @@ jobs:
   #   needs: [package]
   #   steps:
   #     - name: Deploy the latest documentation
-  #       uses: ansys/actions/doc-deploy-dev@v10
+  #       uses: ansys/actions/doc-deploy-dev@33399106dc8b62d83c8aad1fb2c333c8055df180 # v10.0.20
   #       with:
   #         cname: ${{ env.DOCUMENTATION_CNAME }}
   #         token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
@@ -860,7 +860,7 @@ jobs:
   #   needs: [release]
   #   steps:
   #     - name: Deploy the stable documentation
-  #       uses: ansys/actions/doc-deploy-stable@v10
+  #       uses: ansys/actions/doc-deploy-stable@33399106dc8b62d83c8aad1fb2c333c8055df180 # v10.0.20
   #       with:
   #         cname: ${{ env.DOCUMENTATION_CNAME }}
   #         token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
