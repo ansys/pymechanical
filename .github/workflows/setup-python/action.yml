@@ -71,3 +71,27 @@ runs:
 
         # Install Python
         make altinstall
+
+    - name: "Configure Python"
+      run: |
+        # Link python to the installed version
+        ln -s /usr/local/bin/python${{ matrix.python-version }} /usr/bin/python
+
+        # Verify Python installation
+        python -m ensurepip --default-pip
+        python -m pip install --upgrade pip
+        python -m venv /env
+
+    - name: "Check the virtual environment Python can be used"
+      run: |
+        . /env/bin/activate
+
+        env_python_check=$(which python)
+        echo "Using python from $env_python_check"
+
+        if [[ $env_python_check =~ "env" ]]; then
+          echo "Using virtual environment Python."
+        else
+          echo "Not using virtual environment: $env_python_check"
+          exit 1
+        fi
