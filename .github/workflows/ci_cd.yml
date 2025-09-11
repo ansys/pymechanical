@@ -53,7 +53,7 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: ansys/actions/doc-deploy-changelog@v10
+      - uses: ansys/actions/doc-deploy-changelog@33399106dc8b62d83c8aad1fb2c333c8055df180 # v10.0.20
         with:
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
           bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
@@ -64,10 +64,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: PyAnsys code style checks
-        uses: ansys/actions/code-style@v10
+        uses: ansys/actions/code-style@33399106dc8b62d83c8aad1fb2c333c8055df180 # v10.0.20
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
-
+  
   # doc-style:
   #   name: Documentation Style Check
   #   runs-on: ubuntu-latest
@@ -114,7 +114,7 @@ jobs:
             os: macos-latest
     steps:
       - name: Build wheelhouse and perform smoke test
-        uses: ansys/actions/build-wheelhouse@v10
+        uses: ansys/actions/build-wheelhouse@33399106dc8b62d83c8aad1fb2c333c8055df180 # v10.0.20
         with:
           library-name: ${{ env.PACKAGE_NAME }}
           operating-system: ${{ matrix.os }}
@@ -296,7 +296,7 @@ jobs:
   #       python-version: ['3.10', '3.11', '3.12', '3.13']
 
   #   steps:
-  #     - uses: actions/checkout@v5
+  #     - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
   #     - name: Set up python and pip
   #       run: |
   #         apt update
@@ -329,7 +329,7 @@ jobs:
   #         xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc || true
 
       # - name: Upload coverage results
-      #   uses: actions/upload-artifact@v4
+      #   uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       #   if: env.MAIN_PYTHON_VERSION == matrix.python-version
       #   with:
       #     include-hidden-files: true
@@ -338,7 +338,7 @@ jobs:
       #     retention-days: 7
 
       # - name: Upload coverage results (as .coverage)
-      #   uses: actions/upload-artifact@v4
+      #   uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       #   if: env.MAIN_PYTHON_VERSION == matrix.python-version
       #   with:
       #     include-hidden-files: true
@@ -371,7 +371,7 @@ jobs:
         python-version: ['3.10', '3.11', '3.12', '3.13']
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
       - name: "Set up Python and activate virtual environment"
         uses: ./.github/workflows/setup-python/
@@ -401,7 +401,7 @@ jobs:
           fi
 
       - name: Upload coverage results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
           include-hidden-files: true
@@ -410,7 +410,7 @@ jobs:
           retention-days: 7
 
       - name: Upload coverage results (as .coverage)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
           include-hidden-files: true
@@ -419,7 +419,7 @@ jobs:
           retention-days: 7
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@v5
+        uses: mikepenz/action-junit-report@3585e9575db828022551b4231f165eb59a0e74e3 # v5.6.2
         if: always()
         with:
           report_paths: '**/test_results*.xml'
@@ -443,7 +443,7 @@ jobs:
 
   #   steps:
   #     - uses: actions/checkout@v5
-
+  
   #     - name: "Set up Python"
   #       uses: ./.github/workflows/setup-python/
   #       with:
@@ -687,7 +687,7 @@ jobs:
   #   steps:
   #     - name: Checkout repository
   #       uses: actions/checkout@v5
-
+  # 
   #     - name: Set up Python
   #       uses: actions/setup-python@v6
   #       with:
@@ -755,7 +755,6 @@ jobs:
   #             /usr/local/lib/**/ansys/mechanical
   #             .venv/lib/**/ansys/mechanical
   #             /env/lib/**/ansys/mechanical
-
   #         EOF
 
   #     - name: Run coverage merge and show results
