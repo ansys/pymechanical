@@ -73,6 +73,7 @@ runs:
         make altinstall
 
     - name: "Configure Python"
+      shell: bash
       run: |
         # Link python to the installed version
         ln -s /usr/local/bin/python${{ matrix.python-version }} /usr/bin/python
@@ -83,6 +84,7 @@ runs:
         python -m venv /env
 
     - name: "Check the virtual environment Python can be used"
+      shell: bash
       run: |
         . /env/bin/activate
 
