@@ -387,6 +387,14 @@ jobs:
           python -m pip install --upgrade pip
           python${{ matrix.python-version }} -m venv /env
 
+      - name: "location of Python"
+        run: |
+          which python
+
+      - name: "check if venv is there"
+        run: |
+          . /env/bin/activate
+          which python
       - name: Install packages for testing
         run: |
           . /env/bin/activate
