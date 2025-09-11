@@ -372,14 +372,21 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
-      - name: Set up python and pip
+
+      - name: "Set up Python"
+        uses: ./.github/workflows/setup-python/
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: "Configure Python"
         run: |
-          apt update
-          apt install --reinstall ca-certificates
-          apt install lsb-release xvfb software-properties-common -y
-          add-apt-repository ppa:deadsnakes/ppa -y
-          apt install -y python${{ matrix.python-version }} python${{ matrix.python-version }}-venv
-          python${{ matrix.python-version }} -m venv /env
+          # Link python to the installed version
+          ln -s /usr/local/bin/python${{ matrix.python-version }} /usr/bin/python
+          # Verify Python installation
+          # python -m ensurepip --default-pip
+          python -m pip install --upgrade pip
+          python -m pip install --user virtualenv
+          virtualenv /env
 
       - name: Install packages for testing
         run: |
