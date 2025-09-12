@@ -226,5 +226,5 @@ test_mechdat_path = str(output_path / "test.mechdat")
 
 # Close the application and delete downloaded files
 app.close()
-delete_downloads()
+# delete_downloads()
 # sphinx_gallery_end_ignore
