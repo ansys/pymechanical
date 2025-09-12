@@ -32,6 +32,7 @@ This script contains helper examples for applying loads and boundary conditions 
 
 from ansys.mechanical.core import App
 from ansys.mechanical.core.examples import delete_downloads, download_file
+
 app = App(globals=globals())
 geom_file_path = download_file("example_06_bolt_pret_geom.agdb", "pymechanical", "00_basic")
 geometry_import = Model.GeometryImportGroup.AddGeometryImport()
@@ -89,7 +90,7 @@ selection = ExtAPI.SelectionManager.CreateSelectionInfo(SelectionTypeEnum.Geomet
 selection.Ids = [39]
 csys1 = Model.CoordinateSystems.AddCoordinateSystem()
 csys1.OriginLocation = selection
-csys1.Name="cyl"
+csys1.Name = "cyl"
 
 # Apply bolt pretension load
 pretension = Model.Analyses[0].AddBoltPretension()
@@ -155,7 +156,7 @@ force.ZComponent.Output.DiscreteValues = [Quantity("0 [N]"), Quantity("-9 [N]")]
 # %%
 # Apply Nodal Forces by Components
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nodes_list = [16,2329]
+nodes_list = [16, 2329]
 force_quantities_list = ["100 [N]", "-200 [N]"]
 
 # Loop through nodes and apply nodal force
