@@ -7,6 +7,12 @@ description: |
 inputs:
 
   # Required inputs
+  test-container:
+    description: >
+      The test container being used for testing. For example, ghcr.io/ansys/mechanical:25.2.0
+    required: false
+    type: string
+
   python-version:
     description: >
       Python version to set up. For example, 3.10
@@ -24,11 +30,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-
-    - name: "Inspect image digest"
-      shell: bash
-      run: |
-        docker inspect ghcr.io/ansys/mechanical:25.2.0 | grep Digest
 
     - name: Get most recent Python version
       shell: bash

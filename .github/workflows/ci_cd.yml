@@ -127,6 +127,7 @@ jobs:
       stable_container: ${{ steps.save-versions.outputs.stable_container }}
       test_revn: '${{ steps.save-versions.outputs.test_revn }}'
       test_container: ${{ steps.save-versions.outputs.test_container }}
+      test_container_sha: ${{ steps.save-versions.outputs.test_container_sha }}
       test_docker_image_version: '${{ steps.save-versions.outputs.test_docker_image_version }}'
     steps:
       - id: save-versions
@@ -152,6 +153,12 @@ jobs:
           stable_mech_revn=${{ env.STABLE_REVN }}
           stable_mech_image_version=${mech_revn:0:2}.${mech_revn:2}.0
           echo "stable_container=${{ env.DOCKER_PACKAGE }}:$stable_mech_image_version" >> $GITHUB_OUTPUT
+
+          # Get the sha of the test container
+          apt update
+          apt-get install docker.io -y
+          digest=$(docker inspect $test_container | grep digest)
+          echo "DIGEST: $digest"
 
           echo $GITHUB_OUTPUT
 
@@ -372,10 +379,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-
-      - name: Get image
-        run: |
-          docker images
 
       - name: "Set up Python and activate virtual environment"
         uses: ./.github/workflows/setup-python/
