@@ -25,10 +25,10 @@ runs:
   using: "composite"
   steps:
 
-    - name: "Print github sha"
+    - name: "Inspect image digest"
       shell: bash
       run: |
-        echo "GITHUB_SHA: ${{ github.sha }}"
+        docker inspect ghcr.io/ansys/mechanical:25.2.0 | grep Digest
 
     - name: Get most recent Python version
       shell: bash
