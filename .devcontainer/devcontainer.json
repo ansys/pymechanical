@@ -1,0 +1,21 @@
+{
+  "name": "Mechanical Codespace",
+  "image": "ghcr.io/mechanical:latest",
+
+  // User setup: Codespaces expects a non-root user
+  "remoteUser": "vscode",
+
+  // Commands to run after container starts
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "github.copilot",
+        "github.copilot-chat",
+        "ms-python.python",
+        "ms-python.vscode-pylance"
+      ]
+    }
+  }
+}
