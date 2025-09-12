@@ -92,9 +92,9 @@ selection.Ids = [216, 221, 224]
 # Add the named selection to the model
 model = ExtAPI.DataModel.Project.Model
 ns2 = model.AddNamedSelection()
-ns2.Name = "faces" # Set the name of the named selection
+ns2.Name = "faces"  # Set the name of the named selection
 ns2.Location = selection
-selection_manager.ClearSelection() # Clear the selection after creation - delete
+selection_manager.ClearSelection()  # Clear the selection after creation - delete
 
 # %%
 # Create a Named Selection by Worksheet

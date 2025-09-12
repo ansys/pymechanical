@@ -86,7 +86,7 @@ b = bodies[0]  # Access Geometric Properties: 'Area', 'GeoData', 'Centroid', 'Fa
 # %%
 # Find Body with Largest Volume
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Set the active unit system to Standard NMM 
+# Set the active unit system to Standard NMM
 ExtAPI.Application.ActiveUnitSystem = MechanicalUnitSystem.StandardNMM
 
 # Create a list of body names, volumes, and IDs for unsuppressed bodies
