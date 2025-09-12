@@ -36,51 +36,70 @@ from ansys.mechanical.core import App
 from ansys.mechanical.core.examples import delete_downloads, download_file
 
 app = App(globals=globals())
+
+# Download the geometry file for the example
 geom_file_path = download_file("example_06_bolt_pret_geom.agdb", "pymechanical", "00_basic")
+# Alternatively, you can specify a local file path
+# or geom_file_path = r"C:\geometry.agdb"
+
+# Import the geometry into the Mechanical model
 geometry_import = Model.GeometryImportGroup.AddGeometryImport()
 geometry_import_format = Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.Format.Automatic
 geometry_import_preferences = Ansys.ACT.Mechanical.Utilities.GeometryImportPreferences()
+
+# Set preferences for geometry import
 geometry_import_preferences.ProcessLines = True
 geometry_import_preferences.NamedSelectionKey = ""
 geometry_import_preferences.ProcessNamedSelections = True
 geometry_import_preferences.ProcessMaterialProperties = True
+
+# Perform the geometry import
 geometry_import.Import(geom_file_path, geometry_import_format, geometry_import_preferences)
 
-# Plot
+# Plot the imported geometry
 app.plot()
 
-# Print the tree
+# Print the tree structure of the Mechanical model
 app.print_tree()
 
 
 # %%
 # Get all bodies
 # ~~~~~~~~~~~~~~~~~
+
+# Retrieve all body objects from the geometry
 body_objects = Model.Geometry.GetChildren(DataModelObjectCategory.Body, True)
-# or
+# Alternatively, use the following method:
 # bodies_objects = Model.Geometry.GetChildren(Ansys.ACT.Automation.Mechanical.Body, True)
 
+# Extract geometric body wrappers for each body object
 bodies = [body.GetGeoBody() for body in body_objects]  # GeoBodyWrapper
 # or
 # import itertools
 # nested_list = [x.Bodies for x in ExtAPI.DataModel.GeoData.Assemblies[0].AllParts]
 # bodies = list(itertools.chain(*nested_list))
 
+# Access details of the first body object and its geometric properties
 bo = body_objects[0]  # Access Object Details and RMB options
 b = bodies[0]  # Access Geometric Properties: 'Area', 'GeoData', 'Centroid', 'Faces', etc.
 
 # %%
 # Find Body with Largest Volume
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Set the active unit system to Standard NMM 
 ExtAPI.Application.ActiveUnitSystem = MechanicalUnitSystem.StandardNMM
 
+# Create a list of body names, volumes, and IDs for unsuppressed bodies
 body_names_volumes = []
 for body in body_objects:
     if body.Suppressed == 0 and body.Volume:
         body_names_volumes.append((body.Name, body.Volume, body.GetGeoBody().Id))
 
+# Sort the list and retrieve the body with the largest volume
 sorted_name_vol = sorted(body_names_volumes)
 bodyname, volu, bodyid = sorted_name_vol.pop()
+
+# Print details of the largest body
 print(f"Unit System is: {ExtAPI.Application.ActiveUnitSystem}")
 print(f"Name of the Largest Body: '{bodyname}'")
 print(f"Its Volume: {round(volu.Value, 2)} {volu.Unit}")
@@ -89,12 +108,14 @@ print(f"Its id: {bodyid}")
 # %%
 # Find Body by its ID
 # ~~~~~~~~~~~~~~~~~~~~~~
+# Retrieve a body object using its ID
 b2 = ExtAPI.DataModel.GeoData.GeoEntityById(bodyid)
 print(f"Body Name: {b2.Name}, Body Id: {b2.Id}")
 
 # %%
 # Find the Part that the body belongs to
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Retrieve the name of a body and the part it belongs to using its ID
 body_name = ExtAPI.DataModel.GeoData.GeoEntityById(59).Name
 part_name = ExtAPI.DataModel.GeoData.GeoEntityById(59).Part.Name
 print(f"The Body named '{body_name}' belongs to the part named '{part_name}'")
@@ -102,18 +123,24 @@ print(f"The Body named '{body_name}' belongs to the part named '{part_name}'")
 # %%
 # Find Body by its ID AND print its Faces, Centroid, etc.
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Retrieve a body object and its faces, centroids, etc.
 body2 = ExtAPI.DataModel.GeoData.GeoEntityById(bodyid)
 
+# Get face IDs and centroids for each face
 face_ids = [face.Id for face in body2.Faces]
 centroids_of_each_face = [
     ExtAPI.DataModel.GeoData.GeoEntityById(face_id).Centroid for face_id in face_ids
 ]
+
+# Print face IDs and their centroids
 for face_id, centroid in zip(face_ids, centroids_of_each_face):
     print(face_id, list(centroid))
 
 # %%
 # Get all Vertices
 # ~~~~~~~~~~~~~~~~~~~
+
+# Retrieve all vertex IDs from the geometry
 vertices = []
 geo = ExtAPI.DataModel.GeoData
 for asm in geo.Assemblies:
@@ -126,12 +153,14 @@ print(vertices)
 # %%
 # Get all edges of a given length
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Retrieve all edges with a specified length
 ExtAPI.Application.ActiveUnitSystem = MechanicalUnitSystem.StandardNMM
 use_length = 0.100
 
 geo = ExtAPI.DataModel.GeoData
 edgelist = []
 
+# Iterate through assemblies, parts, and bodies to find edges of the given length
 for asm in geo.Assemblies:
     for part in asm.Parts:
         for body in part.Bodies:
@@ -143,14 +172,16 @@ print(edgelist)
 # %%
 # Get all circular edges of a given radius
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Retrieve all circular edges with a specified radius
 import math
 
-radius = 0.018
-circumference = 2 * math.pi * radius
+radius = 0.018  # Target radius
+circumference = 2 * math.pi * radius  # Calculate circumference
 
 geo = ExtAPI.DataModel.GeoData
 circlelist = []
 
+# Iterate through assemblies, parts, and bodies to find circular edges
 for asm in geo.Assemblies:
     for part in asm.Parts:
         for body in part.Bodies:
@@ -165,6 +196,7 @@ print(circlelist)
 # %%
 # Get Radius of a selected edge
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Retrieve the radius of a specific edge if it is circular
 my_edge = ExtAPI.DataModel.GeoData.GeoEntityById(27)
 my_edge_radius = my_edge.Radius if str(my_edge.CurveType) == "GeoCurveCircle" else 0.0
 print(my_edge_radius)
@@ -172,6 +204,7 @@ print(my_edge_radius)
 # %%
 # Create a Named Selection from a list of body Ids
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Create a named selection for a list of body IDs
 mylist = [bodyid]
 
 selection_manager = ExtAPI.SelectionManager
@@ -186,6 +219,7 @@ ns2.Location = selection
 # %%
 # Find a Named Selection with a prefix
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Retrieve a named selection whose name starts with a specific prefix
 NSall = ExtAPI.DataModel.Project.Model.NamedSelections.GetChildren[
     Ansys.ACT.Automation.Mechanical.NamedSelection
 ](True)
@@ -195,6 +229,7 @@ print(my_nsel.Name)
 # %%
 # Create a Named Selection of all bodies with a cylindrical face
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 geo = ExtAPI.DataModel.GeoData
 cyl_body_ids = []
 
@@ -224,6 +259,7 @@ selection_manager.ClearSelection()
 # %%
 # Modify material assignment
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Assign a specific material to all bodies in the model
 allbodies = ExtAPI.DataModel.Project.Model.GetChildren(DataModelObjectCategory.Body, True)
 for body in allbodies:
     body.Material = "Structural Steel"
@@ -231,11 +267,12 @@ for body in allbodies:
 # %%
 # Get all Coordinate Systems
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Retrieve all coordinate systems in the model
 tree_CS = ExtAPI.DataModel.Project.Model.CoordinateSystems
 
 
 # sphinx_gallery_start_ignore
-# Save the mechdat
+# Save the Mechanical database file
 from pathlib import Path
 
 output_path = Path.cwd() / "out"
@@ -243,8 +280,7 @@ test_mechdat_path = str(output_path / "test.mechdat")
 # app.save_as(test_mechdat_path, overwrite=True)
 
 
-# Close the app
+# Close the application and delete downloaded files
 app.close()
-# Delete the downloaded files
 delete_downloads()
 # sphinx_gallery_end_ignore

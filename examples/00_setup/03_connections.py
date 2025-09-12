@@ -33,28 +33,40 @@ from ansys.mechanical.core import App
 from ansys.mechanical.core.examples import delete_downloads, download_file
 
 app = App(globals=globals())
+
+# Download the geometry file for the example
 geom_file_path = download_file("example_06_bolt_pret_geom.agdb", "pymechanical", "00_basic")
+
+# Import the geometry into the Mechanical model
 geometry_import = Model.GeometryImportGroup.AddGeometryImport()
 geometry_import_format = Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.Format.Automatic
 geometry_import_preferences = Ansys.ACT.Mechanical.Utilities.GeometryImportPreferences()
+
+# Set preferences for geometry import
 geometry_import_preferences.ProcessLines = True
 geometry_import_preferences.NamedSelectionKey = ""
 geometry_import_preferences.ProcessNamedSelections = True
 geometry_import_preferences.ProcessMaterialProperties = True
+
+# Perform the geometry import
 geometry_import.Import(geom_file_path, geometry_import_format, geometry_import_preferences)
 # sphinx_gallery_end_ignore
 
+# Plot the imported geometry
 app.plot()
 
-# Print the tree
+# Print the tree structure of the Mechanical model
 app.print_tree()
 
 # %%
 # Get information about all Contacts Defined
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Retrieve all contact regions defined in the model
 all_contacts = ExtAPI.DataModel.Project.Model.Connections.GetChildren(
     DataModelObjectCategory.ContactRegion, True
 )
+
+# Print details of each contact region
 for contact in all_contacts:
     print(
         f"\n{contact.Parent.Name} > {contact.Name} : {contact.ContactType} : {contact.Suppressed} : {contact.ContactFormulation}"
@@ -66,6 +78,8 @@ for contact in all_contacts:
 # %%
 # Create Automatic Connections on a chosen named selection
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Create a new connection group for automatic connections
+
 contactgroup = ExtAPI.DataModel.Project.Model.Connections.AddConnectionGroup()
 contactgroup.FaceFace = True
 contactgroup.FaceEdge = contactgroup.FaceEdge.No
@@ -73,22 +87,28 @@ contactgroup.GroupBy = contactgroup.GroupBy.Faces
 contactgroup.Priority = contactgroup.Priority.FaceOverEdge
 contactgroup.InternalObject.DetectCylindricalFacesType = 1
 
+# Retrieve a named selection for the connection group
 NSall = ExtAPI.DataModel.Project.Model.NamedSelections.GetChildren[
     Ansys.ACT.Automation.Mechanical.NamedSelection
 ](True)
 my_nsel = [i for i in NSall if i.Name == "bodies_5"][0]
 
+# Assign the named selection to the connection group and create automatic connections
 contactgroup.Location = my_nsel
 contactgroup.CreateAutomaticConnections()
 
+# Refresh the tree structure to reflect the changes
 mytree = ExtAPI.DataModel.Tree
 mytree.Refresh()
 
 # %%
 # Create a Contact region using face named selections
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Add a new contact region to the model
 c = ExtAPI.DataModel.Project.Model.Connections
 c1 = c.AddContactRegion()
+
+# Retrieve named selections for the source and target locations
 NSall = ExtAPI.DataModel.Project.Model.NamedSelections.GetChildren[
     Ansys.ACT.Automation.Mechanical.NamedSelection
 ](True)
@@ -101,8 +121,10 @@ c1.SourceLocation = a
 # %%
 # Insert a Joint using face IDs
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Define face IDs for the joint
 face1 = 135
 face2 = 160
+
 
 from pathlib import Path  # delete
 
@@ -110,10 +132,11 @@ output_path = Path.cwd() / "out"  # delete
 test_mechdat_path = str(output_path / "temporarycheck.mechdat")  # delete
 app.save_as(test_mechdat_path, overwrite=True)  # delete
 
-
+# Add a new joint to the model
 model = ExtAPI.DataModel.Project.Model
 j = model.Connections.AddJoint()
 
+# Define the reference and mobile locations for the joint using face IDs
 reference_scoping = ExtAPI.SelectionManager.CreateSelectionInfo(SelectionTypeEnum.GeometryEntities)
 reference_scoping.Ids = [face1]
 j.ReferenceLocation = reference_scoping
@@ -125,18 +148,25 @@ j.MobileLocation = mobile_scoping
 # %%
 # Define a Bearing
 # ~~~~~~~~~~~~~~~~
+# Add a new bearing connection to the model
 brg = ExtAPI.DataModel.Project.Model.Connections.AddBearing()
+
+# Set the reference rotation plane for the bearing
 brg.ReferenceRotationPlane = RotationPlane.XY
+
+# Define stiffness values for the bearing
 brg.StiffnessK11.Output.DiscreteValues = [Quantity("11 [N/m]")]
 brg.StiffnessK22.Output.DiscreteValues = [Quantity("22 [N/m]")]
 brg.StiffnessK21.Output.DiscreteValues = [Quantity("21 [N/m]")]
 brg.StiffnessK12.Output.DiscreteValues = [Quantity("12 [N/m]")]
 
+# Define damping values for the bearing
 brg.DampingC11.Output.DiscreteValues = [Quantity("111 [N sec m^-1]")]
 brg.DampingC22.Output.DiscreteValues = [Quantity("122 [N sec m^-1]")]
 brg.DampingC12.Output.DiscreteValues = [Quantity("112 [N sec m^-1]")]
 brg.DampingC21.Output.DiscreteValues = [Quantity("121 [N sec m^-1]")]
 
+# Retrieve named selections for the reference and mobile locations
 NSall = ExtAPI.DataModel.Project.Model.NamedSelections.GetChildren[
     Ansys.ACT.Automation.Mechanical.NamedSelection
 ](True)
@@ -145,7 +175,7 @@ brg.MobileLocation = [i for i in NSall if i.Name == "shank_surface"][0]
 
 
 # sphinx_gallery_start_ignore
-# Save the mechdat
+# Save the Mechanical database file
 from pathlib import Path
 
 output_path = Path.cwd() / "out"
@@ -153,13 +183,7 @@ test_mechdat_path = str(output_path / "test.mechdat")
 # app.save_as(test_mechdat_path, overwrite=True)
 
 
-# Close the app
+# Close the application and delete downloaded files
 app.close()
-# Delete the downloaded files
 delete_downloads()
 # sphinx_gallery_end_ignore
-
-
-# %%
-# TODO : Change Model for Joint and Bearing
-# ~~~~~~~~~~~~~~~~

@@ -36,9 +36,21 @@ from ansys.mechanical.core import App
 from ansys.mechanical.core.examples import delete_downloads, download_file
 
 mechdat_path = download_file("cantilever.mechdat", "pymechanical", "embedding")
+
+# The following line creates an instance of the app, extracts the global API entry points,
+# and merges them into your Python global variables.
+
 app = App(db_file=mechdat_path, globals=globals())
 print(app)
 
+
+# Alternatively, you can use the update_globals method of the App class to update the global variables:
+# The second argument, if set to False updates globals without enums like "SelectionTypeEnum" or "LoadDefineBy"
+# app = App()
+# app.update_globals(globals(), False)
+
+# For a specific version , use ;
+# app = App(version=241)
 
 # %%
 # Import a Geometry File
