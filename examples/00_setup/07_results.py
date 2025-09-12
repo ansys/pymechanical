@@ -138,7 +138,7 @@ print("Safety Factor Minimum:", minimum)
 
 # Export safety factor results to a text file
 fname = "safety_factor_results.txt"
-safety_factor.ExportToTextFile(True, fname)
+safety_factor.ExportToTextFile(fname)
 
 # %%
 # User-defined Result
@@ -155,7 +155,7 @@ print("User-defined Result Added:", user_result)
 reader = static_struct.GetResultsData()
 result_set_count = reader.ListTimeFreq.Count
 print("Number of Result Sets:", result_set_count)
-
+reader.Dispose()
 
 # %%
 # Export all results in the tree to PNG (2D image) files
