@@ -25,6 +25,11 @@ runs:
   using: "composite"
   steps:
 
+    - name: "Print github sha"
+      shell: bash
+      run: |
+        echo "GITHUB_SHA: ${{ github.sha }}"
+
     - name: Get most recent Python version
       shell: bash
       run: |
@@ -45,6 +50,14 @@ runs:
               exit 1
             fi
           fi
+
+    # - name: "Cache Python directory"
+    #   uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
+    #   with:
+    #     path: /usr/local/bin/python${{ inputs.python-version }}
+    #     key: python${{ inputs.python-version }}-dir-${{ github.sha }}
+    #     restore-keys: |
+    #       python${{ inputs.python-version }}-dir
 
     - name: Manually set up Python
       shell: bash
@@ -76,7 +89,7 @@ runs:
       shell: bash
       run: |
         # Link python to the installed version
-        ln -s /usr/local/bin/python${{ matrix.python-version }} /usr/bin/python
+        ln -s /usr/local/bin/python${{ inputs.python-version }} /usr/bin/python
 
         # Verify Python installation
         python -m ensurepip --default-pip
@@ -92,7 +105,7 @@ runs:
         echo "Using python from $env_python_check"
 
         if [[ $env_python_check =~ "env" ]]; then
-          echo "Using virtual environment Python."
+          echo "Using virtual environment"
         else
           echo "Not using virtual environment: $env_python_check"
           exit 1
