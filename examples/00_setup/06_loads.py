@@ -262,20 +262,20 @@ nf.XYZFunctionCoordinateSystem = a
 nf.YComponent.Output.DiscreteValues = [Quantity("0 [N]"), Quantity("100[N]")]
 
 # Nodal Displacement
-nd = Model.Analyses[0].AddNodalDisplacement()
-nd.Location = n
-nd.YComponent.Inputs[0].DiscreteValues = [Quantity("0 [sec]"), Quantity("1 [sec]")]
-nd.IndependentVariable = LoadVariableVariationType.YValue
-nd.XYZFunctionCoordinateSystem = a
-nd.YComponent.Output.DiscreteValues = [Quantity("0 [mm]"), Quantity("100[mm]")]
+nodal_displacement = Model.Analyses[0].AddNodalDisplacement()
+nodal_displacement.Location = n
+nodal_displacement.YComponent.Inputs[0].DiscreteValues = [Quantity("0 [sec]"), Quantity("1 [sec]")]
+nodal_displacement.IndependentVariable = LoadVariableVariationType.YValue
+nodal_displacement.XYZFunctionCoordinateSystem = a
+nodal_displacement.YComponent.Output.DiscreteValues = [Quantity("0 [mm]"), Quantity("100[mm]")]
 
 # Nodal Pressure
-np = Model.Analyses[0].AddNodalPressure()
-np.Location = n
-np.Magnitude.Inputs[0].DiscreteValues = [Quantity("0 [sec]"), Quantity("1 [sec]")]
-np.IndependentVariable = LoadVariableVariationType.YValue
-np.XYZFunctionCoordinateSystem = a
-np.Magnitude.Output.DiscreteValues = [Quantity("0 [Pa]"), Quantity("100[Pa]")]
+nodal_pressure = Model.Analyses[0].AddNodalPressure()
+nodal_pressure.Location = n
+nodal_pressure.Magnitude.Inputs[0].DiscreteValues = [Quantity("0 [sec]"), Quantity("1 [sec]")]
+nodal_pressure.IndependentVariable = LoadVariableVariationType.YValue
+nodal_pressure.XYZFunctionCoordinateSystem = a
+nodal_pressure.Magnitude.Output.DiscreteValues = [Quantity("0 [Pa]"), Quantity("100[Pa]")]
 
 # sphinx_gallery_start_ignore
 # Save the project as a mechdat file (currently commented out)
