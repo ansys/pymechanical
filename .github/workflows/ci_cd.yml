@@ -123,13 +123,10 @@ jobs:
   revn-variations:
     name: Save variations of revn
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     outputs:
       stable_container: ${{ steps.save-versions.outputs.stable_container }}
       test_revn: '${{ steps.save-versions.outputs.test_revn }}'
       test_container: ${{ steps.save-versions.outputs.test_container }}
-      test_container_sha: ${{ steps.save-versions.outputs.test_container_sha }}
       test_docker_image_version: '${{ steps.save-versions.outputs.test_docker_image_version }}'
     steps:
       - id: save-versions
@@ -169,8 +166,8 @@ jobs:
     needs: [revn-variations]
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    outputs:
-      sha: ${{ steps.get-sha.outputs.sha }}
+    # outputs:
+    #   sha: ${{ steps.get-sha.outputs.sha }}
     steps:
       - name: Install dependencies
         run: |
