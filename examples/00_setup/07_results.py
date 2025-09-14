@@ -155,7 +155,7 @@ print("User-defined Result Added:", user_result)
 reader = static_struct.GetResultsData()
 result_set_count = reader.ListTimeFreq.Count
 print("Number of Result Sets:", result_set_count)
-
+reader.Dispose()
 
 # %%
 # Export all results in the tree to PNG (2D image) files
