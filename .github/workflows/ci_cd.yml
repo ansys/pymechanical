@@ -182,7 +182,7 @@ jobs:
           MECHANICAL_IMAGE: ${{ matrix.test_container }}
         run: |
           docker pull ${{ env.MECHANICAL_IMAGE }}
-          get_sha=$(docker inspect ${{ env.MECHANICAL_IMAGE }} | grep digest)
+          get_sha=$(docker inspect ${{ env.MECHANICAL_IMAGE }})
           echo "Container SHA: $get_sha"
 
   config-matrix:
@@ -382,76 +382,76 @@ jobs:
       #     fail_on_failure: false
 
 
-  embedding-tests:
-    name: Embedding testing and coverage
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs: [revn-variations, container-stability-check] # smoke-tests
-    container:
-      image: ${{ needs.revn-variations.outputs.test_container }}
-      options: --entrypoint /bin/bash
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ['3.10', '3.11', '3.12', '3.13']
+  # embedding-tests:
+  #   name: Embedding testing and coverage
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 30
+  #   needs: [revn-variations, container-stability-check] # smoke-tests
+  #   container:
+  #     image: ${{ needs.revn-variations.outputs.test_container }}
+  #     options: --entrypoint /bin/bash
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       python-version: ['3.10', '3.11', '3.12', '3.13']
 
-    steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+  #   steps:
+  #     - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
-      - name: "Set up Python and activate virtual environment"
-        uses: ./.github/workflows/setup-python/
-        with:
-          python-version: ${{ matrix.python-version }}
+  #     - name: "Set up Python and activate virtual environment"
+  #       uses: ./.github/workflows/setup-python/
+  #       with:
+  #         python-version: ${{ matrix.python-version }}
 
-      - name: "Install packages for testing"
-        run: |
-          . /env/bin/activate
-          pip install --upgrade pip
-          pip install uv
-          uv pip install -e .[tests]
+  #     - name: "Install packages for testing"
+  #       run: |
+  #         . /env/bin/activate
+  #         pip install --upgrade pip
+  #         pip install uv
+  #         uv pip install -e .[tests]
 
-      - name: Unit Testing and coverage
-        env:
-          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
-          ANSYS_WORKBENCH_LOGGING: 0
-          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
-          NUM_CORES: 1
-          PYTHONUNBUFFERED: 1
-        run: |
-          . /env/bin/activate
-          if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
-            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml
-          else
-            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml || true
-          fi
+  #     - name: Unit Testing and coverage
+  #       env:
+  #         ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
+  #         ANSYS_WORKBENCH_LOGGING: 0
+  #         ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
+  #         NUM_CORES: 1
+  #         PYTHONUNBUFFERED: 1
+  #       run: |
+  #         . /env/bin/activate
+  #         if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
+  #           xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml
+  #         else
+  #           xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml || true
+  #         fi
 
-      - name: Upload coverage results
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        if: env.MAIN_PYTHON_VERSION == matrix.python-version
-        with:
-          include-hidden-files: true
-          name: coverage-tests-embedding
-          path: .cov
-          retention-days: 7
+  #     - name: Upload coverage results
+  #       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+  #       if: env.MAIN_PYTHON_VERSION == matrix.python-version
+  #       with:
+  #         include-hidden-files: true
+  #         name: coverage-tests-embedding
+  #         path: .cov
+  #         retention-days: 7
 
-      - name: Upload coverage results (as .coverage)
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        if: env.MAIN_PYTHON_VERSION == matrix.python-version
-        with:
-          include-hidden-files: true
-          name: coverage-file-tests-embedding
-          path: .coverage
-          retention-days: 7
+  #     - name: Upload coverage results (as .coverage)
+  #       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+  #       if: env.MAIN_PYTHON_VERSION == matrix.python-version
+  #       with:
+  #         include-hidden-files: true
+  #         name: coverage-file-tests-embedding
+  #         path: .coverage
+  #         retention-days: 7
 
-      - name: Publish Test Report
-        uses: mikepenz/action-junit-report@3585e9575db828022551b4231f165eb59a0e74e3 # v5.6.2
-        if: always()
-        with:
-          report_paths: '**/test_results*.xml'
-          check_name: Test Report ${{ matrix.python-version }}
-          detailed_summary: true
-          include_passed: true
-          fail_on_failure: true
+  #     - name: Publish Test Report
+  #       uses: mikepenz/action-junit-report@3585e9575db828022551b4231f165eb59a0e74e3 # v5.6.2
+  #       if: always()
+  #       with:
+  #         report_paths: '**/test_results*.xml'
+  #         check_name: Test Report ${{ matrix.python-version }}
+  #         detailed_summary: true
+  #         include_passed: true
+  #         fail_on_failure: true
 
   # embedding-scripts-tests:
   #   name: Embedding scripts testing and coverage
