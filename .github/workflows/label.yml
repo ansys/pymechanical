@@ -1,6 +1,10 @@
 name: Labeler
 on:
   pull_request:
+    # opened, reopened, and synchronize are default for pull_request
+    # edited - when PR title or body is changed
+    # labeled - when labels are added to PR
+    types: [opened, reopened, synchronize, edited, labeled]
   push:
     branches: [ main ]
     paths:
@@ -16,7 +20,7 @@ jobs:
     name: Syncer
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
       - uses: micnncim/action-label-syncer@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -32,15 +36,15 @@ jobs:
 
     # Label based on modified files
     - name: Label based on changed files
-      uses: actions/labeler@v4
+      uses: actions/labeler@v6
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
-        sync-labels: ''
+        sync-labels: false
 
     # Label based on branch name
     - uses: actions-ecosystem/action-add-labels@v1
       if: |
-        startsWith(github.event.pull_request.head.ref, 'doc') || 
+        startsWith(github.event.pull_request.head.ref, 'doc') ||
         startsWith(github.event.pull_request.head.ref, 'docs')
       with:
         labels: documentation
@@ -70,7 +74,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Suggest to add labels
-      uses: peter-evans/create-or-update-comment@v3
+      uses: peter-evans/create-or-update-comment@v4
       # Execute only when no labels have been applied to the pull request
       if: toJSON(github.event.pull_request.labels.*.name) == '{}'
       with:
@@ -83,3 +87,18 @@ jobs:
           - [good first issue](https://github.com/ansys/pymechanical/pulls?q=label%3Agood+first+issue)
           - [maintenance](https://github.com/ansys/pymechanical/pulls?q=label%3Amaintenance+)
           - [release](https://github.com/ansys/pymechanical/pulls?q=label%3Arelease+)
+
+  changelog-fragment:
+    name: "Create changelog fragment"
+    needs: [labeler]
+    permissions:
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+    - uses: ansys/actions/doc-changelog@v10
+      with:
+        token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+        use-conventional-commits: true
+        bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
+        bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}

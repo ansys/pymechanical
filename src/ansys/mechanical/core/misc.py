@@ -1,3 +1,25 @@
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 """Contain miscellaneous functions and methods at the module level."""
 
 from functools import wraps
@@ -25,8 +47,8 @@ def get_mechanical_bin(release_version):
     Parameters
     ----------
     release_version: str
-        Mechanical version using the three-digit format. For example, ``"231"`` for
-        2023 R1.
+        Mechanical version using the three-digit format. For example, ``"252"`` for
+        2025 R2.
     """
     if is_windows():  # pragma: no cover
         program_files = os.getenv("PROGRAMFILES", os.path.join("c:\\", "Program Files"))
@@ -87,7 +109,7 @@ def check_valid_port(port, lower_bound=1000, high_bound=60000):
     """Check if the port is valid.
 
     Parameters
-    ---------
+    ----------
     port : int
         Port to check.
     lower_bound : int, optional
@@ -128,7 +150,7 @@ def check_valid_start_instance(start_instance):
 
     if start_instance.lower() not in ["true", "false"]:
         raise ValueError(
-            f"The value for 'start_instance' should be 'True' or 'False' (case insensitive)."
+            "The value for 'start_instance' should be 'True' or 'False' (case insensitive)."
         )
 
     return start_instance.lower() == "true"

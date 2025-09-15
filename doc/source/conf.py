@@ -1,4 +1,5 @@
 """Sphinx documentation configuration file."""
+
 # Configuration file for the Sphinx documentation builder.
 #
 # This file only contains a selection of the most common options. For a full
@@ -11,13 +12,26 @@ from datetime import datetime
 import os
 import warnings
 
-from ansys_sphinx_theme import get_version_match, pyansys_logo_black
+from ansys_sphinx_theme import ansys_favicon, get_version_match
+import pyvista
+from pyvista.plotting.utilities.sphinx_gallery import DynamicScraper
 from sphinx_gallery.sorting import FileNameSortKey
 
 import ansys.mechanical.core as pymechanical
+from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
 
 # necessary when building the sphinx gallery
 pymechanical.BUILDING_GALLERY = True
+
+# Ensure that offscreen rendering is used for docs generation
+pyvista.OFF_SCREEN = True
+
+# necessary when building the sphinx gallery
+pyvista.BUILDING_GALLERY = True
+
+
+# Whether or not to build the cheatsheet
+BUILD_CHEATSHEET = os.environ.get("BUILD_CHEATSHEET") == "true"
 
 # suppress annoying matplotlib bug
 warnings.filterwarnings(
@@ -27,21 +41,22 @@ warnings.filterwarnings(
     "so cannot show the figure.",
 )
 
-
 # -- Project information -----------------------------------------------------
 
 project = "ansys.mechanical.core"
 copyright = f"(c) {datetime.now().year} ANSYS, Inc. All rights reserved"
 author = "ANSYS Inc."
 release = version = pymechanical.__version__
-cname = os.getenv("DOCUMENTATION_CNAME", default="nocname.com")
+cname = os.getenv("DOCUMENTATION_CNAME", default="mechanical.docs.pyansys.com")
 
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 # -- General configuration ---------------------------------------------------
+# Sphinx extensions
 extensions = [
+    "ansys_sphinx_theme.extension.autoapi",
     "jupyter_sphinx",
     "notfound.extension",
     "numpydoc",
@@ -54,9 +69,13 @@ extensions = [
     "sphinx_autodoc_typehints",
     "sphinx_copybutton",
     "sphinx_design",
-    "sphinx_gallery.gen_gallery",
-    "sphinxemoji.sphinxemoji",
+    "pyvista.ext.plot_directive",
+    "pyvista.ext.viewer_directive",
+    "sphinx_click",
 ]
+
+if pymechanical.BUILDING_GALLERY:
+    extensions.append("sphinx_gallery.gen_gallery")
 
 # Intersphinx mapping
 intersphinx_mapping = {
@@ -65,10 +84,10 @@ intersphinx_mapping = {
     "numpy": ("https://numpy.org/devdocs", None),
     "matplotlib": ("https://matplotlib.org/stable", None),
     "grpc": ("https://grpc.github.io/grpc/python/", None),
-    "pypim": ("https://pypim.docs.pyansys.com/", None),
+    "pypim": ("https://pypim.docs.pyansys.com/version/dev/", None),
 }
 
-suppress_warnings = ["label.*"]
+suppress_warnings = ["label.*", "autoapi.python_import_resolution", "design.grid", "config.cache"]
 # supress_warnings = ["ref.option"]
 
 
@@ -80,7 +99,7 @@ numpydoc_validate = True
 numpydoc_validation_checks = {
     "GL06",  # Found unknown section
     "GL07",  # Sections are in the wrong order.
-    "GL08",  # The object does not have a docstring
+    # "GL08",  # The object does not have a docstring
     "GL09",  # Deprecation warning should precede extended summary
     "GL10",  # reST directives {directives} must be followed by two colons
     "SS01",  # No summary found
@@ -98,7 +117,7 @@ numpydoc_validation_exclude = {  # set of regex
 }
 
 # Favicon
-html_favicon = "favicon.png"
+html_favicon = ansys_favicon
 
 # notfound.extension
 notfound_template = "404.rst"
@@ -106,7 +125,7 @@ notfound_urls_prefix = "/../"
 
 # static path
 html_static_path = ["_static"]
-
+templates_path = ["_templates"]
 # The suffix(es) of source filenames.
 source_suffix = ".rst"
 
@@ -127,16 +146,28 @@ exclude_patterns = [
     "_build",
     "Thumbs.db",
     ".DS_Store",
-    # because we include this in examples/index.rst
-    "examples/gallery_examples/index.rst",
     "links.rst",
 ]
 
-# make rst_epilog a variable, so you can add other epilog parts to it
+# Get the current Mechanical version
+current_mechanical_version = next(iter(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS.keys()))
+
+# Create a link directive to the Ansys help documentation to be used in ``helper_scripts.rst``
+extlinks = {
+    "ansyshelp": (
+        "https://ansyshelp.ansys.com/public/account/secured?returnurl=/Views/Secured/corp/"
+        f"v{current_mechanical_version}/en/act_script/%s",
+        "ansyshelp %s",
+    )
+}
+
+# Create the rst_epilog a variable, so you can add other epilog parts to it
 rst_epilog = ""
 # Read link all targets from file
 with open("links.rst") as f:
     rst_epilog += f.read()
+# Replace the version placeholder in rst_epilog with the current Mechanical version
+rst_epilog = rst_epilog.replace("%%VERSION%%", f"v{current_mechanical_version}")
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"
@@ -156,8 +187,7 @@ sphinx_gallery_conf = {
     # path to your examples scripts
     "examples_dirs": ["../../examples/"],
     # path where to save gallery generated examples
-    "gallery_dirs": ["examples/gallery_examples"],
-    # Pattern to search for example files
+    "gallery_dirs": ["examples/gallery_examples"],  # Pattern to search for example files
     "filename_pattern": r"\.py",
     # Remove the "Download all examples" button from the top level gallery
     "download_all_examples": False,
@@ -167,34 +197,34 @@ sphinx_gallery_conf = {
     "backreferences_dir": None,
     # Modules for which function level galleries are created.  In
     "doc_module": "ansys-mechanical-core",
-    "image_scrapers": ("matplotlib"),
+    "image_scrapers": (DynamicScraper(), "matplotlib"),
     "ignore_pattern": "flycheck*",
     "thumbnail_size": (350, 350),
 }
 
-
 # -- Options for HTML output -------------------------------------------------
 html_short_title = html_title = "PyMechanical"
 html_theme = "ansys_sphinx_theme"
-html_logo = pyansys_logo_black
 html_context = {
     "github_user": "pyansys",
     "github_repo": "pymechanical",
     "github_version": "main",
     "doc_path": "doc/source",
+    "pyansys_tags": ["Structures"],
 }
 html_theme_options = {
+    "logo": "pyansys",
     "switcher": {
         "json_url": f"https://{cname}/versions.json",
         "version_match": get_version_match(version),
     },
     "check_switcher": False,
-    "navbar_end": ["version-switcher", "theme-switcher", "navbar-icon-links"],
     "github_url": "https://github.com/ansys/pymechanical",
     "show_prev_next": False,
     "show_breadcrumbs": True,
     "collapse_navigation": True,
     "use_edit_page_button": True,
+    "header_links_before_dropdown": 5,  # number of links before the dropdown menu
     "additional_breadcrumbs": [
         ("PyAnsys", "https://docs.pyansys.com/"),
     ],
@@ -205,13 +235,31 @@ html_theme_options = {
             "icon": "fa fa-comment fa-fw",
         },
     ],
+    "whatsnew": {
+        "whatsnew_file_name": "../changelog.d/whatsnew.yml",
+        "changelog_file_name": "changelog.rst",
+        "sidebar_pages": ["changelog", "index"],
+    },
+    "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
 }
+
+if BUILD_CHEATSHEET:
+    html_theme_options["cheatsheet"] = {
+        "file": "cheatsheet/cheat_sheet.qmd",
+        "title": "PyMechanical cheat sheet",
+    }
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = "pymechanicaldoc"
 
+html_sidebars = {
+    "changelog": [],
+    "contributing": [],
+}
+
+html_show_sourcelink = False
 
 # -- Options for LaTeX output ------------------------------------------------
 latex_elements = {}
@@ -276,5 +324,28 @@ epub_exclude_files = ["search.html"]
 
 # -- Linkcheck config --------------------------------------------------------
 
-linkcheck_ignore = [r"https://github.com/ansys/pymechanical/pkgs/container/.*"]
+linkcheck_ignore = [
+    "https://github.com/ansys/pymechanical/pkgs/container/.*",
+    "https://ansyshelp.ansys.com/*",
+    "https://ansysaccount.b2clogin.com/*",
+    "https://answers.microsoft.com/en-us/windows/forum/all/*",
+    "https://download.ansys.com/*",
+    "https://support.ansys.com/*",
+    "https://discuss.ansys.com/*",
+    "https://www.ansys.com/*",
+    "../api/*",  # Remove this after release 0.10.12
+    "api/*",
+    "path.html",
+    "user_guide_embedding/*",
+    "changelog.html",
+]
+
 linkcheck_anchors = False
+
+# If we are on a release, we have to ignore the "release" URLs, since it is not
+# available until the release is published.
+switcher_version = get_version_match(version)
+if switcher_version != "dev":
+    linkcheck_ignore.append(
+        f"https://github.com/ansys/pymechanical/releases/tag/v{pymechanical.__version__}"
+    )

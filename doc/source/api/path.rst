@@ -1,8 +1,9 @@
-.. _ansys_tools_path_api:
+.. _ref_ansys_tools_path_api:
 
-Ansys path tools
+Ansys tools path
 ================
-These methods on the ansys-tools-path module provide helper functions for configuration and discovery
+
+These methods on the ``ansys-tools-path`` module provide helper functions for configuration and discovery
 of the installation path of the Mechanical application.
 
 .. currentmodule:: ansys.tools.path
@@ -15,4 +16,3 @@ of the installation path of the Mechanical application.
    get_mechanical_path
    change_default_mechanical_path
    save_mechanical_path
-

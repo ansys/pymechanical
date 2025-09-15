@@ -1,14 +1,36 @@
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 """This module is for threaded implementations of the Mechanical interface."""
 
 import os
 import time
 import warnings
 
-import ansys.platform.instancemanagement as pypim
 from ansys.tools.path import version_from_path
 
 from ansys.mechanical.core.errors import VersionError
 from ansys.mechanical.core.mechanical import (
+    _HAS_ANSYS_PIM,
     _HAS_TQDM,
     LOG,
     MECHANICAL_DEFAULT_PORT,
@@ -89,19 +111,19 @@ class LocalMechanicalPool:
 
     On Windows, create a pool while specifying the Mechanical executable file.
 
-    >>> exec_file = 'C:/Program Files/ANSYS Inc/v231/aisol/bin/winx64/AnsysWBU.exe'
+    >>> exec_file = 'C:/Program Files/ANSYS Inc/v252/aisol/bin/winx64/AnsysWBU.exe'
     >>> pool = LocalMechanicalPool(10, exec_file=exec_file)
     Creating Pool: 100%|########| 10/10 [00:01<00:00,  1.43it/s]
 
     On Linux, create a pool while specifying the Mechanical executable file.
 
-    >>> exec_file = '/ansys_inc/v231/aisol/.workbench'
+    >>> exec_file = '/ansys_inc/v252/aisol/.workbench'
     >>> pool = LocalMechanicalPool(10, exec_file=exec_file)
     Creating Pool: 100%|########| 10/10 [00:01<00:00,  1.43it/s]
 
     In the PyPIM environment, create a pool.
 
-    >>> pool = LocalMechanicalPool(10, version="231")
+    >>> pool = LocalMechanicalPool(10, version="252")
     Creating Pool: 100%|########| 10/10 [00:01<00:00,  1.43it/s]
 
     """
@@ -148,17 +170,17 @@ class LocalMechanicalPool:
         self._spawn_kwargs = kwargs
         self._remote = False
 
-        # verify that mechanical is 2023R1 or newer
+        # Verify that Mechanical is 2023R2 or newer
         exec_file = None
         if "exec_file" in kwargs:
             exec_file = kwargs["exec_file"]
         else:
-            if pypim.is_configured():  # pragma: no cover
+            if _HAS_ANSYS_PIM and pypim.is_configured():  # pragma: no cover
                 if "version" in kwargs:
                     version = kwargs["version"]
                     self._remote = True
                 else:
-                    raise "Pypim is configured. But version is not passed."
+                    raise ValueError("Pypim is configured, but version is not passed.")
             else:  # get default executable
                 exec_file = get_mechanical_path()
                 if exec_file is None:  # pragma: no cover
@@ -169,8 +191,8 @@ class LocalMechanicalPool:
                     )
 
         if not self._remote:  # pragma: no cover
-            if version_from_path("mechanical", exec_file) < 231:
-                raise VersionError("A local Mechanical pool requires Mechanical 2023 R1 or later.")
+            if version_from_path("mechanical", exec_file) < 232:
+                raise VersionError("A local Mechanical pool requires Mechanical 2023 R2 or later.")
 
         ports = None
 
@@ -320,8 +342,8 @@ class LocalMechanicalPool:
         if progress_bar:
             if not _HAS_TQDM:  # pragma: no cover
                 raise ModuleNotFoundError(
-                    f"To use the keyword argument 'progress_bar', you must have installed "
-                    f"the 'tqdm' package. To avoid this message, you can set 'progress_bar=False'."
+                    "To use the keyword argument 'progress_bar', you must have installed "
+                    "the 'tqdm' package. To avoid this message, you can set 'progress_bar=False'."
                 )
 
             pbar = tqdm(total=jobs_count, desc="Mechanical Running")
@@ -364,11 +386,11 @@ class LocalMechanicalPool:
             else:
                 run_thread.join()
                 if not complete[0]:  # pragma: no cover
-                    LOG.error(f"Stopped instance because running failed.")
+                    LOG.error("Stopped instance because running failed.")
                     try:
                         obj.exit()
-                    except:
-                        pass
+                    except Exception as e:
+                        LOG.error(f"Unexpected error while exiting: {e}")
 
             obj.locked = False
             if pbar:
@@ -507,8 +529,8 @@ class LocalMechanicalPool:
         >>> mechanical = pool.next_available()
         >>> mechanical
         Ansys Mechanical [Ansys Mechanical Enterprise]
-        Product Version:231
-        Software build date:Wed Jul 13 14:29:54 2022
+        Product Version:252
+        Software build date: 06/13/2025 15:54:58
         """
         # loop until the next instance is available
         while True:
@@ -561,8 +583,8 @@ class LocalMechanicalPool:
             if instance_local:
                 try:
                     instance_local.exit()
-                except:  # pragma: no cover
-                    pass
+                except Exception as e:  # pragma: no cover
+                    LOG.error(f"Error while exiting instance {str(instance_local)}: {str(e)}")
                 self._instances[index] = None
                 LOG.debug(f"Exited instance: {str(instance_local)}")
 

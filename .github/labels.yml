@@ -6,6 +6,10 @@
   description: Related with project dependencies
   color: ffc0cb
 
+- name: dependabot
+  description: Related to dependabot
+  color: f56cda
+
 - name: documentation
   description: Improvements or additions to documentation
   color: 0677ba
@@ -25,15 +29,35 @@
 - name: release
   description: Anything related to an incoming release
   color: ffffff
-  
+
 - name: testing
   description: Involves the development of new unit/functional tests
   color: bfe5bf
-  
+
 - name: major
   description: Major issue which may have to be subdivided into smaller ones
   color: 5319e7
 
-- name: CI/CD
-  description: ""
+- name: ci/cd
+  description: Involves the GitHub workflow files
   color: b5f226
+
+- name: future
+  description: To be implemented in the future
+  color: 5319e7
+
+- name: windows
+  description: Only observed in Windows
+  color: 9fc5e8
+
+- name: linux
+  description: Only observed in Linux based platform
+  color: a2c4c9
+
+- name: docker
+  description: Only observed in Mechanical docker image
+  color: b6d7a8
+
+- name: stale
+  description: Stale issues will be closed after 60 days of inactivity
+  color: f0dc82

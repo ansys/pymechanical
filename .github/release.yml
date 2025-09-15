@@ -1,0 +1,16 @@
+changelog:
+  categories:
+    - title: New features or code improvements
+      labels:
+        - enhancement
+    - title: Bug fixes or behavior changes
+      labels:
+        - bug
+    - title: Documentation
+      labels:
+        - documentation
+    - title: Maintenance & Testing
+      labels:
+        - dependabot
+        - dependencies
+        - testing

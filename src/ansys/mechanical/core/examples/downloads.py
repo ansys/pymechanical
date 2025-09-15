@@ -1,10 +1,33 @@
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 """Functions to download sample datasets from the PyAnsys data repository."""
 
 import os
 import shutil
 from typing import Optional
 from urllib.parse import urljoin
-import urllib.request
+
+import requests
 
 import ansys.mechanical.core as pymechanical
 
@@ -20,7 +43,7 @@ def _joinurl(base, *paths):
 
 
 def _get_default_server_and_joiner():
-    return "https://github.com/ansys/example-data/raw/master", _joinurl
+    return "https://github.com/ansys/example-data/raw/main", _joinurl
 
 
 def _get_filepath_on_default_server(filename: str, *directory: str):
@@ -31,9 +54,13 @@ def _get_filepath_on_default_server(filename: str, *directory: str):
         return joiner(server, filename)
 
 
-def _retrieve_url(url, dest):
-    saved_file, _ = urllib.request.urlretrieve(url, filename=dest)
-    return saved_file
+def _retrieve_url(url: str, dest: str) -> str:
+    with requests.get(url, stream=True, timeout=10) as r:
+        r.raise_for_status()
+        with open(dest, "wb") as f:
+            for chunk in r.iter_content(chunk_size=4096):
+                f.write(chunk)
+    return dest
 
 
 def _retrieve_data(url: str, filename: str, dest: str = None, force: bool = False):

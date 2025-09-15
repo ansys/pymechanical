@@ -189,14 +189,17 @@ cython_debug/
 
 # End of https://www.toptal.com/developers/gitignore/api/python
 
-doc/source/examples/gallery_examples/*.rst
-doc/source/examples/gallery_examples/*/*.ipynb
-doc/source/examples/gallery_examples/*/*.py
-doc/source/examples/gallery_examples/*/*.md5
-doc/source/examples/gallery_examples/*/*.rst
-doc/source/examples/gallery_examples/*/*.pickle
-doc/source/examples/gallery_examples/**/*.png
+doc/source/examples/gallery_examples/**
 
+doc/source/sg_execution_times.rst
+
+# Ignore everything in the doc/source/api/ directory
+doc/source/api/*
+# This file is for the ansys-tools-path
+!doc/source/api/path.rst
+
+# Examples files downloaded when building docs
+examples/01_basic/out/*
 
 # pymechanical-specific
 mylocal.ip

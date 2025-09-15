@@ -1,19 +1,15 @@
 documentation:
-- doc/**/*
-- examples/**/*
+- changed-files:
+  - any-glob-to-any-file: ['doc/**/*', 'examples/**/*']
+
 maintenance:
-- .github/**/*
-- codecov.yml
-- .flake8
-- .coveragerc
-- .codespellrc
-- .pre-commit-config.yaml
-- pyproject.toml
-- pytest.ini
-- tox.ini
+- changed-files:
+  - any-glob-to-any-file: ['.github/**/*', '.pre-commit-config.yaml']
+
 dependencies:
-- pyproject.toml
-- requirements/*
-CI/CD:
-- .github/**/*
-- .ci/**/*
+- changed-files:
+  - any-glob-to-any-file: ['pyproject.toml']
+
+ci/cd:
+- changed-files:
+  - any-glob-to-any-file: ['.github/**/*', 'docker/**/*']

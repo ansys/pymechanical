@@ -1,3 +1,25 @@
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 """Embedding logger.
 
 Module to interact with the built-in logging system of Mechanical.
@@ -15,7 +37,7 @@ Configuring the logger can be done using the :class:`Configuration <ansys.mechan
   from ansys.mechanical.core.embedding.logger import Configuration, Logger
 
   Configuration.configure(level=logging.INFO, to_stdout=True, base_directory=None)
-  app = mech.App(version=241)
+  app = mech.App(version=252)
 
 Then, the :class:`Logger <ansys.mechanical.core.embedding.logger.Logger>` class can be used to write messages to the log:
 
@@ -34,7 +56,10 @@ from ansys.mechanical.core.embedding import initializer
 from ansys.mechanical.core.embedding.logger import environ, linux_api, sinks, windows_api
 
 LOGGING_SINKS: typing.Set[int] = set()
+"""Constant for logging sinks."""
+
 LOGGING_CONTEXT: str = "PYMECHANICAL"
+"""Constant for logging context."""
 
 
 def _get_backend() -> (
@@ -53,7 +78,7 @@ def _get_backend() -> (
     Actually logging a message or flushing the log only works after initializing.
     """
     # TODO - use abc instead of a union type?
-    embedding_initialized = initializer.INITIALIZED_VERSION != None
+    embedding_initialized = initializer.INITIALIZED_VERSION is not None
     if not embedding_initialized:
         return environ.EnvironBackend()
     if os.name == "nt":
@@ -90,7 +115,7 @@ class Configuration:
 
         # Set up the sink-specific log configuration and store to global state.
         cls._store_stdout_sink_enabled(to_stdout)
-        file_sink_enabled = directory != None or base_directory != None
+        file_sink_enabled = directory is not None or base_directory is not None
         cls._store_file_sink_enabled(file_sink_enabled)
 
         # Commit the sink-specific log configuration global state to the backend.
@@ -119,14 +144,14 @@ class Configuration:
     @classmethod
     def set_log_directory(cls, value: str) -> None:
         """Configure logging to write to a directory."""
-        if value == None:
+        if value is None:
             return
         _get_backend().set_directory(value)
 
     @classmethod
     def set_log_base_directory(cls, directory: str) -> None:
         """Configure logging to write in a time-stamped subfolder in this directory."""
-        if directory == None:
+        if directory is None:
             return
         _get_backend().set_base_directory(directory)
 

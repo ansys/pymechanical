@@ -1,162 +1,278 @@
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 """Initializer for Mechanical embedding. Sets up paths and resolvers."""
 from importlib.metadata import distribution
 import os
 from pathlib import Path
-import shutil
+import platform
 import sys
 import warnings
 
-import ansys.tools.path as atp
-
 from ansys.mechanical.core.embedding.loader import load_clr
 from ansys.mechanical.core.embedding.resolver import resolve
+from ansys.mechanical.core.mechanical import LOG
 
 INITIALIZED_VERSION = None
-SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS = {241: "2024R1", 232: "2023R2", 231: "2023R1"}
+"""Constant for the initialized version."""
+
+SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS = {
+    252: "2025R2",
+    251: "2025R1",
+    242: "2024R2",
+    241: "2024R1",
+}
+"""Supported Mechanical embedding versions on Windows."""
 
 
-class TmpUser:
-    """Create Unique User Profile (for AppData)."""
-
-    def __init__(self, defaultProfile, profileName):
-        """Initialize TmpUser class."""
-        self.defaultProfile = defaultProfile
-        self.profileName = profileName
-
-    def set_env(self):
-        """Set environment variables for new user profile."""
-        home = self.profileName
-        if "win" in sys.platform:
-            os.environ["USERPROFILE"] = home
-            os.environ["APPDATA"] = os.path.join(home, "AppData/Roaming")
-            os.environ["LOCALAPPDATA"] = os.path.join(home, "AppData/Local")
-            os.environ["TMP"] = os.path.join(home, "AppData/Local/Temp")
-            os.environ["TEMP"] = os.path.join(home, "AppData/Local/Temp")
-        elif "lin" in sys.platform:
-            os.environ["HOME"] = home
-
-    def exists(self):
-        """Check if unique profile name already exists."""
-        if os.path.exists(self.profileName):
-            return True
-        else:
-            return False
-
-    def mkdirs(self):
-        """Create unique user profile & set up directory tree."""
-        os.makedirs(self.profileName)
-        if "win" in sys.platform:
-            locs = ["AppData/Roaming", "AppData/Local", "AppData/Local/Temp", "Documents"]
-        elif "lin" in sys.platform:
-            locs = [".config", "temp/reports"]
-
-        for loc in locs:
-            os.makedirs(os.path.join(self.profileName, loc))
-
-    def copy_profiles(self):
-        """Copy directories from current user into new user profile."""
-        if "win" in sys.platform:
-            locs = ["AppData/Roaming/Ansys", "AppData/Local/Ansys"]
-        elif "lin" in sys.platform:
-            locs = [".mw/Application Data/Ansys", ".config/Ansys"]
-        for loc in locs:
-            shutil.copytree(
-                os.path.join(self.defaultProfile, loc), os.path.join(self.profileName, loc)
-            )
-
-
-def __add_sys_path(version) -> str:
+def __add_sys_path(version: int) -> str:
     install_path = Path(os.environ[f"AWP_ROOT{version}"])
     platform_string = "winx64" if os.name == "nt" else "linx64"
     bin_path = install_path / "aisol" / "bin" / platform_string
     sys.path.append(str(bin_path.resolve()))
 
 
-def __disable_sec() -> None:
-    """SEC is part of RSM and is unstable with embedding.
+def __workaround_material_server(version: int) -> None:
+    """Workaround material server bug in 2024 R1.
 
-    I'm not going to debug why that is since we are planning to support
-    DCS/REP in the future instead of RSM.
+    A REST server is used as a backend for the material model GUI.
+    In 2024 R1, this GUI is used even in batch mode. The server
+    starts by default on a background thread, which may lead to
+    a race condition on shutdown.
     """
-    os.environ["ANSYS_MECHANICAL_EMBEDDING_NO_SEC"] = "1"
+    if version in [241]:
+        os.environ["ENGRDATA_SERVER_SERIAL"] = "1"
 
 
-def _get_default_linux_version() -> int:
-    """Try to get the active linux version from the environment.
+def __check_for_supported_version(version) -> None:
+    """Check if Mechanical version is supported with current version of PyMechanical.
 
-    On linux, embedding is only possible by setting environment variables before starting python.
-    The version will then be fixed  to a specific version, based on those env vars.
-    The documented way to set those variables is to run python using the .workbench_lite script,
-    which is distributed with the unified installer.
-    That script doesn't quite set an env var to the version number, like 232, however it does set
-    the env var AWP_ROOT{version} to some path. So here, we can search for which of those env
-    vars are set assuming that the user did not set any others.
-    To overcome this, if multiple are set, the user should set the version number in the
-    constructor of the app, like app(version=232)
+    If specific environment variable is enabled, then users can overwrite the supported versions.
+    However, using unsupported versions may cause issues.
     """
-    supported_versions = [232, 241]
-    awp_roots = {ver: os.environ.get(f"AWP_ROOT{ver}", "") for ver in supported_versions}
-    installed_versions = {
-        ver: path for ver, path in awp_roots.items() if path and os.path.isdir(path)
-    }
-    assert len(installed_versions) == 1, "multiple AWP_ROOT environment variables found!"
-    return next(iter(installed_versions))
+    allow_old_version = os.getenv("ANSYS_MECHANICAL_EMBEDDING_SUPPORT_OLD_VERSIONS") == "1"
+
+    # Check if the version is supported
+    if not allow_old_version and version < min(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS):
+        raise ValueError(f"Mechanical version {version} is not supported.")
+
+    return version
 
 
-def _get_default_version() -> int:
-    if os.name == "posix":
-        return _get_default_linux_version()
+def _get_latest_default_version() -> int:
+    """Try to get the latest Mechanical version from the environment.
 
-    if os.name != "nt":  # pragma: no cover
-        raise Exception("Unexpected platform!")
+    Checks if multiple versions of Mechanical found in system.
+    For Linux it will be only one since ``mechanical-env`` takes care of that.
+    If multiple versions are detected, select the latest one, as no specific version is provided.
+    """
+    awp_roots = [value for key, value in os.environ.items() if key.startswith("AWP_ROOT")]
+    if not awp_roots:
+        raise Exception("No Mechanical installations found.")
 
-    _, version = atp.find_mechanical(
-        supported_versions=SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS_WINDOWS
-    )
+    versions_found = []
+    for path in awp_roots:
+        folder = os.path.basename(os.path.normpath(path))
+        version = folder.split("v")[-1]
+        versions_found.append(int(version))
 
-    # version is of the form 23.2
-    int_version = int(str(version).replace(".", ""))
-    return int_version
+    LOG.info(f"Available versions of Mechanical: {versions_found}")
 
+    latest_version = max(versions_found)
 
-def set_private_appdata(pid):
-    """Set up unique user sessions when running parallel instances."""
-    defaultProfile = os.path.expanduser("~")
-    profileName = os.path.join(defaultProfile, f"PyMechanical-{pid}")
-
-    newProfile = TmpUser(defaultProfile, profileName)
-
-    if newProfile.exists():
-        newProfile.delete_dir()
-
-    newProfile.mkdirs()
-
-    newProfile.copy_profiles()
-
-    newProfile.set_env()
-
-    warnings.warn(
-        "Using the private_appdata option creates temporary directories when "
-        "running the pymechanical instances in parallel. "
-        f"There may be leftover files in {profileName}."
-    )
-
-    return profileName
+    if len(awp_roots) > 1:
+        LOG.warning(
+            f"Multiple versions of Mechanical found! Using latest version {latest_version} ..."
+        )
+    return latest_version
 
 
-def initialize(version=None):
-    """Initialize Mechanical embedding."""
-    global INITIALIZED_VERSION
-    if INITIALIZED_VERSION != None:
-        assert INITIALIZED_VERSION == version
+def __check_python_interpreter_architecture() -> None:
+    """Embedding support only 64 bit architecture."""
+    if platform.architecture()[0] != "64bit":
+        raise Exception("Mechanical Embedding requires a 64-bit Python environment.")
+
+
+def __windows_store_workaround(version: int) -> None:
+    """Workaround for Windows store.
+
+    See https://github.com/ansys/pymechanical/issues/1136
+
+    Windows store Python uses the Win32 API SetDefaultDllDirectories
+    so that the PATH environment variable isn't scanned for any DLL
+    dependency.
+
+    PyMechanical loads the embedding library which automatically sets
+    these Paths, but this uses the PATH environment variable which doesn't
+    work for Windows store Python.
+
+    We provide a workaround for versions 2024R2 and 2025R1 that sets
+    these paths using `os.add_dll_directory`.
+
+    Note:   This workaround does not include DLL paths used in FSI
+            mapping workflows.
+
+    Parameters
+    ----------
+    version : int
+        The version of Mechanical to set the DLL paths for.
+    """
+    # Nothing to do on Linux
+    if os.name != "nt":
         return
 
-    if version == None:
-        version = _get_default_version()
+    # Nothing to do if it isn't a Windows store application
+    if r"WindowsApps\PythonSoftwareFoundation" not in sys.base_prefix:
+        return
 
-    INITIALIZED_VERSION = version
+    # Get the AWP_ROOT environment variable for the specified version
+    awp_root = Path(os.environ[f"AWP_ROOT{version}"])
+    # Set paths to the aisol and framework DLLs
+    paths = [
+        awp_root / "aisol" / "bin" / "winx64",
+        awp_root / "Framework" / "bin" / "Win64",
+    ]
+    # Set the path to the tp directory within the AWP_ROOTXYZ directory
+    awp_root_tp = awp_root / "tp"
+    # Add paths to the IntelCompiler, IntelMKL, HDF5, and Qt DLLs for 2024R2 and 2025R1
+    if version == 242:
+        paths.extend(
+            [
+                awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
+                awp_root_tp / "IntelMKL" / "2023.1.0" / "winx64",
+                awp_root_tp / "hdf5" / "1.12.2" / "winx64",
+                awp_root_tp / "qt" / "5.15.16" / "winx64" / "bin",
+            ]
+        )
+    elif version == 251:
+        paths.extend(
+            [
+                awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
+                awp_root_tp / "IntelMKL" / "2023.1.0" / "winx64",
+                awp_root_tp / "hdf5" / "1.12.2" / "winx64",
+                awp_root_tp / "qt" / "5.15.17" / "winx64" / "bin",
+            ]
+        )
+    elif version == 252:
+        paths.extend(
+            [
+                awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
+                awp_root_tp / "IntelMKL" / "2024.2.3" / "winx64",
+                awp_root_tp / "hdf5" / "winx64",
+                awp_root_tp / "qt" / "5.15.18" / "winx64" / "bin",
+            ]
+        )
+    else:
+        return
 
-    __disable_sec()
+    # Add each path to the DLL search path
+    for path in paths:
+        os.add_dll_directory(str(path))
+
+
+def __set_environment(version: int) -> None:
+    """Set environment variables to configure embedding."""
+    if os.name == "nt":  # pragma: no cover
+        if version < 251:
+            os.environ["MECHANICAL_STARTUP_UNOPTIMIZED"] = "1"
+
+    # Set an environment variable to use the custom CLR host
+    # for embedding.
+    # In the future (>252), it would always be used.
+    if version == 251 or version == 252:
+        if "PYMECHANICAL_NO_CLR_HOST_LITE" not in os.environ:
+            os.environ["ANSYS_MECHANICAL_EMBEDDING_CLR_HOST"] = "1"
+    if version > 252:
+        if "PYMECHANICAL_NO_CLR_HOST_LITE" in os.environ:
+            os.environ["ANSYS_MECHANICAL_EMBEDDING_CLR_HOST"] = "0"
+
+
+def __check_for_mechanical_env():
+    """Embedding in linux platform must use mechanical-env."""
+    if platform.system() == "Linux" and os.environ.get("PYMECHANICAL_EMBEDDING") != "TRUE":
+        raise Exception(
+            "On linux, embedding an instance of the Mechanical process using"
+            "the App class requires running python inside of a Mechanical environment."
+            "Use the `mechanical-env` script to do this. For more information, refer to:"
+            "https://mechanical.docs.pyansys.com/version/stable/"
+            "getting_started/running_mechanical.html#embed-a-mechanical-instance"
+        )
+
+
+def __is_lib_loaded(libname: str):  # pragma: no cover
+    """Return whether a library is loaded."""
+    import ctypes
+
+    RTLD_NOLOAD = 4
+    try:
+        ctypes.CDLL(libname, RTLD_NOLOAD)
+    except OSError:
+        return False
+    return True
+
+
+def __check_loaded_libs(version: int = None):  # pragma: no cover
+    """Ensure that incompatible libraries aren't loaded prior to PyMechanical load."""
+    if platform.system() != "Linux":
+        return
+
+    if version < 251:
+        return
+
+    # For 2025 R1, PyMechanical will crash on shutdown if libX11.so is already loaded
+    # before starting Mechanical
+    if __is_lib_loaded("libX11.so"):
+        LOG.warning(
+            "libX11.so is loaded prior to initializing the Embedded Instance of Mechanical.\
+                      Python will crash on shutdown..."
+        )
+
+
+def initialize(version: int = None):
+    """Initialize Mechanical embedding."""
+    global INITIALIZED_VERSION
+    if version is None:
+        version = _get_latest_default_version()
+
+    version = __check_for_supported_version(version=version)
+
+    if INITIALIZED_VERSION is not None:
+        if INITIALIZED_VERSION != version:
+            raise ValueError(
+                f"Initialized version {INITIALIZED_VERSION} "
+                f"does not match the expected version {version}."
+            )
+        return INITIALIZED_VERSION
+
+    __check_python_interpreter_architecture()  # blocks 32 bit python
+    __check_for_mechanical_env()  # checks for mechanical-env in linux embedding
+
+    __set_environment(version)
+
+    __windows_store_workaround(version)
+
+    __check_loaded_libs(version)
+
+    __workaround_material_server(version)
 
     # need to add system path in order to import the assembly with the resolver
     __add_sys_path(version)
@@ -183,4 +299,5 @@ def initialize(version=None):
     # attach the resolver
     resolve(version)
 
+    INITIALIZED_VERSION = version
     return version

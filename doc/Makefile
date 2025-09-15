@@ -1,11 +1,11 @@
 # Minimal makefile for Sphinx documentation
-#
 
 # You can set these variables from the command line.
 SPHINXOPTS    = -j auto
 SPHINXBUILD   = sphinx-build
 SOURCEDIR     = source
 BUILDDIR      = _build
+LINKCHECKDIR  = $(BUILDDIR)/linkcheck
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -17,7 +17,6 @@ help:
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
-
 
 # customized clean due to examples gallery
 clean:
@@ -37,3 +36,9 @@ pdf:
 	@$(SPHINXBUILD) -M latex "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 	cd $(BUILDDIR)/latex && latexmk -r latexmkrc -pdf *.tex -interaction=nonstopmode || true
 	(test -f $(BUILDDIR)/latex/*.pdf && echo pdf exists) || exit 1
+
+# generate docs without examples
+html-noplot:
+	@$(SPHINXBUILD) -D plot_gallery=0 -b html $(SOURCEDIR) $(BUILDDIR)/html $(SPHINXOPTS) $(O)
+	@echo
+	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."

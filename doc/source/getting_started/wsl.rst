@@ -1,7 +1,7 @@
 .. _ref_guide_wsl:
 
-PyAnsys libraries in the Windows Subsystem for Linux and Docker
-###############################################################
+Windows Subsystem for Linux (WSL)
+=================================
 
 This page explains how you use a PyAnsys library, more specifically PyMechanical,
 in the Windows Subsystem for Linux (WSL). WSL is a compatibility layer for
@@ -11,9 +11,8 @@ Windows Server 2019. For more information, see:
 - Wikipedia's `Windows Subsystem for Linux`_
 - Microsoft's `What is the Windows Subsystem for Linux?`_
 
-
 .. _Windows Subsystem for Linux: https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux
-.. _What is the Windows Subsystem for Linux?: https://docs.microsoft.com/en-us/windows/wsl/about
+.. _What is the Windows Subsystem for Linux?: https://learn.microsoft.com/en-us/windows/wsl/about
 
 This page walks you through the installation of WSL on Windows and then
 shows how to use it together with Mechanical, PyMechanical, and
@@ -23,21 +22,21 @@ shows how to use it together with Mechanical, PyMechanical, and
    These instructions have not been fully tested with a VPN connection. If you
    experience any problems connecting WSL to the internet, try to disconnect from the VPN.
 
-
 Run PyMechanical on WSL
 ***********************
+
 There are two versions of WSL: WSL1 and WSL2. Because WSL2 provides many improvements
 over WSL1, you should upgrade to and use WSL2.
 
 Install WSL
-============
+-----------
 
 Install WSL by following the instructions in Microsoft's `Install Linux on Windows with WSL`_.
 
-.. _Install Linux on Windows with WSL: https://docs.microsoft.com/en-us/windows/wsl/install/
+.. _Install Linux on Windows with WSL: https://learn.microsoft.com/en-us/windows/wsl/install
 
 Install the CentOS7 WSL distribution
-====================================
+------------------------------------
 
 You can install the CentOS7 WSL using an unofficial distribution from the
 `<https://github.com/wsldl-pg/CentWSL/>`_ package or the
@@ -47,18 +46,14 @@ Optionally, you can try Ubuntu, but it has not been tested yet in the context of
 
 
 Install Ansys products in WSL CentOS7
-=====================================
-
-Prerequisites
---------------
+-------------------------------------
 
 If you are using CentOS 7, before installing Mechanical, you must install some
 required libraries:
 
 .. code:: bash
-   
-   sudo yum install openssl openssh-clients mesa-libGL mesa-libGLU motif libgfortran
 
+   sudo yum install openssl openssh-clients mesa-libGL mesa-libGLU motif libgfortran
 
 Install Ansys products
 -----------------------
@@ -67,7 +62,7 @@ To install Ansys products in WSL, perform these steps:
 
 1. Download the **Ansys Structures** image for the `current Ansys release
    <https://download.ansys.com/Current%20Release>`_ from the Ansys Customer Portal.
-   
+
    If you are  downloading the image on a Windows machine, you should later copy the image to
    WSL.
 
@@ -75,7 +70,7 @@ To install Ansys products in WSL, perform these steps:
 
    .. code:: bash
 
-       tar xvzf STRUCTURES_2022R2_LINX64.tgz
+       tar xvzf STRUCTURES_2025R2_LINX64.tgz
 
 
 3. To install Mechanical, go into the folder where the files have been extracted
@@ -95,10 +90,8 @@ To install Ansys products in WSL, perform these steps:
    - ``-<product_flag>`` : Specifies the one or more products to install.
      If you omit this argument, all products are installed. The *Ansys, Inc.
      Installation Guides* in the Ansys Help provides a list of valid
-     values for the ``product_flags`` argument in `Chapter 6
-     <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/installation/unix_silent.html>`_
-     of the *Linux Installation Guide* and `Chapter 7
-     <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v231/en/installation/win_silent.html>`_
+     values for the ``product_flags`` argument in `Chapter 6`_
+     of the *Linux Installation Guide* and `Chapter 7`_
      of the *Windows Installation Guide*.
 
      In the preceding example for Mechanical, you only need to specify the ``-mechapdl`` flag.
@@ -117,7 +110,8 @@ directory (``/*/ansys_inc``).
 
 
 Post-installation setup
-=======================
+***********************
+
 
 Open ports for license server communication
 -------------------------------------------
@@ -214,7 +208,6 @@ this code:
 
 Running a Docker image creates a ``log.txt`` file in your current directory location.
 
-
 .. note:: Ensure that your port ``10001`` is open in your firewall.
 
 You should use a script file (batch ``.bat`` or PowerShell ``.ps``)
@@ -255,10 +248,11 @@ the Mechanical instance is launched.
 
 
 Additional information
-======================
+**********************
+
 
 IP addresses
-============
+------------
 
 The IP address ``127.0.0.1`` specified in `Run Mechanical on a local Docker image`_ is
 the IP address of WSL CentOS from the WSL perspective, whereas the IP address for the Windows
@@ -270,7 +264,7 @@ shares resources with WSL, it also shares the internal IP address with the WSL d
 
 
 Ansys installation flags
-========================
+------------------------
 
 To obtain license server information, use one of the following methods to access the ``INSTALL`` file
 and then inspect the last few lines.
@@ -337,7 +331,7 @@ full path to the ``options`` file.
 
 
 IP addresses in WSL and the Windows host
-========================================
+****************************************
 
 **Theory:** You should be able to access the Windows host using the IP address
 specified in the WSL ``/etc/hosts`` file. This IP address is typically ``127.0.1.1``.
@@ -350,7 +344,7 @@ randomly allocated, which is an issue when you define the license server. Howeve
 updating the ``.bashrc`` file as mentioned earlier resolves this issue.
 
 Disable the firewall on the WSL ethernet
-========================================
+****************************************
 
 There are two methods for disabling the firewall on the WSL ethernet.
 
@@ -370,7 +364,6 @@ This method does not show a notification:
 
     powershell.exe -Command "Set-NetFirewallProfile -DisabledInterfaceAliases \"vEthernet (WSL)\""
 
-
 On Windows 10, you can use the `wsl-windows-toolbar-launcher <https://github.com/cascadium/wsl-windows-toolbar-launcher#firewall-rules>`_
 package to launch Linux native apps directly from Windows with the standard
 Windows toolbar. Because the toolbar in Windows 11 differs, the README
@@ -378,7 +371,7 @@ file for this package explains how to run Microsoft's `PowerToys <https://github
 package instead.
 
 Port forwarding on Windows 10
-=============================
+*****************************
 
 You can use Windows PowerShell commands for port forwarding on Windows 10.
 
@@ -391,7 +384,6 @@ This command links ports between WSL and Windows:
 
     netsh interface portproxy add v4tov4 listenport=1055 listenaddress=0.0.0.0 connectport=1055 connectaddress=XXX.XX.XX.XX
 
-
 View all forwards
 -----------------
 
@@ -400,7 +392,6 @@ This command allows you to view all forwards:
 .. code:: pwsh
 
     netsh interface portproxy show v4tov4
-
 
 Delete port forwarding
 ----------------------
@@ -411,9 +402,8 @@ This command allows you to delete port forwarding:
 
     netsh interface portproxy delete v4tov4 listenport=1055 listenaddres=0.0.0.0 protocol=tcp
 
-
 Reset Windows network adapters
-==============================
+******************************
 
 You can reset Windows network adapters with this code:
 
@@ -424,9 +414,8 @@ You can reset Windows network adapters with this code:
     ipconfig /flushdns
     netsh winsock reset
 
-
 Restart the WSL service
-=======================
+***********************
 
 You can restart the WSL service with this command:
 
@@ -434,9 +423,8 @@ You can restart the WSL service with this command:
 
     Get-Service LxssManager | Restart-Service
 
-
 Stop all processes with a given name
-====================================
+************************************
 
 You can stop all processes with a given name with this command.
 
@@ -444,9 +432,8 @@ You can stop all processes with a given name with this command.
 
    Get-Process "AnsysWBU" | Stop-Process
 
-
 Install ``xvfb`` in CentOS7
-===========================
+***************************
 
 If you want to replicate the CI/CD behavior, you must install the ``xvfb`` package
 as shown in the following command. For more information, see the ``.ci`` folder.

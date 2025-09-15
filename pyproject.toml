@@ -1,88 +1,109 @@
 [build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
 
 [project]
-# Check https://flit.readthedocs.io/en/latest/pyproject_toml.html for all available sections
 name = "ansys-mechanical-core"
-version = "0.9.dev1"
+version = "0.12.dev0"
 description = "A python wrapper for Ansys Mechanical"
 readme = "README.rst"
-requires-python = ">=3.8,<4.0"
-license = {file = "LICENSE"}
-authors = [
-    {name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"},
-]
-maintainers = [
-    {name = "ANSYS, Inc.", email = "pyansys.core@ansys.com"},
-]
+requires-python = ">=3.10,<4.0"
+license = { file = "LICENSE" }
+authors = [{ name = "ANSYS, Inc.", email = "pyansys.core@ansys.com" }]
+maintainers = [{ name = "ANSYS, Inc.", email = "pyansys.core@ansys.com" }]
+keywords = ["pymechanical", "mechanical", "ansys", "pyansys"]
 
 classifiers = [
     "Development Status :: 4 - Beta",
-    'Intended Audience :: Science/Research',
-    'Topic :: Scientific/Engineering :: Information Analysis',
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Information Analysis",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+
 dependencies = [
-    "ansys_api_mechanical==0.1.0",
-    "ansys-platform-instancemanagement>=1.0.1",
-    "ansys-pythonnet>=3.1.0rc1",
+    "ansys-api-mechanical==0.1.3",
+    "ansys-mechanical-stubs==0.1.6",
+    "ansys-pythonnet>=3.1.0rc6",
     "ansys-tools-path>=0.3.1",
     "appdirs>=1.4.0",
-    "click>=8.1.3", # for CLI interface
-    "clr-loader==0.2.6",
+    "click>=8.1.3",
+    "clr-loader>=0.2.6",
     "grpcio>=1.30.0",
-    "protobuf>=3.12.2,<3.21.0",
+    "protobuf>=3.12.2,<6",
+    "psutil>=6",
     "tqdm>=4.45.0",
+    "requests>=2,<3",
 ]
 
 [project.urls]
-Documentation = "https://mechanical.docs.pyansys.com"
-Source = "https://github.com/ansys/pymechanical"
 Homepage = "https://github.com/ansys/pymechanical"
-Tracker = "https://github.com/ansys/pymechanical/issues"
+Documentation = "https://mechanical.docs.pyansys.com"
+Repository = "https://github.com/ansys/pymechanical"
+Issues = "https://github.com/ansys/pymechanical/issues"
+Changelog = "https://mechanical.docs.pyansys.com/version/stable/changelog.html"
 
 [project.optional-dependencies]
 tests = [
-    "pytest==7.4.0",
-    "pytest-cov==4.1.0",
-    "pytest-print==0.3.3",
+    "pytest==8.4.2",
+    "pytest-cov==6.3.0",
+    "pytest-print==1.1.0",
+    "psutil==7.0.0",
 ]
+
 doc = [
-    "Sphinx==7.1.2",
-    "ansys-sphinx-theme==0.10.2",
-    "grpcio==1.56.2",
-    "imageio-ffmpeg==0.4.8",
-    "imageio==2.31.1",
-    "jupyter_sphinx==0.4.0",
+    "sphinx==8.2.3",
+    "ansys-sphinx-theme[autoapi,changelog]==1.6.1",
+    "imageio-ffmpeg==0.6.0",
+    "imageio==2.37.0",
+    "jupyter_sphinx==0.5.3",
     "jupyterlab>=3.2.8",
-    "matplotlib==3.7.2",
-    "numpydoc==1.5.0",
-    "plotly==5.15.0",
-    "pypandoc==1.11",
-    "pytest-sphinx==0.5.0",
-    "pythreejs==2.4.2",
-    "pyvista==0.41.1",
-    "sphinx-autobuild==2021.3.14",
-    "sphinx-autodoc-typehints==1.24.0",
+    "matplotlib==3.10.6",
+    "numpy==2.2.6",
+    "numpydoc==1.8.0",
+    "pypandoc==1.15",
+    "sphinx-autobuild==2024.10.3",
+    "sphinx-autodoc-typehints==3.1.0",
     "sphinx-copybutton==0.5.2",
-    "sphinx_design==0.5.0",
-    "sphinx-gallery==0.13.0",
-    "sphinx-notfound-page==0.8.3",
-    "sphinxcontrib-websupport==1.2.4",
-    "sphinxemoji==0.2.0",
+    "sphinx_design==0.6.1",
+    "sphinx-gallery==0.19.0",
+    "sphinx-notfound-page==1.1.0",
+    "sphinxcontrib-websupport==2.0.0",
+    "sphinx-click==6.0.0",
+    "ansys-tools-visualization-interface>=0.2.6",
+]
+
+graphics = [
+    "ansys-tools-visualization-interface>=0.2.6",
+    "usd-core==25.8",
+]
+
+rpc = [
+    "rpyc==6.0.2",
+    "toolz==1.0.0",
+]
+
+pim = [
+    "ansys-platform-instancemanagement>=1.0.1",
 ]
 
 [project.scripts]
 ansys-mechanical = "ansys.mechanical.core.run:cli"
+ansys-mechanical-ideconfig = "ansys.mechanical.core.ide_config:cli"
+find-mechanical = "ansys.mechanical.core.embedding.find_mechanical:cli"
 
-[tool.flit.module]
-name = "ansys.mechanical.core"
+[tool.pdm.build]
+includes = ["src"]
+excludes = ["tests"]
+
+[tool.pdm.build.wheel-data]
+scripts = ["mechanical-env"]
+
+# ========================================================
 
 [tool.black]
 line-length = 100
@@ -91,8 +112,12 @@ line-length = 100
 profile = "black"
 force_sort_within_sections = true
 line_length = 100
-default_section = "THIRDPARTY"
+
 src_paths = ["doc", "src", "tests"]
+
+# ========================================================
+# Pytest and Coverage Configuration
+# ========================================================
 
 [tool.coverage.run]
 relative_files = true
@@ -109,8 +134,8 @@ output = ".cov/coverage.xml"
 
 [tool.pytest.ini_options]
 minversion = "7.1"
-addopts = """-ra -s -m remote_session_connect --durations=0 --cov=ansys.mechanical --cov-report html:.cov/html \
- --cov-report xml:.cov/xml --cov-report term -vv --print --print-relative-time"""
+addopts = """-ra -s --durations=0 --cov=ansys.mechanical --cov-report html:.cov/html \
+ --cov-report xml:.cov/xml --cov-report term --cov-append -vv --print --print-relative-time"""
 # addopts = """-ra -s -m remote_session_launch --durations=0 --cov=ansys.mechanical --cov-report html:.cov/html \
 # --cov-report xml:.cov/xml --cov-report term -vv --print --print-relative-time"""
 # addopts = """-ra -s -m 'remote_session_launch or remote_session_connect' --durations=0 --cov=ansys.mechanical \
@@ -118,14 +143,150 @@ addopts = """-ra -s -m remote_session_connect --durations=0 --cov=ansys.mechanic
 # addopts = """-ra -s -m 'remote_session_launch or remote_session_connect or embedding' --durations=0
 # --cov=ansys.mechanical --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report \
 # term -vv --print --print-relative-time"""
+
 testpaths = [
     "tests",
 ]
 markers = [
     "embedding: tests that embed Mechanical in the python process",
+    "embedding_scripts: embedding tests that use subprocess",
     "python_env: tests that check for an appropriate python environment",
     "remote_session_launch: tests that launch Mechanical and work with gRPC server inside it",
     "remote_session_connect: tests that connect to Mechanical and work with gRPC server inside it",
-     "minimum_version(num): tests that run if ansys-version is greater than or equal to the minimum version provided",
+    "minimum_version(num): tests that run if ansys-version is greater than or equal to the minimum version provided",
+    "version_range(min_revn,max_revn): tests that run if ansys-version is in the range of the minimum and maximum revision numbers inclusive.",
+    "windows_only: tests that run if the testing platform is on Windows",
+    "linux_only: tests that run if the testing platform is on Linux",
+    "cli: tests for the Command Line Interface",
+    "embedding_backgroundapp: tests for the BackgroundApp",
+    "embedding_logging: tests for the logging with Embedded App",
 ]
 xfail_strict = true
+
+# ========================================================
+# Towncrier Configuration
+# ========================================================
+
+[tool.towncrier]
+package = "ansys.mechanical.core"
+directory = "doc/changelog.d"
+filename = "doc/source/changelog.rst"
+start_string = ".. towncrier release notes start\n"
+template = "doc/changelog.d/changelog_template.jinja"
+title_format = "`{version} <https://github.com/ansys/pymechanical/releases/tag/v{version}>`_ - {project_date}"
+issue_format = "`#{issue} <https://github.com/ansys/pymechanical/pull/{issue}>`_"
+
+[[tool.towncrier.type]]
+directory = "added"
+name = "Added"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "changed"
+name = "Changed"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "fixed"
+name = "Fixed"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "dependencies"
+name = "Dependencies"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "miscellaneous"
+name = "Miscellaneous"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "documentation"
+name = "Documentation"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "maintenance"
+name = "Maintenance"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "test"
+name = "Test"
+showcontent = true
+
+
+# ========================================================
+# Flake8 Configuration
+# ========================================================
+
+[tool.flake8]
+exclude = ["venv", "__init__.py", "doc/_build", ".venv"]
+select = [
+    "W191", "W291", "W293", "W391", "E115", "E117",
+    "E122", "E124", "E125", "E225", "E231", "E301",
+    "E303", "E501", "F401", "F403"
+]
+count = true
+max-complexity = 10
+max-line-length = 100
+statistics = true
+
+# ========================================================
+# Tox Configuration
+# ========================================================
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+description = Default tox environments list
+envlist =
+    style,{py310,py311,py312}{,-coverage},doc
+passenv =  AWP_ROOT
+skip_missing_interpreters = true
+isolated_build = true
+isolated_build_env = build
+
+[gh-actions]
+description = The tox environment to be executed in gh-actions for a given python version
+python =
+    3.10: style,py310-coverage,doc
+    3.11: style,py311-coverage,doc
+    3.12: style,py311-coverage,doc
+    3.13: style,py311-coverage,doc
+
+[testenv]
+description = Checks for project unit tests and coverage (if desired)
+basepython =
+    py310: python3.10
+    py311: python3.11
+    py312: python3.12
+    py313: python3.13
+    py: python3
+    {style,reformat,doc,build}: python3
+passenv = *
+setenv =
+    PYTHONUNBUFFERED = yes
+    coverage: PYTEST_EXTRA_ARGS = --cov=ansys.mechanical --cov-report=term --cov-report=xml:.cov/coverage.xml --cov-report=html:.cov/html
+extras = tests
+commands =
+    pytest {env:PYTEST_MARKERS:} {env:PYTEST_EXTRA_ARGS:} {posargs:-vv}
+
+[testenv:style]
+description = Checks project code style
+passenv = *
+skip_install = true
+deps =
+    pre-commit
+commands =
+    pre-commit install
+    pre-commit run --all-files --show-diff-on-failure
+
+[testenv:doc]
+description = Check if documentation generates properly
+passenv = *
+extras = doc
+commands =
+    sphinx-build -d "{toxworkdir}/doc_doctree" doc/source "{toxinidir}/doc/_build/html" --color -vW -bhtml
+"""

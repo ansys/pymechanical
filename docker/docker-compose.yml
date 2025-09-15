@@ -17,9 +17,9 @@ version: '3.3'
 # 1. You need an environment variable named ANSYSLMD_LICENSE_FILE that points to the license server. For example:
 #
 #     export ANSYSLMD_LICENSE_FILE=1055@mylicensehost
-# 
+#
 # 2. Run the following command:
-# 
+#
 #     docker-compose up
 #
 # Optionally you can specify the '-d' flag for detaching mode. (The container will run in the background.)
@@ -30,14 +30,14 @@ version: '3.3'
 #
 # - The docker image is based on the Mechanical Ubuntu docker image from Ansys.
 # - The entrypoint is defined in the Docker image.
-# - If you need to run a license server, look at the 'docker-compose.license_server.yml' file. 
+# - If you need to run a license server, look at the 'docker-compose.license_server.yml' file.
 #   In that case, the command would be:
 #
 #    docker-compose -f docker-compose.yml -f docker-compose.license_server.yml up
 #
 #
 # - If you want to mount the local directory, add the 'volumes' section to the 'mechanical' service.
-# 
+#
 #      volumes:
 #        - ./:/local
 #
@@ -52,7 +52,7 @@ services:
       - ANSYSLMD_LICENSE_FILE=${ANSYSLMD_LICENSE_FILE}
     ports:
       - '10000:10000'
-    image: 'ghcr.io/ansys/pymechanical/mechanical:v23.1.0'
+    image: 'ghcr.io/ansys/mechanical:25.1.0'
     user: "0:0"
     # entrypoint: "/bin/bash tini -- xvfb-run ./.workbench -dsapplet -AppModeMech -b -grpc 10000"
-  
+

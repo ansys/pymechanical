@@ -1,30 +1,54 @@
+ci:
+    autofix_commit_msg: 'chore: auto fixes from pre-commit hooks'
+    autoupdate_commit_msg: 'chore: pre-commit automatic update'
+    autoupdate_schedule: weekly
+
+exclude: '^tests/embedding/assets/.*$|^tests/parts/.*$'
+
 repos:
 
+- repo: https://github.com/pre-commit-ci/pre-commit-ci-config
+  rev: v1.6.1
+  hooks:
+  -   id: check-pre-commit-ci-config
+
 - repo: https://github.com/psf/black
-  rev: 23.7.0
+  rev: 25.1.0  # IF VERSION CHANGES --> MODIFY "blacken-docs" MANUALLY AS WELL!!
   hooks:
   - id: black
 
 - repo: https://github.com/adamchainz/blacken-docs
-  rev: 1.15.0
+  rev: 1.20.0
   hooks:
   - id: blacken-docs
-    additional_dependencies: [black==23.7.0]
+    additional_dependencies: [black==24.10.0]
 
 - repo: https://github.com/pycqa/isort
-  rev: 5.12.0
+  rev: 6.0.1
   hooks:
   - id: isort
 
 - repo: https://github.com/PyCQA/flake8
-  rev: 6.1.0
+  rev: 7.3.0
   hooks:
   - id: flake8
+    additional_dependencies: [flake8-pyproject]
 
 - repo: https://github.com/codespell-project/codespell
-  rev: v2.2.5
+  rev: v2.4.1
   hooks:
   - id: codespell
+    args: ["--ignore-words", "doc/styles/config/vocabularies/ANSYS/accept.txt", "-w"]
+
+- repo: https://github.com/ansys/pre-commit-hooks
+  rev: v0.5.2
+  hooks:
+  - id: add-license-headers
+    args:
+    - --start_year=2022
+  - id: tech-review
+    args:
+    - --product=mechanical
 
 - repo: https://github.com/pycqa/pydocstyle
   rev: 6.3.0
@@ -39,10 +63,19 @@ repos:
           tests/scripts/run_python_error.py |
           tests/scripts/run_python_success.py |
           tests/scripts/log_message.py |
-          examples/00_basic/example_01_simple_structural_solve.py |
-          examples/00_basic/example_02_capture_images.py |
-          examples/00_basic/example_03_show_object_properties.py |
-          examples/01_tips_n_tricks/example_01_run_python_script_output.py |
-          examples/01_tips_n_tricks/example_02_run_python_script_scope.py
+          examples/.*$
         )$
 
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v6.0.0
+  hooks:
+  - id: check-merge-conflict
+  - id: debug-statements
+  - id: check-yaml
+  - id: trailing-whitespace
+  - id: check-added-large-files
+
+- repo: https://github.com/python-jsonschema/check-jsonschema
+  rev: 0.33.3
+  hooks:
+    - id: check-github-workflows

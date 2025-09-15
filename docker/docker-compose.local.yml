@@ -6,7 +6,7 @@ version: '3.3'
 # This docker-compose file extends the 'base' docker-compose file to run the docker in such a way that
 # you can then attach your VSCode instance and work locally.
 #
-# It is said to be running as 'local' because it will mount the current directory in '/local' 
+# It is said to be running as 'local' because it will mount the current directory in '/local'
 # inside the container (presumably you will have the cloned repository in the current directory),
 # and it will override the entrypoint to run the 'bash' command.
 #
@@ -26,7 +26,7 @@ version: '3.3'
 #
 # - If you need to run a license server, look at the 'docker-compose.license_server.yml'
 # file. In that case, the command to launch everything is:
-# 
+#
 #      docker-compose -f docker-compose.yml -f docker-compose.license-server.yml -f docker-compose.local.yml up
 #
 

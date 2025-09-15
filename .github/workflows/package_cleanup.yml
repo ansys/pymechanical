@@ -1,0 +1,22 @@
+name: Package cleanup
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '00 22 * * *'
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  cleanup:
+    name: "Delete untagged package versions"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Delete untagged package versions"
+        uses: ansys/actions/hk-package-clean-untagged@v10
+        with:
+          package-org: 'ansys'
+          package-name: 'mechanical'
+          allow-last-days: '7'
+          token: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,4 @@
+# This is a CODEOWNERS file. See https://help.github.com/articles/about-codeowners/
+# PyMechanical Maintainers will be requested for
+# review when someone opens a pull request.
+*       @ansys/pymechanical-maintainers

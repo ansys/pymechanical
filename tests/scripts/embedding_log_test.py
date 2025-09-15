@@ -1,3 +1,25 @@
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 """Test cases for embedding logging."""
 
 import logging
@@ -41,13 +63,6 @@ def log_configuration_workbench(version):
     Logger.error("WorkBench configuration!")
 
 
-def log_configuration_legacy(version):
-    """Log at the info level after app starts with the `WorkBench` configuration."""
-    _ = mech.App(version=version, config=AddinConfiguration("Legacy"))
-    Configuration.configure(level=logging.INFO, to_stdout=True, base_directory=None)
-    Logger.error("Legacy configuration!")
-
-
 def log_check_can_log_message(version):
     """Configure logger before app initialization and check can_log_message."""
     Configuration.configure(level=logging.WARNING, to_stdout=True, base_directory=None)
@@ -65,6 +80,18 @@ def log_check_can_log_message(version):
     assert Logger.can_log_message(logging.FATAL) is True
 
 
+def log_check_all_log_level(version):
+    """Configure logger before app initialization and check can_log_message."""
+    Configuration.configure(level=logging.DEBUG, to_stdout=True, base_directory=None)
+    assert Logger.can_log_message(logging.FATAL) is True
+    _ = mech.App(version=version)
+    Logger.debug("debug")
+    Logger.info("info")
+    Logger.warning("warning")
+    Logger.error("error")
+    Logger.fatal("fatal")
+
+
 if __name__ == "__main__":
     version = sys.argv[1]
     test_name = sys.argv[2]
@@ -75,7 +102,7 @@ if __name__ == "__main__":
         "log_check_can_log_message": log_check_can_log_message,
         "log_configuration_Mechanical": log_configuration_mechanical,
         "log_configuration_WorkBench": log_configuration_workbench,
-        "log_configuration_Legacy": log_configuration_legacy,
+        "log_check_all_log_level": log_check_all_log_level,
     }
     tests[test_name](int(version))
     print("@@success@@")

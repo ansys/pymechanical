@@ -1,12 +1,31 @@
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 import json
 import os
 import pathlib
 import re
-import subprocess
-import sys
 
 import ansys.tools.path
-import grpc
 import pytest
 
 import ansys.mechanical.core as pymechanical
@@ -15,16 +34,21 @@ import ansys.mechanical.core.misc as misc
 import conftest
 
 
+def new_python_script_api(mechanical):
+    api_version = mechanical._get_python_script_api_version()
+    return api_version > 0
+
+
 @pytest.mark.remote_session_connect
 def test_run_python_script_success(mechanical):
-    result = mechanical.run_python_script("2+3")
+    result = str(mechanical.run_python_script("2+3"))
     assert result == "5"
 
 
 @pytest.mark.remote_session_connect
 def test_run_python_script_success_return_empty(mechanical):
-    result = mechanical.run_python_script("ExtAPI.DataModel.Project")
-    if misc.is_windows():
+    result = str(mechanical.run_python_script("ExtAPI.DataModel.Project"))
+    if misc.is_windows() and not new_python_script_api(mechanical):
         assert result == ""
     else:
         assert result == "Ansys.ACT.Automation.Mechanical.Project"
@@ -32,10 +56,15 @@ def test_run_python_script_success_return_empty(mechanical):
 
 @pytest.mark.remote_session_connect
 def test_run_python_script_error(mechanical):
-    with pytest.raises(grpc.RpcError) as exc_info:
+
+    with pytest.raises(mechanical._error_type) as exc_info:
         mechanical.run_python_script("import test")
 
-    assert exc_info.value.details() == "No module named test"
+    # TODO : we can do custom error with currying poster
+    if not new_python_script_api(mechanical):
+        assert exc_info.value.details() == "No module named test"
+    else:
+        assert "No module named test" in str(exc_info.value)
 
 
 @pytest.mark.remote_session_connect
@@ -50,61 +79,28 @@ def test_run_python_from_file_success(mechanical):
     assert result == "test"
 
 
-# @pytest.mark.remote_session_connect
-# def test_run_python_from_file_log_messages(mechanical):
-#     current_working_directory = os.getcwd()
-#     script_path = os.path.join(current_working_directory, "tests", "scripts", "log_message.py")
-#     print("running python script : ", script_path)
-#
-#     print("logging_not enabled")
-#     result = mechanical.run_python_script_from_file(script_path)
-#
-#     print("logging_enabled")
-#     result = mechanical.run_python_script_from_file(
-#         script_path, enable_logging=True, log_level="DEBUG", progress_interval=1000
-#     )
-#
-#     result = mechanical.run_python_script_from_file(
-#         script_path, enable_logging=True, log_level="INFO", progress_interval=1000
-#     )
-#
-#     result = mechanical.run_python_script_from_file(
-#         script_path, enable_logging=True, log_level="WARNING", progress_interval=1000
-#     )
-#
-#     result = mechanical.run_python_script_from_file(
-#         script_path, enable_logging=True, log_level="ERROR", progress_interval=1000
-#     )
-#
-#     result = mechanical.run_python_script_from_file(
-#         script_path, enable_logging=True, log_level="CRITICAL", progress_interval=1000
-#     )
-#
-#     assert result == "log_test"
-
-
 @pytest.mark.remote_session_connect
 def test_run_python_script_from_file_error(mechanical):
-    with pytest.raises(grpc.RpcError) as exc_info:
+    with pytest.raises(mechanical._error_type) as exc_info:
         current_working_directory = os.getcwd()
         script_path = os.path.join(
             current_working_directory, "tests", "scripts", "run_python_error.py"
         )
         print("running python script : ", script_path)
         mechanical.run_python_script_from_file(script_path)
-
-    assert exc_info.value.details() == "name 'get_myname' is not defined"
+    if not new_python_script_api(mechanical):
+        assert exc_info.value.details() == "name 'get_myname' is not defined"
+    else:
+        assert "name 'get_myname' is not defined" in str(exc_info.value)
 
 
 @pytest.mark.remote_session_connect
 @pytest.mark.parametrize("file_name", [r"hsec.x_t"])
-def test_upload(mechanical, file_name):
-    mechanical.run_python_script("ExtAPI.DataModel.Project.New()")
+def test_upload(mechanical, file_name, assets):
     directory = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
     print(directory)
 
-    current_working_directory = os.getcwd()
-    file_path = os.path.join(current_working_directory, "tests", "parts", file_name)
+    file_path = os.path.join(assets, file_name)
     mechanical.upload(
         file_name=file_path, file_location_destination=directory, chunk_size=1024 * 1024
     )
@@ -126,10 +122,8 @@ def test_upload(mechanical, file_name):
 # change the chunk_size for that
 # ideally this will be 64*1024, 1024*1024, etc.
 @pytest.mark.parametrize("chunk_size", [10, 50, 100])
-def test_upload_with_different_chunk_size(mechanical, chunk_size):
-    current_working_directory = os.getcwd()
-    file_path = os.path.join(current_working_directory, "tests", "parts", "hsec.x_t")
-    mechanical.run_python_script("ExtAPI.DataModel.Project.New()")
+def test_upload_with_different_chunk_size(mechanical, chunk_size, assets):
+    file_path = os.path.join(assets, "hsec.x_t")
     directory = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
     mechanical.upload(
         file_name=file_path, file_location_destination=directory, chunk_size=chunk_size
@@ -170,7 +164,7 @@ def enable_distributed_solve(mechanical):
 
 def solve_and_return_results(mechanical):
     current_working_directory = os.getcwd()
-    file_path = os.path.join(current_working_directory, "tests", "parts", "hsec.x_t")
+    file_path = os.path.join(current_working_directory, "tests", "assets", "hsec.x_t")
 
     mechanical.clear()
     directory = mechanical.project_directory
@@ -304,15 +298,16 @@ def test_upload_attach_mesh_solve_use_api_non_distributed_solve(mechanical, tmpd
     print(f"min_value = {min_value} max_value = {max_value} avg_value = {avg_value}")
 
     result = mechanical.run_python_script("ExtAPI.DataModel.Project.Model.Analyses[0].ObjectState")
-    assert "5" == result.lower()
+    if not new_python_script_api(mechanical):
+        assert "5" == result
+    else:
+        assert "Solved" == str(result)
 
     verify_project_download(mechanical, tmpdir)
 
 
 @pytest.mark.remote_session_connect
 def test_upload_attach_mesh_solve_use_api_distributed_solve(mechanical, tmpdir):
-    # default is distributed solve
-
     result = solve_and_return_results(mechanical)
 
     dict_result = json.loads(result)
@@ -324,7 +319,10 @@ def test_upload_attach_mesh_solve_use_api_distributed_solve(mechanical, tmpdir):
     print(f"min_value = {min_value} max_value = {max_value} avg_value = {avg_value}")
 
     result = mechanical.run_python_script("ExtAPI.DataModel.Project.Model.Analyses[0].ObjectState")
-    assert "5" == result.lower()
+    if not new_python_script_api(mechanical):
+        assert "5" == result
+    else:
+        assert "Solved" == str(result)
 
     verify_project_download(mechanical, tmpdir)
 
@@ -334,7 +332,7 @@ def verify_download(mechanical, tmpdir, file_name, chunk_size):
     print(directory)
 
     current_working_directory = os.getcwd()
-    file_path = os.path.join(current_working_directory, "tests", "parts", file_name)
+    file_path = os.path.join(current_working_directory, "tests", "assets", file_name)
     mechanical.upload(
         file_name=file_path, file_location_destination=directory, chunk_size=1024 * 1024
     )
@@ -354,7 +352,6 @@ def verify_download(mechanical, tmpdir, file_name, chunk_size):
 
 
 @pytest.mark.remote_session_connect
-# @pytest.mark.wip
 @pytest.mark.parametrize("file_name", ["hsec.x_t"])
 def test_download_file(mechanical, tmpdir, file_name):
     verify_download(mechanical, tmpdir, file_name, 1024 * 1024)
@@ -407,32 +404,29 @@ def test_close_all_Local_instances(tmpdir):
 
 
 @pytest.mark.remote_session_launch
-def test_launch_result_mode(mechanical_result):
-    result = mechanical_result.run_python_script("2+3")
-    assert result == "5"
-
-
-@pytest.mark.remote_session_launch
 def test_find_mechanical_path():
     if pymechanical.mechanical.get_start_instance():
-        path, version = ansys.tools.path.find_mechanical()
+        path = ansys.tools.path.get_mechanical_path()
+        version = ansys.tools.path.version_from_path("mechanical", path)
 
         if misc.is_windows():
             assert "AnsysWBU.exe" in path
         else:
             assert ".workbench" in path
 
-        assert re.match(r"\d\d\.\d", str(version))
+        assert re.match(r"\d{3}", str(version)) and version >= 241
 
 
 @pytest.mark.remote_session_launch
 def test_change_default_mechanical_path():
     if pymechanical.mechanical.get_start_instance():
-        path, version = ansys.tools.path.find_mechanical()
+        path = ansys.tools.path.get_mechanical_path()
+        version = ansys.tools.path.version_from_path("mechanical", path)
 
         pymechanical.change_default_mechanical_path(path)
 
-        path_new, version_new = ansys.tools.path.find_mechanical()
+        path_new = ansys.tools.path.get_mechanical_path()
+        version_new = ansys.tools.path.version_from_path("mechanical", path)
 
         assert path_new == path
         assert version_new == version
@@ -440,13 +434,13 @@ def test_change_default_mechanical_path():
 
 @pytest.mark.remote_session_launch
 def test_version_from_path():
-    windows_path = "C:\\Program Files\\ANSYS Inc\\v231\\aisol\\bin\\winx64\\AnsysWBU.exe"
+    windows_path = "C:\\Program Files\\ANSYS Inc\\v251\\aisol\\bin\\winx64\\AnsysWBU.exe"
     version = ansys.tools.path.version_from_path("mechanical", windows_path)
-    assert version == 231
+    assert version == 251
 
-    linux_path = "/usr/ansys_inc/v231/aisol/.workbench"
+    linux_path = "/usr/ansys_inc/v251/aisol/.workbench"
     version = ansys.tools.path.version_from_path("mechanical", linux_path)
-    assert version == 231
+    assert version == 251
 
     with pytest.raises(RuntimeError):
         # doesn't contain version
@@ -511,58 +505,6 @@ def test_launch_grpc_not_supported_version():
 
     with pytest.raises(errors.VersionError):
         pymechanical.mechanical.launch_grpc(exec_file=exec_file)
-
-
-@pytest.mark.remote_session_launch
-@pytest.mark.python_env
-def test_warning_message_pythonnet(test_env, rootdir):
-    """Test Python.NET warning of the remote session in the virtual environment."""
-
-    # Install pymechanical
-    subprocess.check_call(
-        [test_env.python, "-m", "pip", "install", "-e", "."],
-        cwd=rootdir,
-        env=test_env.env,
-    )
-
-    # Install pythonnet
-    subprocess.check_call([test_env.python, "-m", "pip", "install", "pythonnet"], env=test_env.env)
-
-    # Run remote session in virtual env with pythonnet installed
-    remote_py = os.path.join(rootdir, "tests", "scripts", "run_remote_session.py")
-    check_warning = subprocess.Popen(
-        [test_env.python, remote_py],
-        stderr=subprocess.PIPE,
-        env=test_env.env,
-    )
-    check_warning.wait()
-    stderr = check_warning.stderr.read().decode()
-
-    # If UserWarning & pythonnet are in the stderr output, set warning to True.
-    # Otherwise, set warning to False
-    warning = True if "UserWarning" and "pythonnet" in stderr else False
-
-    # Assert the warning message did not appear for the remote session
-    assert not warning
-
-
-@pytest.mark.remote_session_launch
-def test_warning_message_default():
-    """Test pythonnet warning of the remote session in default env."""
-    base = os.getcwd()
-
-    # Run remote session
-    remote_py = os.path.join(base, "tests", "scripts", "run_remote_session.py")
-    check_warning = subprocess.Popen([sys.executable, remote_py], stderr=subprocess.PIPE)
-    check_warning.wait()
-    stderr_output = check_warning.stderr.read().decode()
-
-    # If UserWarning & pythonnet are in the stderr output, set warning to True.
-    # Otherwise, set warning to False
-    warning = True if "UserWarning" and "pythonnet" in stderr_output else False
-
-    # Assert the warning message did not appear for the remote session
-    assert not warning
 
 
 # def test_call_before_launch_or_connect():

@@ -1,7 +1,24 @@
 name: GitHub CI
+
 on:
   pull_request:
   workflow_dispatch:
+    inputs:
+      revn:
+        type: choice
+        options:
+        - '261'
+        - '252'
+        - '251'
+        - '242'
+        - '241'
+        description: 'The Mechanical revision number to run tests on.'
+        default: '252' #stable version is 252, must match $stable_container
+  schedule:
+    - cron: '00 22 * * *'  # UTC time, may start 5-15 mins later than scheduled time
+  # registry_package:
+    # Run workflow when package is published or updated
+    # types: [published]
   push:
     tags:
       - "*"
@@ -11,38 +28,74 @@ on:
 
 env:
   PYMECHANICAL_PORT: 10000  # default won't work on GitHub runners
-  PYMECHANICAL_START_INSTANCE: FALSE
+  PYMECHANICAL_START_INSTANCE: false
   DOCKER_PACKAGE: ghcr.io/ansys/mechanical
-  DOCKER_IMAGE_VERSION: 23.1.0
   DOCKER_MECH_CONTAINER_NAME: mechanical
-  MAIN_PYTHON_VERSION: '3.10'
   PACKAGE_NAME: ansys-mechanical-core
-  PACKAGE_NAMESPACE: ansys.mechanical.core
   DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
+  MAIN_PYTHON_VERSION: '3.12'
+  # DEV_REVN & its Docker image are used in scheduled or registry package runs
+  STABLE_REVN: '252'
+  DEV_REVN: '261'
+  LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
+  ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  update-changelog:
+    name: "Update CHANGELOG for new tag"
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: ansys/actions/doc-deploy-changelog@33399106dc8b62d83c8aad1fb2c333c8055df180 # v10.0.20
+        with:
+          token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+          bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
+          bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}
 
   style:
     name: Code style
     runs-on: ubuntu-latest
     steps:
       - name: PyAnsys code style checks
-        uses: ansys/actions/code-style@v4
+        uses: ansys/actions/code-style@33399106dc8b62d83c8aad1fb2c333c8055df180 # v10.0.20
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
-  docs-style:
+  doc-style:
     name: Documentation Style Check
     runs-on: ubuntu-latest
     steps:
       - name: PyAnsys documentation style checks
-        uses: ansys/actions/doc-style@v4
+        uses: ansys/actions/doc-style@33399106dc8b62d83c8aad1fb2c333c8055df180 # v10.0.20
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+
+  vulnerabilities:
+    name: Vulnerabilities
+    runs-on: ubuntu-latest
+    steps:
+      - name: PyAnsys Vulnerability check (on main)
+        if: github.ref == 'refs/heads/main'
+        uses:  ansys/actions/check-vulnerabilities@33399106dc8b62d83c8aad1fb2c333c8055df180 # v10.0.20
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          python-package-name: ${{ env.PACKAGE_NAME }}
+          token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+      - name: PyAnsys Vulnerability check (on dev mode)
+        if: github.ref != 'refs/heads/main'
+        uses: ansys/actions/check-vulnerabilities@33399106dc8b62d83c8aad1fb2c333c8055df180 # v10.0.20
+        with:
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          python-package-name: ${{ env.PACKAGE_NAME }}
+          token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+          dev-mode: true
 
   smoke-tests:
     name: Build and Smoke tests
@@ -52,7 +105,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ['3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.10', '3.11', '3.12', '3.13']
         should-release:
           - ${{ github.event_name == 'push' && contains(github.ref, 'refs/tags') }}
         exclude:
@@ -60,57 +113,95 @@ jobs:
             os: macos-latest
     steps:
       - name: Build wheelhouse and perform smoke test
-        uses: ansys/actions/build-wheelhouse@v4
+        uses: ansys/actions/build-wheelhouse@33399106dc8b62d83c8aad1fb2c333c8055df180 # v10.0.20
         with:
           library-name: ${{ env.PACKAGE_NAME }}
-          library-namespace: ${{ env.PACKAGE_NAMESPACE }}
           operating-system: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
-          # use-python-cache: false
 
-  changelog-check:
-    name: Changelog Update Check
-    if: github.event_name == 'pull_request'
+  revn-variations:
+    name: Save variations of revn
     runs-on: ubuntu-latest
+    outputs:
+      stable_container: ${{ steps.save-versions.outputs.stable_container }}
+      test_revn: '${{ steps.save-versions.outputs.test_revn }}'
+      test_container: ${{ steps.save-versions.outputs.test_container }}
+      test_docker_image_version: '${{ steps.save-versions.outputs.test_docker_image_version }}'
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Get all doc files that have changed
-        id: changed-files-yaml
-        uses: tj-actions/changed-files@v37
-        with:
-          files_yaml: |
-            doc:
-              - 'CHANGELOG.md'
-
-      - name: Check Changelog Edited
+      - id: save-versions
         run: |
-          if [[ "${{ steps.changed-files-yaml.outputs.doc_all_changed_files }}" == "CHANGELOG.md" ]]; then
-              echo "CHANGELOG.md was updated."
+          if ${{ github.event_name == 'schedule' }}; then
+            echo "test_revn=${{ env.DEV_REVN}}" >> $GITHUB_OUTPUT
+            test_mech_revn=${{ env.DEV_REVN}}
+            test_mech_image_version=${test_mech_revn:0:2}.${test_mech_revn:2}_candidate
+            echo "test_container=${{ env.DOCKER_PACKAGE }}:$test_mech_image_version" >> $GITHUB_OUTPUT
+            echo "test_docker_image_version=$test_mech_image_version" >> $GITHUB_OUTPUT
           else
-              echo "Please update CHANGELOG.md before merging the pull request."
-              exit 1
+            if [[ -z "${{inputs.revn}}" ]]; then
+              mech_revn=${{ env.STABLE_REVN }}
+            else
+              mech_revn=${{inputs.revn}}
+            fi
+            export mech_image_version=${mech_revn:0:2}.${mech_revn:2}.0
+            echo "test_revn=$mech_revn" >> $GITHUB_OUTPUT
+            echo "test_container=${{ env.DOCKER_PACKAGE }}:$mech_image_version" >> $GITHUB_OUTPUT
+            echo "test_docker_image_version=$mech_image_version" >> $GITHUB_OUTPUT
           fi
 
-  tests:
-    name: Testing and coverage - Mechanical ${{ matrix.mechanical-version }}
+          stable_mech_revn=${{ env.STABLE_REVN }}
+          stable_mech_image_version=${mech_revn:0:2}.${mech_revn:2}.0
+          echo "stable_container=${{ env.DOCKER_PACKAGE }}:$stable_mech_image_version" >> $GITHUB_OUTPUT
+
+          echo $GITHUB_OUTPUT
+
+          # --- Help ----
+          # schedule nightly uses DEV_REVN candidate
+          # PRs and merges use STABLE_REVN
+          # Workflow dispatch can use any revision number
+
+  config-matrix:
+    runs-on: ubuntu-latest
+    needs: [revn-variations]
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        run: |
+          # if a tag(release) is pushed, test all versions
+          if ${{ github.event_name == 'push' }} && ${{ contains(github.ref, 'refs/tags') }}; then
+            echo "matrix={\"mechanical-version\":['24.1.0', '24.2.0', '25.1.0', '25.2.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
+          else
+            echo "matrix={\"mechanical-version\":['${{ needs.revn-variations.outputs.test_docker_image_version }}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
+          fi
+
+  container-stability-check:
+    runs-on: ubuntu-latest
+    needs: [revn-variations]
+    outputs:
+      container_stable_exit: ${{ steps.check_stability.outputs.container_stable_exit }}
+    steps:
+      - id: check_stability
+        run: |
+          sudo apt update
+          sudo apt install bc -y
+          container_version=$(echo "${{ needs.revn-variations.outputs.test_docker_image_version }}" | grep -o -E '[0-9]+(\.[0-9]+)?' | head -n 1)
+          if (( $(echo "$container_version > 24.2" | bc -l) )); then
+            echo "container_stable_exit=true" >> $GITHUB_OUTPUT
+          else
+            echo "container_stable_exit=false" >> $GITHUB_OUTPUT
+          fi
+
+  remote-connect:
+    name: Remote connect testing and coverage - Mechanical ${{ matrix.mechanical-version }}
     runs-on: public-ubuntu-latest-8-cores
-    needs: [smoke-tests]
+    needs: [style, revn-variations, config-matrix]
     continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
-      matrix:
-        mechanical-version: ['23.1.0']
-        experimental: [false]
-        # The following versions would be allowed to fail
-        include:
-          - mechanical-version: '23.2.0'
-            experimental: true
+      matrix: ${{ fromJSON(needs.config-matrix.outputs.matrix) }}
     steps:
       - name: Login in Github Container registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -118,33 +209,58 @@ jobs:
 
       - name: Pull, launch, and validate Mechanical service
         env:
-          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
           MECHANICAL_IMAGE: ${{ env.DOCKER_PACKAGE }}:${{ matrix.mechanical-version }}
         run: |
           docker pull ${{ env.MECHANICAL_IMAGE }}
           docker run --restart always --name ${{ env.DOCKER_MECH_CONTAINER_NAME }} -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }} > log.txt &
           grep -q 'WB Initialize Done' <(timeout 60 tail -f log.txt)
 
+      - name: Display info
+        if: github.event_name == 'schedule'
+        id: capture_info
+        run: |
+          IMAGE_NAME=${{ env.DOCKER_PACKAGE }}:${{ matrix.mechanical-version }}
+          BUILD_DATE=$(docker run --rm --entrypoint head $IMAGE_NAME -n 1 /install/ansys_inc/v${{ needs.revn-variations.outputs.test_revn }}/aisol/CommonFiles/builddate.txt)
+          PUSHED_AT=$(docker inspect --format='{{.Created}}' $IMAGE_NAME)
+          echo "docker_info=$IMAGE_NAME was pushed at: $PUSHED_AT" >> $GITHUB_OUTPUT
+          echo "::group::Docker Info"
+          echo "docker_info=$PUSHED_AT" >> $GITHUB_OUTPUT
+          echo "build_info=$BUILD_DATE" >> $GITHUB_OUTPUT
+          echo "$IMAGE_NAME pushed at $PUSHED_AT"
+          echo "Build date : $BUILD_DATE"
+          echo "::endgroup::"
+
       - name: Testing
-        uses: ansys/actions/tests-pytest@v4
+        uses: ansys/actions/tests-pytest@33399106dc8b62d83c8aad1fb2c333c8055df180 # v10.0.20
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          pytest-markers: '-m remote_session_connect'
+          pytest-extra-args: '-s --junitxml remote_results${{ env.MAIN_PYTHON_VERSION}}.xml'
 
-      # - name: Upload coverage to Codecov
-      #   uses: codecov/codecov-action@v3
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@3585e9575db828022551b4231f165eb59a0e74e3 # v5.6.2
+        if: always()
+        with:
+          report_paths: '**/remote_results*.xml'
+          check_name: Remote Connect Test Report ${{ env.MAIN_PYTHON_VERSION}}
+          detailed_summary: true
+          include_passed: true
+          fail_on_failure: true
 
       - name: Upload coverage results
-        uses: actions/upload-artifact@v3
-        if: matrix.mechanical-version == env.DOCKER_IMAGE_VERSION
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: matrix.mechanical-version == needs.revn-variations.outputs.test_docker_image_version
         with:
+          include-hidden-files: true
           name: coverage-tests
           path: .cov
           retention-days: 7
 
       - name: Upload coverage results (as .coverage)
-        uses: actions/upload-artifact@v3
-        if: matrix.mechanical-version == env.DOCKER_IMAGE_VERSION
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: matrix.mechanical-version == needs.revn-variations.outputs.test_docker_image_version
         with:
+          include-hidden-files: true
           name: coverage-file-tests
           path: .coverage
           retention-days: 7
@@ -159,198 +275,432 @@ jobs:
           lscpu
 
       - name: Upload container logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: mechanical_tests_log-${{ matrix.mechanical-version }}
           path: mechanical_tests_log-${{ matrix.mechanical-version }}.txt
           retention-days: 7
 
+  # embedding-rpc-tests:
+  #   name: Embedding rpc testing and coverage
+  #   runs-on: public-ubuntu-latest-8-cores
+  #   timeout-minutes: 30
+  #   needs: [smoke-tests, revn-variations, container-stability-check]
+  #   container:
+  #     image: ${{ needs.revn-variations.outputs.test_container }}
+  #     options: --entrypoint /bin/bash
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       python-version: ['3.10', '3.11', '3.12', '3.13']
+
+  #   steps:
+  #     - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+  #     - name: Set up python and pip
+  #       run: |
+  #         apt update
+  #         apt install --reinstall ca-certificates
+  #         apt install lsb-release xvfb software-properties-common -y
+  #         add-apt-repository ppa:deadsnakes/ppa -y
+  #         apt install -y python${{ matrix.python-version }} python${{ matrix.python-version }}-venv
+  #         python${{ matrix.python-version }} -m venv /env
+
+  #     - name: Install packages for testing
+  #       run: |
+  #         . /env/bin/activate
+  #         pip install --upgrade pip
+  #         pip install uv
+  #         uv pip install -e .[tests,rpc]
+
+  #     - name: Unit Testing and coverage
+  #       env:
+  #         ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
+  #         ANSYS_WORKBENCH_LOGGING: 0
+  #         ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
+  #         PYTHONUNBUFFERED: 1
+  #       run: |
+  #         . /env/bin/activate
+  #         # if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
+  #         #   xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml
+  #         # else
+  #         #   xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml || true
+  #         # fi
+  #         xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc || true
+
+      # - name: Upload coverage results
+      #   uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      #   if: env.MAIN_PYTHON_VERSION == matrix.python-version
+      #   with:
+      #     include-hidden-files: true
+      #     name: coverage-tests-embedding-rpc
+      #     path: .cov
+      #     retention-days: 7
+
+      # - name: Upload coverage results (as .coverage)
+      #   uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      #   if: env.MAIN_PYTHON_VERSION == matrix.python-version
+      #   with:
+      #     include-hidden-files: true
+      #     name: coverage-file-tests-embedding-rpc
+      #     path: .coverage
+      #     retention-days: 7
+
+      # - name: Publish Test Report
+      #   uses: mikepenz/action-junit-report@v5
+      #   if: always()
+      #   with:
+      #     report_paths: '**/test_results*.xml'
+      #     check_name: Test Report ${{ matrix.python-version }}
+      #     detailed_summary: true
+      #     include_passed: true
+      #     fail_on_failure: false
+
+
   embedding-tests:
     name: Embedding testing and coverage
     runs-on: ubuntu-latest
-    needs: [style]
+    timeout-minutes: 30
+    needs: [smoke-tests, revn-variations, container-stability-check]
     container:
-      image: ghcr.io/ansys/mechanical:23.2.0
+      image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.10', '3.11', '3.12', '3.13']
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Install dependencies
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - name: Set up python and pip
         run: |
           apt update
-          apt install -y lsb-release
-          apt install -y python3-pip
-          apt install -y python3.8-venv
-          pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
-          pip3 install --upgrade pip flit
+          apt install --reinstall ca-certificates
+          apt install lsb-release xvfb software-properties-common -y
+          add-apt-repository ppa:deadsnakes/ppa -y
+          apt install -y python${{ matrix.python-version }} python${{ matrix.python-version }}-venv
+          python${{ matrix.python-version }} -m venv /env
+
       - name: Install packages for testing
         run: |
-          pip install .[tests]
+          . /env/bin/activate
+          pip install --upgrade pip
+          pip install uv
+          uv pip install -e .[tests]
 
       - name: Unit Testing and coverage
         env:
-          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
-          ANSYSCL232_DIR: /install/ansys_inc/v232/licensingclient
-          ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
           ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
           ANSYS_WORKBENCH_LOGGING: 0
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
           NUM_CORES: 1
+          PYTHONUNBUFFERED: 1
         run: |
-          /install/ansys_inc/v232/aisol/.workbench_lite pytest -m embedding -k logging > pytest_output.txt || true
-          cat pytest_output.txt
-          #
-          # Check if failure occurred
-          #
-          output=$(grep -c "FAILURES" pytest_output.txt || true)
-          if [ $output -eq 0 ]; then
-            echo "Pytest execution succeeded"
-            exit 0
+          . /env/bin/activate
+          if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
+            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml
           else
-            echo "Pytest execution failed"
-            exit 1
+            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml || true
           fi
 
       - name: Upload coverage results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
+          include-hidden-files: true
           name: coverage-tests-embedding
           path: .cov
           retention-days: 7
 
       - name: Upload coverage results (as .coverage)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
+          include-hidden-files: true
           name: coverage-file-tests-embedding
           path: .coverage
           retention-days: 7
 
-  launch-tests:
-    name: Launch testing and coverage
-    runs-on: public-ubuntu-latest-8-cores
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@3585e9575db828022551b4231f165eb59a0e74e3 # v5.6.2
+        if: always()
+        with:
+          report_paths: '**/test_results*.xml'
+          check_name: Test Report ${{ matrix.python-version }}
+          detailed_summary: true
+          include_passed: true
+          fail_on_failure: true
+
+  embedding-scripts-tests:
+    name: Embedding scripts testing and coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [smoke-tests, revn-variations]
     container:
-      image: ghcr.io/ansys/mechanical:23.2.0
+      image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
-    needs: [ smoke-tests ]
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11' ]
+        python-version: ['3.10', '3.11', '3.12', '3.13']
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Install dependencies
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - name: Set up python and pip
         run: |
           apt update
-          apt install -y lsb-release
-          apt install -y python3-pip
-          apt install -y python3.8-venv
-          pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pip setuptools
-          pip3 install --upgrade pip flit
+          apt install --reinstall ca-certificates
+          apt install lsb-release xvfb software-properties-common -y
+          add-apt-repository ppa:deadsnakes/ppa -y
+          apt install -y python${{ matrix.python-version }} python${{ matrix.python-version }}-venv
+          python${{ matrix.python-version }} -m venv /env
+
       - name: Install packages for testing
         run: |
-          pip install .[tests]
+          . /env/bin/activate
+          pip install --upgrade pip
+          pip install uv
+          uv pip install -e .[tests]
+
+      - name: Embedding scripts unit testing and coverage
+        env:
+          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
+          ANSYS_WORKBENCH_LOGGING: 0
+          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
+          NUM_CORES: 1
+          PYTHONUNBUFFERED: 1
+        run: |
+          . /env/bin/activate
+          mechanical-env pytest -m embedding_scripts -s --junitxml test_results_embedding_scripts${{ matrix.python-version }}.xml
+          pytest -m cli -s --junitxml test_results_cli_scripts${{ matrix.python-version }}.xml
+
+      - name: Upload coverage results
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: env.MAIN_PYTHON_VERSION == matrix.python-version
+        with:
+          include-hidden-files: true
+          name: coverage-tests-embedding-scripts
+          path: .cov
+          retention-days: 7
+
+      - name: Upload coverage results (as .coverage)
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: env.MAIN_PYTHON_VERSION == matrix.python-version
+        with:
+          include-hidden-files: true
+          name: coverage-file-tests-embedding-scripts
+          path: .coverage
+          retention-days: 7
+
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@3585e9575db828022551b4231f165eb59a0e74e3 # v5.6.2
+        if: always()
+        with:
+          report_paths: '**/test_results*.xml'
+          check_name: Test Report ${{ matrix.python-version }}
+          detailed_summary: true
+          include_passed: true
+          fail_on_failure: true
+
+  launch-tests:
+    name: Launch testing and coverage
+    runs-on: public-ubuntu-latest-8-cores
+    timeout-minutes: 30
+    container:
+      image: ${{ needs.revn-variations.outputs.test_container }}
+      options: --entrypoint /bin/bash
+    needs: [ style, revn-variations, container-stability-check]
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.11', '3.12', '3.13']
+
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - name: Set up python and pip
+        run: |
+          apt update
+          apt install --reinstall ca-certificates
+          apt install software-properties-common -y
+          add-apt-repository ppa:deadsnakes/ppa -y
+          apt install -y python${{ env.MAIN_PYTHON_VERSION }} python${{ env.MAIN_PYTHON_VERSION }}-venv
+          python${{ env.MAIN_PYTHON_VERSION }} -m venv /env
+
+      - name: Install dependencies
+        run: |
+          apt install -y lsb-release
+
+      - name: Install packages for testing
+        run: |
+          . /env/bin/activate
+          pip install uv
+          uv pip install .[tests]
+
+      - name: Set environment variable
+        run: echo "ANSYSCL${{ needs.revn-variations.outputs.test_revn }}_DIR=/install/ansys_inc/v${{ needs.revn-variations.outputs.test_revn }}/licensingclient" >> $GITHUB_ENV
 
       - name: Unit Testing and coverage
         env:
-          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
-          ANSYSCL232_DIR: /install/ansys_inc/v232/licensingclient
-          ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
           ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
         run: |
           unset PYMECHANICAL_PORT
           unset PYMECHANICAL_START_INSTANCE
-          pytest -m remote_session_launch > pytest_output.txt || true
-          cat pytest_output.txt
-          #
-          # Check if failure occurred
-          #
-          output=$(grep -c "FAILURES" pytest_output.txt || true)
-          if [ $output -eq 0 ]; then
-            echo "Pytest execution succeeded"
-            exit 0
+          . /env/bin/activate
+          if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
+            pytest -m remote_session_launch -s --junitxml launch_test_results${{ matrix.python-version }}.xml
           else
-            echo "Pytest execution failed"
-            exit 1
+            pytest -m remote_session_launch -s --junitxml launch_test_results${{ matrix.python-version }}.xml || true
           fi
 
+      - name: Publish Launch Test Report
+        uses: mikepenz/action-junit-report@3585e9575db828022551b4231f165eb59a0e74e3 # v5.6.2
+        if: always()
+        with:
+          report_paths: '**/launch_test_results*.xml'
+          check_name: Launch Test Report ${{ matrix.python-version }}
+          detailed_summary: true
+          include_passed: true
+          fail_on_failure: true
+
       - name: Upload coverage results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
+          include-hidden-files: true
           name: coverage-tests-remote-session-launch
           path: .cov
           retention-days: 7
 
       - name: Upload coverage results (as .coverage)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
+          include-hidden-files: true
           name: coverage-file-tests-remote-session-launch
           path: .coverage
           retention-days: 7
 
-  docs:
+  doc-build:
     name: Documentation
-    needs: [docs-style]
     runs-on: public-ubuntu-latest-8-cores
+    container:
+      image: ${{ needs.revn-variations.outputs.test_container }}
+      options: --entrypoint /bin/bash
+    needs: [style, doc-style, revn-variations, container-stability-check]
+
     steps:
-      - name: Login in Github Container registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Pull, launch, and validate Mechanical service
-        env:
-          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
-          MECHANICAL_IMAGE: ${{ env.DOCKER_PACKAGE }}:${{ env.DOCKER_IMAGE_VERSION }}
+      - name: Install Git and checkout project
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Set up Python
         run: |
-          echo CPU info
-          lscpu
-          docker pull ${{ env.MECHANICAL_IMAGE }}
-          docker run --restart always --name ${{ env.DOCKER_MECH_CONTAINER_NAME }} -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }} > log.txt &
-          grep -q 'WB Initialize Done' <(timeout 60 tail -f log.txt)
+          apt update
+          apt install --reinstall ca-certificates
+          apt install software-properties-common -y
+          add-apt-repository ppa:deadsnakes/ppa -y
+          apt install -y python${{ env.MAIN_PYTHON_VERSION }} python${{ env.MAIN_PYTHON_VERSION }}-venv
+          python${{ env.MAIN_PYTHON_VERSION }} -m venv /env
 
-      - name: Run Ansys documentation building action
-        uses: ansys/actions/doc-build@v4
+      - name: Install system dependencies
+        run: |
+          apt update
+          apt install make lsb-release xvfb poppler-utils -y
+          apt install zip pandoc libgl1-mesa-glx mesa-utils texlive-latex-extra latexmk nodejs npm graphviz -y
+
+      - name: Install gh cli
+        run: |
+          (type -p wget >/dev/null || (apt update && apt-get install wget -y)) \
+          && mkdir -p -m 755 /etc/apt/keyrings \
+          && wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+          && chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+          && apt update \
+          && apt install gh -y
+
+      - name: Install quarto to build cheatsheet
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
+          gh release download v1.6.43 --repo github.com/quarto-dev/quarto-cli --pattern *linux-amd64.deb
+          apt install ./quarto*linux-amd64.deb -y
+          quarto install tool tinytex --log-level warning
+
+      - name: Test quarto installation
+        run: quarto --version
+
+      - name: Install Python requirements
+        run: |
+          . /env/bin/activate
+          pip install uv
+          uv pip install -e .[doc]
+
+      - name: Build docs
+        env:
+          NUM_CORES: 1
+          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 0
+          BUILD_CHEATSHEET: true
+        run: |
+          . /env/bin/activate
+
+          apt update
+          apt install -y libjbig-dev
+          # Add the /usr/lib/x86_64-linux-gnu/ path to the LD_LIBRARY_PATH (where libjbig-dev .so files are)
+          export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/
+
+          if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
+            xvfb-run mechanical-env make -C doc html
+          else
+            xvfb-run mechanical-env make -C doc html > output.txt 2>&1 || true
+            cat output.txt
+            if grep -q "build succeeded" output.txt; then
+              echo "Documentation building succeeded"
+            else
+              echo "Documentation building failed"
+              exit 1
+            fi
+          fi
+      - name: Check links
+        run: |
+          . /env/bin/activate
+          make -C doc linkcheck
+
+      - name: Upload HTML Documentation
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          python-version: ${{ env.MAIN_PYTHON_VERSION }}
-          dependencies: "pandoc"
-
-      - name: Get Mechanical container logs
-        if: always()
-        run: docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > mechanical_documentation_log.txt 2>&1
-
-      - name: Upload container logs
-        uses: actions/upload-artifact@v3
-        with:
-          name: mechanical_documentation_log
-          path: mechanical_documentation_log.txt
+          name: documentation-html
+          path: doc/_build/html
           retention-days: 7
+
+  doc-deploy-pr:
+    name: "Deploy PR documentation"
+    runs-on: ubuntu-latest
+    needs: [doc-build]
+    if: contains(github.event.pull_request.labels.*.name, 'documentation') && (needs.doc-build.result == 'success' || needs.doc-build.result == 'skipped')
+    steps:
+      - uses: ansys/actions/doc-deploy-pr@33399106dc8b62d83c8aad1fb2c333c8055df180 # v10.0.20
+        with:
+          cname: ${{ env.DOCUMENTATION_CNAME }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
+          bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}
+          maximum-pr-doc-deployments: 10
 
   coverage:
     name: Merging coverage
-    needs: [tests, embedding-tests, launch-tests]
+    needs: [remote-connect, embedding-tests, embedding-scripts-tests, launch-tests]
+    # needs: [remote-connect, embedding-tests, embedding-scripts-tests, embedding-rpc-tests, launch-tests]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
       - name: Install coverage
         run: |
+          rm -rf ./env
           python -m pip install -U pip
           pip install coverage
           pip install -e .
@@ -358,17 +708,27 @@ jobs:
       - name: Create common coverage directory
         run: mkdir cov-dir
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v5
         with:
           name: coverage-file-tests-embedding
           path: cov-dir/embedding
 
-      - uses: actions/download-artifact@v3
+      # - uses: actions/download-artifact@v5
+      #   with:
+      #     name: coverage-file-tests-embedding-rpc
+      #     path: cov-dir/embedding-rpc
+
+      - uses: actions/download-artifact@v5
+        with:
+          name: coverage-file-tests-embedding-scripts
+          path: cov-dir/embedding-scripts
+
+      - uses: actions/download-artifact@v5
         with:
           name: coverage-file-tests-remote-session-launch
           path: cov-dir/launch
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v5
         with:
           name: coverage-file-tests
           path: cov-dir/normal
@@ -379,6 +739,8 @@ jobs:
       - name: Move files to common location
         run: |
           mv cov-dir/embedding/.coverage .coverage.Embedding
+          # mv cov-dir/embedding-rpc/.coverage .coverage.EmbeddingRPC
+          mv cov-dir/embedding-scripts/.coverage .coverage.EmbeddingScripts
           mv cov-dir/launch/.coverage .coverage.Launch
           mv cov-dir/normal/.coverage .coverage.Normal
           rm -rf cov-dir
@@ -396,6 +758,8 @@ jobs:
               src/ansys/mechanical
               /opt/hostedtoolcache/**/ansys/mechanical
               /usr/local/lib/**/ansys/mechanical
+              .venv/lib/**/ansys/mechanical
+              /env/lib/**/ansys/mechanical
 
           EOF
 
@@ -407,40 +771,79 @@ jobs:
           coverage xml -o .coverage-combined/xml
 
       - name: Upload combined coverage results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
+          include-hidden-files: true
           name: combined-coverage-results
           path: .coverage-combined
           retention-days: 7
 
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        with:
+          files: .coverage-combined/xml
+
+      - name: Upload coverage to Codacy
+        uses: codacy/codacy-coverage-reporter-action@v1.3.0
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: '.coverage-combined/xml'
+
   package:
     name: Package library
-    needs: [tests, embedding-tests, docs]
+    needs: [smoke-tests, remote-connect, embedding-tests, embedding-scripts-tests, doc-build]
     runs-on: ubuntu-latest
+    permissions:
+      attestations: write
+      contents: read
+      id-token: write
     steps:
       - name: Build library source and wheel artifacts
-        uses: ansys/actions/build-library@v4
+        uses: ansys/actions/build-library@2031be5b84d9f8c1d56a54912209aa489b469a0f # v10.0.13
         with:
           library-name: ${{ env.PACKAGE_NAME }}
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
-
+          attest-provenance: true
   release:
-    name: Release project
+    name: Release project to GitHub
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
-    needs: [package]
+    needs: [package, update-changelog]
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
     steps:
-      - name: Release to the public PyPI repository
-        uses: ansys/actions/release-pypi-public@v4
-        with:
-          library-name: ${{ env.PACKAGE_NAME }}
-          twine-username: "__token__"
-          twine-token: ${{ secrets.PYPI_TOKEN }}
-
       - name: Release to GitHub
-        uses: ansys/actions/release-github@v4
+        uses: ansys/actions/release-github@2031be5b84d9f8c1d56a54912209aa489b469a0f # v10.0.13
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           library-name: ${{ env.PACKAGE_NAME }}
+          only-code: true
+
+  release-pypi:
+    name: Release project to PyPI
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
+    needs: [package, update-changelog]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+    steps:
+      - name: "Download the library artifacts from build-library step"
+        uses: actions/download-artifact@de96f4613b77ec03b5cf633e7c350c32bd3c5660 # v4.3.0
+        with:
+          name: ${{ env.PACKAGE_NAME }}-artifacts
+          path: ${{ env.PACKAGE_NAME }}-artifacts
+
+      - name: "Upload artifacts to PyPI using trusted publisher"
+        uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e # v1.13.0
+        with:
+          repository-url: "https://upload.pypi.org/legacy/"
+          print-hash: true
+          packages-dir: ${{ env.PACKAGE_NAME }}-artifacts
+          skip-existing: false
 
   upload_dev_docs:
     name: Upload dev documentation
@@ -449,10 +852,12 @@ jobs:
     needs: [package]
     steps:
       - name: Deploy the latest documentation
-        uses: ansys/actions/doc-deploy-dev@v4
+        uses: ansys/actions/doc-deploy-dev@33399106dc8b62d83c8aad1fb2c333c8055df180 # v10.0.20
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+          bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
+          bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}
 
   upload_docs_release:
     name: Upload release documentation
@@ -461,8 +866,9 @@ jobs:
     needs: [release]
     steps:
       - name: Deploy the stable documentation
-        uses: ansys/actions/doc-deploy-stable@v4
+        uses: ansys/actions/doc-deploy-stable@33399106dc8b62d83c8aad1fb2c333c8055df180 # v10.0.20
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+          bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
+          bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}
