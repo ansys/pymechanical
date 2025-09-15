@@ -162,34 +162,28 @@ jobs:
 
   test-container-info:
     name: Get SHA of test container
-    runs-on: ubuntu-latest
+    runs-on: public-ubuntu-latest-8-cores
     needs: [revn-variations]
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     # outputs:
     #   sha: ${{ steps.get-sha.outputs.sha }}
+    strategy:
+      matrix:
+        test_container: ['${{ needs.revn-variations.outputs.test_container }}']
     steps:
-      - name: Install dependencies
-        run: |
-          sudo apt update
-          sudo apt install curl -y
+      - name: Login in Github Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - id: get-sha
+      - name: Pull, launch, and validate Mechanical service
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MECHANICAL_IMAGE: ${{ matrix.test_container }}
         run: |
-          # Get the SHA of the test container
-          mech_container=$(curl -L \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            -h "Authorization: Bearer $GH_TOKEN" \
-            https://api.github.com/orgs/ansys/packages/container/mechanical)
-          echo "mech_container_id=$mech_container_id"
-
-          # curl -L \
-          #   -H "Accept: application/vnd.github+json" \
-          #   -H "X-GitHub-Api-Version: 2022-11-28" \
-          #   https://api.github.com/orgs/ansys/packages/container/mechanical/versions/PACKAGE_VERSION_ID
+          docker pull ${{ env.MECHANICAL_IMAGE }}
+          get_sha=$(docker inspect ${{ env.MECHANICAL_IMAGE }} | grep Digest)
+          echo "Container SHA: $get_sha"
 
   config-matrix:
     runs-on: ubuntu-latest
