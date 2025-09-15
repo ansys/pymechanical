@@ -175,11 +175,14 @@ jobs:
           sudo apt install curl -y
 
       - id: get-sha
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Get the SHA of the test container
           mech_container=$(curl -L \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
+            -h "Authorization: Bearer $GH_TOKEN" \
             https://api.github.com/orgs/ansys/packages/container/mechanical)
           echo "mech_container_id=$mech_container_id"
 
