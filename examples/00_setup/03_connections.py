@@ -69,7 +69,8 @@ all_contacts = ExtAPI.DataModel.Project.Model.Connections.GetChildren(
 # Print details of each contact region
 for contact in all_contacts:
     print(
-        f"\n{contact.Parent.Name} > {contact.Name} : {contact.ContactType} : {contact.Suppressed} : {contact.ContactFormulation}"
+        f"\n{contact.Parent.Name} > {contact.Name} : {contact.ContactType} : "
+        f"{contact.Suppressed} : {contact.ContactFormulation}"
     )
     print("Contact: ", contact.ContactBodies, list(contact.SourceLocation.Ids))
     print("Target: ", contact.TargetBodies, list(contact.TargetLocation.Ids))

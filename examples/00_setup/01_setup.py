@@ -44,8 +44,9 @@ app = App(db_file=mechdat_path, globals=globals())
 print(app)
 
 
-# Alternatively, you can use the update_globals method of the App class to update the global variables:
-# The second argument, if set to False updates globals without enums like "SelectionTypeEnum" or "LoadDefineBy"
+# Alternatively, you can use the update_globals method of the App class to
+# update the global variables.The second argument, if set to False updates
+# globals without enums like "SelectionTypeEnum" or "LoadDefineBy"
 # app = App()
 # app.update_globals(globals(), False)
 

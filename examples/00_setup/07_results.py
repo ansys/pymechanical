@@ -138,7 +138,7 @@ print("Safety Factor Minimum:", minimum)
 
 # Export safety factor results to a text file
 fname = "safety_factor_results.txt"
-safety_factor.ExportToTextFile(True, fname)
+safety_factor.ExportToTextFile(fname)
 
 # %%
 # User-defined Result
@@ -187,5 +187,5 @@ test_mechdat_path = str(output_path / "test.mechdat")
 
 app.close()
 # Delete the downloaded files
-# delete_downloads()
+delete_downloads()
 # sphinx_gallery_end_ignore
