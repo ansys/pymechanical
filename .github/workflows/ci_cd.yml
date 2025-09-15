@@ -182,7 +182,7 @@ jobs:
           MECHANICAL_IMAGE: ${{ matrix.test_container }}
         run: |
           docker pull ${{ env.MECHANICAL_IMAGE }}
-          get_sha=$(docker inspect ${{ env.MECHANICAL_IMAGE }} | grep "digest")
+          get_sha=$(docker inspect ${{ env.MECHANICAL_IMAGE }} | grep digest)
           echo "Container SHA: $get_sha"
 
   config-matrix:
