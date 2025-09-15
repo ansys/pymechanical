@@ -494,7 +494,7 @@ jobs:
           PYTHONUNBUFFERED: 1
         run: |
           . /env/bin/activate
-          mechanical-env pytest -m embedding_scripts -s --junitxml test_results_embedding_scripts${{ matrix.python-version }}.xml -v
+          mechanical-env pytest -m embedding_scripts -s --junitxml test_results_embedding_scripts${{ matrix.python-version }}.xml
           pytest -m cli -s --junitxml test_results_cli_scripts${{ matrix.python-version }}.xml
 
       - name: Upload coverage results
