@@ -60,7 +60,20 @@ runs:
         restore-keys: |
           python${{ inputs.python-version }}-dir
 
-    - name: Manually set up Python
+    - name: "Check if Python is already installed"
+      id: check_python
+      shell: bash
+      run: |
+        if [ -z "$(ls -A /usr/local/bin/python${{ inputs.python-version }})" ]; then
+          echo "Python ${{ inputs.python-version }} is not installed."
+          echo "installed=false" >> "$GITHUB_OUTPUT"
+        else
+          echo "Python ${{ inputs.python-version }} is already installed."
+          echo "installed=true" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: "Install Python ${{ env.PYTHON_VERSION_PATCH }}"
+      if: steps.check_python.outputs.installed == 'false'
       shell: bash
       run: |
         # Update package lists

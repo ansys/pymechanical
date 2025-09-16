@@ -181,9 +181,17 @@ jobs:
         env:
           MECHANICAL_IMAGE: ${{ matrix.test_container }}
         run: |
-          docker pull ${{ env.MECHANICAL_IMAGE }}
-          repo_digests=$(docker inspect --format="{{ index (index .RepoDigests) 0}}" ${{ env.MECHANICAL_IMAGE }})
-          sha="${repo_digests#*:}"
+          # Install jq for parsing JSON
+          pip install jq
+
+          # Get docker info
+          image_info=$(docker manifest inspect -v ${{ env.MECHANICAL_IMAGE }}) # --format ".Descriptor.digest"
+
+          # Get digest SHA
+          digest=$(echo "$image_info" | jq -r '.Descriptor.digest')
+
+          # Remove the "sha256:" prefix to get only the SHA
+          sha="${digest#*:}"
           echo "SHA of image ${{ env.MECHANICAL_IMAGE }} is $sha"
           echo "sha=$sha" >> $GITHUB_OUTPUT
 
