@@ -8,7 +8,7 @@ enabling the use of Ansys technologies directly from Python.
 It allows users to integrate the Mechanical multiphysics solver
 into custom applications via ``ansys-mechanical-core``, which provides a Python-friendly
 interface to drive the software that facilitates the use of
-:ref:`ref_scripting` commands.
+:ref:`Mechanical Scripting <ref_scripting>` commands.
 
 
 .. grid:: 1 2 2 2
