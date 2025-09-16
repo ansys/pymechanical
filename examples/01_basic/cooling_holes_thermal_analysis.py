@@ -159,7 +159,7 @@ def display_image(
 geometry_path = download_file("cooling_holes_geometry.pmdb", "pymechanical", "embedding")
 
 # Download the material file
-mat_path = download_file("Cooling_holes_mat_file.xml", "pymechanical", "embedding")
+mat_path = download_file("cooling_holes_material_file.xml", "pymechanical", "embedding")
 
 
 # %%
@@ -401,9 +401,11 @@ cm,holenodes,node		!Store the nodes for these elements as a component
 esel,inve			    !Switch selection to inverse of these elements
 esel,r,ename,,291	    !Reselect just the solid elements
 nsle,s				    !Select the nodes for these elements
-cmsel,r,holenodes	    !reselect nodes from the holenodes component - results in nodes at the interfaces being selected
+cmsel,r,holenodes	    !reselect nodes from the holenodes component
+                        !results in nodes at the interfaces being selected
 
-/com, now nodes at the interface are selected and elements (minus the elements where the hole would be) are selected
+/com, now nodes at the interface are selected and elements
+/com, (minus the elements where the hole would be) are selected
 /com, Create a new surface effect element type
 
 *get,maxetyp,ETYP,0,NUM,MAX
@@ -417,9 +419,10 @@ esurf,all
 KEYOPT,newsurftyp,5,1
 KEYOPT,newsurftyp,8,2
 
-/com, Now need to attach these new surface effect elements to the fluid 116 elements that pass through where the hole will be
-/com, Store the element centroids of the new surface effect elements using mask arrays
-/com, First get a list of the new surface effect elements and the mask array
+/com, Now need to attach these new surface effect elements to the fluid 116 elements
+/com, that pass through where the hole will be store the element centroids of the new
+/com, surface effect elements using mask arrays. First get a list of the new surface
+/com, effect elements and the mask array
 esel,s,type,,newsurftyp
 *del,elemnums,,nopr
 *vget,elemnums,elem,,elist
@@ -463,14 +466,15 @@ totalarea=0
 *enddo
 
 /com, Add convection boundary conditions to new surface effect elements.
-/com, Use expected hole surface area ratioed to actual surface effect element area to dial in proper heat transfer
+/com, Use expected hole surface area ratioed to actual surface effect element area
+/com, to dial in proper heat transfer
 /solu
 alls
 esel,s,type,,newsurftyp
-ApplyHTC = 9.65e-4*778.2*12		!Convert to proper units, here my solution is in BIN so convert BTU to in-lbf
+ApplyHTC = 9.65e-4*778.2*12		!Convert to proper units, in BIN so convert BTU to in-lbf
 
-/com, Calculate expected hole area (here it is calculated as a straight hole with known diameter and length.
-/com, Could also just hardcode in surface area of the hole
+/com, Calculate expected hole area (here it is calculated as a straight hole with known
+/com, diameter and length). Could also just hardcode in surface area of the hole
 HoleDia = 0.05
 HoleLength = 0.05
 HoleArea = 3.141592654*HoleDia*HoleLength
