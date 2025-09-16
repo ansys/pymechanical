@@ -164,11 +164,11 @@ jobs:
     name: Get SHA of test container
     runs-on: public-ubuntu-latest-8-cores
     needs: [revn-variations]
+    outputs:
+      sha: ${{ steps.get_sha.outputs.sha }}
     strategy:
       matrix:
         test_container: ['${{ needs.revn-variations.outputs.test_container }}']
-    outputs:
-      sha: ${{ steps.get-sha.outputs.sha }}
     steps:
       - name: Login in Github Container registry
         uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
@@ -178,6 +178,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pull, launch, and validate Mechanical service
+        id: get_sha
         env:
           MECHANICAL_IMAGE: ${{ matrix.test_container }}
         run: |
