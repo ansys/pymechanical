@@ -74,8 +74,6 @@ runs:
 
     - name: "Install Python ${{ env.PYTHON_VERSION_PATCH }}"
       if: steps.check_python.outputs.installed == 'false'
-      env:
-        PYTHONHOME: /usr/local/lib/python${{ inputs.python-version }}
       shell: bash
       run: |
         # Update package lists
@@ -104,8 +102,11 @@ runs:
     - name: "Configure Python"
       shell: bash
       run: |
+        # Get the location of the installed Python version
+        python_location=$(which python${{ inputs.python-version }})
+
         # Link python to the installed version
-        ln -s /usr/local/bin/python${{ inputs.python-version }} /usr/bin/python
+        ln -s $python_location /usr/bin/python
 
         # Verify Python installation
         python -m ensurepip --default-pip
