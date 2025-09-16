@@ -100,6 +100,9 @@ runs:
         make altinstall
 
     - name: "Configure Python"
+      env:
+        PYTHONHOME: /usr/local/bin/python${{ inputs.python-version }}
+        PYTHONPATH: /usr/local/bin/python${{ inputs.python-version }}/lib/python${{ inputs.python-version }}/site-packages
       shell: bash
       run: |
         # Link python to the installed version
