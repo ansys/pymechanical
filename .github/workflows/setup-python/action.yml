@@ -52,26 +52,35 @@ runs:
             fi
           fi
 
-    - name: "Cache Python directory"
-      id: cache-python
+    - name: "Cache /usr/local/bin"
+      id: cache-python-bin
       uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
       with:
-        path: /usr/local/bin/python${{ inputs.python-version }}
-        key: python${{ inputs.python-version }}-dir-${{ inputs.container-sha }}
+        path: /usr/local/bin
+        key: python${{ inputs.python-version }}-bin-${{ inputs.container-sha }}
         restore-keys: |
-          python${{ inputs.python-version }}-dir
+          python${{ inputs.python-version }}-bin
 
-    - name: Cache pip
-      id: cache-pip
+    - name: "Cache /usr/local/include"
+      id: cache-python-include
       uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
       with:
-        path: ~/.cache/pip
-        key: Python-${{ runner.os }}-${{ inputs.python-version }}-${{ inputs.container-sha }}-${{ hashFiles('pyproject.toml') }}
+        path: /usr/local/include
+        key: python${{ inputs.python-version }}-include-${{ inputs.container-sha }}
         restore-keys: |
-          Python-${{ runner.os }}-${{ inputs.python-version }}
+          python${{ inputs.python-version }}-include
+
+    - name: "Cache /usr/local/lib"
+      id: cache-python-lib
+      uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
+      with:
+        path: /usr/local/lib
+        key: python${{ inputs.python-version }}-lib-${{ inputs.container-sha }}
+        restore-keys: |
+          python${{ inputs.python-version }}-lib
 
     - name: "Install Python ${{ env.PYTHON_VERSION_PATCH }}"
-      if: ${{ steps.cache-python.outputs.cache-hit != 'true' }}
+      if: ${{ steps.cache-python-bin.outputs.cache-hit != 'true' }} || ${{ steps.cache-python-include.outputs.cache-hit != 'true' }} || ${{ steps.cache-python-lib.outputs.cache-hit != 'true' }}
       shell: bash
       run: |
         # Update package lists
