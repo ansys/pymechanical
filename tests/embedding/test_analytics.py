@@ -29,7 +29,6 @@ import pytest
 
 
 @pytest.mark.embedding_scripts
-@pytest.mark.skip(reason="Figure out why json isn't being created on GH. Re-enabling later")
 def test_analytics(rootdir, run_subprocess, pytestconfig, tmp_path: pytest.TempPathFactory):
     """Test that no output is written when an info is logged when configured at the error level."""
     version = pytestconfig.getoption("ansys_version")
