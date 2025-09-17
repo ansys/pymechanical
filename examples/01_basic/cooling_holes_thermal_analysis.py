@@ -22,8 +22,8 @@
 
 """.. _ref_cooling_holes_thermal_analysis:
 
-Steady State Thermal Analysis of a cooling holes on a representative model
---------------------------------------------------------------------------
+Steady State Thermal Analysis of cooling holes on a representative model
+------------------------------------------------------------------------
 
 This example illustrates the process of adding a Steady State Thermal
 analysis to a new standalone Mechanical session, followed by executing
@@ -35,19 +35,19 @@ with Fluid116 elements.
 Cooling holes are carefully designed small channels within turbine blades
 that release cool air, creating a protective layer on the blade's surface
 to shield it from the intense heat of combustion gases. This film cooling
-technique helps to maintain ideal temperatures, boost turbine efficiency,
-and ensure safe functioning. The size, shape, and location of these holes
-are crucial for their effectiveness and to avoid early failure.
+technique helps maintain optimal temperatures, boost turbine efficiency,
+and ensure safe operation. The size, shape, and location of these holes
+are crucial for their effectiveness and to prevent premature failure.
 
 The model features two plates: one equipped with cooling holes and the
-other lacking them. Fluid116 elements simulate the flow network through
-the hole without needing the hole to be physically present in the
+other without them. Fluid116 elements simulate the flow network through
+the holes without requiring the holes to be physically present in the
 geometry.
 
 The plates are constructed from structural steel, with air
 flowing through the holes. The simulation involves applying convection
-boundary conditions to the plate surfaces, a temperature boundary condition
-at the line vertices, and a mass flow rate boundary condition at the
+boundary conditions to the plate surfaces, temperature boundary conditions
+at the line vertices, and mass flow rate boundary conditions at the
 fluid lines. After solving the simulation, the results are visualized with
 temperature plots, showing the temperature distribution on the plates
 and fluid lines using matplotlib.
@@ -166,7 +166,7 @@ mat_path = download_file("cooling_holes_material_file.xml", "pymechanical", "emb
 # Configure graphics for image export
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Define the graphics and camera
+# Define the graphics and camera objects
 graphics = app.Graphics
 camera = graphics.Camera
 
@@ -189,8 +189,8 @@ settings_720p.CurrentGraphicsDisplay = False
 model = app.Model
 
 # %%
-# Define python variables
-# ~~~~~~~~~~~~~~~~~~~~~~~~
+# Define Python variables
+# ~~~~~~~~~~~~~~~~~~~~~~~
 # Store all main tree nodes as variables
 
 geometry = model.Geometry
@@ -224,8 +224,8 @@ assert str(geometry_import.ObjectState) == "Solved", "Geometry Import unsuccessf
 
 
 # %%
-# Define and Select BIN Units System
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Define and select BIN units system
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Define the unit system for the model as Standard BIN (BTU, inch).
 
 app.ExtAPI.Application.ActiveUnitSystem = MechanicalUnitSystem.StandardBIN
@@ -239,8 +239,8 @@ materials.Import(mat_path)
 
 # %%
 # Assign geometrical and material properties
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Specify section properties and assign it to geometry
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Specify section properties and assign them to geometry
 
 geometry.Activate()
 fluid_line1 = geometry.Children[2].Children[0]  # Activate fluid line Body
@@ -254,11 +254,11 @@ fluid_line2.Material = "Air"
 fluid_line2.FluidCrossArea = Quantity(3.1414, "in in")
 
 # Visualize the model in 3D
-# app.plot()
+app.plot()
 
 # %%
-# Define Coordinate System
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Define coordinate system
+# ~~~~~~~~~~~~~~~~~~~~~~~
 # Specify cylindrical coordinate system for applying boundary conditions
 
 coordinate_systems.Activate()
@@ -273,9 +273,9 @@ coordinate_system_101.PrimaryAxisDefineBy = CoordinateSystemAlignmentType.Global
 coordinate_system_101.SecondaryAxisDefineBy = CoordinateSystemAlignmentType.GlobalZ
 
 # %%
-# Define named selection
+# Define named selections
 # ~~~~~~~~~~~~~~~~~~~~~~
-# Create NS for named selections used in the model
+# Create named selections used in the model
 
 HoleFluidNodes_NS = [x for x in Tree.AllObjects if x.Name == "HoleFluidNodes"][0]
 Both_Plates_NS = [x for x in Tree.AllObjects if x.Name == "Both_Plates"][0]
@@ -288,7 +288,7 @@ Top_Surface_Plates_NS = [x for x in Tree.AllObjects if x.Name == "Top_Surface_Pl
 Hole_Cyl_Surface_NS = [x for x in Tree.AllObjects if x.Name == "Hole_Cyl_Surface"][0]
 Fluidlines_NS = [x for x in Tree.AllObjects if x.Name == "Fluidlines"][0]
 
-# Create NS for elements at the hole
+# Create named selection for elements at the hole
 named_selections = model.NamedSelections
 named_selection = named_selections.AddNamedSelection()
 named_selection.ScopingMethod = GeometryDefineByType.Worksheet
@@ -308,7 +308,7 @@ named_selection.Generate()
 named_selection.Name = r"""HoleElements"""
 
 # %%
-# Define Mesh Controls and generate the mesh
+# Define mesh controls and generate the mesh
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Mesh the model
 
@@ -329,8 +329,17 @@ sizing.ElementSize = Quantity(1e-2, "in")
 mesh.GenerateMesh()
 
 # %%
-# Define Analysis
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Display the mesh
+
+# Activate the mesh for visualization
+app.Tree.Activate([mesh])
+
+# Set the camera to fit the model and export the image
+set_camera_and_display_image(camera, graphics, settings_720p, output_path, "mesh.png")
+
+# %%
+# Define analysis
+# ~~~~~~~~~~~~~~
 # Add a Steady State Thermal Analysis
 
 steady_state_thermal = model.AddSteadyStateThermalAnalysis()
@@ -340,9 +349,9 @@ steady_state_thermal_analysis = model.Analyses[0].AnalysisSettings
 solution = model.Analyses[0].Solution
 
 # %%
-# Apply Loads and Boundary Conditions
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Add convection load, body temperature and mass flow rate
+# Apply loads and boundary conditions
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Add convection loads, body temperatures, and mass flow rates
 
 steady_state_thermal.Activate()
 
@@ -384,8 +393,8 @@ mass_flow_rate_2.Location = Fluid_Line2_NS
 mass_flow_rate_2.Magnitude.Output.SetDiscreteValue(0, Quantity(9.9999e-4, "lbm sec^-1"))
 
 # %%
-# Insert Command Snippet to create surface effect elements at the hole
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Insert command snippet to create surface effect elements at the hole
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 command_snippet = steady_state_thermal.AddCommandSnippet()
 
@@ -487,7 +496,7 @@ alls """
 
 # %%
 # Insert results
-# ~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~
 # Insert temperature results
 
 temp_plot_both_plates = solution.AddTemperature()
@@ -507,7 +516,7 @@ STAT_SS = solution.Status
 # ~~~~~~~~~~~~~~
 
 # %%
-# Display the temperature plots
+# Display the temperature plots for both plates
 
 # Activate the temperature results for both plates
 app.Tree.Activate([temp_plot_both_plates])
@@ -521,9 +530,9 @@ set_camera_and_display_image(
 )
 
 # %%
-# Display the templature plots for fluid lines
+# Display the temperature plots for fluid lines
 
-# Activate the temperature results
+# Activate the temperature results for fluid lines
 app.Tree.Activate([temp_plot_fluidlines])
 # Set the camera to fit the model and export the image
 set_camera_and_display_image(
