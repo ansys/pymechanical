@@ -674,7 +674,7 @@ jobs:
     name: "Deploy PR documentation"
     runs-on: ubuntu-latest
     needs: [doc-build]
-    if: contains(github.event.pull_request.labels.*.name, 'documentation') && (needs.doc-build.result == 'success' || needs.doc-build.result == 'skipped')
+    if: always() && (needs.doc-build.result == 'success' || needs.doc-build.result == 'skipped')
     steps:
       - uses: ansys/actions/doc-deploy-pr@33399106dc8b62d83c8aad1fb2c333c8055df180 # v10.0.20
         with:
