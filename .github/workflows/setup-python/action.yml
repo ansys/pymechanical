@@ -117,7 +117,7 @@ runs:
 
         # Install sqlite3 and libsqlite3-dev
         apt-get update
-        apt-get install sqlite3 libsqlite3-dev -y
+        apt-get install sqlite3 libsqlite3-dev lsb-release -y
 
         # Verify Python installation
         python -m ensurepip --default-pip
