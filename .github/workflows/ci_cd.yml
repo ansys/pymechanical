@@ -422,8 +422,6 @@ jobs:
           pip install uv
           uv pip install -e .[tests]
 
-          apt-get install sqlite3 -y
-
       - name: Unit Testing and coverage
         env:
           ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
