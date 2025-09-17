@@ -48,7 +48,7 @@ def __register_function_codec():
 def _bind_assembly(
     assembly_name: str, explicit_interface: bool = False, pep8_aliases: bool = False
 ) -> None:
-    """Bind the assembly for explicit interface and/or pep8 aliases.
+    """Bind the assembly for explicit interface and/or PEP 8 aliases.
 
     Parameters
     ----------
@@ -105,8 +105,8 @@ def initialize(version: int, pep8_aliases: bool = False) -> None:
     if os.environ.get("PYMECHANICAL_EXPLICIT_INTERFACE") == "0":
         explicit_interface = False
 
-    # TODO: When the pep8_aliases option is enabled (True by default),
-    # keep three environment variables to turn explicit, pep8, and both off.
+    # TODO: When the PEP 8 aliases option is enabled (True by default),
+    # keep three environment variables to turn explicit, PEP 8, and both off.
 
     _bind_assembly(
         "Ansys.ACT.WB1", explicit_interface=explicit_interface, pep8_aliases=pep8_aliases
