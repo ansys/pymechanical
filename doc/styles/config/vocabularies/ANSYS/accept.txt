@@ -66,3 +66,4 @@ Windows
 windows
 WSL
 wsl
+alls
