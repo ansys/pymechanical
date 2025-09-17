@@ -80,7 +80,7 @@ runs:
           python${{ inputs.python-version }}-lib
 
     - name: "Install Python ${{ env.PYTHON_VERSION_PATCH }}"
-      if: ${{ steps.cache-python-bin.outputs.cache-hit != 'true' }} || ${{ steps.cache-python-include.outputs.cache-hit != 'true' }} || ${{ steps.cache-python-lib.outputs.cache-hit != 'true' }}
+      if: ${{ steps.cache-python-bin.outputs.cache-hit != 'true' || steps.cache-python-include.outputs.cache-hit != 'true' || steps.cache-python-lib.outputs.cache-hit != 'true' }}
       shell: bash
       run: |
         # Update package lists
