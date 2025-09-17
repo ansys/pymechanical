@@ -27,6 +27,14 @@ inputs:
     type: string
     default: ""
 
+  enable-optimizations:
+    description: >
+      Whether to enable optimizations when building Python from source.
+      Defaults to true.
+    required: false
+    type: boolean
+    default: true
+
 runs:
   using: "composite"
   steps:
@@ -98,7 +106,13 @@ runs:
 
         # Check the required dependencies of the Python install
         cd Python-$version/
-        ./configure --enable-optimizations
+
+        if [ "${{ inputs.enable-optimizations }}" = true ]; then
+          optimization_flag="--enable-optimizations"
+        else
+          optimization_flag=""
+        fi
+        ./configure $optimizations_flag
 
         # Build Python
         make -j $(nproc)
