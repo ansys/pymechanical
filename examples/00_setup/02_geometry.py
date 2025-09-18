@@ -128,9 +128,7 @@ body2 = DataModel.GeoData.GeoEntityById(bodyid)
 
 # Get face IDs and centroids for each face
 face_ids = [face.Id for face in body2.Faces]
-centroids_of_each_face = [
-    DataModel.GeoData.GeoEntityById(face_id).Centroid for face_id in face_ids
-]
+centroids_of_each_face = [DataModel.GeoData.GeoEntityById(face_id).Centroid for face_id in face_ids]
 
 # Print face IDs and their centroids
 for face_id, centroid in zip(face_ids, centroids_of_each_face):
@@ -220,9 +218,7 @@ ns2.Location = selection
 # Find a Named Selection with a prefix
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Retrieve a named selection whose name starts with a specific prefix
-NSall = Model.NamedSelections.GetChildren[
-    Ansys.ACT.Automation.Mechanical.NamedSelection
-](True)
+NSall = Model.NamedSelections.GetChildren[Ansys.ACT.Automation.Mechanical.NamedSelection](True)
 my_nsel = [i for i in NSall if i.Name.startswith("b")][0]
 print(my_nsel.Name)
 
@@ -275,9 +271,9 @@ tree_CS = Model.CoordinateSystems
 # Create a new coordinate system
 csys = Model.CoordinateSystems.AddCoordinateSystem()
 # place csys origin at arbitrary (0,25,50) location
-csys.SetOriginLocation(Quantity(0,"in"), Quantity(25,"in"), Quantity(50,"in"))
+csys.SetOriginLocation(Quantity(0, "in"), Quantity(25, "in"), Quantity(50, "in"))
 # set primary X axis to arbitrary (1,2,3) direction
-csys.PrimaryAxisDirection = Vector3D(1,2,3)
+csys.PrimaryAxisDirection = Vector3D(1, 2, 3)
 
 # %%
 # Add a cartesian coordinate system at a location (0,25,50) inches with primary X axis towards an arbitrary (1,2,3) direction
@@ -285,10 +281,9 @@ csys.PrimaryAxisDirection = Vector3D(1,2,3)
 # Create a new coordinate system
 csys = Model.CoordinateSystems.AddCoordinateSystem()
 # place csys origin at arbitrary (0,25,50) location
-csys.SetOriginLocation(Quantity(0,"in"), Quantity(25,"in"), Quantity(50,"in"))
+csys.SetOriginLocation(Quantity(0, "in"), Quantity(25, "in"), Quantity(50, "in"))
 # set primary X axis to arbitrary (1,2,3) direction
-csys.PrimaryAxisDirection = Vector3D(1,2,3)
-
+csys.PrimaryAxisDirection = Vector3D(1, 2, 3)
 
 
 # %%
@@ -297,10 +292,9 @@ csys.PrimaryAxisDirection = Vector3D(1,2,3)
 # Create a new coordinate system
 csys = app.Model.CoordinateSystems.AddCoordinateSystem()
 # place csys origin at arbitrary (0,25,50) location
-csys.SetOriginLocation(Quantity(0,"in"), Quantity(25,"in"), Quantity(50,"in"))
+csys.SetOriginLocation(Quantity(0, "in"), Quantity(25, "in"), Quantity(50, "in"))
 # set primary X axis to arbitrary (1,2,3) direction
-csys.PrimaryAxisDirection = Vector3D(1,2,3)
-
+csys.PrimaryAxisDirection = Vector3D(1, 2, 3)
 
 
 # sphinx_gallery_start_ignore

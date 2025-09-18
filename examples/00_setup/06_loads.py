@@ -241,7 +241,11 @@ t.Output.DiscreteValues = [Quantity("22 [C]"), Quantity("2302 [C]")]
 temp_bc = analysis2.AddTemperature()
 temp_bc.Location = app.DataModel.GetObjectsByName("fixed")[0]
 temp_bc.Magnitude.Output.DiscreteValues = [Quantity("22[C]"), Quantity("60[C]")]
-temp_bc.Magnitude.Inputs[0].DiscreteValues = [Quantity("0 [sec]"), Quantity("1 [sec]"), Quantity("2 [sec]")]
+temp_bc.Magnitude.Inputs[0].DiscreteValues = [
+    Quantity("0 [sec]"),
+    Quantity("1 [sec]"),
+    Quantity("2 [sec]"),
+]
 temp_bc.Magnitude.Output.DiscreteValues = [Quantity("22[C]"), Quantity("50[C]"), Quantity("80[C]")]
 
 
@@ -259,11 +263,22 @@ convection = Model.Analyses[0].AddConvection()
 if named_sel != None:
     convection.Location = named_sel
 
-convection.AmbientTemperature.Inputs[0].DiscreteValues = [Quantity("0 [s]"), Quantity("1 [s]")]  # Set the time values
-convection.AmbientTemperature.Output.DiscreteValues = [Quantity('760  [C]'), Quantity('800  [C]')] # Set the Ambient Temperature values
-convection.FilmCoefficient.Inputs[0].DiscreteValues = [Quantity("0 [s]"), Quantity("1 [s]")]  # Set the time values
-convection.FilmCoefficient.Output.DiscreteValues = [Quantity("100 [W m^-1 m^-1 K^-1]"), Quantity("150  [W m^-1 m^-1 K^-1]")] #Set the HTC values
-
+convection.AmbientTemperature.Inputs[0].DiscreteValues = [
+    Quantity("0 [s]"),
+    Quantity("1 [s]"),
+]  # Set the time values
+convection.AmbientTemperature.Output.DiscreteValues = [
+    Quantity("760  [C]"),
+    Quantity("800  [C]"),
+]  # Set the Ambient Temperature values
+convection.FilmCoefficient.Inputs[0].DiscreteValues = [
+    Quantity("0 [s]"),
+    Quantity("1 [s]"),
+]  # Set the time values
+convection.FilmCoefficient.Output.DiscreteValues = [
+    Quantity("100 [W m^-1 m^-1 K^-1]"),
+    Quantity("150  [W m^-1 m^-1 K^-1]"),
+]  # Set the HTC values
 
 
 # %%
@@ -326,37 +341,37 @@ nodal_pressure.Magnitude.Output.DiscreteValues = [Quantity("0 [Pa]"), Quantity("
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 analysis_settings = Model.Analyses[0].AnalysisSettings
 analysis_settings.CurrentStepNumber = 1
-print(analysis_settings.AutomaticTimeStepping )
+print(analysis_settings.AutomaticTimeStepping)
 
 
 # %%
 # Set Step end time
 # ~~~~~~~~~~~~~~~~~
 analysis_settings.CurrentStepNumber = 5
-analysis_settings.StepEndTime = Quantity('0.1 [sec]')
+analysis_settings.StepEndTime = Quantity("0.1 [sec]")
 
 # %%
 # Define Load steps with end times
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-analysis_settings.NumberOfSteps=3
+analysis_settings.NumberOfSteps = 3
 
 analysis_settings.CurrentStepNumber = 1
-analysis_settings.StepEndTime = Quantity('1.0 [sec]')
+analysis_settings.StepEndTime = Quantity("1.0 [sec]")
 
 analysis_settings.CurrentStepNumber = 2
-analysis_settings.StepEndTime = Quantity('10.0 [sec]')
+analysis_settings.StepEndTime = Quantity("10.0 [sec]")
 
 analysis_settings.CurrentStepNumber = 3
-analysis_settings.StepEndTime = Quantity('100.0 [sec]')
+analysis_settings.StepEndTime = Quantity("100.0 [sec]")
 
 
 # %%
 # Define substep sizing using times
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 analysis_settings.CurrentStepNumber = 1
-analysis_settings.StepEndTime = Quantity('0.1 [sec]')
-analysis_settings.AutomaticTimeStepping =analysis_settings.AutomaticTimeStepping.On
-analysis_settings.DefineBy=analysis_settings.DefineBy.Time
+analysis_settings.StepEndTime = Quantity("0.1 [sec]")
+analysis_settings.AutomaticTimeStepping = analysis_settings.AutomaticTimeStepping.On
+analysis_settings.DefineBy = analysis_settings.DefineBy.Time
 analysis_settings.InitialTimeStep = Quantity("0.005 [s]")
 analysis_settings.MaximumTimeStep = Quantity("0.5 [s]")
 analysis_settings.MinimumTimeStep = Quantity("0.0005 [s]")
@@ -366,12 +381,12 @@ analysis_settings.MinimumTimeStep = Quantity("0.0005 [s]")
 # Define substep sizing using steps
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 analysis_settings.CurrentStepNumber = 1
-analysis_settings.StepEndTime = Quantity('0.1 [sec]')
-analysis_settings.AutomaticTimeStepping =analysis_settings.AutomaticTimeStepping.On
-analysis_settings.DefineBy=analysis_settings.DefineBy.Substeps
-analysis_settings.InitialSubsteps=15
-analysis_settings.MinimumSubsteps=5
-analysis_settings.MaximumSubsteps=50
+analysis_settings.StepEndTime = Quantity("0.1 [sec]")
+analysis_settings.AutomaticTimeStepping = analysis_settings.AutomaticTimeStepping.On
+analysis_settings.DefineBy = analysis_settings.DefineBy.Substeps
+analysis_settings.InitialSubsteps = 15
+analysis_settings.MinimumSubsteps = 5
+analysis_settings.MaximumSubsteps = 50
 
 # %%
 # Set Iterative solver type for solution
@@ -415,14 +430,11 @@ Model.Analyses[0].Solution.Solve(True)
 # Set the step end time and time steps in Transient structural analysis
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # analysis = app.Model.AddTransientStructuralAnalysis()
-analysis_settings=analysis.AnalysisSettings
-analysis_settings.SetStepEndTime( 1, Quantity("0.4 [s]"))
-analysis_settings.SetInitialTimeStep(1,Quantity("0.0001 [s]"))
-analysis_settings.SetMinimumTimeStep(1,Quantity("0.0000001 [s]"))
-analysis_settings.SetMaximumTimeStep(1,Quantity("0.01 [s]"))
-
-
-
+analysis_settings = analysis.AnalysisSettings
+analysis_settings.SetStepEndTime(1, Quantity("0.4 [s]"))
+analysis_settings.SetInitialTimeStep(1, Quantity("0.0001 [s]"))
+analysis_settings.SetMinimumTimeStep(1, Quantity("0.0000001 [s]"))
+analysis_settings.SetMaximumTimeStep(1, Quantity("0.01 [s]"))
 
 
 # sphinx_gallery_start_ignore

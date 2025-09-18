@@ -69,14 +69,12 @@ body = DataModel.GeoData.GeoEntityById(312)
 # %%
 # Print all visible properties of a tree
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-tree_object= DataModel.GetObjectsByName("Contact Region")[0]
+tree_object = DataModel.GetObjectsByName("Contact Region")[0]
 for prop in tree_object.Properties:
-    print(f'{prop.Name}: {prop.InternalValue}')
+    print(f"{prop.Name}: {prop.InternalValue}")
 # or
 for tree_object in tree_object.VisibleProperties:
     print(tree_object.Caption + " | " + tree_object.StringValue)
-
-
 
 
 # %%
@@ -103,9 +101,7 @@ ns_all = DataModel.GetObjectsByType(DataModelObjectCategory.NamedSelections.Name
 
 # Retrieve all contact regions
 abc = DataModel.GetObjectsByType(DataModelObjectCategory.ContactRegion)
-all_contacts = Model.Connections.GetChildren(
-    DataModelObjectCategory.ContactRegion, True
-)
+all_contacts = Model.Connections.GetChildren(DataModelObjectCategory.ContactRegion, True)
 
 # Access a specific contact region by name
 my_contact = [contact for contact in all_contacts if contact.Name == "Contact Region"][0]
@@ -121,12 +117,8 @@ ana = DataModel.Tree.GetObjectsByType(DataModelObjectCategory.Analysis)
 all_contacts2 = Model.Connections.GetChildren[
     Ansys.ACT.Automation.Mechanical.Connections.ContactRegion
 ](True)
-all_remote_points2 = Model.GetChildren[
-    Ansys.ACT.Automation.Mechanical.RemotePoint
-](True)
-all_folders = Model.GetChildren[
-    Ansys.ACT.Automation.Mechanical.TreeGroupingFolder
-](True)
+all_remote_points2 = Model.GetChildren[Ansys.ACT.Automation.Mechanical.RemotePoint](True)
+all_folders = Model.GetChildren[Ansys.ACT.Automation.Mechanical.TreeGroupingFolder](True)
 
 # %%
 # Finding Duplicate Objects by Name
@@ -207,9 +199,7 @@ bb = DataModel.GetObjectsByName("Connector\Solid1")[0]
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Access specific named selections by their names.
 
-NSall = Model.NamedSelections.GetChildren[
-    Ansys.ACT.Automation.Mechanical.NamedSelection
-](True)
+NSall = Model.NamedSelections.GetChildren[Ansys.ACT.Automation.Mechanical.NamedSelection](True)
 my_nsel = [i for i in NSall if i.Name.startswith("NSF")][0]
 my_nsel2 = [i for i in NSall if i.Name == "NSInsideFaces"][0]
 
@@ -226,7 +216,6 @@ print(len(all_bodies))
 # Retrieve all unsuppressed point masses
 all_pm = Model.GetChildren(DataModelObjectCategory.PointMass, True)
 all_pm = [i for i in all_pm if not i.Suppressed]
-
 
 
 # sphinx_gallery_start_ignore

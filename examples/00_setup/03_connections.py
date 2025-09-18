@@ -62,13 +62,11 @@ app.print_tree()
 # Get information about all Contacts Defined
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Retrieve all contact regions defined in the model
-all_contacts = Model.Connections.GetChildren(
-    DataModelObjectCategory.ContactRegion, True
-)
+all_contacts = Model.Connections.GetChildren(DataModelObjectCategory.ContactRegion, True)
 
 # Print count of all contact regions
 numContacts = all_contacts.Count
-print("There are %s contact regions" % (numContacts) )
+print("There are %s contact regions" % (numContacts))
 
 # Print details of each contact region
 for contact in all_contacts:
@@ -78,7 +76,6 @@ for contact in all_contacts:
     )
     print("Contact: ", contact.ContactBodies, list(contact.SourceLocation.Ids))
     print("Target: ", contact.TargetBodies, list(contact.TargetLocation.Ids))
-
 
 
 # %%
@@ -94,9 +91,7 @@ contactgroup.Priority = contactgroup.Priority.FaceOverEdge
 contactgroup.InternalObject.DetectCylindricalFacesType = 1
 
 # Retrieve a named selection for the connection group
-NSall = Model.NamedSelections.GetChildren[
-    Ansys.ACT.Automation.Mechanical.NamedSelection
-](True)
+NSall = Model.NamedSelections.GetChildren[Ansys.ACT.Automation.Mechanical.NamedSelection](True)
 my_nsel = [i for i in NSall if i.Name == "bodies_5"][0]
 
 # Assign the named selection to the connection group and create automatic connections
@@ -114,9 +109,7 @@ c = DataModel.Project.Model.Connections
 c1 = c.AddContactRegion()
 
 # Retrieve named selections for the source and target locations
-NSall = Model.NamedSelections.GetChildren[
-    Ansys.ACT.Automation.Mechanical.NamedSelection
-](True)
+NSall = Model.NamedSelections.GetChildren[Ansys.ACT.Automation.Mechanical.NamedSelection](True)
 a = [i for i in NSall if i.Name == "block1_washer_cont"][0]
 c1.TargetLocation = a
 a = [i for i in NSall if i.Name == "block1_washer_targ"][0]
@@ -128,10 +121,9 @@ c1.SourceLocation = a
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 connections = Model.Connections
 fixed_joint = connections.AddJoint()
-fixed_joint.ConnectionType=JointScopingType.BodyToGround
+fixed_joint.ConnectionType = JointScopingType.BodyToGround
 fixed_joint.Type = JointType.Fixed
 fixed_joint.MobileLocation = app.DataModel.GetObjectsByName("block1_washer_cont")[0]
-
 
 
 # %%
@@ -165,7 +157,7 @@ j.MobileLocation = mobile_scoping
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 connections = Model.Connections
 spring = connections.AddSpring()
-spring.ConnectionType=JointScopingType.BodyToGround
+spring.ConnectionType = JointScopingType.BodyToGround
 spring.LongitudinalStiffness = Quantity(1, "N m^-1")
 spring.MobileScopingMethod = GeometryDefineByType.Component
 spring.MobileScopeLocation = app.DataModel.GetObjectsByName("block1_washer_cont")[0]
@@ -193,9 +185,7 @@ brg.DampingC12.Output.DiscreteValues = [Quantity("112 [N sec m^-1]")]
 brg.DampingC21.Output.DiscreteValues = [Quantity("121 [N sec m^-1]")]
 
 # Retrieve named selections for the reference and mobile locations
-NSall = Model.NamedSelections.GetChildren[
-    Ansys.ACT.Automation.Mechanical.NamedSelection
-](True)
+NSall = Model.NamedSelections.GetChildren[Ansys.ACT.Automation.Mechanical.NamedSelection](True)
 brg.ReferenceLocation = [i for i in NSall if i.Name == "shank_surface"][0]
 brg.MobileLocation = [i for i in NSall if i.Name == "shank_surface"][0]
 

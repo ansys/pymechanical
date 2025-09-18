@@ -69,9 +69,7 @@ nsall = DataModel.GetObjectsByType(DataModelObjectCategory.NamedSelections.Named
 # Delete a named selection
 # ~~~~~~~~~~~~~~~~~~~~~~~~
 # Retrieve all named selections in the project
-NSall = Model.NamedSelections.GetChildren[
-    Ansys.ACT.Automation.Mechanical.NamedSelection
-](True)
+NSall = Model.NamedSelections.GetChildren[Ansys.ACT.Automation.Mechanical.NamedSelection](True)
 
 # Delete a named selection by its name
 a = [i for i in NSall if i.Name == "Top_Face"][0]
@@ -124,18 +122,17 @@ Criterion2.Value = Quantity("0 [m]")
 GenerationCriteria.Add(Criterion2)
 
 # Generate the named selection based on the criteria
-NS1.Name="faces_for_support"
+NS1.Name = "faces_for_support"
 NS1.Generate()
-
 
 
 # %%
 # Extract all the details of a named selection worksheet named "faces_for_support"
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-NSall=app.Model.NamedSelections.GetChildren[Ansys.ACT.Automation.Mechanical.NamedSelection](True)
+NSall = app.Model.NamedSelections.GetChildren[Ansys.ACT.Automation.Mechanical.NamedSelection](True)
 my_nsel = [i for i in NSall if i.Name == "shaft"][0]
 worksheet = my_nsel.GenerationCriteria
-for i in range(0,len(list(worksheet))):
+for i in range(0, len(list(worksheet))):
     print(worksheet[i].Action)
     print(worksheet[i].EntityType)
     print(worksheet[i].Criterion)
@@ -144,14 +141,11 @@ for i in range(0,len(list(worksheet))):
     print(worksheet[i].CoordinateSystem.Name)
 
 
-
 # %%
 # Find a Named Selection
 # ~~~~~~~~~~~~~~~~~~~~~~
 # Retrieve all named selections in the project
-NSall = Model.NamedSelections.GetChildren[
-    Ansys.ACT.Automation.Mechanical.NamedSelection
-](True)
+NSall = Model.NamedSelections.GetChildren[Ansys.ACT.Automation.Mechanical.NamedSelection](True)
 
 # Find a specific named selection by its name
 a = [i for i in NSall if i.Name == "Rubber_Bodies30"][0]
@@ -164,9 +158,7 @@ print(entities[0].Volume)
 # Identify Named Selections based on Name and Type
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Retrieve all named selections in the project
-NSall = Model.NamedSelections.GetChildren[
-    Ansys.ACT.Automation.Mechanical.NamedSelection
-](True)
+NSall = Model.NamedSelections.GetChildren[Ansys.ACT.Automation.Mechanical.NamedSelection](True)
 
 # Filter named selections based on keywords in their names
 keywords = ["Rubber_Bodies30", "Inner_Faces30", "Outer_Faces30"]

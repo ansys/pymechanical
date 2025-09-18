@@ -60,10 +60,9 @@ app.print_tree()
 # %%
 # Set Global Mesh Settings
 # ~~~~~~~~~~~~~~~~~~~~~~~~
-mesh=Model.Mesh
-mesh.ElementSize = Quantity('37 [mm]')
+mesh = Model.Mesh
+mesh.ElementSize = Quantity("37 [mm]")
 mesh.ElementOrder = ElementOrder.Linear
-
 
 
 # %%
