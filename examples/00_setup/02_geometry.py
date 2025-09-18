@@ -25,7 +25,7 @@
 Geometry
 --------
 
-This section has helper scripts for Geometry
+This section contains utility scripts for working with Geometry, including importing, analyzing, and accessing geometric data, as well as utilizing it for downstream preprocessing operations in Mechanical simulations.
 """
 
 # %%
