@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (C) 2023 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -33,8 +33,8 @@ if [ $# -lt 1 ]; then
     echo "Usage:"
     echo "    mechanical-env [-r version] [-p <path to installation>] [COMMAND]"
     echo "Example:"
-    echo "    mechanical-env -r 251 python"
-    echo "    mechanical-env -p /usr/install/ansys_inc/251 python"
+    echo "    mechanical-env -r 252 python"
+    echo "    mechanical-env -p /usr/install/ansys_inc/252 python"
     exit 1
 fi
 
@@ -158,15 +158,22 @@ LD_LIBRARY_PATH=${!awp_root}/tp/stdc++\
 :${!awp_root}/Framework/bin/Linux64
 
 # Add extra path to the dynamic library load path depending on version
-# For version 251, 252 or greater
-if [ "$version" = "252" ] || [ "$version" -gt "252" ]; then
+# For version 261 or greater
+if [ "$version" = "261" ] || [ "$version" -gt "261" ]; then
+    LD_LIBRARY_PATH=${LD_LIBRARY_PATH}\
+:${!awp_root}/tp/IntelMKL/2024.2.0/linx64/lib/intel64\
+:${!awp_root}/tp/nss/3.89/lib\
+:${!awp_root}/tp/IntelCompiler/2023.1.0/linx64/lib/intel64\
+:${!awp_root}/tp/qt/5.15.19/linx64/lib\
+:${!awp_root}/tp/openssl/3.0/linx64/lib
+elif [ "$version" = "252" ]; then
     LD_LIBRARY_PATH=${LD_LIBRARY_PATH}\
 :${!awp_root}/tp/IntelMKL/2024.2.0/linx64/lib/intel64\
 :${!awp_root}/tp/nss/3.89/lib\
 :${!awp_root}/tp/IntelCompiler/2023.1.0/linx64/lib/intel64\
 :${!awp_root}/tp/qt/5.15.18/linx64/lib\
 :${!awp_root}/tp/openssl/3.0/linx64/lib
-elif [ "$version" = "251" ]; then # For version 242
+elif [ "$version" = "251" ]; then
     LD_LIBRARY_PATH=${LD_LIBRARY_PATH}\
 :${!awp_root}/tp/IntelMKL/2023.1.0/linx64/lib/intel64\
 :${!awp_root}/tp/nss/3.89/lib\
@@ -180,17 +187,11 @@ elif [ "$version" = "242" ]; then # For version 242
 :${!awp_root}/tp/IntelCompiler/2023.1.0/linx64/lib/intel64\
 :${!awp_root}/tp/qt/5.15.16/linx64/lib\
 :${!awp_root}/tp/openssl/3.0/linx64/lib
-elif [ "$version" = "241" ]; then # For version 241
+else
     LD_LIBRARY_PATH=${LD_LIBRARY_PATH}\
 :${!awp_root}/tp/IntelMKL/2020.0.166/linx64/lib/intel64\
 :${!awp_root}/tp/nss/3.89/lib\
 :${!awp_root}/tp/IntelCompiler/2023.1.0/linx64/lib/intel64\
-:${!awp_root}/tp/qt_fw/5.9.6/Linux64/lib\
-:${!awp_root}/tp/openssl/1.1.1/linx64/lib
-else  # For version < 241 (mainly 232)
-    LD_LIBRARY_PATH=${LD_LIBRARY_PATH}\
-:${!awp_root}/tp/IntelMKL/2020.0.166/linx64/lib/intel64\
-:${!awp_root}/tp/IntelCompiler/2019.3.199/linx64/lib/intel64\
 :${!awp_root}/tp/qt_fw/5.9.6/Linux64/lib\
 :${!awp_root}/tp/openssl/1.1.1/linx64/lib
 fi
