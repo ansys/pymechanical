@@ -57,6 +57,14 @@ app.plot()
 # Print the Mechanical tree structure
 app.print_tree()
 
+# %%
+# Set Global Mesh Settings
+# ~~~~~~~~~~~~~~~~~~~~~~~~
+mesh=Model.Mesh
+mesh.ElementSize = Quantity('37 [mm]')
+mesh.ElementOrder = ElementOrder.Linear
+
+
 
 # %%
 # Insert a Local Meshing Control for a Named Selection
@@ -95,11 +103,10 @@ body = Model.Geometry.GetBody(geoBody)
 meshregion = meshdata.MeshRegionById(geoBody.Id)
 print(body.Name, meshregion.ElementCount)
 
-
-# sphinx_gallery_start_ignore
-# Clear the generated mesh to start fresh for next operations
+# %%
+# Clear generated mesh
+# ~~~~~~~~~~~~~~~~~~~~~~~~
 Model.Mesh.ClearGeneratedData()
-# sphinx_gallery_end_ignore
 
 
 # %%

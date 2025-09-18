@@ -71,6 +71,20 @@ geometry_import_preferences.ProcessNamedSelections = True
 geometry_import_preferences.ProcessMaterialProperties = True
 geometry_import.Import(geom_file_path, geometry_import_format, geometry_import_preferences)
 
+# %%
+# Set Units
+# ~~~~~~~~~~~~~~~~~~~~~~~
+
+app.ExtAPI.Application.ActiveUnitSystem = MechanicalUnitSystem.StandardNMM
+app.ExtAPI.Application.ActiveAngleUnit = AngleUnitType.Radian
+app.ExtAPI.Application.ActiveAngularVelocityUnit=AngularVelocityUnitType.RadianPerSecond
+
+# %%
+# View messages in Mechanical using PyMechanical
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+app.messages.show()
+
 
 # %%
 # Plot and Print the Tree (To check model so far)

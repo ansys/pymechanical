@@ -63,13 +63,13 @@ app.print_tree()
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Retrieve all named selections in the model
-nsall = ExtAPI.DataModel.GetObjectsByType(DataModelObjectCategory.NamedSelections.NamedSelection)
+nsall = DataModel.GetObjectsByType(DataModelObjectCategory.NamedSelections.NamedSelection)
 
 # %%
 # Delete a named selection
 # ~~~~~~~~~~~~~~~~~~~~~~~~
 # Retrieve all named selections in the project
-NSall = ExtAPI.DataModel.Project.Model.NamedSelections.GetChildren[
+NSall = Model.NamedSelections.GetChildren[
     Ansys.ACT.Automation.Mechanical.NamedSelection
 ](True)
 
@@ -78,7 +78,7 @@ a = [i for i in NSall if i.Name == "Top_Face"][0]
 a.Delete()
 
 # Alternative way to delete a named selection by name
-b = ExtAPI.DataModel.GetObjectsByName("Bottom_Face")[0]
+b = DataModel.GetObjectsByName("Bottom_Face")[0]
 b.Delete()
 
 # %%
@@ -90,8 +90,7 @@ selection = ExtAPI.SelectionManager.CreateSelectionInfo(SelectionTypeEnum.Geomet
 selection.Ids = [216, 221, 224]
 
 # Add the named selection to the model
-model = ExtAPI.DataModel.Project.Model
-ns2 = model.AddNamedSelection()
+ns2 = Model.AddNamedSelection()
 ns2.Name = "faces"  # Set the name of the named selection
 ns2.Location = selection
 selection_manager.ClearSelection()  # Clear the selection after creation - delete
@@ -100,9 +99,12 @@ selection_manager.ClearSelection()  # Clear the selection after creation - delet
 # Create a Named Selection by Worksheet
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Create a named selection using worksheet criteria
-NS1 = DataModel.Project.Model.AddNamedSelection()
+NS1 = Model.AddNamedSelection()
 NS1.ScopingMethod = GeometryDefineByType.Worksheet
 GenerationCriteria = NS1.GenerationCriteria
+
+# Let us create a named selection "faces_for_support"
+# using worksheet for all faces at y=0 or z=0 m
 
 # Add criteria to the worksheet for selecting entities
 Criterion1 = Ansys.ACT.Automation.Mechanical.NamedSelectionCriterion()
@@ -122,13 +124,32 @@ Criterion2.Value = Quantity("0 [m]")
 GenerationCriteria.Add(Criterion2)
 
 # Generate the named selection based on the criteria
+NS1.Name="faces_for_support"
 NS1.Generate()
+
+
+
+# %%
+# Extract all the details of a named selection worksheet named "faces_for_support"
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+NSall=app.Model.NamedSelections.GetChildren[Ansys.ACT.Automation.Mechanical.NamedSelection](True)
+my_nsel = [i for i in NSall if i.Name == "shaft"][0]
+worksheet = my_nsel.GenerationCriteria
+for i in range(0,len(list(worksheet))):
+    print(worksheet[i].Action)
+    print(worksheet[i].EntityType)
+    print(worksheet[i].Criterion)
+    print(worksheet[i].Operator)
+    print(worksheet[i].Value)
+    print(worksheet[i].CoordinateSystem.Name)
+
+
 
 # %%
 # Find a Named Selection
 # ~~~~~~~~~~~~~~~~~~~~~~
 # Retrieve all named selections in the project
-NSall = ExtAPI.DataModel.Project.Model.NamedSelections.GetChildren[
+NSall = Model.NamedSelections.GetChildren[
     Ansys.ACT.Automation.Mechanical.NamedSelection
 ](True)
 
@@ -143,7 +164,7 @@ print(entities[0].Volume)
 # Identify Named Selections based on Name and Type
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Retrieve all named selections in the project
-NSall = ExtAPI.DataModel.Project.Model.NamedSelections.GetChildren[
+NSall = Model.NamedSelections.GetChildren[
     Ansys.ACT.Automation.Mechanical.NamedSelection
 ](True)
 
@@ -156,7 +177,7 @@ filtered = ns1 + ns2 + ns3
 
 # Further filter the named selections based on entity type
 FaceNsels = [
-    i for i in filtered if str(ExtAPI.DataModel.GeoData.GeoEntityById(i.Ids[0]).Type) == "GeoFace"
+    i for i in filtered if str(DataModel.GeoData.GeoEntityById(i.Ids[0]).Type) == "GeoFace"
 ]
 
 

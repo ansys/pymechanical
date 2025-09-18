@@ -62,9 +62,13 @@ app.print_tree()
 # Get information about all Contacts Defined
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Retrieve all contact regions defined in the model
-all_contacts = ExtAPI.DataModel.Project.Model.Connections.GetChildren(
+all_contacts = Model.Connections.GetChildren(
     DataModelObjectCategory.ContactRegion, True
 )
+
+# Print count of all contact regions
+numContacts = all_contacts.Count
+print("There are %s contact regions" % (numContacts) )
 
 # Print details of each contact region
 for contact in all_contacts:
@@ -76,12 +80,13 @@ for contact in all_contacts:
     print("Target: ", contact.TargetBodies, list(contact.TargetLocation.Ids))
 
 
+
 # %%
 # Create Automatic Connections on a chosen named selection
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Create a new connection group for automatic connections
 
-contactgroup = ExtAPI.DataModel.Project.Model.Connections.AddConnectionGroup()
+contactgroup = Model.Connections.AddConnectionGroup()
 contactgroup.FaceFace = True
 contactgroup.FaceEdge = contactgroup.FaceEdge.No
 contactgroup.GroupBy = contactgroup.GroupBy.Faces
@@ -89,7 +94,7 @@ contactgroup.Priority = contactgroup.Priority.FaceOverEdge
 contactgroup.InternalObject.DetectCylindricalFacesType = 1
 
 # Retrieve a named selection for the connection group
-NSall = ExtAPI.DataModel.Project.Model.NamedSelections.GetChildren[
+NSall = Model.NamedSelections.GetChildren[
     Ansys.ACT.Automation.Mechanical.NamedSelection
 ](True)
 my_nsel = [i for i in NSall if i.Name == "bodies_5"][0]
@@ -99,24 +104,34 @@ contactgroup.Location = my_nsel
 contactgroup.CreateAutomaticConnections()
 
 # Refresh the tree structure to reflect the changes
-mytree = ExtAPI.DataModel.Tree
-mytree.Refresh()
+DataModel.Tree.Refresh()
 
 # %%
 # Create a Contact region using face named selections
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Add a new contact region to the model
-c = ExtAPI.DataModel.Project.Model.Connections
+c = DataModel.Project.Model.Connections
 c1 = c.AddContactRegion()
 
 # Retrieve named selections for the source and target locations
-NSall = ExtAPI.DataModel.Project.Model.NamedSelections.GetChildren[
+NSall = Model.NamedSelections.GetChildren[
     Ansys.ACT.Automation.Mechanical.NamedSelection
 ](True)
 a = [i for i in NSall if i.Name == "block1_washer_cont"][0]
 c1.TargetLocation = a
 a = [i for i in NSall if i.Name == "block1_washer_targ"][0]
 c1.SourceLocation = a
+
+
+# %%
+# Insert a fixed body to ground joint
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+connections = Model.Connections
+fixed_joint = connections.AddJoint()
+fixed_joint.ConnectionType=JointScopingType.BodyToGround
+fixed_joint.Type = JointType.Fixed
+fixed_joint.MobileLocation = app.DataModel.GetObjectsByName("block1_washer_cont")[0]
+
 
 
 # %%
@@ -134,8 +149,7 @@ test_mechdat_path = str(output_path / "temporarycheck.mechdat")  # delete
 app.save_as(test_mechdat_path, overwrite=True)  # delete
 
 # Add a new joint to the model
-model = ExtAPI.DataModel.Project.Model
-j = model.Connections.AddJoint()
+j = Model.Connections.AddJoint()
 
 # Define the reference and mobile locations for the joint using face IDs
 reference_scoping = ExtAPI.SelectionManager.CreateSelectionInfo(SelectionTypeEnum.GeometryEntities)
@@ -147,10 +161,21 @@ mobile_scoping.Ids = [face2]
 j.MobileLocation = mobile_scoping
 
 # %%
+# Define a ground to body spring with 1 N/m stiffness scoped to preexisting named selection
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+connections = Model.Connections
+spring = connections.AddSpring()
+spring.ConnectionType=JointScopingType.BodyToGround
+spring.LongitudinalStiffness = Quantity(1, "N m^-1")
+spring.MobileScopingMethod = GeometryDefineByType.Component
+spring.MobileScopeLocation = app.DataModel.GetObjectsByName("block1_washer_cont")[0]
+
+
+# %%
 # Define a Bearing
 # ~~~~~~~~~~~~~~~~
 # Add a new bearing connection to the model
-brg = ExtAPI.DataModel.Project.Model.Connections.AddBearing()
+brg = Model.Connections.AddBearing()
 
 # Set the reference rotation plane for the bearing
 brg.ReferenceRotationPlane = RotationPlane.XY
@@ -168,7 +193,7 @@ brg.DampingC12.Output.DiscreteValues = [Quantity("112 [N sec m^-1]")]
 brg.DampingC21.Output.DiscreteValues = [Quantity("121 [N sec m^-1]")]
 
 # Retrieve named selections for the reference and mobile locations
-NSall = ExtAPI.DataModel.Project.Model.NamedSelections.GetChildren[
+NSall = Model.NamedSelections.GetChildren[
     Ansys.ACT.Automation.Mechanical.NamedSelection
 ](True)
 brg.ReferenceLocation = [i for i in NSall if i.Name == "shank_surface"][0]

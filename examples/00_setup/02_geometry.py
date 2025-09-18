@@ -25,7 +25,7 @@
 Geometry
 --------
 
-This section contains utility scripts for working with Geometry, including importing, analyzing, and accessing geometric data, as well as utilizing it for downstream preprocessing operations in Mechanical simulations.
+This section contains utility scripts for working with Geometry, including importing, analyzing, and accessing geometric data, as well as utilizing it for downstream preprocessing operations in Mechanical simulations. Coordinate Systems too are covered here.
 """
 
 # %%
@@ -109,27 +109,27 @@ print(f"Its id: {bodyid}")
 # Find Body by its ID
 # ~~~~~~~~~~~~~~~~~~~~~~
 # Retrieve a body object using its ID
-b2 = ExtAPI.DataModel.GeoData.GeoEntityById(bodyid)
+b2 = DataModel.GeoData.GeoEntityById(bodyid)
 print(f"Body Name: {b2.Name}, Body Id: {b2.Id}")
 
 # %%
 # Find the Part that the body belongs to
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Retrieve the name of a body and the part it belongs to using its ID
-body_name = ExtAPI.DataModel.GeoData.GeoEntityById(59).Name
-part_name = ExtAPI.DataModel.GeoData.GeoEntityById(59).Part.Name
+body_name = DataModel.GeoData.GeoEntityById(59).Name
+part_name = DataModel.GeoData.GeoEntityById(59).Part.Name
 print(f"The Body named '{body_name}' belongs to the part named '{part_name}'")
 
 # %%
 # Find Body by its ID AND print its Faces, Centroid, etc.
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Retrieve a body object and its faces, centroids, etc.
-body2 = ExtAPI.DataModel.GeoData.GeoEntityById(bodyid)
+body2 = DataModel.GeoData.GeoEntityById(bodyid)
 
 # Get face IDs and centroids for each face
 face_ids = [face.Id for face in body2.Faces]
 centroids_of_each_face = [
-    ExtAPI.DataModel.GeoData.GeoEntityById(face_id).Centroid for face_id in face_ids
+    DataModel.GeoData.GeoEntityById(face_id).Centroid for face_id in face_ids
 ]
 
 # Print face IDs and their centroids
@@ -142,7 +142,7 @@ for face_id, centroid in zip(face_ids, centroids_of_each_face):
 
 # Retrieve all vertex IDs from the geometry
 vertices = []
-geo = ExtAPI.DataModel.GeoData
+geo = DataModel.GeoData
 for asm in geo.Assemblies:
     for part in asm.Parts:
         for body in part.Bodies:
@@ -157,7 +157,7 @@ print(vertices)
 ExtAPI.Application.ActiveUnitSystem = MechanicalUnitSystem.StandardNMM
 use_length = 0.100
 
-geo = ExtAPI.DataModel.GeoData
+geo = DataModel.GeoData
 edgelist = []
 
 # Iterate through assemblies, parts, and bodies to find edges of the given length
@@ -178,7 +178,7 @@ import math
 radius = 0.018  # Target radius
 circumference = 2 * math.pi * radius  # Calculate circumference
 
-geo = ExtAPI.DataModel.GeoData
+geo = DataModel.GeoData
 circlelist = []
 
 # Iterate through assemblies, parts, and bodies to find circular edges
@@ -197,7 +197,7 @@ print(circlelist)
 # Get Radius of a selected edge
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Retrieve the radius of a specific edge if it is circular
-my_edge = ExtAPI.DataModel.GeoData.GeoEntityById(27)
+my_edge = DataModel.GeoData.GeoEntityById(27)
 my_edge_radius = my_edge.Radius if str(my_edge.CurveType) == "GeoCurveCircle" else 0.0
 print(my_edge_radius)
 
@@ -212,7 +212,7 @@ selection = ExtAPI.SelectionManager.CreateSelectionInfo(SelectionTypeEnum.Geomet
 selection.Ids = mylist
 selection_manager.NewSelection(selection)
 
-ns2 = ExtAPI.DataModel.Project.Model.AddNamedSelection()
+ns2 = Model.AddNamedSelection()
 ns2.Name = "bodies2"
 ns2.Location = selection
 
@@ -220,7 +220,7 @@ ns2.Location = selection
 # Find a Named Selection with a prefix
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Retrieve a named selection whose name starts with a specific prefix
-NSall = ExtAPI.DataModel.Project.Model.NamedSelections.GetChildren[
+NSall = Model.NamedSelections.GetChildren[
     Ansys.ACT.Automation.Mechanical.NamedSelection
 ](True)
 my_nsel = [i for i in NSall if i.Name.startswith("b")][0]
@@ -230,7 +230,7 @@ print(my_nsel.Name)
 # Create a Named Selection of all bodies with a cylindrical face
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-geo = ExtAPI.DataModel.GeoData
+geo = DataModel.GeoData
 cyl_body_ids = []
 
 for asm in geo.Assemblies:
@@ -250,8 +250,7 @@ selection_manager = ExtAPI.SelectionManager
 selection = ExtAPI.SelectionManager.CreateSelectionInfo(SelectionTypeEnum.GeometryEntities)
 selection.Ids = cyl_body_ids
 
-model = ExtAPI.DataModel.Project.Model
-ns2 = model.AddNamedSelection()
+ns2 = Model.AddNamedSelection()
 ns2.Name = "bodies_with_cyl_face"
 ns2.Location = selection
 selection_manager.ClearSelection()
@@ -260,15 +259,48 @@ selection_manager.ClearSelection()
 # Modify material assignment
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Assign a specific material to all bodies in the model
-allbodies = ExtAPI.DataModel.Project.Model.GetChildren(DataModelObjectCategory.Body, True)
+allbodies = Model.GetChildren(DataModelObjectCategory.Body, True)
 for body in allbodies:
     body.Material = "Structural Steel"
 
 # %%
 # Get all Coordinate Systems
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Retrieve all coordinate systems in the model
-tree_CS = ExtAPI.DataModel.Project.Model.CoordinateSystems
+tree_CS = Model.CoordinateSystems
+
+# %%
+# Add a cylindrical coordinate system
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Create a new coordinate system
+csys = Model.CoordinateSystems.AddCoordinateSystem()
+# place csys origin at arbitrary (0,25,50) location
+csys.SetOriginLocation(Quantity(0,"in"), Quantity(25,"in"), Quantity(50,"in"))
+# set primary X axis to arbitrary (1,2,3) direction
+csys.PrimaryAxisDirection = Vector3D(1,2,3)
+
+# %%
+# Add a cartesian coordinate system at a location (0,25,50) inches with primary X axis towards an arbitrary (1,2,3) direction
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Create a new coordinate system
+csys = Model.CoordinateSystems.AddCoordinateSystem()
+# place csys origin at arbitrary (0,25,50) location
+csys.SetOriginLocation(Quantity(0,"in"), Quantity(25,"in"), Quantity(50,"in"))
+# set primary X axis to arbitrary (1,2,3) direction
+csys.PrimaryAxisDirection = Vector3D(1,2,3)
+
+
+
+# %%
+# Find a coordinate system by name
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Create a new coordinate system
+csys = app.Model.CoordinateSystems.AddCoordinateSystem()
+# place csys origin at arbitrary (0,25,50) location
+csys.SetOriginLocation(Quantity(0,"in"), Quantity(25,"in"), Quantity(50,"in"))
+# set primary X axis to arbitrary (1,2,3) direction
+csys.PrimaryAxisDirection = Vector3D(1,2,3)
+
 
 
 # sphinx_gallery_start_ignore

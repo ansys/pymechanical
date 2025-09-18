@@ -64,15 +64,28 @@ app.print_tree()
 # ~~~~~~~~~~~~~~~~~~
 # Access a specific geometry entity by its ID.
 
-body = ExtAPI.DataModel.GeoData.GeoEntityById(312)
+body = DataModel.GeoData.GeoEntityById(312)
+
+# %%
+# Print all visible properties of a tree
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tree_object= DataModel.GetObjectsByName("Contact Region")[0]
+for prop in tree_object.Properties:
+    print(f'{prop.Name}: {prop.InternalValue}')
+# or
+for tree_object in tree_object.VisibleProperties:
+    print(tree_object.Caption + " | " + tree_object.StringValue)
+
+
+
 
 # %%
 # Accessing Mesh Data
-# ~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~
 # Access specific mesh data by name and ID.
 
-node = ExtAPI.DataModel.MeshDataByName("Global").NodeById(555)
-element = ExtAPI.DataModel.MeshDataByName("Global").ElementById(444)
+node = DataModel.MeshDataByName("Global").NodeById(555)
+element = DataModel.MeshDataByName("Global").ElementById(444)
 
 # %%
 # Accessing All Objects and Child Objects
@@ -80,17 +93,17 @@ element = ExtAPI.DataModel.MeshDataByName("Global").ElementById(444)
 # Examples of accessing all objects, bodies, named selections, and contact regions.
 
 # Retrieve all objects in the  tree
-AllObj = ExtAPI.DataModel.Project.Model.GetChildren(DataModelObjectCategory.DataModelObject, True)
+AllObj = Model.GetChildren(DataModelObjectCategory.DataModelObject, True)
 
 # Retrieve all bodies
-all_bodies = ExtAPI.DataModel.Project.Model.GetChildren(DataModelObjectCategory.Body, True)
+all_bodies = Model.GetChildren(DataModelObjectCategory.Body, True)
 
 # Retrieve all named selections
-ns_all = ExtAPI.DataModel.GetObjectsByType(DataModelObjectCategory.NamedSelections.NamedSelection)
+ns_all = DataModel.GetObjectsByType(DataModelObjectCategory.NamedSelections.NamedSelection)
 
 # Retrieve all contact regions
-abc = ExtAPI.DataModel.GetObjectsByType(DataModelObjectCategory.ContactRegion)
-all_contacts = ExtAPI.DataModel.Project.Model.Connections.GetChildren(
+abc = DataModel.GetObjectsByType(DataModelObjectCategory.ContactRegion)
+all_contacts = Model.Connections.GetChildren(
     DataModelObjectCategory.ContactRegion, True
 )
 
@@ -98,20 +111,20 @@ all_contacts = ExtAPI.DataModel.Project.Model.Connections.GetChildren(
 my_contact = [contact for contact in all_contacts if contact.Name == "Contact Region"][0]
 
 # Retrieve all result objects of a specific type (e.g., Normal Stress)
-all_norm_stress = ExtAPI.DataModel.GetObjectsByType(DataModelObjectCategory.Result.NormalStress)
+all_norm_stress = DataModel.GetObjectsByType(DataModelObjectCategory.Result.NormalStress)
 
 # Retrieve other objects such as remote points and analyses
-all_remote_points = ExtAPI.DataModel.GetObjectsByType(DataModelObjectCategory.RemotePoint)
-ana = ExtAPI.DataModel.Tree.GetObjectsByType(DataModelObjectCategory.Analysis)
+all_remote_points = DataModel.GetObjectsByType(DataModelObjectCategory.RemotePoint)
+ana = DataModel.Tree.GetObjectsByType(DataModelObjectCategory.Analysis)
 
 # Using the ACT Automation API to retrieve specific objects
-all_contacts2 = ExtAPI.DataModel.Project.Model.Connections.GetChildren[
+all_contacts2 = Model.Connections.GetChildren[
     Ansys.ACT.Automation.Mechanical.Connections.ContactRegion
 ](True)
-all_remote_points2 = ExtAPI.DataModel.Project.Model.GetChildren[
+all_remote_points2 = Model.GetChildren[
     Ansys.ACT.Automation.Mechanical.RemotePoint
 ](True)
-all_folders = ExtAPI.DataModel.Project.Model.GetChildren[
+all_folders = Model.GetChildren[
     Ansys.ACT.Automation.Mechanical.TreeGroupingFolder
 ](True)
 
@@ -123,7 +136,7 @@ all_folders = ExtAPI.DataModel.Project.Model.GetChildren[
 import collections
 
 # Retrieve all objects and their names
-AllObj = ExtAPI.DataModel.Project.Model.GetChildren(DataModelObjectCategory.DataModelObject, True)
+AllObj = Model.GetChildren(DataModelObjectCategory.DataModelObject, True)
 AllObjNames = [x.Name for x in AllObj]
 
 # Find duplicate names
@@ -153,7 +166,7 @@ c = DataModel.AnalysisList[0].DataObjects.GetByName(c1).DataObjects.GetByName(c2
 # Access and filter contact regions based on their properties.
 
 new_contact_list = []
-dataobjects = ExtAPI.DataModel.AnalysisList[0].DataObjects
+dataobjects = DataModel.AnalysisList[0].DataObjects
 for group in dataobjects:
     print(group.Type)
 
@@ -187,14 +200,14 @@ print(new_contact_list)
 # Using GetObjectsByName
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 # Access a specific object by its name.
-bb = ExtAPI.DataModel.GetObjectsByName("Connector\Solid1")[0]
+bb = DataModel.GetObjectsByName("Connector\Solid1")[0]
 
 # %%
 # Accessing a Named Selection
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Access specific named selections by their names.
 
-NSall = ExtAPI.DataModel.Project.Model.NamedSelections.GetChildren[
+NSall = Model.NamedSelections.GetChildren[
     Ansys.ACT.Automation.Mechanical.NamedSelection
 ](True)
 my_nsel = [i for i in NSall if i.Name.startswith("NSF")][0]
@@ -202,17 +215,18 @@ my_nsel2 = [i for i in NSall if i.Name == "NSInsideFaces"][0]
 
 # %%
 # Get All Unsuppressed Bodies and Point Masses
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Example of getting all unsuppressed bodies and point masses.
 
 # Retrieve all unsuppressed bodies
-all_bodies = ExtAPI.DataModel.Project.Model.GetChildren(DataModelObjectCategory.Body, True)
+all_bodies = Model.GetChildren(DataModelObjectCategory.Body, True)
 all_bodies = [i for i in all_bodies if not i.Suppressed]
 print(len(all_bodies))
 
 # Retrieve all unsuppressed point masses
-all_pm = ExtAPI.DataModel.Project.Model.GetChildren(DataModelObjectCategory.PointMass, True)
+all_pm = Model.GetChildren(DataModelObjectCategory.PointMass, True)
 all_pm = [i for i in all_pm if not i.Suppressed]
+
 
 
 # sphinx_gallery_start_ignore
