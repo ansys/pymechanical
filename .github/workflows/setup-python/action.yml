@@ -60,35 +60,27 @@ runs:
             fi
           fi
 
-    - name: "Cache /usr/local/bin"
-      id: cache-python-bin
+    - name: "Cache Python directories"
+      id: cache-python
       uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
       with:
-        path: /usr/local/bin
-        key: python${{ inputs.python-version }}-bin-${{ inputs.container-sha }}
+        path: |
+          /usr/local/bin
+          /usr/local/include
+          /usr/local/lib
+        key: python${{ inputs.python-version }}-dirs-${{ inputs.container-sha }}
         restore-keys: |
-          python${{ inputs.python-version }}-bin
+          python${{ inputs.python-version }}-dirs
 
-    - name: "Cache /usr/local/include"
-      id: cache-python-include
-      uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
-      with:
-        path: /usr/local/include
-        key: python${{ inputs.python-version }}-include-${{ inputs.container-sha }}
-        restore-keys: |
-          python${{ inputs.python-version }}-include
-
-    - name: "Cache /usr/local/lib"
-      id: cache-python-lib
-      uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
-      with:
-        path: /usr/local/lib
-        key: python${{ inputs.python-version }}-lib-${{ inputs.container-sha }}
-        restore-keys: |
-          python${{ inputs.python-version }}-lib
+    - name: "Confirm Python is installed"
+      if: ${{ steps.cache-python.outputs.cache-hit == 'true' }}
+      shell: bash
+      run: |
+        python_location=$(which python${{ inputs.python-version }})
+        echo "Python ${{ inputs.python-version }} found at $python_location"
 
     - name: "Install Python ${{ env.PYTHON_VERSION_PATCH }}"
-      if: ${{ steps.cache-python-bin.outputs.cache-hit != 'true' || steps.cache-python-include.outputs.cache-hit != 'true' || steps.cache-python-lib.outputs.cache-hit != 'true' }}
+      if: ${{ steps.cache-python.outputs.cache-hit != 'true' }}
       shell: bash
       run: |
         # Update package lists
