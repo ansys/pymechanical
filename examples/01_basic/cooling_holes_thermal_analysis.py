@@ -516,7 +516,7 @@ STAT_SS = solution.Status
 # ~~~~~~~~~~~~~~
 
 camera.SetFit()
-camera.SceneHeight = Quantity(2.0, 'in')
+camera.SceneHeight = Quantity(2.0, "in")
 # %%
 # Display the temperature plots for both plates
 
@@ -527,7 +527,7 @@ graphics.ViewOptions.ResultPreference.ExtraModelDisplay = (
     Ansys.Mechanical.DataModel.MechanicalEnums.Graphics.ExtraModelDisplay.NoWireframe
 )
 # Set the camera to fit the model and export the image
-image_path = output_path /  "temp_plot_both_plates.png"
+image_path = output_path / "temp_plot_both_plates.png"
 graphics.ExportImage(str(image_path), image_export_format, settings_720p)
 # Display the exported mesh image
 display_image(image_path)
@@ -539,7 +539,7 @@ display_image(image_path)
 app.Tree.Activate([temp_plot_fluidlines])
 # Set the camera to fit the model and export the image
 # Set the camera to fit the model and export the image
-image_path = output_path /  "temp_plot_fluidlines.png"
+image_path = output_path / "temp_plot_fluidlines.png"
 graphics.ExportImage(str(image_path), image_export_format, settings_720p)
 # Display the exported mesh image
 display_image(image_path)
