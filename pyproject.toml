@@ -97,7 +97,7 @@ ansys-mechanical-ideconfig = "ansys.mechanical.core.ide_config:cli"
 find-mechanical = "ansys.mechanical.core.embedding.find_mechanical:cli"
 
 [tool.pdm.build]
-includes = ["src"]
+includes = ["src", "mechanical-env"]
 excludes = ["tests"]
 
 [tool.pdm.build.wheel-data]
