@@ -108,10 +108,10 @@ def set_camera_and_display_image(
     """
     # Set the camera to fit the mesh
     camera.SetFit()
-    # Export the mesh image with the specified settings
+    # Export the image with the specified settings
     image_path = image_output_path / image_name
     graphics.ExportImage(str(image_path), image_export_format, graphics_image_export_settings)
-    # Display the exported mesh image
+    # Display the exported image
     display_image(image_path)
 
 
@@ -529,7 +529,7 @@ graphics.ViewOptions.ResultPreference.ExtraModelDisplay = (
 # Set the camera to fit the model and export the image
 image_path = output_path / "temp_plot_both_plates.png"
 graphics.ExportImage(str(image_path), image_export_format, settings_720p)
-# Display the exported mesh image
+# Display the exported image
 display_image(image_path)
 
 # %%
@@ -541,7 +541,7 @@ app.Tree.Activate([temp_plot_fluidlines])
 # Set the camera to fit the model and export the image
 image_path = output_path / "temp_plot_fluidlines.png"
 graphics.ExportImage(str(image_path), image_export_format, settings_720p)
-# Display the exported mesh image
+# Display the exported image
 display_image(image_path)
 # %%
 # Clean up the project
