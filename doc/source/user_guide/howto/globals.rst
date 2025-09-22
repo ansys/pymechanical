@@ -6,7 +6,7 @@ Globals
 When using Mechanical scripting APIs (in either Mechanical's graphical user interface or when
 sending scripts to a remote session of Mechanical), there are many global variables that are
 by default usable from Python. Some of these are API entry points, like those discussed in
-:ref:`ref_user_guide_scripting`, while others are types and namespaces that are used by the
+:ref:`Mechanical Scripting overview <ref_scripting>` , while others are types and namespaces that are used by the
 scripting APIs. Examples of those are the ``Quantity``, ``Transaction`` class or the ``DataModel``
 entry point.
 

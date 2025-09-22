@@ -33,6 +33,7 @@ from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 from ansys.mechanical.core.embedding.imports import global_entry_points, global_variables
+from ansys.mechanical.core.embedding.license_manager import LicenseManager
 from ansys.mechanical.core.embedding.mechanical_warnings import (
     connect_warnings,
     disconnect_warnings,
@@ -246,6 +247,11 @@ class App:
         if globals:
             self.update_globals(globals)
 
+        # Licensing API is available only for version 2025R2 and later
+        self._license_manager = None
+        if self.version >= 252:
+            self._license_manager = LicenseManager(self)
+
     def __repr__(self):
         """Get the product info."""
         import clr
@@ -406,7 +412,7 @@ class App:
         text_file.close()
         return self.execute_script(data)
 
-    def plotter(self) -> None:
+    def plotter(self, obj=None) -> None:
         """Return ``ansys.tools.visualization_interface.Plotter`` object."""
         if not HAS_ANSYS_GRAPHICS:
             LOG.warning(
@@ -422,9 +428,9 @@ class App:
 
         from ansys.mechanical.core.embedding.graphics.embedding_plotter import to_plotter
 
-        return to_plotter(self)
+        return to_plotter(self, obj)
 
-    def plot(self) -> None:
+    def plot(self, obj=None) -> None:
         """Visualize the model in 3d.
 
         Requires installation using the graphics option. E.g.
@@ -437,9 +443,10 @@ class App:
         >>> app.open("path/to/file.mechdat")
         >>> app.plot()
         """
-        _plotter = self.plotter()
+        _plotter = self.plotter(obj)
 
         if _plotter is None:
+            print("nothing to plot!")
             return
 
         return _plotter.show()
@@ -501,6 +508,13 @@ class App:
 
             self._messages = MessageManager(self._app)
         return self._messages
+
+    @property
+    def license_manager(self):
+        """Return license manager."""
+        if self._license_manager is None:
+            raise Exception("LicenseManager is only available for version 252 and later.")
+        return self._license_manager
 
     def _share(self, other) -> None:
         """Shares the state of self with other.

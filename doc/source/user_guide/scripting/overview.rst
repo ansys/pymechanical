@@ -1,24 +1,7 @@
-.. _ref_user_guide_scripting:
-
-Mechanical scripting
-====================
-
-This section provides an overview of Mechanical scripting.
-
-..
-   This toctreemust be a top-level index to get it to show up in
-   pydata_sphinx_theme.
-
-.. toctree::
-   :maxdepth: 1
-   :hidden:
-
-   self
-   helper_scripts
-   threading
+.. _ref_scripting:
 
 Overview
---------
+=========
 
 You could already perform scripting of Mechanical with Python from inside
 Mechanical. PyMechanical leverages the same APIs but allows you to run your
@@ -47,7 +30,7 @@ View**. Examples of these actions are assigning selections to scoping, changing 
 the details view, and renaming an object in the **Outline**. In the following animated example,
 a **Fixed Support** and a **Pressure** are added to the **Outline**.
 
-.. figure:: ../images/gmech_scripting_recording.gif
+.. figure:: ../../images/gmech_scripting_recording.gif
 
 Mechanical entities
 -------------------
