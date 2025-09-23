@@ -378,8 +378,25 @@ class App:
         self._unsubscribe()
         self.ExtAPI.Application.Exit()
 
-    def execute_script(self, script: str) -> typing.Any:
-        """Execute the given script with the internal IronPython engine."""
+    def execute_script(self, script: str, engine_type: str) -> typing.Any:
+        """
+        Execute the given script with the internal script engine.
+
+        Parameters
+        ----------
+        script : str
+            The script to execute.
+        engine_type : str
+            The engine type to use. Either "ironpython" or "cpython".
+
+        Returns
+        -------
+        typing.Any
+            The result of the script execution.
+        """
+        if not script:
+            raise ValueError("Script must be provided.")
+
         SCRIPT_SCOPE = "pymechanical-internal"
         if not hasattr(self, "script_engine"):
             import clr
@@ -387,12 +404,18 @@ class App:
             clr.AddReference("Ansys.Mechanical.Scripting")
             import Ansys
 
-            engine_type = Ansys.Mechanical.Scripting.ScriptEngineType.IronPython
+            if engine_type.lower() == "cpython":
+                engine_type = Ansys.Mechanical.Scripting.ScriptEngineType.CPython
+            elif engine_type.lower() == "ironpython":
+                engine_type = Ansys.Mechanical.Scripting.ScriptEngineType.IronPython
+            else:
+                raise ValueError(f"Unknown engine type: {engine_type}")
             script_engine = Ansys.Mechanical.Scripting.EngineFactory.CreateEngine(engine_type)
             empty_scope = False
             debug_mode = False
             script_engine.CreateScope(SCRIPT_SCOPE, empty_scope, debug_mode)
             self.script_engine = script_engine
+
         light_mode = True
         args = None
         rets = None
