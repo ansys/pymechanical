@@ -42,9 +42,9 @@
       <HintPath>$(AWP_ROOTDV_DEV)\aisol\bin\winx64\Ansys.ACT.WB1.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Ansys.Common.Interop.241, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Ansys.Common.Interop.261, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(AWP_ROOTDV_DEV)\AISOL\bin\winx64\Ansys.Common.Interop.241.dll</HintPath>
+      <HintPath>$(AWP_ROOTDV_DEV)\AISOL\bin\winx64\Ansys.Common.Interop.261.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Ansys.Mechanical.DataModel">
