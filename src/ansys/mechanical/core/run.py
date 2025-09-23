@@ -99,6 +99,7 @@ def _cli_impl(
     private_appdata: bool = False,
     exit: bool = False,
     features: str = None,
+    enginetype: str = None,
 ):
     if project_file and input_script:
         raise Exception("Cannot open a project file *and* run a script.")
@@ -114,6 +115,9 @@ def _cli_impl(
 
     if not input_script and script_args:
         raise Exception("Cannot add script arguments without an input script.")
+
+    if enginetype and not input_script:
+        raise Exception("Cannot specify engine type without an input script (-i).")
 
     if script_args:
         if '"' in script_args:
@@ -180,9 +184,15 @@ def _cli_impl(
     if features is not None:
         args.extend(get_command_line_arguments(features.split(";")))
 
+    # Add engine type argument for version 261 with input script
+    if version == 261 and enginetype and input_script:
+        args.append("-engineType")
+        args.append(enginetype)
+
     if DRY_RUN:
         return args, env
     else:
+        print(args)
         _run(args, env, False, True)
 
     if private_appdata:
@@ -215,6 +225,14 @@ def _cli_impl(
     default=None,
     help=f"Beta feature flags to set, as a semicolon delimited list.\
  Options: {get_feature_flag_names()}",
+)
+@click.option(
+    "--enginetype",
+    type=click.Choice(["ironpython", "cpython"], case_sensitive=False),
+    default="ironpython",
+    help="Engine type to use with input scripts. Only applicable for version 261 "
+    "when used with -i/--input-script."
+    "Default is 'ironpython'.",
 )
 @click.option(
     "-i",
@@ -280,6 +298,7 @@ def cli(
     private_appdata: bool,
     exit: bool,
     features: str,
+    enginetype: str,
 ):
     """CLI tool to run mechanical.
 
@@ -294,6 +313,17 @@ def cli(
     exe = atp.get_mechanical_path(allow_input=False, version=revision)
     version = atp.version_from_path("mechanical", exe)
 
+    # Validate enginetype usage - must be used with input script and version 261
+    if enginetype != "ironpython" and version != 261:
+        raise click.ClickException(
+            f"--enginetype option is only applicable for version 261. Current version: {version}"
+        )
+
+    if enginetype != "ironpython" and not input_script:
+        raise click.ClickException(
+            "--enginetype option can only be used with --input-script (-i) option."
+        )
+
     return _cli_impl(
         project_file,
         port,
@@ -307,4 +337,5 @@ def cli(
         private_appdata,
         exit,
         features,
+        enginetype,
     )
