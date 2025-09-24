@@ -418,13 +418,17 @@ class App:
             import Ansys
 
             if engine_type.lower() == "cpython":
-                script_engine_type = Ansys.Mechanical.Scripting.ScriptEngineType.CPython
-            else:  # ironpython
-                script_engine_type = Ansys.Mechanical.Scripting.ScriptEngineType.IronPython
-
-            script_engine = Ansys.Mechanical.Scripting.EngineFactory.CreateEngine(
-                script_engine_type
-            )
+                if self.version >= 261:
+                    engine_type = Ansys.Mechanical.Scripting.ScriptEngineType.CPython
+                else:
+                    raise ValueError(
+                        "CPython engine is only available in Mechanical version 2026R1 and later."
+                    )
+            elif engine_type.lower() == "ironpython":
+                engine_type = Ansys.Mechanical.Scripting.ScriptEngineType.IronPython
+            else:
+                raise ValueError(f"Unknown engine type: {engine_type}")
+            script_engine = Ansys.Mechanical.Scripting.EngineFactory.CreateEngine(engine_type)
             empty_scope = False
             debug_mode = False
             script_engine.CreateScope(SCRIPT_SCOPE, empty_scope, debug_mode)
