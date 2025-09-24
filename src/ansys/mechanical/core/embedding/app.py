@@ -378,7 +378,7 @@ class App:
         self._unsubscribe()
         self.ExtAPI.Application.Exit()
 
-    def execute_script(self, script: str, engine_type: str) -> typing.Any:
+    def execute_script(self, script: str, engine_type="ironpython") -> typing.Any:
         """
         Execute the given script with the internal script engine.
 
@@ -388,6 +388,7 @@ class App:
             The script to execute.
         engine_type : str
             The engine type to use. Either "ironpython" or "cpython".
+            Default is "ironpython". CPython is only available in version 2026R1 and later.
 
         Returns
         -------
