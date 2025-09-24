@@ -474,7 +474,7 @@ jobs:
 
   coverage:
     name: Merging coverage
-    needs: [remote-connect, embedding-tests, embedding-scripts-tests, launch-tests]
+    needs: [remote-connect, tests] # embedding-tests, embedding-scripts-tests, launch-tests]
     # needs: [remote-connect, embedding-tests, embedding-scripts-tests, embedding-rpc-tests, launch-tests]
     runs-on: ubuntu-latest
     steps:
@@ -580,7 +580,7 @@ jobs:
 
   package:
     name: Package library
-    needs: [smoke-tests, remote-connect, embedding-tests, embedding-scripts-tests, doc-build]
+    needs: [smoke-tests, remote-connect, tests, doc-build] # embedding-tests, embedding-scripts-tests, doc-build]
     runs-on: ubuntu-latest
     permissions:
       attestations: write
