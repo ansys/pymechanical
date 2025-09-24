@@ -16,9 +16,6 @@ on:
         default: '252' #stable version is 252, must match $stable_container
   schedule:
     - cron: '00 22 * * *'  # UTC time, may start 5-15 mins later than scheduled time
-  # registry_package:
-    # Run workflow when package is published or updated
-    # types: [published]
   push:
     tags:
       - "*"
@@ -318,234 +315,18 @@ jobs:
           path: mechanical_tests_log-${{ matrix.mechanical-version }}.txt
           retention-days: 7
 
-  # embedding-rpc-tests:
-  #   name: Embedding rpc testing and coverage
-  #   runs-on: public-ubuntu-latest-8-cores
-  #   timeout-minutes: 30
-  #   needs: [smoke-tests, revn-variations, container-stability-check]
-  #   container:
-  #     image: ${{ needs.revn-variations.outputs.test_container }}
-  #     options: --entrypoint /bin/bash
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       python-version: ['3.10', '3.11', '3.12', '3.13']
-
-  #   steps:
-  #     - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-  #     - name: Set up python and pip
-  #       run: |
-  #         apt update
-  #         apt install --reinstall ca-certificates
-  #         apt install lsb-release xvfb software-properties-common -y
-  #         add-apt-repository ppa:deadsnakes/ppa -y
-  #         apt install -y python${{ matrix.python-version }} python${{ matrix.python-version }}-venv
-  #         python${{ matrix.python-version }} -m venv /env
-
-  #     - name: Install packages for testing
-  #       run: |
-  #         . /env/bin/activate
-  #         pip install --upgrade pip
-  #         pip install uv
-  #         uv pip install -e .[tests,rpc]
-
-  #     - name: Unit Testing and coverage
-  #       env:
-  #         ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
-  #         ANSYS_WORKBENCH_LOGGING: 0
-  #         ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
-  #         PYTHONUNBUFFERED: 1
-  #       run: |
-  #         . /env/bin/activate
-  #         # if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
-  #         #   xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml
-  #         # else
-  #         #   xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml || true
-  #         # fi
-  #         xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc || true
-
-  #     - name: Upload coverage results
-  #       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-  #       if: env.MAIN_PYTHON_VERSION == matrix.python-version
-  #       with:
-  #         include-hidden-files: true
-  #         name: coverage-tests-embedding-rpc
-  #         path: .cov
-  #         retention-days: 7
-
-  #     - name: Upload coverage results (as .coverage)
-  #       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-  #       if: env.MAIN_PYTHON_VERSION == matrix.python-version
-  #       with:
-  #         include-hidden-files: true
-  #         name: coverage-file-tests-embedding-rpc
-  #         path: .coverage
-  #         retention-days: 7
-
-  #     - name: Publish Test Report
-  #       uses: mikepenz/action-junit-report@3585e9575db828022551b4231f165eb59a0e74e3 # v5.6.2
-  #       if: always()
-  #       with:
-  #         report_paths: '**/test_results*.xml'
-  #         check_name: Test Report ${{ matrix.python-version }}
-  #         detailed_summary: true
-  #         include_passed: true
-  #         fail_on_failure: false
-
-  embedding-tests:
-    name: Embedding testing and coverage
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs: [revn-variations, test-container-info, container-stability-check, smoke-tests]
-    container:
-      image: ${{ needs.revn-variations.outputs.test_container }}
-      options: --entrypoint /bin/bash
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ['3.10', '3.11', '3.12', '3.13']
-
-    steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-
-      - name: "Set up Python and activate virtual environment"
-        uses: ./.github/workflows/setup-python/
-        with:
-          container-sha: ${{ needs.test-container-info.outputs.sha }}
-          python-version: ${{ matrix.python-version }}
-
-      - name: "Install packages for testing"
-        run: |
-          . /env/bin/activate
-          pip install --upgrade pip
-          pip install uv
-          uv pip install -e .[tests]
-
-      - name: Unit Testing and coverage
-        env:
-          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
-          ANSYS_WORKBENCH_LOGGING: 0
-          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
-          NUM_CORES: 1
-          PYTHONUNBUFFERED: 1
-        run: |
-          . /env/bin/activate
-          if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
-            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml
-          else
-            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml || true
-          fi
-
-      - name: Upload coverage results
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        if: env.MAIN_PYTHON_VERSION == matrix.python-version
-        with:
-          include-hidden-files: true
-          name: coverage-tests-embedding
-          path: .cov
-          retention-days: 7
-
-      - name: Upload coverage results (as .coverage)
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        if: env.MAIN_PYTHON_VERSION == matrix.python-version
-        with:
-          include-hidden-files: true
-          name: coverage-file-tests-embedding
-          path: .coverage
-          retention-days: 7
-
-      - name: Publish Test Report
-        uses: mikepenz/action-junit-report@3585e9575db828022551b4231f165eb59a0e74e3 # v5.6.2
-        if: always()
-        with:
-          report_paths: '**/test_results*.xml'
-          check_name: Test Report ${{ matrix.python-version }}
-          detailed_summary: true
-          include_passed: true
-          fail_on_failure: true
-
-  embedding-scripts-tests:
-    name: Embedding scripts testing and coverage
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs: [smoke-tests, revn-variations, test-container-info]
-    container:
-      image: ${{ needs.revn-variations.outputs.test_container }}
-      options: --entrypoint /bin/bash
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ['3.10', '3.11', '3.12', '3.13']
-
-    steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-
-      - name: "Set up Python and activate virtual environment"
-        uses: ./.github/workflows/setup-python/
-        with:
-          container-sha: ${{ needs.test-container-info.outputs.sha }}
-          python-version: ${{ matrix.python-version }}
-
-      - name: "Install packages for testing"
-        run: |
-          . /env/bin/activate
-          pip install --upgrade pip
-          pip install uv
-          uv pip install -e .[tests]
-
-      - name: Embedding scripts unit testing and coverage
-        env:
-          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
-          ANSYS_WORKBENCH_LOGGING: 0
-          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
-          NUM_CORES: 1
-          PYTHONUNBUFFERED: 1
-        run: |
-          . /env/bin/activate
-          mechanical-env pytest -m embedding_scripts -s --junitxml test_results_embedding_scripts${{ matrix.python-version }}.xml
-          pytest -m cli -s --junitxml test_results_cli_scripts${{ matrix.python-version }}.xml
-
-      - name: Upload coverage results
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        if: env.MAIN_PYTHON_VERSION == matrix.python-version
-        with:
-          include-hidden-files: true
-          name: coverage-tests-embedding-scripts
-          path: .cov
-          retention-days: 7
-
-      - name: Upload coverage results (as .coverage)
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        if: env.MAIN_PYTHON_VERSION == matrix.python-version
-        with:
-          include-hidden-files: true
-          name: coverage-file-tests-embedding-scripts
-          path: .coverage
-          retention-days: 7
-
-      - name: Publish Test Report
-        uses: mikepenz/action-junit-report@3585e9575db828022551b4231f165eb59a0e74e3 # v5.6.2
-        if: always()
-        with:
-          report_paths: '**/test_results*.xml'
-          check_name: Test Report ${{ matrix.python-version }}
-          detailed_summary: true
-          include_passed: true
-          fail_on_failure: true
-
-  launch-tests:
-    name: Launch testing and coverage
+  tests:
+    name: PyMechanical tests
+    needs: [ style, revn-variations, container-stability-check, test-container-info]
     runs-on: public-ubuntu-latest-8-cores
     timeout-minutes: 30
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
-    needs: [ style, revn-variations, container-stability-check, test-container-info]
     strategy:
       fail-fast: false
       matrix:
         python-version: ['3.10', '3.11', '3.12', '3.13']
-
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
@@ -555,49 +336,27 @@ jobs:
           container-sha: ${{ needs.test-container-info.outputs.sha }}
           python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies
+      - name: "Install packages for testing"
         run: |
           apt install -y lsb-release
 
-      - name: "Install packages for testing"
-        run: |
           . /env/bin/activate
           pip install --upgrade pip
           pip install uv
           uv pip install -e .[tests]
 
-      - name: Set environment variable
-        run: echo "ANSYSCL${{ needs.revn-variations.outputs.test_revn }}_DIR=/install/ansys_inc/v${{ needs.revn-variations.outputs.test_revn }}/licensingclient" >> $GITHUB_ENV
-
-      - name: Unit Testing and coverage
-        env:
-          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
-        run: |
-          unset PYMECHANICAL_PORT
-          unset PYMECHANICAL_START_INSTANCE
-          . /env/bin/activate
-          if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
-            pytest -m remote_session_launch -s --junitxml launch_test_results${{ matrix.python-version }}.xml
-          else
-            pytest -m remote_session_launch -s --junitxml launch_test_results${{ matrix.python-version }}.xml || true
-          fi
-
-      - name: Publish Launch Test Report
-        uses: mikepenz/action-junit-report@3585e9575db828022551b4231f165eb59a0e74e3 # v5.6.2
-        if: always()
+      - name: "Run tests"
+        uses: ./.github/workflows/run-tests/
         with:
-          report_paths: '**/launch_test_results*.xml'
-          check_name: Launch Test Report ${{ matrix.python-version }}
-          detailed_summary: true
-          include_passed: true
-          fail_on_failure: true
+          python-version: ${{ matrix.python-version }}
+          stable-container-exit: ${{ needs.container-stability-check.outputs.container_stable_exit }}
 
       - name: Upload coverage results
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
           include-hidden-files: true
-          name: coverage-tests-remote-session-launch
+          name: coverage-tests
           path: .cov
           retention-days: 7
 
@@ -606,9 +365,10 @@ jobs:
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
           include-hidden-files: true
-          name: coverage-file-tests-remote-session-launch
+          name: coverage-file-tests
           path: .coverage
           retention-days: 7
+
 
   doc-build:
     name: Documentation

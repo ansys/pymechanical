@@ -1,0 +1,86 @@
+name: >
+  Run PyMechanical tests
+
+description: |
+  Runs embedding and remote tests on the specified Mechanical container.
+
+inputs:
+
+  # Required inputs
+  python-version:
+    description: >
+      Python version to run tests on. For example, 3.10
+    required: true
+    type: string
+
+  stable-container-exit:
+    description: >
+      Whether the container stability check passed for the stable container.
+    required: true
+    type: boolean
+
+runs:
+  using: "composite"
+  steps:
+
+      - name: Unit Testing and coverage
+        env:
+          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
+          ANSYS_WORKBENCH_LOGGING: 0
+          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
+          NUM_CORES: 1
+          PYTHONUNBUFFERED: 1
+        shell: bash
+        run: |
+          . /env/bin/activate
+          if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
+            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml
+          else
+            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml || true
+          fi
+
+      - name: Embedding scripts unit testing and coverage
+        env:
+          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
+          ANSYS_WORKBENCH_LOGGING: 0
+          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
+          NUM_CORES: 1
+          PYTHONUNBUFFERED: 1
+        shell: bash
+        run: |
+          . /env/bin/activate
+          mechanical-env pytest -m embedding_scripts -s --junitxml test_results_embedding_scripts${{ matrix.python-version }}.xml
+          pytest -m cli -s --junitxml test_results_cli_scripts${{ matrix.python-version }}.xml
+
+      - name: Set ANSYSCL2XY_DIR environment variable
+        shell: bash
+        run: |
+          revn=$(echo $ANSYS_VERSION)
+          echo "ANSYSCL${revn}_DIR=/install/ansys_inc/v${revn}/licensingclient" >> $GITHUB_ENV
+
+      - name: Unit Testing and coverage
+        env:
+          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
+        shell: bash
+        run: |
+          unset PYMECHANICAL_PORT
+          unset PYMECHANICAL_START_INSTANCE
+          . /env/bin/activate
+          if [ "${{ inputs.stable-container-exit }}" = "true" ]; then
+            pytest -m remote_session_launch -s --junitxml launch_test_results${{ inputs.python-version }}.xml
+          else
+            pytest -m remote_session_launch -s --junitxml launch_test_results${{ inputs.python-version }}.xml || true
+          fi
+
+      - name: Publish Test Reports
+        uses: mikepenz/action-junit-report@3585e9575db828022551b4231f165eb59a0e74e3 # v5.6.2
+        if: always()
+        with:
+          report_paths: |
+            '**/remote_results*.xml'
+            '**/test_results*.xml'
+            '**/launch_test_results*.xml'
+          check_name: Test Report ${{ matrix.python-version }}
+          detailed_summary: true
+          include_passed: true
+          fail_on_failure: true
