@@ -33,10 +33,10 @@ runs:
         shell: bash
         run: |
           . /env/bin/activate
-          if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
-            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml
+          if [ "${{ inputs.container_stable_exit }}" = "true" ]; then
+            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ inputs.python-version }}.xml
           else
-            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ matrix.python-version }}.xml || true
+            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${{ inputs.python-version }}.xml || true
           fi
 
       - name: Embedding scripts unit testing and coverage
@@ -49,8 +49,8 @@ runs:
         shell: bash
         run: |
           . /env/bin/activate
-          mechanical-env pytest -m embedding_scripts -s --junitxml test_results_embedding_scripts${{ matrix.python-version }}.xml
-          pytest -m cli -s --junitxml test_results_cli_scripts${{ matrix.python-version }}.xml
+          mechanical-env pytest -m embedding_scripts -s --junitxml test_results_embedding_scripts${{ inputs.python-version }}.xml
+          pytest -m cli -s --junitxml test_results_cli_scripts${{ inputs.python-version }}.xml
 
       - name: Set ANSYSCL2XY_DIR environment variable
         shell: bash
@@ -80,7 +80,7 @@ runs:
             '**/remote_results*.xml'
             '**/test_results*.xml'
             '**/launch_test_results*.xml'
-          check_name: Test Report ${{ matrix.python-version }}
+          check_name: Test Report ${{ inputs.python-version }}
           detailed_summary: true
           include_passed: true
           fail_on_failure: true
