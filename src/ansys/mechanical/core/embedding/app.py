@@ -411,7 +411,8 @@ class App:
             )
 
         # Check if we need to create the script engine for this engine type
-        if not hasattr(self, "script_engine"):
+        engine_attr = f"script_engine_{engine_type.lower()}"
+        if not hasattr(self, engine_attr):
             import clr
 
             clr.AddReference("Ansys.Mechanical.Scripting")
@@ -428,12 +429,13 @@ class App:
             empty_scope = False
             debug_mode = False
             script_engine.CreateScope(SCRIPT_SCOPE, empty_scope, debug_mode)
-            self.script_engine = script_engine
+            setattr(self, engine_attr, script_engine)
 
         light_mode = True
         args = None
         rets = None
-        script_result = self.script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
+        script_engine = getattr(self, engine_attr)
+        script_result = script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
         error_msg = f"Failed to execute the script"
         if script_result is None:
             raise Exception(error_msg)
