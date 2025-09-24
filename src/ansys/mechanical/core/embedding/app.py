@@ -405,7 +405,10 @@ class App:
             import Ansys
 
             if engine_type.lower() == "cpython":
-                engine_type = Ansys.Mechanical.Scripting.ScriptEngineType.CPython
+                if self.version >= 261:
+                    engine_type = Ansys.Mechanical.Scripting.ScriptEngineType.CPython
+                else:
+                    raise ValueError("CPython engine is only available in Mechanical version 2026R1 and later.")
             elif engine_type.lower() == "ironpython":
                 engine_type = Ansys.Mechanical.Scripting.ScriptEngineType.IronPython
             else:
