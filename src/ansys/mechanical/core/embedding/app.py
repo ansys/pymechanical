@@ -428,12 +428,12 @@ class App:
             raise Exception(error_msg)
         return script_result.Value
 
-    def execute_script_from_file(self, file_path=None):
-        """Execute the given script from file with the internal IronPython engine."""
+    def execute_script_from_file(self, file_path=None, engine_type="ironpython") -> typing.Any:
+        """Execute the given script from file with the internal script engine."""
         text_file = open(file_path, "r", encoding="utf-8")
         data = text_file.read()
         text_file.close()
-        return self.execute_script(data)
+        return self.execute_script(data, engine_type=engine_type)
 
     def plotter(self, obj=None) -> None:
         """Return ``ansys.tools.visualization_interface.Plotter`` object."""
