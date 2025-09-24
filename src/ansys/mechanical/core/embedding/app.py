@@ -398,6 +398,19 @@ class App:
             raise ValueError("Script must be provided.")
 
         SCRIPT_SCOPE = "pymechanical-internal"
+
+        # Validate engine type and version compatibility
+        if engine_type.lower() == "cpython":
+            if self.version < 261:
+                raise ValueError(
+                    "CPython engine is only available in Mechanical version 2026R1 and later."
+                )
+        elif engine_type.lower() != "ironpython":
+            raise ValueError(
+                f"Unknown engine type: {engine_type}. Must be 'ironpython' or 'cpython'."
+            )
+
+        # Check if we need to create or recreate the script engine
         if not hasattr(self, "script_engine"):
             import clr
 
@@ -405,15 +418,13 @@ class App:
             import Ansys
 
             if engine_type.lower() == "cpython":
-                if self.version >= 261:
-                    engine_type = Ansys.Mechanical.Scripting.ScriptEngineType.CPython
-                else:
-                    raise ValueError("CPython engine is only available in Mechanical version 2026R1 and later.")
-            elif engine_type.lower() == "ironpython":
-                engine_type = Ansys.Mechanical.Scripting.ScriptEngineType.IronPython
-            else:
-                raise ValueError(f"Unknown engine type: {engine_type}")
-            script_engine = Ansys.Mechanical.Scripting.EngineFactory.CreateEngine(engine_type)
+                script_engine_type = Ansys.Mechanical.Scripting.ScriptEngineType.CPython
+            else:  # ironpython
+                script_engine_type = Ansys.Mechanical.Scripting.ScriptEngineType.IronPython
+
+            script_engine = Ansys.Mechanical.Scripting.EngineFactory.CreateEngine(
+                script_engine_type
+            )
             empty_scope = False
             debug_mode = False
             script_engine.CreateScope(SCRIPT_SCOPE, empty_scope, debug_mode)
@@ -422,7 +433,8 @@ class App:
         light_mode = True
         args = None
         rets = None
-        script_result = self.script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
+        self.log_info(f"Executing script {script} with {engine_type} engine...")
+        script_result = script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
         error_msg = f"Failed to execute the script"
         if script_result is None:
             raise Exception(error_msg)
@@ -432,7 +444,21 @@ class App:
         return script_result.Value
 
     def execute_script_from_file(self, file_path=None, engine_type="ironpython") -> typing.Any:
-        """Execute the given script from file with the internal script engine."""
+        """Execute the given script from file with the internal script engine.
+
+        Parameters
+        ----------
+        file_path : str
+            Path to the script file to execute.
+        engine_type : str, optional
+            The engine type to use. Either "ironpython" or "cpython".
+            Default is "ironpython". CPython is only available in version 26R1 and later.
+
+        Returns
+        -------
+        typing.Any
+            The result of the script execution.
+        """
         text_file = open(file_path, "r", encoding="utf-8")
         data = text_file.read()
         text_file.close()
