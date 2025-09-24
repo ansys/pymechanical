@@ -258,7 +258,15 @@ class App:
             additional_args += " " + " ".join(flag_args)
         print(additional_args)
         runtime.initialize(self._version, pep8_aliases=pep8_alias)
-        self._app = _start_application(configuration, self._version, db_file, additional_args)
+        if self._version >= 261:
+            self._app = _start_application(configuration, self._version, db_file, additional_args)
+        else:
+            if additional_args != "":
+                self.log_warning(
+                    f"Additional arguments {additional_args} are only supported "
+                    f"with version 2026R1 and later."
+                )
+            self._app = _start_application(configuration, self._version, db_file)
         connect_warnings(self)
         self._poster = None
 
