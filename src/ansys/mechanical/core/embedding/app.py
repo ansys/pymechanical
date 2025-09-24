@@ -40,6 +40,7 @@ from ansys.mechanical.core.embedding.mechanical_warnings import (
 )
 from ansys.mechanical.core.embedding.poster import Poster
 from ansys.mechanical.core.embedding.ui import launch_ui
+from ansys.mechanical.core.feature_flags import get_command_line_arguments
 
 if typing.TYPE_CHECKING:
     # Make sure to run ``ansys-mechanical-ideconfig`` to add the autocomplete settings to VS Code
@@ -74,7 +75,9 @@ def _cleanup_private_appdata(profile: UniqueUserProfile):
     profile.cleanup()
 
 
-def _start_application(configuration: AddinConfiguration, version, db_file) -> "App":
+def _start_application(
+    configuration: AddinConfiguration, version, db_file, _addtional_args
+) -> "App":
     import clr
 
     clr.AddReference("Ansys.Mechanical.Embedding")
@@ -84,8 +87,9 @@ def _start_application(configuration: AddinConfiguration, version, db_file) -> "
         os.environ["ANSYS_MECHANICAL_STANDALONE_NO_ACT_EXTENSIONS"] = "1"
 
     addin_configuration_name = configuration.addin_configuration
-
-    return Ansys.Mechanical.Embedding.Application(db_file, addin_configuration_name)
+    return Ansys.Mechanical.Embedding.Application(
+        db_file, addin_configuration_name, _addtional_args
+    )
 
 
 def is_initialized():
@@ -141,6 +145,13 @@ class App:
         The logging level for the application. Default is "WARNING".
     pep8 : bool, optional
         Whether to enable PEP 8 style binding for the assembly. Default is False.
+    readonly : bool, optional
+        Whether to open the application in read-only mode. Default is False.
+    feature_flags : list, optional
+        List of feature flag names to enable. Default is [].
+        Available flags include: 'ThermalShells', 'MultistageHarmonic', 'CPython'.
+    additional_args : str, optional
+        Additional command line arguments to pass to the application. Default is "".
 
     Examples
     --------
@@ -170,6 +181,14 @@ class App:
     >>> app = App(log_level='INFO')
 
     ... INFO -  -  app - log_info - Starting Mechanical Application
+
+    Create App in read-only mode
+
+    >>> app = App(readonly=True)
+
+    Create App with feature flags enabled
+
+    >>> app = App(feature_flags=['CPython', 'ThermalShells'])
 
     """
 
@@ -229,8 +248,17 @@ class App:
             profile.update_environment(os.environ)
 
         pep8_alias = kwargs.get("pep8", False)
+        readonly = kwargs.get("readonly", False)
+        feature_flags = kwargs.get("feature_flags", [])
+        additional_args = ""
+        if readonly:
+            additional_args += " -readonly"
+        if feature_flags:
+            flag_args = get_command_line_arguments(feature_flags)
+            additional_args += " " + " ".join(flag_args)
+        print(additional_args)
         runtime.initialize(self._version, pep8_aliases=pep8_alias)
-        self._app = _start_application(configuration, self._version, db_file)
+        self._app = _start_application(configuration, self._version, db_file, additional_args)
         connect_warnings(self)
         self._poster = None
 
