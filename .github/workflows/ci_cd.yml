@@ -4,16 +4,18 @@ on:
   pull_request:
   workflow_dispatch:
     inputs:
-      revn:
+      mechanical-image:
         type: choice
         options:
-        - '261'
-        - '252'
-        - '251'
-        - '242'
-        - '241'
-        description: 'The Mechanical revision number to run tests on.'
-        default: '252' #stable version is 252, must match $stable_container
+        - '26.1_Dev'
+        - '26.1_candidate'
+        - '26.1.0'
+        - '25.2.0'
+        - '25.1.0'
+        - '24.2.0'
+        - '24.1.0'
+        description: 'The Mechanical image to run tests on.'
+        default: '25.1.0' #stable version is 252, must match $stable_container
   schedule:
     - cron: '00 22 * * *'  # UTC time, may start 5-15 mins later than scheduled time
   push:
@@ -31,9 +33,8 @@ env:
   PACKAGE_NAME: ansys-mechanical-core
   DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
   MAIN_PYTHON_VERSION: '3.12'
-  # DEV_REVN & its Docker image are used in scheduled or registry package runs
-  STABLE_REVN: '252'
-  DEV_REVN: '261'
+  STABLE_CONTAINER: '25.2.0'
+  CANDIDATE_CONTAINER: '26.1_candidate'
   LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
   ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
 
@@ -42,6 +43,38 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  run-type-container:
+    name: Set test container
+    runs-on: ubuntu-latest
+    outputs:
+      test_container: ${{ steps.container.outputs.test }}
+      is_dev_container: ${{ steps.container.outputs.is_dev_container }}
+    steps:
+      - id: container
+        run: |
+          # Default to not a dev container (container does not contain "Dev" in its name)
+          is_dev_container=false
+
+          # If it's a scheduled (nightly) run, use the candidate container (26.1_candidate)
+          if ${{ github.event_name == 'schedule' }}; then
+            test=${{ env.DOCKER_PACKAGE }}:${{ env.CANDIDATE_CONTAINER }}
+          else
+            # If a specific mechanical-image is not provided, use the stable container (25.2.0)
+            if [[ -z "${{ inputs.mechanical-image }}" ]]; then
+              test=${{ env.DOCKER_PACKAGE }}:${{ env.STABLE_CONTAINER }}"
+            else
+              test=${{ env.DOCKER_PACKAGE }}:${{ inputs.mechanical-image }}
+
+              # If the provided mechanical-image contains "Dev", set is_dev_container to true
+              if [[ "${{ inputs.mechanical-image }}" == *"Dev"* ]]; then
+                is_dev_container=true
+              fi
+
+            fi
+          fi
+
+          echo "test=$test" >> $GITHUB_OUTPUT
+
   update-changelog:
     name: "Update CHANGELOG for new tag"
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
@@ -117,55 +150,15 @@ jobs:
           operating-system: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
 
-  revn-variations:
-    name: Save variations of revn
-    runs-on: ubuntu-latest
-    outputs:
-      stable_container: ${{ steps.save-versions.outputs.stable_container }}
-      test_revn: '${{ steps.save-versions.outputs.test_revn }}'
-      test_container: ${{ steps.save-versions.outputs.test_container }}
-      test_docker_image_version: '${{ steps.save-versions.outputs.test_docker_image_version }}'
-    steps:
-      - id: save-versions
-        run: |
-          if ${{ github.event_name == 'schedule' }}; then
-            echo "test_revn=${{ env.DEV_REVN}}" >> $GITHUB_OUTPUT
-            test_mech_revn=${{ env.DEV_REVN}}
-            test_mech_image_version=${test_mech_revn:0:2}.${test_mech_revn:2}_candidate
-            echo "test_container=${{ env.DOCKER_PACKAGE }}:$test_mech_image_version" >> $GITHUB_OUTPUT
-            echo "test_docker_image_version=$test_mech_image_version" >> $GITHUB_OUTPUT
-          else
-            if [[ -z "${{inputs.revn}}" ]]; then
-              mech_revn=${{ env.STABLE_REVN }}
-            else
-              mech_revn=${{inputs.revn}}
-            fi
-            export mech_image_version=${mech_revn:0:2}.${mech_revn:2}.0
-            echo "test_revn=$mech_revn" >> $GITHUB_OUTPUT
-            echo "test_container=${{ env.DOCKER_PACKAGE }}:$mech_image_version" >> $GITHUB_OUTPUT
-            echo "test_docker_image_version=$mech_image_version" >> $GITHUB_OUTPUT
-          fi
-
-          stable_mech_revn=${{ env.STABLE_REVN }}
-          stable_mech_image_version=${mech_revn:0:2}.${mech_revn:2}.0
-          echo "stable_container=${{ env.DOCKER_PACKAGE }}:$stable_mech_image_version" >> $GITHUB_OUTPUT
-
-          echo $GITHUB_OUTPUT
-
-          # --- Help ----
-          # schedule nightly uses DEV_REVN candidate
-          # PRs and merges use STABLE_REVN
-          # Workflow dispatch can use any revision number
-
   test-container-info:
     name: Get SHA of test container
     runs-on: public-ubuntu-latest-8-cores
-    needs: [revn-variations]
+    needs: [run-type-container]
     outputs:
       sha: ${{ steps.get_sha.outputs.sha }}
     strategy:
       matrix:
-        test_container: ['${{ needs.revn-variations.outputs.test_container }}']
+        test_container: ${{ needs.run-type-container.outputs.test_container }}
     steps:
       - name: Login in Github Container registry
         uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
@@ -195,7 +188,7 @@ jobs:
 
   config-matrix:
     runs-on: ubuntu-latest
-    needs: [revn-variations]
+    needs: [run-type-container]
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
@@ -205,12 +198,12 @@ jobs:
           if ${{ github.event_name == 'push' }} && ${{ contains(github.ref, 'refs/tags') }}; then
             echo "matrix={\"mechanical-version\":['24.1.0', '24.2.0', '25.1.0', '25.2.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           else
-            echo "matrix={\"mechanical-version\":['${{ needs.revn-variations.outputs.test_docker_image_version }}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
+            echo "matrix={\"mechanical-version\":['${{ needs.run-type-container.outputs.test_container }}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           fi
 
   container-stability-check:
     runs-on: ubuntu-latest
-    needs: [revn-variations]
+    needs: [run-type-container]
     outputs:
       container_stable_exit: ${{ steps.check_stability.outputs.container_stable_exit }}
     steps:
@@ -218,7 +211,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install bc -y
-          container_version=$(echo "${{ needs.revn-variations.outputs.test_docker_image_version }}" | grep -o -E '[0-9]+(\.[0-9]+)?' | head -n 1)
+          container_version=$(echo "${{ needs.run-type-container.outputs.test_container }}" | grep -o -E '[0-9]+(\.[0-9]+)?' | head -n 1)
           if (( $(echo "$container_version > 24.2" | bc -l) )); then
             echo "container_stable_exit=true" >> $GITHUB_OUTPUT
           else
@@ -228,7 +221,7 @@ jobs:
   remote-connect:
     name: Remote connect testing and coverage - Mechanical ${{ matrix.mechanical-version }}
     runs-on: public-ubuntu-latest-8-cores
-    needs: [style, revn-variations, config-matrix]
+    needs: [style, run-type-container, config-matrix]
     continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
@@ -254,7 +247,8 @@ jobs:
         id: capture_info
         run: |
           IMAGE_NAME=${{ env.DOCKER_PACKAGE }}:${{ matrix.mechanical-version }}
-          BUILD_DATE=$(docker run --rm --entrypoint head $IMAGE_NAME -n 1 /install/ansys_inc/v${{ needs.revn-variations.outputs.test_revn }}/aisol/CommonFiles/builddate.txt)
+          TEST_REVN=$(echo $ANSYS_VERSION)
+          BUILD_DATE=$(docker run --rm --entrypoint head $IMAGE_NAME -n 1 /install/ansys_inc/v${TEST_REVN}/aisol/CommonFiles/builddate.txt)
           PUSHED_AT=$(docker inspect --format='{{.Created}}' $IMAGE_NAME)
           echo "docker_info=$IMAGE_NAME was pushed at: $PUSHED_AT" >> $GITHUB_OUTPUT
           echo "::group::Docker Info"
@@ -283,7 +277,7 @@ jobs:
 
       - name: Upload coverage results
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        if: matrix.mechanical-version == needs.revn-variations.outputs.test_docker_image_version
+        if: matrix.mechanical-version == needs.run-type-container.outputs.test_container
         with:
           include-hidden-files: true
           name: coverage-tests
@@ -292,7 +286,7 @@ jobs:
 
       - name: Upload coverage results (as .coverage)
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        if: matrix.mechanical-version == needs.revn-variations.outputs.test_docker_image_version
+        if: matrix.mechanical-version == needs.run-type-container.outputs.test_container
         with:
           include-hidden-files: true
           name: coverage-file-tests
@@ -319,9 +313,9 @@ jobs:
     name: Embedding testing and coverage
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: [revn-variations, test-container-info, container-stability-check, smoke-tests]
+    needs: [run-type-container, test-container-info, container-stability-check, smoke-tests]
     container:
-      image: ${{ needs.revn-variations.outputs.test_container }}
+      image: ${{ needs.run-type-container.outputs.test_container }}
       options: --entrypoint /bin/bash
     strategy:
       fail-fast: false
@@ -336,6 +330,7 @@ jobs:
         with:
           container-sha: ${{ needs.test-container-info.outputs.sha }}
           python-version: ${{ matrix.python-version }}
+          is-dev-container: ${{ needs.run-type-container.outputs.is_dev_container }}
 
       - name: "Install packages for testing"
         run: |
@@ -391,9 +386,9 @@ jobs:
     name: Embedding scripts testing and coverage
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: [smoke-tests, revn-variations, test-container-info]
+    needs: [smoke-tests, run-type-container, test-container-info]
     container:
-      image: ${{ needs.revn-variations.outputs.test_container }}
+      image: ${{ needs.run-type-container.outputs.test_container }}
       options: --entrypoint /bin/bash
     strategy:
       fail-fast: false
@@ -408,6 +403,7 @@ jobs:
         with:
           container-sha: ${{ needs.test-container-info.outputs.sha }}
           python-version: ${{ matrix.python-version }}
+          is-dev-container: ${{ needs.run-type-container.outputs.is_dev_container }}
 
       - name: "Install packages for testing"
         run: |
@@ -461,9 +457,9 @@ jobs:
     runs-on: public-ubuntu-latest-8-cores
     timeout-minutes: 30
     container:
-      image: ${{ needs.revn-variations.outputs.test_container }}
+      image: ${{ needs.run-type-container.outputs.test_container }}
       options: --entrypoint /bin/bash
-    needs: [ style, revn-variations, container-stability-check, test-container-info]
+    needs: [ style, run-type-container, container-stability-check, test-container-info]
     strategy:
       fail-fast: false
       matrix:
@@ -477,6 +473,7 @@ jobs:
         with:
           container-sha: ${{ needs.test-container-info.outputs.sha }}
           python-version: ${{ matrix.python-version }}
+          is-dev-container: ${{ needs.run-type-container.outputs.is_dev_container }}
 
       - name: Install dependencies
         run: |
@@ -490,7 +487,9 @@ jobs:
           uv pip install -e .[tests]
 
       - name: Set environment variable
-        run: echo "ANSYSCL${{ needs.revn-variations.outputs.test_revn }}_DIR=/install/ansys_inc/v${{ needs.revn-variations.outputs.test_revn }}/licensingclient" >> $GITHUB_ENV
+        run: |
+          REVN=$(echo $ANSYS_VERSION)
+          echo "ANSYSCL${REVN}_DIR=/install/ansys_inc/v${REVN}/licensingclient" >> $GITHUB_ENV
 
       - name: Unit Testing and coverage
         env:
@@ -537,10 +536,9 @@ jobs:
     name: Documentation
     runs-on: public-ubuntu-latest-8-cores
     container:
-      image: ${{ needs.revn-variations.outputs.test_container }}
+      image: ${{ needs.run-type-container.outputs.test_container }}
       options: --entrypoint /bin/bash
-    needs: [style, doc-style, revn-variations, container-stability-check, test-container-info]
-
+    needs: [style, doc-style, run-type-container, container-stability-check, test-container-info]
     steps:
 
       - name: Install Git and checkout project
@@ -551,6 +549,7 @@ jobs:
         with:
           container-sha: ${{ needs.test-container-info.outputs.sha }}
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          is-dev-container: ${{ needs.run-type-container.outputs.is_dev_container }}
 
       - name: Install system dependencies
         run: |
@@ -663,11 +662,6 @@ jobs:
         with:
           name: coverage-file-tests-embedding
           path: cov-dir/embedding
-
-      # - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
-      #   with:
-      #     name: coverage-file-tests-embedding-rpc
-      #     path: cov-dir/embedding-rpc
 
       - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
@@ -826,7 +820,6 @@ jobs:
 
   notify-on-failure:
     name: Notify on failure
-    needs: [revn-variations]
     if: github.event_name == 'schedule' && failure()
     runs-on: ubuntu-latest
     steps:
