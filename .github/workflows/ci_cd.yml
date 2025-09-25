@@ -15,7 +15,7 @@ on:
         - '24.2.0'
         - '24.1.0'
         description: 'The Mechanical image to run tests on.'
-        default: '25.1.0' #stable version is 252, must match $stable_container
+        default: '25.2.0' #stable version is 25.2.0, must match $stable_container
   schedule:
     - cron: '00 22 * * *'  # UTC time, may start 5-15 mins later than scheduled time
   push:
@@ -66,10 +66,9 @@ jobs:
               test=${{ env.DOCKER_PACKAGE }}:${{ inputs.mechanical-image }}
 
               # If the provided mechanical-image contains "Dev", set is_dev_container to true
-              if [[ "${{ inputs.mechanical-image }}" == *"Dev"* ]]; then
+              if [[ "${{ inputs.mechanical-image }}" =~ "Dev" ]]; then
                 is_dev_container=true
               fi
-
             fi
           fi
 
