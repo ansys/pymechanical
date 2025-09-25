@@ -537,17 +537,6 @@ def test_app_execute_script_from_file(embedded_app, rootdir, printer):
     result = embedded_app.execute_script_from_file(succes_script_path)
     assert result == "test"
 
-    printer("Running run_python_enginetype.py")
-    succes_script_path = os.path.join(rootdir, "tests", "scripts", "run_python_enginetype.py")
-    result = embedded_app.execute_script_from_file(succes_script_path)
-    assert result == "IPython"
-    if embedded_app.version < 261:
-        with pytest.raises(ValueError):
-            embedded_app.execute_script_from_file(succes_script_path, engine_type="cpython")
-    else:
-        result = embedded_app.execute_script_from_file(succes_script_path, engine_type="cpython")
-        assert result == "CPython"
-
 
 @pytest.mark.embedding
 def test_app_lock_file_open(embedded_app, tmp_path: pytest.TempPathFactory, caplog):

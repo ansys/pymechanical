@@ -378,65 +378,25 @@ class App:
         self._unsubscribe()
         self.ExtAPI.Application.Exit()
 
-    def execute_script(self, script: str, engine_type="ironpython") -> typing.Any:
-        """
-        Execute the given script with the internal script engine.
-
-        Parameters
-        ----------
-        script : str
-            The script to execute.
-        engine_type : str
-            The engine type to use. Either "ironpython" or "cpython".
-            Default is "ironpython". CPython is only available in version 2026R1 and later.
-
-        Returns
-        -------
-        typing.Any
-            The result of the script execution.
-        """
-        if not script:
-            raise ValueError("Script must be provided.")
-
+    def execute_script(self, script: str) -> typing.Any:
+        """Execute the given script with the internal IronPython engine."""
         SCRIPT_SCOPE = "pymechanical-internal"
-
-        # Validate engine type and version compatibility
-        if engine_type.lower() == "cpython":
-            if self.version < 261:
-                raise ValueError(
-                    "CPython engine is only available in Mechanical version 2026R1 and later."
-                )
-        elif engine_type.lower() != "ironpython":
-            raise ValueError(
-                f"Unknown engine type: {engine_type}. Must be 'ironpython' or 'cpython'."
-            )
-
-        # Check if we need to create the script engine for this engine type
-        engine_attr = f"script_engine_{engine_type.lower()}"
-        if not hasattr(self, engine_attr):
+        if not hasattr(self, "script_engine"):
             import clr
 
             clr.AddReference("Ansys.Mechanical.Scripting")
             import Ansys
 
-            if engine_type.lower() == "cpython":
-                script_engine_type = Ansys.Mechanical.Scripting.ScriptEngineType.CPython
-            else:  # ironpython
-                script_engine_type = Ansys.Mechanical.Scripting.ScriptEngineType.IronPython
-
-            script_engine = Ansys.Mechanical.Scripting.EngineFactory.CreateEngine(
-                script_engine_type
-            )
+            engine_type = Ansys.Mechanical.Scripting.ScriptEngineType.IronPython
+            script_engine = Ansys.Mechanical.Scripting.EngineFactory.CreateEngine(engine_type)
             empty_scope = False
             debug_mode = False
             script_engine.CreateScope(SCRIPT_SCOPE, empty_scope, debug_mode)
-            setattr(self, engine_attr, script_engine)
-
+            self.script_engine = script_engine
         light_mode = True
         args = None
         rets = None
-        script_engine = getattr(self, engine_attr)
-        script_result = script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
+        script_result = self.script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
         error_msg = f"Failed to execute the script"
         if script_result is None:
             raise Exception(error_msg)
@@ -445,26 +405,12 @@ class App:
             raise Exception(error_msg)
         return script_result.Value
 
-    def execute_script_from_file(self, file_path=None, engine_type="ironpython") -> typing.Any:
-        """Execute the given script from file with the internal script engine.
-
-        Parameters
-        ----------
-        file_path : str
-            Path to the script file to execute.
-        engine_type : str, optional
-            The engine type to use. Either "ironpython" or "cpython".
-            Default is "ironpython". CPython is only available in version 2026R1 and later.
-
-        Returns
-        -------
-        typing.Any
-            The result of the script execution.
-        """
+    def execute_script_from_file(self, file_path=None):
+        """Execute the given script from file with the internal IronPython engine."""
         text_file = open(file_path, "r", encoding="utf-8")
         data = text_file.read()
         text_file.close()
-        return self.execute_script(data, engine_type=engine_type)
+        return self.execute_script(data)
 
     def plotter(self, obj=None) -> None:
         """Return ``ansys.tools.visualization_interface.Plotter`` object."""

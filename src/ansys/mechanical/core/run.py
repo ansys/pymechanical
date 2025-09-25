@@ -192,7 +192,6 @@ def _cli_impl(
     if DRY_RUN:
         return args, env
     else:
-        print(args)
         _run(args, env, False, True)
 
     if private_appdata:
