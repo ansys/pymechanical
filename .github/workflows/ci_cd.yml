@@ -61,7 +61,7 @@ jobs:
           else
             # If a specific mechanical-image is not provided, use the stable container (25.2.0)
             if [[ -z "${{ inputs.mechanical-image }}" ]]; then
-              test=${{ env.DOCKER_PACKAGE }}:${{ env.STABLE_CONTAINER }}"
+              test=${{ env.DOCKER_PACKAGE }}:${{ env.STABLE_CONTAINER }}
             else
               test=${{ env.DOCKER_PACKAGE }}:${{ inputs.mechanical-image }}
 
