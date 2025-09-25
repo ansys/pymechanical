@@ -32,7 +32,7 @@ import pytest
 from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
 from ansys.mechanical.core.ide_config import cli as ideconfig_cli
 from ansys.mechanical.core.ide_config import get_stubs_location, get_stubs_versions
-from ansys.mechanical.core.run import _cli_impl
+from ansys.mechanical.core.run import _cli_impl, cli
 
 STUBS_LOC = get_stubs_location()
 STUBS_REVNS = get_stubs_versions(STUBS_LOC)
@@ -477,3 +477,57 @@ def test_ideconfig_no_revision():
     assert result.exit_code == 0
     assert f"Update {settings_json} with the following information" in stdout
     assert str(stubs_location) in stdout
+
+
+@pytest.mark.cli
+@pytest.mark.version_range(261, 261)
+def test_cli_engine_type_selection(disable_cli, pytestconfig):
+    version = int(pytestconfig.getoption("ansys_version"))
+    # Default engine type
+    args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, port=11)
+    assert "-engineType" not in args
+
+    # Select ipython engine type
+    args, _ = _cli_impl(
+        exe="AnsysWBU.exe", version=version, enginetype="ipython", input_script="foo.py"
+    )
+    assert "-engineType" in args
+    assert "ipython" in args
+
+    # Select cpython engine type
+    args, _ = _cli_impl(
+        exe="AnsysWBU.exe", version=version, enginetype="cpython", input_script="foo.py"
+    )
+    assert "-engineType" in args
+    assert "cpython" in args
+
+    # Invalid engine type
+    with pytest.raises(Exception):
+        _cli_impl(exe="AnsysWBU.exe", version=version, enginetype="invalid_engine")
+
+
+@pytest.mark.cli
+def test_cli_enginetype_errors(disable_cli, pytestconfig):
+    """Test engine type validation errors."""
+
+    # Test enginetype without input script should fail
+    runner = CliRunner()
+    result = runner.invoke(cli, ["--revision", "261", "--enginetype", "cpython"])
+    assert result.exit_code != 0
+    assert "--enginetype option can only be used with --input-script" in result.output
+
+    # Test enginetype with version other than 261 should fail
+    if int(pytestconfig.getoption("ansys_version")) < 261:
+        result = runner.invoke(
+            cli,
+            [
+                "--revision",
+                str(int(pytestconfig.getoption("ansys_version"))),
+                "--input-script",
+                "foo.py",
+                "--enginetype",
+                "cpython",
+            ],
+        )
+        assert result.exit_code != 0
+        assert "--enginetype option is only applicable for version 261" in result.output
