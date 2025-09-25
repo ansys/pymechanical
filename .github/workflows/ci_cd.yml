@@ -195,9 +195,9 @@ jobs:
         run: |
           # if a tag(release) is pushed, test all versions
           if ${{ github.event_name == 'push' }} && ${{ contains(github.ref, 'refs/tags') }}; then
-            echo "matrix={\"mechanical-version\":['24.1.0', '24.2.0', '25.1.0', '25.2.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
+            echo "matrix={\"mechanical-image\":['${{ env.DOCKER_PACKAGE }}:24.1.0', '${{ env.DOCKER_PACKAGE }}:24.2.0', '${{ env.DOCKER_PACKAGE }}:25.1.0', '${{ env.DOCKER_PACKAGE }}:25.2.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           else
-            echo "matrix={\"mechanical-version\":['${{ needs.run-type-container.outputs.test_container }}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
+            echo "matrix={\"mechanical-image\":['${{ needs.run-type-container.outputs.test_container }}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           fi
 
   container-stability-check:
@@ -234,20 +234,22 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pull, launch, and validate Mechanical service
-        env:
-          MECHANICAL_IMAGE: ${{ env.DOCKER_PACKAGE }}:${{ matrix.mechanical-version }}
         run: |
-          docker pull ${{ env.MECHANICAL_IMAGE }}
-          docker run --restart always --name ${{ env.DOCKER_MECH_CONTAINER_NAME }} -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }} > log.txt &
+          docker pull ${{ matrix.mechanical-image }}
+          docker run --restart always --name ${{ env.DOCKER_MECH_CONTAINER_NAME }} -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ matrix.mechanical-image }} > log.txt &
           grep -q 'WB Initialize Done' <(timeout 60 tail -f log.txt)
 
       - name: Display info
         if: github.event_name == 'schedule'
         id: capture_info
         run: |
-          IMAGE_NAME=${{ env.DOCKER_PACKAGE }}:${{ matrix.mechanical-version }}
-          TEST_REVN=$(echo $ANSYS_VERSION)
-          BUILD_DATE=$(docker run --rm --entrypoint head $IMAGE_NAME -n 1 /install/ansys_inc/v${TEST_REVN}/aisol/CommonFiles/builddate.txt)
+          IMAGE_NAME=${{ matrix.mechanical-image }}
+
+          IMAGE_NUMS="${IMAGE_NAME#*:}"
+          IFS='.' read -r year revn rest <<< "$IMAGE_NUMS"
+          IMAGE_REVN="${year}${revn}"
+
+          BUILD_DATE=$(docker run --rm --entrypoint head $IMAGE_NAME -n 1 /install/ansys_inc/v${IMAGE_REVN}/aisol/CommonFiles/builddate.txt)
           PUSHED_AT=$(docker inspect --format='{{.Created}}' $IMAGE_NAME)
           echo "docker_info=$IMAGE_NAME was pushed at: $PUSHED_AT" >> $GITHUB_OUTPUT
           echo "::group::Docker Info"
