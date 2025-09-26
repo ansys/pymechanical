@@ -826,7 +826,7 @@ jobs:
 
   notify-on-failure:
     name: Notify on failure
-    needs: [revn-variations]
+    needs: [embedding-tests, embedding-scripts-tests, launch-tests, remote-connect, doc-build]
     if: github.event_name == 'schedule' && failure()
     runs-on: ubuntu-latest
     steps:
