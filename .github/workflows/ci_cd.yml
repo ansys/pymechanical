@@ -73,6 +73,7 @@ jobs:
           fi
 
           echo "test=$test" >> $GITHUB_OUTPUT
+          echo "is_dev_container=$is_dev_container" >> $GITHUB_OUTPUT
 
   update-changelog:
     name: "Update CHANGELOG for new tag"
