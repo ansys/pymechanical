@@ -157,7 +157,7 @@ jobs:
       sha: ${{ steps.get_sha.outputs.sha }}
     strategy:
       matrix:
-        test_container: ${{ needs.run-type-container.outputs.test_container }}
+        test_container: ['${{ needs.run-type-container.outputs.test_container }}']
     steps:
       - name: Login in Github Container registry
         uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
