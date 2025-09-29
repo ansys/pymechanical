@@ -218,7 +218,7 @@ jobs:
           fi
 
   remote-connect:
-    name: Remote connect testing and coverage - Mechanical ${{ matrix.mechanical-version }}
+    name: Remote connect testing and coverage - Mechanical ${{ matrix.mechanical-image }}
     runs-on: public-ubuntu-latest-8-cores
     needs: [style, run-type-container, config-matrix]
     continue-on-error: ${{ matrix.experimental }}
@@ -278,7 +278,7 @@ jobs:
 
       - name: Upload coverage results
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        if: matrix.mechanical-version == needs.run-type-container.outputs.test_container
+        if: matrix.mechanical-image == needs.run-type-container.outputs.test_container
         with:
           include-hidden-files: true
           name: coverage-tests
@@ -287,7 +287,7 @@ jobs:
 
       - name: Upload coverage results (as .coverage)
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        if: matrix.mechanical-version == needs.run-type-container.outputs.test_container
+        if: matrix.mechanical-image == needs.run-type-container.outputs.test_container
         with:
           include-hidden-files: true
           name: coverage-file-tests
