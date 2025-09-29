@@ -860,20 +860,23 @@ jobs:
             "type": "message",
             "attachments": [
               {
-                "contentType": "application/vnd.microsoft.card.adaptive",
-                "content": {
-                  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-                  "type": "AdaptiveCard",
-                  "version": "1.0",
-                  "body": [
-                    {
-                      "type": "TextBlock",
-                      "text": "**PyMechanical Nightly Run Failed**\n\n[View details in GitHub Actions](https://github.com/ansys/pymechanical/actions/runs/${{ github.run_id }})",
-                      "wrap": "true",
-                    }
-                  ]
-                },
-                "title": "The PyMechanical nightly run failed on ${{ needs.get-date.outputs.date }}",
-              }
-            ]
+              "type": "message",
+              "attachments": [
+                {
+                  "contentType": "application/vnd.microsoft.card.adaptive",
+                  "content": {
+                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                    "type": "AdaptiveCard",
+                    "version": "1.0",
+                    "title": "The PyMechanical nightly run failed on ${{ needs.get-date.outputs.date }}",
+                    "body": [
+                      {
+                        "type": "TextBlock",
+                        "text": "**PyMechanical Nightly Run Failed**\n\n[View details in GitHub Actions](https://github.com/ansys/pymechanical/actions/runs/${{ github.run_id }})",
+                        "wrap": true
+                      }
+                    ]
+                  }
+                }
+              ]
             }
