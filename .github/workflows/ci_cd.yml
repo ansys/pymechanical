@@ -858,11 +858,12 @@ jobs:
                   "body": [
                     {
                       "type": "TextBlock",
-                      "title": "The PyMechanical nightly run has failed",
-                      "text": "Check the run for more details: https://github.com/ansys/pymechanical/actions/runs/${{ github.run_id }}"
+                      "text": "**PyMechanical Nightly Run Failed**\n\n[View details in GitHub Actions](https://github.com/ansys/pymechanical/actions/runs/${{ github.run_id }})",
+                      "wrap": true
                     }
                   ]
-                }
+                },
+                "title": "The PyMechanical nightly run has failed",
               }
             ]
             }
