@@ -819,8 +819,20 @@ jobs:
           bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
           bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}
 
+  get-date:
+    name: Get date
+    runs-on: ubuntu-latest
+    outputs:
+      date: ${{ steps.date.outputs.date }}
+    steps:
+      - name: Get current date
+        id: date
+        run: |
+          echo "date=$(date --iso-8601)" >> $GITHUB_OUTPUT
+
   notify-on-failure:
     name: Notify on failure
+    needs: [get-date, embedding-tests, embedding-scripts-tests, launch-tests, remote-connect, doc-build]
     if: github.event_name == 'schedule' && failure()
     runs-on: ubuntu-latest
     steps:
@@ -831,21 +843,22 @@ jobs:
           # Message to send to Teams as a webhook notification in JSON Payload format
           raw: >-
             {
-              "@type": "MessageCard",
-              "@context": "http://schema.org/extensions",
-              "summary": "Nightly run is failing for PyMechanical",
-              "themeColor": "f44336",
-              "title": "Scheduled Run Failed - PyMechanical",
-              "sections": [
+              "type": "message",
+              "attachments": [
                 {
-                  "activityTitle": "The PyMechanical nightly run has failed.",
-                  "activitySubtitle": "Check the run for more details: https://github.com/ansys/pymechanical/actions/runs/${{ github.run_id }}",
-                  "facts": [
-                    {
-                      "name": "Status",
-                      "value": "Failed"
-                    }
-                  ]
+                  "contentType": "application/vnd.microsoft.card.adaptive",
+                  "content": {
+                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                    "type": "AdaptiveCard",
+                    "version": "1.0",
+                    "body": [
+                      {
+                        "type": "TextBlock",
+                        "text": "**PyMechanical Nightly Run Failed on ${{ needs.get-date.outputs.date }}**\n\n[View details in GitHub Actions](https://github.com/ansys/pymechanical/actions/runs/${{ github.run_id }})",
+                        "wrap": true
+                      }
+                    ]
+                  }
                 }
               ]
             }
