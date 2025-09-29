@@ -831,10 +831,20 @@ jobs:
       - name: Run a simple test
         run: exit 1
 
+  get-date:
+    name: Get date
+    runs-on: ubuntu-latest
+    outputs:
+      date: ${{ steps.date.outputs.date }}
+    steps:
+      - name: Get current date
+        id: date
+        run: |
+          echo "date=$(date --iso-8601)" >> $GITHUB_OUTPUT
 
   notify-on-failure:
     name: Notify on failure
-    needs: [test-job]
+    needs: [test-job, get-date]
     if: failure()
     # needs: [embedding-tests, embedding-scripts-tests, launch-tests, remote-connect, doc-build]
     # if: github.event_name == 'schedule' && failure()
@@ -859,11 +869,11 @@ jobs:
                     {
                       "type": "TextBlock",
                       "text": "**PyMechanical Nightly Run Failed**\n\n[View details in GitHub Actions](https://github.com/ansys/pymechanical/actions/runs/${{ github.run_id }})",
-                      "wrap": true
+                      "wrap": "true",
                     }
                   ]
                 },
-                "title": "The PyMechanical nightly run has failed",
+                "title": "The PyMechanical nightly run failed on ${{ needs.get-date.outputs.date }}",
               }
             ]
             }
