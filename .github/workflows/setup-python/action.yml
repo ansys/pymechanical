@@ -49,7 +49,7 @@ runs:
       run: |
         # Install sqlite3, libsqlite3-dev, and lsb-release
         apt-get update
-        apt-get install sqlite3 libsqlite3-dev lsb-release -y
+        apt-get install sqlite3 libsqlite3-dev lsb-release libc6 -y
 
     - name: "Set up Python ${{ inputs.python-version }}"
       if: inputs.is-dev-container == 'true'
