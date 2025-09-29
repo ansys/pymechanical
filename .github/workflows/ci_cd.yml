@@ -857,9 +857,6 @@ jobs:
           # Message to send to Teams as a webhook notification in JSON Payload format
           raw: >-
             {
-            "type": "message",
-            "attachments": [
-              {
               "type": "message",
               "attachments": [
                 {
@@ -868,7 +865,6 @@ jobs:
                     "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
                     "type": "AdaptiveCard",
                     "version": "1.0",
-                    "title": "The PyMechanical nightly run failed on ${{ needs.get-date.outputs.date }}",
                     "body": [
                       {
                         "type": "TextBlock",
