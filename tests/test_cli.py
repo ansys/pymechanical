@@ -480,19 +480,19 @@ def test_ideconfig_no_revision():
 
 
 @pytest.mark.cli
-@pytest.mark.version_range(261, 261)
+@pytest.mark.minimum_version(261)
 def test_cli_engine_type_selection(disable_cli, pytestconfig):
     version = int(pytestconfig.getoption("ansys_version"))
     # Default engine type
     args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, port=11)
     assert "-engineType" not in args
 
-    # Select ipython engine type
+    # Select ironpython engine type
     args, _ = _cli_impl(
-        exe="AnsysWBU.exe", version=version, enginetype="ipython", input_script="foo.py"
+        exe="AnsysWBU.exe", version=version, enginetype="ironpython", input_script="foo.py"
     )
     assert "-engineType" in args
-    assert "ipython" in args
+    assert "ironpython" in args
 
     # Select cpython engine type
     args, _ = _cli_impl(
@@ -531,3 +531,9 @@ def test_cli_enginetype_errors(disable_cli, pytestconfig):
         )
         assert result.exit_code != 0
         assert "--enginetype option is only applicable for version 261" in result.output
+
+    # Test enginetype with input script should fail
+    result = runner.invoke(cli, ["--revision", "261", "--enginetype", "cpython"])
+    assert result.exit_code != 0
+    assert "--enginetype option can only be used with --input-script (-i) option" in result.output
+    print(result.output)
