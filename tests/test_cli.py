@@ -501,12 +501,17 @@ def test_cli_engine_type_selection(disable_cli, pytestconfig):
     assert "-engineType" in args
     assert "cpython" in args
 
-    # Invalid engine type
-    with pytest.raises(Exception):
-        _cli_impl(exe="AnsysWBU.exe", version=version, enginetype="invalid_engine")
+    # Invalid engine type - this should be caught by Click's Choice validation
+    with pytest.raises(Exception) as e:
+        _cli_impl(
+            exe="AnsysWBU.exe", version=version, enginetype="invalid_engine", input_script="foo.py"
+        )
+    assert "Invalid engine type" in str(e.value)
 
-    with pytest.raises(Exception):
+    # Test enginetype without input script should fail
+    with pytest.raises(Exception) as e:
         _cli_impl(exe="AnsysWBU.exe", version=version, enginetype="cpython")
+    assert "Cannot specify engine type without an input script" in str(e.value)
 
 
 @pytest.mark.cli
@@ -515,9 +520,9 @@ def test_cli_enginetype_errors(disable_cli, pytestconfig):
 
     # Test enginetype without input script should fail
     runner = CliRunner()
-
+    version = int(pytestconfig.getoption("ansys_version"))
     # Test enginetype with version other than 261 should fail
-    if int(pytestconfig.getoption("ansys_version")) < 261:
+    if version < 261:
         result = runner.invoke(
             cli,
             [
@@ -530,10 +535,7 @@ def test_cli_enginetype_errors(disable_cli, pytestconfig):
             ],
         )
         assert result.exit_code != 0
-        assert "--enginetype option is only applicable for version 261" in result.output
-
-    # Test enginetype with input script should fail
-    result = runner.invoke(cli, ["--revision", "261", "--enginetype", "cpython"])
-    assert result.exit_code != 0
-    assert "--enginetype option can only be used with --input-script (-i) option" in result.output
-    print(result.output)
+        assert (
+            "--enginetype option for cpython is only applicable for version 261 or later."
+            in result.output
+        )

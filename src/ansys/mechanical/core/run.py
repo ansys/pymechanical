@@ -119,6 +119,11 @@ def _cli_impl(
     if enginetype and not input_script:
         raise Exception("Cannot specify engine type without an input script (-i).")
 
+    if enginetype and enginetype not in ["ironpython", "cpython"]:
+        raise Exception(
+            f"Invalid engine type '{enginetype}'. Valid options are: ironpython, cpython"
+        )
+
     if script_args:
         if '"' in script_args:
             raise Exception(
@@ -313,14 +318,9 @@ def cli(
     version = atp.version_from_path("mechanical", exe)
 
     # Validate enginetype usage - must be used with input script and version 261
-    if enginetype != "ironpython" and version != 261:
+    if enginetype != "ironpython" and version < 261:
         raise click.ClickException(
-            f"--enginetype option is only applicable for version 261. Current version: {version}"
-        )
-
-    if enginetype != "ironpython" and not input_script:
-        raise click.ClickException(
-            "--enginetype option can only be used with --input-script (-i) option."
+            f"--enginetype option for cpython is only applicable for version 261 or later."
         )
 
     return _cli_impl(
