@@ -480,7 +480,6 @@ def test_ideconfig_no_revision():
 
 
 @pytest.mark.cli
-@pytest.mark.minimum_version(261)
 def test_cli_engine_type_selection(disable_cli, pytestconfig):
     version = int(pytestconfig.getoption("ansys_version"))
     # Default engine type

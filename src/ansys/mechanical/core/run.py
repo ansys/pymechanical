@@ -320,7 +320,7 @@ def cli(
     # Validate enginetype usage - must be used with input script and version 261
     if enginetype != "ironpython" and version < 261:
         raise click.ClickException(
-            f"--enginetype option for cpython is only applicable for version 261 or later."
+            "--enginetype option for cpython is only applicable for version 261 or later."
         )
 
     return _cli_impl(
