@@ -161,7 +161,7 @@ jobs:
         test_container: ['${{ needs.run-type-container.outputs.test_container }}']
     steps:
       - name: Login in Github Container registry
-        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -228,7 +228,7 @@ jobs:
       matrix: ${{ fromJSON(needs.config-matrix.outputs.matrix) }}
     steps:
       - name: Login in Github Container registry
-        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -537,6 +537,7 @@ jobs:
   doc-build:
     name: Documentation
     runs-on: public-ubuntu-latest-8-cores
+    timeout-minutes: 30
     container:
       image: ${{ needs.run-type-container.outputs.test_container }}
       options: --entrypoint /bin/bash
