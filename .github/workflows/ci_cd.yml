@@ -536,6 +536,7 @@ jobs:
   doc-build:
     name: Documentation
     runs-on: public-ubuntu-latest-8-cores
+    timeout-minutes: 30
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
