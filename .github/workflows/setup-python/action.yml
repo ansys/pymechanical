@@ -140,11 +140,15 @@ runs:
         python_location=$(which python${{ inputs.python-version }})
 
         # Link python to the installed version
+        echo "linking python to usr bin python"
         ln -s $python_location /usr/bin/python
 
         # Verify Python installation
+        echo "ensuring pip"
         python -m ensurepip --default-pip
+        echo "upgrading pip"
         python -m pip install --upgrade pip
+        echo "making venv"
         python -m venv /env
 
     - name: "Check the virtual environment Python can be used"
