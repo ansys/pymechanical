@@ -58,12 +58,6 @@ runs:
       with:
         python-version: ${{ inputs.python-version }}
 
-    - name: "Install pip"
-      if: inputs.is-dev-container == 'true'
-      shell: bash
-      run: |
-        python -m pip install -U pip
-
     - name: Get most recent Python version
       if: inputs.is-dev-container == 'false'
       shell: bash
