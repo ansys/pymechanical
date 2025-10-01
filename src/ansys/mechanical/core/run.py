@@ -189,8 +189,7 @@ def _cli_impl(
     if features is not None:
         args.extend(get_command_line_arguments(features.split(";")))
 
-    # Add engine type argument for version 261 with input script
-    if version == 261 and enginetype and input_script:
+    if enginetype and input_script:
         args.append("-engineType")
         args.append(enginetype)
 

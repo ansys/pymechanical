@@ -480,26 +480,25 @@ def test_ideconfig_no_revision():
 
 
 @pytest.mark.cli
-def test_cli_engine_type_selection(disable_cli, pytestconfig):
-    version = int(pytestconfig.getoption("ansys_version"))
+def test_cli_engine_type_args(disable_cli, pytestconfig):
     # Default engine type
-    args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, port=11)
+    args, _ = _cli_impl(exe="AnsysWBU.exe", port=11)
     assert "-engineType" not in args
 
     # Select ironpython engine type
-    args, _ = _cli_impl(
-        exe="AnsysWBU.exe", version=version, enginetype="ironpython", input_script="foo.py"
-    )
+    args, _ = _cli_impl(exe="AnsysWBU.exe", enginetype="ironpython", input_script="foo.py")
     assert "-engineType" in args
     assert "ironpython" in args
 
     # Select cpython engine type
-    args, _ = _cli_impl(
-        exe="AnsysWBU.exe", version=version, enginetype="cpython", input_script="foo.py"
-    )
+    args, _ = _cli_impl(exe="AnsysWBU.exe", enginetype="cpython", input_script="foo.py")
     assert "-engineType" in args
     assert "cpython" in args
 
+
+@pytest.mark.cli
+def test_cli_engine_type_selection(disable_cli, pytestconfig):
+    version = int(pytestconfig.getoption("ansys_version"))
     # Invalid engine type - this should be caught by Click's Choice validation
     with pytest.raises(Exception) as e:
         _cli_impl(
