@@ -39,13 +39,21 @@ def launch_app(args):
     if args.test_not_initialized:
         init_msg = "The app is initialized" if is_initialized() else "The app is not initialized"
         print(init_msg)
-
-    app = pymechanical.App(
-        version=int(args.version),
-        private_appdata=args.private_appdata,
-        copy_profile=False,
-        globals=globals(),
-    )
+    if args.test_readonly:
+        app = pymechanical.App(version=int(args.version), readonly=True)
+        (
+            print("The app is started in read-only mode")
+            if app.readonly
+            else print("The app is not in read-only mode")
+        )
+        return app
+    else:
+        app = pymechanical.App(
+            version=int(args.version),
+            private_appdata=args.private_appdata,
+            copy_profile=False,
+            globals=globals(),
+        )
 
     return app
 
@@ -93,6 +101,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--test_not_initialized", action="store_true"
     )  # 'store_true' implies default=False
+    parser.add_argument("--readonly", action="store_true")
+    parser.add_argument("--test_readonly", action="store_true")  # Add the missing argument
 
     # Get and set args from subprocess
     args = parser.parse_args()

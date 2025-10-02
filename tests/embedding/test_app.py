@@ -585,3 +585,25 @@ def test_app_not_initialized(run_subprocess, pytestconfig, rootdir):
     stdout = stdout.decode()
 
     assert "The app is not initialized" in stdout
+
+
+@pytest.mark.embedding
+def test_app_start_readonly(run_subprocess, pytestconfig, rootdir, printer):
+    """Test the app is started in read-only mode."""
+    version = pytestconfig.getoption("ansys_version")
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+    printer(f"Testing readonly for version {version}")
+    process, stdout, stderr = run_subprocess(
+        [
+            sys.executable,
+            embedded_py,
+            "--version",
+            version,
+            "--test_readonly",
+        ]
+    )
+    stdout = stdout.decode()
+    if int(version) < 261:
+        assert "The app is not in read-only mode" in stdout
+    else:
+        assert "The app is started in read-only mode" in stdout
