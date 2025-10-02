@@ -87,9 +87,28 @@ def _start_application(
         os.environ["ANSYS_MECHANICAL_STANDALONE_NO_ACT_EXTENSIONS"] = "1"
 
     addin_configuration_name = configuration.addin_configuration
+    if version < 261:
+        return Ansys.Mechanical.Embedding.Application(db_file, addin_configuration_name)
     return Ansys.Mechanical.Embedding.Application(
         db_file, addin_configuration_name, _addtional_args
     )
+
+
+def _additional_args(readonly: bool, feature_flags: list, version: int) -> str:
+    """Generate additional command line arguments for the application."""
+    if version < 261:
+        LOG.warning(
+            "The readonly and feature_flags arguments are only supported "
+            "with version 2026R1 and later."
+        )
+        return ""
+    additional_args = ""
+    if readonly:
+        additional_args += " -readonly"
+    if feature_flags:
+        flag_args = get_command_line_arguments(feature_flags)
+        additional_args += " " + " ".join(flag_args)
+    return additional_args
 
 
 def is_initialized():
@@ -150,8 +169,6 @@ class App:
     feature_flags : list, optional
         List of feature flag names to enable. Default is [].
         Available flags include: 'ThermalShells', 'MultistageHarmonic', 'CPython'.
-    additional_args : str, optional
-        Additional command line arguments to pass to the application. Default is "".
 
     Examples
     --------
@@ -250,23 +267,10 @@ class App:
         pep8_alias = kwargs.get("pep8", False)
         readonly = kwargs.get("readonly", False)
         feature_flags = kwargs.get("feature_flags", [])
-        additional_args = ""
-        if readonly:
-            additional_args += " -readonly"
-        if feature_flags:
-            flag_args = get_command_line_arguments(feature_flags)
-            additional_args += " " + " ".join(flag_args)
-        print(additional_args)
+        additional_args = _additional_args(readonly, feature_flags, self._version)
+
         runtime.initialize(self._version, pep8_aliases=pep8_alias)
-        if self._version >= 261:
-            self._app = _start_application(configuration, self._version, db_file, additional_args)
-        else:
-            if additional_args != "":
-                self.log_warning(
-                    f"Additional arguments {additional_args} are only supported "
-                    f"with version 2026R1 and later."
-                )
-            self._app = _start_application(configuration, self._version, db_file)
+        self._app = _start_application(configuration, self._version, db_file, additional_args)
         connect_warnings(self)
         self._poster = None
 
