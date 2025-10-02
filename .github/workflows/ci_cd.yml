@@ -839,7 +839,7 @@ jobs:
   notify-on-failure:
     name: Notify on failure
     needs: [get-date, embedding-tests, embedding-scripts-tests, launch-tests, remote-connect, doc-build]
-    if: github.event_name == 'schedule' && failure()
+    if: github.event_name == 'schedule' && (failure() || cancelled())
     runs-on: ubuntu-latest
     steps:
       - name: Microsoft Teams Notification
