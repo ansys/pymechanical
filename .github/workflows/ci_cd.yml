@@ -42,6 +42,56 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  show-glibc-version:
+    name: Show glibc Version (Multiple Versions Check)
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Comprehensive glibc version check
+        run: |
+          echo "=== System Information ==="
+          uname -a
+          echo ""
+          echo "=== Distribution info ==="
+          cat /etc/os-release
+          echo ""
+          echo "=== Primary glibc Version ==="
+          ldd --version
+          echo ""
+          echo "=== Alternative glibc check ==="
+          getconf GNU_LIBC_VERSION 2>/dev/null || echo "getconf not available"
+          echo ""
+          echo "=== All glibc libraries in /lib ==="
+          find /lib* -name "libc.so*" -type f 2>/dev/null | while read lib; do
+            echo "Found: $lib"
+            $lib 2>/dev/null | head -3 || echo "  Cannot execute directly"
+          done
+          echo ""
+          echo "=== All glibc libraries in /usr/lib ==="
+          find /usr/lib* -name "libc.so*" -type f 2>/dev/null | while read lib; do
+            echo "Found: $lib"
+            $lib 2>/dev/null | head -3 || echo "  Cannot execute directly"
+          done
+          echo ""
+          echo "=== Symlinks to glibc ==="
+          find /lib* /usr/lib* -name "libc.so*" -type l 2>/dev/null | while read link; do
+            echo "Symlink: $link -> $(readlink -f $link)"
+          done
+          echo ""
+          echo "=== All libc versions using strings ==="
+          find /lib* /usr/lib* -name "libc.so.*" -type f 2>/dev/null | while read lib; do
+            echo "=== Checking $lib ==="
+            strings "$lib" | grep -E "^GLIBC_[0-9]+\.[0-9]+" | sort -V | tail -5 2>/dev/null || echo "  No GLIBC version strings found"
+          done
+          echo ""
+          echo "=== Available glibc symbols ==="
+          objdump -T /lib/x86_64-linux-gnu/libc.so.6 2>/dev/null | grep "GLIBC_" | awk '{print $5}' | sort -u | sort -V | tail -10 || echo "objdump not available"
+          echo ""
+          echo "=== Check for multiple glibc installations ==="
+          dpkg -l | grep libc6 || echo "dpkg not available"
+          echo ""
+          echo "=== RPM check (if available) ==="
+          rpm -qa | grep glibc 2>/dev/null || echo "RPM not available (expected on Ubuntu)"
+
   setup-python:
     name: Setup Python on Ubuntu 22.04
     runs-on: ubuntu-22.04
@@ -88,3 +138,49 @@ jobs:
         run: |
           python -c "import sys; assert sys.version_info >= (3, 9), 'Python version should be 3.9 or higher'"
           python -c "print('✅ Python setup verification completed successfully')"
+
+  embedding-scripts-tests:
+    name: Embedding scripts testing and coverage
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/ansys/mechanical:26.1_Dev
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: Check container and Python environment
+        run: |
+          echo "=== Container Environment Information ==="
+          cat /etc/os-release
+          echo ""
+          echo "=== Python Setup Verification ==="
+          python --version
+          python -c "import sys; print(f'Python executable: {sys.executable}')"
+          python -c "import sys; print(f'Python version: {sys.version}')"
+          python -c "import platform; print(f'Platform: {platform.platform()}')"
+          echo ""
+          echo "=== glibc version in container ==="
+          ldd --version
+          echo ""
+          echo "=== Python installation details ==="
+          which python python3
+          ls -la $(which python)
+
+      - name: Upgrade pip and install build tools
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install build wheel setuptools pytest coverage
+
+      - name: Verify pip and installed packages
+        run: |
+          pip --version
+          pip list
