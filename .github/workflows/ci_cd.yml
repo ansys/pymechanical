@@ -333,12 +333,21 @@ jobs:
 
       - name: "Set up Python and activate virtual environment"
         run: |
+          apt-get update
           apt-get install git curl -y
           curl -LsSf https://astral.sh/uv/install.sh | sh
           export PATH="$HOME/.local/bin:$PATH"
           echo "PATH=$HOME/.local/bin:$PATH" >> $GITHUB_ENV
           uv python install ${{ matrix.python-version }}
+          curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+          /env/bin/python3.11 get-pip.py
           python${{ matrix.python-version }} -m venv /env
+      - name: Install pip if missing
+        run: |
+          if ! /env/bin/python3.11 -m pip --version; then
+            curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+            /env/bin/python3.11 get-pip.py
+          fi
       - name: "Install packages for testing"
         run: |
           . /env/bin/activate
