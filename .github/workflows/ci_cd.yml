@@ -333,6 +333,7 @@ jobs:
 
       - name: "Set up Python and activate virtual environment"
         run: |
+          apt-get update
           apt-get install git curl -y
           curl -LsSf https://astral.sh/uv/install.sh | sh
           export PATH="$HOME/.local/bin:$PATH"
