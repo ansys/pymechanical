@@ -67,19 +67,6 @@ app.print_tree()
 
 body = DataModel.GeoData.GeoEntityById(312)
 
-<<<<<<< HEAD
-=======
-# %%
-# Print all visible properties of a tree
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-tree_object = DataModel.GetObjectsByName("Contact Region")[0]
-for prop in tree_object.Properties:
-    print(f"{prop.Name}: {prop.InternalValue}")
-# or
-for tree_object in tree_object.VisibleProperties:
-    print(tree_object.Caption + " | " + tree_object.StringValue)
->>>>>>> 8aacf8ab962a5255ace7487b5710c04c4ca8c86b
-
 
 # %%
 # Accessing Mesh Data

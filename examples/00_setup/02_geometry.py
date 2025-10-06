@@ -25,7 +25,10 @@
 Geometry
 --------
 
-This section contains a few utility scripts for working with Geometry, including importing, analyzing, and accessing geometric data, as well as utilizing it for downstream preprocessing operations in Mechanical simulations. Coordinate Systems too are covered here.
+This section contains a few utility scripts for working with Geometry,
+including importing, analyzing, and accessing geometric data, as well
+as utilizing it for downstream preprocessing operations in Mechanical
+simulations. Coordinate Systems too are covered here.
 """
 
 # %%
@@ -276,9 +279,9 @@ csys.SetOriginLocation(Quantity(0, "in"), Quantity(25, "in"), Quantity(50, "in")
 csys.PrimaryAxisDirection = Vector3D(1, 2, 3)
 
 # %%
-# Add a cartesian coordinate system at a location (0,25,50) inches with primary X axis towards an arbitrary (1,2,3) direction
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Create a new coordinate system
+# Add a cartesian coordinate system at a location (0,25,50) inches
+# with primary X axis towards an arbitrary (1,2,3) direction
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 csys = Model.CoordinateSystems.AddCoordinateSystem()
 # place csys origin at arbitrary (0,25,50) location
 csys.SetOriginLocation(Quantity(0, "in"), Quantity(25, "in"), Quantity(50, "in"))

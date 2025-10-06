@@ -129,13 +129,9 @@ NS1.Generate()
 # %%
 # Extract all the details of a named selection worksheet named "faces_for_support"
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<<<<<<< HEAD
-NSall=app.Model.NamedSelections.GetChildren[Ansys.ACT.Automation.Mechanical.NamedSelection](True)
-my_nsel = [i for i in NSall if i.Name == "faces_for_support"][0]
-=======
 NSall = app.Model.NamedSelections.GetChildren[Ansys.ACT.Automation.Mechanical.NamedSelection](True)
-my_nsel = [i for i in NSall if i.Name == "shaft"][0]
->>>>>>> 8aacf8ab962a5255ace7487b5710c04c4ca8c86b
+my_nsel = [i for i in NSall if i.Name == "faces_for_support"][0]
+
 worksheet = my_nsel.GenerationCriteria
 for i in range(0, len(list(worksheet))):
     print(worksheet[i].Action)
