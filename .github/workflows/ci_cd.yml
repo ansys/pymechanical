@@ -16,9 +16,6 @@ on:
         default: '252' #stable version is 252, must match $stable_container
   schedule:
     - cron: '00 22 * * *'  # UTC time, may start 5-15 mins later than scheduled time
-  # registry_package:
-    # Run workflow when package is published or updated
-    # types: [published]
   push:
     tags:
       - "*"
@@ -171,7 +168,7 @@ jobs:
         test_container: ['${{ needs.revn-variations.outputs.test_container }}']
     steps:
       - name: Login in Github Container registry
-        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -238,7 +235,7 @@ jobs:
       matrix: ${{ fromJSON(needs.config-matrix.outputs.matrix) }}
     steps:
       - name: Login in Github Container registry
-        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -317,80 +314,6 @@ jobs:
           name: mechanical_tests_log-${{ matrix.mechanical-version }}
           path: mechanical_tests_log-${{ matrix.mechanical-version }}.txt
           retention-days: 7
-
-  # embedding-rpc-tests:
-  #   name: Embedding rpc testing and coverage
-  #   runs-on: public-ubuntu-latest-8-cores
-  #   timeout-minutes: 30
-  #   needs: [smoke-tests, revn-variations, container-stability-check]
-  #   container:
-  #     image: ${{ needs.revn-variations.outputs.test_container }}
-  #     options: --entrypoint /bin/bash
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       python-version: ['3.10', '3.11', '3.12', '3.13']
-
-  #   steps:
-  #     - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-  #     - name: Set up python and pip
-  #       run: |
-  #         apt update
-  #         apt install --reinstall ca-certificates
-  #         apt install lsb-release xvfb software-properties-common -y
-  #         add-apt-repository ppa:deadsnakes/ppa -y
-  #         apt install -y python${{ matrix.python-version }} python${{ matrix.python-version }}-venv
-  #         python${{ matrix.python-version }} -m venv /env
-
-  #     - name: Install packages for testing
-  #       run: |
-  #         . /env/bin/activate
-  #         pip install --upgrade pip
-  #         pip install uv
-  #         uv pip install -e .[tests,rpc]
-
-  #     - name: Unit Testing and coverage
-  #       env:
-  #         ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
-  #         ANSYS_WORKBENCH_LOGGING: 0
-  #         ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
-  #         PYTHONUNBUFFERED: 1
-  #       run: |
-  #         . /env/bin/activate
-  #         # if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
-  #         #   xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml
-  #         # else
-  #         #   xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc -s --junitxml test_results${{ matrix.python-version }}.xml || true
-  #         # fi
-  #         xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc || true
-
-  #     - name: Upload coverage results
-  #       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-  #       if: env.MAIN_PYTHON_VERSION == matrix.python-version
-  #       with:
-  #         include-hidden-files: true
-  #         name: coverage-tests-embedding-rpc
-  #         path: .cov
-  #         retention-days: 7
-
-  #     - name: Upload coverage results (as .coverage)
-  #       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-  #       if: env.MAIN_PYTHON_VERSION == matrix.python-version
-  #       with:
-  #         include-hidden-files: true
-  #         name: coverage-file-tests-embedding-rpc
-  #         path: .coverage
-  #         retention-days: 7
-
-  #     - name: Publish Test Report
-  #       uses: mikepenz/action-junit-report@3585e9575db828022551b4231f165eb59a0e74e3 # v5.6.2
-  #       if: always()
-  #       with:
-  #         report_paths: '**/test_results*.xml'
-  #         check_name: Test Report ${{ matrix.python-version }}
-  #         detailed_summary: true
-  #         include_passed: true
-  #         fail_on_failure: false
 
   embedding-tests:
     name: Embedding testing and coverage
@@ -613,6 +536,7 @@ jobs:
   doc-build:
     name: Documentation
     runs-on: public-ubuntu-latest-8-cores
+    timeout-minutes: 30
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
@@ -900,3 +824,47 @@ jobs:
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
           bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
           bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}
+
+  get-date:
+    name: Get date
+    runs-on: ubuntu-latest
+    outputs:
+      date: ${{ steps.date.outputs.date }}
+    steps:
+      - name: Get current date
+        id: date
+        run: |
+          echo "date=$(date --iso-8601)" >> $GITHUB_OUTPUT
+
+  notify-on-failure:
+    name: Notify on failure
+    needs: [get-date, embedding-tests, embedding-scripts-tests, launch-tests, remote-connect, doc-build]
+    if: github.event_name == 'schedule' && (failure() || cancelled())
+    runs-on: ubuntu-latest
+    steps:
+      - name: Microsoft Teams Notification
+        uses: skitionek/notify-microsoft-teams@11e40c38c3a629ae65a985b582eca4897b01e79e # v1.0.9
+        with:
+          webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
+          # Message to send to Teams as a webhook notification in JSON Payload format
+          raw: >-
+            {
+              "type": "message",
+              "attachments": [
+                {
+                  "contentType": "application/vnd.microsoft.card.adaptive",
+                  "content": {
+                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                    "type": "AdaptiveCard",
+                    "version": "1.0",
+                    "body": [
+                      {
+                        "type": "TextBlock",
+                        "text": "**PyMechanical Nightly Run Failed on ${{ needs.get-date.outputs.date }}**\n\n[View details in GitHub Actions](https://github.com/ansys/pymechanical/actions/runs/${{ github.run_id }})",
+                        "wrap": true
+                      }
+                    ]
+                  }
+                }
+              ]
+            }

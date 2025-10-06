@@ -52,7 +52,7 @@ tests = [
     "pytest==8.4.2",
     "pytest-cov==7.0.0",
     "pytest-print==1.1.0",
-    "psutil==7.0.0",
+    "psutil==7.1.0",
 ]
 
 doc = [
@@ -97,7 +97,7 @@ ansys-mechanical-ideconfig = "ansys.mechanical.core.ide_config:cli"
 find-mechanical = "ansys.mechanical.core.embedding.find_mechanical:cli"
 
 [tool.pdm.build]
-includes = ["src"]
+includes = ["src", "mechanical-env"]
 excludes = ["tests"]
 
 [tool.pdm.build.wheel-data]
