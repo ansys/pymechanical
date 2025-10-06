@@ -607,3 +607,25 @@ def test_app_start_readonly(run_subprocess, pytestconfig, rootdir, printer):
         assert "The app is not in read-only mode" in stdout
     else:
         assert "The app is started in read-only mode" in stdout
+
+
+@pytest.mark.minimum_version(261)
+@pytest.mark.embedding
+def test_app_feature_flags(run_subprocess, pytestconfig, rootdir, printer):
+    """Test app feature flags. Only supported in 26R1 and later,
+    as arguments are accepted from this version onward."""
+    version = pytestconfig.getoption("ansys_version")
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+    printer(f"Testing feature flags for version {version}")
+    process, stdout, stderr = run_subprocess(
+        [
+            sys.executable,
+            embedded_py,
+            "--version",
+            version,
+            "--test_feature_flags",
+        ]
+    )
+    stdout = stdout.decode()
+    assert "ThermalShells is enabled" in stdout
+    assert "MultistageHarmonic is enabled" in stdout
