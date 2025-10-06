@@ -25,7 +25,8 @@
 Mesh
 ----
 
-This section has helper scripts for Named Selections.
+This section contains a few utility scripts for setting local and global Mesh Controls.
+
 """
 
 # sphinx_gallery_start_ignore

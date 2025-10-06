@@ -25,7 +25,7 @@
 Loads and BCs
 -------------
 
-This script contains helper examples for applying loads and boundary conditions in Ansys Mechanical.
+This script contains helper examples for applying loads and boundary conditions in Ansys Mechanical. Analysis Settings too are covered here.
 """
 
 # sphinx_gallery_start_ignore

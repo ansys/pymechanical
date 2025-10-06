@@ -25,7 +25,9 @@
 Connections
 -----------
 
-This section has helper scripts for Connections.
+
+This section contains a few utility scripts for working with Connections.
+
 """
 
 # sphinx_gallery_start_ignore

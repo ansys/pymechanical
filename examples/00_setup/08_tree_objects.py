@@ -25,7 +25,8 @@
 Tree Objects
 ------------
 
-This section has helper scripts for Tree Objects.
+This section contains a few utility scripts for working with Tree Objects.
+
 """
 
 # sphinx_gallery_start_ignore
@@ -66,6 +67,8 @@ app.print_tree()
 
 body = DataModel.GeoData.GeoEntityById(312)
 
+<<<<<<< HEAD
+=======
 # %%
 # Print all visible properties of a tree
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -75,6 +78,7 @@ for prop in tree_object.Properties:
 # or
 for tree_object in tree_object.VisibleProperties:
     print(tree_object.Caption + " | " + tree_object.StringValue)
+>>>>>>> 8aacf8ab962a5255ace7487b5710c04c4ca8c86b
 
 
 # %%
@@ -87,7 +91,7 @@ element = DataModel.MeshDataByName("Global").ElementById(444)
 
 # %%
 # Accessing All Objects and Child Objects
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Examples of accessing all objects, bodies, named selections, and contact regions.
 
 # Retrieve all objects in the  tree
@@ -122,7 +126,7 @@ all_folders = Model.GetChildren[Ansys.ACT.Automation.Mechanical.TreeGroupingFold
 
 # %%
 # Finding Duplicate Objects by Name
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Identify duplicate objects in the project tree based on their names.
 
 import collections
@@ -145,7 +149,7 @@ static_struct.Solution.AddEquivalentStress()
 
 # %%
 # Using DataObjects and GetByName
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Access specific data objects by their names.
 c1 = "Solution"
@@ -154,7 +158,7 @@ c = DataModel.AnalysisList[0].DataObjects.GetByName(c1).DataObjects.GetByName(c2
 
 # %%
 # Using DataObjects, NamesByType, and GetByName
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Access and filter contact regions based on their properties.
 
 new_contact_list = []
@@ -190,13 +194,13 @@ print(new_contact_list)
 
 # %%
 # Using GetObjectsByName
-# ~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~
 # Access a specific object by its name.
 bb = DataModel.GetObjectsByName("Connector\Solid1")[0]
 
 # %%
 # Accessing a Named Selection
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Access specific named selections by their names.
 
 NSall = Model.NamedSelections.GetChildren[Ansys.ACT.Automation.Mechanical.NamedSelection](True)

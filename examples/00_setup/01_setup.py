@@ -25,7 +25,11 @@
 App
 ---
 
-This section has helper scripts for  Embedded App
+This section has helper scripts to start an embedded instance of Mechanical Application and import/open a file .
+
+This is a prerequisite step for the other helper scripts in the following pages.
+
+
 """
 
 # %%

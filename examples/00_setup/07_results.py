@@ -25,7 +25,8 @@
 Results
 -------
 
-This section has helper scripts for Results.
+This section contains a few utility scripts for result objects.
+
 """
 
 # sphinx_gallery_start_ignore
