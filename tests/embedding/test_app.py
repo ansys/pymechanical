@@ -629,3 +629,16 @@ def test_app_feature_flags(run_subprocess, pytestconfig, rootdir, printer):
     stdout = stdout.decode()
     assert "ThermalShells is enabled" in stdout
     assert "MultistageHarmonic is enabled" in stdout
+
+    # Test feature flags when not enabled
+    process, stdout, stderr = run_subprocess(
+        [
+            sys.executable,
+            embedded_py,
+            "--version",
+            version,
+        ]
+    )
+    stdout = stdout.decode()
+    assert "ThermalShells is enabled" not in stdout
+    assert "MultistageHarmonic is enabled" not in stdout
