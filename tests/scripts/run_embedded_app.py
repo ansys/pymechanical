@@ -39,13 +39,6 @@ def launch_app(args):
     if args.test_not_initialized:
         init_msg = "The app is initialized" if is_initialized() else "The app is not initialized"
         print(init_msg)
-    if args.test_readonly:
-        app = pymechanical.App(version=int(args.version), readonly=True)
-        (
-            print("The app is started in read-only mode")
-            if app.readonly
-            else print("The app is not in read-only mode")
-        )
     if args.test_feature_flags:
         app = pymechanical.App(
             version=int(args.version),
@@ -64,6 +57,12 @@ def launch_app(args):
             "Mechanical.ThermalShells"
         ):
             print("ThermalShells is enabled")
+    elif args.test_readonly:
+        app = pymechanical.App(version=int(args.version), readonly=True)
+        if app.readonly:
+            print("The app is started in read-only mode")
+        else:
+            print("The app is not in read-only mode")
     else:
         app = pymechanical.App(
             version=int(args.version),
