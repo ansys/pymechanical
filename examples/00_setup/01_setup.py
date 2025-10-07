@@ -80,9 +80,9 @@ geometry_import.Import(geom_file_path, geometry_import_format, geometry_import_p
 # Set Units
 # ~~~~~~~~~~~~~~~~~~~~~~~
 
-app.ExtAPI.Application.ActiveUnitSystem = MechanicalUnitSystem.StandardNMM
-app.ExtAPI.Application.ActiveAngleUnit = AngleUnitType.Radian
-app.ExtAPI.Application.ActiveAngularVelocityUnit = AngularVelocityUnitType.RadianPerSecond
+ExtAPI.Application.ActiveUnitSystem = MechanicalUnitSystem.StandardNMM
+ExtAPI.Application.ActiveAngleUnit = AngleUnitType.Radian
+ExtAPI.Application.ActiveAngularVelocityUnit = AngularVelocityUnitType.RadianPerSecond
 
 # %%
 # View messages in Mechanical using PyMechanical
