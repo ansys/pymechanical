@@ -246,8 +246,31 @@ jobs:
           MECHANICAL_IMAGE: ${{ env.DOCKER_PACKAGE }}:${{ matrix.mechanical-version }}
         run: |
           docker pull ${{ env.MECHANICAL_IMAGE }}
-          docker run --restart always --name ${{ env.DOCKER_MECH_CONTAINER_NAME }} -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }} > log.txt &
-          grep -q 'WB Initialize Done' <(timeout 60 tail -f log.txt)
+
+          # Start container in detached mode
+          docker run -d --restart always --name ${{ env.DOCKER_MECH_CONTAINER_NAME }} \
+            -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} \
+            -p ${{ env.PYMECHANICAL_PORT }}:10000 \
+            ${{ env.MECHANICAL_IMAGE }}
+
+          # Wait for initialization using docker logs
+          echo "Waiting for Mechanical to initialize..."
+          timeout 120 bash -c '
+            while true; do
+              if docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} 2>&1 | grep -q "WB Initialize Done"; then
+                echo "Mechanical initialized successfully"
+                exit 0
+              fi
+              sleep 2
+            done
+          ' || {
+            echo "Failed to initialize Mechanical within timeout"
+            echo "Container logs:"
+            docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }}
+            echo "Container status:"
+            docker ps -a | grep ${{ env.DOCKER_MECH_CONTAINER_NAME }}
+            exit 1
+          }
 
       - name: Display info
         if: github.event_name == 'schedule'
