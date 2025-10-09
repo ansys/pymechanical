@@ -257,7 +257,7 @@ jobs:
           sleep 60  # give time to start
 
           echo "Check logs for WB Initialize Done"
-          docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} | grep -q 'WB Initialize Done'
+          docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} | grep 'WB Initialize Done'
 
       - name: Display info
         if: github.event_name == 'schedule'
