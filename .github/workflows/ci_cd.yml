@@ -249,9 +249,15 @@ jobs:
           ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH: 0  # turn off autoflush for faster performance
         run: |
           docker pull ${{ env.MECHANICAL_IMAGE }}
+
+          echo "Run docker in detached mode"
           docker run -d --name ${{ env.DOCKER_MECH_CONTAINER_NAME }} -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }}
+
+          echo "Sleep for 60 seconds"
           sleep 60  # give time to start
-          docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }}| grep -q 'WB Initialize Done'
+
+          echo "Check logs for WB Initialize Done"
+          docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} | grep -q 'WB Initialize Done'
 
       - name: Display info
         if: github.event_name == 'schedule'
