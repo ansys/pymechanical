@@ -251,7 +251,7 @@ jobs:
           docker pull ${{ env.MECHANICAL_IMAGE }}
           docker run -d --name ${{ env.DOCKER_MECH_CONTAINER_NAME }} -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }}
           sleep 60  # give time to start
-          grep -q 'WB Initialize Done' < $(docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }})
+          docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }}| grep -q 'WB Initialize Done'
 
       - name: Display info
         if: github.event_name == 'schedule'
