@@ -30,7 +30,7 @@ Usage
 Configuring logger
 ~~~~~~~~~~~~~~~~~~
 
-Configuring the logger can be done using the 
+Configuring the logger can be done using the
 :class:`Configuration <ansys.mechanical.core.embedding.logger.Configuration>` class:
 
 .. code:: python
@@ -40,7 +40,7 @@ Configuring the logger can be done using the
   Configuration.configure(level=logging.INFO, to_stdout=True, base_directory=None)
   app = mech.App(version=252)
 
-Then, the :class:`Logger <ansys.mechanical.core.embedding.logger.Logger>` class can 
+Then, the :class:`Logger <ansys.mechanical.core.embedding.logger.Logger>` class can
 be used to write messages to the log:
 
 .. code:: python

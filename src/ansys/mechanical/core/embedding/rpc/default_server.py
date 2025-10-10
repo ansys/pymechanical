@@ -84,7 +84,7 @@ class DefaultServiceMethods:
         for file_path in root_path.rglob("*"):
             if file_path.is_file():
                 file_list.append(str(file_path))
-        
+
         files_out = "\n".join(file_list).splitlines()
         if not files_out:  # pragma: no cover
             print("No files listed")
