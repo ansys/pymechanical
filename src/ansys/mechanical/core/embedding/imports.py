@@ -22,10 +22,15 @@
 
 """Additional imports for embedded Mechanical."""
 
+from __future__ import annotations
+
 import typing
+from typing import TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from ansys.mechanical.core.embedding import App
 
-def global_entry_points(app: "ansys.mechanical.core.App") -> typing.Dict:
+def global_entry_points(app: App) -> typing.Dict:
     """Return the global entry points of the application."""
     vars = {}
     vars["ExtAPI"] = app.ExtAPI
@@ -36,7 +41,7 @@ def global_entry_points(app: "ansys.mechanical.core.App") -> typing.Dict:
     return vars
 
 
-def global_variables(app: "ansys.mechanical.core.App", enums: bool = False) -> typing.Dict:
+def global_variables(app: App, enums: bool = False) -> typing.Dict:
     """Return the Mechanical scripting global variables as a dict.
 
     It can be used to add all of these as global variables in python
