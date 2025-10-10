@@ -30,6 +30,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from ansys.mechanical.core.embedding import App
 
+
 def global_entry_points(app: App) -> typing.Dict:
     """Return the global entry points of the application."""
     vars = {}
