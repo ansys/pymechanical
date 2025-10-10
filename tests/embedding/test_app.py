@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Miscellaneous embedding tests"""
+
 import os
 from pathlib import Path
 import shutil
@@ -59,8 +60,8 @@ def test_deprecation_warning(embedded_app):
 @pytest.mark.embedding
 def test_app_save_open(embedded_app, tmp_path: pytest.TempPathFactory):
     """Test save and open of the Application class."""
-    import System
     import clr  # noqa: F401
+    import System
 
     # save without a save_as throws an exception
     with pytest.raises(System.Exception):
@@ -434,7 +435,7 @@ def test_launch_gui(embedded_app, tmp_path: pytest.TempPathFactory, capfd):
     embedded_app.launch_gui(delete_tmp_on_close=False, dry_run=True)
     embedded_app.close()
     out, err = capfd.readouterr()
-    assert f"ansys-mechanical --project-file" in out
+    assert "ansys-mechanical --project-file" in out
     assert f"--graphical --revision {str(embedded_app.version)}" in out
     assert f"Opened a new mechanical session based on {mechdb_path}" in out
 
@@ -585,3 +586,60 @@ def test_app_not_initialized(run_subprocess, pytestconfig, rootdir):
     stdout = stdout.decode()
 
     assert "The app is not initialized" in stdout
+
+
+@pytest.mark.embedding
+def test_app_start_readonly(run_subprocess, pytestconfig, rootdir, printer):
+    """Test the app is started in read-only mode."""
+    version = pytestconfig.getoption("ansys_version")
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+    printer(f"Testing readonly for version {version}")
+    process, stdout, stderr = run_subprocess(
+        [
+            sys.executable,
+            embedded_py,
+            "--version",
+            version,
+            "--test_readonly",
+        ]
+    )
+    stdout = stdout.decode()
+    if int(version) < 261:
+        assert "The app is not in read-only mode" in stdout
+    else:
+        assert "The app is started in read-only mode" in stdout
+
+
+@pytest.mark.minimum_version(261)
+@pytest.mark.embedding
+def test_app_feature_flags(run_subprocess, pytestconfig, rootdir, printer):
+    """Test app feature flags. Only supported in 26R1 and later,
+    as arguments are accepted from this version onward."""
+    version = pytestconfig.getoption("ansys_version")
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+    printer(f"Testing feature flags for version {version}")
+    process, stdout, stderr = run_subprocess(
+        [
+            sys.executable,
+            embedded_py,
+            "--version",
+            version,
+            "--test_feature_flags",
+        ]
+    )
+    stdout = stdout.decode()
+    assert "ThermalShells is enabled" in stdout
+    assert "MultistageHarmonic is enabled" in stdout
+
+    # Test that feature flags are not enabled by default
+    process, stdout, stderr = run_subprocess(
+        [
+            sys.executable,
+            embedded_py,
+            "--version",
+            version,
+        ]
+    )
+    stdout = stdout.decode()
+    assert "ThermalShells is enabled" not in stdout
+    assert "MultistageHarmonic is enabled" not in stdout

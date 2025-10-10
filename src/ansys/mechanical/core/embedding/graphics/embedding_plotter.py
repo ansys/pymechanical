@@ -34,9 +34,10 @@ clr.AddReference("Ansys.ACT.Interfaces")
 
 import Ansys  # isort: skip
 
-from ansys.tools.visualization_interface import Plotter
 import numpy as np
 import pyvista as pv
+
+from ansys.tools.visualization_interface import Plotter
 
 from .utils import (
     bgr_to_rgb_tuple,
@@ -179,7 +180,7 @@ class ScenegraphNodeVisitor:
         self, node: "Ansys.Mechanical.Scenegraph.MeshOrientedTransformNode"
     ) -> Plottable:
         if "PYMECHANICAL_SCENE_VISIT_MESH_ORIENTED_TRANSFORM_NODE" not in os.environ:
-            self._app.log_warning(f"Ignoring MeshOrientedTransformNode")
+            self._app.log_warning("Ignoring MeshOrientedTransformNode")
             return None
 
         plottable = self.visit_node(node.Child)

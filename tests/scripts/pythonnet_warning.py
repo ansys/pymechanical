@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Test script for checking pythonnet warning."""
+
 import sys
 
 from ansys.mechanical.core.embedding import initializer

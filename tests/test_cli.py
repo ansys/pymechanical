@@ -25,14 +25,17 @@ from pathlib import Path
 import subprocess
 import sys
 
-import ansys.tools.path as atp
 from click.testing import CliRunner
 import pytest
 
 from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
-from ansys.mechanical.core.ide_config import cli as ideconfig_cli
-from ansys.mechanical.core.ide_config import get_stubs_location, get_stubs_versions
-from ansys.mechanical.core.run import _cli_impl
+from ansys.mechanical.core.ide_config import (
+    cli as ideconfig_cli,
+    get_stubs_location,
+    get_stubs_versions,
+)
+from ansys.mechanical.core.run import _cli_impl, cli
+import ansys.tools.path as atp
 
 STUBS_LOC = get_stubs_location()
 STUBS_REVNS = get_stubs_versions(STUBS_LOC)
@@ -477,3 +480,63 @@ def test_ideconfig_no_revision():
     assert result.exit_code == 0
     assert f"Update {settings_json} with the following information" in stdout
     assert str(stubs_location) in stdout
+
+
+@pytest.mark.cli
+def test_cli_engine_type_args(disable_cli, pytestconfig):
+    # Default engine type
+    args, _ = _cli_impl(exe="AnsysWBU.exe", port=11)
+    assert "-engineType" not in args
+
+    # Select ironpython engine type
+    args, _ = _cli_impl(exe="AnsysWBU.exe", enginetype="ironpython", input_script="foo.py")
+    assert "-engineType" in args
+    assert "ironpython" in args
+
+    # Select cpython engine type
+    args, _ = _cli_impl(exe="AnsysWBU.exe", enginetype="cpython", input_script="foo.py")
+    assert "-engineType" in args
+    assert "cpython" in args
+
+
+@pytest.mark.cli
+def test_cli_engine_type_selection(disable_cli, pytestconfig):
+    version = int(pytestconfig.getoption("ansys_version"))
+    # Invalid engine type - this should be caught by Click's Choice validation
+    with pytest.raises(Exception) as e:
+        _cli_impl(
+            exe="AnsysWBU.exe", version=version, enginetype="invalid_engine", input_script="foo.py"
+        )
+    assert "Invalid engine type" in str(e.value)
+
+    # Test enginetype without input script should fail
+    with pytest.raises(Exception) as e:
+        _cli_impl(exe="AnsysWBU.exe", version=version, enginetype="cpython")
+    assert "Cannot specify engine type without an input script" in str(e.value)
+
+
+@pytest.mark.cli
+def test_cli_enginetype_errors(disable_cli, pytestconfig):
+    """Test engine type validation errors."""
+
+    # Test enginetype without input script should fail
+    runner = CliRunner()
+    version = int(pytestconfig.getoption("ansys_version"))
+    # Test enginetype with version other than 261 should fail
+    if version < 261:
+        result = runner.invoke(
+            cli,
+            [
+                "--revision",
+                str(int(pytestconfig.getoption("ansys_version"))),
+                "--input-script",
+                "foo.py",
+                "--enginetype",
+                "cpython",
+            ],
+        )
+        assert result.exit_code != 0
+        assert (
+            "--enginetype option for cpython is only applicable for version 261 or later."
+            in result.output
+        )

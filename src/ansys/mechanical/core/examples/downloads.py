@@ -100,7 +100,7 @@ def download_file(
     Download a file from the server
 
     >>> from ansys.mechanical.core import examples
-    >>> filename = examples.download_file('example_01_geometry.agdb', 'pymechanical', '00_basic')
+    >>> filename = examples.download_file("example_01_geometry.agdb", "pymechanical", "00_basic")
     >>> filename
     'C:/Users/user/AppData/Local/ansys_mechanical_core/ansys_mechanical_core/examples/example_01_geometry.agdb'
     """

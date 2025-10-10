@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Run embedded instance for analytics."""
+
 import argparse
 
 import ansys.mechanical.core as pymechanical

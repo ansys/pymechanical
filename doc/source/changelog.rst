@@ -9,6 +9,135 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.34 <https://github.com/ansys/pymechanical/releases/tag/v0.11.34>`_ - September 19, 2025
+=============================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add \`mechanical-env\` in wheel
+          - `#1324 <https://github.com/ansys/pymechanical/pull/1324>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.11.33
+          - `#1319 <https://github.com/ansys/pymechanical/pull/1319>`_
+
+        * - Update qt version
+          - `#1320 <https://github.com/ansys/pymechanical/pull/1320>`_
+
+        * - Combine Python cache step into one and confirm Python is installed
+          - `#1321 <https://github.com/ansys/pymechanical/pull/1321>`_
+
+
+`0.11.33 <https://github.com/ansys/pymechanical/releases/tag/v0.11.33>`_ - September 18, 2025
+=============================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Modify installation of python inside container
+          - `#1312 <https://github.com/ansys/pymechanical/pull/1312>`_
+
+        * - Add new example
+          - `#1314 <https://github.com/ansys/pymechanical/pull/1314>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update ``ansys-sphinx-theme`` version
+          - `#1310 <https://github.com/ansys/pymechanical/pull/1310>`_
+
+
+  .. tab-item:: Documentation
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update ``html_context`` with PyAnsys tags
+          - `#1291 <https://github.com/ansys/pymechanical/pull/1291>`_
+
+        * - Add user guide section
+          - `#1292 <https://github.com/ansys/pymechanical/pull/1292>`_
+
+        * - Update contribute section
+          - `#1293 <https://github.com/ansys/pymechanical/pull/1293>`_
+
+        * - Address vale warnings
+          - `#1299 <https://github.com/ansys/pymechanical/pull/1299>`_
+
+        * - Add pep8 in whatsnew
+          - `#1306 <https://github.com/ansys/pymechanical/pull/1306>`_
+
+        * - Fix reference
+          - `#1318 <https://github.com/ansys/pymechanical/pull/1318>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.11.32
+          - `#1289 <https://github.com/ansys/pymechanical/pull/1289>`_
+
+        * - Build cheat sheet condition
+          - `#1290 <https://github.com/ansys/pymechanical/pull/1290>`_
+
+        * - Bump the doc group across 1 directory with 2 updates
+          - `#1294 <https://github.com/ansys/pymechanical/pull/1294>`_
+
+        * - Bump matplotlib from 3.10.5 to 3.10.6 in the doc group
+          - `#1296 <https://github.com/ansys/pymechanical/pull/1296>`_
+
+        * - Bump the tests group with 2 updates
+          - `#1301 <https://github.com/ansys/pymechanical/pull/1301>`_
+
+        * - Bump actions/setup-python from 5 to 6
+          - `#1302 <https://github.com/ansys/pymechanical/pull/1302>`_
+
+        * - Bump actions/labeler from 5 to 6
+          - `#1303 <https://github.com/ansys/pymechanical/pull/1303>`_
+
+        * - Bump pypa/gh-action-pypi-publish from 1.12.4 to 1.13.0 in the actions group
+          - `#1304 <https://github.com/ansys/pymechanical/pull/1304>`_
+
+        * - Pre-commit automatic update
+          - `#1305 <https://github.com/ansys/pymechanical/pull/1305>`_
+
+        * - Update actions with commit sha
+          - `#1309 <https://github.com/ansys/pymechanical/pull/1309>`_
+
+        * - Bump sphinx-click from 6.0.0 to 6.1.0 in the doc group
+          - `#1316 <https://github.com/ansys/pymechanical/pull/1316>`_
+
+        * - Bump pytest-cov from 6.3.0 to 7.0.0
+          - `#1317 <https://github.com/ansys/pymechanical/pull/1317>`_
+
+
 `0.11.32 <https://github.com/ansys/pymechanical/releases/tag/v0.11.32>`_ - August 26, 2025
 ==========================================================================================
 

@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Initializer for Mechanical embedding. Sets up paths and resolvers."""
+
 from importlib.metadata import distribution
 import os
 from pathlib import Path

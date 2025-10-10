@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """License Manager."""
+
 from typing import List, Optional, Union
 
 from ansys.mechanical.core import LOG
@@ -137,7 +138,7 @@ class LicenseManager:
         Move Ansys Mechanical Premium to the first location.
 
         >>> license_manager = LicenseManager(app)
-        >>> license_manager.move_to_index('Ansys Mechanical Premium', 0)
+        >>> license_manager.move_to_index("Ansys Mechanical Premium", 0)
         """
         LOG.info(f"Moving license preference for {license_name} to location {location}")
         self._license_preference.MoveLicenseToLocation(license_name, location)

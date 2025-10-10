@@ -40,10 +40,9 @@ or component, in this example, a long bar model.
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from PIL import Image
-from matplotlib import image as mpimg
-from matplotlib import pyplot as plt
+from matplotlib import image as mpimg, pyplot as plt
 from matplotlib.animation import FuncAnimation
+from PIL import Image
 
 from ansys.mechanical.core import App
 from ansys.mechanical.core.examples import delete_downloads, download_file

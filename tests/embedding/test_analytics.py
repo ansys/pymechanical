@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Analytics embedding tests"""
+
 import json
 import os
 import sys
