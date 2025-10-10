@@ -32,10 +32,11 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ansys.mechanical.core.embedding import App
-from ansys.tools.visualization_interface import Plotter
 import clr
 import numpy as np
 import pyvista as pv
+
+from ansys.tools.visualization_interface import Plotter
 
 from .utils import (
     bgr_to_rgb_tuple,
@@ -277,9 +278,7 @@ def _get_plotter_for_scene(
     return plotter
 
 
-def _plot_object(
-    app: App, obj, plot_settings: PlotSettings
-) -> Plotter:
+def _plot_object(app: App, obj, plot_settings: PlotSettings) -> Plotter:
     """Get a ``ansys.tools.visualization_interface.Plotter`` instance for `obj`."""
     scene = get_scene_for_object(app, obj)
     if scene is None:
@@ -289,9 +288,7 @@ def _plot_object(
     return plotter
 
 
-def to_plotter(
-    app: App, obj=None, plot_settings: PlotSettings = None
-) -> Plotter:
+def to_plotter(app: App, obj=None, plot_settings: PlotSettings = None) -> Plotter:
     """Convert the scene for `obj` to an ``ansys.tools.visualization_interface.Plotter`` instance.
 
     If the `obj` is None, default to the Geometry object.

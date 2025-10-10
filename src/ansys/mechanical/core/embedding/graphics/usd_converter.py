@@ -75,7 +75,9 @@ def _convert_tri_tessellation_node(
 
 
 def _create_prim_with_transform(
-    stage: Usd.Stage, path: str, node: "Ansys.Mechanical.Scenegraph.TransformNode"  # noqa: F821
+    stage: Usd.Stage,
+    path: str,
+    node: "Ansys.Mechanical.Scenegraph.TransformNode",  # noqa: F821
 ) -> Usd.Prim:
     """Create an empty Usd Xform prim based on a mechanical transform node."""
     prim = UsdGeom.Xform.Define(stage, path)
@@ -130,7 +132,7 @@ def _convert_attribute_node(
     _convert_transform_node(child_node, stage, path, bgr_to_rgb_tuple(color))
 
 
-def load_into_usd_stage(scene: "Ansys.Mechanical.Scenegraph.GroupNode", stage: Usd.Stage) -> None: # noqa: F821
+def load_into_usd_stage(scene: "Ansys.Mechanical.Scenegraph.GroupNode", stage: Usd.Stage) -> None:  # noqa: F821
     """Load mechanical scene into usd stage `stage`."""
     root_prim = UsdGeom.Xform.Define(stage, "/root")
 
