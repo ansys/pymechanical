@@ -110,6 +110,6 @@ class BackgroundApp:
                 break
             try:
                 utils.sleep(40)
-            except:
-                raise Exception("BackgroundApp cannot sleep.")  # pragma: no cover
+            except Exception as e:  # pragma: no cover
+                raise Exception("BackgroundApp cannot sleep.") from e  # pragma: no cover
         BackgroundApp.__stopped = True
