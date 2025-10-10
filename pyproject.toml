@@ -110,7 +110,7 @@ scripts = ["mechanical-env"]
 [tool.ruff]
 line-length = 100
 fix = true
-extend-exclude = ["tests/assets"]
+extend-exclude = ["tests/assets", "tests/scripts"]
 
 [tool.ruff.format]
 quote-style = "double"
@@ -140,7 +140,8 @@ ignore = [
 # Ignore `E402` (module level import not at top of file) in `src/ansys/mechanical/core/__init__.py`.
 "src/ansys/mechanical/core/__init__.py" = ["E402"]
 # Ignore `D` rules everywhere except for the `src/` directory.
-"!src/**.py" = ["D"]
+#"!src/**.py" = ["D"]
+"tests/conftest.py" = ["F811"]
 
 
 [tool.ruff.lint.pydocstyle]
