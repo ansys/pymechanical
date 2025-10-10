@@ -33,7 +33,7 @@ def _get_env_without_logging_variables():
     """Get a copy of environment without logging variables."""
 
     def _unset_var(env, var) -> None:
-        """remove `var` from `env` if it is present."""
+        """Remove `var` from `env` if it is present."""
         if var in env:
             del env[var]
 
@@ -77,7 +77,6 @@ def _run_embedding_log_test(
 
 def _assert_success(stdout: str, pass_expected: bool) -> int:
     """Asserts the outcome of the process matches pass_expected"""
-
     # HACK! On linux, due to bug #85, there is always a crash on shutdown
     # so instead there's a print("success") that happens after the test
     # function runs that will only be executed if the function doesn't

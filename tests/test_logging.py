@@ -63,6 +63,7 @@ def fake_record(
 ):
     """
     Function to fake log records using the format from the logger handler.
+
     Parameters
     ----------
     logger : logging.Logger
@@ -86,6 +87,7 @@ def fake_record(
         Exception information. By default None
     extra : dict, optional
         Extra arguments, one of them should be 'instance_name'. By default {}
+
     Returns
     -------
     [type]
@@ -179,7 +181,8 @@ def test_global_logger_exception_handling(caplog):
 @pytest.mark.remote_session_launch
 def test_global_logger_debug_levels(caplog):
     """Testing for all the possible logging level that the output is recorded
-    properly for each type of msg."""
+    properly for each type of msg.
+    """
     for each_level in [
         deflogging.DEBUG,
         deflogging.INFO,
