@@ -30,6 +30,7 @@ import subprocess
 import sys
 import time
 
+import ansys.tools.path as atp
 import pytest
 
 import ansys.mechanical.core as pymechanical
@@ -40,7 +41,6 @@ from ansys.mechanical.core.errors import MechanicalExitedError
 from ansys.mechanical.core.examples import download_file
 from ansys.mechanical.core.misc import get_mechanical_bin
 import ansys.mechanical.core.run
-import ansys.tools.path as atp
 
 # to run tests with multiple markers
 # pytest -q --collect-only -m "remote_session_launch"
