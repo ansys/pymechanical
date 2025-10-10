@@ -75,4 +75,3 @@ def connect_warnings(app: App):
 def disconnect_warnings(app: App):
     """Disconnect Mechanical warnings from the `warnings` Python module."""
     app._app.OnObsoleteMessage -= _on_obsolete_message
-
