@@ -63,7 +63,7 @@ valid_rver = [str(each) for each in SUPPORTED_MECHANICAL_VERSIONS]
 
 EXEC_FILE = None
 for rver in valid_rver:
-    if os.path.isfile(get_mechanical_bin(rver)):
+    if Path(get_mechanical_bin(rver)).is_file():
         EXEC_FILE = get_mechanical_bin(rver)
         break
 
@@ -93,7 +93,7 @@ def pytest_collection_modifyitems(config, items):
         if ("embedding" or "embedding_scripts") in item.keywords
     ]
 
-    # TODO - skip python_env tests unless the mark is specified. (The below doesn't work!)
+    # TODO : skip python_env tests unless the mark is specified. (The below doesn't work!)
     # skip_python_env = pytest.mark.skip(
     #     reason="python_env not selected for pytest run (`pytest -m python_env`).  Skip by default"
     # )
@@ -101,27 +101,13 @@ def pytest_collection_modifyitems(config, items):
 
 
 @pytest.fixture()
-def selection(embedded_app):
-    class Selection:
-        def __init__(self):
-            self._mgr = embedded_app.ExtAPI.SelectionManager
-
-        def UpdateSelection(self, api, input, type):
-            new_selection = self._mgr.CreateSelectionInfo(type)
-            new_selection.Ids = input
-            self._mgr.NewSelection(new_selection)
-
-    yield Selection()
-
-
-@pytest.fixture()
 def assets():
     """Return the test assets folder.
 
-    TODO - share this with the mechanical remote tests.
+    # TODO : share this with the mechanical remote tests.
     """
-    ROOT_FOLDER = pathlib.Path(__file__).parent
-    return ROOT_FOLDER / "assets"
+    root_folder = pathlib.Path(__file__).parent
+    return root_folder / "assets"
 
 
 def ensure_embedding() -> None:
@@ -229,19 +215,19 @@ def test_env():
         exe_dir = "bin"
         exe_name = "python"
 
-    venv_dir = os.path.join(base, "." + venv_name)
-    venv_bin = os.path.join(venv_dir, exe_dir)
-
+    venv_dir = base / f".{venv_name}"
+    venv_bin = venv_dir / exe_dir
+    python_exe = venv_bin / exe_name
     # Set up path to use the virtual environment
     env_copy = os.environ.copy()
-    env_copy["PATH"] = venv_bin + os.pathsep + os.environ.get("PATH", "")
+    env_copy["PATH"] = str(venv_bin) + os.pathsep + os.environ.get("PATH", "")
 
     # object describing the python environment
     class TestEnv:
         # environment variable needed to run inside the environment
         env = env_copy
         # python executable inside the environment
-        python = os.path.join(venv_bin, exe_name)
+        python = str(python_exe)
 
     test_env_object = TestEnv()
 
@@ -341,7 +327,7 @@ def _stop_python_server(mechanical, server_process):
 def _stop_mechanical_server(mechanical):
     assert "Ansys Mechanical" in str(mechanical)
     if pymechanical.mechanical.get_start_instance():
-        print(f"get_start_instance() returned True. exiting mechanical.")
+        print("get_start_instance() returned True. exiting mechanical.")
         mechanical.exit(force=True)
         assert mechanical.exited
         assert "Mechanical exited" in str(mechanical)
@@ -373,16 +359,6 @@ def mechanical_session(pytestconfig, rootdir):
     print("mechanical rpc session fixture exited cleanly")
 
 
-@pytest.fixture(autouse=True)
-def mke_app_reset(request, printer):
-    global EMBEDDED_APP
-    if EMBEDDED_APP is None:
-        # embedded app was not started - no need to do anything
-        return
-    printer(f"starting test {request.function.__name__} - file new")
-    EMBEDDED_APP.new()
-
-
 @pytest.fixture()
 def mechanical(request, printer, mechanical_session):
     mechanical, server_process = mechanical_session
@@ -397,7 +373,7 @@ def mechanical(request, printer, mechanical_session):
 # used only once
 @pytest.fixture(scope="function")
 def mechanical_meshing():
-    print("current working directory: ", os.getcwd())
+    print("current working directory: ", Path.cwd())
 
     mechanical_meshing = pymechanical.launch_mechanical(
         additional_switches=["-AppModeMesh"],
@@ -415,7 +391,7 @@ def mechanical_meshing():
 # used only once
 @pytest.fixture(scope="function")
 def mechanical_result():
-    print("current working directory: ", os.getcwd())
+    print("current working directory: ", Path.cwd())
 
     mechanical_result = pymechanical.launch_mechanical(
         additional_switches=["-AppModeRest"], verbose_mechanical=True

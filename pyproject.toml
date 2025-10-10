@@ -130,6 +130,7 @@ select = [
 ]
 ignore = [
     "TD002", # Missing author in TODOs comment
+    "TD003", # Missing issue link in TODOs comment
 ]
 
 
