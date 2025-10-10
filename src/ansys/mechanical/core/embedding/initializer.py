@@ -92,7 +92,7 @@ def _get_latest_default_version() -> int:
 
     versions_found = []
     for path in awp_roots:
-        folder = os.path.basename(os.path.normpath(path))
+        folder = Path(path).name
         version = folder.split("v")[-1]
         versions_found.append(int(version))
 
@@ -223,9 +223,9 @@ def __is_lib_loaded(libname: str):  # pragma: no cover
     """Return whether a library is loaded."""
     import ctypes
 
-    RTLD_NOLOAD = 4
+    rtld_noload = 4
     try:
-        ctypes.CDLL(libname, RTLD_NOLOAD)
+        ctypes.CDLL(libname, rtld_noload)
     except OSError:
         return False
     return True
