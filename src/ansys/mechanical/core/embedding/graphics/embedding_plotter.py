@@ -22,22 +22,20 @@
 
 """PyVista plotter."""
 
+from __future__ import annotations
+
 import dataclasses
 from enum import Enum
 import os
 import typing
+from typing import TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from ansys.mechanical.core.embedding import App
+from ansys.tools.visualization_interface import Plotter
 import clr
-
-clr.AddReference("Ansys.Mechanical.DataModel")
-clr.AddReference("Ansys.ACT.Interfaces")
-
-import Ansys  # isort: skip
-
 import numpy as np
 import pyvista as pv
-
-from ansys.tools.visualization_interface import Plotter
 
 from .utils import (
     bgr_to_rgb_tuple,
@@ -47,6 +45,11 @@ from .utils import (
     get_tri_result_disp_and_results,
 )
 
+clr.AddReference("Ansys.Mechanical.DataModel")
+clr.AddReference("Ansys.ACT.Interfaces")
+
+import Ansys  # noqa: E402
+
 
 @dataclasses.dataclass
 class Plottable:
@@ -54,7 +57,7 @@ class Plottable:
 
     polydata: typing.Optional[pv.PolyData] = None
 
-    # TODO - make this a list of overridable attributes
+    # TODO : Make this a list of overridable attributes
     color: typing.Optional[pv.Color] = None
     transform: pv.transform.Transform = None
     children: typing.List["Plottable"] = None
@@ -263,7 +266,7 @@ def _add_plottable(plotter: Plotter, plottable: Plottable, plot_settings: PlotSe
 
 
 def _get_plotter_for_scene(
-    app: "ansys.mechanical.core.embedding.App",
+    app: App,
     node: "Ansys.Mechanical.Scenegraph.Node",
     plot_settings: PlotSettings,
 ) -> Plotter:
@@ -275,7 +278,7 @@ def _get_plotter_for_scene(
 
 
 def _plot_object(
-    app: "ansys.mechanical.core.embedding.App", obj, plot_settings: PlotSettings
+    app: App, obj, plot_settings: PlotSettings
 ) -> Plotter:
     """Get a ``ansys.tools.visualization_interface.Plotter`` instance for `obj`."""
     scene = get_scene_for_object(app, obj)
@@ -287,7 +290,7 @@ def _plot_object(
 
 
 def to_plotter(
-    app: "ansys.mechanical.core.embedding.App", obj=None, plot_settings: PlotSettings = None
+    app: App, obj=None, plot_settings: PlotSettings = None
 ) -> Plotter:
     """Convert the scene for `obj` to an ``ansys.tools.visualization_interface.Plotter`` instance.
 

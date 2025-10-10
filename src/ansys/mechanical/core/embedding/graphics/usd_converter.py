@@ -22,15 +22,22 @@
 
 """Converter to OpenUSD."""
 
-import typing
+from __future__ import annotations
 
+import typing
+from typing import TYPE_CHECKING
+
+import Ansys
+
+if TYPE_CHECKING:
+    from ansys.mechanical.core.embedding import App
 from pxr import Gf, Usd, UsdGeom
 
 from .utils import bgr_to_rgb_tuple, get_scene, get_tri_nodes_and_coords
 
 
 def _transform_to_rotation_translation(
-    transform: "Ansys.ACT.Math.Matrix4D",
+    transform: "Ansys.ACT.Math.Matrix4D",  # noqa: F821
 ) -> typing.Tuple[Gf.Quatf, Gf.Vec3f]:
     """Convert the Transformation matrix to a single-precision quaternion."""
     transforms = [transform[i] for i in range(16)]
@@ -51,7 +58,7 @@ def _transform_to_rotation_translation(
 
 
 def _convert_tri_tessellation_node(
-    node: "Ansys.Mechanical.Scenegraph.TriTessellationNode",
+    node: "Ansys.Mechanical.Scenegraph.TriTessellationNode",  # noqa: F821
     stage: Usd.Stage,
     path: str,
     rgb: typing.Tuple[int, int, int],
@@ -68,7 +75,7 @@ def _convert_tri_tessellation_node(
 
 
 def _create_prim_with_transform(
-    stage: Usd.Stage, path: str, node: "Ansys.Mechanical.Scenegraph.TransformNode"
+    stage: Usd.Stage, path: str, node: "Ansys.Mechanical.Scenegraph.TransformNode"  # noqa: F821
 ) -> Usd.Prim:
     """Create an empty Usd Xform prim based on a mechanical transform node."""
     prim = UsdGeom.Xform.Define(stage, path)
@@ -79,7 +86,7 @@ def _create_prim_with_transform(
 
 
 def _convert_transform_node(
-    node: "Ansys.Mechanical.Scenegraph.TransformNode",
+    node: "Ansys.Mechanical.Scenegraph.TransformNode",  # noqa: F821
     stage: Usd.Stage,
     path: str,
     rgb: typing.Tuple[int, int, int],
@@ -103,7 +110,7 @@ def _convert_transform_node(
 
 
 def _convert_attribute_node(
-    node: "Ansys.Mechanical.Scenegraph.AttributeNode",
+    node: "Ansys.Mechanical.Scenegraph.AttributeNode",  # noqa: F821
     stage: Usd.Stage,
     path: str,
 ) -> None:
@@ -123,17 +130,17 @@ def _convert_attribute_node(
     _convert_transform_node(child_node, stage, path, bgr_to_rgb_tuple(color))
 
 
-def load_into_usd_stage(scene: "Ansys.Mechanical.Scenegraph.GroupNode", stage: Usd.Stage) -> None:
+def load_into_usd_stage(scene: "Ansys.Mechanical.Scenegraph.GroupNode", stage: Usd.Stage) -> None: # noqa: F821
     """Load mechanical scene into usd stage `stage`."""
     root_prim = UsdGeom.Xform.Define(stage, "/root")
 
     for child in scene.Children:
-        child: "Ansys.Mechanical.Scenegraph.AttributeNode" = child
+        child: "Ansys.Mechanical.Scenegraph.AttributeNode" = child  # noqa: F821
         child_path = root_prim.GetPath().AppendPath(child.Tag)
         _convert_attribute_node(child, stage, child_path)
 
 
-def to_usd_stage(app: "ansys.mechanical.core.embedding.App", name: str) -> Usd.Stage:
+def to_usd_stage(app: App, name: str) -> Usd.Stage:
     """Convert mechanical scene to new usd stage and return it."""
     stage = Usd.Stage.CreateNew(name)
     scene = get_scene(app)
