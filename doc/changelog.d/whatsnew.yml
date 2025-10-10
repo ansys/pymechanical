@@ -1,10 +1,10 @@
 fragments:
-- title: Pep8 aliases for Mechanical APIs
+- title: PEP 8 aliases for Mechanical APIs
   version: 0.11.30
   content: |
-    Mechanical APIs now support PEP8 aliases for improved usability and consistency when used with PyMechanical.
+    Mechanical APIs now support PEP 8 aliases for improved usability and consistency when used with PyMechanical.
 
-    To enable PEP8 aliases
+    To enable PEP 8 aliases
 
 
     .. code:: python
@@ -14,7 +14,7 @@ fragments:
       # Initialize the app and update globals
       app = App(globals=globals(), pep8=True)
 
-    Example on how to use the PEP8 aliases are given below
+    Example on how to use the PEP 8 aliases are given below
 
 
     .. code:: python

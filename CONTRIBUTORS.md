@@ -23,3 +23,4 @@
 * [Revathy Venugopal](https://github.com/Revathyvenugopal162)
 * [Roberto Pastor Muela](https://github.com/RobPasMue)
 * [Sean Bradrick](https://github.com/sbradrick)
+* [Vikas Namdeo](https://github.com/vnamdeo)

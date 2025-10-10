@@ -14,17 +14,17 @@ When PEP 8 aliases are enabled, you can use both the original Pascal Case names 
 Snake Case aliases interchangeably, providing backward compatibility while offering a more
 Python-friendly API.
 
-Enabling pep8 aliases
+Enabling PEP 8 aliases
 ---------------------
 
-To enable PEP 8 aliases, use the ``pep8_aliases`` parameter when creating an ``App`` instance:
+To enable PEP 8 aliases, use the ``pep`` parameter when creating an ``App`` instance:
 
 .. code:: python
 
    from ansys.mechanical.core import App
 
    # Create an app instance with PEP 8 aliases enabled
-   app = App(pep8_aliases=True, globals=globals())
+   app = App(pep8=True, globals=globals())
 
    # Now you can use both Pascal Case and Snake Case
    # Traditional way (Pascal Case)

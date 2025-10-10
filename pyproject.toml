@@ -50,14 +50,14 @@ Changelog = "https://mechanical.docs.pyansys.com/version/stable/changelog.html"
 [project.optional-dependencies]
 tests = [
     "pytest==8.4.2",
-    "pytest-cov==6.3.0",
+    "pytest-cov==7.0.0",
     "pytest-print==1.1.0",
-    "psutil==7.0.0",
+    "psutil==7.1.0",
 ]
 
 doc = [
     "sphinx==8.2.3",
-    "ansys-sphinx-theme[autoapi,changelog]==1.6.0",
+    "ansys-sphinx-theme[autoapi,changelog]==1.6.1",
     "imageio-ffmpeg==0.6.0",
     "imageio==2.37.0",
     "jupyter_sphinx==0.5.3",
@@ -73,7 +73,7 @@ doc = [
     "sphinx-gallery==0.19.0",
     "sphinx-notfound-page==1.1.0",
     "sphinxcontrib-websupport==2.0.0",
-    "sphinx-click==6.0.0",
+    "sphinx-click==6.1.0",
     "ansys-tools-visualization-interface>=0.2.6",
 ]
 
@@ -97,7 +97,7 @@ ansys-mechanical-ideconfig = "ansys.mechanical.core.ide_config:cli"
 find-mechanical = "ansys.mechanical.core.embedding.find_mechanical:cli"
 
 [tool.pdm.build]
-includes = ["src"]
+includes = ["src", "mechanical-env"]
 excludes = ["tests"]
 
 [tool.pdm.build.wheel-data]
