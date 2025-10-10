@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Logger embedding tests"""
+"""Logger embedding tests."""
 
 import os
 import sys
@@ -53,12 +53,12 @@ def _run_embedding_log_test(
     testname: str,
     pass_expected: bool = True,
 ) -> typing.Tuple[bytes, bytes]:
-    """Runs the process and returns it after it finishes"""
+    """Runs the process and returns it after it finishes."""
     version = pytestconfig.getoption("ansys_version")
     embedded_py = os.path.join(rootdir, "tests", "scripts", "embedding_log_test.py")
 
     subprocess_pass_expected = pass_expected
-    if pass_expected == True:
+    if pass_expected:
         if os.name != "nt" and int(version) < 251:
             subprocess_pass_expected = False
 
@@ -76,7 +76,7 @@ def _run_embedding_log_test(
 
 
 def _assert_success(stdout: str, pass_expected: bool) -> int:
-    """Asserts the outcome of the process matches pass_expected"""
+    """Asserts the outcome of the process matches pass_expected."""
     # HACK! On linux, due to bug #85, there is always a crash on shutdown
     # so instead there's a print("success") that happens after the test
     # function runs that will only be executed if the function doesn't
@@ -92,7 +92,7 @@ def _assert_success(stdout: str, pass_expected: bool) -> int:
 @pytest.mark.embedding_scripts
 @pytest.mark.embedding_logging
 def test_logging_write_log_before_init(rootdir, run_subprocess, pytestconfig):
-    """Test that an error is thrown when trying to log before initializing"""
+    """Test that an error is thrown when trying to log before initializing."""
     stderr = _run_embedding_log_test(
         run_subprocess, rootdir, pytestconfig, "log_before_initialize", False
     )

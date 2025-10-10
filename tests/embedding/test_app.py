@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Miscellaneous embedding tests"""
+"""Miscellaneous embedding tests."""
 
 import os
 from pathlib import Path
@@ -133,7 +133,7 @@ def test_nonblock_sleep(embedded_app):
 
 @pytest.mark.embedding
 def test_app_print_tree(embedded_app, capsys, assets):
-    """Test printing hierarchical tree of Mechanical ExtAPI object"""
+    """Test printing hierarchical tree of Mechanical ExtAPI object."""
     embedded_app.update_globals(globals())
     geometry_file = os.path.join(assets, "Eng157.x_t")
     geometry_import = Model.GeometryImportGroup.AddGeometryImport()
@@ -191,7 +191,7 @@ def test_app_poster(embedded_app, printer):
     error = []
 
     def change_name_async(poster):
-        """Change_name_async will run a background thread
+        """Change_name_async will run a background thread.
 
         It will change the name of the project to "foo"
         """

@@ -28,7 +28,7 @@ import pytest
 @pytest.mark.embedding
 @pytest.mark.windows_only
 def test_remote_solve(printer, embedded_app, graphics_test_mechdb_file):
-    """Test to check My Computer Background solve"""
+    """Test to check My Computer Background solve."""
     printer(embedded_app)
     embedded_app.update_globals(globals())
     embedded_app.open(graphics_test_mechdb_file)

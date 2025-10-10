@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Embedding tests for global variables associated with Mechanical"""
+"""Embedding tests for global variables associated with Mechanical."""
 
 from pathlib import Path
 import subprocess
