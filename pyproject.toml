@@ -142,6 +142,7 @@ ignore = [
 # Ignore `D` rules everywhere except for the `src/` directory.
 #"!src/**.py" = ["D"]
 "tests/conftest.py" = ["F811"]
+"examples/**.py" = ["D400", "F821", "F405", "E402", "D205"]
 
 
 [tool.ruff.lint.pydocstyle]

@@ -363,7 +363,7 @@ solve_path = analysis.WorkingDir
 solve_out_path = solve_path + "solve.out"
 # If the solve output file exists, print its contents
 if solve_out_path:
-    with open(solve_out_path, "rt") as file:
+    with Path.open(solve_out_path, "rt") as file:
         for line in file:
             print(line, end="")
 

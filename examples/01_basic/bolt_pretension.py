@@ -278,7 +278,7 @@ def advanced_contact_settings(
 # %%
 # Add a command snippet to the contact region with the specified Archard Wear Model
 def add_command_snippet(
-    contact_region: Ansys.ACT.Automation.Mechanical.Connections.ContactRegion,
+    contact_region: "Ansys.ACT.Automation.Mechanical.Connections.ContactRegion",
     archard_wear_model: str,
 ) -> None:
     """Add a command snippet to the contact region with the specified Archard Wear Model.
