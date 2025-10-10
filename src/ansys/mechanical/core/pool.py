@@ -26,6 +26,8 @@ import os
 import time
 import warnings
 
+from ansys.tools.path import version_from_path
+
 from ansys.mechanical.core.errors import VersionError
 from ansys.mechanical.core.mechanical import (
     _HAS_ANSYS_PIM,
@@ -37,7 +39,6 @@ from ansys.mechanical.core.mechanical import (
     port_in_use,
 )
 from ansys.mechanical.core.misc import threaded, threaded_daemon
-from ansys.tools.path import version_from_path
 
 if _HAS_TQDM:
     from tqdm import tqdm
@@ -176,7 +177,7 @@ class LocalMechanicalPool:
         else:
             if _HAS_ANSYS_PIM and pypim.is_configured():  # pragma: no cover
                 if "version" in kwargs:
-                    version = kwargs["version"]
+                    kwargs["version"]
                     self._remote = True
                 else:
                     raise ValueError("Pypim is configured, but version is not passed.")

@@ -118,7 +118,7 @@ def get_remote_methods(
                 yield attrname, prop, MethodType.PROP
                 continue
         result = try_get_remote_method(attrname, obj)
-        if result != None:
+        if result is not None:
             attrname, method = result
             yield attrname, method, MethodType.METHOD
 

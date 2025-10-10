@@ -34,10 +34,9 @@ clr.AddReference("Ansys.ACT.Interfaces")
 
 import Ansys  # isort: skip
 
+from ansys.tools.visualization_interface import Plotter
 import numpy as np
 import pyvista as pv
-
-from ansys.tools.visualization_interface import Plotter
 
 from .utils import (
     bgr_to_rgb_tuple,
@@ -253,7 +252,7 @@ def _add_plottable(plotter: Plotter, plottable: Plottable, plot_settings: PlotSe
         "smooth_shading": True,
         "point_size": plot_settings.point_size,
     }
-    if plottable.kwargs != None:
+    if plottable.kwargs is not None:
         kwargs.update(plottable.kwargs)
     if kwargs.get("remove_color", None):
         kwargs.pop("remove_color")

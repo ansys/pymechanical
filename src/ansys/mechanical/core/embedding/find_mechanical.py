@@ -24,9 +24,8 @@
 import os
 import sys
 
-import click
-
 import ansys.tools.path as atp
+import click
 
 
 @click.command()
