@@ -705,7 +705,7 @@ solve_path = stat_therm.WorkingDir
 solve_out_path = solve_path + "solve.out"
 # Print the output of the solve.out file if applicable
 if solve_out_path:
-    with open(solve_out_path, "rt") as file:
+    with Path.open(solve_out_path, "rt") as file:
         for line in file:
             print(line, end="")
 
