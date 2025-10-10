@@ -518,7 +518,6 @@ def test_cli_engine_type_selection(disable_cli, pytestconfig):
 @pytest.mark.cli
 def test_cli_enginetype_errors(disable_cli, pytestconfig):
     """Test engine type validation errors."""
-
     # Test enginetype without input script should fail
     runner = CliRunner()
     version = int(pytestconfig.getoption("ansys_version"))
