@@ -21,15 +21,18 @@
 # SOFTWARE.
 
 """ "Testing of log module"""
+
 import logging as deflogging  # Default logging
 import os
 import re
 
+from conftest import HAS_GRPC
 import pytest
 
-from ansys.mechanical.core import LOG  # Global logger
-from ansys.mechanical.core import logging
-from conftest import HAS_GRPC
+from ansys.mechanical.core import (
+    LOG,  # Global logger
+    logging,
+)
 
 ## Notes
 # Use the next fixtures for:
@@ -253,27 +256,27 @@ def test_global_methods(caplog):
     LOG.logger.setLevel("DEBUG")
     LOG.std_out_handler.setLevel("DEBUG")
 
-    msg = f"This is a debug message"
+    msg = "This is a debug message"
     LOG.debug(msg)
     assert msg in caplog.text
 
-    msg = f"This is an info message"
+    msg = "This is an info message"
     LOG.info(msg)
     assert msg in caplog.text
 
-    msg = f"This is a warning message"
+    msg = "This is a warning message"
     LOG.warning(msg)
     assert msg in caplog.text
 
-    msg = f"This is an error message"
+    msg = "This is an error message"
     LOG.error(msg)
     assert msg in caplog.text
 
-    msg = f"This is a critical message"
+    msg = "This is a critical message"
     LOG.critical(msg)
     assert msg in caplog.text
 
-    msg = f'This is a 30 message using "log"'
+    msg = 'This is a 30 message using "log"'
     LOG.log(30, msg)
     assert msg in caplog.text
 

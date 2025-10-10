@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Miscellaneous embedding tests"""
+
 import os
 import sys
 import typing

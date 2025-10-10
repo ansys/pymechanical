@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Logger embedding tests"""
+
 import os
 import sys
 import typing

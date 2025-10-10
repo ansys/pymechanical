@@ -20,11 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Cli for finding mechanical installation."""
+
 import os
 import sys
 
-import ansys.tools.path as atp
 import click
+
+import ansys.tools.path as atp
 
 
 @click.command()

@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Utilities necessary for remote calls."""
+
 import typing
 
 from ansys.mechanical.core.mechanical import port_in_use

@@ -39,10 +39,9 @@ equivalent stresses, contact, and bolt.
 from pathlib import Path
 import typing
 
-from PIL import Image
-from matplotlib import image as mpimg
-from matplotlib import pyplot as plt
+from matplotlib import image as mpimg, pyplot as plt
 from matplotlib.animation import FuncAnimation
+from PIL import Image
 
 from ansys.mechanical.core import App
 from ansys.mechanical.core.examples import delete_downloads, download_file
@@ -708,7 +707,7 @@ app.Tree.Activate([total_deformation])
 # Set the camera to fit the model
 camera.SetFit()
 # Set the image name and path for the object
-image_path = str(output_path / f"total_deformation.png")
+image_path = str(output_path / "total_deformation.png")
 # Export the image of the object
 app.Graphics.ExportImage(image_path, image_export_format, graphics_image_export_settings)
 # Display the image of the object
@@ -722,7 +721,7 @@ app.Tree.Activate([equivalent_stress_1])
 # Set the camera to fit the model
 camera.SetFit()
 # Set the image name and path for the object
-image_path = str(output_path / f"equivalent_stress_all_bodies.png")
+image_path = str(output_path / "equivalent_stress_all_bodies.png")
 # Export the image of the object
 app.Graphics.ExportImage(image_path, image_export_format, graphics_image_export_settings)
 # Display the image of the object
@@ -736,7 +735,7 @@ app.Tree.Activate([equivalent_stress_2])
 # Set the camera to fit the model
 camera.SetFit()
 # Set the image name and path for the object
-image_path = str(output_path / f"equivalent_stress_shank.png")
+image_path = str(output_path / "equivalent_stress_shank.png")
 # Export the image of the object
 app.Graphics.ExportImage(image_path, image_export_format, graphics_image_export_settings)
 # Display the image of the object

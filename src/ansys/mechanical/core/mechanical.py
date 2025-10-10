@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Connect to Mechanical gRPC server and issues commands."""
+
 import atexit
 from contextlib import closing
 import datetime
@@ -39,11 +40,10 @@ from typing import Optional
 import warnings
 import weakref
 
-import ansys.api.mechanical.v0.mechanical_pb2 as mechanical_pb2
-import ansys.api.mechanical.v0.mechanical_pb2_grpc as mechanical_pb2_grpc
-import ansys.tools.path as atp
 import grpc
 
+import ansys.api.mechanical.v0.mechanical_pb2 as mechanical_pb2
+import ansys.api.mechanical.v0.mechanical_pb2_grpc as mechanical_pb2_grpc
 import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core import LOG
 from ansys.mechanical.core.errors import (
@@ -59,6 +59,7 @@ from ansys.mechanical.core.misc import (
     check_valid_start_instance,
     threaded,
 )
+import ansys.tools.path as atp
 
 # Check if PyPIM is installed
 try:
@@ -248,7 +249,7 @@ def check_valid_mechanical():
 
     >>> from ansys.mechanical.core import mechanical
     >>> from ansys.tools.path import change_default_mechanical_path
-    >>> mechanical_path = 'C:/Program Files/ANSYS Inc/v252/aisol/bin/win64/AnsysWBU.exe'
+    >>> mechanical_path = "C:/Program Files/ANSYS Inc/v252/aisol/bin/win64/AnsysWBU.exe"
     >>> change_default_mechanical_path(mechanical_pth)
     >>> mechanical.check_valid_mechanical()
     True
@@ -367,11 +368,11 @@ class Mechanical(object):
 
         Connect to a Mechanical instance running on the LAN on a default port.
 
-        >>> mechanical = pymechanical.Mechanical('192.168.1.101')
+        >>> mechanical = pymechanical.Mechanical("192.168.1.101")
 
         Connect to a Mechanical instance running on the LAN on a non-default port.
 
-        >>> mechanical = pymechanical.Mechanical('192.168.1.101', port=60001)
+        >>> mechanical = pymechanical.Mechanical("192.168.1.101", port=60001)
 
         If you want to customize the channel, you can connect directly to gRPC channels.
         For example, if you want to create an insecure channel with a maximum message
@@ -379,9 +380,9 @@ class Mechanical(object):
 
         >>> import grpc
         >>> channel_temp = grpc.insecure_channel(
-        ...     '127.0.0.1:10000',
+        ...     "127.0.0.1:10000",
         ...     options=[
-        ...         ("grpc.max_receive_message_length", 8*1024**2),
+        ...         ("grpc.max_receive_message_length", 8 * 1024**2),
         ...     ],
         ... )
         >>> mechanical = pymechanical.Mechanical(channel=channel_temp)
@@ -967,22 +968,22 @@ class Mechanical(object):
         --------
         Return a value from a simple calculation.
 
-        >>> mechanical.run_python_script('2+3')
+        >>> mechanical.run_python_script("2+3")
         '5'
 
         Return a string value from Project object.
 
-        >>> mechanical.run_python_script('ExtAPI.DataModel.Project.ProductVersion')
+        >>> mechanical.run_python_script("ExtAPI.DataModel.Project.ProductVersion")
         '2025 R2'
 
         Return an empty string, when you try to return the Project object.
 
-        >>> mechanical.run_python_script('ExtAPI.DataModel.Project')
+        >>> mechanical.run_python_script("ExtAPI.DataModel.Project")
         ''
 
         Return an empty string for assignments.
 
-        >>> mechanical.run_python_script('version = ExtAPI.DataModel.Project.ProductVersion')
+        >>> mechanical.run_python_script("version = ExtAPI.DataModel.Project.ProductVersion")
         ''
 
         Return value from the last executed statement from a variable.
@@ -1006,7 +1007,7 @@ class Mechanical(object):
 
         Handle an error scenario.
 
-        >>> script = 'hello_world()'
+        >>> script = "hello_world()"
         >>> import grpc
         >>> try:
                 mechanical.run_python_script(script)
@@ -1057,7 +1058,7 @@ class Mechanical(object):
 
         2+3
 
-        >>> mechanical.run_python_script_from_file('simple.py')
+        >>> mechanical.run_python_script_from_file("simple.py")
         '5'
 
         Return a value from a simple function call.
@@ -1068,14 +1069,14 @@ class Mechanical(object):
 
         math.pow(2,3)
 
-        >>> mechanical.run_python_script_from_file('test.py')
+        >>> mechanical.run_python_script_from_file("test.py")
         '8'
 
         """
         self.verify_valid_connection()
-        self.log_debug(f"run_python_script_from_file started")
+        self.log_debug("run_python_script_from_file started")
         script_code = Mechanical.__readfile(file_path)
-        self.log_debug(f"run_python_script_from_file started")
+        self.log_debug("run_python_script_from_file started")
         return self.run_python_script(script_code, enable_logging, log_level, progress_interval)
 
     def exit(self, force=False):
@@ -1119,7 +1120,7 @@ class Mechanical(object):
         self._busy = True
         try:
             self._stub.Shutdown(request)
-        except grpc._channel._InactiveRpcError as error:
+        except grpc._channel._InactiveRpcError:
             self.log_warning("Mechanical exit failed: {str(error}.")
         finally:
             self._busy = False
@@ -1131,7 +1132,7 @@ class Mechanical(object):
             self.log_debug("PyPIM delete has started.")
             try:
                 self._remote_instance.delete()
-            except Exception as error:
+            except Exception:
                 self.log_warning("Remote instance delete failed: {str(error}.")
             self.log_debug("PyPIM delete has finished.")
 
@@ -1180,7 +1181,7 @@ class Mechanical(object):
         --------
         Upload the ``hsec.x_t`` file  with the progress bar not shown.
 
-        >>> mechanical.upload('hsec.x_t', progress_bar=False)
+        >>> mechanical.upload("hsec.x_t", progress_bar=False)
         """
         self.verify_valid_connection()
 
@@ -1287,7 +1288,8 @@ class Mechanical(object):
         List the files in the working directory.
 
         >>> files = mechanical.list_files()
-        >>> for file in files: print(file)
+        >>> for file in files:
+        ...     print(file)
         """
         result = self.run_python_script(
             "import pymechanical_helpers\npymechanical_helpers.GetAllProjectFiles(ExtAPI)"
@@ -1411,15 +1413,15 @@ class Mechanical(object):
         --------
         Download a single file.
 
-        >>> local_file_path_list = mechanical.download('file.out')
+        >>> local_file_path_list = mechanical.download("file.out")
 
         Download all files starting with ``file``.
 
-        >>> local_file_path_list = mechanical.download('file*')
+        >>> local_file_path_list = mechanical.download("file*")
 
         Download every file in the Mechanical working directory.
 
-        >>> local_file_path_list = mechanical.download('*.*')
+        >>> local_file_path_list = mechanical.download("*.*")
 
         Alternatively, the recommended method is to use the
         :func:`download_project() <ansys.mechanical.core.mechanical.Mechanical.download_project>`
@@ -1505,7 +1507,7 @@ class Mechanical(object):
         --------
         Download the remote result file "file.rst" as "my_result.rst".
 
-        >>> mechanical.download('file.rst', 'my_result.rst')
+        >>> mechanical.download("file.rst", "my_result.rst")
         """
         self.verify_valid_connection()
 
@@ -1783,7 +1785,7 @@ class Mechanical(object):
     def log_message(self, log_level, message):
         """Log the message using the given log level.
 
-         Parameters
+        Parameters
         ----------
         log_level: str
             Level of logging. Options are ``"DEBUG"``, ``"INFO"``, ``"WARNING"``,
@@ -1795,11 +1797,11 @@ class Mechanical(object):
         --------
         Log a debug message.
 
-        >>> mechanical.log_message('DEBUG', 'debug message')
+        >>> mechanical.log_message("DEBUG", "debug message")
 
         Log an info message.
 
-        >>> mechanical.log_message('INFO', 'info message')
+        >>> mechanical.log_message("INFO", "info message")
 
         """
         if log_level == "DEBUG":
@@ -1954,7 +1956,7 @@ def launch_grpc(
 
     Launch Mechanical using a specified executable file.
 
-    >>> exec_file_path = 'C:/Program Files/ANSYS Inc/v252/aisol/bin/win64/AnsysWBU.exe'
+    >>> exec_file_path = "C:/Program Files/ANSYS Inc/v252/aisol/bin/win64/AnsysWBU.exe"
     >>> mechanical = launch_mechanical(exec_file=exec_file_path)
 
     """
@@ -2195,13 +2197,13 @@ def launch_mechanical(
 
     Launch Mechanical using a specified executable file.
 
-    >>> exec_file_path = 'C:/Program Files/ANSYS Inc/v252/aisol/bin/win64/AnsysWBU.exe'
+    >>> exec_file_path = "C:/Program Files/ANSYS Inc/v252/aisol/bin/win64/AnsysWBU.exe"
     >>> mech = launch_mechanical(exec_file=exec_file_path)
 
     Connect to an existing Mechanical instance at IP address ``192.168.1.30`` on port
     ``50001``.
 
-    >>> mech = launch_mechanical(start_instance=False, ip='192.168.1.30', port=50001)
+    >>> mech = launch_mechanical(start_instance=False, ip="192.168.1.30", port=50001)
     """
     # Start Mechanical with PyPIM if the environment is configured for it
     # and a directive on how to launch Mechanical was not passed.
@@ -2430,7 +2432,7 @@ def connect_to_mechanical(
 
 
     >>> from ansys.mechanical.core import connect_to_mechanical
-    >>> pymech = connect_to_mechanical(ip='192.168.1.30', port=50001)
+    >>> pymech = connect_to_mechanical(ip="192.168.1.30", port=50001)
     """
     return launch_mechanical(
         start_instance=False,

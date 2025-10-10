@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Launch Mechanical in batch or UI mode."""
+
 import errno
 import os
 

@@ -25,13 +25,13 @@ import os
 import pathlib
 import re
 
-import ansys.tools.path
+import conftest
 import pytest
 
 import ansys.mechanical.core as pymechanical
 import ansys.mechanical.core.errors as errors
 import ansys.mechanical.core.misc as misc
-import conftest
+import ansys.tools.path
 
 
 def new_python_script_api(mechanical):
@@ -56,7 +56,6 @@ def test_run_python_script_success_return_empty(mechanical):
 
 @pytest.mark.remote_session_connect
 def test_run_python_script_error(mechanical):
-
     with pytest.raises(mechanical._error_type) as exc_info:
         mechanical.run_python_script("import test")
 

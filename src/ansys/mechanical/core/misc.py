@@ -56,10 +56,10 @@ def get_mechanical_bin(release_version):
             f"AWP_ROOT{release_version}",
             os.path.join(program_files, "ANSYS Inc", f"v{release_version}"),
         )
-        mechanical_bin = os.path.join(ans_root, "aisol", "bin", "winx64", f"AnsysWBU.exe")
+        mechanical_bin = os.path.join(ans_root, "aisol", "bin", "winx64", "AnsysWBU.exe")
     else:
         ans_root = os.getenv(f"AWP_ROOT{release_version}", os.path.join("/", "usr", "ansys_inc"))
-        mechanical_bin = os.path.join(*ans_root, f"v{release_version}", "aisol", f".workbench")
+        mechanical_bin = os.path.join(*ans_root, f"v{release_version}", "aisol", ".workbench")
 
     return mechanical_bin
 

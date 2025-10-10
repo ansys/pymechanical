@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """clr_loader for pymechanical embedding. This loads the CLR on both windows and linux."""
+
 import os
 import warnings
 

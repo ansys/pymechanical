@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Embedding tests for global variables associated with Mechanical"""
+
 from pathlib import Path
 import subprocess
 import sys

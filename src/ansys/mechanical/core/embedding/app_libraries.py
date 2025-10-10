@@ -52,9 +52,8 @@ import os
 import sys
 import warnings
 
-from ansys.tools.path import get_mechanical_path
-
 from ansys.mechanical.core.embedding.app import App
+from ansys.tools.path import get_mechanical_path
 
 
 def add_mechanical_python_libraries(app_or_version):

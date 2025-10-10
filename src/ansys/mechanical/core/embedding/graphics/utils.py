@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Common plotting utilities."""
+
 import os
 import typing
 

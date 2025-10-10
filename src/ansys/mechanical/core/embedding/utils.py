@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Miscellaneous utilities."""
+
 import ctypes
 import os
 
