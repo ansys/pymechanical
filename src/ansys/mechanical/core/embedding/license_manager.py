@@ -49,7 +49,7 @@ class LicenseManager:
 
     def get_license_status(
         self, license_name: str
-    ) -> "Ansys.Mechanical.DataModel.Enums.LicenseStatus":
+    ) -> "Ansys.Mechanical.DataModel.Enums.LicenseStatus":  # noqa: F821
         """Return status of the specific license.
 
         Parameters
