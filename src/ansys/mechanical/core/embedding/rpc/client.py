@@ -152,7 +152,6 @@ class Client:
 
         print(f"File {file_name} uploaded to {file_location_destination}")
 
-
     def download(
         self,
         files,
@@ -252,12 +251,12 @@ class Client:
             file_path = Path(file)
             parent_path = Path(parent_directory)
             dest_path = Path(destination_directory)
-            
+
             # Replace parent directory with destination directory
             relative_path = file_path.relative_to(parent_path)
             new_path = dest_path / relative_path
             new_path_dir = new_path.parent
-            
+
             temp_files = self.download(
                 files=file, target_dir=str(new_path_dir), progress_bar=progress_bar
             )
