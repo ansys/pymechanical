@@ -30,4 +30,4 @@ from .server import (
 )
 from .utils import get_remote_methods, remote_method
 
-# TODO - combine Server and MechanicalService
+# TODO : Combine Server and MechanicalService

@@ -28,7 +28,7 @@ from ansys.mechanical.core.mechanical import port_in_use
 PYMECHANICAL_DEFAULT_RPC_PORT = 20000
 
 
-class remote_method:
+class remote_method:  # noqa: N801
     """Decorator for passing remote methods."""
 
     def __init__(self, func):
