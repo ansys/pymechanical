@@ -109,59 +109,38 @@ scripts = ["mechanical-env"]
 
 [tool.ruff]
 line-length = 100
-target-version = "py310"
-src = ["src", "doc", "tests"]
-exclude = [
-    "env",
-    ".env",
-    "doc/_build",
-    "tests/assets",
-    "tests/scripts",
-    "examples",
-]
+fix = true
+extend-exclude = ["tests/assets"]
+
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
 
 [tool.ruff.lint]
 select = [
-    "E",    # pycodestyle errors
-    "W",    # pycodestyle warnings
-    "F",    # pyflakes
-    "I",    # isort
-    "D",    # pydocstyle
-    "N",    # pep8-naming
-    "PTH",  # flake8-use-pathlib
-    "TD",   # flake8-todos
-    "UP",   # pyupgrade
-    "B",    # flake8-bugbear
-    "SIM",  # flake8-simplify
-    "C4",   # flake8-comprehensions
+    "E",    # pycodestyle, see https://docs.astral.sh/ruff/rules/#pycodestyle-e-w
+    "D",    # pydocstyle, see https://docs.astral.sh/ruff/rules/#pydocstyle-d
+    "F",    # pyflakes, see https://docs.astral.sh/ruff/rules/#pyflakes-f
+    "I",    # isort, see https://docs.astral.sh/ruff/rules/#isort-i
+    "N",    # pep8-naming, see https://docs.astral.sh/ruff/rules/#pep8-naming-n
+    "PTH",  # flake8-use-pathlib, https://docs.astral.sh/ruff/rules/#flake8-use-pathlib-pth
+    "TD",   # flake8-todos, https://docs.astral.sh/ruff/rules/#flake8-todos-td
 ]
-
 ignore = [
-    "D100",  # Missing docstring in public module
-    "D104",  # Missing docstring in public package
-    "D401",  # First line should be in imperative mood
-    "E501",  # Line too long (handled by formatter)
     "TD002", # Missing author in TODOs comment
 ]
 
-# Exclude specific files/directories
-exclude = [
-    "venv",
-    ".venv",
-    "doc/_build",
-    "tests/embedding/assets",
-    "tests/parts",
-    "examples",
-]
 
 [tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["F401", "D104"]
-"tests/*" = ["D", "TD"]
-"doc/*" = ["D", "TD"]
-"examples/*" = ["D", "TD"]
+# Ignore `F401` (import violations) in all `__init__.py` files.
+"__init__.py" = ["F401"]
+# Ignore `E402` (module level import not at top of file) in `src/ansys/mechanical/core/__init__.py`.
+"src/ansys/mechanical/core/__init__.py" = ["E402"]
+# Ignore `D` rules everywhere except for the `src/` directory.
+"!src/**.py" = ["D"]
+
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
@@ -169,7 +148,8 @@ convention = "numpy"
 [tool.ruff.lint.isort]
 combine-as-imports = true
 force-sort-within-sections = true
-known-first-party = ["ansys"]
+known-first-party = ["ansys.mechanical.core"]
+
 
 # ========================================================
 # Legacy tool configurations (kept for compatibility)
@@ -319,24 +299,14 @@ commands =
     pytest {env:PYTEST_MARKERS:} {env:PYTEST_EXTRA_ARGS:} {posargs:-vv}
 
 [testenv:style]
-description = Checks project code style using ruff
+description = Checks project code style
 passenv = *
 skip_install = true
 deps =
-    ruff>=0.8.0
+    pre-commit
 commands =
-    ruff check --diff src doc tests
-    ruff format --check --diff src doc tests
-
-[testenv:format]
-description = Formats code using ruff
-passenv = *
-skip_install = true
-deps =
-    ruff>=0.8.0
-commands =
-    ruff check --fix src doc tests
-    ruff format src doc tests
+    pre-commit install
+    pre-commit run --all-files --show-diff-on-failure
 
 [testenv:doc]
 description = Check if documentation generates properly
