@@ -28,7 +28,6 @@ import pytest
 @pytest.mark.embedding
 def test_license_manager(embedded_app, capsys):
     """Test message manager"""
-
     test_license = "Ansys Mechanical Premium"
     assert len(embedded_app.license_manager.get_all_licenses()) > 0
     assert embedded_app.readonly is False, "App should be editable after enabling session license"

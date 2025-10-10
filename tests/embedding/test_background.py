@@ -35,7 +35,6 @@ def _run_background_app_test(
     run_subprocess, rootdir: str, pytestconfig, testname: str, pass_expected: bool = True
 ) -> typing.Tuple[bytes, bytes]:
     """Run the process and return stdout and stderr after it finishes."""
-
     version = pytestconfig.getoption("ansys_version")
     script = os.path.join(rootdir, "tests", "scripts", "background_app_test.py")
 

@@ -176,7 +176,6 @@ def test_app_poster(embedded_app, printer):
     that they properly redirect the calls to the appropriate C#
     object after a new()
     """
-
     version = embedded_app.version
     if os.name != "nt" and version < 242:
         """This test is effectively disabled for versions older than 242 on linux.
@@ -268,7 +267,6 @@ def test_app_getters_notstale(embedded_app):
 @pytest.mark.python_env
 def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
     """Test Python.NET warning of the embedded instance using a test-scoped Python environment."""
-
     # set these to None to see output in the terminal
     stdout = subprocess.DEVNULL
     stderr = subprocess.DEVNULL
@@ -614,7 +612,8 @@ def test_app_start_readonly(run_subprocess, pytestconfig, rootdir, printer):
 @pytest.mark.embedding
 def test_app_feature_flags(run_subprocess, pytestconfig, rootdir, printer):
     """Test app feature flags. Only supported in 26R1 and later,
-    as arguments are accepted from this version onward."""
+    as arguments are accepted from this version onward.
+    """
     version = pytestconfig.getoption("ansys_version")
     embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
     printer(f"Testing feature flags for version {version}")
