@@ -23,8 +23,8 @@
 """clr_loader for pymechanical embedding. This loads the CLR on both windows and linux."""
 
 import os
-import warnings
 from pathlib import Path
+import warnings
 
 
 def __get_mono(assembly_dir, config_dir):
