@@ -34,9 +34,10 @@ clr.AddReference("Ansys.ACT.Interfaces")
 
 import Ansys  # isort: skip
 
-from ansys.tools.visualization_interface import Plotter
 import numpy as np
 import pyvista as pv
+
+from ansys.tools.visualization_interface import Plotter
 
 from .utils import (
     bgr_to_rgb_tuple,

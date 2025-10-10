@@ -26,8 +26,6 @@ import os
 import time
 import warnings
 
-from ansys.tools.path import version_from_path
-
 from ansys.mechanical.core.errors import VersionError
 from ansys.mechanical.core.mechanical import (
     _HAS_ANSYS_PIM,
@@ -39,6 +37,7 @@ from ansys.mechanical.core.mechanical import (
     port_in_use,
 )
 from ansys.mechanical.core.misc import threaded, threaded_daemon
+from ansys.tools.path import version_from_path
 
 if _HAS_TQDM:
     from tqdm import tqdm
