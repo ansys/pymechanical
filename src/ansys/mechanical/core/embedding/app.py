@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Main application class for embedded Mechanical."""
+
 from __future__ import annotations
 
 import atexit
@@ -170,7 +171,7 @@ class App:
 
     Set log level
 
-    >>> app = App(log_level='INFO')
+    >>> app = App(log_level="INFO")
 
     ... INFO -  -  app - log_info - Starting Mechanical Application
 
