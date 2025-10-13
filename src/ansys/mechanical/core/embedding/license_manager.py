@@ -37,14 +37,19 @@ class LicenseManager:
     def __init__(self, app):
         """Initialize the message manager."""
         self._app = app
-        self._license_preference = self._app.ExtAPI.Application.LicensePreference
+        self._license_preference = None
         import Ansys
 
         self._license_status = Ansys.Mechanical.DataModel.Enums.LicenseStatus
 
+    def _get_license_manager(self):
+        if self._license_preference is None:
+            self._license_preference = self._app.ExtAPI.Application.LicensePreference
+        return self._license_preference
+
     def get_all_licenses(self) -> list[str]:
         """Return list of all licenses."""
-        return self._license_preference.GetAllLicenses()
+        return self._get_license_manager().GetAllLicenses()
 
     def get_license_status(
         self, license_name: str
@@ -62,9 +67,9 @@ class LicenseManager:
             The status of the license.
         """
         LOG.info(
-            f"{license_name} status: {self._license_preference.GetLicenseStatus(license_name)}"
+            f"{license_name} status: {self._get_license_manager().GetLicenseStatus(license_name)}"
         )
-        return self._license_preference.GetLicenseStatus(license_name)
+        return self._get_license_manager().GetLicenseStatus(license_name)
 
     def set_license_status(self, license_name: str, status: bool) -> None:
         """Set the status of a license and save the preference.
@@ -77,21 +82,23 @@ class LicenseManager:
             True to enable the license, False to disable it.
         """
         if status:
-            self._license_preference.SetLicenseStatus(license_name, self._license_status.Enabled)
+            self._get_license_manager().SetLicenseStatus(license_name, self._license_status.Enabled)
             LOG.info(f"{license_name} is enabled.")
         else:
-            self._license_preference.SetLicenseStatus(license_name, self._license_status.Disabled)
+            self._get_license_manager().SetLicenseStatus(
+                license_name, self._license_status.Disabled
+            )
             LOG.info(f"{license_name} is disabled.")
-        self._license_preference.Save()
+        self._get_license_manager().Save()
 
     def show(self) -> None:
         """Print all active licenses."""
         for lic in self.get_all_licenses():
-            print(f"{lic} - {self._license_preference.GetLicenseStatus(lic)}")
+            print(f"{lic} - {self._get_license_manager().GetLicenseStatus(lic)}")
 
     def disable_session_license(self) -> None:
         """Disable active license for current session."""
-        self._license_preference.DeActivateLicense()
+        self._get_license_manager().DeActivateLicense()
 
     def enable_session_license(self, license: Optional[Union[str, List[str]]] = None) -> None:
         """Enable license(s) for the current session.
@@ -107,14 +114,14 @@ class LicenseManager:
         from System.Collections.Generic import List as DotNetList
 
         if license is None:
-            self._license_preference.ActivateLicense()
+            self._get_license_manager().ActivateLicense()
         elif isinstance(license, str):
-            self._license_preference.ActivateLicense(String(license))
+            self._get_license_manager().ActivateLicense(String(license))
         elif isinstance(license, list):
             licenses = DotNetList[String]()
             for lic in license:
                 licenses.Add(String(lic))
-            self._license_preference.ActivateLicense(licenses)
+            self._get_license_manager().ActivateLicense(licenses)
         else:
             raise TypeError("License must be None, a string, or a list of strings.")
         LOG.info(f"License(s) {license} enabled for the current session.")
@@ -140,8 +147,8 @@ class LicenseManager:
         >>> license_manager.move_to_index('Ansys Mechanical Premium', 0)
         """
         LOG.info(f"Moving license preference for {license_name} to location {location}")
-        self._license_preference.MoveLicenseToLocation(license_name, location)
-        self._license_preference.Save()
+        self._get_license_manager().MoveLicenseToLocation(license_name, location)
+        self._get_license_manager().Save()
 
     def reset_preference(self) -> None:
         """Reset the license preference.
@@ -150,4 +157,4 @@ class LicenseManager:
         to the default state.
         """
         LOG.info("Resetting license preferences to default state.")
-        self._license_preference.Reset()
+        self._get_license_manager().Reset()
