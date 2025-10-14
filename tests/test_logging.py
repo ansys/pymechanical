@@ -344,7 +344,7 @@ def test_log_instance_name(mechanical):
 @pytest.mark.remote_session_launch
 def test_instance_log_to_file(mechanical, tmpdir):
     """Testing writing to log file.
-    
+
     Since the default loglevel of LOG is error, debug are not normally recorded to it.
     """
     file_path = str(Path(tmpdir) / "instance.log")
