@@ -28,7 +28,7 @@ import threading
 
 from grpc._channel import _InactiveRpcError, _MultiThreadedRendezvous
 
-from ansys.mechanical.core import LOG as logger
+from ansys.mechanical.core import LOG
 
 SIGINT_TRACKER = []
 """List of SIGINT keyboard interrupts."""
@@ -71,7 +71,7 @@ class MechanicalExitedError(RuntimeError):
 # handler for protect_grpc
 def handler(sig, frame):  # pragma: no cover
     """Pass signal to custom interrupt handler."""
-    logger.info("KeyboardInterrupt received.  Waiting until Mechanical " "execution finishes")
+    LOG.info("KeyboardInterrupt received.  Waiting until Mechanical " "execution finishes")
     SIGINT_TRACKER.append(True)
 
 
@@ -101,7 +101,7 @@ def protect_grpc(func):
             # Can't use isinstance here due to circular imports
             try:
                 class_name = args[0].__class__.__name__
-            except:
+            except AttributeError:
                 class_name = ""
 
             mechanical = None
