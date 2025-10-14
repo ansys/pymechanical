@@ -30,6 +30,7 @@ from functools import wraps
 import glob
 import os
 import pathlib
+from pathlib import Path
 import socket
 import subprocess  # nosec: B404
 import sys
@@ -40,10 +41,11 @@ from typing import Optional
 import warnings
 import weakref
 
-import grpc
-
 import ansys.api.mechanical.v0.mechanical_pb2 as mechanical_pb2
 import ansys.api.mechanical.v0.mechanical_pb2_grpc as mechanical_pb2_grpc
+import ansys.tools.path as atp
+import grpc
+
 import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core import LOG
 from ansys.mechanical.core.errors import (
@@ -59,7 +61,6 @@ from ansys.mechanical.core.misc import (
     check_valid_start_instance,
     threaded,
 )
-import ansys.tools.path as atp
 
 # Check if PyPIM is installed
 try:
@@ -2010,7 +2011,7 @@ def launch_rpyc(
         port += 1
     local_ports.append(port)
 
-    # TODO - use multiprocessing
+    # TODO : use multiprocessing
     server_script = """
 import sys
 from ansys.mechanical.core.embedding.rpc import MechanicalDefaultServer
@@ -2021,8 +2022,8 @@ server.start()
         embedded_server = subprocess.Popen(
             [sys.executable, "-c", server_script, str(port), str(_version)]
         )  # nosec: B603
-    except:
-        raise RuntimeError("Unable to start the embedded server.")
+    except Exception as e:
+        raise RuntimeError(f"Unable to start the embedded server: {e}")
 
     return port, embedded_server
 
@@ -2300,7 +2301,7 @@ def launch_mechanical(
 
         # setting ip for the grpc server
         if ip != LOCALHOST:  # Default local ip is 127.0.0.1
-            create_ip_file(ip, os.getcwd())
+            create_ip_file(ip, Path.cwd())
 
         return mechanical
 
@@ -2314,7 +2315,7 @@ def launch_mechanical(
                 "'exec_file' parameter."
             )
     else:  # verify ansys exists at this location
-        if not os.path.isfile(exec_file):
+        if not Path.is_file(exec_file):
             raise FileNotFoundError(
                 f'This path for the Mechanical executable is invalid: "{exec_file}"\n'
                 "Enter a path manually by specifying a value for the "
@@ -2332,7 +2333,7 @@ def launch_mechanical(
         try:
             port = launch_grpc(port=port, verbose=verbose_mechanical, **start_parm)
 
-            # TODO - version argument is ignored...
+            # TODO : Version argument is ignored...
             version = atp.version_from_path("mechanical", exec_file)
 
             start_parm["local"] = True
