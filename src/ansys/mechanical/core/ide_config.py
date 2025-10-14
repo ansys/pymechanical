@@ -30,8 +30,9 @@ import site
 import sys
 import warnings
 
-import ansys.tools.path as atp
 import click
+
+import ansys.tools.path as atp
 
 
 def get_stubs_location():
