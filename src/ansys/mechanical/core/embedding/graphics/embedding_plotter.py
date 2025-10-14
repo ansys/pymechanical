@@ -32,10 +32,11 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ansys.mechanical.core.embedding import App
-from ansys.tools.visualization_interface import Plotter
 import clr
 import numpy as np
 import pyvista as pv
+
+from ansys.tools.visualization_interface import Plotter
 
 from .utils import (
     bgr_to_rgb_tuple,

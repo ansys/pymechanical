@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Run Mechanical UI from Python."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -53,9 +54,7 @@ class UILauncher:
         """
         app.save()
 
-    def save_temp_copy(
-        self, app: App
-    ) -> typing.Union[Path, Path]:
+    def save_temp_copy(self, app: App) -> typing.Union[Path, Path]:
         """Save a new mechdb file with a temporary name.
 
         Parameters
@@ -92,9 +91,7 @@ class UILauncher:
         """
         app.open(mechdb_file)
 
-    def graphically_launch_temp(
-        self, app: App, temp_file: Path
-    ) -> typing.Union[Popen, str]:
+    def graphically_launch_temp(self, app: App, temp_file: Path) -> typing.Union[Popen, str]:
         """Launch the GUI for the mechdb file with a temporary name from save_temp_copy().
 
         Parameters
@@ -168,9 +165,7 @@ def _is_saved(app: App) -> bool:
     return True
 
 
-def _launch_ui(
-    app: App, delete_tmp_on_close: bool, launcher: UILauncher
-) -> None:
+def _launch_ui(app: App, delete_tmp_on_close: bool, launcher: UILauncher) -> None:
     """Launch the Mechanical UI if the mechdb file has been saved.
 
     Parameters

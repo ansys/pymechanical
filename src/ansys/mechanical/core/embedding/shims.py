@@ -34,9 +34,8 @@ import warnings
 if TYPE_CHECKING:
     from ansys.mechanical.core.embedding import App
 
-def import_materials(
-    app: App, material_file: str
-) -> None:
+
+def import_materials(app: App, material_file: str) -> None:
     """Import material from matml file."""
     warnings.warn(
         "Use of this function is deprecated. Use Model.Materials.Import() directly.",
