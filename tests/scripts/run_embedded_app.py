@@ -39,14 +39,37 @@ def launch_app(args):
     if args.test_not_initialized:
         init_msg = "The app is initialized" if is_initialized() else "The app is not initialized"
         print(init_msg)
+    if args.test_feature_flags:
+        app = pymechanical.App(
+            version=int(args.version),
+            private_appdata=args.private_appdata,
+            copy_profile=False,
+            globals=globals(),
+            feature_flags=["ThermalShells", "MultistageHarmonic"],
+        )
+        import Ansys
 
-    app = pymechanical.App(
-        version=int(args.version),
-        private_appdata=args.private_appdata,
-        copy_profile=False,
-        globals=globals(),
-    )
-
+        if Ansys.ACT.Mechanical.MechanicalAPI.Instance.IsFeatureFlagEnabled(
+            "Mechanical.MultistageHarmonic"
+        ):
+            print("MultistageHarmonic is enabled")
+        if Ansys.ACT.Mechanical.MechanicalAPI.Instance.IsFeatureFlagEnabled(
+            "Mechanical.ThermalShells"
+        ):
+            print("ThermalShells is enabled")
+    elif args.test_readonly:
+        app = pymechanical.App(version=int(args.version), readonly=True)
+        if app.readonly:
+            print("The app is started in read-only mode")
+        else:
+            print("The app is not in read-only mode")
+    else:
+        app = pymechanical.App(
+            version=int(args.version),
+            private_appdata=args.private_appdata,
+            copy_profile=False,
+            globals=globals(),
+        )
     return app
 
 
@@ -93,7 +116,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--test_not_initialized", action="store_true"
     )  # 'store_true' implies default=False
-
+    parser.add_argument("--test_readonly", action="store_true")  # Add the missing argument
+    parser.add_argument("--test_feature_flags", action="store_true")
     # Get and set args from subprocess
     args = parser.parse_args()
     action = args.action
