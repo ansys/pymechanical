@@ -367,7 +367,7 @@ class App:
         Exception
             If the file already exists at the specified path and `overwrite` is False.
         """
-        if not os.path.exists(path):
+        if not Path(path).exists():
             self.DataModel.Project.SaveAs(path)
             return
 
@@ -420,7 +420,7 @@ class App:
 
     def execute_script(self, script: str) -> typing.Any:
         """Execute the given script with the internal IronPython engine."""
-        SCRIPT_SCOPE = "pymechanical-internal"
+        script_scope = "pymechanical-internal"
         if not hasattr(self, "script_engine"):
             import clr
 
@@ -431,13 +431,13 @@ class App:
             script_engine = Ansys.Mechanical.Scripting.EngineFactory.CreateEngine(engine_type)
             empty_scope = False
             debug_mode = False
-            script_engine.CreateScope(SCRIPT_SCOPE, empty_scope, debug_mode)
+            script_engine.CreateScope(script_scope, empty_scope, debug_mode)
             self.script_engine = script_engine
         light_mode = True
         args = None
         rets = None
-        script_result = self.script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
-        error_msg = f"Failed to execute the script"
+        script_result = self.script_engine.ExecuteCode(script, script_scope, light_mode, args, rets)
+        error_msg = "Failed to execute the script"
         if script_result is None:
             raise Exception(error_msg)
         if script_result.Error is not None:
@@ -447,7 +447,10 @@ class App:
 
     def execute_script_from_file(self, file_path=None):
         """Execute the given script from file with the internal IronPython engine."""
-        text_file = open(file_path, "r", encoding="utf-8")
+        file_path = Path(file_path)
+        if not file_path.is_file():
+            raise FileNotFoundError(f"The file {file_path} does not exist.")
+        text_file = file_path.open("r", encoding="utf-8")
         data = text_file.read()
         text_file.close()
         return self.execute_script(data)
@@ -464,7 +467,7 @@ class App:
             LOG.warning("Plotting is only supported with version 2024R2 and later!")
             return
 
-        # TODO Check if anything loaded inside app or else show warning and return
+        # TODO : Check if anything loaded inside app or else show warning and return
 
         from ansys.mechanical.core.embedding.graphics.embedding_plotter import to_plotter
 
@@ -499,27 +502,27 @@ class App:
         return self._poster
 
     @property
-    def DataModel(self) -> Ansys.Mechanical.DataModel.Interfaces.DataModelObject:
+    def DataModel(self) -> Ansys.Mechanical.DataModel.Interfaces.DataModelObject:  # noqa: N802
         """Return the DataModel."""
         return GetterWrapper(self._app, lambda app: app.DataModel)
 
     @property
-    def ExtAPI(self) -> Ansys.ACT.Interfaces.Mechanical.IMechanicalExtAPI:
+    def ExtAPI(self) -> Ansys.ACT.Interfaces.Mechanical.IMechanicalExtAPI:  # noqa: N802
         """Return the ExtAPI object."""
         return GetterWrapper(self._app, lambda app: app.ExtAPI)
 
     @property
-    def Tree(self) -> Ansys.ACT.Automation.Mechanical.Tree:
+    def Tree(self) -> Ansys.ACT.Automation.Mechanical.Tree:  # noqa: N802
         """Return the Tree object."""
         return GetterWrapper(self._app, lambda app: app.DataModel.Tree)
 
     @property
-    def Model(self) -> Ansys.ACT.Automation.Mechanical.Model:
+    def Model(self) -> Ansys.ACT.Automation.Mechanical.Model:  # noqa: N802
         """Return the Model object."""
         return GetterWrapper(self._app, lambda app: app.DataModel.Project.Model)
 
     @property
-    def Graphics(self) -> Ansys.ACT.Common.Graphics.MechanicalGraphicsWrapper:
+    def Graphics(self) -> Ansys.ACT.Common.Graphics.MechanicalGraphicsWrapper:  # noqa: N802
         """Return the Graphics object."""
         return GetterWrapper(self._app, lambda app: app.ExtAPI.Graphics)
 
@@ -593,8 +596,9 @@ class App:
             # EventSource isn't defined on the IApplication interface
             self.ExtAPI.Application.EventSource.OnWorkbenchReady += self._on_workbench_ready
             self._subscribed = True
-        except:
+        except Exception:
             self._subscribed = False
+
 
     def _unsubscribe(self):
         if not self._subscribed:
