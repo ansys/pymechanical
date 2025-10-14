@@ -323,7 +323,9 @@ def test_building_gallery(pytestconfig, run_subprocess, rootdir):
     # Assert Exception
     assert "Cannot have more than one embedded mechanical instance" in stderr
 
-    process, stdout, stderr = run_subprocess([sys.executable, str(embedded_gallery_py), version, "True"])
+    process, stdout, stderr = run_subprocess(
+        [sys.executable, str(embedded_gallery_py), version, "True"]
+    )
     stdout = stdout.decode()
 
     # Assert stdout after launching multiple instances
