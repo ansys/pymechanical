@@ -51,18 +51,18 @@ Changelog = "https://mechanical.docs.pyansys.com/version/stable/changelog.html"
 tests = [
     "pytest==8.4.2",
     "pytest-cov==7.0.0",
-    "pytest-print==1.1.0",
+    "pytest-print==1.2.0",
     "psutil==7.1.0",
 ]
 
 doc = [
     "sphinx==8.2.3",
-    "ansys-sphinx-theme[autoapi,changelog]==1.6.1",
+    "ansys-sphinx-theme[autoapi,changelog]==1.6.3",
     "imageio-ffmpeg==0.6.0",
     "imageio==2.37.0",
     "jupyter_sphinx==0.5.3",
     "jupyterlab>=3.2.8",
-    "matplotlib==3.10.6",
+    "matplotlib==3.10.7",
     "numpy==2.2.6",
     "numpydoc==1.8.0",
     "pypandoc==1.15",
