@@ -600,7 +600,6 @@ class App:
         except Exception:
             self._subscribed = False
 
-
     def _unsubscribe(self):
         if not self._subscribed:
             return
