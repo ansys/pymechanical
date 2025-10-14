@@ -2315,7 +2315,7 @@ def launch_mechanical(
                 "'exec_file' parameter."
             )
     else:  # verify ansys exists at this location
-        if not Path.is_file(exec_file):
+        if not Path(exec_file).is_file():
             raise FileNotFoundError(
                 f'This path for the Mechanical executable is invalid: "{exec_file}"\n'
                 "Enter a path manually by specifying a value for the "
