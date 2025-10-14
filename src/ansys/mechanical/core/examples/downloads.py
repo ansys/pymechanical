@@ -22,7 +22,6 @@
 
 """Functions to download sample datasets from the PyAnsys data repository."""
 
-import os
 from pathlib import Path
 import shutil
 from typing import Optional
