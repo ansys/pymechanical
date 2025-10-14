@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Main application class for embedded Mechanical."""
+
 from __future__ import annotations
 
 import atexit
@@ -195,7 +196,7 @@ class App:
 
     Set log level
 
-    >>> app = App(log_level='INFO')
+    >>> app = App(log_level="INFO")
 
     ... INFO -  -  app - log_info - Starting Mechanical Application
 
@@ -205,7 +206,7 @@ class App:
 
     Create App with feature flags enabled
 
-    >>> app = App(feature_flags=['CPython', 'ThermalShells'])
+    >>> app = App(feature_flags=["CPython", "ThermalShells"])
 
     """
 
@@ -437,7 +438,7 @@ class App:
         args = None
         rets = None
         script_result = self.script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
-        error_msg = f"Failed to execute the script"
+        error_msg = "Failed to execute the script"
         if script_result is None:
             raise Exception(error_msg)
         if script_result.Error is not None:
