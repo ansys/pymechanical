@@ -20,11 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""This module is for threaded implementations of the Mechanical interface."""
+"""Module for threaded implementations of the Mechanical interface."""
 
-import os
+from pathlib import Path
 import time
 import warnings
+
+from ansys.tools.path import version_from_path
 
 from ansys.mechanical.core.errors import VersionError
 from ansys.mechanical.core.mechanical import (
@@ -37,11 +39,16 @@ from ansys.mechanical.core.mechanical import (
     port_in_use,
 )
 from ansys.mechanical.core.misc import threaded, threaded_daemon
-from ansys.tools.path import version_from_path
 
 if _HAS_TQDM:
     from tqdm import tqdm
 
+try:
+    import ansys.platform.instancemanagement as pypim
+    _HAS_ANSYS_PIM = True
+except ImportError:
+    _HAS_ANSYS_PIM = False
+    pypim = None
 
 def available_ports(n_ports, starting_port=MECHANICAL_DEFAULT_PORT):
     """Get a list of a given number of available ports starting from a specified port number.
@@ -488,7 +495,7 @@ class LocalMechanicalPool:
         """
         # check all files exist before running
         for filename in files:
-            if not os.path.isfile(filename):
+            if not Path.is_file(filename):
                 raise FileNotFoundError("Unable to locate file %s" % filename)
 
         def run_file(mechanical, input_file):
@@ -545,7 +552,7 @@ class LocalMechanicalPool:
                         # double check that this instance is alive:
                         try:
                             instance._make_dummy_call()
-                        except:  # pragma: no cover
+                        except Exception:  # pragma: no cover
                             instance.exit()
                             continue
 
