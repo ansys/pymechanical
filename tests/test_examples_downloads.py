@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os.path
+from pathlib import Path
 
 import pytest
 
@@ -31,18 +31,18 @@ from ansys.mechanical.core import examples
 def test_download_file():
     # first time download
     filename = examples.download_file("example_01_geometry.agdb", "pymechanical", "00_basic")
-    assert os.path.isfile(filename)
+    assert Path(filename).is_file()
 
     # file already exists in the cache, do not force the download
     filename = examples.download_file("example_01_geometry.agdb", "pymechanical", "00_basic")
-    assert os.path.isfile(filename)
+    assert Path(filename).is_file()
 
     # file already exists in the cache, force it to download again
     filename = examples.download_file(
         "example_01_geometry.agdb", "pymechanical", "00_basic", force=True
     )
-    assert os.path.isfile(filename)
+    assert Path(filename).is_file()
 
     # cleanup downloaded file
     examples.delete_downloads()
-    assert not os.path.isfile(filename)
+    assert not Path(filename).is_file()
