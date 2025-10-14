@@ -143,7 +143,7 @@ ignore = [
 #"!src/**.py" = ["D"]
 "tests/conftest.py" = ["F811"]
 "examples/**.py" = ["D400", "F821", "F405", "E402", "D205"]
-"tests/**.py" = ["D103", "D100"] # add docstrings to tests later
+"tests/**.py" = ["D103", "D100", "D205"] # add docstrings to tests later
 
 
 [tool.ruff.lint.pydocstyle]

@@ -20,10 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-""" "Testing of log module."""
+"""Testing of log module."""
 
 import logging as deflogging  # Default logging
-import os
+from pathlib import Path
 import re
 
 from conftest import HAS_GRPC
@@ -62,7 +62,7 @@ def fake_record(
     extra={},
 ):
     """
-    Function to fake log records using the format from the logger handler.
+    Fake log records using the format from the logger handler.
 
     Parameters
     ----------
@@ -87,11 +87,6 @@ def fake_record(
         Exception information. By default None
     extra : dict, optional
         Extra arguments, one of them should be 'instance_name'. By default {}
-
-    Returns
-    -------
-    [type]
-        [description]
     """
     sinfo = None
     if not name_logger:
@@ -289,7 +284,7 @@ def test_log_to_file(tmpdir):
     """Testing writing to log file.
     Since the default loglevel of LOG is error, debug are not normally recorded to it.
     """
-    file_path = os.path.join(tmpdir, "instance.log")
+    file_path = str(Path(tmpdir) / "instance.log")
     file_msg_error = "This is a error message"
     file_msg_debug = "This is a debug message"
 
@@ -303,8 +298,8 @@ def test_log_to_file(tmpdir):
 
     LOG.error(file_msg_error)
     LOG.debug(file_msg_debug)
-
-    with open(file_path, "r") as fid:
+    file_path = Path(file_path)
+    with file_path.open("r") as fid:
         text = "".join(fid.readlines())
 
     assert file_msg_error in text
@@ -328,7 +323,7 @@ def test_log_to_file(tmpdir):
     file_msg_debug = "This debug message should be recorded."
     LOG.debug(file_msg_debug)
 
-    with open(file_path, "r") as fid:
+    with file_path.open("r") as fid:
         text = "".join(fid.readlines())
 
     assert file_msg_error in text
@@ -349,9 +344,10 @@ def test_log_instance_name(mechanical):
 @pytest.mark.remote_session_launch
 def test_instance_log_to_file(mechanical, tmpdir):
     """Testing writing to log file.
+    
     Since the default loglevel of LOG is error, debug are not normally recorded to it.
     """
-    file_path = os.path.join(tmpdir, "instance.log")
+    file_path = str(Path(tmpdir) / "instance.log")
     file_msg_error = "This is a error message"
     file_msg_debug = "This is a debug message"
 
@@ -361,7 +357,8 @@ def test_instance_log_to_file(mechanical, tmpdir):
     mechanical.log_message("ERROR", file_msg_error)
     mechanical.log_message("DEBUG", file_msg_debug)
 
-    with open(file_path, "r") as fid:
+    file_path = Path(file_path)
+    with file_path.open("r") as fid:
         text = "".join(fid.readlines())
 
     assert file_msg_error in text
@@ -403,7 +400,7 @@ def test_instance_log_to_file(mechanical, tmpdir):
     # enable logging
     mechanical._disable_logging = False
 
-    with open(file_path, "r") as fid:
+    with file_path.open("r") as fid:
         text = "".join(fid.readlines())
 
     assert file_msg_error in text
