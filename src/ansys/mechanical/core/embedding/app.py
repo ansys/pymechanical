@@ -29,7 +29,6 @@ import os
 from pathlib import Path
 import shutil
 import typing
-import warnings
 
 from ansys.mechanical.core import LOG
 from ansys.mechanical.core.embedding import initializer, runtime
