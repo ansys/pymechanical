@@ -256,7 +256,7 @@ class PyMechanicalCustomAdapter(logging.LoggerAdapter):
         self.logger = add_stdout_handler(self.logger, level=level)
         self.std_out_handler = self.logger.std_out_handler
 
-    def setLevel(self, level="DEBUG"):
+    def setLevel(self, level="DEBUG"):  # noqa: N802
         """Change the log level of the object and the attached handlers.
 
         Parameters
@@ -464,7 +464,7 @@ class Logger:
         """
         add_stdout_handler(self, level=level)
 
-    def setLevel(self, level="DEBUG"):
+    def setLevel(self, level="DEBUG"):  # noqa: N802
         """Change the log level of the object and the attached handlers.
 
         Parameters
