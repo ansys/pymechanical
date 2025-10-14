@@ -96,7 +96,7 @@ def test_app_update_globals_after_open(embedded_app, assets):
     # this will throw an exception
     embedded_app.new()
     embedded_app.open(str(Path(assets) / "cube-hole.mechdb"))
-    Model.AddNamedSelection()
+    Model.AddNamedSelection()  # noqa
 
 
 @pytest.mark.embedding
@@ -104,7 +104,7 @@ def test_explicit_interface(embedded_app):
     """Test save and open of the Application class."""
     embedded_app.update_globals(globals())
     try:
-        namedselection = Model.AddNamedSelection()
+        namedselection = embedded_app.Model.AddNamedSelection()
         ids = list(namedselection.Ids)
         assert len(ids) == 0, f"Expected an empty Ids list, but got {ids}."
     except AttributeError as e:
@@ -155,8 +155,8 @@ def test_app_print_tree(embedded_app, capsys, assets):
     with pytest.raises(AttributeError):
         embedded_app.print_tree(DataModel)
 
-    Modal = Model.AddModalAnalysis()
-    Modal.Solution.Solve(True)
+    modal = Model.AddModalAnalysis()
+    modal.Solution.Solve(True)
     embedded_app.print_tree()
     captured = capsys.readouterr()
     printed_output = captured.out.strip()
