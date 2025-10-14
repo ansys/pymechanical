@@ -20,7 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Run Mechanical UI from Python."""
+from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ansys.mechanical.core.embedding import App
 from pathlib import Path
 
 # Subprocess is needed to launch the GUI and clean up the process on close.
@@ -38,7 +43,7 @@ class UILauncher:
         """Initialize UILauncher class."""
         self._dry_run = dry_run
 
-    def save_original(self, app: "ansys.mechanical.core.embedding.App") -> None:
+    def save_original(self, app: App) -> None:
         """Save the active mechdb file.
 
         Parameters
@@ -49,7 +54,7 @@ class UILauncher:
         app.save()
 
     def save_temp_copy(
-        self, app: "ansys.mechanical.core.embedding.App"
+        self, app: App
     ) -> typing.Union[Path, Path]:
         """Save a new mechdb file with a temporary name.
 
@@ -75,7 +80,7 @@ class UILauncher:
 
         return mechdb_file, temp_file_name
 
-    def open_original(self, app: "ansys.mechanical.core.embedding.App", mechdb_file: str) -> None:
+    def open_original(self, app: App, mechdb_file: str) -> None:
         """Open the original mechdb file from save_original().
 
         Parameters
@@ -88,7 +93,7 @@ class UILauncher:
         app.open(mechdb_file)
 
     def graphically_launch_temp(
-        self, app: "ansys.mechanical.core.embedding.App", temp_file: Path
+        self, app: App, temp_file: Path
     ) -> typing.Union[Popen, str]:
         """Launch the GUI for the mechdb file with a temporary name from save_temp_copy().
 
@@ -142,7 +147,7 @@ class UILauncher:
             )  # pragma: no cover # nosec: B603
 
 
-def _is_saved(app: "ansys.mechanical.core.embedding.App") -> bool:
+def _is_saved(app: App) -> bool:
     """Check if the mechdb file has been saved and raise an exception if not.
 
     Parameters
@@ -158,13 +163,13 @@ def _is_saved(app: "ansys.mechanical.core.embedding.App") -> bool:
     """
     try:
         app.save()
-    except:
-        raise Exception("The App must have already been saved before using launch_ui!")
+    except Exception as e:
+        raise Exception("The App must have already been saved before using launch_ui!") from e
     return True
 
 
 def _launch_ui(
-    app: "ansys.mechanical.core.embedding.App", delete_tmp_on_close: bool, launcher: UILauncher
+    app: App, delete_tmp_on_close: bool, launcher: UILauncher
 ) -> None:
     """Launch the Mechanical UI if the mechdb file has been saved.
 
@@ -206,7 +211,7 @@ PyMechanical will not delete it after use."""
 
 
 def launch_ui(
-    app: "ansys.mechanical.core.embedding.App",
+    app: App,
     delete_tmp_on_close: bool = True,
     dry_run: bool = False,
 ) -> None:
