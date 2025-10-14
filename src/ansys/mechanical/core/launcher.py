@@ -24,6 +24,7 @@
 
 import errno
 import os
+from pathlib import Path
 
 # Subprocess is needed to start the backend. Excluding bandit check.
 import subprocess  # nosec: B404
@@ -113,7 +114,7 @@ class MechanicalLauncher:
         exe_path : str
             Path to verify.
         """
-        if not os.path.exists(exe_path):
+        if not Path(exe_path).exists():
             LOG.info(f"Startup file:{exe_path} doesn't exist.")
             raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), exe_path)
 
