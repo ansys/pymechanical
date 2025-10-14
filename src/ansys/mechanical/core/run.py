@@ -28,11 +28,11 @@ import os
 import sys
 import typing
 
-import ansys.tools.path as atp
 import click
 
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 from ansys.mechanical.core.feature_flags import get_command_line_arguments, get_feature_flag_names
+import ansys.tools.path as atp
 
 DRY_RUN = False
 """Dry run constant."""
