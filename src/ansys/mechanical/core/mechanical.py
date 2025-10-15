@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Connect to Mechanical gRPC server and issues commands."""
+
 import atexit
 from contextlib import closing
 import datetime
@@ -1316,7 +1317,7 @@ class Mechanical(object):
                         list_files = [files]
                 elif "*" in files:
                     # using filter
-                    list_files = glob.glob(files, recursive=recursive) # noqa: PTH207 
+                    list_files = glob.glob(files, recursive=recursive)  # noqa: PTH207
                     # TODO : replace pathlib when python 3.11 is minimum
                     if not list_files:
                         raise ValueError(
