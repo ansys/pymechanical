@@ -32,7 +32,7 @@ def test_remote_solve(printer, embedded_app, graphics_test_mechdb_file):
     printer(embedded_app)
     embedded_app.update_globals(globals())
     embedded_app.open(graphics_test_mechdb_file)
-    solution = Model.Analyses[0].Solution
+    solution = embedded_app.Model.Analyses[0].Solution
     solution.ClearGeneratedData()
     assert str(solution.Status) == "SolveRequired"
 

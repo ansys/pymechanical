@@ -23,6 +23,7 @@
 """Logger embedding tests."""
 
 import os
+from pathlib import Path
 import sys
 import typing
 
@@ -53,9 +54,9 @@ def _run_embedding_log_test(
     testname: str,
     pass_expected: bool = True,
 ) -> typing.Tuple[bytes, bytes]:
-    """Runs the process and returns it after it finishes."""
+    """Run the process and returns it after it finishes."""
     version = pytestconfig.getoption("ansys_version")
-    embedded_py = os.path.join(rootdir, "tests", "scripts", "embedding_log_test.py")
+    embedded_py = Path(rootdir) / "tests" / "scripts" / "embedding_log_test.py"
 
     subprocess_pass_expected = pass_expected
     if pass_expected:
@@ -63,7 +64,7 @@ def _run_embedding_log_test(
             subprocess_pass_expected = False
 
     _, stdout, stderr = run_subprocess(
-        [sys.executable, embedded_py, version, testname],
+        [sys.executable, str(embedded_py), version, testname],
         _get_env_without_logging_variables(),
         subprocess_pass_expected,
     )
@@ -76,7 +77,7 @@ def _run_embedding_log_test(
 
 
 def _assert_success(stdout: str, pass_expected: bool) -> int:
-    """Asserts the outcome of the process matches pass_expected."""
+    """Assert that the outcome of the process matches pass_expected."""
     # HACK! On linux, due to bug #85, there is always a crash on shutdown
     # so instead there's a print("success") that happens after the test
     # function runs that will only be executed if the function doesn't

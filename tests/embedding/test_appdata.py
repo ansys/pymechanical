@@ -37,12 +37,12 @@ from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 def test_private_appdata(pytestconfig, run_subprocess, rootdir):
     """Test embedded instance does not save ShowTriad using a test-scoped Python environment."""
     version = pytestconfig.getoption("ansys_version")
-    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+    embedded_py = Path(rootdir) / "tests" / "scripts" / "run_embedded_app.py"
 
     run_subprocess(
         [
             sys.executable,
-            embedded_py,
+            str(embedded_py),
             "--version",
             version,
             "--private_appdata",
@@ -54,7 +54,7 @@ def test_private_appdata(pytestconfig, run_subprocess, rootdir):
     process, stdout, stderr = run_subprocess(
         [
             sys.executable,
-            embedded_py,
+            str(embedded_py),
             "--version",
             version,
             "--private_appdata",
@@ -73,12 +73,12 @@ def test_normal_appdata(pytestconfig, run_subprocess, rootdir):
     """Test embedded instance saves ShowTriad value using a test-scoped Python environment."""
     version = pytestconfig.getoption("ansys_version")
 
-    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+    embedded_py = Path(rootdir) / "tests" / "scripts" / "run_embedded_app.py"
 
     run_subprocess(
         [
             sys.executable,
-            embedded_py,
+            str(embedded_py),
             "--version",
             version,
             "--private_appdata",
@@ -90,7 +90,7 @@ def test_normal_appdata(pytestconfig, run_subprocess, rootdir):
     process, stdout, stderr = run_subprocess(
         [
             sys.executable,
-            embedded_py,
+            str(embedded_py),
             "--version",
             version,
             "--private_appdata",
@@ -102,7 +102,7 @@ def test_normal_appdata(pytestconfig, run_subprocess, rootdir):
     run_subprocess(
         [
             sys.executable,
-            embedded_py,
+            str(embedded_py),
             "--version",
             version,
             "--private_appdata",
@@ -124,7 +124,7 @@ def test_uniqueprofile_creation():
 
     # Create private app data without copying profiles
     private_data2 = UniqueUserProfile(profile_name="test1", copy_profile=False)
-    assert not os.path.exists(os.path.join(private_data2.location, folder_to_check))
+    assert not (Path(private_data2.location) / folder_to_check).exists()
 
     # Check if location is same with same profile name
     private_data1 = UniqueUserProfile(profile_name="test1")
@@ -150,13 +150,13 @@ def test_uniqueprofile_env():
             profile.update_environment(env)
 
     if platform == "win32":
-        env["USERPROFILE"] = profile.location
-        env["APPDATA"] = Path(profile.location) / "AppData" / "Roaming"
-        env["LOCALAPPDATA"] = Path(profile.location) / "AppData" / "Local"
-        env["TMP"] = Path(profile.location) / "AppData" / "Local" / "Temp"
-        env["TEMP"] = Path(profile.location) / "AppData" / "Local " / "Temp"
+        env["USERPROFILE"] = str(profile.location)
+        env["APPDATA"] = str(Path(profile.location) / "AppData" / "Roaming")
+        env["LOCALAPPDATA"] = str(Path(profile.location) / "AppData" / "Local")
+        env["TMP"] = str(Path(profile.location) / "AppData" / "Local" / "Temp")
+        env["TEMP"] = str(Path(profile.location) / "AppData" / "Local" / "Temp")
     else:
-        env["HOME"] = profile.location
+        env["HOME"] = str(profile.location)
 
 
 @pytest.mark.embedding

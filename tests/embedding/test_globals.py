@@ -61,11 +61,11 @@ def test_global_variables(embedded_app):
 @pytest.mark.embedding
 def test_global_variable_transaction(embedded_app):
     embedded_app.update_globals(globals())
-    project_name = DataModel.Project.Name
+    project_name = embedded_app.DataModel.Project.Name
     assert project_name == "Project"
     with Transaction():
-        DataModel.Project.Name = "New Project"
-    project_name = DataModel.Project.Name
+        embedded_app.DataModel.Project.Name = "New Project"
+    project_name = embedded_app.DataModel.Project.Name
     assert project_name == "New Project"
 
 
