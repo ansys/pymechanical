@@ -27,7 +27,6 @@ from contextlib import closing
 import datetime
 import fnmatch
 from functools import wraps
-import glob
 import os
 import pathlib
 from pathlib import Path
@@ -41,10 +40,11 @@ from typing import Optional
 import warnings
 import weakref
 
-import grpc
-
 import ansys.api.mechanical.v0.mechanical_pb2 as mechanical_pb2
 import ansys.api.mechanical.v0.mechanical_pb2_grpc as mechanical_pb2_grpc
+import ansys.tools.path as atp
+import grpc
+
 import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core import LOG
 from ansys.mechanical.core.errors import (
@@ -60,7 +60,6 @@ from ansys.mechanical.core.misc import (
     check_valid_start_instance,
     threaded,
 )
-import ansys.tools.path as atp
 
 # Check if PyPIM is installed
 try:
@@ -229,8 +228,8 @@ def close_all_local_instances(port_range=None, use_thread=True):
 
 def create_ip_file(ip, path):
     """Create the ``mylocal.ip`` file needed to change the IP address of the gRPC server."""
-    file_name = os.path.join(path, "mylocal.ip")
-    with open(file_name, "w", encoding="utf-8") as f:
+    file_name = Path(path) / "mylocal.ip"
+    with file_name.open("w", encoding="utf-8") as f:
         f.write(ip)
 
 
@@ -866,7 +865,7 @@ class Mechanical(object):
         else:
             self.log_info(f"Waiting for Mechanical to be ready. Maximum wait time: {wait_time}s")
 
-        while not self.__isMechanicalReady():
+        while not self.__is_mechanical_ready():
             time_2 = datetime.datetime.now()
             time_interval = time_2 - time_1
             time_interval_seconds = int(time_interval.total_seconds())
@@ -893,7 +892,7 @@ class Mechanical(object):
 
         self.log_info(f"Mechanical is ready. It took {time_interval_seconds} seconds to verify.")
 
-    def __isMechanicalReady(self):
+    def __is_mechanical_ready(self):
         """Whether the Mechanical gRPC server is ready.
 
         Returns
@@ -1184,9 +1183,10 @@ class Mechanical(object):
 
         >>> mechanical.upload("hsec.x_t", progress_bar=False)
         """
+        file_name = Path(file_name)
         self.verify_valid_connection()
 
-        if not os.path.isfile(file_name):
+        if not file_name.is_file():
             raise FileNotFoundError(f"Unable to locate filename {file_name}.")
 
         self._log.debug(f"Uploading file '{file_name}' to the Mechanical instance.")
@@ -1198,7 +1198,7 @@ class Mechanical(object):
         try:
             chunks_generator = self.get_file_chunks(
                 file_location_destination,
-                file_name,
+                str(file_name),
                 chunk_size=chunk_size,
                 progress_bar=progress_bar,
             )
@@ -1209,7 +1209,7 @@ class Mechanical(object):
 
         if not response.is_ok:  # pragma: no cover
             raise IOError("File failed to upload.")
-        return os.path.basename(file_name)
+        return str(file_name.name)
 
     def get_file_chunks(self, file_location, file_name, chunk_size, progress_bar):
         """Construct the file upload request for the server.
@@ -1225,6 +1225,7 @@ class Mechanical(object):
         progress_bar : bool
             Whether to show a progress bar using ``tqdm``.
         """
+        file_name = Path(file_name)
         pbar = None
         if progress_bar:
             if not _HAS_TQDM:  # pragma: no cover
@@ -1234,9 +1235,9 @@ class Mechanical(object):
                     "set 'progress_bar=False'."
                 )
 
-            n_bytes = os.path.getsize(file_name)
+            n_bytes = file_name.stat().st_size
 
-            base_name = os.path.basename(file_name)
+            base_name = file_name.name
             pbar = tqdm(
                 total=n_bytes,
                 desc=f"Uploading {base_name} to {self._channel_str}:{file_location}.",
@@ -1244,8 +1245,7 @@ class Mechanical(object):
                 unit_scale=True,
                 unit_divisor=1024,
             )
-
-        with open(file_name, "rb") as f:
+        with file_name.open("rb") as f:
             while True:
                 piece = f.read(chunk_size)
                 length = len(piece)
@@ -1259,7 +1259,7 @@ class Mechanical(object):
 
                 chunk = mechanical_pb2.Chunk(payload=piece, size=length)
                 yield mechanical_pb2.FileUploadRequest(
-                    file_name=os.path.basename(file_name), file_location=file_location, chunk=chunk
+                    file_name=str(file_name.name), file_location=file_location, chunk=chunk
                 )
 
     @property
@@ -1307,15 +1307,19 @@ class Mechanical(object):
         if isinstance(files, str):
             if self._local:  # pragma: no cover
                 # in local mode
-                if os.path.exists(files):
-                    if not os.path.isabs(files):
-                        list_files = [os.path.join(os.getcwd(), files)]
+                file_path = Path(files)
+                if file_path.exists():
+                    if not file_path.is_absolute():
+                        list_files = [str(Path.cwd() / files)]
                     else:
                         # file exist
                         list_files = [files]
                 elif "*" in files:
                     # using filter
-                    list_files = glob.glob(files, recursive=recursive)
+                    if recursive:
+                        list_files = [str(p) for p in Path().rglob(files.lstrip('*/'))]
+                    else:
+                        list_files = [str(p) for p in Path().glob(files)]
                     if not list_files:
                         raise ValueError(
                             f"The `'files'` parameter ({files}) didn't match any file using "
@@ -1445,13 +1449,13 @@ class Mechanical(object):
             path = pathlib.Path(target_dir)
             path.mkdir(parents=True, exist_ok=True)
         else:
-            target_dir = os.getcwd()
+            target_dir = Path.cwd()
 
         out_files = []
 
         for each_file in list_files:
             try:
-                file_name = os.path.basename(each_file)  # Getting only the name of the file.
+                file_name = Path(each_file).name  # Getting only the name of the file.
                 #  We try to avoid that when the full path is supplied. It crashes when trying
                 # to do `os.path.join(target_dir"os.getcwd()", file_name "full filename path"`
                 # This produces the file structure to flat out, but it is fine,
@@ -1459,7 +1463,7 @@ class Mechanical(object):
                 self._busy = True
                 out_file_path = self._download(
                     each_file,
-                    out_file_name=os.path.join(target_dir, file_name),
+                    out_file_name=str(Path(target_dir) / file_name),
                     chunk_size=chunk_size,
                     progress_bar=progress_bar,
                 )
@@ -1559,7 +1563,8 @@ class Mechanical(object):
                 )
 
         file_size = 0
-        with open(filename, "wb") as f:
+        filename=Path(filename)
+        with filename.open("wb") as f:
             for response in responses:
                 f.write(response.chunk.payload)
                 payload_size = len(response.chunk.payload)
@@ -1613,23 +1618,23 @@ class Mechanical(object):
 
         # let us create the directory, if it doesn't exist
         if destination_directory:
-            path = pathlib.Path(destination_directory)
+            path = Path(destination_directory)
             path.mkdir(parents=True, exist_ok=True)
         else:
-            destination_directory = os.getcwd()
-
+            destination_directory = str(Path.cwd())
         # relative directory?
-        if os.path.isdir(destination_directory):
-            if not os.path.isabs(destination_directory):
+        dest_path = Path(destination_directory)
+        if dest_path.is_dir():
+            if not dest_path.is_absolute():
                 # construct full path
-                destination_directory = os.path.join(os.getcwd(), destination_directory)
+                destination_directory = str(Path.cwd() / destination_directory)
 
         project_directory = self.project_directory
         # remove the trailing slash - server could be windows or linux
         project_directory = project_directory.rstrip("\\/")
 
         # this is where .mechddb resides
-        parent_directory = os.path.dirname(project_directory)
+        parent_directory = str(Path(project_directory).parent)
 
         list_of_files = []
 
@@ -1640,9 +1645,9 @@ class Mechanical(object):
             for each_extension in extensions:
                 # mechdb resides one level above project directory
                 if "mechdb" == each_extension.lower():
-                    file_temp = os.path.join(parent_directory, f"*.{each_extension}")
+                    file_temp = str(Path(parent_directory) / f"*.{each_extension}")
                 else:
-                    file_temp = os.path.join(project_directory, "**", f"*.{each_extension}")
+                    file_temp = str(Path(project_directory) / "**" / f"*.{each_extension}")
 
                 if self._local:
                     list_files_expanded = self._get_files(file_temp, recursive=True)
@@ -1666,7 +1671,7 @@ class Mechanical(object):
         for file in files:
             # create similar hierarchy locally
             new_path = file.replace(parent_directory, destination_directory)
-            new_path_dir = os.path.dirname(new_path)
+            new_path_dir = str(Path(new_path).parent)
             temp_files = self.download(
                 files=file, target_dir=new_path_dir, progress_bar=progress_bar
             )
@@ -1699,7 +1704,8 @@ class Mechanical(object):
     def __readfile(file_path):
         """Get the contents of the file as a string."""
         # open text file in read mode
-        text_file = open(file_path, "r", encoding="utf-8")
+        file_path = Path(file_path)
+        text_file = file_path.open("r", encoding="utf-8")
         # read whole file to a string
         data = text_file.read()
         # close file
@@ -1858,8 +1864,9 @@ class Mechanical(object):
             return
 
         if self._log_file_mechanical:
+            log_file_path = Path(self._log_file_mechanical)
             try:
-                with open(self._log_file_mechanical, "a", encoding="utf-8") as file:
+                with log_file_path.open("a", encoding="utf-8") as file:
                     file.write(script_code)
                     file.write("\n")
             except IOError as e:  # pragma: no cover
@@ -2030,7 +2037,7 @@ server.start()
 
 def launch_remote_mechanical(
     version=None,
-) -> (grpc.Channel, Optional["Instance"]):  # pragma: no cover
+) -> (grpc.Channel, Optional["Instance"]):  # pragma: no cover # noqa F821
     """Start Mechanical remotely using the Product Instance Management (PIM) API.
 
     When calling this method, you must ensure that you are in an environment
