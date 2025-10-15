@@ -21,12 +21,12 @@
 # SOFTWARE.
 
 """Connect to Mechanical gRPC server and issues commands."""
-
 import atexit
 from contextlib import closing
 import datetime
 import fnmatch
 from functools import wraps
+import glob
 import os
 import pathlib
 from pathlib import Path
@@ -1316,10 +1316,8 @@ class Mechanical(object):
                         list_files = [files]
                 elif "*" in files:
                     # using filter
-                    if recursive:
-                        list_files = [str(p) for p in Path().rglob(files.lstrip('*/'))]
-                    else:
-                        list_files = [str(p) for p in Path().glob(files)]
+                    list_files = glob.glob(files, recursive=recursive) # noqa: PTH207 
+                    # TODO : replace pathlib when python 3.11 is minimum
                     if not list_files:
                         raise ValueError(
                             f"The `'files'` parameter ({files}) didn't match any file using "
