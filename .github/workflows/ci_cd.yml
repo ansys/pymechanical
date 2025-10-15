@@ -256,8 +256,6 @@ jobs:
           echo "Sleep for 60 seconds"
           sleep 60  # give time to start
 
-          docker logs --timestamps ${{ env.DOCKER_MECH_CONTAINER_NAME }}
-
           echo "Check logs for WB Initialize Done"
           docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} | grep 'WB Initialize Done'
 
