@@ -22,8 +22,8 @@
 
 """Migration from QK_ENG_WB2 tests."""
 
-import os
 from pathlib import Path
+
 import pytest
 
 
