@@ -341,17 +341,19 @@ jobs:
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
-      - name: "Set up Python and activate virtual environment"
-        uses: ./.github/workflows/setup-python/
-        with:
-          container-sha: ${{ needs.test-container-info.outputs.sha }}
-          python-version: ${{ matrix.python-version }}
-
+      - name: Set up Python
+        shell: bash
+        run: |
+          apt update
+          apt install lsb-release xvfb git curl make -y
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          export PATH="$HOME/.local/bin:$PATH"
+          uv python install python${{ env.MAIN_PYTHON_VERSION }}
+          uv venv /env
       - name: "Install packages for testing"
         run: |
           . /env/bin/activate
-          pip install --upgrade pip
-          pip install uv
+          uv pip install --upgrade pip
           uv pip install -e .[tests]
 
       - name: Unit Testing and coverage
@@ -413,17 +415,19 @@ jobs:
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
-      - name: "Set up Python and activate virtual environment"
-        uses: ./.github/workflows/setup-python/
-        with:
-          container-sha: ${{ needs.test-container-info.outputs.sha }}
-          python-version: ${{ matrix.python-version }}
-
+      - name: Set up Python
+        shell: bash
+        run: |
+          apt update
+          apt install lsb-release xvfb git curl make -y
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          export PATH="$HOME/.local/bin:$PATH"
+          uv python install python${{ env.MAIN_PYTHON_VERSION }}
+          uv venv /env
       - name: "Install packages for testing"
         run: |
           . /env/bin/activate
-          pip install --upgrade pip
-          pip install uv
+          uv pip install --upgrade pip
           uv pip install -e .[tests]
 
       - name: Embedding scripts unit testing and coverage
@@ -482,21 +486,19 @@ jobs:
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
-      - name: "Set up Python and activate virtual environment"
-        uses: ./.github/workflows/setup-python/
-        with:
-          container-sha: ${{ needs.test-container-info.outputs.sha }}
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install dependencies
+      - name: Set up Python
+        shell: bash
         run: |
-          apt install -y lsb-release
-
+          apt update
+          apt install lsb-release xvfb git curl make -y
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          export PATH="$HOME/.local/bin:$PATH"
+          uv python install python${{ env.MAIN_PYTHON_VERSION }}
+          uv venv /env
       - name: "Install packages for testing"
         run: |
           . /env/bin/activate
-          pip install --upgrade pip
-          pip install uv
+          uv pip install --upgrade pip
           uv pip install -e .[tests]
 
       - name: Set environment variable
@@ -557,11 +559,15 @@ jobs:
       - name: Install Git and checkout project
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
-      - name: "Set up Python and activate virtual environment"
-        uses: ./.github/workflows/setup-python/
-        with:
-          container-sha: ${{ needs.test-container-info.outputs.sha }}
-          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+      - name: Set up Python
+        shell: bash
+        run: |
+          apt update
+          apt install lsb-release xvfb git curl make -y
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          export PATH="$HOME/.local/bin:$PATH"
+          uv python install python${{ env.MAIN_PYTHON_VERSION }}
+          uv venv /env
 
       - name: Install system dependencies
         run: |
@@ -592,7 +598,7 @@ jobs:
       - name: Install Python requirements
         run: |
           . /env/bin/activate
-          pip install uv
+          uv pip install --upgrade pip
           uv pip install -e .[doc]
 
       - name: Build docs
