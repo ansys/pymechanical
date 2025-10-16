@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Test for Miscellaneous Functions."""
+
 import pytest
 
 import ansys.mechanical.core.misc as misc
