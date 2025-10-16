@@ -20,17 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Test for Mechanical Module."""
+
 import json
 from pathlib import Path
 import re
 
-import ansys.tools.path
 import conftest
 import pytest
 
 import ansys.mechanical.core as pymechanical
 import ansys.mechanical.core.errors as errors
 import ansys.mechanical.core.misc as misc
+import ansys.tools.path
 
 
 def new_python_script_api(mechanical):

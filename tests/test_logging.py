@@ -184,7 +184,7 @@ def test_global_logger_exception_handling(caplog):
 @pytest.mark.remote_session_launch
 def test_global_logger_debug_levels(caplog):
     """Testing for all the possible logging level.
-    
+
     Test that the output is recorded properly for each type of msg.
     """
     for each_level in [
@@ -292,7 +292,7 @@ def test_global_methods(caplog):
 @pytest.mark.remote_session_launch
 def test_log_to_file(tmpdir):
     """Testing writing to log file.
-    
+
     Since the default loglevel of LOG is error, debug are not normally recorded to it.
     """
     file_path = str(Path(tmpdir) / "instance.log")
