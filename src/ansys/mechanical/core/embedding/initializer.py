@@ -92,7 +92,7 @@ def _get_latest_default_version() -> int:
 
     versions_found = []
     for path in awp_roots:
-        folder = Path(path).name
+        folder = str(Path(path).name)
         version = folder.split("v")[-1]
         versions_found.append(int(version))
 
