@@ -19,12 +19,13 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
+"""Test for Command Line Interface (CLI) functionality."""
 import os
 from pathlib import Path
 import subprocess
 import sys
 
+import ansys.tools.path as atp
 from click.testing import CliRunner
 import pytest
 
@@ -35,7 +36,6 @@ from ansys.mechanical.core.ide_config import (
     get_stubs_versions,
 )
 from ansys.mechanical.core.run import _cli_impl, cli
-import ansys.tools.path as atp
 
 STUBS_LOC = get_stubs_location()
 STUBS_REVNS = get_stubs_versions(STUBS_LOC)
@@ -45,6 +45,7 @@ MAX_STUBS_REVN = max(STUBS_REVNS)
 
 @pytest.mark.cli
 def test_cli_default(disable_cli, pytestconfig):
+    """Test for default CLI arguments."""
     version = int(pytestconfig.getoption("ansys_version"))
     args, env = _cli_impl(exe="AnsysWBU.exe", version=version, port=11)
     assert os.environ == env
@@ -56,6 +57,7 @@ def test_cli_default(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_debug(disable_cli, pytestconfig):
+    """Test for CLI debug argument."""
     version = int(pytestconfig.getoption("ansys_version"))
     _, env = _cli_impl(exe="AnsysWBU.exe", version=version, debug=True, port=11)
     assert "WBDEBUG_STOP" in env
@@ -63,6 +65,7 @@ def test_cli_debug(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_graphical(disable_cli, pytestconfig):
+    """Test for CLI graphical argument."""
     version = int(pytestconfig.getoption("ansys_version"))
     args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, graphical=True)
     assert "-b" not in args
@@ -70,6 +73,7 @@ def test_cli_graphical(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_appdata(disable_cli, pytestconfig):
+    """Test for CLI private appdata argument."""
     version = int(pytestconfig.getoption("ansys_version"))
     _, env = _cli_impl(exe="AnsysWBU.exe", version=version, private_appdata=True, port=11)
     var_to_compare = "TEMP" if os.name == "nt" else "HOME"
@@ -78,6 +82,7 @@ def test_cli_appdata(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_errors(disable_cli, pytestconfig):
+    """Test for CLI error conditions."""
     version = int(pytestconfig.getoption("ansys_version"))
     # can't mix project file and input script
     with pytest.raises(Exception):
@@ -101,6 +106,7 @@ def test_cli_errors(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_appmode(disable_cli, pytestconfig):
+    """Test for CLI appmode argument."""
     version = int(pytestconfig.getoption("ansys_version"))
     args, _ = _cli_impl(
         exe="AnsysWBU.exe", version=version, show_welcome_screen=True, graphical=True
@@ -110,6 +116,7 @@ def test_cli_appmode(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_port(disable_cli, pytestconfig):
+    """Test for CLI port argument."""
     version = int(pytestconfig.getoption("ansys_version"))
     args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, port=11)
     assert "-grpc" in args
@@ -118,6 +125,7 @@ def test_cli_port(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_project(disable_cli, pytestconfig):
+    """Test for CLI project argument."""
     version = int(pytestconfig.getoption("ansys_version"))
     args, _ = _cli_impl(
         exe="AnsysWBU.exe", version=version, project_file="foo.mechdb", graphical=True
@@ -128,6 +136,7 @@ def test_cli_project(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_script(disable_cli, pytestconfig):
+    """Test for CLI script argument."""
     version = int(pytestconfig.getoption("ansys_version"))
     args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, input_script="foo.py", graphical=True)
     assert "-script" in args
@@ -136,6 +145,7 @@ def test_cli_script(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_scriptargs(disable_cli, pytestconfig):
+    """Test for CLI scriptargs argument."""
     version = int(pytestconfig.getoption("ansys_version"))
     args, _ = _cli_impl(
         exe="AnsysWBU.exe",
@@ -152,6 +162,7 @@ def test_cli_scriptargs(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_scriptargs_no_script(disable_cli, pytestconfig):
+    """Test for CLI scriptargs argument without script."""
     version = int(pytestconfig.getoption("ansys_version"))
     with pytest.raises(Exception):
         _cli_impl(
@@ -164,6 +175,7 @@ def test_cli_scriptargs_no_script(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_scriptargs_singlequote(disable_cli, pytestconfig):
+    """Test for CLI scriptargs argument with single quotes."""
     version = int(pytestconfig.getoption("ansys_version"))
     args, _ = _cli_impl(
         exe="AnsysWBU.exe",
@@ -180,6 +192,7 @@ def test_cli_scriptargs_singlequote(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_scriptargs_doublequote(disable_cli, pytestconfig):
+    """Test for CLI scriptargs argument with double quotes."""
     version = int(pytestconfig.getoption("ansys_version"))
     with pytest.raises(Exception):
         _cli_impl(
@@ -193,6 +206,7 @@ def test_cli_scriptargs_doublequote(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_features(disable_cli, pytestconfig):
+    """Test for CLI features argument."""
     version = int(pytestconfig.getoption("ansys_version"))
     with pytest.warns(UserWarning):
         args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, features="a;b;c", port=11)
@@ -212,6 +226,7 @@ def test_cli_features(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_exit(disable_cli, pytestconfig):
+    """Test for CLI exit argument."""
     version = int(pytestconfig.getoption("ansys_version"))
 
     args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, exit=True, port=11)
@@ -236,6 +251,7 @@ def test_cli_exit(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_batch_required_args(disable_cli):
+    """Test for CLI batch required arguments."""
     # ansys-mechanical -r <version> => exception
     with pytest.raises(Exception):
         _cli_impl(exe="AnsysWBU.exe", version=max(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS))
@@ -484,7 +500,7 @@ def test_ideconfig_no_revision():
 
 @pytest.mark.cli
 def test_cli_engine_type_args(disable_cli, pytestconfig):
-    # Default engine type
+    """Test engine type selection arguments."""
     args, _ = _cli_impl(exe="AnsysWBU.exe", port=11)
     assert "-engineType" not in args
 
@@ -501,6 +517,7 @@ def test_cli_engine_type_args(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_engine_type_selection(disable_cli, pytestconfig):
+    """Test engine type selection errors."""
     version = int(pytestconfig.getoption("ansys_version"))
     # Invalid engine type - this should be caught by Click's Choice validation
     with pytest.raises(Exception) as e:

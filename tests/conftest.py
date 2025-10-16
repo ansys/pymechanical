@@ -19,7 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
+"""Fixtures and helpers for testing."""
 import datetime
 import os
 import pathlib
@@ -30,6 +30,7 @@ import subprocess
 import sys
 import time
 
+import ansys.tools.path as atp
 import pytest
 
 import ansys.mechanical.core as pymechanical
@@ -40,7 +41,6 @@ from ansys.mechanical.core.errors import MechanicalExitedError
 from ansys.mechanical.core.examples import download_file
 from ansys.mechanical.core.misc import get_mechanical_bin
 import ansys.mechanical.core.run
-import ansys.tools.path as atp
 
 # to run tests with multiple markers
 # pytest -q --collect-only -m "remote_session_launch"
@@ -77,6 +77,7 @@ HAS_GRPC = int(rver) >= 232 or ON_CI
 
 
 def pytest_collection_modifyitems(config, items):
+    """Modify the collected test items."""
     keywordexpr = config.option.keyword
     markexpr = config.option.markexpr
     if keywordexpr or markexpr:
@@ -111,6 +112,7 @@ def assets():
 
 
 def ensure_embedding() -> None:
+    """Ensure that embedding is available."""
     from ansys.mechanical.core import HAS_EMBEDDING
 
     if not HAS_EMBEDDING:
@@ -118,6 +120,7 @@ def ensure_embedding() -> None:
 
 
 def start_embedding_app(version, pytestconfig) -> datetime.timedelta:
+    """Start the embedded Mechanical application."""
     from ansys.mechanical.core import App
 
     global EMBEDDED_APP
@@ -143,6 +146,7 @@ EMBEDDED_APP = None
 
 @pytest.fixture(scope="session")
 def embedded_app(pytestconfig, request):
+    """Fixture that creates an embedded Mechanical application."""
     global EMBEDDED_APP
     startup_time = start_embedding_app(pytestconfig.getoption("ansys_version"), pytestconfig)
     terminal_reporter = request.config.pluginmanager.getplugin("terminalreporter")
@@ -154,6 +158,7 @@ def embedded_app(pytestconfig, request):
 
 @pytest.fixture(autouse=True)
 def mke_app_reset(request):
+    """Fixture that resets the embedded Mechanical application before each test."""
     global EMBEDDED_APP
     if EMBEDDED_APP is None:
         # embedded app was not started - no need to do anything
@@ -170,6 +175,7 @@ _PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE = False
 
 @pytest.fixture()
 def run_subprocess(pytestconfig):
+    """Return a function that runs a subprocess with the given args and env."""
     version = pytestconfig.getoption("ansys_version")
 
     def func(args, env=None, check: bool = None):
@@ -196,6 +202,7 @@ def rootdir():
 
 @pytest.fixture()
 def disable_cli():
+    """Disable command line interface."""
     ansys.mechanical.core.run.DRY_RUN = True
     yield
     ansys.mechanical.core.run.DRY_RUN = False
@@ -254,6 +261,7 @@ def graphics_test_mechdb_file():
 
 
 def launch_mechanical_instance(cleanup_on_exit=False):
+    """Launch a new Mechanical instance."""
     print("launching mechanical instance")
     return pymechanical.launch_mechanical(
         allow_input=False,
@@ -264,6 +272,7 @@ def launch_mechanical_instance(cleanup_on_exit=False):
 
 
 def connect_to_mechanical_instance(port=None, clear_on_connect=False):
+    """Connect to an existing Mechanical instance."""
     print("connecting to a existing mechanical instance")
     hostname = platform.uname().node  # your machine name
 
@@ -284,6 +293,7 @@ def launch_rpc_embedded_server(port: int, version: int, server_script: str):
 
 
 def connect_rpc_embedded_server(port: int):
+    """Connect to the rpc server."""
     from ansys.mechanical.core.embedding.rpc.client import Client
 
     client = Client("localhost", port)
@@ -303,6 +313,7 @@ def _launch_mechanical_rpyc_server(rootdir: str, version: int):
 
 
 def _get_mechanical_server():
+    """Get a mechanical server, either by connecting or launching."""
     if not pymechanical.mechanical.get_start_instance():
         mechanical = connect_to_mechanical_instance()
     else:
@@ -311,6 +322,7 @@ def _get_mechanical_server():
 
 
 def _stop_python_server(mechanical, server_process):
+    """Stop the python rpc server process."""
     mechanical.exit()
     start_time = time.time()
     while server_process.poll() is None:
@@ -325,6 +337,7 @@ def _stop_python_server(mechanical, server_process):
 
 
 def _stop_mechanical_server(mechanical):
+    """Stop the mechanical server."""
     assert "Ansys Mechanical" in str(mechanical)
     if pymechanical.mechanical.get_start_instance():
         print("get_start_instance() returned True. exiting mechanical.")
@@ -337,6 +350,7 @@ def _stop_mechanical_server(mechanical):
 
 @pytest.fixture(scope="session")
 def mechanical_session(pytestconfig, rootdir):
+    """Fixture that creates a Mechanical instance for the session."""
     print("Mechanical session fixture")
     is_python_server = pytestconfig.getoption("remote_server_type") == "rpyc"
     version = int(pytestconfig.getoption("ansys_version"))
@@ -361,6 +375,7 @@ def mechanical_session(pytestconfig, rootdir):
 
 @pytest.fixture()
 def mechanical(request, printer, mechanical_session):
+    """Fixture that creates a Mechanical instance for a test."""
     mechanical, server_process = mechanical_session
     if server_process is not None:
         ret = server_process.poll()
@@ -373,6 +388,7 @@ def mechanical(request, printer, mechanical_session):
 # used only once
 @pytest.fixture(scope="function")
 def mechanical_meshing():
+    """Fixture that creates a Mechanical instance in meshing mode."""
     print("current working directory: ", Path.cwd())
 
     mechanical_meshing = pymechanical.launch_mechanical(
@@ -391,6 +407,7 @@ def mechanical_meshing():
 # used only once
 @pytest.fixture(scope="function")
 def mechanical_result():
+    """Fixture that creates a Mechanical instance in result mode."""
     print("current working directory: ", Path.cwd())
 
     mechanical_result = pymechanical.launch_mechanical(
@@ -405,6 +422,7 @@ def mechanical_result():
 
 @pytest.fixture(scope="session")
 def mechanical_pool():
+    """Fixture that creates a local pool of Mechanical instances."""
     if not pymechanical.mechanical.get_start_instance():
         return None
 
@@ -434,6 +452,7 @@ def mechanical_pool():
 
 
 def pytest_addoption(parser):
+    """Add command line options for pytest."""
     mechanical_path = atp.get_mechanical_path(False)
 
     if mechanical_path is None:

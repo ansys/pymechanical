@@ -19,7 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
+"""Test for Mechanical Pool."""
 import pathlib
 
 import pytest
@@ -29,10 +29,12 @@ from ansys.mechanical.core.errors import VersionError
 
 
 def print_info(mechanical, name="no_name", info="no_info"):
+    """Print information about the mechanical instance."""
     print(mechanical._channel_str + " " + name + " " + info)
 
 
 def func(mechanical, script, name):
+    """Run a script."""
     result = None
 
     if len(script) > 0:
@@ -45,18 +47,21 @@ def func(mechanical, script, name):
 
 @pytest.mark.remote_session_launch
 def test_available_ports():
+    """Test for available ports."""
     with pytest.raises(RuntimeError):
         ansys.mechanical.core.pool.available_ports(2, starting_port=65536)
 
 
 @pytest.mark.remote_session_launch
 def test_minimum_instances():
+    """Test for minimum instances error."""
     with pytest.raises(ValueError):
         ansys.mechanical.core.pool.LocalMechanicalPool(1)
 
 
 @pytest.mark.remote_session_launch
 def test_map(mechanical_pool):
+    """Test for mapping with jobs."""
     if mechanical_pool is None:
         return
 
@@ -81,6 +86,7 @@ def test_map(mechanical_pool):
 
 
 def func_no_args(mechanical):
+    """Test function with no arguments."""
     result = None
 
     print_info(mechanical)
@@ -90,6 +96,7 @@ def func_no_args(mechanical):
 
 @pytest.mark.remote_session_launch
 def test_map_no_job(mechanical_pool):
+    """Test for mapping with no jobs."""
     if mechanical_pool is None:
         return
 
@@ -105,6 +112,7 @@ def test_map_no_job(mechanical_pool):
 
 @pytest.mark.remote_session_launch
 def test_run_batch_no_job(mechanical_pool, tmp_path: pathlib.Path):
+    """Test for running a batch with no jobs."""
     if mechanical_pool is None:
         return
 
@@ -136,5 +144,6 @@ def test_run_batch_no_job(mechanical_pool, tmp_path: pathlib.Path):
 
 @pytest.mark.remote_session_launch
 def test_version_error():
+    """Test for version error."""
     with pytest.raises(VersionError):
         raise VersionError("Requires Mechanical 2023 R2 or later.")

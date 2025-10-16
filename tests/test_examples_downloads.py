@@ -19,7 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
+"""Test for downloading example files."""
 from pathlib import Path
 
 import pytest
@@ -29,6 +29,7 @@ from ansys.mechanical.core import examples
 
 @pytest.mark.remote_session_connect
 def test_download_file():
+    """Test for downloading example files."""
     # first time download
     filename = examples.download_file("example_01_geometry.agdb", "pymechanical", "00_basic")
     assert Path(filename).is_file()
