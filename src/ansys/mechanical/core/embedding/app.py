@@ -317,6 +317,10 @@ class App:
         self._app.Dispose()
         self._disposed = True
 
+    def wait_with_dialog(self):
+        """Wait with dialog open."""
+        self._app.BlockingModalDialog("Wait with dialog", "PyMechanical")
+
     def open(self, db_file, remove_lock=False):
         """Open the db file.
 
