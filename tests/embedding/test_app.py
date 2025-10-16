@@ -72,7 +72,7 @@ def test_app_save_open(embedded_app, tmp_path: pytest.TempPathFactory):
     project_file = tmp_path / f"{NamedTemporaryFile().name}.mechdat"
     embedded_app.save_as(str(project_file))
 
-    project_file_directory = str(project_file.with_suffix("")) + "_Mech_Files\\"
+    project_file_directory = str(project_file.with_suffix("")) + "_Mech_Files" + os.sep
     assert project_file_directory == embedded_app.project_directory
 
     with pytest.raises(Exception):
