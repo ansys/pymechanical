@@ -26,8 +26,7 @@ import queue
 import time
 import threading
 
-# can't import this or the background thread will not be property initialized for com
-#from ansys.mechanical.core import LOG
+from ansys.mechanical.core import LOG
 
 try:
     import pythoncom
@@ -48,16 +47,19 @@ APP_INIT_EVENT = threading.Event()
 EXEC_THREAD = None
 ORIGINAL_RUN_CELL = None
 SHELL_HOOK: callable = None
+EXECUTION_THREAD_ID: int = None
 
 def _execution_thread_main():
-    pythoncom.CoInitialize()
     global APP_INIT_EVENT
     global CODE_QUEUE
+    global EXECUTION_THREAD_ID
     global ORIGINAL_RUN_CELL
     global RESULT_QUEUE
     global SHUTDOWN_EVENT
     global SHELL_HOOK
+    pythoncom.CoInitialize()
     shell = InteractiveShell.instance()
+    EXECUTION_THREAD_ID = threading.get_ident()
     while not SHUTDOWN_EVENT.is_set():
         try:
             code = CODE_QUEUE.get_nowait()
@@ -69,12 +71,12 @@ def _execution_thread_main():
                 try:
                     SHELL_HOOK()
                 except Exception as e:
-                    #LOG.error(f"shell hook raised {e}. Uninstalling it.")
+                    LOG.error(f"shell hook raised {e}. Uninstalling it.")
                     SHELL_HOOK = None
             continue
         if code is None:
             break
-        #LOG.info(f"execution thread {threading.get_ident()}")
+        LOG.info(f"execution thread {threading.get_ident()}")
         result = ORIGINAL_RUN_CELL(shell, code, store_history=True)
         RESULT_QUEUE.put(result)
 
@@ -117,7 +119,7 @@ def post_ipython_blocks():
     _can_post_ipython_blocks()
     global EXEC_THREAD
     global ORIGINAL_RUN_CELL
-    #LOG.info(f"original main thread {threading.get_ident()}")
+    LOG.info(f"original main thread {threading.get_ident()}")
     ORIGINAL_RUN_CELL = InteractiveShell.run_cell
     EXEC_THREAD = threading.Thread(target=_execution_thread_main, daemon=True)
     EXEC_THREAD.start()
@@ -127,15 +129,28 @@ def post_ipython_blocks():
     # Patch IPython to delegate to your thread
     InteractiveShell.run_cell = _run_cell_in_thread.__get__(InteractiveShell.instance(), InteractiveShell)
 
-    #LOG.info("IPython now runs all cells in your dedicated thread.")
+    LOG.info("IPython now runs all cells in your dedicated thread.")
 
 def install_shell_hook(hook):
     global SHELL_HOOK
     SHELL_HOOK = hook
 
+
+def try_post_ipython_blocks():
+    if in_ipython():
+        post_ipython_blocks()
+
+
+def is_in_interactive_thread():
+    global EXECUTION_THREAD_ID
+    if EXECUTION_THREAD_ID is None:
+        return False
+    return EXECUTION_THREAD_ID == threading.get_ident()
+
 """
 
-TODO: try install_shell_hook before start ui
+TODO: move code around
+      improve exit stability
 
 import pythoncom
 import threading
@@ -144,7 +159,7 @@ def background_mech():
     pythoncom.CoInitialize()
     app = mech.App(version=261)
     app.ExtAPI.Application.StartUI(True)
-threading.Thread(target=background_mech, daemon=False).start()
+threading.Thread(target=background_mech, daemon=True).start()
 
 import ansys.mechanical.core as mech
 from ansys.mechanical.core.embedding.ipython_shell import post_ipython_blocks, install_shell_hook
@@ -153,9 +168,9 @@ post_ipython_blocks()
 # BELOW NEEDS TO BE IN A SEPARATE CELL!
 
 app = mech.App(version=261)
-app.ExtAPI.Application.StartUI(False)
 import ansys.mechanical.core.embedding.utils as utils
 install_shell_hook(lambda: utils.sleep(50))
+app.ExtAPI.Application.StartUI(False)
 
 
 

@@ -55,6 +55,9 @@ try:
 except ImportError:
     HAS_ANSYS_GRAPHICS = False
 
+from ansys.mechanical.core.embedding.ipython_shell import try_post_ipython_blocks
+try_post_ipython_blocks()
+
 
 def _get_default_addin_configuration() -> AddinConfiguration:
     configuration = AddinConfiguration()
@@ -318,6 +321,8 @@ class App:
         self._disposed = True
 
     def wait_with_dialog(self):
+        if self.version< 261:
+            raise Exception("wait_with_dialog is only supported with Mechanical 261")
         """Wait with dialog open."""
         self._app.BlockingModalDialog("Wait with dialog", "PyMechanical")
 
@@ -421,6 +426,16 @@ class App:
         """Exit the application."""
         self._unsubscribe()
         self.ExtAPI.Application.Exit()
+
+    def _start_nonblocked_ui(self) -> None:
+        import ansys.mechanical.core.embedding.shell as shell
+        shell.start_nonblocking_ui(self)
+
+    def start_ui(self, block=True) -> None:
+        if block:
+            self.ExtAPI.Application.StartUI(True)
+            return
+        self._start_nonblocked_ui()
 
     def execute_script(self, script: str) -> typing.Any:
         """Execute the given script with the internal IronPython engine."""
