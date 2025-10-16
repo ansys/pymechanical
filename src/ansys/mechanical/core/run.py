@@ -232,7 +232,7 @@ def _cli_impl(
 @click.option(
     "--enginetype",
     type=click.Choice(["ironpython", "cpython"], case_sensitive=False),
-    default="ironpython",
+    default=None,
     help="Engine type to use with input scripts. Only applicable for version 261 "
     "when used with -i/--input-script."
     "Default is 'ironpython'.",
@@ -317,7 +317,7 @@ def cli(
     version = atp.version_from_path("mechanical", exe)
 
     # Validate enginetype usage - must be used with input script and version 261
-    if enginetype != "ironpython" and version < 261:
+    if enginetype and enginetype != "ironpython" and version < 261:
         raise click.ClickException(
             "--enginetype option for cpython is only applicable for version 261 or later."
         )
