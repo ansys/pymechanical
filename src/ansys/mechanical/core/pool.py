@@ -496,7 +496,7 @@ class LocalMechanicalPool:
         """
         # check all files exist before running
         for filename in files:
-            if not Path.is_file(filename):
+            if not Path(filename).is_file():
                 raise FileNotFoundError("Unable to locate file %s" % filename)
 
         def run_file(mechanical, input_file):
