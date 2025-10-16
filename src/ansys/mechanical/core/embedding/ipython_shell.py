@@ -119,7 +119,7 @@ def post_ipython_blocks():
     global ORIGINAL_RUN_CELL
     #LOG.info(f"original main thread {threading.get_ident()}")
     ORIGINAL_RUN_CELL = InteractiveShell.run_cell
-    EXEC_THREAD = threading.Thread(target=_execution_thread_main, daemon=False)
+    EXEC_THREAD = threading.Thread(target=_execution_thread_main, daemon=True)
     EXEC_THREAD.start()
 
     import atexit
@@ -134,6 +134,9 @@ def install_shell_hook(hook):
     SHELL_HOOK = hook
 
 """
+
+TODO: try install_shell_hook before start ui
+
 import pythoncom
 import threading
 import ansys.mechanical.core as mech
