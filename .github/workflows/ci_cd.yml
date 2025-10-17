@@ -260,6 +260,7 @@ jobs:
 
           echo "Waiting for Mechanical to initialize..."
           while [ $elapsed -lt $max_wait ]; do
+            docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > log.txt
             if grep -q 'WB Initialize Done' log.txt 2>/dev/null; then
               echo "Mechanical initialized successfully after ${elapsed} seconds"
               break
