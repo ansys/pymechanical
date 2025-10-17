@@ -22,21 +22,21 @@
 
 """PyVista plotter."""
 
+from __future__ import annotations
+
 import dataclasses
 from enum import Enum
 import os
 import typing
+from typing import TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from ansys.mechanical.core.embedding import App
 import clr
-
-clr.AddReference("Ansys.Mechanical.DataModel")
-clr.AddReference("Ansys.ACT.Interfaces")
-
-import Ansys  # isort: skip
-
-from ansys.tools.visualization_interface import Plotter
 import numpy as np
 import pyvista as pv
+
+from ansys.tools.visualization_interface import Plotter
 
 from .utils import (
     bgr_to_rgb_tuple,
@@ -46,6 +46,11 @@ from .utils import (
     get_tri_result_disp_and_results,
 )
 
+clr.AddReference("Ansys.Mechanical.DataModel")
+clr.AddReference("Ansys.ACT.Interfaces")
+
+import Ansys  # noqa: E402
+
 
 @dataclasses.dataclass
 class Plottable:
@@ -53,7 +58,7 @@ class Plottable:
 
     polydata: typing.Optional[pv.PolyData] = None
 
-    # TODO - make this a list of overridable attributes
+    # TODO : Make this a list of overridable attributes
     color: typing.Optional[pv.Color] = None
     transform: pv.transform.Transform = None
     children: typing.List["Plottable"] = None
@@ -179,7 +184,7 @@ class ScenegraphNodeVisitor:
         self, node: "Ansys.Mechanical.Scenegraph.MeshOrientedTransformNode"
     ) -> Plottable:
         if "PYMECHANICAL_SCENE_VISIT_MESH_ORIENTED_TRANSFORM_NODE" not in os.environ:
-            self._app.log_warning(f"Ignoring MeshOrientedTransformNode")
+            self._app.log_warning("Ignoring MeshOrientedTransformNode")
             return None
 
         plottable = self.visit_node(node.Child)
@@ -252,7 +257,7 @@ def _add_plottable(plotter: Plotter, plottable: Plottable, plot_settings: PlotSe
         "smooth_shading": True,
         "point_size": plot_settings.point_size,
     }
-    if plottable.kwargs != None:
+    if plottable.kwargs is not None:
         kwargs.update(plottable.kwargs)
     if kwargs.get("remove_color", None):
         kwargs.pop("remove_color")
@@ -262,7 +267,7 @@ def _add_plottable(plotter: Plotter, plottable: Plottable, plot_settings: PlotSe
 
 
 def _get_plotter_for_scene(
-    app: "ansys.mechanical.core.embedding.App",
+    app: App,
     node: "Ansys.Mechanical.Scenegraph.Node",
     plot_settings: PlotSettings,
 ) -> Plotter:
@@ -273,9 +278,7 @@ def _get_plotter_for_scene(
     return plotter
 
 
-def _plot_object(
-    app: "ansys.mechanical.core.embedding.App", obj, plot_settings: PlotSettings
-) -> Plotter:
+def _plot_object(app: App, obj, plot_settings: PlotSettings) -> Plotter:
     """Get a ``ansys.tools.visualization_interface.Plotter`` instance for `obj`."""
     scene = get_scene_for_object(app, obj)
     if scene is None:
@@ -285,9 +288,7 @@ def _plot_object(
     return plotter
 
 
-def to_plotter(
-    app: "ansys.mechanical.core.embedding.App", obj=None, plot_settings: PlotSettings = None
-) -> Plotter:
+def to_plotter(app: App, obj=None, plot_settings: PlotSettings = None) -> Plotter:
     """Convert the scene for `obj` to an ``ansys.tools.visualization_interface.Plotter`` instance.
 
     If the `obj` is None, default to the Geometry object.

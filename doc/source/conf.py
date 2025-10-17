@@ -10,6 +10,7 @@
 
 from datetime import datetime
 import os
+from pathlib import Path
 import warnings
 
 from ansys_sphinx_theme import ansys_favicon, get_version_match
@@ -164,7 +165,7 @@ extlinks = {
 # Create the rst_epilog a variable, so you can add other epilog parts to it
 rst_epilog = ""
 # Read link all targets from file
-with open("links.rst") as f:
+with Path.open("links.rst") as f:
     rst_epilog += f.read()
 # Replace the version placeholder in rst_epilog with the current Mechanical version
 rst_epilog = rst_epilog.replace("%%VERSION%%", f"v{current_mechanical_version}")

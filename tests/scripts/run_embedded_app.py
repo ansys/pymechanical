@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Launch embedded instance."""
+
 import argparse
 
 import ansys.mechanical.core as pymechanical

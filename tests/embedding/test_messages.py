@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Message manager test"""
+"""Message manager test."""
 
 import re
 
@@ -29,7 +29,7 @@ import pytest
 
 @pytest.mark.embedding
 def test_message_manager(embedded_app):
-    """Test message manager"""
+    """Test message manager."""
     # if license checkout takes time then there is a warning message
     # get added to app. So, clear the messages before starting the test
     embedded_app.messages.clear()
@@ -46,7 +46,7 @@ def test_message_manager(embedded_app):
 
 @pytest.mark.embedding
 def test_message_add_and_clear(embedded_app):
-    """Test adding and clearing messages"""
+    """Test adding and clearing messages."""
     embedded_app.messages.clear()
     assert len(embedded_app.messages) == 0
 
@@ -69,7 +69,7 @@ def test_message_add_and_clear(embedded_app):
 
 @pytest.mark.embedding
 def test_message_show(embedded_app):
-    """Test showing messages"""
+    """Test showing messages."""
     embedded_app.messages.clear()
     messages_str = str(embedded_app.messages._show_string())
     assert "No messages to display." in messages_str
@@ -88,7 +88,7 @@ def test_message_show(embedded_app):
 
 @pytest.mark.embedding
 def test_message_get(embedded_app, graphics_test_mechdb_file):
-    """Test getting a message"""
+    """Test getting a message."""
     from ansys.mechanical.core.embedding.enum_importer import MessageSeverityType
 
     with pytest.raises(IndexError):

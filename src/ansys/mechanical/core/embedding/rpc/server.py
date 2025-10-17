@@ -21,7 +21,7 @@
 # SOFTWARE.
 """Remote Procedure Call (RPC) server."""
 
-import os
+from pathlib import Path
 import threading
 import time
 import typing
@@ -219,12 +219,12 @@ class MechanicalService(rpyc.Service):
         if not remote_path:
             raise ValueError("The remote file path is empty.")
 
-        remote_dir = os.path.dirname(remote_path)
+        remote_dir = Path(remote_path).parent
 
         if remote_dir:
-            os.makedirs(remote_dir, exist_ok=True)
+            remote_dir.mkdir(parents=True, exist_ok=True)
 
-        with open(remote_path, "wb") as f:
+        with Path(remote_path).open("wb") as f:
             f.write(file_data)
 
         print(f"File {remote_path} uploaded successfully.")
@@ -232,19 +232,19 @@ class MechanicalService(rpyc.Service):
     def exposed_service_download(self, remote_path):
         """Handle file download request from client."""
         # Check if the remote file exists
-        if not os.path.exists(remote_path):
+        if not Path(remote_path).exists():
             raise FileNotFoundError(f"The file {remote_path} does not exist on the server.")
 
-        if os.path.isdir(remote_path):
+        if Path(remote_path).is_dir():
             files = []
-            for dirpath, _, filenames in os.walk(remote_path):
-                for filename in filenames:
-                    full_path = os.path.join(dirpath, filename)
-                    relative_path = os.path.relpath(full_path, remote_path)
-                    files.append(relative_path)
+            remote_path_obj = Path(remote_path)
+            for file_path in remote_path_obj.rglob("*"):
+                if file_path.is_file():
+                    relative_path = file_path.relative_to(remote_path_obj)
+                    files.append(str(relative_path))
             return {"is_directory": True, "files": files}
 
-        with open(remote_path, "rb") as f:
+        with Path(remote_path).open("rb") as f:
             file_data = f.read()
 
         print(f"File {remote_path} downloaded successfully.")
