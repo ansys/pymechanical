@@ -235,10 +235,42 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pull, launch, and validate Mechanical service
+        env:
+          MECHANICAL_IMAGE: ${{ env.DOCKER_PACKAGE }}:${{ matrix.mechanical-version }}
+          # ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
+          # ANSYS_WORKBENCH_LOGGING_DIRECTORY: /log_file  # workbench.log file
+          ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH: 0  # turn off autoflush for faster performance
         run: |
-          docker pull ${{ matrix.mechanical-image }}
-          docker run --restart always --name ${{ env.DOCKER_MECH_CONTAINER_NAME }} -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ matrix.mechanical-image }} > log.txt &
-          grep -q 'WB Initialize Done' <(timeout 60 tail -f log.txt)
+          docker pull ${{ env.MECHANICAL_IMAGE }}
+
+          echo "Run docker in detached mode"
+          docker run -d --name ${{ env.DOCKER_MECH_CONTAINER_NAME }} -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }}
+
+          # Wait for Mechanical to initialize with intelligent polling
+          max_wait=300  # Maximum wait time in seconds
+          check_interval=10  # Check every 10 seconds
+          elapsed=0
+
+          echo "Waiting for Mechanical to initialize..."
+          while [ $elapsed -lt $max_wait ]; do
+            docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > log.txt
+            if grep -q 'WB Initialize Done' log.txt 2>/dev/null; then
+              echo "Mechanical initialized successfully after ${elapsed} seconds"
+              break
+            fi
+            echo "Waiting for initialization... (${elapsed}/${max_wait}s)"
+            sleep $check_interval
+            elapsed=$((elapsed + check_interval))
+          done
+
+          # Final check
+          docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > log.txt
+          if ! grep -q 'WB Initialize Done' log.txt 2>/dev/null; then
+            echo "ERROR: Mechanical failed to initialize within ${max_wait} seconds"
+            echo "=== Last 50 lines of log.txt ==="
+            tail -n 50 log.txt || echo "No log file found"
+            exit 1
+          fi
 
       - name: Display info
         if: github.event_name == 'schedule'
@@ -268,7 +300,7 @@ jobs:
           pytest-extra-args: '-s --junitxml remote_results${{ env.MAIN_PYTHON_VERSION}}.xml'
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@3585e9575db828022551b4231f165eb59a0e74e3 # v5.6.2
+        uses: mikepenz/action-junit-report@5b7ee5a21e8674b695313d769f3cbdfd5d4d53a4 # v6.0.0
         if: always()
         with:
           report_paths: '**/remote_results*.xml'
@@ -327,18 +359,19 @@ jobs:
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
-      - name: "Set up Python and activate virtual environment"
-        uses: ./.github/workflows/setup-python/
-        with:
-          container-sha: ${{ needs.test-container-info.outputs.sha }}
-          python-version: ${{ matrix.python-version }}
-          is-dev-container: ${{ needs.run-type-container.outputs.is_dev_container }}
-
+      - name: Set up Python
+        shell: bash
+        run: |
+          apt update
+          apt install lsb-release xvfb git curl make -y
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          export PATH="$HOME/.local/bin:$PATH"
+          uv python install python${{ env.MAIN_PYTHON_VERSION }}
+          uv venv /env
       - name: "Install packages for testing"
         run: |
           . /env/bin/activate
-          pip install --upgrade pip
-          pip install uv
+          uv pip install --upgrade pip
           uv pip install -e .[tests]
 
       - name: Unit Testing and coverage
@@ -375,7 +408,7 @@ jobs:
           retention-days: 7
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@3585e9575db828022551b4231f165eb59a0e74e3 # v5.6.2
+        uses: mikepenz/action-junit-report@5b7ee5a21e8674b695313d769f3cbdfd5d4d53a4 # v6.0.0
         if: always()
         with:
           report_paths: '**/test_results*.xml'
@@ -400,18 +433,19 @@ jobs:
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
-      - name: "Set up Python and activate virtual environment"
-        uses: ./.github/workflows/setup-python/
-        with:
-          container-sha: ${{ needs.test-container-info.outputs.sha }}
-          python-version: ${{ matrix.python-version }}
-          is-dev-container: ${{ needs.run-type-container.outputs.is_dev_container }}
-
+      - name: Set up Python
+        shell: bash
+        run: |
+          apt update
+          apt install lsb-release xvfb git curl make -y
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          export PATH="$HOME/.local/bin:$PATH"
+          uv python install python${{ env.MAIN_PYTHON_VERSION }}
+          uv venv /env
       - name: "Install packages for testing"
         run: |
           . /env/bin/activate
-          pip install --upgrade pip
-          pip install uv
+          uv pip install --upgrade pip
           uv pip install -e .[tests]
 
       - name: Embedding scripts unit testing and coverage
@@ -445,7 +479,7 @@ jobs:
           retention-days: 7
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@3585e9575db828022551b4231f165eb59a0e74e3 # v5.6.2
+        uses: mikepenz/action-junit-report@5b7ee5a21e8674b695313d769f3cbdfd5d4d53a4 # v6.0.0
         if: always()
         with:
           report_paths: '**/test_results*.xml'
@@ -470,22 +504,19 @@ jobs:
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
-      - name: "Set up Python and activate virtual environment"
-        uses: ./.github/workflows/setup-python/
-        with:
-          container-sha: ${{ needs.test-container-info.outputs.sha }}
-          python-version: ${{ matrix.python-version }}
-          is-dev-container: ${{ needs.run-type-container.outputs.is_dev_container }}
-
-      - name: Install dependencies
+      - name: Set up Python
+        shell: bash
         run: |
-          apt install -y lsb-release
-
+          apt update
+          apt install lsb-release xvfb git curl make -y
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          export PATH="$HOME/.local/bin:$PATH"
+          uv python install python${{ env.MAIN_PYTHON_VERSION }}
+          uv venv /env
       - name: "Install packages for testing"
         run: |
           . /env/bin/activate
-          pip install --upgrade pip
-          pip install uv
+          uv pip install --upgrade pip
           uv pip install -e .[tests]
 
       - name: Set environment variable
@@ -507,7 +538,7 @@ jobs:
           fi
 
       - name: Publish Launch Test Report
-        uses: mikepenz/action-junit-report@3585e9575db828022551b4231f165eb59a0e74e3 # v5.6.2
+        uses: mikepenz/action-junit-report@5b7ee5a21e8674b695313d769f3cbdfd5d4d53a4 # v6.0.0
         if: always()
         with:
           report_paths: '**/launch_test_results*.xml'
@@ -547,12 +578,15 @@ jobs:
       - name: Install Git and checkout project
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
-      - name: "Set up Python and activate virtual environment"
-        uses: ./.github/workflows/setup-python/
-        with:
-          container-sha: ${{ needs.test-container-info.outputs.sha }}
-          python-version: ${{ env.MAIN_PYTHON_VERSION }}
-          is-dev-container: ${{ needs.run-type-container.outputs.is_dev_container }}
+      - name: Set up Python
+        shell: bash
+        run: |
+          apt update
+          apt install lsb-release xvfb git curl make -y
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          export PATH="$HOME/.local/bin:$PATH"
+          uv python install python${{ env.MAIN_PYTHON_VERSION }}
+          uv venv /env
 
       - name: Install system dependencies
         run: |
@@ -583,7 +617,7 @@ jobs:
       - name: Install Python requirements
         run: |
           . /env/bin/activate
-          pip install uv
+          uv pip install --upgrade pip
           uv pip install -e .[doc]
 
       - name: Build docs
@@ -835,7 +869,7 @@ jobs:
   notify-on-failure:
     name: Notify on failure
     needs: [get-date, embedding-tests, embedding-scripts-tests, launch-tests, remote-connect, doc-build]
-    if: github.event_name == 'schedule' && failure()
+    if: github.event_name == 'schedule' && (failure() || cancelled())
     runs-on: ubuntu-latest
     steps:
       - name: Microsoft Teams Notification
