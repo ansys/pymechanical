@@ -271,6 +271,7 @@ jobs:
           done
 
           # Final check
+          docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > log.txt
           if ! grep -q 'WB Initialize Done' log.txt 2>/dev/null; then
             echo "ERROR: Mechanical failed to initialize within ${max_wait} seconds"
             echo "=== Last 50 lines of log.txt ==="
