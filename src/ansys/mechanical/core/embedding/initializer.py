@@ -92,10 +92,12 @@ def _get_latest_default_version() -> int:
 
     versions_found = []
     for path in awp_roots:
-        folder = str(Path(path).name)
-        version = folder.split("v")[-1]
-        versions_found.append(int(version))
-
+        resolved_path = Path(path).resolve()
+        folder = resolved_path.name
+        if folder.startswith("v") and folder[1:].isdigit():
+            version = int(folder[1:])
+            versions_found.append(version)
+            
     LOG.info(f"Available versions of Mechanical: {versions_found}")
 
     latest_version = max(versions_found)
