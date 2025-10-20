@@ -84,7 +84,7 @@ graphics = [
 
 rpc = [
     "rpyc==6.0.2",
-    "toolz==1.0.0",
+    "toolz==1.1.0",
 ]
 
 pim = [
