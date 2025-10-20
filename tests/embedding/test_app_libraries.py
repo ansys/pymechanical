@@ -42,11 +42,11 @@ def test_app_library(embedded_app):
     exe_path = Path(exe)
     while exe_path.name != f"v{_version}":
         exe_path = exe_path.parent
-    location = exe_path / "Addins" / "ACT" / "libraries" / "Mechanical"
+    location = str(exe_path / "Addins" / "ACT" / "libraries" / "Mechanical")
     add_mechanical_python_libraries(_version)
-    assert str(location) in sys.path
-    sys.path.remove(str(location))
-    assert str(location) not in sys.path
+    assert location in sys.path
+    sys.path.remove(location)
+    assert location not in sys.path
 
     # Test with app as input
     add_mechanical_python_libraries(embedded_app)
