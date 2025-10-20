@@ -70,21 +70,23 @@ def test_app_save_open(embedded_app, tmp_path: pytest.TempPathFactory):
 
     embedded_app.DataModel.Project.Name = "PROJECT 1"
     project_file = tmp_path / f"{NamedTemporaryFile().name}.mechdat"
-    embedded_app.save_as(str(project_file))
+    project_file_str = str(project_file)
+
+    embedded_app.save_as(project_file_str)
 
     project_file_directory = str(project_file.with_suffix("")) + "_Mech_Files" + os.sep
     assert project_file_directory == embedded_app.project_directory
 
     with pytest.raises(Exception):
-        embedded_app.save_as(str(project_file))
-    embedded_app.save_as(str(project_file), overwrite=True)
+        embedded_app.save_as(project_file_str)
+    embedded_app.save_as(project_file_str, overwrite=True)
     embedded_app.new()
-    embedded_app.open(str(project_file))
+    embedded_app.open(project_file_str)
     assert embedded_app.DataModel.Project.Name == "PROJECT 1"
     embedded_app.DataModel.Project.Name = "PROJECT 2"
     embedded_app.save()
     embedded_app.new()
-    embedded_app.open(str(project_file))
+    embedded_app.open(project_file_str)
     assert embedded_app.DataModel.Project.Name == "PROJECT 2"
     embedded_app.new()
 
