@@ -139,12 +139,8 @@ ignore = [
 "__init__.py" = ["F401"]
 # Ignore `E402` (module level import not at top of file) in `src/ansys/mechanical/core/__init__.py`.
 "src/ansys/mechanical/core/__init__.py" = ["E402"]
-# Ignore `D` rules everywhere except for the `src/` directory.
-#"!src/**.py" = ["D"]
-"tests/conftest.py" = ["F811"]
+"tests/conftest.py" = ["F811"] # TODO : Fix pytest_collection issues.
 "examples/**.py" = ["D400", "F821", "F405", "E402", "D205"]
-#"tests/**.py" = ["D103", "D100", "D205"] # add docstrings to tests later
-"tests/embedding/test_app.py" = ["F821"] # Global like "Model" are directly called.
 "tests/embedding/test_dyna.py" = ["F821"] # Global like "Model" are directly called.
 "tests/embedding/test_graphics_export.py" = ["F821"] # Global like "Model" are directly called.
 "tests/embedding/test_qk_eng_wb2.py" = ["F821", "N806"] # Global like "Model" are directly called.

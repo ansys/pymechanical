@@ -139,9 +139,9 @@ def test_app_print_tree(embedded_app, capsys, assets):
     """Test printing hierarchical tree of Mechanical ExtAPI object."""
     embedded_app.update_globals(globals())
     geometry_file = str(Path(assets) / "Eng157.x_t")
-    geometry_import = Model.GeometryImportGroup.AddGeometryImport()
+    geometry_import = embedded_app.Model.GeometryImportGroup.AddGeometryImport()
     geometry_import.Import(geometry_file)
-    allbodies = Model.GetChildren(DataModelObjectCategory.Body, True)
+    allbodies = embedded_app.Model.GetChildren(DataModelObjectCategory.Body, True)  # noqa: F821
     allbodies[0].Suppressed = True
     embedded_app.print_tree()
     captured = capsys.readouterr()
@@ -156,9 +156,9 @@ def test_app_print_tree(embedded_app, capsys, assets):
     assert "truncating after" in printed_output
 
     with pytest.raises(AttributeError):
-        embedded_app.print_tree(DataModel)
+        embedded_app.print_tree(embedded_app.DataModel)
 
-    modal = Model.AddModalAnalysis()
+    modal = embedded_app.Model.AddModalAnalysis()
     modal.Solution.Solve(True)
     embedded_app.print_tree()
     captured = capsys.readouterr()
