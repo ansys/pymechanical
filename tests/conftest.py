@@ -341,7 +341,7 @@ def _stop_mechanical_server(mechanical):
     """Stop the mechanical server."""
     assert "Ansys Mechanical" in str(mechanical)
     if pymechanical.mechanical.get_start_instance():
-        print("get_start_instance() returned True. exiting mechanical.")
+        print("get_start_instance() returned True. Exiting mechanical.")
         mechanical.exit(force=True)
         assert mechanical.exited
         assert "Mechanical exited" in str(mechanical)
