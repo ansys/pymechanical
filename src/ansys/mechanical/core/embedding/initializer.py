@@ -97,7 +97,7 @@ def _get_latest_default_version() -> int:
         if folder.startswith("v") and folder[1:].isdigit():
             version = int(folder[1:])
             versions_found.append(version)
-            
+
     LOG.info(f"Available versions of Mechanical: {versions_found}")
 
     latest_version = max(versions_found)
