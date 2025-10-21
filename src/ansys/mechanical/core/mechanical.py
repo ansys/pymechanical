@@ -1296,7 +1296,7 @@ file_list = []
 
 # Add mechdb path if it exists
 mechdbPath = ExtAPI.DataModel.Project.FilePath
-if mechdbPath and mechdbPath.strip():
+if mechdbPath != "":
     file_list.append(mechdbPath)
 
 # Walk through project directory
