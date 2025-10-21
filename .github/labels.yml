@@ -57,3 +57,7 @@
 - name: docker
   description: Only observed in Mechanical docker image
   color: b6d7a8
+
+- name: stale
+  description: Stale issues will be closed after 60 days of inactivity
+  color: f0dc82

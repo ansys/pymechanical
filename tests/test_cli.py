@@ -25,11 +25,14 @@ from pathlib import Path
 import subprocess
 import sys
 
+import ansys.tools.path as atp
+from click.testing import CliRunner
 import pytest
 
-from ansys.mechanical.core.ide_config import _cli_impl as ideconfig_cli_impl
+from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
+from ansys.mechanical.core.ide_config import cli as ideconfig_cli
 from ansys.mechanical.core.ide_config import get_stubs_location, get_stubs_versions
-from ansys.mechanical.core.run import _cli_impl
+from ansys.mechanical.core.run import _cli_impl, cli
 
 STUBS_LOC = get_stubs_location()
 STUBS_REVNS = get_stubs_versions(STUBS_LOC)
@@ -100,13 +103,6 @@ def test_cli_appmode(disable_cli, pytestconfig):
         exe="AnsysWBU.exe", version=version, show_welcome_screen=True, graphical=True
     )
     assert "-AppModeMech" not in args
-
-
-@pytest.mark.cli
-def test_cli_231(disable_cli):
-    args, _ = _cli_impl(exe="AnsysWBU.exe", version=231, port=11)
-    assert "-nosplash" in args
-    assert "-notabctrl" in args
 
 
 @pytest.mark.cli
@@ -214,17 +210,9 @@ def test_cli_features(disable_cli, pytestconfig):
 @pytest.mark.cli
 def test_cli_exit(disable_cli, pytestconfig):
     version = int(pytestconfig.getoption("ansys_version"))
-    # Regardless of version, `exit` does nothing on its own
-    args, _ = _cli_impl(exe="AnsysWBU.exe", version=232, exit=True, port=11)
-    assert "-x" not in args
 
     args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, exit=True, port=11)
     assert "-x" not in args
-
-    # On versions earlier than 2024R1, `exit` throws a warning but does nothing
-    with pytest.warns(UserWarning):
-        args, _ = _cli_impl(exe="AnsysWBU.exe", version=232, exit=True, input_script="foo.py")
-        assert "-x" not in args
 
     # In UI mode, exit must be manually specified
     args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, input_script="foo.py", graphical=True)
@@ -245,25 +233,31 @@ def test_cli_exit(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_batch_required_args(disable_cli):
-    # ansys-mechanical -r 241 => exception
+    # ansys-mechanical -r <version> => exception
     with pytest.raises(Exception):
-        _cli_impl(exe="AnsysWBU.exe", version=241)
+        _cli_impl(exe="AnsysWBU.exe", version=max(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS))
 
-    # ansys-mechanical -r 241 -g => no exception
+    # ansys-mechanical -r <version> -g => no exception
     try:
-        _cli_impl(exe="AnsysWBU.exe", version=241, graphical=True)
+        _cli_impl(
+            exe="AnsysWBU.exe", version=max(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS), graphical=True
+        )
     except Exception as e:
         assert False, f"cli raised an exception: {e}"
 
-    # ansys-mechanical -r 241 -i input.py => no exception
+    # ansys-mechanical -r <version> -i input.py => no exception
     try:
-        _cli_impl(exe="AnsysWBU.exe", version=241, input_script="input.py")
+        _cli_impl(
+            exe="AnsysWBU.exe",
+            version=max(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS),
+            input_script="input.py",
+        )
     except Exception as e:
         assert False, f"cli raised an exception: {e}"
 
-    # ansys-mechanical -r 241 -port 11 => no exception
+    # ansys-mechanical -r <version> -port 11 => no exception
     try:
-        _cli_impl(exe="AnsysWBU.exe", version=241, port=11)
+        _cli_impl(exe="AnsysWBU.exe", version=max(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS), port=11)
     except Exception as e:
         assert False, f"cli raised an exception: {e}"
 
@@ -285,32 +279,19 @@ def get_settings_location() -> str:
 
 
 @pytest.mark.cli
-def test_ideconfig_cli_ide_exception(capfd, pytestconfig):
+def test_ideconfig_cli_ide_exception(pytestconfig):
     """Test IDE configuration raises an exception for anything but vscode."""
     revision = int(pytestconfig.getoption("ansys_version"))
-    with pytest.raises(Exception):
-        ideconfig_cli_impl(
-            ide="pycharm",
-            target="user",
-            revision=revision,
-        )
+    unsupported_ide = "pycharm"
 
+    # Set up the runner for click
+    runner = CliRunner()
+    result = runner.invoke(
+        ideconfig_cli, ["--ide", unsupported_ide, "--target", "user", "--revision", str(revision)]
+    )
 
-def test_ideconfig_cli_version_exception(pytestconfig):
-    """Test the IDE configuration raises an exception when the version is out of bounds."""
-    revision = int(pytestconfig.getoption("ansys_version"))
-    stubs_location = get_stubs_location()
-    stubs_revns = get_stubs_versions(stubs_location)
-
-    # If revision number is greater than the maximum stubs revision number
-    # assert an exception is raised
-    if revision > max(stubs_revns):
-        with pytest.raises(Exception):
-            ideconfig_cli_impl(
-                ide="vscode",
-                target="user",
-                revision=revision,
-            )
+    assert result.exception is not None
+    assert f"{unsupported_ide} is not supported at the moment" in result.exception.args[0]
 
 
 @pytest.mark.cli
@@ -320,51 +301,41 @@ def test_ideconfig_cli_user_settings(capfd, pytestconfig):
     # Get the revision number
     revision = int(pytestconfig.getoption("ansys_version"))
     stubs_location = get_stubs_location()
-
-    # Run the IDE configuration command for the user settings type
-    ideconfig_cli_impl(
-        ide="vscode",
-        target="user",
-        revision=revision,
-    )
-
-    # Get output of the IDE configuration command
-    out, err = capfd.readouterr()
-    out = out.replace("\\\\", "\\")
-
     # Get the path to the settings.json file based on operating system env vars
     settings_json = get_settings_location()
 
-    assert f"Update {settings_json} with the following information" in out
-    assert str(stubs_location) in out
+    runner = CliRunner()
+    result = runner.invoke(
+        ideconfig_cli, ["--ide", "vscode", "--target", "user", "--revision", str(revision)]
+    )
+    stdout = result.output.replace("\\\\", "\\")
+
+    assert result.exit_code == 0
+    assert f"Update {settings_json} with the following information" in stdout
+    assert str(stubs_location) in stdout
 
 
 @pytest.mark.cli
 @pytest.mark.version_range(MIN_STUBS_REVN, MAX_STUBS_REVN)
-def test_ideconfig_cli_workspace_settings(capfd, pytestconfig):
+def test_ideconfig_cli_workspace_settings(pytestconfig):
     """Test the IDE configuration prints correct information for workplace settings."""
     # Set the revision number
     revision = int(pytestconfig.getoption("ansys_version"))
     stubs_location = get_stubs_location()
-
-    # Run the IDE configuration command
-    ideconfig_cli_impl(
-        ide="vscode",
-        target="workspace",
-        revision=revision,
-    )
-
-    # Get output of the IDE configuration command
-    out, err = capfd.readouterr()
-    out = out.replace("\\\\", "\\")
-
     # Get the path to the settings.json file based on the current directory & .vscode folder
     settings_json = Path.cwd() / ".vscode" / "settings.json"
 
+    runner = CliRunner()
+    result = runner.invoke(
+        ideconfig_cli, ["--ide", "vscode", "--target", "workspace", "--revision", str(revision)]
+    )
+    stdout = result.output.replace("\\\\", "\\")
+
     # Assert the correct settings.json file and stubs location is in the output
-    assert f"Update {settings_json} with the following information" in out
-    assert str(stubs_location) in out
-    assert "Please ensure the .vscode folder is in the root of your project or repository" in out
+    assert result.exit_code == 0
+    assert f"Update {settings_json} with the following information" in stdout
+    assert str(stubs_location) in stdout
+    assert "Please ensure the .vscode folder is in the root of your project or repository" in stdout
 
 
 @pytest.mark.cli
@@ -443,6 +414,126 @@ def test_ideconfig_cli_default(test_env, run_subprocess, rootdir, pytestconfig):
     # Decode stdout and fix extra backslashes in paths
     stdout = subprocess_output_ideconfig[1].decode().replace("\\\\", "\\")
 
-    assert revision in stdout
+    # Get the version from the Mechanical executable
+    exe = atp.get_mechanical_path(allow_input=False, version=revision)
+    if exe:
+        exe_version = atp.version_from_path("mechanical", exe)
+        assert str(exe_version) in stdout
+
     assert str(settings_json_fragment) in stdout
     assert venv_loc in stdout
+
+
+@pytest.mark.cli
+def test_ideconfig_revision_max_min():
+    """Test the IDE configuration location when no arguments are supplied."""
+    # Set the revision number to be greater than the maximum stubs revision number
+    stubs_location = get_stubs_location()
+    # Get the path to the settings.json file based on operating system env vars
+    settings_json = get_settings_location()
+
+    # Set the revision number to be greater than the maximum stubs revision number
+    gt_max_revision = MAX_STUBS_REVN + 10
+    # Set the revision number to be less than the minimum stubs revision number
+    lt_min_revision = MIN_STUBS_REVN - 10
+
+    # Set up the runner for click
+    runner = CliRunner()
+
+    # Assert a warning is raised when the revision is greater than the maximum version in the stubs
+    with pytest.warns(UserWarning):
+        result = runner.invoke(
+            ideconfig_cli,
+            ["--ide", "vscode", "--target", "user", "--revision", str(gt_max_revision)],
+        )
+        stdout = result.output.replace("\\\\", "\\")
+
+        assert result.exit_code == 0
+        assert f"Update {settings_json} with the following information" in stdout
+        assert str(stubs_location) in stdout
+        assert str(MAX_STUBS_REVN) in stdout
+
+    # Assert an exception is raised when the revision is less than the minimum version in the stubs
+    result = runner.invoke(
+        ideconfig_cli, ["--ide", "vscode", "--target", "user", "--revision", str(lt_min_revision)]
+    )
+    assert result.exception is not None
+    assert f"PyMechanical Stubs are not available for {lt_min_revision}" in result.exception.args[0]
+
+
+@pytest.mark.cli
+def test_ideconfig_no_revision():
+    """Test the IDE configuration when no revision is supplied."""
+    # Set the revision number to be greater than the maximum stubs revision number
+    stubs_location = get_stubs_location()
+    # Get the path to the settings.json file based on operating system env vars
+    settings_json = get_settings_location()
+
+    # Set the runner for click
+    runner = CliRunner()
+    result = runner.invoke(ideconfig_cli, ["--ide", "vscode", "--target", "user"])
+    stdout = result.output.replace("\\\\", "\\")
+
+    assert result.exit_code == 0
+    assert f"Update {settings_json} with the following information" in stdout
+    assert str(stubs_location) in stdout
+
+
+@pytest.mark.cli
+def test_cli_engine_type_args(disable_cli, pytestconfig):
+    # Default engine type
+    args, _ = _cli_impl(exe="AnsysWBU.exe", port=11)
+    assert "-engineType" not in args
+
+    # Select ironpython engine type
+    args, _ = _cli_impl(exe="AnsysWBU.exe", enginetype="ironpython", input_script="foo.py")
+    assert "-engineType" in args
+    assert "ironpython" in args
+
+    # Select cpython engine type
+    args, _ = _cli_impl(exe="AnsysWBU.exe", enginetype="cpython", input_script="foo.py")
+    assert "-engineType" in args
+    assert "cpython" in args
+
+
+@pytest.mark.cli
+def test_cli_engine_type_selection(disable_cli, pytestconfig):
+    version = int(pytestconfig.getoption("ansys_version"))
+    # Invalid engine type - this should be caught by Click's Choice validation
+    with pytest.raises(Exception) as e:
+        _cli_impl(
+            exe="AnsysWBU.exe", version=version, enginetype="invalid_engine", input_script="foo.py"
+        )
+    assert "Invalid engine type" in str(e.value)
+
+    # Test enginetype without input script should fail
+    with pytest.raises(Exception) as e:
+        _cli_impl(exe="AnsysWBU.exe", version=version, enginetype="cpython")
+    assert "Cannot specify engine type without an input script" in str(e.value)
+
+
+@pytest.mark.cli
+def test_cli_enginetype_errors(disable_cli, pytestconfig):
+    """Test engine type validation errors."""
+
+    # Test enginetype without input script should fail
+    runner = CliRunner()
+    version = int(pytestconfig.getoption("ansys_version"))
+    # Test enginetype with version other than 261 should fail
+    if version < 261:
+        result = runner.invoke(
+            cli,
+            [
+                "--revision",
+                str(int(pytestconfig.getoption("ansys_version"))),
+                "--input-script",
+                "foo.py",
+                "--enginetype",
+                "cpython",
+            ],
+        )
+        assert result.exit_code != 0
+        assert (
+            "--enginetype option for cpython is only applicable for version 261 or later."
+            in result.output
+        )

@@ -8,7 +8,7 @@ enabling the use of Ansys technologies directly from Python.
 It allows users to integrate the Mechanical multiphysics solver
 into custom applications via ``ansys-mechanical-core``, which provides a Python-friendly
 interface to drive the software that facilitates the use of
-:ref:`ref_user_guide_scripting` commands.
+:ref:`Mechanical Scripting <ref_scripting>` commands.
 
 
 .. grid:: 1 2 2 2
@@ -35,7 +35,7 @@ interface to drive the software that facilitates the use of
         :link-type: doc
         :text-align: left
 
-        How to create Mechanical docker images.
+        How to run Mechanical Docker containers.
 
     .. grid-item-card:: Windows Subsystem for Linux (WSL)
         :padding: 2 2 2 2

@@ -21,48 +21,116 @@
 # SOFTWARE.
 
 """Launch embedded instance."""
-# import logging
-import sys
+import argparse
 
 import ansys.mechanical.core as pymechanical
+from ansys.mechanical.core.embedding.app import is_initialized
 
-# from ansys.mechanical.core.embedding.logger import Configuration
 
-
-def launch_app(version, private_appdata):
+def launch_app(args):
     """Launch embedded instance of app."""
-    # Configuration.configure(level=logging.DEBUG, to_stdout=True, base_directory=None)
-    app = pymechanical.App(version=version, private_appdata=private_appdata, copy_profile=True)
+    if args.debug:
+        import logging
+
+        from ansys.mechanical.core.embedding.logger import Configuration
+
+        Configuration.configure(level=logging.DEBUG, to_stdout=True, base_directory=None)
+
+    if args.test_not_initialized:
+        init_msg = "The app is initialized" if is_initialized() else "The app is not initialized"
+        print(init_msg)
+    if args.test_feature_flags:
+        app = pymechanical.App(
+            version=int(args.version),
+            private_appdata=args.private_appdata,
+            copy_profile=False,
+            globals=globals(),
+            feature_flags=["ThermalShells", "MultistageHarmonic"],
+        )
+        import Ansys
+
+        if Ansys.ACT.Mechanical.MechanicalAPI.Instance.IsFeatureFlagEnabled(
+            "Mechanical.MultistageHarmonic"
+        ):
+            print("MultistageHarmonic is enabled")
+        if Ansys.ACT.Mechanical.MechanicalAPI.Instance.IsFeatureFlagEnabled(
+            "Mechanical.ThermalShells"
+        ):
+            print("ThermalShells is enabled")
+    elif args.test_readonly:
+        app = pymechanical.App(version=int(args.version), readonly=True)
+        if app.readonly:
+            print("The app is started in read-only mode")
+        else:
+            print("The app is not in read-only mode")
+    else:
+        app = pymechanical.App(
+            version=int(args.version),
+            private_appdata=args.private_appdata,
+            copy_profile=False,
+            globals=globals(),
+        )
     return app
 
 
-def set_showtriad(version, appdata_option, value):
+def test_globals(args):
+    """Test ViewOrientationType doesn't throw an error when globals are updated."""
+    # Set BUILDING_GALLERY to True
+    pymechanical.BUILDING_GALLERY = True
+    # Launch an embedded instance of the app without updating globals
+    app = pymechanical.App(version=int(args.version))
+    # Launch an embedded instance of the app with updated globals
+    app = pymechanical.App(globals=globals())
+    # Check that ViewOrientationType is valid
+    app.Graphics.Camera.SetSpecificViewOrientation(ViewOrientationType.Iso)
+    print("ViewOrientationType exists")
+
+    # Check that the app can print messages in the building gallery
+    try:
+        app.messages.show()
+    except AssertionError:
+        print("The app cannot print messages in the building gallery")
+
+
+def set_showtriad(args, value):
     """Launch embedded instance of app & set ShowTriad to False."""
-    app = launch_app(version, appdata_option)
-    app.ExtAPI.Graphics.ViewOptions.ShowTriad = value
+    app = launch_app(args)
+    ExtAPI.Graphics.ViewOptions.ShowTriad = value
     app.close()
 
 
-def print_showtriad(version, appdata_option):
+def print_showtriad(args):
     """Return ShowTriad value."""
-    app = launch_app(version, appdata_option)
+    app = launch_app(args)
     print("ShowTriad value is " + str(app.ExtAPI.Graphics.ViewOptions.ShowTriad))
     app.close()
 
 
 if __name__ == "__main__":
-    version = int(sys.argv[1])
-    if len(sys.argv) == 2:
-        launch_app(version, False)
-        sys.exit(0)
+    # Set up argparse for command line arguments from subprocess.
+    parser = argparse.ArgumentParser(description="Launch embedded instance of app.")
+    parser.add_argument("--version", type=str, help="Mechanical version")
+    parser.add_argument("--private_appdata", type=str, help="Private appdata")
+    parser.add_argument("--action", type=str, help="Action to perform")
+    parser.add_argument("--debug", action="store_true")  # 'store_true' implies default=False
+    parser.add_argument(
+        "--test_not_initialized", action="store_true"
+    )  # 'store_true' implies default=False
+    parser.add_argument("--test_readonly", action="store_true")  # Add the missing argument
+    parser.add_argument("--test_feature_flags", action="store_true")
+    # Get and set args from subprocess
+    args = parser.parse_args()
+    action = args.action
 
-    appdata_option = sys.argv[2]
-    action = sys.argv[3]
+    args.private_appdata = args.private_appdata == "True"
 
-    private_appdata = appdata_option == "True"
     if action == "Set":
-        set_showtriad(version, private_appdata, False)
+        set_showtriad(args, False)
     elif action == "Run":
-        print_showtriad(version, private_appdata)
+        print_showtriad(args)
     elif action == "Reset":
-        set_showtriad(version, private_appdata, True)
+        set_showtriad(args, True)
+    elif action == "TestGlobals":
+        test_globals(args)
+    else:
+        launch_app(args)

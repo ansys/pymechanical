@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Miscellaneous embedding tests"""
+"""Logger embedding tests"""
 import os
 import sys
 import typing
@@ -117,7 +117,6 @@ def test_logging_write_info_after_initialize_with_error_level(
 @pytest.mark.parametrize("addin_configuration", ["Mechanical", "WorkBench"])
 @pytest.mark.embedding_scripts
 @pytest.mark.embedding_logging
-@pytest.mark.minimum_version(241)
 def test_addin_configuration(rootdir, run_subprocess, pytestconfig, addin_configuration):
     """Test that mechanical can start with both the Mechanical and WorkBench configuration."""
     stderr = _run_embedding_log_test(

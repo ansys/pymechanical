@@ -41,7 +41,7 @@ def resolve(version):
         resolve_handler = assembly_resolver.MechanicalResolveEventHandler
         System.AppDomain.CurrentDomain.AssemblyResolve += resolve_handler
     except AttributeError:
-        error_msg = f"""Unable to resolve Mechanical assemblies. Please ensure the following:
+        error_msg = """Unable to resolve Mechanical assemblies. Please ensure the following:
     1. Mechanical is installed.
     2. A folder with the name "Ansys" does not exist in the same directory as the script being run.
     """

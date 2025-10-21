@@ -28,6 +28,7 @@ from pathlib import Path
 import re
 import site
 import sys
+import warnings
 
 import ansys.tools.path as atp
 import click
@@ -46,7 +47,7 @@ def get_stubs_location():
     site_packages_regex = re.compile(f"{prefix_path}.*site-packages$")
     site_packages_paths = list(filter(site_packages_regex.match, site_packages))
 
-    if len(site_packages_paths) == 1:
+    if len(site_packages_paths) >= 1:
         # Get the stubs location
         stubs_location = Path(site_packages_paths[0]) / "ansys" / "mechanical" / "stubs"
         return stubs_location
@@ -88,10 +89,11 @@ def _vscode_impl(
         The type of settings to update. Either "user" or "workspace" in VS Code.
         By default, it's ``user``.
     revision: int
-        The Mechanical revision number. For example, "251".
+        The Mechanical revision number. For example, "252".
         If unspecified, it finds the default Mechanical version from ansys-tools-path.
     """
     # Update the user or workspace settings
+    settings_json = "the settings.json file"
     if target == "user":
         # Get the path to the user's settings.json file depending on the platform
         if "win" in sys.platform:
@@ -144,20 +146,30 @@ def _cli_impl(
         The type of settings to update. Either "user" or "workspace" in VS Code.
         By default, it's ``user``.
     revision: int
-        The Mechanical revision number. For example, "251".
+        The Mechanical revision number. For example, "252".
         If unspecified, it finds the default Mechanical version from ansys-tools-path.
     """
     # Get the ansys-mechanical-stubs install location
     stubs_location = get_stubs_location()
     # Get all revision numbers available in ansys-mechanical-stubs
     revns = get_stubs_versions(stubs_location)
-    # Check the IDE and raise an exception if it's not VS Code
-    if revision < min(revns) or revision > max(revns):
+
+    # Check if the user revision number is less or greater than the min and max revisions
+    # in the ansys-mechanical-stubs package location
+    if revision < min(revns):
         raise Exception(f"PyMechanical Stubs are not available for {revision}")
-    elif ide != "vscode":
+    elif revision > max(revns):
+        warnings.warn(
+            f"PyMechanical Stubs are not available for {revision}. Using {max(revns)} instead.",
+            stacklevel=2,
+        )
+        revision = max(revns)
+
+    # Check the IDE and raise an exception if it's not VS Code
+    if ide != "vscode":
         raise Exception(f"{ide} is not supported at the moment.")
-    else:
-        return _vscode_impl(target, revision)
+
+    return _vscode_impl(target, revision)
 
 
 @click.command()
@@ -178,7 +190,7 @@ def _cli_impl(
     "--revision",
     default=None,
     type=int,
-    help='The Mechanical revision number, e.g. "251" or "242". If unspecified,\
+    help='The Mechanical revision number, e.g. "252" or "251". If unspecified,\
 it finds and uses the default version from ansys-tools-path.',
 )
 def cli(ide: str, target: str, revision: int) -> None:
@@ -192,18 +204,21 @@ def cli(ide: str, target: str, revision: int) -> None:
         The type of settings to update. Either "user" or "workspace" in VS Code.
         By default, it's ``user``.
     revision: int
-        The Mechanical revision number. For example, "251".
+        The Mechanical revision number. For example, "252".
         If unspecified, it finds the default Mechanical version from ansys-tools-path.
 
     Usage
     -----
     The following example demonstrates the main use of this tool:
 
-        $ ansys-mechanical-ideconfig --ide vscode --target user --revision 251
+        $ ansys-mechanical-ideconfig --ide vscode --target user --revision 252
 
     """
-    exe = atp.get_mechanical_path(allow_input=False, version=revision)
-    version = atp.version_from_path("mechanical", exe)
+    if not revision:
+        exe = atp.get_mechanical_path(allow_input=False, version=revision)
+        version = atp.version_from_path("mechanical", exe)
+    else:
+        version = revision
 
     return _cli_impl(
         ide,

@@ -27,7 +27,6 @@ from asyncio.subprocess import PIPE
 import os
 import sys
 import typing
-import warnings
 
 import ansys.tools.path as atp
 import click
@@ -100,6 +99,7 @@ def _cli_impl(
     private_appdata: bool = False,
     exit: bool = False,
     features: str = None,
+    enginetype: str = None,
 ):
     if project_file and input_script:
         raise Exception("Cannot open a project file *and* run a script.")
@@ -116,6 +116,14 @@ def _cli_impl(
     if not input_script and script_args:
         raise Exception("Cannot add script arguments without an input script.")
 
+    if enginetype and not input_script:
+        raise Exception("Cannot specify engine type without an input script (-i).")
+
+    if enginetype and enginetype not in ["ironpython", "cpython"]:
+        raise Exception(
+            f"Invalid engine type '{enginetype}'. Valid options are: ironpython, cpython"
+        )
+
     if script_args:
         if '"' in script_args:
             raise Exception(
@@ -129,10 +137,6 @@ def _cli_impl(
     args = [exe, "-DSApplet"]
     if (not graphical) or (not show_welcome_screen):
         args.append("-AppModeMech")
-
-    if version < 232:
-        args.append("-nosplash")
-        args.append("-notabctrl")
 
     if not graphical:
         args.append("-b")
@@ -159,14 +163,8 @@ def _cli_impl(
 
     if (not graphical) and input_script:
         exit = True
-        if version < 241:
-            warnings.warn(
-                "Please ensure ExtAPI.Application.Close() is at the end of your script. "
-                "Without this command, Batch mode will not terminate.",
-                stacklevel=2,
-            )
 
-    if exit and input_script and version >= 241:
+    if exit and input_script:
         args.append("-x")
 
     profile: UniqueUserProfile = None
@@ -176,7 +174,7 @@ def _cli_impl(
         profile.update_environment(env)
 
     if not DRY_RUN:
-        version_name = atp.SUPPORTED_ANSYS_VERSIONS[version]
+        version_name = atp.SUPPORTED_ANSYS_VERSIONS.get(version, version)
         if graphical:
             mode = "Graphical"
         else:
@@ -190,6 +188,10 @@ def _cli_impl(
 
     if features is not None:
         args.extend(get_command_line_arguments(features.split(";")))
+
+    if enginetype and input_script:
+        args.append("-engineType")
+        args.append(enginetype)
 
     if DRY_RUN:
         return args, env
@@ -226,6 +228,14 @@ def _cli_impl(
     default=None,
     help=f"Beta feature flags to set, as a semicolon delimited list.\
  Options: {get_feature_flag_names()}",
+)
+@click.option(
+    "--enginetype",
+    type=click.Choice(["ironpython", "cpython"], case_sensitive=False),
+    default=None,
+    help="Engine type to use with input scripts. Only applicable for version 261 "
+    "when used with -i/--input-script."
+    "Default is 'ironpython'.",
 )
 @click.option(
     "-i",
@@ -269,7 +279,7 @@ The ``exit`` command is only supported in version 2024 R1 or later.",
     "--revision",
     default=None,
     type=int,
-    help='Ansys Revision number, e.g. "251" or "242". If none is specified\
+    help='Ansys Revision number, e.g. "251" or "252". If none is specified\
 , uses the default from ansys-tools-path',
 )
 @click.option(
@@ -291,6 +301,7 @@ def cli(
     private_appdata: bool,
     exit: bool,
     features: str,
+    enginetype: str,
 ):
     """CLI tool to run mechanical.
 
@@ -298,12 +309,18 @@ def cli(
 
     The following example demonstrates the main use of this tool:
 
-        $ ansys-mechanical -r 251 -g
+        $ ansys-mechanical -r 252 -g
 
-        Starting Ansys Mechanical version 2025R1 in graphical mode...
+        Starting Ansys Mechanical version 2025R2 in graphical mode...
     """
     exe = atp.get_mechanical_path(allow_input=False, version=revision)
     version = atp.version_from_path("mechanical", exe)
+
+    # Validate enginetype usage - must be used with input script and version 261
+    if enginetype and enginetype != "ironpython" and version < 261:
+        raise click.ClickException(
+            "--enginetype option for cpython is only applicable for version 261 or later."
+        )
 
     return _cli_impl(
         project_file,
@@ -318,4 +335,5 @@ def cli(
         private_appdata,
         exit,
         features,
+        enginetype,
     )

@@ -1,7 +1,6 @@
 
 .. title:: PyMechanical
 
-
 .. image:: /_static/logo/pymechanical-logo-light.png
    :class: only-light
    :alt: PyMechanical Logo Light
@@ -15,7 +14,7 @@
    :align: center
 
 
-Python API to interact with `Ansys Mechanical`_ (FEA software for structural engineering) from **2023R2** and later versions.
+Python API to interact with `Ansys Mechanical`_ (FEA software for structural engineering) from **2024R1** and later versions.
 
 .. grid:: 3
 
@@ -25,10 +24,19 @@ Python API to interact with `Ansys Mechanical`_ (FEA software for structural eng
         :link: getting_started/index
         :link-type: doc
 
-        Learn how to install and use PyMechanical. Explains architecture
+        Learn how to install PyMechanical and verify the installation. Explains architecture
         and background.
 
         :bdg-primary-line:`Install` :bdg-primary-line:`Architecture` :bdg-primary-line:`Docker`
+
+    .. grid-item-card:: User Guide :fa:`window-maximize`
+        :padding: 2 2 2 2
+        :link: user_guide/index
+        :link-type: doc
+
+        Learn how to use PyMechanical and its features including scripting, configuration, and CLI.
+
+        :bdg-primary-line:`How to` :bdg-primary-line:`Mechanical scripting` :bdg-primary-line:`CLI`
 
     .. grid-item-card:: Examples :fa:`scroll`
         :padding: 2 2 2 2
@@ -37,7 +45,7 @@ Python API to interact with `Ansys Mechanical`_ (FEA software for structural eng
 
         Dive into examples created using PyMechanical.
 
-        :bdg-primary-line:`Basic` :bdg-primary-line:`Technology-showcase` :bdg-primary-line:`Tips`
+        :bdg-primary-line:`Basic` :bdg-primary-line:`Advanced` :bdg-primary-line:`Remote`
 
     .. grid-item-card:: API reference :fa:`book-bookmark`
         :padding: 2 2 2 2
@@ -48,33 +56,6 @@ Python API to interact with `Ansys Mechanical`_ (FEA software for structural eng
 
         :bdg-primary-line:`Classes` :bdg-primary-line:`Methods` :bdg-primary-line:`Error handling`
 
-    .. grid-item-card:: Embedding instance :fa:`window-maximize`
-        :padding: 2 2 2 2
-        :link: user_guide_embedding/index
-        :link-type: doc
-
-        A Mechanical object implemented in .NET is directly loaded into Python memory.
-
-        :bdg-primary-line:`Python.NET` :bdg-primary-line:`no-GUI`
-
-    .. grid-item-card:: Remote session :fa:`window-restore`
-        :padding: 2 2 2 2
-        :link: user_guide_session/index
-        :link-type: doc
-
-        Using gRPC, Mechanical operates as a server, ready to respond to client requests.
-
-        :bdg-primary-line:`gRPC` :bdg-primary-line:`GUI`
-
-
-    .. grid-item-card:: Mechanical scripting :fa:`code`
-        :padding: 2 2 2 2
-        :link: user_guide_scripting/index
-        :link-type: doc
-
-        Overview of Ansys Mechanical scripting.
-
-        :bdg-primary-line:`ACT` :bdg-primary-line:`Threading`
 
     .. grid-item-card:: FAQs :fa:`fa-solid fa-circle-question`
         :padding: 2 2 2 2
@@ -92,11 +73,11 @@ Python API to interact with `Ansys Mechanical`_ (FEA software for structural eng
 
         Issues and limitations on both PyMechanical and Mechanical.
 
-        :bdg-primary-line:`23R2` :bdg-primary-line:`24R1` :bdg-primary-line:`24R2` :bdg-primary-line:`25R1`
+        :bdg-primary-line:`24R1` :bdg-primary-line:`24R2` :bdg-primary-line:`25R1` :bdg-primary-line:`25R2`
 
     .. grid-item-card:: Contribute :fa:`people-group`
         :padding: 2 2 2 2
-        :link: contributing
+        :link: contribute
         :link-type: doc
 
         Learn how to contribute to the PyMechanical codebase
@@ -110,12 +91,10 @@ Python API to interact with `Ansys Mechanical`_ (FEA software for structural eng
    :maxdepth: 3
 
    getting_started/index
+   user_guide/index
    examples/index
-   user_guide_session/index
-   user_guide_embedding/index
-   user_guide_scripting/index
    api/index
-   contributing
-   kil/index
+   contribute
    faq
+   kil/index
    changelog

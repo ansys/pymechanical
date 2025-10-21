@@ -45,26 +45,44 @@ def __register_function_codec():
     Ansys.Mechanical.CPython.Codecs.FunctionCodec.Register()
 
 
-def _bind_assembly_for_explicit_interface(assembly_name: str):
-    """Bind the assembly for explicit interface implementation."""
+def _bind_assembly(
+    assembly_name: str, explicit_interface: bool = False, pep8_aliases: bool = False
+) -> None:
+    """Bind the assembly for explicit interface and/or PEP 8 aliases.
+
+    Parameters
+    ----------
+    assembly_name : str
+        The name of the assembly to bind.
+    explicit_interface : bool, optional
+        If True, allows explicit interface implementation. Default is False.
+    pep8_aliases : bool, optional
+        If True, enables PEP 8 aliases. Default is False.
+    """
     # if pythonnet is not installed, we can't bind the assembly
     try:
         distribution("pythonnet")
+        Logger.warning("Cannot bind for explicit interface because pythonnet is installed")
         return
     except ModuleNotFoundError:
         pass
-
     import clr
 
+    Logger.debug(f"Binding assembly {assembly_name}")
     assembly = clr.AddReference(assembly_name)
     from Python.Runtime import BindingManager, BindingOptions
 
     binding_options = BindingOptions()
-    binding_options.AllowExplicitInterfaceImplementation = True
+    if explicit_interface:
+        Logger.debug(f"Binding explicit interface for {assembly_name}")
+        binding_options.AllowExplicitInterfaceImplementation = True
+    if pep8_aliases:
+        Logger.debug(f"Setting PEP 8 aliases for {assembly_name}")
+        binding_options.Pep8Aliases = True
     BindingManager.SetBindingOptions(assembly, binding_options)
 
 
-def initialize(version: int) -> None:
+def initialize(version: int, pep8_aliases: bool = False) -> None:
     """Initialize the runtime.
 
     Pythonnet is already initialized but we need to
@@ -78,6 +96,18 @@ def initialize(version: int) -> None:
     if version >= 242 or os.name == "nt":
         # function codec is distributed with pymechanical on linux only
         # at version 242 or later
+        Logger.debug("Registering function codec")
         __register_function_codec()
+        Logger.debug("Registered function codec")
 
-    _bind_assembly_for_explicit_interface("Ansys.ACT.WB1")
+    explicit_interface = True
+
+    if os.environ.get("PYMECHANICAL_EXPLICIT_INTERFACE") == "0":
+        explicit_interface = False
+
+    # TODO: When the PEP 8 aliases option is enabled (True by default),
+    # keep three environment variables to turn explicit, PEP 8, and both off.
+
+    _bind_assembly(
+        "Ansys.ACT.WB1", explicit_interface=explicit_interface, pep8_aliases=pep8_aliases
+    )

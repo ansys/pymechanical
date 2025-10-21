@@ -31,7 +31,9 @@ import time
 
 import pytest
 
+from ansys.mechanical.core.embedding.app import is_initialized
 from ansys.mechanical.core.embedding.cleanup_gui import cleanup_gui
+from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
 from ansys.mechanical.core.embedding.ui import _launch_ui
 import ansys.mechanical.core.embedding.utils as utils
 
@@ -46,7 +48,6 @@ def test_app_repr(embedded_app):
 
 
 @pytest.mark.embedding
-@pytest.mark.minimum_version(241)
 def test_deprecation_warning(embedded_app):
     harmonic_acoustic = embedded_app.Model.AddHarmonicAcousticAnalysis()
     with pytest.warns(UserWarning):
@@ -117,7 +118,7 @@ def test_app_version(embedded_app):
     """Test version of the Application class."""
     version = embedded_app.version
     assert type(version) is int
-    assert version >= 232
+    assert version >= min(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS)
 
 
 @pytest.mark.embedding
@@ -161,10 +162,8 @@ def test_app_print_tree(embedded_app, capsys, assets):
     assert all(symbol in printed_output for symbol in ["?", "⚡︎", "✕", "✓"])
 
 
-@pytest.mark.embedding
-@pytest.mark.skip(
-    reason="This test is not working on the CI (https://github.com/ansys/pymechanical/issues/1071 )"
-)
+# @pytest.mark.embedding
+@pytest.mark.skip(reason="This test hangs on Linux with Python 3.10-3.13")
 def test_app_poster(embedded_app, printer):
     """The getters of app should be usable after a new().
 
@@ -269,15 +268,26 @@ def test_app_getters_notstale(embedded_app):
 def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
     """Test Python.NET warning of the embedded instance using a test-scoped Python environment."""
 
+    # set these to None to see output in the terminal
+    stdout = subprocess.DEVNULL
+    stderr = subprocess.DEVNULL
+
     # Install pymechanical
     subprocess.check_call(
         [test_env.python, "-m", "pip", "install", "-e", "."],
         cwd=rootdir,
         env=test_env.env,
+        stdout=stdout,
+        stderr=stderr,
     )
 
     # Install pythonnet
-    subprocess.check_call([test_env.python, "-m", "pip", "install", "pythonnet"], env=test_env.env)
+    subprocess.check_call(
+        [test_env.python, "-m", "pip", "install", "pythonnet"],
+        env=test_env.env,
+        stdout=stdout,
+        stderr=stderr,
+    )
 
     # Initialize with pythonnet
     embedded_pythonnet_py = os.path.join(rootdir, "tests", "scripts", "pythonnet_warning.py")
@@ -439,8 +449,9 @@ def test_launch_gui_exception(embedded_app):
 
 
 @pytest.mark.embedding_scripts
-def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory, run_subprocess):
+def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory):
     """Test cleanup function to remove the temporary mechdb file and folder."""
+    assert os.path.isdir(tmp_path)
     temp_file = tmp_path / "tempfiletest.mechdb"
     temp_folder = tmp_path / "tempfiletest_Mech_Files"
 
@@ -454,10 +465,23 @@ def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory, run_subprocess):
     assert temp_folder.exists()
 
     # Run process
-    process, stdout, stderr = run_subprocess(["sleep", "3"])
+    if os.name == "nt":
+        process = subprocess.Popen(
+            ["ping", "127.0.0.1", "-n", "2"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            shell=True,
+        )
+    else:
+        process = subprocess.Popen(
+            ["sleep", "3"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        )
+
+    pid = process.pid
+    assert process.wait() == 0
 
     # Remove the temporary file and folder
-    cleanup_gui(process.pid, temp_file)
+    cleanup_gui(pid, temp_file)
 
     # Assert the file and folder do not exist
     assert not temp_file.exists()
@@ -465,7 +489,7 @@ def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory, run_subprocess):
 
 
 @pytest.mark.embedding_scripts
-def test_attribute_error(tmp_path: pytest.TempPathFactory, pytestconfig, rootdir, run_subprocess):
+def test_attribute_error(tmp_path: pytest.TempPathFactory, pytestconfig, rootdir):
     """Test cleanup function to remove the temporary mechdb file and folder."""
     # Change directory to tmp_path
     os.chdir(tmp_path)
@@ -485,7 +509,9 @@ def test_attribute_error(tmp_path: pytest.TempPathFactory, pytestconfig, rootdir
 
     # Run the script and assert the AttributeError is raised
     stdout, stderr = subprocess.Popen(
-        [sys.executable, tmp_file_script, version], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        [sys.executable, tmp_file_script, "--version", version],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
     ).communicate()
 
     # Assert the AttributeError is raised
@@ -513,7 +539,7 @@ def test_app_execute_script_from_file(embedded_app, rootdir, printer):
 
 
 @pytest.mark.embedding
-def test_app_lock_file_open(embedded_app, tmp_path: pytest.TempPathFactory):
+def test_app_lock_file_open(embedded_app, tmp_path: pytest.TempPathFactory, caplog):
     """Test the lock file is removed on open if remove_lock=True."""
     embedded_app.DataModel.Project.Name = "PROJECT 1"
     project_file = os.path.join(tmp_path, f"{NamedTemporaryFile().name}.mechdat")
@@ -528,5 +554,91 @@ def test_app_lock_file_open(embedded_app, tmp_path: pytest.TempPathFactory):
     assert lock_file.exists()
 
     # Assert a warning is emitted if the lock file is going to be removed
-    with pytest.warns(UserWarning):
+
+    with caplog.at_level("WARNING"):
         embedded_app.open(project_file, remove_lock=True)
+
+    assert any("Removing the lock file" in message for message in caplog.messages)
+
+
+@pytest.mark.embedding
+def test_app_initialized(embedded_app):
+    """Test the app is initialized."""
+    assert is_initialized()
+
+
+@pytest.mark.embedding
+def test_app_not_initialized(run_subprocess, pytestconfig, rootdir):
+    """Test the app is not initialized."""
+    version = pytestconfig.getoption("ansys_version")
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+
+    process, stdout, stderr = run_subprocess(
+        [
+            sys.executable,
+            embedded_py,
+            "--version",
+            version,
+            "--test_not_initialized",
+        ]
+    )
+    stdout = stdout.decode()
+
+    assert "The app is not initialized" in stdout
+
+
+@pytest.mark.embedding
+def test_app_start_readonly(run_subprocess, pytestconfig, rootdir, printer):
+    """Test the app is started in read-only mode."""
+    version = pytestconfig.getoption("ansys_version")
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+    printer(f"Testing readonly for version {version}")
+    process, stdout, stderr = run_subprocess(
+        [
+            sys.executable,
+            embedded_py,
+            "--version",
+            version,
+            "--test_readonly",
+        ]
+    )
+    stdout = stdout.decode()
+    if int(version) < 261:
+        assert "The app is not in read-only mode" in stdout
+    else:
+        assert "The app is started in read-only mode" in stdout
+
+
+@pytest.mark.minimum_version(261)
+@pytest.mark.embedding
+def test_app_feature_flags(run_subprocess, pytestconfig, rootdir, printer):
+    """Test app feature flags. Only supported in 26R1 and later,
+    as arguments are accepted from this version onward."""
+    version = pytestconfig.getoption("ansys_version")
+    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+    printer(f"Testing feature flags for version {version}")
+    process, stdout, stderr = run_subprocess(
+        [
+            sys.executable,
+            embedded_py,
+            "--version",
+            version,
+            "--test_feature_flags",
+        ]
+    )
+    stdout = stdout.decode()
+    assert "ThermalShells is enabled" in stdout
+    assert "MultistageHarmonic is enabled" in stdout
+
+    # Test that feature flags are not enabled by default
+    process, stdout, stderr = run_subprocess(
+        [
+            sys.executable,
+            embedded_py,
+            "--version",
+            version,
+        ]
+    )
+    stdout = stdout.decode()
+    assert "ThermalShells is enabled" not in stdout
+    assert "MultistageHarmonic is enabled" not in stdout
