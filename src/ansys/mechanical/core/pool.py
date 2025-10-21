@@ -28,7 +28,6 @@ import warnings
 
 from ansys.mechanical.core.errors import VersionError
 from ansys.mechanical.core.mechanical import (
-    _HAS_ANSYS_PIM,
     _HAS_TQDM,
     LOG,
     MECHANICAL_DEFAULT_PORT,
@@ -184,7 +183,6 @@ class LocalMechanicalPool:
         else:
             if _HAS_ANSYS_PIM and pypim.is_configured():  # pragma: no cover
                 if "version" in kwargs:
-                    kwargs["version"]
                     self._remote = True
                 else:
                     raise ValueError("Pypim is configured, but version is not passed.")
