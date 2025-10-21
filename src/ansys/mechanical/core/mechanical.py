@@ -1289,12 +1289,6 @@ class Mechanical(object):
         >>> files = mechanical.list_files()
         >>> for file in files: print(file)
         """
-        # Get mechdb file path
-        mechdbPath = self.run_python_script("ExtAPI.DataModel.Project.FilePath")
-
-        # Get project directory
-        rootDir = self.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
-
         # Get all files using server-side script
         script = """
 import os
