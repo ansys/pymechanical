@@ -1279,8 +1279,8 @@ class Mechanical(object):
 
         Returns
         -------
-        list
-            List of files in the working directory of Mechanical.
+        list[str]
+            List of file paths in the working directory of Mechanical.
 
         Examples
         --------
@@ -1289,32 +1289,44 @@ class Mechanical(object):
         >>> files = mechanical.list_files()
         >>> for file in files: print(file)
         """
-        #         _list = self.run_python_script(
-        #             """import os
-        # mechdbPath = ExtAPI.DataModel.Project.FilePath
-        # file_list = []
-        # if mechdbPath != '':
-        #     file_list.append(mechdbPath)
-        # rootDir = ExtAPI.DataModel.Project.ProjectDirectory
-        # """
-        #         )
-        print("func list_files started")
-        file_list = []
-        mechdbPath = self.run_python_script("""ExtAPI.DataModel.Project.FilePath""")
-        if mechdbPath != "":
-            file_list.append(mechdbPath)
-        rootDir = self.project_directory
-        for dirPath, dirNames, fileNames in os.walk(rootDir):
-            for fileName in fileNames:
-                file_list.append(os.path.join(dirPath, fileName))
-        print(file_list)
-        print(type(file_list))
-        if not file_list:  # pragma: no cover
+        # Get mechdb file path
+        mechdbPath = self.run_python_script("ExtAPI.DataModel.Project.FilePath")
+
+        # Get project directory
+        rootDir = self.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
+
+        # Get all files using server-side script
+        script = """
+import os
+file_list = []
+
+# Add mechdb path if it exists
+mechdbPath = ExtAPI.DataModel.Project.FilePath
+if mechdbPath and mechdbPath.strip():
+    file_list.append(mechdbPath)
+
+# Walk through project directory
+rootDir = ExtAPI.DataModel.Project.ProjectDirectory
+if rootDir and rootDir.strip():
+    for dirPath, dirNames, fileNames in os.walk(rootDir):
+        for fileName in fileNames:
+            full_path = os.path.join(dirPath, fileName)
+            file_list.append(full_path)
+
+# Join with newlines and return
+'\\n'.join(file_list)
+"""
+
+        result = self.run_python_script(script)
+        if not result:  # pragma: no cover
             self.log_warning("No files listed")
-        return list(file_list)
+            return []
+
+        # Split the result into a list and return
+        return result.split("\n") if result else []
 
     def _get_files(self, files, recursive=False):
-        self_files = self.list_files()  # to avoid calling it too much
+        self_files = self.list_files()
 
         if isinstance(files, str):
             if self._local:  # pragma: no cover
@@ -2042,7 +2054,7 @@ server.start()
 
 def launch_remote_mechanical(
     version=None,
-) -> (grpc.Channel, Optional["Instance"]):  # pragma: no cover
+) -> tuple[grpc.Channel, Optional[typing.Any]]:  # pragma: no cover
     """Start Mechanical remotely using the Product Instance Management (PIM) API.
 
     When calling this method, you must ensure that you are in an environment
