@@ -1301,11 +1301,9 @@ if mechdbPath != "":
 
 # Walk through project directory
 rootDir = ExtAPI.DataModel.Project.ProjectDirectory
-if rootDir and rootDir.strip():
-    for dirPath, dirNames, fileNames in os.walk(rootDir):
+for dirPath, _, fileNames in os.walk(rootDir):
         for fileName in fileNames:
-            full_path = os.path.join(dirPath, fileName)
-            file_list.append(full_path)
+            file_list.append(os.path.join(dirPath, fileName))
 
 # Join with newlines and return
 '\\n'.join(file_list)
