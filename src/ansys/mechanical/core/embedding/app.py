@@ -426,6 +426,7 @@ class App:
 
             clr.AddReference("Ansys.Mechanical.Scripting")
             import Ansys
+
             script_engine = Ansys.Mechanical.Scripting.EngineFactory.CreateEngine()
             empty_scope = False
             debug_mode = False
