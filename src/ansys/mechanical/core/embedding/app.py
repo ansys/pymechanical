@@ -267,8 +267,11 @@ class App:
         pep8_alias = kwargs.get("pep8", False)
         readonly = kwargs.get("readonly", False)
         feature_flags = kwargs.get("feature_flags", [])
-        additional_args = _additional_args(readonly, feature_flags, self._version)
-
+        if readonly or feature_flags:
+            additional_args = _additional_args(readonly, feature_flags, self._version)
+        else:
+            additional_args = ""
+        
         runtime.initialize(self._version, pep8_aliases=pep8_alias)
         self._app = _start_application(configuration, self._version, db_file, additional_args)
         connect_warnings(self)
