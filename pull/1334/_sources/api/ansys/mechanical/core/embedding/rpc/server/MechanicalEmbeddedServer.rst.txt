@@ -1,0 +1,118 @@
+.. vale off
+
+
+
+:class:`MechanicalEmbeddedServer`
+=================================
+
+.. py:class:: ansys.mechanical.core.embedding.rpc.server.MechanicalEmbeddedServer(port: int = None, version: int = None, methods: List[Callable] = [], impl: List = [])
+
+   
+   Start rpc server.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: MechanicalEmbeddedServer
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~start`
+            - Start server on specified port.
+          * - :py:attr:`~stop`
+            - Stop the server.
+
+
+
+
+
+
+
+
+Import detail
+-------------
+
+    from ansys.mechanical.core.embedding.rpc.server import MechanicalEmbeddedServer
+
+
+
+
+
+Method detail
+-------------
+.. py:method:: start() -> None
+
+   
+   Start server on specified port.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: stop() -> None
+
+   
+   Stop the server.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. vale on
