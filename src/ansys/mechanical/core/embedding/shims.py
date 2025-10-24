@@ -25,12 +25,17 @@
 These shims are used when APIs are released in newer versions of Mechanical,
 but workarounds exist in an older release
 """
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 import warnings
 
+if TYPE_CHECKING:
+    from ansys.mechanical.core.embedding import App
 
-def import_materials(
-    app: "ansys.mechanical.core.embedding.Application", material_file: str
-) -> None:
+
+def import_materials(app: App, material_file: str) -> None:
     """Import material from matml file."""
     warnings.warn(
         "Use of this function is deprecated. Use Model.Materials.Import() directly.",

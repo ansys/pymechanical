@@ -29,11 +29,11 @@ from ansys.mechanical.core.embedding.logger import Logger
 
 
 def __register_container_codecs():
-    import Python.Runtime.Codecs as codecs
+    import Python.Runtime.Codecs as Codecs
 
-    codecs.ListDecoder.Instance.Register()
-    codecs.SequenceDecoder.Instance.Register()
-    codecs.IterableDecoder.Instance.Register()
+    Codecs.ListDecoder.Instance.Register()
+    Codecs.SequenceDecoder.Instance.Register()
+    Codecs.IterableDecoder.Instance.Register()
 
 
 def __register_function_codec():

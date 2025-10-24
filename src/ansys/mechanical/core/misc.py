@@ -24,6 +24,7 @@
 
 from functools import wraps
 import os
+from pathlib import Path
 import socket
 from threading import Thread
 
@@ -51,17 +52,17 @@ def get_mechanical_bin(release_version):
         2025 R2.
     """
     if is_windows():  # pragma: no cover
-        program_files = os.getenv("PROGRAMFILES", os.path.join("c:\\", "Program Files"))
+        program_files = os.getenv("PROGRAMFILES", str(Path("c:") / "Program Files"))
         ans_root = os.getenv(
             f"AWP_ROOT{release_version}",
-            os.path.join(program_files, "ANSYS Inc", f"v{release_version}"),
+            str(Path(program_files) / "ANSYS Inc" / f"v{release_version}"),
         )
-        mechanical_bin = os.path.join(ans_root, "aisol", "bin", "winx64", f"AnsysWBU.exe")
+        mechanical_bin = Path(ans_root) / "aisol" / "bin" / "winx64" / "AnsysWBU.exe"
     else:
-        ans_root = os.getenv(f"AWP_ROOT{release_version}", os.path.join("/", "usr", "ansys_inc"))
-        mechanical_bin = os.path.join(*ans_root, f"v{release_version}", "aisol", f".workbench")
+        ans_root = os.getenv(f"AWP_ROOT{release_version}", str(Path("/") / "usr" / "ansys_inc"))
+        mechanical_bin = Path(ans_root) / f"v{release_version}" / "aisol" / ".workbench"
 
-    return mechanical_bin
+    return str(mechanical_bin)
 
 
 def threaded(func):

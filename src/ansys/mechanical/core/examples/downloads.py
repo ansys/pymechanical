@@ -22,7 +22,7 @@
 
 """Functions to download sample datasets from the PyAnsys data repository."""
 
-import os
+from pathlib import Path
 import shutil
 from typing import Optional
 from urllib.parse import urljoin
@@ -57,19 +57,22 @@ def _get_filepath_on_default_server(filename: str, *directory: str):
 def _retrieve_url(url: str, dest: str) -> str:
     with requests.get(url, stream=True, timeout=10) as r:
         r.raise_for_status()
-        with open(dest, "wb") as f:
+        dest_path = Path(dest)
+        dest_path.parent.mkdir(parents=True, exist_ok=True)  # Ensure directory exists
+        with dest_path.open("wb") as f:
             for chunk in r.iter_content(chunk_size=4096):
                 f.write(chunk)
-    return dest
+    return str(dest_path)
 
 
 def _retrieve_data(url: str, filename: str, dest: str = None, force: bool = False):
     if dest is None:
         dest = pymechanical.EXAMPLES_PATH
-    local_path = os.path.join(dest, os.path.basename(filename))
-    if not force and os.path.isfile(local_path):
-        return local_path
-    local_path = _retrieve_url(url, local_path)
+    dest_path = Path(dest)
+    local_path = dest_path / Path(filename).name
+    if not force and local_path.is_file():
+        return str(local_path)
+    local_path = _retrieve_url(url, str(local_path))
     return local_path
 
 
@@ -100,7 +103,7 @@ def download_file(
     Download a file from the server
 
     >>> from ansys.mechanical.core import examples
-    >>> filename = examples.download_file('example_01_geometry.agdb', 'pymechanical', '00_basic')
+    >>> filename = examples.download_file("example_01_geometry.agdb", "pymechanical", "00_basic")
     >>> filename
     'C:/Users/user/AppData/Local/ansys_mechanical_core/ansys_mechanical_core/examples/example_01_geometry.agdb'
     """
@@ -127,6 +130,8 @@ def delete_downloads() -> bool:
     'True'
 
     """
-    shutil.rmtree(pymechanical.EXAMPLES_PATH)
-    os.makedirs(pymechanical.EXAMPLES_PATH)
+    examples_path = Path(pymechanical.EXAMPLES_PATH)
+    if examples_path.exists():
+        shutil.rmtree(examples_path)
+    examples_path.mkdir(parents=True, exist_ok=True)
     return True

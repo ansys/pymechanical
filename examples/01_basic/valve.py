@@ -35,10 +35,9 @@ This example demonstrates a basic implementation of a valve in Python.
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from PIL import Image
-from matplotlib import image as mpimg
-from matplotlib import pyplot as plt
+from matplotlib import image as mpimg, pyplot as plt
 from matplotlib.animation import FuncAnimation
+from PIL import Image
 
 from ansys.mechanical.core import App
 from ansys.mechanical.core.examples import delete_downloads, download_file
@@ -364,7 +363,7 @@ solve_path = analysis.WorkingDir
 solve_out_path = solve_path + "solve.out"
 # If the solve output file exists, print its contents
 if solve_out_path:
-    with open(solve_out_path, "rt") as file:
+    with Path.open(solve_out_path, "rt") as file:
         for line in file:
             print(line, end="")
 

@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Initializer for Mechanical embedding. Sets up paths and resolvers."""
+
 from importlib.metadata import distribution
 import os
 from pathlib import Path
@@ -91,9 +92,11 @@ def _get_latest_default_version() -> int:
 
     versions_found = []
     for path in awp_roots:
-        folder = os.path.basename(os.path.normpath(path))
-        version = folder.split("v")[-1]
-        versions_found.append(int(version))
+        resolved_path = Path(path).resolve()
+        folder = resolved_path.name
+        if folder.startswith("v") and folder[1:].isdigit():
+            version = int(folder[1:])
+            versions_found.append(version)
 
     LOG.info(f"Available versions of Mechanical: {versions_found}")
 
@@ -222,9 +225,9 @@ def __is_lib_loaded(libname: str):  # pragma: no cover
     """Return whether a library is loaded."""
     import ctypes
 
-    RTLD_NOLOAD = 4
+    rtld_noload = 4
     try:
-        ctypes.CDLL(libname, RTLD_NOLOAD)
+        ctypes.CDLL(libname, rtld_noload)
     except OSError:
         return False
     return True
