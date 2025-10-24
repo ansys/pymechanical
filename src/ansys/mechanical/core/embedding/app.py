@@ -429,6 +429,7 @@ class App:
 
             clr.AddReference("Ansys.Mechanical.Scripting")
             import Ansys
+
             # CreateEngine API without parameters creates an IronPython engine
             script_engine = Ansys.Mechanical.Scripting.EngineFactory.CreateEngine()
             empty_scope = False
