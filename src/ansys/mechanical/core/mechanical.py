@@ -2056,7 +2056,6 @@ server.start()
 def launch_remote_mechanical(
     version=None,
 ) -> tuple[grpc.Channel, Optional[typing.Any]]:  # pragma: no cover
-
     """Start Mechanical remotely using the Product Instance Management (PIM) API.
 
     When calling this method, you must ensure that you are in an environment
