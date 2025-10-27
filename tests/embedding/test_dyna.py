@@ -83,8 +83,14 @@ def test_lsdyna(printer, embedded_app, assets):
         )
         printer("Meshing")
         mesh = Model.Mesh
+        mesh.SetMeshSizing(MeshSizingType.Adaptive)
         mesh.ElementOrder = ElementOrder.Linear  # LSDyna supports only Linear
         mesh.ElementSize = Quantity(200, "mm")
+        mesh.GenerateMesh()
+
+        assert Model.Mesh.Elements == 28
+        assert Model.Mesh.Nodes == 116
+
 
         analysis_solution = analysis.Solution
         assert analysis_solution.ObjectState != ObjectState.Solved
