@@ -92,7 +92,6 @@ def test_lsdyna(printer, embedded_app, assets):
         assert Model.Mesh.Elements == 28
         assert Model.Mesh.Nodes == 116
 
-
         analysis_solution = analysis.Solution
         assert analysis_solution.ObjectState != ObjectState.Solved
 
