@@ -79,7 +79,7 @@ doc = [
 
 graphics = [
     "ansys-tools-visualization-interface>=0.2.6",
-    "usd-core==25.8",
+    "usd-core==25.11",
 ]
 
 rpc = [
