@@ -221,6 +221,7 @@ def test_qk_eng_wb2_007(printer, embedded_app, assets):
         NS2.Generate()
 
         printer("Setup Mesh")
+        MSH.MeshSizing = MeshSizingType.Adaptive
         MSH = MODEL.Mesh
         MSH.Resolution = 4
 

@@ -1279,8 +1279,8 @@ class Mechanical(object):
 
         Returns
         -------
-        list
-            List of files in the working directory of Mechanical.
+        list[str]
+            List of file paths in the working directory of Mechanical.
 
         Examples
         --------
@@ -1289,17 +1289,36 @@ class Mechanical(object):
         >>> files = mechanical.list_files()
         >>> for file in files: print(file)
         """
-        result = self.run_python_script(
-            "import pymechanical_helpers\npymechanical_helpers.GetAllProjectFiles(ExtAPI)"
-        )
+        # Get all files using server-side script
+        script = """
+import os
+file_list = []
 
-        files_out = result.splitlines()
-        if not files_out:  # pragma: no cover
+# Add mechdb path if it exists
+mechdbPath = ExtAPI.DataModel.Project.FilePath
+if mechdbPath != "":
+    file_list.append(mechdbPath)
+
+# Walk through project directory
+rootDir = ExtAPI.DataModel.Project.ProjectDirectory
+for dirPath, _, fileNames in os.walk(rootDir):
+        for fileName in fileNames:
+            file_list.append(os.path.join(dirPath, fileName))
+
+# Join with newlines and return
+'\\n'.join(file_list)
+"""
+
+        result = self.run_python_script(script)
+        if not result:  # pragma: no cover
             self.log_warning("No files listed")
-        return files_out
+            return []
+
+        # Split the result into a list and return
+        return result.split("\n") if result else []
 
     def _get_files(self, files, recursive=False):
-        self_files = self.list_files()  # to avoid calling it too much
+        self_files = self.list_files()
 
         if isinstance(files, str):
             if self._local:  # pragma: no cover
@@ -2027,7 +2046,7 @@ server.start()
 
 def launch_remote_mechanical(
     version=None,
-) -> (grpc.Channel, Optional["Instance"]):  # pragma: no cover
+) -> tuple[grpc.Channel, Optional[typing.Any]]:  # pragma: no cover
     """Start Mechanical remotely using the Product Instance Management (PIM) API.
 
     When calling this method, you must ensure that you are in an environment
