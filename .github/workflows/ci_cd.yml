@@ -567,8 +567,8 @@ jobs:
 
   doc-build:
     name: Documentation
-    runs-on: public-ubuntu-latest-8-cores
-    timeout-minutes: 30
+    runs-on: public-ubuntu-latest-16-cores
+    timeout-minutes: 60
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
@@ -624,7 +624,7 @@ jobs:
       - name: Build docs
         env:
           NUM_CORES: 1
-          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 0
+          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
           BUILD_CHEATSHEET: true
         run: |
           . /env/bin/activate
