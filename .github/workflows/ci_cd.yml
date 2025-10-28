@@ -208,22 +208,22 @@ jobs:
   #           echo "matrix={\"mechanical-version\":['${{ needs.revn-variations.outputs.test_docker_image_version }}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
   #         fi
 
-  # container-stability-check:
-  #   runs-on: ubuntu-latest
-  #   needs: [revn-variations]
-  #   outputs:
-  #     container_stable_exit: ${{ steps.check_stability.outputs.container_stable_exit }}
-  #   steps:
-  #     - id: check_stability
-  #       run: |
-  #         sudo apt update
-  #         sudo apt install bc -y
-  #         container_version=$(echo "${{ needs.revn-variations.outputs.test_docker_image_version }}" | grep -o -E '[0-9]+(\.[0-9]+)?' | head -n 1)
-  #         if (( $(echo "$container_version > 24.2" | bc -l) )); then
-  #           echo "container_stable_exit=true" >> $GITHUB_OUTPUT
-  #         else
-  #           echo "container_stable_exit=false" >> $GITHUB_OUTPUT
-  #         fi
+  container-stability-check:
+    runs-on: ubuntu-latest
+    needs: [revn-variations]
+    outputs:
+      container_stable_exit: ${{ steps.check_stability.outputs.container_stable_exit }}
+    steps:
+      - id: check_stability
+        run: |
+          sudo apt update
+          sudo apt install bc -y
+          container_version=$(echo "${{ needs.revn-variations.outputs.test_docker_image_version }}" | grep -o -E '[0-9]+(\.[0-9]+)?' | head -n 1)
+          if (( $(echo "$container_version > 24.2" | bc -l) )); then
+            echo "container_stable_exit=true" >> $GITHUB_OUTPUT
+          else
+            echo "container_stable_exit=false" >> $GITHUB_OUTPUT
+          fi
 
   # remote-connect:
   #   name: Remote connect testing and coverage - Mechanical ${{ matrix.mechanical-version }}
@@ -572,7 +572,7 @@ jobs:
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
-    needs: [revn-variations]
+    needs: [revn-variations, container-stability-check]
     #needs: [style, doc-style, revn-variations, container-stability-check, test-container-info]
     steps:
 
