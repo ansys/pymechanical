@@ -218,9 +218,9 @@ class PyMechanicalCustomAdapter(logging.LoggerAdapter):
         """Process the message."""
         kwargs["extra"] = {}
         # These are the extra parameters to send to the log.
-        kwargs["extra"][
-            "instance_name"
-        ] = self.extra.name  # Here self.extra is the argument to pass to the log records.
+        kwargs["extra"]["instance_name"] = (
+            self.extra.name
+        )  # Here self.extra is the argument to pass to the log records.
         return msg, kwargs
 
     def log_to_file(self, filename=FILE_NAME, level=LOG_LEVEL):
@@ -256,7 +256,7 @@ class PyMechanicalCustomAdapter(logging.LoggerAdapter):
         self.logger = add_stdout_handler(self.logger, level=level)
         self.std_out_handler = self.logger.std_out_handler
 
-    def setLevel(self, level="DEBUG"):
+    def setLevel(self, level="DEBUG"):  # noqa: N802
         """Change the log level of the object and the attached handlers.
 
         Parameters
@@ -370,15 +370,15 @@ class Logger:
     created when a Mechanical instance is created.
 
     >>> from ansys.mechanical.core import launch_mechanical
-    >>> mechanical = launch_mechanical(loglevel='DEBUG')
-    >>> mechanical.log.info('This is a useful message')
+    >>> mechanical = launch_mechanical(loglevel="DEBUG")
+    >>> mechanical.log.info("This is a useful message")
     INFO -  -  <ipython-input-24-80df150fe31f> - <module> - This is LOG debug message.
 
     Import the PyMechanical global logger and add a file output handler.
 
     >>> import os
     >>> from ansys.mechanical.core import LOG
-    >>> file_path = os.path.join(os.getcwd(), 'pymechanical.log')
+    >>> file_path = os.path.join(os.getcwd(), "pymechanical.log")
     >>> LOG.log_to_file(file_path)
 
     """
@@ -448,7 +448,7 @@ class Logger:
 
         >>> from ansys.mechanical.core import LOG
         >>> import os
-        >>> file_path = os.path.join(os.getcwd(), 'pymechanical.log')
+        >>> file_path = os.path.join(os.getcwd(), "pymechanical.log")
         >>> LOG.log_to_file(file_path)
 
         """
@@ -464,7 +464,7 @@ class Logger:
         """
         add_stdout_handler(self, level=level)
 
-    def setLevel(self, level="DEBUG"):
+    def setLevel(self, level="DEBUG"):  # noqa: N802
         """Change the log level of the object and the attached handlers.
 
         Parameters

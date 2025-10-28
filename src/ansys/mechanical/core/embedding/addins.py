@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Configuration system for embedded mechanical."""
+
 import os
 
 

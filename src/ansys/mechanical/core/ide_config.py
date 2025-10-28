@@ -30,8 +30,9 @@ import site
 import sys
 import warnings
 
-import ansys.tools.path as atp
 import click
+
+import ansys.tools.path as atp
 
 
 def get_stubs_location():
@@ -70,9 +71,9 @@ def get_stubs_versions(stubs_location: Path):
     """
     # Get revision numbers in stubs folder
     revns = [
-        int(revision[1:])
-        for revision in os.listdir(stubs_location)
-        if os.path.isdir(os.path.join(stubs_location, revision)) and revision.startswith("v")
+        int(revision.name[1:])
+        for revision in stubs_location.iterdir()
+        if revision.is_dir() and revision.name.startswith("v")
     ]
     return revns
 

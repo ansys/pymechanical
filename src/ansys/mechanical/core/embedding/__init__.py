@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Imports for the embedding sub-package."""
+
 from .addins import AddinConfiguration
 from .app import App
 from .app_libraries import add_mechanical_python_libraries
