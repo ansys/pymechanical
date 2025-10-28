@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """License Manager."""
+
 from typing import List, Optional, Union
 
 from ansys.mechanical.core import LOG
@@ -53,7 +54,7 @@ class LicenseManager:
 
     def get_license_status(
         self, license_name: str
-    ) -> "Ansys.Mechanical.DataModel.Enums.LicenseStatus":
+    ) -> "Ansys.Mechanical.DataModel.Enums.LicenseStatus":  # noqa: F821
         """Return status of the specific license.
 
         Parameters
@@ -144,7 +145,7 @@ class LicenseManager:
         Move Ansys Mechanical Premium to the first location.
 
         >>> license_manager = LicenseManager(app)
-        >>> license_manager.move_to_index('Ansys Mechanical Premium', 0)
+        >>> license_manager.move_to_index("Ansys Mechanical Premium", 0)
         """
         LOG.info(f"Moving license preference for {license_name} to location {location}")
         self._get_license_manager().MoveLicenseToLocation(license_name, location)

@@ -20,9 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""LSDyna analysis test"""
+"""LSDyna analysis test."""
 
-import os
+from pathlib import Path
 
 import pytest
 
@@ -45,7 +45,7 @@ def test_lsdyna(printer, embedded_app, assets):
     embedded_app.update_globals(globals())
     printer("Setting up test - LSDyna system")
     Model.AddLSDynaAnalysis()
-    geometry_file = os.path.join(assets, "Eng157.x_t")
+    geometry_file = str(Path(assets) / "Eng157.x_t")
     printer(f"Setting up test - attaching geometry {geometry_file}")
     geometry_import = Model.GeometryImportGroup.AddGeometryImport()
     geometry_import.Import(geometry_file)

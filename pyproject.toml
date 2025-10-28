@@ -52,7 +52,7 @@ tests = [
     "pytest==8.4.2",
     "pytest-cov==7.0.0",
     "pytest-print==1.2.0",
-    "psutil==7.1.0",
+    "psutil==7.1.2",
 ]
 
 doc = [
@@ -79,12 +79,12 @@ doc = [
 
 graphics = [
     "ansys-tools-visualization-interface>=0.2.6",
-    "usd-core==25.8",
+    "usd-core==25.11",
 ]
 
 rpc = [
     "rpyc==6.0.2",
-    "toolz==1.0.0",
+    "toolz==1.1.0",
 ]
 
 pim = [
@@ -104,16 +104,54 @@ excludes = ["tests"]
 scripts = ["mechanical-env"]
 
 # ========================================================
+# Ruff Configuration
+# ========================================================
 
-[tool.black]
+[tool.ruff]
 line-length = 100
+fix = true
+extend-exclude = ["tests/assets", "tests/scripts"]
 
-[tool.isort]
-profile = "black"
-force_sort_within_sections = true
-line_length = 100
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
 
-src_paths = ["doc", "src", "tests"]
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle, see https://docs.astral.sh/ruff/rules/#pycodestyle-e-w
+    "D",    # pydocstyle, see https://docs.astral.sh/ruff/rules/#pydocstyle-d
+    "F",    # pyflakes, see https://docs.astral.sh/ruff/rules/#pyflakes-f
+    "I",    # isort, see https://docs.astral.sh/ruff/rules/#isort-i
+    "N",    # pep8-naming, see https://docs.astral.sh/ruff/rules/#pep8-naming-n
+    "PTH",  # flake8-use-pathlib, https://docs.astral.sh/ruff/rules/#flake8-use-pathlib-pth
+    "TD",   # flake8-todos, https://docs.astral.sh/ruff/rules/#flake8-todos-td
+]
+ignore = [
+    "TD002", # Missing author in TODOs comment
+    "TD003", # Missing issue link in TODOs comment
+]
+
+
+[tool.ruff.lint.per-file-ignores]
+# Ignore `F401` (import violations) in all `__init__.py` files.
+"__init__.py" = ["F401"]
+"src/ansys/mechanical/core/__init__.py" = ["E402"]
+"tests/conftest.py" = ["F811"] # TODO : Fix pytest_collection issues.
+"examples/**.py" = ["D400", "F821", "F405", "E402", "D205"]
+"tests/embedding/test_dyna.py" = ["F821"] # Global like "Model" are directly called.
+"tests/embedding/test_graphics_export.py" = ["F821"] # Global like "Model" are directly called.
+"tests/embedding/test_qk_eng_wb2.py" = ["F821", "N806"] # Global like "Model" are directly called.
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+force-sort-within-sections = true
+known-first-party = ["ansys.mechanical.core"]
+
 
 # ========================================================
 # Pytest and Coverage Configuration
@@ -136,13 +174,6 @@ output = ".cov/coverage.xml"
 minversion = "7.1"
 addopts = """-ra -s --durations=0 --cov=ansys.mechanical --cov-report html:.cov/html \
  --cov-report xml:.cov/xml --cov-report term --cov-append -vv --print --print-relative-time"""
-# addopts = """-ra -s -m remote_session_launch --durations=0 --cov=ansys.mechanical --cov-report html:.cov/html \
-# --cov-report xml:.cov/xml --cov-report term -vv --print --print-relative-time"""
-# addopts = """-ra -s -m 'remote_session_launch or remote_session_connect' --durations=0 --cov=ansys.mechanical \
-# --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report term -vv --print --print-relative-time"""
-# addopts = """-ra -s -m 'remote_session_launch or remote_session_connect or embedding' --durations=0
-# --cov=ansys.mechanical --cov-report html:.cov/html --cov-report xml:.cov/xml --cov-report \
-# term -vv --print --print-relative-time"""
 
 testpaths = [
     "tests",
@@ -153,7 +184,7 @@ markers = [
     "python_env: tests that check for an appropriate python environment",
     "remote_session_launch: tests that launch Mechanical and work with gRPC server inside it",
     "remote_session_connect: tests that connect to Mechanical and work with gRPC server inside it",
-    "minimum_version(num): tests that run if ansys-version is greater than or equal to the minimum version provided",
+    "minimum_version(num): tests that run if ansys-version is greater than the minimum version provided",
     "version_range(min_revn,max_revn): tests that run if ansys-version is in the range of the minimum and maximum revision numbers inclusive.",
     "windows_only: tests that run if the testing platform is on Windows",
     "linux_only: tests that run if the testing platform is on Linux",
@@ -216,23 +247,6 @@ directory = "test"
 name = "Test"
 showcontent = true
 
-
-# ========================================================
-# Flake8 Configuration
-# ========================================================
-
-[tool.flake8]
-exclude = ["venv", "__init__.py", "doc/_build", ".venv"]
-select = [
-    "W191", "W291", "W293", "W391", "E115", "E117",
-    "E122", "E124", "E125", "E225", "E231", "E301",
-    "E303", "E501", "F401", "F403"
-]
-count = true
-max-complexity = 10
-max-line-length = 100
-statistics = true
-
 # ========================================================
 # Tox Configuration
 # ========================================================
@@ -253,8 +267,8 @@ description = The tox environment to be executed in gh-actions for a given pytho
 python =
     3.10: style,py310-coverage,doc
     3.11: style,py311-coverage,doc
-    3.12: style,py311-coverage,doc
-    3.13: style,py311-coverage,doc
+    3.12: style,py312-coverage,doc
+    3.13: style,py313-coverage,doc
 
 [testenv]
 description = Checks for project unit tests and coverage (if desired)

@@ -20,7 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Embedding tests for global variables associated with Mechanical"""
+"""Embedding tests for global variables associated with Mechanical."""
+
 from pathlib import Path
 import subprocess
 import sys
@@ -59,12 +60,13 @@ def test_global_variables(embedded_app):
 
 @pytest.mark.embedding
 def test_global_variable_transaction(embedded_app):
+    """Test the global variable Transaction."""
     embedded_app.update_globals(globals())
-    project_name = DataModel.Project.Name
+    project_name = embedded_app.DataModel.Project.Name
     assert project_name == "Project"
     with Transaction():
-        DataModel.Project.Name = "New Project"
-    project_name = DataModel.Project.Name
+        embedded_app.DataModel.Project.Name = "New Project"
+    project_name = embedded_app.DataModel.Project.Name
     assert project_name == "New Project"
 
 
@@ -104,8 +106,11 @@ def test_enum_importer_exception(rootdir):
 
 @pytest.mark.embedding_scripts
 def test_globals_kwarg_building_gallery(run_subprocess, pytestconfig, rootdir):
-    """Test ViewOrientationType exists and messages are printed when BUILDING_GALLERY is True
-    and globals are updated during the app initialization."""
+    """Test for globals kwarg BUILDING_GALLERY.
+
+    Test ViewOrientationType exists and messages are printed when
+    BUILDING_GALLERY is True and globals are updated during the app initialization.
+    """
     version = pytestconfig.getoption("ansys_version")
     embedded_py = Path(rootdir) / "tests" / "scripts" / "run_embedded_app.py"
 
