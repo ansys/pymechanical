@@ -29,8 +29,7 @@ class Transaction:  # When ansys-pythonnet issue #14 is fixed, this class will b
     Example
     -------
     >>> with Transaction() as transaction:
-    ...     pass   # Perform bulk user interactions here
-    ...
+    ...     pass  # Perform bulk user interactions here
     """
 
     def __init__(self):

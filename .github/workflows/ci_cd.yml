@@ -253,11 +253,31 @@ jobs:
           echo "Run docker in detached mode"
           docker run -d --name ${{ env.DOCKER_MECH_CONTAINER_NAME }} -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }}
 
-          echo "Sleep for 60 seconds"
-          sleep 60  # give time to start
+          # Wait for Mechanical to initialize with intelligent polling
+          max_wait=300  # Maximum wait time in seconds
+          check_interval=10  # Check every 10 seconds
+          elapsed=0
 
-          echo "Check logs for WB Initialize Done"
-          docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} | grep 'WB Initialize Done'
+          echo "Waiting for Mechanical to initialize..."
+          while [ $elapsed -lt $max_wait ]; do
+            docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > log.txt
+            if grep -q 'WB Initialize Done' log.txt 2>/dev/null; then
+              echo "Mechanical initialized successfully after ${elapsed} seconds"
+              break
+            fi
+            echo "Waiting for initialization... (${elapsed}/${max_wait}s)"
+            sleep $check_interval
+            elapsed=$((elapsed + check_interval))
+          done
+
+          # Final check
+          docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > log.txt
+          if ! grep -q 'WB Initialize Done' log.txt 2>/dev/null; then
+            echo "ERROR: Mechanical failed to initialize within ${max_wait} seconds"
+            echo "=== Last 50 lines of log.txt ==="
+            tail -n 50 log.txt || echo "No log file found"
+            exit 1
+          fi
 
       - name: Display info
         if: github.event_name == 'schedule'

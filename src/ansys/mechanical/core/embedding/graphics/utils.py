@@ -21,10 +21,17 @@
 # SOFTWARE.
 
 """Common plotting utilities."""
+
+from __future__ import annotations
+
 import os
 import typing
+from typing import TYPE_CHECKING
 
 import numpy as np
+
+if TYPE_CHECKING:
+    from ansys.mechanical.core.embedding import App
 
 
 def bgr_to_rgb_tuple(bgr_int: int) -> typing.Tuple[int, int, int]:
@@ -50,7 +57,7 @@ def _reshape_ncols(arr: np.array, ncols: int, name: str = "array"):
 
 
 def get_line_nodes_and_coords(
-    line_tessellation: "Ansys.Mechanical.Scenegraph.LineTessellationNode",
+    line_tessellation: "Ansys.Mechanical.Scenegraph.LineTessellationNode",  # noqa: F821
 ):
     """Extract the nodes and coordinates from the LineTessellationNode.
 
@@ -65,7 +72,7 @@ def get_line_nodes_and_coords(
     return np_coordinates, np_indices
 
 
-def get_tri_nodes_and_coords(tri_tessellation: "Ansys.Mechanical.Scenegraph.TriTessellationNode"):
+def get_tri_nodes_and_coords(tri_tessellation: "Ansys.Mechanical.Scenegraph.TriTessellationNode"):  # noqa: F821
     """Extract the nodes and coordinates from the TriTessellationNode.
 
     The TriTessellationNode contains "Coordinates" and "Indices"
@@ -79,7 +86,7 @@ def get_tri_nodes_and_coords(tri_tessellation: "Ansys.Mechanical.Scenegraph.TriT
 
 
 def get_tri_result_disp_and_results(
-    tri_tessellation: "Ansys.Mechanical.Scenegraph.TriTessellationResultNode",
+    tri_tessellation: "Ansys.Mechanical.Scenegraph.TriTessellationResultNode",  # noqa: F821
 ):
     """Extract the defomation and results from the TriTessellationResultNode.
 
@@ -94,8 +101,8 @@ def get_tri_result_disp_and_results(
 
 
 def _get_geometry_scene(
-    app: "ansys.mechanical.core.embedding.App",
-) -> "Ansys.Mechanical.Scenegraph.GroupNode":
+    app: App,
+) -> "Ansys.Mechanical.Scenegraph.GroupNode":  # noqa: F821
     """Get the scene for the geometry.
 
     using the undocumented apis under ScenegraphHelpers.
@@ -126,15 +133,13 @@ def _get_geometry_scene(
 
 
 def get_scene(
-    app: "ansys.mechanical.core.embedding.App",
-) -> "Ansys.Mechanical.Scenegraph.GroupNode":
+    app: App,
+) -> "Ansys.Mechanical.Scenegraph.GroupNode":  # noqa: F821
     """Get the scene of the model."""
     return _get_geometry_scene(app)
 
 
-def _get_scene_for_object(
-    app: "ansys.mechanical.core.embedding.App", obj
-) -> "Ansys.Mechanical.Scenegraph.Node":
+def _get_scene_for_object(app: App, obj) -> "Ansys.Mechanical.Scenegraph.Node":  # noqa: F821
     from Ansys.Mechanical.DataModel.Enums import DataModelObjectCategory
 
     if obj.DataModelObjectCategory == DataModelObjectCategory.Geometry:
@@ -149,9 +154,7 @@ def _get_scene_for_object(
     return scenegraph_node
 
 
-def get_scene_for_object(
-    app: "ansys.mechanical.core.embedding.App", obj
-) -> "Ansys.Mechanical.Scenegraph.Node":
+def get_scene_for_object(app: App, obj) -> "Ansys.Mechanical.Scenegraph.Node":  # noqa: F821
     """Get the scene for the given object.
 
     2025R2 and before: only geometry is supported
