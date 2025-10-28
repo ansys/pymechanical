@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Start rpc sever for embedded instance."""
+
 import sys
 
 from ansys.mechanical.core.embedding.rpc import MechanicalDefaultServer
