@@ -56,6 +56,9 @@ try:
 except ImportError:
     HAS_ANSYS_GRAPHICS = False
 
+from ansys.mechanical.core.embedding.ipython_shell import try_post_ipython_blocks
+try_post_ipython_blocks()
+
 
 def _get_default_addin_configuration() -> AddinConfiguration:
     configuration = AddinConfiguration()
@@ -275,6 +278,12 @@ class App:
 
         runtime.initialize(self._version, pep8_aliases=pep8_alias)
         self._app = _start_application(configuration, self._version, db_file, additional_args)
+
+        if os.environ.get("ANSYS_MECHANICAL_EMBEDDING_START_WITH_UI") == "1":
+            from ansys.mechanical.core.embedding.ipython_shell import install_shell_hook
+            from ansys.mechanical.core.embedding.utils import sleep
+            install_shell_hook(lambda: sleep(50))
+
         connect_warnings(self)
         self._poster = None
 
@@ -320,6 +329,12 @@ class App:
         disconnect_warnings(self)
         self._app.Dispose()
         self._disposed = True
+
+    def wait_with_dialog(self):
+        if self.version< 261:
+            raise Exception("wait_with_dialog is only supported with Mechanical 261")
+        """Wait with dialog open."""
+        self._app.BlockingModalDialog("Wait with dialog", "PyMechanical")
 
     def open(self, db_file, remove_lock=False):
         """Open the db file.
