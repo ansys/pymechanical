@@ -33,11 +33,6 @@ This is a prerequisite step for the other helper scripts in the following pages.
 
 """
 
-import tracemalloc
-
-# Start tracing memory
-tracemalloc.start()
-
 # %%
 # Create an embedded instance and open an existing Mechanical File
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -47,21 +42,11 @@ from ansys.mechanical.core.examples import delete_downloads, download_file
 
 mechdat_path = download_file("cantilever.mechdat", "pymechanical", "embedding")
 
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
 # The following line creates an instance of the app, extracts the global API entry points,
 # and merges them into your Python global variables.
 
 app = App(db_file=mechdat_path, globals=globals())
 print(app)
-
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 
 # Alternatively, you can use the update_globals method of the App class to
 # update the global variables.The second argument, if set to False updates
@@ -80,11 +65,6 @@ print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 app.new()
 # sphinx_gallery_end_ignore
 
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
 geom_file_path = download_file("example_06_bolt_pret_geom.agdb", "pymechanical", "00_basic")
 geometry_import = Model.GeometryImportGroup.AddGeometryImport()
 geometry_import_format = Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.Format.Automatic
@@ -94,11 +74,6 @@ geometry_import_preferences.NamedSelectionKey = ""
 geometry_import_preferences.ProcessNamedSelections = True
 geometry_import_preferences.ProcessMaterialProperties = True
 geometry_import.Import(geom_file_path, geometry_import_format, geometry_import_preferences)
-
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 # %%
 # Set Units
 # ~~~~~~~~~~~~~~~~~~~~~~~
@@ -106,21 +81,11 @@ print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 ExtAPI.Application.ActiveUnitSystem = MechanicalUnitSystem.StandardNMM
 ExtAPI.Application.ActiveAngleUnit = AngleUnitType.Radian
 ExtAPI.Application.ActiveAngularVelocityUnit = AngularVelocityUnitType.RadianPerSecond
-
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 # %%
 # View messages in Mechanical using PyMechanical
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 app.messages.show()
-
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 # %%
 # Plot and Print the Tree (To check model so far)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -128,18 +93,8 @@ print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 # Plot
 app.plot()
 
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
 # Print the tree
 app.print_tree()
-
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 
 # %%
 # Save the model
@@ -150,22 +105,9 @@ output_path = Path.cwd() / "out"
 test_mechdat_path = str(output_path / "test.mechdat")
 app.save_as(test_mechdat_path, overwrite=True)
 
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
 # sphinx_gallery_start_ignore
 # Close the app
 app.close()
 # Delete the downloaded files
 delete_downloads()
 # sphinx_gallery_end_ignore
-
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
-# stop tracing memory
-tracemalloc.stop()

@@ -31,11 +31,6 @@ as utilizing it for downstream preprocessing operations in Mechanical
 simulations. Coordinate Systems too are covered here.
 """
 
-import tracemalloc
-
-# Start tracing memory
-tracemalloc.start()
-
 # %%
 # Import Geometry
 # ~~~~~~~~~~~~~~~
@@ -45,30 +40,15 @@ from ansys.mechanical.core.examples import delete_downloads, download_file
 
 app = App(globals=globals())
 
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
 # Download the geometry file for the example
 geom_file_path = download_file("example_06_bolt_pret_geom.agdb", "pymechanical", "00_basic")
 # Alternatively, you can specify a local file path
 # or geom_file_path = r"C:\geometry.agdb"
 
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
 # Import the geometry into the Mechanical model
 geometry_import = Model.GeometryImportGroup.AddGeometryImport()
 geometry_import_format = Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.Format.Automatic
 geometry_import_preferences = Ansys.ACT.Mechanical.Utilities.GeometryImportPreferences()
-
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 
 # Set preferences for geometry import
 geometry_import_preferences.ProcessLines = True
@@ -76,35 +56,14 @@ geometry_import_preferences.NamedSelectionKey = ""
 geometry_import_preferences.ProcessNamedSelections = True
 geometry_import_preferences.ProcessMaterialProperties = True
 
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
 # Perform the geometry import
 geometry_import.Import(geom_file_path, geometry_import_format, geometry_import_preferences)
-
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 
 # Plot the imported geometry
 app.plot()
 
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
 # Print the tree structure of the Mechanical model
 app.print_tree()
-
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
 
 # %%
 # Get all bodies
@@ -115,11 +74,6 @@ body_objects = Model.Geometry.GetChildren(DataModelObjectCategory.Body, True)
 # Alternatively, use the following method:
 # bodies_objects = Model.Geometry.GetChildren(Ansys.ACT.Automation.Mechanical.Body, True)
 
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
 # Extract geometric body wrappers for each body object
 bodies = [body.GetGeoBody() for body in body_objects]  # GeoBodyWrapper
 # or
@@ -127,19 +81,9 @@ bodies = [body.GetGeoBody() for body in body_objects]  # GeoBodyWrapper
 # nested_list = [x.Bodies for x in ExtAPI.DataModel.GeoData.Assemblies[0].AllParts]
 # bodies = list(itertools.chain(*nested_list))
 
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
 # Access details of the first body object and its geometric properties
 bo = body_objects[0]  # Access Object Details and RMB options
 b = bodies[0]  # Access Geometric Properties: 'Area', 'GeoData', 'Centroid', 'Faces', etc.
-
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 
 # %%
 # Find Body with Largest Volume
@@ -147,30 +91,15 @@ print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 # Set the active unit system to Standard NMM
 ExtAPI.Application.ActiveUnitSystem = MechanicalUnitSystem.StandardNMM
 
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
 # Create a list of body names, volumes, and IDs for unsuppressed bodies
 body_names_volumes = []
 for body in body_objects:
     if body.Suppressed == 0 and body.Volume:
         body_names_volumes.append((body.Name, body.Volume, body.GetGeoBody().Id))
 
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
 # Sort the list and retrieve the body with the largest volume
 sorted_name_vol = sorted(body_names_volumes)
 bodyname, volu, bodyid = sorted_name_vol.pop()
-
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 
 # Print details of the largest body
 print(f"Unit System is: {ExtAPI.Application.ActiveUnitSystem}")
@@ -185,11 +114,6 @@ print(f"Its id: {bodyid}")
 b2 = DataModel.GeoData.GeoEntityById(bodyid)
 print(f"Body Name: {b2.Name}, Body Id: {b2.Id}")
 
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
 # %%
 # Find the Part that the body belongs to
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -197,11 +121,6 @@ print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 body_name = DataModel.GeoData.GeoEntityById(59).Name
 part_name = DataModel.GeoData.GeoEntityById(59).Part.Name
 print(f"The Body named '{body_name}' belongs to the part named '{part_name}'")
-
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 
 # %%
 # Find Body by its ID AND print its Faces, Centroid, etc.
@@ -231,11 +150,6 @@ for asm in geo.Assemblies:
                 vertices.append(body.Vertices[i].Id)
 print(vertices)
 
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
 # %%
 # Get all edges of a given length
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -246,11 +160,6 @@ use_length = 0.100
 geo = DataModel.GeoData
 edgelist = []
 
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
 # Iterate through assemblies, parts, and bodies to find edges of the given length
 for asm in geo.Assemblies:
     for part in asm.Parts:
@@ -259,11 +168,6 @@ for asm in geo.Assemblies:
                 if abs(edge.Length - use_length) <= use_length * 0.01:
                     edgelist.append(edge.Id)
 print(edgelist)
-
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 
 # %%
 # Get all circular edges of a given radius
@@ -289,11 +193,6 @@ for asm in geo.Assemblies:
                     circlelist.append(edge.Id)
 print(circlelist)
 
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
 # %%
 # Get Radius of a selected edge
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -301,11 +200,6 @@ print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 my_edge = DataModel.GeoData.GeoEntityById(27)
 my_edge_radius = my_edge.Radius if str(my_edge.CurveType) == "GeoCurveCircle" else 0.0
 print(my_edge_radius)
-
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 
 # %%
 # Create a Named Selection from a list of body Ids
@@ -318,19 +212,9 @@ selection = ExtAPI.SelectionManager.CreateSelectionInfo(SelectionTypeEnum.Geomet
 selection.Ids = mylist
 selection_manager.NewSelection(selection)
 
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
 ns2 = Model.AddNamedSelection()
 ns2.Name = "bodies2"
 ns2.Location = selection
-
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 
 # %%
 # Find a Named Selection with a prefix
@@ -339,11 +223,6 @@ print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 NSall = Model.NamedSelections.GetChildren[Ansys.ACT.Automation.Mechanical.NamedSelection](True)
 my_nsel = [i for i in NSall if i.Name.startswith("b")][0]
 print(my_nsel.Name)
-
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 
 # %%
 # Create a Named Selection of all bodies with a cylindrical face
@@ -365,29 +244,14 @@ for asm in geo.Assemblies:
             if countcyl != 0:
                 cyl_body_ids.append(body.Id)
 
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
 selection_manager = ExtAPI.SelectionManager
 selection = ExtAPI.SelectionManager.CreateSelectionInfo(SelectionTypeEnum.GeometryEntities)
 selection.Ids = cyl_body_ids
-
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 
 ns2 = Model.AddNamedSelection()
 ns2.Name = "bodies_with_cyl_face"
 ns2.Location = selection
 selection_manager.ClearSelection()
-
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 
 # %%
 # Modify material assignment
@@ -397,21 +261,11 @@ allbodies = Model.GetChildren(DataModelObjectCategory.Body, True)
 for body in allbodies:
     body.Material = "Structural Steel"
 
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
 # %%
 # Get all Coordinate Systems
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Retrieve all coordinate systems in the model
 tree_CS = Model.CoordinateSystems
-
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 
 # %%
 # Add a cylindrical coordinate system
@@ -422,12 +276,6 @@ csys = Model.CoordinateSystems.AddCoordinateSystem()
 csys.SetOriginLocation(Quantity(0, "in"), Quantity(25, "in"), Quantity(50, "in"))
 # set primary X axis to arbitrary (1,2,3) direction
 csys.PrimaryAxisDirection = Vector3D(1, 2, 3)
-
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
 # %%
 # Add a cartesian coordinate system at a location (0,25,50) inches
 # with primary X axis towards an arbitrary (1,2,3) direction
@@ -437,11 +285,6 @@ csys = Model.CoordinateSystems.AddCoordinateSystem()
 csys.SetOriginLocation(Quantity(0, "in"), Quantity(25, "in"), Quantity(50, "in"))
 # set primary X axis to arbitrary (1,2,3) direction
 csys.PrimaryAxisDirection = Vector3D(1, 2, 3)
-
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
 
 # %%
 # Find a coordinate system by name
@@ -453,11 +296,6 @@ csys.SetOriginLocation(Quantity(0, "in"), Quantity(25, "in"), Quantity(50, "in")
 # set primary X axis to arbitrary (1,2,3) direction
 csys.PrimaryAxisDirection = Vector3D(1, 2, 3)
 
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
 # sphinx_gallery_start_ignore
 # Save the Mechanical database file
 from pathlib import Path
@@ -466,20 +304,7 @@ output_path = Path.cwd() / "out"
 test_mechdat_path = str(output_path / "test.mechdat")
 # app.save_as(test_mechdat_path, overwrite=True)
 
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
 # Close the application and delete downloaded files
 app.close()
 delete_downloads()
 # sphinx_gallery_end_ignore
-
-# Get current and peak memory usage
-current, peak = tracemalloc.get_traced_memory()
-print(f"Current memory usage: {current / 1024:.2f} KiB")
-print(f"Peak memory usage: {peak / 1024:.2f} KiB")
-
-# stop tracing memory
-tracemalloc.stop()
