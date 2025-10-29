@@ -241,7 +241,7 @@ for asm in geo.Assemblies:
                     face.SurfaceType
                     == Ansys.ACT.Interfaces.Geometry.GeoSurfaceTypeEnum.GeoSurfaceCylinder
                 ):
-                    countcyl+=1
+                    countcyl += 1
             if countcyl != 0:
                 cyl_body_ids.append(body.Id)
 
