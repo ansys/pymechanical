@@ -134,7 +134,7 @@ centroids_of_each_face = [DataModel.GeoData.GeoEntityById(face_id).Centroid for 
 
 # Print face IDs and their centroids
 for face_id, centroid in zip(face_ids, centroids_of_each_face):
-    print(face_id, list(centroid))
+    print(f"Face ID: {face_id}", f"List: {list(centroid)}")
 
 # %%
 # Get all Vertices
@@ -148,7 +148,7 @@ for asm in geo.Assemblies:
         for body in part.Bodies:
             for i in range(0, body.Vertices.Count):
                 vertices.append(body.Vertices[i].Id)
-print(vertices)
+print(f"Vertices: {vertices}")
 
 # %%
 # Get all edges of a given length
@@ -167,7 +167,7 @@ for asm in geo.Assemblies:
             for edge in body.Edges:
                 if abs(edge.Length - use_length) <= use_length * 0.01:
                     edgelist.append(edge.Id)
-print(edgelist)
+print(f"Edgelist: {edgelist}")
 
 # %%
 # Get all circular edges of a given radius
@@ -191,7 +191,7 @@ for asm in geo.Assemblies:
                     and str(edge.CurveType) == "GeoCurveCircle"
                 ):
                     circlelist.append(edge.Id)
-print(circlelist)
+print(f"Circle list: {circlelist}")
 
 # %%
 # Get Radius of a selected edge
@@ -199,7 +199,7 @@ print(circlelist)
 # Retrieve the radius of a specific edge if it is circular
 my_edge = DataModel.GeoData.GeoEntityById(27)
 my_edge_radius = my_edge.Radius if str(my_edge.CurveType) == "GeoCurveCircle" else 0.0
-print(my_edge_radius)
+print(f"Edge radius is: {my_edge_radius}")
 
 # %%
 # Create a Named Selection from a list of body Ids
@@ -222,7 +222,7 @@ ns2.Location = selection
 # Retrieve a named selection whose name starts with a specific prefix
 NSall = Model.NamedSelections.GetChildren[Ansys.ACT.Automation.Mechanical.NamedSelection](True)
 my_nsel = [i for i in NSall if i.Name.startswith("b")][0]
-print(my_nsel.Name)
+print(f"Named selection name: {my_nsel.Name}")
 
 # %%
 # Create a Named Selection of all bodies with a cylindrical face
