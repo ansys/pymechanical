@@ -235,14 +235,17 @@ for asm in geo.Assemblies:
     for part in asm.Parts:
         for body in part.Bodies:
             countcyl = 0
+            print(f"countcyl {countcyl} for body {body}")
             for face in body.Faces:
                 if (
                     face.SurfaceType
                     == Ansys.ACT.Interfaces.Geometry.GeoSurfaceTypeEnum.GeoSurfaceCylinder
                 ):
-                    countcyl = countcyl + 1
+                    countcyl+=1
             if countcyl != 0:
                 cyl_body_ids.append(body.Id)
+
+print(f"Bodies with cylindrical face IDs: {cyl_body_ids}")
 
 selection_manager = ExtAPI.SelectionManager
 selection = ExtAPI.SelectionManager.CreateSelectionInfo(SelectionTypeEnum.GeometryEntities)
@@ -252,6 +255,8 @@ ns2 = Model.AddNamedSelection()
 ns2.Name = "bodies_with_cyl_face"
 ns2.Location = selection
 selection_manager.ClearSelection()
+
+print("Cleared selection")
 
 # %%
 # Modify material assignment
@@ -272,6 +277,9 @@ tree_CS = Model.CoordinateSystems
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Create a new coordinate system
 csys = Model.CoordinateSystems.AddCoordinateSystem()
+
+print("Added coordinate system")
+
 # place csys origin at arbitrary (0,25,50) location
 csys.SetOriginLocation(Quantity(0, "in"), Quantity(25, "in"), Quantity(50, "in"))
 # set primary X axis to arbitrary (1,2,3) direction
@@ -291,6 +299,9 @@ csys.PrimaryAxisDirection = Vector3D(1, 2, 3)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Create a new coordinate system
 csys = app.Model.CoordinateSystems.AddCoordinateSystem()
+
+print("Added 2nd coordinate system")
+
 # place csys origin at arbitrary (0,25,50) location
 csys.SetOriginLocation(Quantity(0, "in"), Quantity(25, "in"), Quantity(50, "in"))
 # set primary X axis to arbitrary (1,2,3) direction
