@@ -35,10 +35,11 @@ simulations. Coordinate Systems too are covered here.
 # Import Geometry
 # ~~~~~~~~~~~~~~~
 
-from ansys.mechanical.core import App
-from ansys.mechanical.core.examples import delete_downloads, download_file
 import logging
+
+from ansys.mechanical.core import App
 from ansys.mechanical.core.embedding.logger import Configuration
+from ansys.mechanical.core.examples import delete_downloads, download_file
 
 Configuration.configure(level=logging.DEBUG, to_stdout=True, base_directory=None)
 
@@ -318,7 +319,7 @@ output_path = Path.cwd() / "out"
 test_mechdat_path = str(output_path / "test.mechdat")
 print("Set mechdat path")
 
-app.save_as(test_mechdat_path, overwrite=True)
+app.save(test_mechdat_path)
 print("Saved mechdat")
 # sphinx_gallery_start_ignore
 # Close the application and delete downloaded files
