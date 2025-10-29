@@ -307,7 +307,6 @@ csys.SetOriginLocation(Quantity(0, "in"), Quantity(25, "in"), Quantity(50, "in")
 # set primary X axis to arbitrary (1,2,3) direction
 csys.PrimaryAxisDirection = Vector3D(1, 2, 3)
 
-# sphinx_gallery_start_ignore
 # Save the Mechanical database file
 from pathlib import Path
 
@@ -316,15 +315,11 @@ test_mechdat_path = str(output_path / "test.mechdat")
 print("Set mechdat path")
 
 app.save_as(test_mechdat_path, overwrite=True)
-
 print("Saved mechdat")
-
+# sphinx_gallery_start_ignore
 # Close the application and delete downloaded files
 app.close()
-
 print("Closed app")
-
 delete_downloads()
-
 print("Deleted downloads")
 # sphinx_gallery_end_ignore
