@@ -241,7 +241,7 @@ for asm in geo.Assemblies:
                     face.SurfaceType
                     == Ansys.ACT.Interfaces.Geometry.GeoSurfaceTypeEnum.GeoSurfaceCylinder
                 ):
-                    countcyl+=1
+                    countcyl += 1
             if countcyl != 0:
                 cyl_body_ids.append(body.Id)
 
@@ -313,9 +313,18 @@ from pathlib import Path
 
 output_path = Path.cwd() / "out"
 test_mechdat_path = str(output_path / "test.mechdat")
-# app.save_as(test_mechdat_path, overwrite=True)
+print("Set mechdat path")
+
+app.save_as(test_mechdat_path, overwrite=True)
+
+print("Saved mechdat")
 
 # Close the application and delete downloaded files
 app.close()
+
+print("Closed app")
+
 delete_downloads()
+
+print("Deleted downloads")
 # sphinx_gallery_end_ignore
