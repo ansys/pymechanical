@@ -57,6 +57,7 @@ except ImportError:
     HAS_ANSYS_GRAPHICS = False
 
 from ansys.mechanical.core.embedding.ipython_shell import try_post_ipython_blocks
+
 try_post_ipython_blocks()
 
 
@@ -282,6 +283,7 @@ class App:
         if os.environ.get("ANSYS_MECHANICAL_EMBEDDING_START_WITH_UI") == "1":
             from ansys.mechanical.core.embedding.ipython_shell import install_shell_hook
             from ansys.mechanical.core.embedding.utils import sleep
+
             install_shell_hook(lambda: sleep(50))
 
         connect_warnings(self)
@@ -331,7 +333,7 @@ class App:
         self._disposed = True
 
     def wait_with_dialog(self):
-        if self.version< 261:
+        if self.version < 261:
             raise Exception("wait_with_dialog is only supported with Mechanical 261")
         """Wait with dialog open."""
         self._app.BlockingModalDialog("Wait with dialog", "PyMechanical")

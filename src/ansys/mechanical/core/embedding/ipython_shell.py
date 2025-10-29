@@ -1,4 +1,4 @@
-# Copyright (C) 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -23,21 +23,23 @@
 """Interactive IPython shell for embedding."""
 
 import queue
-import time
 import threading
+import time
 
 from ansys.mechanical.core import LOG
 
 try:
     import pythoncom
+
     HAS_WIN32 = True
-except ImportError as e:
+except ImportError:
     HAS_WIN32 = False
 
 try:
     from IPython.core.interactiveshell import InteractiveShell
+
     HAS_IPYTHON = True
-except ImportError as e:
+except ImportError:
     HAS_IPYTHON = False
 
 CODE_QUEUE = queue.Queue()
@@ -48,6 +50,7 @@ EXEC_THREAD = None
 ORIGINAL_RUN_CELL = None
 SHELL_HOOK: callable = None
 EXECUTION_THREAD_ID: int = None
+
 
 def _execution_thread_main():
     global APP_INIT_EVENT
@@ -66,7 +69,7 @@ def _execution_thread_main():
         except queue.Empty:
             # Spin with short sleep
             if SHELL_HOOK is None:
-                time.sleep(.05)
+                time.sleep(0.05)
             else:
                 try:
                     SHELL_HOOK()
@@ -80,6 +83,7 @@ def _execution_thread_main():
         result = ORIGINAL_RUN_CELL(shell, code, store_history=True)
         RESULT_QUEUE.put(result)
 
+
 def _run_cell_in_thread(self, raw_cell, store_history=False, silent=False, shell_futures=True):
     global CODE_QUEUE
     global RESULT_QUEUE
@@ -92,6 +96,7 @@ def _run_cell_in_thread(self, raw_cell, store_history=False, silent=False, shell
             continue
     raise RuntimeError("Execution thread shut down before result was returned.")
 
+
 def _cleanup():
     global CODE_QUEUE
     global SHUTDOWN_EVENT
@@ -101,16 +106,19 @@ def _cleanup():
     CODE_QUEUE.put(None)  # Unblock the thread
     EXEC_THREAD.join(timeout=1)
 
+
 def _can_post_ipython_blocks():
     if not HAS_WIN32:
         raise Exception("`post_ipython_blocks` requires pywin32")
     if not HAS_IPYTHON:
         raise Exception("`post_ipython_blocks` requires ipython")
 
+
 def in_ipython():
     if not HAS_IPYTHON:
         return False
     from IPython import get_ipython
+
     return get_ipython() is not None
 
 
@@ -125,11 +133,15 @@ def post_ipython_blocks():
     EXEC_THREAD.start()
 
     import atexit
+
     atexit.register(_cleanup)
     # Patch IPython to delegate to your thread
-    InteractiveShell.run_cell = _run_cell_in_thread.__get__(InteractiveShell.instance(), InteractiveShell)
+    InteractiveShell.run_cell = _run_cell_in_thread.__get__(
+        InteractiveShell.instance(), InteractiveShell
+    )
 
     LOG.info("IPython now runs all cells in your dedicated thread.")
+
 
 def install_shell_hook(hook):
     global SHELL_HOOK
@@ -146,4 +158,3 @@ def is_in_interactive_thread():
     if EXECUTION_THREAD_ID is None:
         return False
     return EXECUTION_THREAD_ID == threading.get_ident()
-

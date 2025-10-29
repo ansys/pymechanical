@@ -27,6 +27,7 @@ import os
 
 TEST_HELPER = None
 
+
 def _get_test_helper():
     global TEST_HELPER
     import clr
@@ -37,6 +38,7 @@ def _get_test_helper():
     TEST_HELPER = Ansys.Common.WB1ManagedUtils.TestHelper()
     return TEST_HELPER
 
+
 def sleep(ms: int) -> None:
     """Non-blocking sleep for `ms` milliseconds.
 
@@ -44,9 +46,11 @@ def sleep(ms: int) -> None:
     """
     _get_test_helper().Wait(ms)
 
+
 def drain() -> None:
     """Block the current thread while all the UI messages
-    are processed."""
+    are processed.
+    """
     _get_test_helper().Drain()
 
 

@@ -25,6 +25,7 @@
 import sys
 import warnings
 
+
 def _start_nonblocking_ui_no_ipython(app) -> None:
     warnings.warn("""Starting the UI without blocking.
                   The UI will be stuck while python is executing, except during
@@ -34,25 +35,31 @@ def _start_nonblocking_ui_no_ipython(app) -> None:
                   or, use app.wait_with_dialog() to open a dialog box that
                   will block the python interpreter but keep the UI
                   responsive.""")
+
     def tracer(frame, event, arg):
         if event == "line":
             from ansys.mechanical.core.embedding.utils import drain
+
             drain()
         return tracer
 
     sys.settrace(tracer)
     app.ExtAPI.Application.StartUI(False)
 
+
 def _start_nonblocking_ui_ipython(app) -> None:
     """"""
     from ansys.mechanical.core.embedding.ipython_shell import install_shell_hook
     from ansys.mechanical.core.embedding.utils import sleep
+
     install_shell_hook(lambda: sleep(50))
     app.ExtAPI.Application.StartUI(False)
+
 
 def start_nonblocking_ui(app) -> None:
     """Start the ui without blocking"""
     from ansys.mechanical.core.embedding.ipython_shell import in_ipython, is_in_interactive_thread
+
     if not in_ipython():
         _start_nonblocking_ui_no_ipython(app)
         return
