@@ -37,6 +37,10 @@ simulations. Coordinate Systems too are covered here.
 
 from ansys.mechanical.core import App
 from ansys.mechanical.core.examples import delete_downloads, download_file
+import logging
+from ansys.mechanical.core.embedding.logger import Configuration
+
+Configuration.configure(level=logging.DEBUG, to_stdout=True, base_directory=None)
 
 app = App(globals=globals())
 
