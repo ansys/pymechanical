@@ -35,10 +35,11 @@ simulations. Coordinate Systems too are covered here.
 # Import Geometry
 # ~~~~~~~~~~~~~~~
 
-from ansys.mechanical.core import App
-from ansys.mechanical.core.examples import delete_downloads, download_file
 import logging
+
+from ansys.mechanical.core import App
 from ansys.mechanical.core.embedding.logger import Configuration
+from ansys.mechanical.core.examples import delete_downloads, download_file
 
 Configuration.configure(level=logging.DEBUG, to_stdout=True, base_directory=None)
 
