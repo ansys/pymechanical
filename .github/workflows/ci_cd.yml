@@ -590,6 +590,9 @@ jobs:
           uv venv /env
 
       - name: Install system dependencies
+        env: 
+          DEBIAN_FRONTEND: 'noninteractive'
+          TZ: 'Etc/UTC'
         run: |
           apt update
           apt install make lsb-release xvfb poppler-utils -y
