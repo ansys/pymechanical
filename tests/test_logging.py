@@ -20,16 +20,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-""" "Testing of log module"""
+"""Testing of log module."""
+
 import logging as deflogging  # Default logging
-import os
+from pathlib import Path
 import re
 
+from conftest import HAS_GRPC
 import pytest
 
-from ansys.mechanical.core import LOG  # Global logger
-from ansys.mechanical.core import logging
-from conftest import HAS_GRPC
+from ansys.mechanical.core import (
+    LOG,  # Global logger
+    logging,
+)
 
 ## Notes
 # Use the next fixtures for:
@@ -59,7 +62,8 @@ def fake_record(
     extra={},
 ):
     """
-    Function to fake log records using the format from the logger handler.
+    Fake log records using the format from the logger handler.
+
     Parameters
     ----------
     logger : logging.Logger
@@ -83,10 +87,6 @@ def fake_record(
         Exception information. By default None
     extra : dict, optional
         Extra arguments, one of them should be 'instance_name'. By default {}
-    Returns
-    -------
-    [type]
-        [description]
     """
     sinfo = None
     if not name_logger:
@@ -121,6 +121,7 @@ def fake_record(
 
 @pytest.mark.remote_session_launch
 def test_only_logger(caplog):
+    """Test for only logger."""
     log_a = deflogging.getLogger("test")
     log_a.setLevel("DEBUG")
 
@@ -130,12 +131,15 @@ def test_only_logger(caplog):
 
 @pytest.mark.remote_session_launch
 def test_global_logger_exist():
+    """Test for global logger existence."""
+    assert LOG.logger is not None
     assert isinstance(LOG.logger, deflogging.Logger)
     assert LOG.logger.name == "pymechanical_global"
 
 
 @pytest.mark.remote_session_launch
 def test_global_logger_has_handlers():
+    """Test for global logger handlers."""
     assert hasattr(LOG, "file_handler")
     assert hasattr(LOG, "std_out_handler")
     assert LOG.logger.hasHandlers
@@ -144,6 +148,7 @@ def test_global_logger_has_handlers():
 
 @pytest.mark.remote_session_launch
 def test_global_logger_logging(caplog):
+    """Test for global logger logging."""
     LOG.logger.setLevel("DEBUG")
     LOG.std_out_handler.setLevel("DEBUG")
     for each_log_name, each_log_number in LOG_LEVELS.items():
@@ -159,11 +164,14 @@ def test_global_logger_logging(caplog):
 
 @pytest.mark.remote_session_launch
 def test_global_logger_debug_mode():
+    """Test for global logger debug mode."""
+    LOG.logger.setLevel("DEBUG")
     assert isinstance(LOG.logger.level, int)
 
 
 @pytest.mark.remote_session_launch
 def test_global_logger_exception_handling(caplog):
+    """Test for global logger exception handling."""
     exc = "Unexpected exception"
     with caplog.at_level(logging.ERROR):
         with pytest.raises(Exception):
@@ -175,8 +183,10 @@ def test_global_logger_exception_handling(caplog):
 
 @pytest.mark.remote_session_launch
 def test_global_logger_debug_levels(caplog):
-    """Testing for all the possible logging level that the output is recorded
-    properly for each type of msg."""
+    """Testing for all the possible logging level.
+
+    Test that the output is recorded properly for each type of msg.
+    """
     for each_level in [
         deflogging.DEBUG,
         deflogging.INFO,
@@ -212,7 +222,7 @@ def test_global_logger_format():
     # This method is not super robust, since we are input fake data to ``logging.makeRecord``.
     # There are things such as filename or class that we cannot evaluate without going
     # into the code.
-
+    """Test for global logger format."""
     assert "instance" in logging.FILE_MSG_FORMAT
     assert "instance" in logging.STDOUT_MSG_FORMAT
 
@@ -236,7 +246,7 @@ def test_instance_logger_format(mechanical):
     # This method is not super robust, since we are input fake data to ``logging.makeRecord``.
     # There are things such as filename or class that we cannot evaluate without going
     # into the code.
-
+    """Test for instance logger format."""
     log = fake_record(
         mechanical._log.logger,
         msg="This is a message",
@@ -250,30 +260,31 @@ def test_instance_logger_format(mechanical):
 
 @pytest.mark.remote_session_launch
 def test_global_methods(caplog):
+    """Test for global logging methods."""
     LOG.logger.setLevel("DEBUG")
     LOG.std_out_handler.setLevel("DEBUG")
 
-    msg = f"This is a debug message"
+    msg = "This is a debug message"
     LOG.debug(msg)
     assert msg in caplog.text
 
-    msg = f"This is an info message"
+    msg = "This is an info message"
     LOG.info(msg)
     assert msg in caplog.text
 
-    msg = f"This is a warning message"
+    msg = "This is a warning message"
     LOG.warning(msg)
     assert msg in caplog.text
 
-    msg = f"This is an error message"
+    msg = "This is an error message"
     LOG.error(msg)
     assert msg in caplog.text
 
-    msg = f"This is a critical message"
+    msg = "This is a critical message"
     LOG.critical(msg)
     assert msg in caplog.text
 
-    msg = f'This is a 30 message using "log"'
+    msg = 'This is a 30 message using "log"'
     LOG.log(30, msg)
     assert msg in caplog.text
 
@@ -281,9 +292,10 @@ def test_global_methods(caplog):
 @pytest.mark.remote_session_launch
 def test_log_to_file(tmpdir):
     """Testing writing to log file.
+
     Since the default loglevel of LOG is error, debug are not normally recorded to it.
     """
-    file_path = os.path.join(tmpdir, "instance.log")
+    file_path = str(Path(tmpdir) / "instance.log")
     file_msg_error = "This is a error message"
     file_msg_debug = "This is a debug message"
 
@@ -297,8 +309,8 @@ def test_log_to_file(tmpdir):
 
     LOG.error(file_msg_error)
     LOG.debug(file_msg_debug)
-
-    with open(file_path, "r") as fid:
+    file_path = Path(file_path)
+    with file_path.open("r") as fid:
         text = "".join(fid.readlines())
 
     assert file_msg_error in text
@@ -322,7 +334,7 @@ def test_log_to_file(tmpdir):
     file_msg_debug = "This debug message should be recorded."
     LOG.debug(file_msg_debug)
 
-    with open(file_path, "r") as fid:
+    with file_path.open("r") as fid:
         text = "".join(fid.readlines())
 
     assert file_msg_error in text
@@ -333,7 +345,7 @@ def test_log_to_file(tmpdir):
 
 @pytest.mark.remote_session_launch
 def test_log_instance_name(mechanical):
-    # verify we can access via an instance name
+    """Verify we can access via an instance name."""
     LOG[mechanical.name] == mechanical._log
 
     with pytest.raises(KeyError):
@@ -343,9 +355,10 @@ def test_log_instance_name(mechanical):
 @pytest.mark.remote_session_launch
 def test_instance_log_to_file(mechanical, tmpdir):
     """Testing writing to log file.
+
     Since the default loglevel of LOG is error, debug are not normally recorded to it.
     """
-    file_path = os.path.join(tmpdir, "instance.log")
+    file_path = str(Path(tmpdir) / "instance.log")
     file_msg_error = "This is a error message"
     file_msg_debug = "This is a debug message"
 
@@ -355,7 +368,8 @@ def test_instance_log_to_file(mechanical, tmpdir):
     mechanical.log_message("ERROR", file_msg_error)
     mechanical.log_message("DEBUG", file_msg_debug)
 
-    with open(file_path, "r") as fid:
+    file_path = Path(file_path)
+    with file_path.open("r") as fid:
         text = "".join(fid.readlines())
 
     assert file_msg_error in text
@@ -397,7 +411,7 @@ def test_instance_log_to_file(mechanical, tmpdir):
     # enable logging
     mechanical._disable_logging = False
 
-    with open(file_path, "r") as fid:
+    with file_path.open("r") as fid:
         text = "".join(fid.readlines())
 
     assert file_msg_error in text
@@ -413,7 +427,7 @@ def test_instance_log_to_file(mechanical, tmpdir):
 
 @pytest.mark.remote_session_launch
 def test_lowercases():
-    # test that all loggers are lowercase
+    """Test that all loggers are lowercase."""
     for each_loglevel in LOG_LEVELS.keys():
         LOG.setLevel(each_loglevel.lower())
 

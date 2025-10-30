@@ -60,8 +60,7 @@ and fluid lines using matplotlib.
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from matplotlib import image as mpimg
-from matplotlib import pyplot as plt
+from matplotlib import image as mpimg, pyplot as plt
 
 from ansys.mechanical.core import App
 from ansys.mechanical.core.examples import delete_downloads, download_file
@@ -108,10 +107,10 @@ def set_camera_and_display_image(
     """
     # Set the camera to fit the mesh
     camera.SetFit()
-    # Export the mesh image with the specified settings
+    # Export the image with the specified settings
     image_path = image_output_path / image_name
     graphics.ExportImage(str(image_path), image_export_format, graphics_image_export_settings)
-    # Display the exported mesh image
+    # Display the exported image
     display_image(image_path)
 
 
@@ -515,6 +514,8 @@ STAT_SS = solution.Status
 # Postprocessing
 # ~~~~~~~~~~~~~~
 
+camera.SetFit()
+camera.SceneHeight = Quantity(2.0, "in")
 # %%
 # Display the temperature plots for both plates
 
@@ -525,9 +526,10 @@ graphics.ViewOptions.ResultPreference.ExtraModelDisplay = (
     Ansys.Mechanical.DataModel.MechanicalEnums.Graphics.ExtraModelDisplay.NoWireframe
 )
 # Set the camera to fit the model and export the image
-set_camera_and_display_image(
-    camera, graphics, settings_720p, output_path, "temp_plot_both_plates.png"
-)
+image_path = output_path / "temp_plot_both_plates.png"
+graphics.ExportImage(str(image_path), image_export_format, settings_720p)
+# Display the exported image
+display_image(image_path)
 
 # %%
 # Display the temperature plots for fluid lines
@@ -535,10 +537,11 @@ set_camera_and_display_image(
 # Activate the temperature results for fluid lines
 app.Tree.Activate([temp_plot_fluidlines])
 # Set the camera to fit the model and export the image
-set_camera_and_display_image(
-    camera, graphics, settings_720p, output_path, "temp_plot_fluidlines.png"
-)
-
+# Set the camera to fit the model and export the image
+image_path = output_path / "temp_plot_fluidlines.png"
+graphics.ExportImage(str(image_path), image_export_format, settings_720p)
+# Display the exported image
+display_image(image_path)
 # %%
 # Clean up the project
 # ~~~~~~~~~~~~~~~~~~~~

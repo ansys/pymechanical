@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Main application class for embedded Mechanical."""
+
 from __future__ import annotations
 
 import atexit
@@ -40,6 +41,7 @@ from ansys.mechanical.core.embedding.mechanical_warnings import (
 )
 from ansys.mechanical.core.embedding.poster import Poster
 from ansys.mechanical.core.embedding.ui import launch_ui
+from ansys.mechanical.core.feature_flags import get_command_line_arguments
 
 if typing.TYPE_CHECKING:
     # Make sure to run ``ansys-mechanical-ideconfig`` to add the autocomplete settings to VS Code
@@ -74,7 +76,9 @@ def _cleanup_private_appdata(profile: UniqueUserProfile):
     profile.cleanup()
 
 
-def _start_application(configuration: AddinConfiguration, version, db_file) -> "App":
+def _start_application(
+    configuration: AddinConfiguration, version, db_file, _addtional_args
+) -> "App":
     import clr
 
     clr.AddReference("Ansys.Mechanical.Embedding")
@@ -84,8 +88,28 @@ def _start_application(configuration: AddinConfiguration, version, db_file) -> "
         os.environ["ANSYS_MECHANICAL_STANDALONE_NO_ACT_EXTENSIONS"] = "1"
 
     addin_configuration_name = configuration.addin_configuration
+    if version < 261:
+        return Ansys.Mechanical.Embedding.Application(db_file, addin_configuration_name)
+    return Ansys.Mechanical.Embedding.Application(
+        db_file, addin_configuration_name, _addtional_args
+    )
 
-    return Ansys.Mechanical.Embedding.Application(db_file, addin_configuration_name)
+
+def _additional_args(readonly: bool, feature_flags: list, version: int) -> str:
+    """Generate additional command line arguments for the application."""
+    if version < 261:
+        LOG.warning(
+            "The readonly and feature_flags arguments are only supported "
+            "with version 2026R1 and later."
+        )
+        return ""
+    additional_args = ""
+    if readonly:
+        additional_args += " -readonly"
+    if feature_flags:
+        flag_args = get_command_line_arguments(feature_flags)
+        additional_args += " " + " ".join(flag_args)
+    return additional_args
 
 
 def is_initialized():
@@ -141,6 +165,11 @@ class App:
         The logging level for the application. Default is "WARNING".
     pep8 : bool, optional
         Whether to enable PEP 8 style binding for the assembly. Default is False.
+    readonly : bool, optional
+        Whether to open the application in read-only mode. Default is False.
+    feature_flags : list, optional
+        List of feature flag names to enable. Default is [].
+        Available flags include: 'ThermalShells', 'MultistageHarmonic', 'CPython'.
 
     Examples
     --------
@@ -167,9 +196,17 @@ class App:
 
     Set log level
 
-    >>> app = App(log_level='INFO')
+    >>> app = App(log_level="INFO")
 
     ... INFO -  -  app - log_info - Starting Mechanical Application
+
+    Create App in read-only mode
+
+    >>> app = App(readonly=True)
+
+    Create App with feature flags enabled
+
+    >>> app = App(feature_flags=["CPython", "ThermalShells"])
 
     """
 
@@ -229,8 +266,15 @@ class App:
             profile.update_environment(os.environ)
 
         pep8_alias = kwargs.get("pep8", False)
+        readonly = kwargs.get("readonly", False)
+        feature_flags = kwargs.get("feature_flags", [])
+        if readonly or feature_flags:
+            additional_args = _additional_args(readonly, feature_flags, self._version)
+        else:
+            additional_args = ""
+
         runtime.initialize(self._version, pep8_aliases=pep8_alias)
-        self._app = _start_application(configuration, self._version, db_file)
+        self._app = _start_application(configuration, self._version, db_file, additional_args)
         connect_warnings(self)
         self._poster = None
 
@@ -327,7 +371,7 @@ class App:
         Exception
             If the file already exists at the specified path and `overwrite` is False.
         """
-        if not os.path.exists(path):
+        if not Path(path).exists():
             self.DataModel.Project.SaveAs(path)
             return
 
@@ -380,24 +424,24 @@ class App:
 
     def execute_script(self, script: str) -> typing.Any:
         """Execute the given script with the internal IronPython engine."""
-        SCRIPT_SCOPE = "pymechanical-internal"
+        script_scope = "pymechanical-internal"
         if not hasattr(self, "script_engine"):
             import clr
 
             clr.AddReference("Ansys.Mechanical.Scripting")
             import Ansys
 
-            engine_type = Ansys.Mechanical.Scripting.ScriptEngineType.IronPython
-            script_engine = Ansys.Mechanical.Scripting.EngineFactory.CreateEngine(engine_type)
+            # CreateEngine API without parameters creates an IronPython engine
+            script_engine = Ansys.Mechanical.Scripting.EngineFactory.CreateEngine()
             empty_scope = False
             debug_mode = False
-            script_engine.CreateScope(SCRIPT_SCOPE, empty_scope, debug_mode)
+            script_engine.CreateScope(script_scope, empty_scope, debug_mode)
             self.script_engine = script_engine
         light_mode = True
         args = None
         rets = None
-        script_result = self.script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
-        error_msg = f"Failed to execute the script"
+        script_result = self.script_engine.ExecuteCode(script, script_scope, light_mode, args, rets)
+        error_msg = "Failed to execute the script"
         if script_result is None:
             raise Exception(error_msg)
         if script_result.Error is not None:
@@ -407,7 +451,10 @@ class App:
 
     def execute_script_from_file(self, file_path=None):
         """Execute the given script from file with the internal IronPython engine."""
-        text_file = open(file_path, "r", encoding="utf-8")
+        file_path = Path(file_path)
+        if not file_path.is_file():
+            raise FileNotFoundError(f"The file {file_path} does not exist.")
+        text_file = file_path.open("r", encoding="utf-8")
         data = text_file.read()
         text_file.close()
         return self.execute_script(data)
@@ -424,7 +471,7 @@ class App:
             LOG.warning("Plotting is only supported with version 2024R2 and later!")
             return
 
-        # TODO Check if anything loaded inside app or else show warning and return
+        # TODO : Check if anything loaded inside app or else show warning and return
 
         from ansys.mechanical.core.embedding.graphics.embedding_plotter import to_plotter
 
@@ -459,27 +506,27 @@ class App:
         return self._poster
 
     @property
-    def DataModel(self) -> Ansys.Mechanical.DataModel.Interfaces.DataModelObject:
+    def DataModel(self) -> Ansys.Mechanical.DataModel.Interfaces.DataModelObject:  # noqa: N802
         """Return the DataModel."""
         return GetterWrapper(self._app, lambda app: app.DataModel)
 
     @property
-    def ExtAPI(self) -> Ansys.ACT.Interfaces.Mechanical.IMechanicalExtAPI:
+    def ExtAPI(self) -> Ansys.ACT.Interfaces.Mechanical.IMechanicalExtAPI:  # noqa: N802
         """Return the ExtAPI object."""
         return GetterWrapper(self._app, lambda app: app.ExtAPI)
 
     @property
-    def Tree(self) -> Ansys.ACT.Automation.Mechanical.Tree:
+    def Tree(self) -> Ansys.ACT.Automation.Mechanical.Tree:  # noqa: N802
         """Return the Tree object."""
         return GetterWrapper(self._app, lambda app: app.DataModel.Tree)
 
     @property
-    def Model(self) -> Ansys.ACT.Automation.Mechanical.Model:
+    def Model(self) -> Ansys.ACT.Automation.Mechanical.Model:  # noqa: N802
         """Return the Model object."""
         return GetterWrapper(self._app, lambda app: app.DataModel.Project.Model)
 
     @property
-    def Graphics(self) -> Ansys.ACT.Common.Graphics.MechanicalGraphicsWrapper:
+    def Graphics(self) -> Ansys.ACT.Common.Graphics.MechanicalGraphicsWrapper:  # noqa: N802
         """Return the Graphics object."""
         return GetterWrapper(self._app, lambda app: app.ExtAPI.Graphics)
 
@@ -553,7 +600,7 @@ class App:
             # EventSource isn't defined on the IApplication interface
             self.ExtAPI.Application.EventSource.OnWorkbenchReady += self._on_workbench_ready
             self._subscribed = True
-        except:
+        except Exception:
             self._subscribed = False
 
     def _unsubscribe(self):

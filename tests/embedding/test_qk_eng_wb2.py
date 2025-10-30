@@ -22,7 +22,7 @@
 
 """Migration from QK_ENG_WB2 tests."""
 
-import os
+from pathlib import Path
 
 import pytest
 
@@ -39,15 +39,14 @@ def test_qk_eng_wb2_005(printer, embedded_app, assets):
     STAT_STRUC = Model.AddStaticStructuralAnalysis()
     STAT_STRUC_SOLN = STAT_STRUC.Solution
     BUCK = Model.AddEigenvalueBucklingAnalysis()
-    BUCK_SOLN = BUCK.Solution
     BUCK_ANA_SETTING = BUCK.AnalysisSettings
     PRE_STRS_ENV = BUCK.Children[0]
     PRE_STRS_ENV.PreStressICEnvironment = STAT_STRUC
 
-    geometry_file = os.path.join(assets, "Eng157.x_t")
+    geometry_file = Path(assets) / "Eng157.x_t"
     printer(f"Setting up test - attaching geometry {geometry_file}")
     geometry_import = Model.GeometryImportGroup.AddGeometryImport()
-    geometry_import.Import(geometry_file)
+    geometry_import.Import(str(geometry_file))
     printer("Running test")
 
     def _innertest():
@@ -98,7 +97,7 @@ def test_qk_eng_wb2_005(printer, embedded_app, assets):
         FRC.ZComponent.Output.SetDiscreteValue(0, Quantity("-1 [lbf]"))
 
         printer("Insert Static Structural results and Solve")
-        DIR_DEF01_STAT_STRUC = STAT_STRUC.Solution.AddDirectionalDeformation()
+        STAT_STRUC.Solution.AddDirectionalDeformation()
         STAT_STRUC_SOLN.Solve(True)
 
         printer("Setup Linear Buckling analysis")
@@ -156,19 +155,19 @@ def test_qk_eng_wb2_007(printer, embedded_app, assets):
     printer("Set units system to MKS")
     ExtAPI.Application.ActiveUnitSystem = MechanicalUnitSystem.StandardMKS
 
-    geometry_file = os.path.join(assets, "longbar_sat_m.x_t")
+    geometry_file = Path(assets) / "longbar_sat_m.x_t"
     printer(f"Setting up test - attaching geometry {geometry_file}")
     geometry_import = Model.GeometryImportGroup.AddGeometryImport()
-    geometry_import.Import(geometry_file)
+    geometry_import.Import(str(geometry_file))
 
     printer("Setting up test - adding two static structural systems")
     Model.AddStaticStructuralAnalysis()
     Model.AddStaticStructuralAnalysis()
 
-    material_file = os.path.join(assets, "eng200_material.xml")
+    material_file = Path(assets) / "eng200_material.xml"
     printer(f"Setting up test - import materials {material_file}")
     materials = Model.Materials
-    materials.Import(material_file)
+    materials.Import(str(material_file))
 
     def _innertest():
         printer("Add material file")
@@ -179,7 +178,7 @@ def test_qk_eng_wb2_007(printer, embedded_app, assets):
         GEOM = Model.Geometry
         MSH = Model.Mesh
 
-        PART_1 = [
+        [
             i
             for i in GEOM.GetChildren[Ansys.ACT.Automation.Mechanical.Body](True)
             if i.Name == "Part 1"
@@ -221,6 +220,7 @@ def test_qk_eng_wb2_007(printer, embedded_app, assets):
         NS2.Generate()
 
         printer("Setup Mesh")
+        MSH.MeshSizing = MeshSizingType.Adaptive
         MSH = MODEL.Mesh
         MSH.Resolution = 4
 
@@ -261,7 +261,7 @@ def test_qk_eng_wb2_007(printer, embedded_app, assets):
 
         SHEAR_STRS1_STAT_STRUC2 = SOLN_STAT_STRUC2.AddShearStress()  # YZ stress
         SHEAR_STRS1_STAT_STRUC2.ShearOrientation = ShearOrientationType.YZPlane
-        SHEAR_STRS2_STAT_STRUC2 = SOLN_STAT_STRUC2.AddShearStress()  # XZ stress
+        SOLN_STAT_STRUC2.AddShearStress()  # XZ stress
         SHEAR_STRS2_STAT_STRUC1.ShearOrientation = ShearOrientationType.XZPlane
 
         SOLN_STAT_STRUC2.Solve(True)
