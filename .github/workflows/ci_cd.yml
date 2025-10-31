@@ -7,6 +7,7 @@ on:
       revn:
         type: choice
         options:
+        - 'candidate'
         - '261'
         - '252'
         - '251'
@@ -128,7 +129,7 @@ jobs:
     steps:
       - id: save-versions
         run: |
-          if ${{ github.event_name == 'schedule' }}; then
+          if ${{ github.event_name == 'schedule' }} || [[ "${{ inputs.revn }}" == "candidate" ]]; then
             echo "test_revn=${{ env.DEV_REVN}}" >> $GITHUB_OUTPUT
             test_mech_revn=${{ env.DEV_REVN}}
             test_mech_image_version=${test_mech_revn:0:2}.${test_mech_revn:2}_candidate
