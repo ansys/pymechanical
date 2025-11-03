@@ -64,9 +64,9 @@ LOGGING_CONTEXT: str = "PYMECHANICAL"
 """Constant for logging context."""
 
 
-def _get_backend() -> (
-    typing.Union[windows_api.APIBackend, linux_api.APIBackend, environ.EnvironBackend]
-):
+def _get_backend() -> typing.Union[
+    windows_api.APIBackend, linux_api.APIBackend, environ.EnvironBackend
+]:
     """Get the appropriate logger backend.
 
     Before embedding is initialized, logging is configured via environment variables.
