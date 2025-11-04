@@ -20,15 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""License manager test"""
+"""License manager test."""
 
 import pytest
 
 
 @pytest.mark.embedding
 def test_license_manager(embedded_app, capsys):
-    """Test message manager"""
-
+    """Test message manager."""
     test_license = "Ansys Mechanical Premium"
     assert len(embedded_app.license_manager.get_all_licenses()) > 0
     assert embedded_app.readonly is False, "App should be editable after enabling session license"
@@ -37,21 +36,21 @@ def test_license_manager(embedded_app, capsys):
 
     # Enable and disable specific license
     status = embedded_app.license_manager.get_license_status(test_license)
-    assert (
-        status == embedded_app.license_manager._license_status.Enabled
-    ), "License should be enabled"
+    assert status == embedded_app.license_manager._license_status.Enabled, (
+        "License should be enabled"
+    )
 
     embedded_app.license_manager.set_license_status(test_license, False)
     status = embedded_app.license_manager.get_license_status(test_license)
-    assert (
-        status == embedded_app.license_manager._license_status.Disabled
-    ), "License should be disabled"
+    assert status == embedded_app.license_manager._license_status.Disabled, (
+        "License should be disabled"
+    )
 
     embedded_app.license_manager.set_license_status(test_license, True)
     status = embedded_app.license_manager.get_license_status(test_license)
-    assert (
-        status == embedded_app.license_manager._license_status.Enabled
-    ), "License should be enabled"
+    assert status == embedded_app.license_manager._license_status.Enabled, (
+        "License should be enabled"
+    )
 
     license_list = embedded_app.license_manager.get_all_licenses()
     assert license_list.index(test_license) == 1, "License should be at index 1"

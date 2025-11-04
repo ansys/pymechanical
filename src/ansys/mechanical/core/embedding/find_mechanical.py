@@ -20,7 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Cli for finding mechanical installation."""
+
 import os
+from pathlib import Path
 import sys
 
 import ansys.tools.path as atp
@@ -77,11 +79,11 @@ def cli(version: int, path: str | None = None) -> tuple[int, str]:
             raise click.BadParameter(
                 f"The provided path {path} does not match the specified version {version}."
             )
-        print(version, os.path.join(path, "aisol"))
+        print(version, str(Path(path) / "aisol"))
         sys.exit(0)
     if path and not version:
         _version_from_given_path = atp.version_from_path("mechanical", path)
-        print(_version_from_given_path, os.path.join(path, "aisol"))
+        print(_version_from_given_path, str(Path(path) / "aisol"))
         sys.exit(0)
 
     awp_roots = [value for key, value in os.environ.items() if key.startswith("AWP_ROOT")]
@@ -89,22 +91,22 @@ def cli(version: int, path: str | None = None) -> tuple[int, str]:
     if awp_roots:
         versions_found = []
         for awp_root in awp_roots:
-            vfolder = os.path.basename(awp_root)
+            vfolder = Path(awp_root).name
             _version = vfolder.lstrip("v")
             versions_found.append(int(_version))
         if version in versions_found:
-            print(version, os.path.join(os.environ[f"AWP_ROOT{version}"], "aisol"))
+            print(version, str(Path(os.environ[f"AWP_ROOT{version}"]) / "aisol"))
             sys.exit(0)
         if versions_found:
             latest_version = max(versions_found)
-            print(latest_version, os.path.join(os.environ[f"AWP_ROOT{latest_version}"], "aisol"))
+            print(latest_version, str(Path(os.environ[f"AWP_ROOT{latest_version}"]) / "aisol"))
             sys.exit(0)
 
     # Use ansys-tools-path
     _exe = atp.get_mechanical_path(allow_input=False, version=version)
     _version = atp.version_from_path("mechanical", _exe)
 
-    _path = os.path.dirname(_exe)
+    _path = str(Path(_exe).parent)
     print(_version, _path)
 
     sys.exit(0)

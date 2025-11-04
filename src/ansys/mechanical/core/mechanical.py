@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Connect to Mechanical gRPC server and issues commands."""
+
 import atexit
 from contextlib import closing
 import datetime
@@ -29,6 +30,7 @@ from functools import wraps
 import glob
 import os
 import pathlib
+from pathlib import Path
 import socket
 import subprocess  # nosec: B404
 import sys
@@ -227,8 +229,8 @@ def close_all_local_instances(port_range=None, use_thread=True):
 
 def create_ip_file(ip, path):
     """Create the ``mylocal.ip`` file needed to change the IP address of the gRPC server."""
-    file_name = os.path.join(path, "mylocal.ip")
-    with open(file_name, "w", encoding="utf-8") as f:
+    file_name = Path(path) / "mylocal.ip"
+    with file_name.open("w", encoding="utf-8") as f:
         f.write(ip)
 
 
@@ -248,7 +250,7 @@ def check_valid_mechanical():
 
     >>> from ansys.mechanical.core import mechanical
     >>> from ansys.tools.path import change_default_mechanical_path
-    >>> mechanical_path = 'C:/Program Files/ANSYS Inc/v252/aisol/bin/win64/AnsysWBU.exe'
+    >>> mechanical_path = "C:/Program Files/ANSYS Inc/v252/aisol/bin/win64/AnsysWBU.exe"
     >>> change_default_mechanical_path(mechanical_pth)
     >>> mechanical.check_valid_mechanical()
     True
@@ -367,11 +369,11 @@ class Mechanical(object):
 
         Connect to a Mechanical instance running on the LAN on a default port.
 
-        >>> mechanical = pymechanical.Mechanical('192.168.1.101')
+        >>> mechanical = pymechanical.Mechanical("192.168.1.101")
 
         Connect to a Mechanical instance running on the LAN on a non-default port.
 
-        >>> mechanical = pymechanical.Mechanical('192.168.1.101', port=60001)
+        >>> mechanical = pymechanical.Mechanical("192.168.1.101", port=60001)
 
         If you want to customize the channel, you can connect directly to gRPC channels.
         For example, if you want to create an insecure channel with a maximum message
@@ -379,9 +381,9 @@ class Mechanical(object):
 
         >>> import grpc
         >>> channel_temp = grpc.insecure_channel(
-        ...     '127.0.0.1:10000',
+        ...     "127.0.0.1:10000",
         ...     options=[
-        ...         ("grpc.max_receive_message_length", 8*1024**2),
+        ...         ("grpc.max_receive_message_length", 8 * 1024**2),
         ...     ],
         ... )
         >>> mechanical = pymechanical.Mechanical(channel=channel_temp)
@@ -864,7 +866,7 @@ class Mechanical(object):
         else:
             self.log_info(f"Waiting for Mechanical to be ready. Maximum wait time: {wait_time}s")
 
-        while not self.__isMechanicalReady():
+        while not self.__is_mechanical_ready():
             time_2 = datetime.datetime.now()
             time_interval = time_2 - time_1
             time_interval_seconds = int(time_interval.total_seconds())
@@ -880,7 +882,7 @@ class Mechanical(object):
                         f"before throwing the error."
                     )
                     raise RuntimeError(
-                        f"Couldn't connect to Mechanical. " f"Waited for {time_interval_seconds}s."
+                        f"Couldn't connect to Mechanical. Waited for {time_interval_seconds}s."
                     )
 
             time.sleep(sleep_time)
@@ -891,7 +893,7 @@ class Mechanical(object):
 
         self.log_info(f"Mechanical is ready. It took {time_interval_seconds} seconds to verify.")
 
-    def __isMechanicalReady(self):
+    def __is_mechanical_ready(self):
         """Whether the Mechanical gRPC server is ready.
 
         Returns
@@ -967,22 +969,22 @@ class Mechanical(object):
         --------
         Return a value from a simple calculation.
 
-        >>> mechanical.run_python_script('2+3')
+        >>> mechanical.run_python_script("2+3")
         '5'
 
         Return a string value from Project object.
 
-        >>> mechanical.run_python_script('ExtAPI.DataModel.Project.ProductVersion')
+        >>> mechanical.run_python_script("ExtAPI.DataModel.Project.ProductVersion")
         '2025 R2'
 
         Return an empty string, when you try to return the Project object.
 
-        >>> mechanical.run_python_script('ExtAPI.DataModel.Project')
+        >>> mechanical.run_python_script("ExtAPI.DataModel.Project")
         ''
 
         Return an empty string for assignments.
 
-        >>> mechanical.run_python_script('version = ExtAPI.DataModel.Project.ProductVersion')
+        >>> mechanical.run_python_script("version = ExtAPI.DataModel.Project.ProductVersion")
         ''
 
         Return value from the last executed statement from a variable.
@@ -1006,7 +1008,7 @@ class Mechanical(object):
 
         Handle an error scenario.
 
-        >>> script = 'hello_world()'
+        >>> script = "hello_world()"
         >>> import grpc
         >>> try:
                 mechanical.run_python_script(script)
@@ -1057,7 +1059,7 @@ class Mechanical(object):
 
         2+3
 
-        >>> mechanical.run_python_script_from_file('simple.py')
+        >>> mechanical.run_python_script_from_file("simple.py")
         '5'
 
         Return a value from a simple function call.
@@ -1068,14 +1070,14 @@ class Mechanical(object):
 
         math.pow(2,3)
 
-        >>> mechanical.run_python_script_from_file('test.py')
+        >>> mechanical.run_python_script_from_file("test.py")
         '8'
 
         """
         self.verify_valid_connection()
-        self.log_debug(f"run_python_script_from_file started")
+        self.log_debug("run_python_script_from_file started")
         script_code = Mechanical.__readfile(file_path)
-        self.log_debug(f"run_python_script_from_file started")
+        self.log_debug("run_python_script_from_file started")
         return self.run_python_script(script_code, enable_logging, log_level, progress_interval)
 
     def exit(self, force=False):
@@ -1119,7 +1121,7 @@ class Mechanical(object):
         self._busy = True
         try:
             self._stub.Shutdown(request)
-        except grpc._channel._InactiveRpcError as error:
+        except grpc._channel._InactiveRpcError:
             self.log_warning("Mechanical exit failed: {str(error}.")
         finally:
             self._busy = False
@@ -1131,7 +1133,7 @@ class Mechanical(object):
             self.log_debug("PyPIM delete has started.")
             try:
                 self._remote_instance.delete()
-            except Exception as error:
+            except Exception:
                 self.log_warning("Remote instance delete failed: {str(error}.")
             self.log_debug("PyPIM delete has finished.")
 
@@ -1180,11 +1182,12 @@ class Mechanical(object):
         --------
         Upload the ``hsec.x_t`` file  with the progress bar not shown.
 
-        >>> mechanical.upload('hsec.x_t', progress_bar=False)
+        >>> mechanical.upload("hsec.x_t", progress_bar=False)
         """
+        file_name = Path(file_name)
         self.verify_valid_connection()
 
-        if not os.path.isfile(file_name):
+        if not file_name.is_file():
             raise FileNotFoundError(f"Unable to locate filename {file_name}.")
 
         self._log.debug(f"Uploading file '{file_name}' to the Mechanical instance.")
@@ -1196,7 +1199,7 @@ class Mechanical(object):
         try:
             chunks_generator = self.get_file_chunks(
                 file_location_destination,
-                file_name,
+                str(file_name),
                 chunk_size=chunk_size,
                 progress_bar=progress_bar,
             )
@@ -1207,7 +1210,7 @@ class Mechanical(object):
 
         if not response.is_ok:  # pragma: no cover
             raise IOError("File failed to upload.")
-        return os.path.basename(file_name)
+        return str(file_name.name)
 
     def get_file_chunks(self, file_location, file_name, chunk_size, progress_bar):
         """Construct the file upload request for the server.
@@ -1223,6 +1226,7 @@ class Mechanical(object):
         progress_bar : bool
             Whether to show a progress bar using ``tqdm``.
         """
+        file_name = Path(file_name)
         pbar = None
         if progress_bar:
             if not _HAS_TQDM:  # pragma: no cover
@@ -1232,9 +1236,9 @@ class Mechanical(object):
                     "set 'progress_bar=False'."
                 )
 
-            n_bytes = os.path.getsize(file_name)
+            n_bytes = file_name.stat().st_size
 
-            base_name = os.path.basename(file_name)
+            base_name = file_name.name
             pbar = tqdm(
                 total=n_bytes,
                 desc=f"Uploading {base_name} to {self._channel_str}:{file_location}.",
@@ -1242,8 +1246,7 @@ class Mechanical(object):
                 unit_scale=True,
                 unit_divisor=1024,
             )
-
-        with open(file_name, "rb") as f:
+        with file_name.open("rb") as f:
             while True:
                 piece = f.read(chunk_size)
                 length = len(piece)
@@ -1257,7 +1260,7 @@ class Mechanical(object):
 
                 chunk = mechanical_pb2.Chunk(payload=piece, size=length)
                 yield mechanical_pb2.FileUploadRequest(
-                    file_name=os.path.basename(file_name), file_location=file_location, chunk=chunk
+                    file_name=str(file_name.name), file_location=file_location, chunk=chunk
                 )
 
     @property
@@ -1287,7 +1290,8 @@ class Mechanical(object):
         List the files in the working directory.
 
         >>> files = mechanical.list_files()
-        >>> for file in files: print(file)
+        >>> for file in files:
+        ...     print(file)
         """
         # Get all files using server-side script
         script = """
@@ -1323,15 +1327,17 @@ for dirPath, _, fileNames in os.walk(rootDir):
         if isinstance(files, str):
             if self._local:  # pragma: no cover
                 # in local mode
-                if os.path.exists(files):
-                    if not os.path.isabs(files):
-                        list_files = [os.path.join(os.getcwd(), files)]
+                file_path = Path(files)
+                if file_path.exists():
+                    if not file_path.is_absolute():
+                        list_files = [str(Path.cwd() / files)]
                     else:
                         # file exist
                         list_files = [files]
                 elif "*" in files:
                     # using filter
-                    list_files = glob.glob(files, recursive=recursive)
+                    list_files = glob.glob(files, recursive=recursive)  # noqa: PTH207
+                    # TODO : replace pathlib when python 3.11 is minimum
                     if not list_files:
                         raise ValueError(
                             f"The `'files'` parameter ({files}) didn't match any file using "
@@ -1430,15 +1436,15 @@ for dirPath, _, fileNames in os.walk(rootDir):
         --------
         Download a single file.
 
-        >>> local_file_path_list = mechanical.download('file.out')
+        >>> local_file_path_list = mechanical.download("file.out")
 
         Download all files starting with ``file``.
 
-        >>> local_file_path_list = mechanical.download('file*')
+        >>> local_file_path_list = mechanical.download("file*")
 
         Download every file in the Mechanical working directory.
 
-        >>> local_file_path_list = mechanical.download('*.*')
+        >>> local_file_path_list = mechanical.download("*.*")
 
         Alternatively, the recommended method is to use the
         :func:`download_project() <ansys.mechanical.core.mechanical.Mechanical.download_project>`
@@ -1461,13 +1467,13 @@ for dirPath, _, fileNames in os.walk(rootDir):
             path = pathlib.Path(target_dir)
             path.mkdir(parents=True, exist_ok=True)
         else:
-            target_dir = os.getcwd()
+            target_dir = Path.cwd()
 
         out_files = []
 
         for each_file in list_files:
             try:
-                file_name = os.path.basename(each_file)  # Getting only the name of the file.
+                file_name = Path(each_file).name  # Getting only the name of the file.
                 #  We try to avoid that when the full path is supplied. It crashes when trying
                 # to do `os.path.join(target_dir"os.getcwd()", file_name "full filename path"`
                 # This produces the file structure to flat out, but it is fine,
@@ -1475,7 +1481,7 @@ for dirPath, _, fileNames in os.walk(rootDir):
                 self._busy = True
                 out_file_path = self._download(
                     each_file,
-                    out_file_name=os.path.join(target_dir, file_name),
+                    out_file_name=str(Path(target_dir) / file_name),
                     chunk_size=chunk_size,
                     progress_bar=progress_bar,
                 )
@@ -1524,7 +1530,7 @@ for dirPath, _, fileNames in os.walk(rootDir):
         --------
         Download the remote result file "file.rst" as "my_result.rst".
 
-        >>> mechanical.download('file.rst', 'my_result.rst')
+        >>> mechanical.download("file.rst", "my_result.rst")
         """
         self.verify_valid_connection()
 
@@ -1575,7 +1581,8 @@ for dirPath, _, fileNames in os.walk(rootDir):
                 )
 
         file_size = 0
-        with open(filename, "wb") as f:
+        filename = Path(filename)
+        with filename.open("wb") as f:
             for response in responses:
                 f.write(response.chunk.payload)
                 payload_size = len(response.chunk.payload)
@@ -1629,23 +1636,23 @@ for dirPath, _, fileNames in os.walk(rootDir):
 
         # let us create the directory, if it doesn't exist
         if destination_directory:
-            path = pathlib.Path(destination_directory)
+            path = Path(destination_directory)
             path.mkdir(parents=True, exist_ok=True)
         else:
-            destination_directory = os.getcwd()
-
+            destination_directory = str(Path.cwd())
         # relative directory?
-        if os.path.isdir(destination_directory):
-            if not os.path.isabs(destination_directory):
+        dest_path = Path(destination_directory)
+        if dest_path.is_dir():
+            if not dest_path.is_absolute():
                 # construct full path
-                destination_directory = os.path.join(os.getcwd(), destination_directory)
+                destination_directory = str(Path.cwd() / destination_directory)
 
         project_directory = self.project_directory
         # remove the trailing slash - server could be windows or linux
         project_directory = project_directory.rstrip("\\/")
 
         # this is where .mechddb resides
-        parent_directory = os.path.dirname(project_directory)
+        parent_directory = str(Path(project_directory).parent)
 
         list_of_files = []
 
@@ -1656,9 +1663,9 @@ for dirPath, _, fileNames in os.walk(rootDir):
             for each_extension in extensions:
                 # mechdb resides one level above project directory
                 if "mechdb" == each_extension.lower():
-                    file_temp = os.path.join(parent_directory, f"*.{each_extension}")
+                    file_temp = str(Path(parent_directory) / f"*.{each_extension}")
                 else:
-                    file_temp = os.path.join(project_directory, "**", f"*.{each_extension}")
+                    file_temp = str(Path(project_directory) / "**" / f"*.{each_extension}")
 
                 if self._local:
                     list_files_expanded = self._get_files(file_temp, recursive=True)
@@ -1682,7 +1689,7 @@ for dirPath, _, fileNames in os.walk(rootDir):
         for file in files:
             # create similar hierarchy locally
             new_path = file.replace(parent_directory, destination_directory)
-            new_path_dir = os.path.dirname(new_path)
+            new_path_dir = str(Path(new_path).parent)
             temp_files = self.download(
                 files=file, target_dir=new_path_dir, progress_bar=progress_bar
             )
@@ -1715,7 +1722,8 @@ for dirPath, _, fileNames in os.walk(rootDir):
     def __readfile(file_path):
         """Get the contents of the file as a string."""
         # open text file in read mode
-        text_file = open(file_path, "r", encoding="utf-8")
+        file_path = Path(file_path)
+        text_file = file_path.open("r", encoding="utf-8")
         # read whole file to a string
         data = text_file.read()
         # close file
@@ -1802,7 +1810,7 @@ for dirPath, _, fileNames in os.walk(rootDir):
     def log_message(self, log_level, message):
         """Log the message using the given log level.
 
-         Parameters
+        Parameters
         ----------
         log_level: str
             Level of logging. Options are ``"DEBUG"``, ``"INFO"``, ``"WARNING"``,
@@ -1814,11 +1822,11 @@ for dirPath, _, fileNames in os.walk(rootDir):
         --------
         Log a debug message.
 
-        >>> mechanical.log_message('DEBUG', 'debug message')
+        >>> mechanical.log_message("DEBUG", "debug message")
 
         Log an info message.
 
-        >>> mechanical.log_message('INFO', 'info message')
+        >>> mechanical.log_message("INFO", "info message")
 
         """
         if log_level == "DEBUG":
@@ -1874,8 +1882,9 @@ for dirPath, _, fileNames in os.walk(rootDir):
             return
 
         if self._log_file_mechanical:
+            log_file_path = Path(self._log_file_mechanical)
             try:
-                with open(self._log_file_mechanical, "a", encoding="utf-8") as file:
+                with log_file_path.open("a", encoding="utf-8") as file:
                     file.write(script_code)
                     file.write("\n")
             except IOError as e:  # pragma: no cover
@@ -1973,7 +1982,7 @@ def launch_grpc(
 
     Launch Mechanical using a specified executable file.
 
-    >>> exec_file_path = 'C:/Program Files/ANSYS Inc/v252/aisol/bin/win64/AnsysWBU.exe'
+    >>> exec_file_path = "C:/Program Files/ANSYS Inc/v252/aisol/bin/win64/AnsysWBU.exe"
     >>> mechanical = launch_mechanical(exec_file=exec_file_path)
 
     """
@@ -2027,7 +2036,7 @@ def launch_rpyc(
         port += 1
     local_ports.append(port)
 
-    # TODO - use multiprocessing
+    # TODO : use multiprocessing
     server_script = """
 import sys
 from ansys.mechanical.core.embedding.rpc import MechanicalDefaultServer
@@ -2038,8 +2047,8 @@ server.start()
         embedded_server = subprocess.Popen(
             [sys.executable, "-c", server_script, str(port), str(_version)]
         )  # nosec: B603
-    except:
-        raise RuntimeError("Unable to start the embedded server.")
+    except Exception as e:
+        raise RuntimeError(f"Unable to start the embedded server: {e}")
 
     return port, embedded_server
 
@@ -2214,13 +2223,13 @@ def launch_mechanical(
 
     Launch Mechanical using a specified executable file.
 
-    >>> exec_file_path = 'C:/Program Files/ANSYS Inc/v252/aisol/bin/win64/AnsysWBU.exe'
+    >>> exec_file_path = "C:/Program Files/ANSYS Inc/v252/aisol/bin/win64/AnsysWBU.exe"
     >>> mech = launch_mechanical(exec_file=exec_file_path)
 
     Connect to an existing Mechanical instance at IP address ``192.168.1.30`` on port
     ``50001``.
 
-    >>> mech = launch_mechanical(start_instance=False, ip='192.168.1.30', port=50001)
+    >>> mech = launch_mechanical(start_instance=False, ip="192.168.1.30", port=50001)
     """
     # Start Mechanical with PyPIM if the environment is configured for it
     # and a directive on how to launch Mechanical was not passed.
@@ -2317,7 +2326,7 @@ def launch_mechanical(
 
         # setting ip for the grpc server
         if ip != LOCALHOST:  # Default local ip is 127.0.0.1
-            create_ip_file(ip, os.getcwd())
+            create_ip_file(ip, Path.cwd())
 
         return mechanical
 
@@ -2331,7 +2340,7 @@ def launch_mechanical(
                 "'exec_file' parameter."
             )
     else:  # verify ansys exists at this location
-        if not os.path.isfile(exec_file):
+        if not Path(exec_file).is_file():
             raise FileNotFoundError(
                 f'This path for the Mechanical executable is invalid: "{exec_file}"\n'
                 "Enter a path manually by specifying a value for the "
@@ -2349,7 +2358,7 @@ def launch_mechanical(
         try:
             port = launch_grpc(port=port, verbose=verbose_mechanical, **start_parm)
 
-            # TODO - version argument is ignored...
+            # TODO : Version argument is ignored...
             version = atp.version_from_path("mechanical", exec_file)
 
             start_parm["local"] = True
@@ -2449,7 +2458,7 @@ def connect_to_mechanical(
 
 
     >>> from ansys.mechanical.core import connect_to_mechanical
-    >>> pymech = connect_to_mechanical(ip='192.168.1.30', port=50001)
+    >>> pymech = connect_to_mechanical(ip="192.168.1.30", port=50001)
     """
     return launch_mechanical(
         start_instance=False,

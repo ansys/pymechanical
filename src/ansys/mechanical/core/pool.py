@@ -20,9 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""This module is for threaded implementations of the Mechanical interface."""
+"""Module for threaded implementations of the Mechanical interface."""
 
-import os
+from pathlib import Path
 import time
 import warnings
 
@@ -30,7 +30,6 @@ from ansys.tools.path import version_from_path
 
 from ansys.mechanical.core.errors import VersionError
 from ansys.mechanical.core.mechanical import (
-    _HAS_ANSYS_PIM,
     _HAS_TQDM,
     LOG,
     MECHANICAL_DEFAULT_PORT,
@@ -42,6 +41,14 @@ from ansys.mechanical.core.misc import threaded, threaded_daemon
 
 if _HAS_TQDM:
     from tqdm import tqdm
+
+try:
+    import ansys.platform.instancemanagement as pypim
+
+    _HAS_ANSYS_PIM = True
+except ImportError:
+    _HAS_ANSYS_PIM = False
+    pypim = None
 
 
 def available_ports(n_ports, starting_port=MECHANICAL_DEFAULT_PORT):
@@ -111,13 +118,13 @@ class LocalMechanicalPool:
 
     On Windows, create a pool while specifying the Mechanical executable file.
 
-    >>> exec_file = 'C:/Program Files/ANSYS Inc/v252/aisol/bin/winx64/AnsysWBU.exe'
+    >>> exec_file = "C:/Program Files/ANSYS Inc/v252/aisol/bin/winx64/AnsysWBU.exe"
     >>> pool = LocalMechanicalPool(10, exec_file=exec_file)
     Creating Pool: 100%|########| 10/10 [00:01<00:00,  1.43it/s]
 
     On Linux, create a pool while specifying the Mechanical executable file.
 
-    >>> exec_file = '/ansys_inc/v252/aisol/.workbench'
+    >>> exec_file = "/ansys_inc/v252/aisol/.workbench"
     >>> pool = LocalMechanicalPool(10, exec_file=exec_file)
     Creating Pool: 100%|########| 10/10 [00:01<00:00,  1.43it/s]
 
@@ -177,7 +184,6 @@ class LocalMechanicalPool:
         else:
             if _HAS_ANSYS_PIM and pypim.is_configured():  # pragma: no cover
                 if "version" in kwargs:
-                    version = kwargs["version"]
                     self._remote = True
                 else:
                     raise ValueError("Pypim is configured, but version is not passed.")
@@ -211,8 +217,8 @@ class LocalMechanicalPool:
         if wait and progress_bar:
             if not _HAS_TQDM:  # pragma: no cover
                 raise ModuleNotFoundError(
-                    f"To use the keyword argument 'progress_bar', you must have installed "
-                    f"the 'tqdm' package. To avoid this message, you can set 'progress_bar=False'."
+                    "To use the keyword argument 'progress_bar', you must have installed "
+                    "the 'tqdm' package. To avoid this message, you can set 'progress_bar=False'."
                 )
 
             pbar = tqdm(total=n_instances, desc="Creating Pool")
@@ -321,7 +327,7 @@ class LocalMechanicalPool:
                 mechanical.clear()
                 output = mechanical.run_python_script(script)
                 return name, output
-        >>> inputs = [("first","2+3"), ("second", "3+4")]
+        >>> inputs = [("first", "2+3"), ("second", "3+4")]
         >>> output = pool.map(function, inputs, progress_bar=False, wait=True)
         [('first', '5'), ('second', '7')]
         """
@@ -412,7 +418,7 @@ class LocalMechanicalPool:
             for instance in self._instances:
                 if instance:
                     threads.append(
-                        func_wrapper(instance, func, clear_at_start, timeout, name=f"Map_Thread")
+                        func_wrapper(instance, func, clear_at_start, timeout, name="Map_Thread")
                     )
 
         if close_when_finished:  # pragma: no cover
@@ -489,7 +495,7 @@ class LocalMechanicalPool:
         """
         # check all files exist before running
         for filename in files:
-            if not os.path.isfile(filename):
+            if not Path(filename).is_file():
                 raise FileNotFoundError("Unable to locate file %s" % filename)
 
         def run_file(mechanical, input_file):
@@ -546,7 +552,7 @@ class LocalMechanicalPool:
                         # double check that this instance is alive:
                         try:
                             instance._make_dummy_call()
-                        except:  # pragma: no cover
+                        except Exception:  # pragma: no cover
                             instance.exit()
                             continue
 

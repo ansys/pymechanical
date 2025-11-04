@@ -37,8 +37,8 @@ from ansys.mechanical.core.feature_flags import get_command_line_arguments, get_
 DRY_RUN = False
 """Dry run constant."""
 
-# TODO - add logging options (reuse env var based logging initialization)
-# TODO - add timeout
+# TODO : add logging options (reuse env var based logging initialization)
+# TODO : add timeout
 
 
 async def _read_and_display(cmd, env, do_display: bool):
@@ -181,7 +181,7 @@ def _cli_impl(
             mode = "Batch"
         print(f"Starting Ansys Mechanical version {version_name} in {mode} mode...")
         if port:
-            # TODO - Mechanical doesn't write anything to the stdout in grpc mode
+            # TODO : Mechanical doesn't write anything to the stdout in grpc mode
             #        when logging is off.. Ideally we let Mechanical write it, so
             #        the user only sees the message when the server is ready.
             print(f"Serving on port {port}")

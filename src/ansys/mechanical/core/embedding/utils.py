@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Miscellaneous utilities."""
+
 import ctypes
 import os
 
@@ -44,10 +45,10 @@ def load_library_windows(library: str) -> int:  # pragma: no cover
         return 0
 
     try:
-        LOAD_WITH_ALTERED_SEARCH_PATH = 8
+        load_with_altered_search_path = 8
         dll = ctypes.CDLL(
-            library, use_errno=True, use_last_error=True, winmode=LOAD_WITH_ALTERED_SEARCH_PATH
+            library, use_errno=True, use_last_error=True, winmode=load_with_altered_search_path
         )
         return dll._handle
-    except:
+    except OSError:
         return 0
