@@ -20,20 +20,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Interactive IPython shell for embedding."""
+"""Module for scheduling background work in IPython shells.
+
+Interactive Python, or IPython, offers an enhanced Python shell. This module
+schedules all the work of the IPython shell on a background thread, allowing
+the Main thread to be used exclusively for the shell frontend. As a result,
+user-defined functions can be executed during idle time between blocks.
+"""
 
 import queue
 import threading
 import time
 
 from ansys.mechanical.core import LOG
-
-try:
-    import pythoncom
-
-    HAS_WIN32 = True
-except ImportError:
-    HAS_WIN32 = False
 
 try:
     from IPython.core.interactiveshell import InteractiveShell
@@ -48,9 +47,58 @@ SHUTDOWN_EVENT = threading.Event()
 APP_INIT_EVENT = threading.Event()
 EXEC_THREAD = None
 ORIGINAL_RUN_CELL = None
-SHELL_HOOK: callable = None
 EXECUTION_THREAD_ID: int = None
 
+DEFAULT_IDLE_HOOK = lambda: time.sleep(0.05)
+
+class ShellHooks:
+    """IPython shell lifetime hooks."""
+
+    def __init__(self):
+        self._idle_hook: callable = DEFAULT_IDLE_HOOK
+        self._start_hook: callable = None
+        self._end_hook: callable = None
+
+    @property
+    def idle_hook(self) -> callable:
+        """Function to call between IPython block executions."""
+        return self._idle_hook
+
+    @idle_hook.setter
+    def idle_hook(self, value: callable) -> None:
+        self._idle_hook = value
+
+    @property
+    def start_hook(self) -> callable:
+        """Function to call at the start of the block thread."""
+        return self._start_hook
+
+    @start_hook.setter
+    def start_hook(self, value: callable) -> None:
+        self._start_hook = value
+
+    @property
+    def end_hook(self) -> callable:
+        """Function to call when the shell is exited."""
+        return self._end_hook
+
+    @end_hook.setter
+    def end_hook(self, value: callable) -> None:
+        self._end_hook = value
+
+    def start(self):
+        if self.start_hook is not None:
+            self._start_hook()
+
+    def idle(self):
+        if self.idle_hook is not None:
+            self._idle_hook()
+
+    def end(self):
+        if self.end_hook is not None:
+            self._end_hook()
+
+SHELL_HOOKS = ShellHooks()
 
 def _execution_thread_main():
     global APP_INIT_EVENT
@@ -59,29 +107,29 @@ def _execution_thread_main():
     global ORIGINAL_RUN_CELL
     global RESULT_QUEUE
     global SHUTDOWN_EVENT
-    global SHELL_HOOK
-    pythoncom.CoInitialize()
+    global SHELL_HOOKS
+
+    SHELL_HOOKS.start()
     shell = InteractiveShell.instance()
     EXECUTION_THREAD_ID = threading.get_ident()
     while not SHUTDOWN_EVENT.is_set():
         try:
             code = CODE_QUEUE.get_nowait()
         except queue.Empty:
-            # Spin with short sleep
-            if SHELL_HOOK is None:
-                time.sleep(0.05)
-            else:
-                try:
-                    SHELL_HOOK()
-                except Exception as e:
-                    LOG.error(f"shell hook raised {e}. Uninstalling it.")
-                    SHELL_HOOK = None
+            # call the idle hook
+            try:
+                SHELL_HOOKS.idle()
+            except Exception as e:
+                LOG.error(f"shell hook raised {e}. Uninstalling it.")
+                SHELL_HOOKS.idle_hook = DEFAULT_IDLE_HOOK
             continue
         if code is None:
+            SHELL_HOOKS.end()
             break
         LOG.info(f"execution thread {threading.get_ident()}")
         result = ORIGINAL_RUN_CELL(shell, code, store_history=True)
         RESULT_QUEUE.put(result)
+        SHELL_HOOKS.end()
 
 
 def _run_cell_in_thread(self, raw_cell, store_history=False, silent=False, shell_futures=True):
@@ -101,15 +149,13 @@ def _cleanup():
     global CODE_QUEUE
     global SHUTDOWN_EVENT
     global EXEC_THREAD
-    print("Shutting down execution thread")
+    LOG.info("Shutting down execution thread")
     SHUTDOWN_EVENT.set()
     CODE_QUEUE.put(None)  # Unblock the thread
     EXEC_THREAD.join(timeout=1)
 
 
 def _can_post_ipython_blocks():
-    if not HAS_WIN32:
-        raise Exception("`post_ipython_blocks` requires pywin32")
     if not HAS_IPYTHON:
         raise Exception("`post_ipython_blocks` requires ipython")
 
@@ -139,22 +185,9 @@ def post_ipython_blocks():
     InteractiveShell.run_cell = _run_cell_in_thread.__get__(
         InteractiveShell.instance(), InteractiveShell
     )
-
     LOG.info("IPython now runs all cells in your dedicated thread.")
 
 
-def install_shell_hook(hook):
-    global SHELL_HOOK
-    SHELL_HOOK = hook
-
-
-def try_post_ipython_blocks():
-    if in_ipython():
-        post_ipython_blocks()
-
-
-def is_in_interactive_thread():
-    global EXECUTION_THREAD_ID
-    if EXECUTION_THREAD_ID is None:
-        return False
-    return EXECUTION_THREAD_ID == threading.get_ident()
+def get_shell_hooks():
+    global SHELL_HOOKS
+    return SHELL_HOOKS

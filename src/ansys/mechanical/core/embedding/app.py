@@ -28,6 +28,7 @@ import atexit
 import os
 from pathlib import Path
 import typing
+import warnings
 
 from ansys.mechanical.core import LOG
 from ansys.mechanical.core.embedding import initializer, runtime
@@ -40,6 +41,7 @@ from ansys.mechanical.core.embedding.mechanical_warnings import (
     disconnect_warnings,
 )
 from ansys.mechanical.core.embedding.poster import Poster
+import ansys.mechanical.core.embedding.shell as shell
 from ansys.mechanical.core.embedding.ui import launch_ui
 from ansys.mechanical.core.feature_flags import get_command_line_arguments
 
@@ -56,10 +58,7 @@ try:
 except ImportError:
     HAS_ANSYS_GRAPHICS = False
 
-from ansys.mechanical.core.embedding.ipython_shell import try_post_ipython_blocks
-
-try_post_ipython_blocks()
-
+shell.initialize_ipython_shell()
 
 def _get_default_addin_configuration() -> AddinConfiguration:
     configuration = AddinConfiguration()
@@ -277,14 +276,16 @@ class App:
         else:
             additional_args = ""
 
+        self._interactive_mode = kwargs.get("interactive", False)
+        if self._version < 261 and self.interactive:
+            raise Exception("Interactive mode is only supported starting with version 261")
+
+        self._prepare_interactive_mode()
         runtime.initialize(self._version, pep8_aliases=pep8_alias)
+
         self._app = _start_application(configuration, self._version, db_file, additional_args)
 
-        if os.environ.get("ANSYS_MECHANICAL_EMBEDDING_START_WITH_UI") == "1":
-            from ansys.mechanical.core.embedding.ipython_shell import install_shell_hook
-            from ansys.mechanical.core.embedding.utils import sleep
-
-            install_shell_hook(lambda: sleep(50))
+        self._handle_interactive_shell()
 
         connect_warnings(self)
         self._poster = None
@@ -329,14 +330,45 @@ class App:
             return
         self._unsubscribe()
         disconnect_warnings(self)
+        self._end_interactive_shell()
         self._app.Dispose()
         self._disposed = True
 
+    def _prepare_interactive_mode(self):
+        if not self.interactive:
+            return
+        if self._version < 261:
+            raise Exception("Interactive mode is only supported starting with version 261")
+        if os.name != "nt":
+            if os.environ.get("ANSYS_MECHANICAL_EMBEDDING_LINUX_UI", False) == False:
+                raise Exception("Interactive mode is only supported on windows")
+        os.environ["ANSYS_MECHANICAL_EMBEDDING_START_WITH_UI"] = "1"
+
+    def _handle_interactive_shell(self):
+        if not self.interactive:
+            return
+        shell.start_interactive_shell(self)
+
+    def _end_interactive_shell(self):
+        if not self.interactive:
+            return
+        shell.end_interactive_shell()
+
     def wait_with_dialog(self):
+        """Block python while an interactive pop-up is displayed.
+
+        While that pop-up is displayed, Mechanical's main thread will
+        not be blocked."""
+        if not self.interactive:
+            raise Exception("wait_with_dialog is only supported in interactive mode!")
         if self.version < 261:
             raise Exception("wait_with_dialog is only supported with Mechanical 261")
         """Wait with dialog open."""
         self._app.BlockingModalDialog("Wait with dialog", "PyMechanical")
+
+    @property
+    def interactive(self) -> bool:
+        return self._interactive_mode
 
     def open(self, db_file, remove_lock=False):
         """Open the db file.
@@ -507,6 +539,9 @@ class App:
         >>> app.open("path/to/file.mechdat")
         >>> app.plot()
         """
+        if self.interactive:
+            raise Exception("Plotting is not allowed in interactive mode")
+
         _plotter = self.plotter(obj)
 
         if _plotter is None:
