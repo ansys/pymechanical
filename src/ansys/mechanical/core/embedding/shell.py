@@ -62,13 +62,26 @@ def _uninstall_drain_tracer() -> None:
 def _use_drain_tracer():
     return os.environ.get("ANSYS_MECHANICAL_EMBEDDING_UI_DRAIN_TRACER") == "1"
 
-def start_interactive_shell(app):
-    if ipython_shell.in_ipython():
-        if not HAS_WIN32:
+def _using_interactive_ipython(warn: bool):
+    if not ipython_shell.in_ipython():
+        return False
+
+    if not HAS_WIN32:
+        if warn:
             warnings.warn("""Interactive PyMechanical requires pywin32""")
-            return
+        return False
+
+    if os.environ.get("PYMECHANICAL_NO_INTERCTIVE_IPYTHON") == "1":
+        return False
+    return True
+
+def start_interactive_shell(app):
+    """Start the interactive IPython shell."""
+    if _using_interactive_ipython(True):
         ipython_shell.get_shell_hooks().idle_hook = lambda: embedding_utils.sleep(50)
-        ipython_shell.get_shell_hooks().end_hook = lambda: app._dispose()
+        def _end_hook():
+            app._dispose()
+        ipython_shell.get_shell_hooks().end_hook = _end_hook
     else:
         if _use_drain_tracer():
             _install_drain_tracer()
@@ -78,20 +91,18 @@ def start_interactive_shell(app):
                           the mechanical UI will not be responsive""")
 
 def end_interactive_shell():
-    if ipython_shell.in_ipython():
-        if not HAS_WIN32:
-            return
+    """End the interactive IPython shell."""
+    if _using_interactive_ipython(False):
         ipython_shell.get_shell_hooks().idle_hook = None
+        ipython_shell.cleanup()
     else:
         if _use_drain_tracer():
             _uninstall_drain_tracer()
 
 def initialize_ipython_shell():
-    if not ipython_shell.in_ipython():
-        return
-    if not HAS_WIN32:
+    """Initialize the interactive IPython shell."""
+    if not _using_interactive_ipython(False):
         return
 
     ipython_shell.get_shell_hooks().start_hook = lambda: pythoncom.CoInitialize()
     ipython_shell.post_ipython_blocks()
-    #ipython_shell.get_shell_hooks().end_hook = lambda: print("DSFKSJDFSFJK")

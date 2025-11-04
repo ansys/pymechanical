@@ -69,10 +69,13 @@ INSTANCES = []
 """List of instances."""
 
 
-def _dispose_embedded_app(instances):  # pragma: nocover
+def _atexit_embedded_app(instances):  # pragma: nocover
     if len(instances) > 0:
         instance = instances[0]
-        instance._dispose()
+        if instance._started_interactive_shell:
+            shell.end_interactive_shell()
+        else:
+            instance._dispose()
 
 
 def _cleanup_private_appdata(profile: UniqueUserProfile):
@@ -285,14 +288,14 @@ class App:
 
         self._app = _start_application(configuration, self._version, db_file, additional_args)
 
+        self._disposed = False
+        atexit.register(_atexit_embedded_app, INSTANCES)
+        INSTANCES.append(self)
+
         self._handle_interactive_shell()
 
         connect_warnings(self)
         self._poster = None
-
-        self._disposed = False
-        atexit.register(_dispose_embedded_app, INSTANCES)
-        INSTANCES.append(self)
 
         # Clean up the private appdata directory on exit if private_appdata is True
         if private_appdata:
@@ -330,7 +333,6 @@ class App:
             return
         self._unsubscribe()
         disconnect_warnings(self)
-        self._end_interactive_shell()
         self._app.Dispose()
         self._disposed = True
 
@@ -345,14 +347,11 @@ class App:
         os.environ["ANSYS_MECHANICAL_EMBEDDING_START_WITH_UI"] = "1"
 
     def _handle_interactive_shell(self):
+        self._started_interactive_shell = False
         if not self.interactive:
             return
         shell.start_interactive_shell(self)
-
-    def _end_interactive_shell(self):
-        if not self.interactive:
-            return
-        shell.end_interactive_shell()
+        self._started_interactive_shell = True
 
     def wait_with_dialog(self):
         """Block python while an interactive pop-up is displayed.
