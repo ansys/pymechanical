@@ -495,9 +495,9 @@ force_reaction.BoundaryConditionSelection = displacement1_vertex
 static_structural_analysis_solution.Solve(True)
 
 # sphinx_gallery_start_ignore
-assert (
-    static_structural_analysis_solution.Status == SolutionStatusType.Done
-), "Solution status is not 'Done'"
+assert static_structural_analysis_solution.Status == SolutionStatusType.Done, (
+    "Solution status is not 'Done'"
+)
 # sphinx_gallery_end_ignore
 
 # %%
