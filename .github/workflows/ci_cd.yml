@@ -348,7 +348,7 @@ jobs:
 
   embedding-tests:
     name: Embedding testing and coverage
-    runs-on: ubuntu-latest
+    runs-on: public-ubuntu-latest-8-cores
     timeout-minutes: 30
     needs: [revn-variations, test-container-info, container-stability-check, smoke-tests]
     container:
@@ -422,7 +422,7 @@ jobs:
 
   embedding-scripts-tests:
     name: Embedding scripts testing and coverage
-    runs-on: ubuntu-latest
+    runs-on: public-ubuntu-latest-8-cores
     timeout-minutes: 30
     needs: [smoke-tests, revn-variations, test-container-info]
     container:
