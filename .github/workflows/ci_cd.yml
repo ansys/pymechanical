@@ -42,6 +42,8 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions: {}
+
 jobs:
   update-changelog:
     name: "Update CHANGELOG for new tag"
@@ -60,6 +62,8 @@ jobs:
   style:
     name: Code style
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: PyAnsys code style checks
         uses: ansys/actions/code-style@21c9de9bee9692173780696d4a39964f20b9cfa3 # v10.1.5
@@ -69,6 +73,8 @@ jobs:
   doc-style:
     name: Documentation Style Check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: PyAnsys documentation style checks
         uses: ansys/actions/doc-style@21c9de9bee9692173780696d4a39964f20b9cfa3 # v10.1.5
@@ -78,6 +84,8 @@ jobs:
   check-vulnerabilities:
     name: Check Vulnerabilities
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: PyAnsys Vulnerability check (on main)
         if: github.ref == 'refs/heads/main'
@@ -99,6 +107,8 @@ jobs:
   check-actions-security:
     name: "Check Actions Security"
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: ansys/actions/check-actions-security@21c9de9bee9692173780696d4a39964f20b9cfa3 # v10.1.5
         with:
@@ -121,6 +131,8 @@ jobs:
         exclude:
           - should-release: false
             os: macos-latest
+    permissions:
+      contents: read
     steps:
       - name: Build wheelhouse and perform smoke test
         uses: ansys/actions/build-wheelhouse@21c9de9bee9692173780696d4a39964f20b9cfa3 # v10.1.5
@@ -137,37 +149,43 @@ jobs:
       test_revn: '${{ steps.save-versions.outputs.test_revn }}'
       test_container: ${{ steps.save-versions.outputs.test_container }}
       test_docker_image_version: '${{ steps.save-versions.outputs.test_docker_image_version }}'
+    permissions:
+      contents: read
     steps:
       - id: save-versions
+        env:
+          GH_EVENT_NAME: ${{ github.event_name }}
+          REVN_INPUT: ${{ github.event.inputs.revn }}
+          DEV_REVN: ${{ env.DEV_REVN }}
+          DOCKER_PACKAGE: ${{ env.DOCKER_PACKAGE }}
+          STABLE_REVN: ${{ env.STABLE_REVN }}
         run: |
-          if ${{ github.event_name == 'schedule' }} || [[ "${{ inputs.revn }}" == "candidate" ]]; then
-            echo "test_revn=${{ env.DEV_REVN}}" >> $GITHUB_OUTPUT
-            test_mech_revn=${{ env.DEV_REVN}}
-            test_mech_image_version=${test_mech_revn:0:2}.${test_mech_revn:2}_candidate
-            echo "test_container=${{ env.DOCKER_PACKAGE }}:$test_mech_image_version" >> $GITHUB_OUTPUT
-            echo "test_docker_image_version=$test_mech_image_version" >> $GITHUB_OUTPUT
-          else
-            if [[ -z "${{inputs.revn}}" ]]; then
-              mech_revn=${{ env.STABLE_REVN }}
-            else
-              mech_revn=${{inputs.revn}}
-            fi
-            export mech_image_version=${mech_revn:0:2}.${mech_revn:2}.0
-            echo "test_revn=$mech_revn" >> $GITHUB_OUTPUT
-            echo "test_container=${{ env.DOCKER_PACKAGE }}:$mech_image_version" >> $GITHUB_OUTPUT
-            echo "test_docker_image_version=$mech_image_version" >> $GITHUB_OUTPUT
-          fi
-
-          stable_mech_revn=${{ env.STABLE_REVN }}
-          stable_mech_image_version=${mech_revn:0:2}.${mech_revn:2}.0
-          echo "stable_container=${{ env.DOCKER_PACKAGE }}:$stable_mech_image_version" >> $GITHUB_OUTPUT
-
-          echo $GITHUB_OUTPUT
-
           # --- Help ----
           # schedule nightly uses DEV_REVN candidate
           # PRs and merges use STABLE_REVN
           # Workflow dispatch can use any revision number
+
+          if [[ "${GH_EVENT_NAME}" == "schedule" ]] || [[ "${REVN_INPUT}" == "candidate" ]]; then
+            echo "test_revn=${DEV_REVN}" >> $GITHUB_OUTPUT
+            test_mech_revn=${DEV_REVN}
+            test_mech_image_version=${test_mech_revn:0:2}.${test_mech_revn:2}_candidate
+            echo "test_container=${DOCKER_PACKAGE}:$test_mech_image_version" >> $GITHUB_OUTPUT
+            echo "test_docker_image_version=$test_mech_image_version" >> $GITHUB_OUTPUT
+          else
+            if [[ -z "${REVN_INPUT}" ]]; then
+              mech_revn=${STABLE_REVN}
+            else
+              mech_revn=${REVN_INPUT}
+            fi
+            export mech_image_version=${mech_revn:0:2}.${mech_revn:2}.0
+            echo "test_revn=$mech_revn" >> $GITHUB_OUTPUT
+            echo "test_container=${DOCKER_PACKAGE}:$mech_image_version" >> $GITHUB_OUTPUT
+            echo "test_docker_image_version=$mech_image_version" >> $GITHUB_OUTPUT
+          fi
+
+          stable_mech_revn=${STABLE_REVN}
+          stable_mech_image_version=${mech_revn:0:2}.${mech_revn:2}.0
+          echo "stable_container=${DOCKER_PACKAGE}:$stable_mech_image_version" >> $GITHUB_OUTPUT
 
   test-container-info:
     name: Get SHA of test container
@@ -178,6 +196,8 @@ jobs:
     strategy:
       matrix:
         test_container: ['${{ needs.revn-variations.outputs.test_container }}']
+    permissions:
+      contents: read
     steps:
       - name: Login in Github Container registry
         uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
@@ -195,14 +215,14 @@ jobs:
           pip install jq
 
           # Get docker info
-          image_info=$(docker manifest inspect -v ${{ env.MECHANICAL_IMAGE }}) # --format ".Descriptor.digest"
+          image_info=$(docker manifest inspect -v ${MECHANICAL_IMAGE}) # --format ".Descriptor.digest"
 
           # Get digest SHA
           digest=$(echo "$image_info" | jq -r '.Descriptor.digest')
 
           # Remove the "sha256:" prefix to get only the SHA
           sha="${digest#*:}"
-          echo "SHA of image ${{ env.MECHANICAL_IMAGE }} is $sha"
+          echo "SHA of image ${MECHANICAL_IMAGE} is $sha"
           echo "sha=$sha" >> $GITHUB_OUTPUT
 
   config-matrix:
@@ -210,14 +230,20 @@ jobs:
     needs: [revn-variations]
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+    permissions:
+      contents: read
     steps:
       - id: set-matrix
+        env:
+          GH_EVENT_NAME: ${{ github.event_name }}
+          TEST_DOCKER_IMAGE_VERSION: ${{ needs.revn-variations.outputs.test_docker_image_version }}
+          GH_REF: ${{ github.ref }}
         run: |
           # if a tag(release) is pushed, test all versions
-          if ${{ github.event_name == 'push' }} && ${{ contains(github.ref, 'refs/tags') }}; then
+          if [[ "${GH_EVENT_NAME}" == "push" ]] && [[ "$GH_REF" =~ "refs/tags" ]]; then
             echo "matrix={\"mechanical-version\":['24.1.0', '24.2.0', '25.1.0', '25.2.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           else
-            echo "matrix={\"mechanical-version\":['${{ needs.revn-variations.outputs.test_docker_image_version }}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
+            echo "matrix={\"mechanical-version\":["${TEST_DOCKER_IMAGE_VERSION}"],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           fi
 
   container-stability-check:
@@ -225,12 +251,16 @@ jobs:
     needs: [revn-variations]
     outputs:
       container_stable_exit: ${{ steps.check_stability.outputs.container_stable_exit }}
+    permissions:
+      contents: read
     steps:
       - id: check_stability
+        env:
+          TEST_DOCKER_IMAGE_VERSION: ${{ needs.revn-variations.outputs.test_docker_image_version }}
         run: |
           sudo apt update
           sudo apt install bc -y
-          container_version=$(echo "${{ needs.revn-variations.outputs.test_docker_image_version }}" | grep -o -E '[0-9]+(\.[0-9]+)?' | head -n 1)
+          container_version=$(echo "${TEST_DOCKER_IMAGE_VERSION}" | grep -o -E '[0-9]+(\.[0-9]+)?' | head -n 1)
           if (( $(echo "$container_version > 24.2" | bc -l) )); then
             echo "container_stable_exit=true" >> $GITHUB_OUTPUT
           else
@@ -245,6 +275,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.config-matrix.outputs.matrix) }}
+    permissions:
+      contents: read
     steps:
       - name: Login in Github Container registry
         uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
@@ -259,11 +291,14 @@ jobs:
           # ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
           # ANSYS_WORKBENCH_LOGGING_DIRECTORY: /log_file  # workbench.log file
           ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH: 0  # turn off autoflush for faster performance
+          DOCKER_MECH_CONTAINER_NAME: ${{ env.DOCKER_MECH_CONTAINER_NAME }}
+          LICENSE_SERVER: ${{ env.LICENSE_SERVER }}
+          PYMECHANICAL_PORT: ${{ env.PYMECHANICAL_PORT }}
         run: |
-          docker pull ${{ env.MECHANICAL_IMAGE }}
+          docker pull ${MECHANICAL_IMAGE}
 
           echo "Run docker in detached mode"
-          docker run -d --name ${{ env.DOCKER_MECH_CONTAINER_NAME }} -e ANSYSLMD_LICENSE_FILE=1055@${{ env.LICENSE_SERVER }} -p ${{ env.PYMECHANICAL_PORT }}:10000 ${{ env.MECHANICAL_IMAGE }}
+          docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} -p ${PYMECHANICAL_PORT}:10000 ${MECHANICAL_IMAGE}
 
           # Wait for Mechanical to initialize with intelligent polling
           max_wait=300  # Maximum wait time in seconds
@@ -272,7 +307,7 @@ jobs:
 
           echo "Waiting for Mechanical to initialize..."
           while [ $elapsed -lt $max_wait ]; do
-            docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > log.txt
+            docker logs ${DOCKER_MECH_CONTAINER_NAME} > log.txt
             if grep -q 'WB Initialize Done' log.txt 2>/dev/null; then
               echo "Mechanical initialized successfully after ${elapsed} seconds"
               break
@@ -283,7 +318,7 @@ jobs:
           done
 
           # Final check
-          docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > log.txt
+          docker logs ${DOCKER_MECH_CONTAINER_NAME} > log.txt
           if ! grep -q 'WB Initialize Done' log.txt 2>/dev/null; then
             echo "ERROR: Mechanical failed to initialize within ${max_wait} seconds"
             echo "=== Last 50 lines of log.txt ==="
@@ -294,9 +329,13 @@ jobs:
       - name: Display info
         if: github.event_name == 'schedule'
         id: capture_info
+        env:
+          DOCKER_PACKAGE: ${{ env.DOCKER_PACKAGE }}
+          MECH_VERSION: ${{ matrix.mechanical-version }}
+          TEST_REVN: ${{ needs.revn-variations.outputs.test_revn }}
         run: |
-          IMAGE_NAME=${{ env.DOCKER_PACKAGE }}:${{ matrix.mechanical-version }}
-          BUILD_DATE=$(docker run --rm --entrypoint head $IMAGE_NAME -n 1 /install/ansys_inc/v${{ needs.revn-variations.outputs.test_revn }}/aisol/CommonFiles/builddate.txt)
+          IMAGE_NAME=${DOCKER_PACKAGE}:${MECH_VERSION}
+          BUILD_DATE=$(docker run --rm --entrypoint head $IMAGE_NAME -n 1 /install/ansys_inc/v${TEST_REVN}/aisol/CommonFiles/builddate.txt)
           PUSHED_AT=$(docker inspect --format='{{.Created}}' $IMAGE_NAME)
           echo "docker_info=$IMAGE_NAME was pushed at: $PUSHED_AT" >> $GITHUB_OUTPUT
           echo "::group::Docker Info"
@@ -308,17 +347,21 @@ jobs:
 
       - name: Testing
         uses: ansys/actions/tests-pytest@21c9de9bee9692173780696d4a39964f20b9cfa3 # v10.1.5
+        env:
+          MAIN_PYTHON_VERSION: ${{ env.MAIN_PYTHON_VERSION }}
         with:
-          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          python-version: ${MAIN_PYTHON_VERSION}
           pytest-markers: '-m remote_session_connect'
-          pytest-extra-args: '-s --junitxml remote_results${{ env.MAIN_PYTHON_VERSION}}.xml'
+          pytest-extra-args: '-s --junitxml remote_results${MAIN_PYTHON_VERSION}.xml'
 
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@e08919a3b1fb83a78393dfb775a9c37f17d8eea6 # v6.0.1
         if: always()
+        env:
+          MAIN_PYTHON_VERSION: ${{ env.MAIN_PYTHON_VERSION }}
         with:
           report_paths: '**/remote_results*.xml'
-          check_name: Remote Connect Test Report ${{ env.MAIN_PYTHON_VERSION}}
+          check_name: Remote Connect Test Report ${MAIN_PYTHON_VERSION}
           detailed_summary: true
           include_passed: true
           fail_on_failure: true
@@ -369,9 +412,12 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ['3.10', '3.11', '3.12', '3.13']
-
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
 
       - name: Set up Python
         shell: bash
@@ -443,9 +489,12 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ['3.10', '3.11', '3.12', '3.13']
-
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
 
       - name: Set up Python
         shell: bash
@@ -514,9 +563,12 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ['3.10', '3.11', '3.12', '3.13']
-
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
 
       - name: Set up Python
         shell: bash
@@ -585,11 +637,14 @@ jobs:
       image: ${{ needs.revn-variations.outputs.test_container }}
       options: --entrypoint /bin/bash
     needs: [style, doc-style, revn-variations, container-stability-check, test-container-info]
-
+    permissions:
+      contents: read
     steps:
 
       - name: Install Git and checkout project
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
 
       - name: Set up Python
         shell: bash
@@ -678,6 +733,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [doc-build]
     if: always() && (needs.doc-build.result == 'success' || needs.doc-build.result == 'skipped')
+    permissions:
+      contents: write
     steps:
       - uses: ansys/actions/doc-deploy-pr@21c9de9bee9692173780696d4a39964f20b9cfa3 # v10.1.5
         with:
@@ -694,6 +751,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6.0.0
@@ -846,6 +905,8 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: [package]
+    permissions:
+      contents: write
     steps:
       - name: Deploy the latest documentation
         uses: ansys/actions/doc-deploy-dev@21c9de9bee9692173780696d4a39964f20b9cfa3 # v10.1.5
@@ -860,6 +921,8 @@ jobs:
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
     runs-on: ubuntu-latest
     needs: [release]
+    permissions:
+      contents: write
     steps:
       - name: Deploy the stable documentation
         uses: ansys/actions/doc-deploy-stable@21c9de9bee9692173780696d4a39964f20b9cfa3 # v10.1.5
@@ -874,6 +937,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       date: ${{ steps.date.outputs.date }}
+    permissions:
+      contents: read
     steps:
       - name: Get current date
         id: date
@@ -885,6 +950,9 @@ jobs:
     needs: [get-date, embedding-tests, embedding-scripts-tests, launch-tests, remote-connect, doc-build]
     if: github.event_name == 'schedule' && (failure() || cancelled())
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Microsoft Teams Notification
         uses: skitionek/notify-microsoft-teams@11e40c38c3a629ae65a985b582eca4897b01e79e # v1.0.9
