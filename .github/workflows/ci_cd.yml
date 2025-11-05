@@ -228,7 +228,7 @@ jobs:
 
   remote-connect:
     name: Remote connect testing and coverage - Mechanical ${{ matrix.mechanical-version }}
-    runs-on: public-ubuntu-latest-8-cores
+    runs-on: public-ubuntu-latest-16-cores
     needs: [style, revn-variations, config-matrix]
     continue-on-error: ${{ matrix.experimental }}
     strategy:
@@ -348,7 +348,7 @@ jobs:
 
   embedding-tests:
     name: Embedding testing and coverage
-    runs-on: public-ubuntu-latest-8-cores
+    runs-on: public-ubuntu-latest-16-cores
     timeout-minutes: 30
     needs: [revn-variations, test-container-info, container-stability-check, smoke-tests]
     container:
@@ -422,7 +422,7 @@ jobs:
 
   embedding-scripts-tests:
     name: Embedding scripts testing and coverage
-    runs-on: public-ubuntu-latest-8-cores
+    runs-on: public-ubuntu-latest-16-cores
     timeout-minutes: 30
     needs: [smoke-tests, revn-variations, test-container-info]
     container:
@@ -493,7 +493,7 @@ jobs:
 
   launch-tests:
     name: Launch testing and coverage
-    runs-on: public-ubuntu-latest-8-cores
+    runs-on: public-ubuntu-latest-16-cores
     timeout-minutes: 30
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
@@ -568,7 +568,7 @@ jobs:
 
   doc-build:
     name: Documentation
-    runs-on: public-ubuntu-latest-8-cores
+    runs-on: public-ubuntu-latest-16-cores
     timeout-minutes: 30
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
