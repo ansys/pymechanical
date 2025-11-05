@@ -14,11 +14,16 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions: {}
+
 jobs:
 
   label-syncer:
     name: Syncer
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
@@ -78,6 +83,8 @@ jobs:
 
   commenter:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
     - name: Suggest to add labels
       uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
