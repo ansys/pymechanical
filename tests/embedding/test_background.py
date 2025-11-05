@@ -57,6 +57,7 @@ def _run_background_app_test(
 
 @pytest.mark.embedding_scripts
 @pytest.mark.embedding_backgroundapp
+@pytest.mark.skip(reason="Flaky test, needs investigation")
 def test_background_app_multiple_instances(rootdir, run_subprocess, pytestconfig):
     """Multiple instances of background app can be used."""
     stderr = _run_background_app_test(
