@@ -226,6 +226,7 @@ jobs:
           echo "sha=$sha" >> $GITHUB_OUTPUT
 
   config-matrix:
+    name: Configure matrix
     runs-on: ubuntu-latest
     needs: [revn-variations]
     outputs:
@@ -247,6 +248,7 @@ jobs:
           fi
 
   container-stability-check:
+    name: Container stability check
     runs-on: ubuntu-latest
     needs: [revn-variations]
     outputs:
@@ -277,6 +279,7 @@ jobs:
       matrix: ${{ fromJSON(needs.config-matrix.outputs.matrix) }}
     permissions:
       contents: read
+      packages: read
     steps:
       - name: Login in Github Container registry
         uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
@@ -419,6 +422,7 @@ jobs:
         python-version: ['3.10', '3.11', '3.12', '3.13']
     permissions:
       contents: read
+      packages: read
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
@@ -502,6 +506,7 @@ jobs:
         python-version: ['3.10', '3.11', '3.12', '3.13']
     permissions:
       contents: read
+      packages: read
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
@@ -579,6 +584,7 @@ jobs:
         python-version: ['3.10', '3.11', '3.12', '3.13']
     permissions:
       contents: read
+      packages: read
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
@@ -609,12 +615,13 @@ jobs:
       - name: Unit Testing and coverage
         env:
           ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
+          CONTAINER_STABLE_EXIT: ${{ needs.container-stability-check.outputs.container_stable_exit }}
           MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
         run: |
           unset PYMECHANICAL_PORT
           unset PYMECHANICAL_START_INSTANCE
           . /env/bin/activate
-          if [ "${{ needs.container-stability-check.outputs.container_stable_exit }}" = "true" ]; then
+          if [ "${CONTAINER_STABLE_EXIT}" = "true" ]; then
             pytest -m remote_session_launch -s --junitxml launch_test_results${MATRIX_PYTHON_VERSION}.xml
           else
             pytest -m remote_session_launch -s --junitxml launch_test_results${MATRIX_PYTHON_VERSION}.xml || true
@@ -660,6 +667,7 @@ jobs:
     needs: [style, doc-style, revn-variations, container-stability-check, test-container-info]
     permissions:
       contents: read
+      packages: read
     steps:
 
       - name: Install Git and checkout project
@@ -699,8 +707,10 @@ jobs:
           && apt install gh -y
 
       - name: Install quarto to build cheatsheet
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
+          echo "${GITHUB_TOKEN}" | gh auth login --with-token
           gh release download v1.6.43 --repo github.com/quarto-dev/quarto-cli --pattern *linux-amd64.deb
           apt install ./quarto*linux-amd64.deb -y
           quarto install tool tinytex --log-level warning

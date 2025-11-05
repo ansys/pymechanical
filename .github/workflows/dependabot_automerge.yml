@@ -5,6 +5,7 @@ permissions: {}
 
 jobs:
   dependabot-automerge:
+    name: "Auto-merge Dependabot PRs"
     runs-on: ubuntu-latest
     if: startsWith(github.head_ref, 'dependabot/')
     permissions:

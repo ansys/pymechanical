@@ -82,6 +82,7 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
 
   commenter:
+    name: "Suggest labels if none applied"
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
