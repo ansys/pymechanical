@@ -7,6 +7,7 @@ on:
       revn:
         type: choice
         options:
+        - 'candidate'
         - '261'
         - '252'
         - '251'
@@ -128,7 +129,7 @@ jobs:
     steps:
       - id: save-versions
         run: |
-          if ${{ github.event_name == 'schedule' }}; then
+          if ${{ github.event_name == 'schedule' }} || [[ "${{ inputs.revn }}" == "candidate" ]]; then
             echo "test_revn=${{ env.DEV_REVN}}" >> $GITHUB_OUTPUT
             test_mech_revn=${{ env.DEV_REVN}}
             test_mech_image_version=${test_mech_revn:0:2}.${test_mech_revn:2}_candidate
@@ -227,7 +228,7 @@ jobs:
 
   remote-connect:
     name: Remote connect testing and coverage - Mechanical ${{ matrix.mechanical-version }}
-    runs-on: public-ubuntu-latest-8-cores
+    runs-on: public-ubuntu-latest-16-cores
     needs: [style, revn-variations, config-matrix]
     continue-on-error: ${{ matrix.experimental }}
     strategy:
@@ -302,7 +303,7 @@ jobs:
           pytest-extra-args: '-s --junitxml remote_results${{ env.MAIN_PYTHON_VERSION}}.xml'
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@5b7ee5a21e8674b695313d769f3cbdfd5d4d53a4 # v6.0.0
+        uses: mikepenz/action-junit-report@e08919a3b1fb83a78393dfb775a9c37f17d8eea6 # v6.0.1
         if: always()
         with:
           report_paths: '**/remote_results*.xml'
@@ -347,7 +348,7 @@ jobs:
 
   embedding-tests:
     name: Embedding testing and coverage
-    runs-on: ubuntu-latest
+    runs-on: public-ubuntu-latest-16-cores
     timeout-minutes: 30
     needs: [revn-variations, test-container-info, container-stability-check, smoke-tests]
     container:
@@ -410,7 +411,7 @@ jobs:
           retention-days: 7
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@5b7ee5a21e8674b695313d769f3cbdfd5d4d53a4 # v6.0.0
+        uses: mikepenz/action-junit-report@e08919a3b1fb83a78393dfb775a9c37f17d8eea6 # v6.0.1
         if: always()
         with:
           report_paths: '**/test_results*.xml'
@@ -421,7 +422,7 @@ jobs:
 
   embedding-scripts-tests:
     name: Embedding scripts testing and coverage
-    runs-on: ubuntu-latest
+    runs-on: public-ubuntu-latest-16-cores
     timeout-minutes: 30
     needs: [smoke-tests, revn-variations, test-container-info]
     container:
@@ -481,7 +482,7 @@ jobs:
           retention-days: 7
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@5b7ee5a21e8674b695313d769f3cbdfd5d4d53a4 # v6.0.0
+        uses: mikepenz/action-junit-report@e08919a3b1fb83a78393dfb775a9c37f17d8eea6 # v6.0.1
         if: always()
         with:
           report_paths: '**/test_results*.xml'
@@ -492,7 +493,7 @@ jobs:
 
   launch-tests:
     name: Launch testing and coverage
-    runs-on: public-ubuntu-latest-8-cores
+    runs-on: public-ubuntu-latest-16-cores
     timeout-minutes: 30
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
@@ -538,7 +539,7 @@ jobs:
           fi
 
       - name: Publish Launch Test Report
-        uses: mikepenz/action-junit-report@5b7ee5a21e8674b695313d769f3cbdfd5d4d53a4 # v6.0.0
+        uses: mikepenz/action-junit-report@e08919a3b1fb83a78393dfb775a9c37f17d8eea6 # v6.0.1
         if: always()
         with:
           report_paths: '**/launch_test_results*.xml'
@@ -567,7 +568,7 @@ jobs:
 
   doc-build:
     name: Documentation
-    runs-on: public-ubuntu-latest-8-cores
+    runs-on: public-ubuntu-latest-16-cores
     timeout-minutes: 30
     container:
       image: ${{ needs.revn-variations.outputs.test_container }}
