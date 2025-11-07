@@ -707,8 +707,8 @@ jobs:
           && apt install gh -y
 
       - name: Install quarto to build cheatsheet
-        run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token # zizmor: ignore[template-injection]
+        run: | # zizmor: ignore[template-injection]
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
           gh release download v1.6.43 --repo github.com/quarto-dev/quarto-cli --pattern *linux-amd64.deb
           apt install ./quarto*linux-amd64.deb -y
           quarto install tool tinytex --log-level warning
