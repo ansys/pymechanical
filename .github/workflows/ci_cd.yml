@@ -767,6 +767,7 @@ jobs:
     if: always() && (needs.doc-build.result == 'success' || needs.doc-build.result == 'skipped')
     permissions:
       contents: write
+      pull-requests: write
     steps:
       - uses: ansys/actions/doc-deploy-pr@21c9de9bee9692173780696d4a39964f20b9cfa3 # v10.1.5
         with:
