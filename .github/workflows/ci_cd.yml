@@ -414,7 +414,7 @@ jobs:
     timeout-minutes: 30
     needs: [revn-variations, test-container-info, container-stability-check, smoke-tests]
     container:
-      image: ${{ needs.revn-variations.outputs.test_container }}
+      image: ${{ needs.revn-variations.outputs.test_container }} # zizmor: ignore[unpinned-images]
       options: --entrypoint /bin/bash
     strategy:
       fail-fast: false
@@ -498,7 +498,7 @@ jobs:
     timeout-minutes: 30
     needs: [smoke-tests, revn-variations, test-container-info]
     container:
-      image: ${{ needs.revn-variations.outputs.test_container }}
+      image: ${{ needs.revn-variations.outputs.test_container }} # zizmor: ignore[unpinned-images]
       options: --entrypoint /bin/bash
     strategy:
       fail-fast: false
@@ -575,7 +575,7 @@ jobs:
     runs-on: public-ubuntu-latest-16-cores
     timeout-minutes: 30
     container:
-      image: ${{ needs.revn-variations.outputs.test_container }}
+      image: ${{ needs.revn-variations.outputs.test_container }} # zizmor: ignore[unpinned-images]
       options: --entrypoint /bin/bash
     needs: [ style, revn-variations, container-stability-check, test-container-info]
     strategy:
@@ -662,7 +662,7 @@ jobs:
     runs-on: public-ubuntu-latest-16-cores
     timeout-minutes: 30
     container:
-      image: ${{ needs.revn-variations.outputs.test_container }}
+      image: ${{ needs.revn-variations.outputs.test_container }} # zizmor: ignore[unpinned-images]
       options: --entrypoint /bin/bash
     needs: [style, doc-style, revn-variations, container-stability-check, test-container-info]
     permissions:
@@ -707,10 +707,8 @@ jobs:
           && apt install gh -y
 
       - name: Install quarto to build cheatsheet
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "${GITHUB_TOKEN}" | gh auth login --with-token
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
           gh release download v1.6.43 --repo github.com/quarto-dev/quarto-cli --pattern *linux-amd64.deb
           apt install ./quarto*linux-amd64.deb -y
           quarto install tool tinytex --log-level warning
