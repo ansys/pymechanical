@@ -28,7 +28,6 @@ import atexit
 import os
 from pathlib import Path
 import typing
-import warnings
 
 from ansys.mechanical.core import LOG
 from ansys.mechanical.core.embedding import initializer, runtime
@@ -59,6 +58,7 @@ except ImportError:
     HAS_ANSYS_GRAPHICS = False
 
 shell.initialize_ipython_shell()
+
 
 def _get_default_addin_configuration() -> AddinConfiguration:
     configuration = AddinConfiguration()
@@ -357,7 +357,8 @@ class App:
         """Block python while an interactive pop-up is displayed.
 
         While that pop-up is displayed, Mechanical's main thread will
-        not be blocked."""
+        not be blocked.
+        """
         if not self.interactive:
             raise Exception("wait_with_dialog is only supported in interactive mode!")
         if self.version < 261:
