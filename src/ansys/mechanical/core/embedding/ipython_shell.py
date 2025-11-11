@@ -59,6 +59,7 @@ def _idle_sleep():
 DEFAULT_IDLE_HOOK = _idle_sleep
 
 
+
 class ShellHooks:
     """IPython shell lifetime hooks."""
 
