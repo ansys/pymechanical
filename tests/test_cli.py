@@ -26,6 +26,7 @@ from pathlib import Path
 import subprocess
 import sys
 
+import ansys.tools.path as atp
 from click.testing import CliRunner
 import pytest
 
@@ -36,7 +37,6 @@ from ansys.mechanical.core.ide_config import (
     get_stubs_versions,
 )
 from ansys.mechanical.core.run import _cli_impl, cli
-import ansys.tools.path as atp
 
 STUBS_LOC = get_stubs_location()
 STUBS_REVNS = get_stubs_versions(STUBS_LOC)
