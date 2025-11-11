@@ -280,7 +280,7 @@ class App:
             additional_args = ""
 
         self._interactive_mode = kwargs.get("interactive", False)
-        if self._version < 261 and self.interactive:
+        if self._version < 261 and self._interactive_mode:
             raise Exception("Interactive mode is only supported starting with version 261")
 
         self._prepare_interactive_mode()
@@ -337,7 +337,7 @@ class App:
         self._disposed = True
 
     def _prepare_interactive_mode(self):
-        if not self.interactive:
+        if not self._interactive_mode:
             return
         if self._version < 261:
             raise Exception("Interactive mode is only supported starting with version 261")
@@ -348,7 +348,7 @@ class App:
 
     def _handle_interactive_shell(self):
         self._started_interactive_shell = False
-        if not self.interactive:
+        if not self._interactive_mode:
             return
         shell.start_interactive_shell(self)
         self._started_interactive_shell = True
@@ -359,7 +359,7 @@ class App:
         While that pop-up is displayed, Mechanical's main thread will
         not be blocked.
         """
-        if not self.interactive:
+        if not self._interactive_mode:
             raise Exception("wait_with_dialog is only supported in interactive mode!")
         if self.version < 261:
             raise Exception("wait_with_dialog is only supported with Mechanical 261")
@@ -540,7 +540,7 @@ class App:
         >>> app.open("path/to/file.mechdat")
         >>> app.plot()
         """
-        if self.interactive:
+        if self._interactive_mode:
             raise Exception("Plotting is not allowed in interactive mode")
 
         _plotter = self.plotter(obj)
