@@ -36,8 +36,8 @@ try:
 except ImportError:
     HAS_WIN32 = False
 
+
 def _install_drain_tracer() -> None:
-    """Optional."""
     warnings.warn("""Mechanical UI without blocking python.
                   The UI will be stuck while python is executing, except during
                   non-blocking sleeps. To use a non-blocking sleep, run
@@ -56,11 +56,14 @@ def _install_drain_tracer() -> None:
 
     sys.settrace(tracer)
 
+
 def _uninstall_drain_tracer() -> None:
     sys.settrace(None)
 
+
 def _use_drain_tracer():
     return os.environ.get("ANSYS_MECHANICAL_EMBEDDING_UI_DRAIN_TRACER") == "1"
+
 
 def _using_interactive_ipython(warn: bool):
     if not ipython_shell.in_ipython():
@@ -75,12 +78,15 @@ def _using_interactive_ipython(warn: bool):
         return False
     return True
 
+
 def start_interactive_shell(app):
     """Start the interactive IPython shell."""
     if _using_interactive_ipython(True):
         ipython_shell.get_shell_hooks().idle_hook = lambda: embedding_utils.sleep(50)
+
         def _end_hook():
             app._dispose()
+
         ipython_shell.get_shell_hooks().end_hook = _end_hook
     else:
         if _use_drain_tracer():
@@ -90,6 +96,7 @@ def start_interactive_shell(app):
                           The main thread will be held by python, and therefore
                           the mechanical UI will not be responsive""")
 
+
 def end_interactive_shell():
     """End the interactive IPython shell."""
     if _using_interactive_ipython(False):
@@ -98,6 +105,7 @@ def end_interactive_shell():
     else:
         if _use_drain_tracer():
             _uninstall_drain_tracer()
+
 
 def initialize_ipython_shell():
     """Initialize the interactive IPython shell."""

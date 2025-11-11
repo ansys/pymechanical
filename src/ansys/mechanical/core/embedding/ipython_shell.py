@@ -35,10 +35,10 @@ import time
 from ansys.mechanical.core import LOG
 
 try:
-    from IPython.core.interactiveshell import InteractiveShell
     from IPython import get_ipython
+    from IPython.core.interactiveshell import InteractiveShell
 
-    FROM_IPYTHON =  get_ipython() is not None
+    FROM_IPYTHON = get_ipython() is not None
     HAS_IPYTHON = True
 except ImportError:
     FROM_IPYTHON = False
@@ -51,7 +51,13 @@ EXEC_THREAD = None
 ORIGINAL_RUN_CELL = None
 EXECUTION_THREAD_ID: int = None
 
-DEFAULT_IDLE_HOOK = lambda: time.sleep(0.05)
+
+def _idle_sleep():
+    time.sleep(0.01)
+
+
+DEFAULT_IDLE_HOOK = _idle_sleep
+
 
 class ShellHooks:
     """IPython shell lifetime hooks."""
@@ -89,20 +95,25 @@ class ShellHooks:
         self._end_hook = value
 
     def start(self):
+        """Signal handler when the shell starts."""
         if self.start_hook is not None:
             self._start_hook()
             self._start_hook = None
 
     def idle(self):
+        """Signal handler when the shell is idle."""
         if self.idle_hook is not None:
             self._idle_hook()
 
     def end(self):
+        """Signal handler when the shell ends."""
         if self.end_hook is not None:
             self._end_hook()
             self._end_hook = None
 
+
 SHELL_HOOKS = ShellHooks()
+
 
 def _exec_from_queue(shell) -> bool:
     """Worker function for ipython execution.
@@ -129,6 +140,7 @@ def _exec_from_queue(shell) -> bool:
     result = ORIGINAL_RUN_CELL(shell, code, store_history=True)
     RESULT_QUEUE.put(result)
     return False
+
 
 def _execution_thread_main():
     global EXECUTION_THREAD_ID
@@ -164,7 +176,8 @@ def cleanup():
     """Cleanup the ipython shell.
 
     Must be called before the application exits.
-    May be called from an atexit handler."""
+    May be called from an atexit handler.
+    """
     global CODE_QUEUE
     global SHUTDOWN_EVENT
     global EXEC_THREAD
@@ -180,7 +193,7 @@ def _can_post_ipython_blocks():
 
 
 def in_ipython():
-    """Return whether Python is running from IPython"""
+    """Return whether Python is running from IPython."""
     return FROM_IPYTHON
 
 

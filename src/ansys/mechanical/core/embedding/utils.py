@@ -48,8 +48,9 @@ def sleep(ms: int) -> None:
 
 
 def drain() -> None:
-    """Block the current thread while all the UI messages
-    are processed.
+    """Execute all pending work on the main thread.
+
+    Blocks until all the UI messages and other scheduled work complete.
     """
     _get_test_helper().Drain()
 

@@ -28,7 +28,6 @@ import atexit
 import os
 from pathlib import Path
 import typing
-import warnings
 
 from ansys.mechanical.core import LOG
 from ansys.mechanical.core.embedding import initializer, runtime
@@ -59,6 +58,7 @@ except ImportError:
     HAS_ANSYS_GRAPHICS = False
 
 shell.initialize_ipython_shell()
+
 
 def _get_default_addin_configuration() -> AddinConfiguration:
     configuration = AddinConfiguration()
@@ -342,7 +342,7 @@ class App:
         if self._version < 261:
             raise Exception("Interactive mode is only supported starting with version 261")
         if os.name != "nt":
-            if os.environ.get("ANSYS_MECHANICAL_EMBEDDING_LINUX_UI", False) == False:
+            if os.environ.get("ANSYS_MECHANICAL_EMBEDDING_LINUX_UI", False) is False:
                 raise Exception("Interactive mode is only supported on windows")
         os.environ["ANSYS_MECHANICAL_EMBEDDING_START_WITH_UI"] = "1"
 
@@ -357,7 +357,8 @@ class App:
         """Block python while an interactive pop-up is displayed.
 
         While that pop-up is displayed, Mechanical's main thread will
-        not be blocked."""
+        not be blocked.
+        """
         if not self.interactive:
             raise Exception("wait_with_dialog is only supported in interactive mode!")
         if self.version < 261:
@@ -367,6 +368,7 @@ class App:
 
     @property
     def interactive(self) -> bool:
+        """Get whether the application is running in interactive mode."""
         return self._interactive_mode
 
     def open(self, db_file, remove_lock=False):
