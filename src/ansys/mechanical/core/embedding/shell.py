@@ -115,5 +115,8 @@ def initialize_ipython_shell():
     if not _using_interactive_ipython(False):
         return
 
-    ipython_shell.get_shell_hooks().start_hook = lambda: pythoncom.CoInitialize()
+    def _start_hook():
+        pythoncom.CoInitialize()
+
+    ipython_shell.get_shell_hooks().start_hook = _start_hook
     ipython_shell.post_ipython_blocks()
