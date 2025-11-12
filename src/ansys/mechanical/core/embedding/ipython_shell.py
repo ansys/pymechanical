@@ -197,8 +197,8 @@ def post_ipython_blocks():
     EXEC_THREAD.start()
 
     # Patch IPython to delegate to your thread
-    InteractiveShell.run_cell = _run_cell_in_thread.__get__(
-        InteractiveShell.instance(), InteractiveShell
+    InteractiveShell.run_cell = (  # type: ignore
+        _run_cell_in_thread.__get__(InteractiveShell.instance(), InteractiveShell)  # type: ignore
     )  # type: ignore
     LOG.info("IPython now runs all cells in your dedicated thread.")
 
