@@ -82,11 +82,14 @@ def _using_interactive_ipython(warn: bool):
 def start_interactive_shell(app):
     """Start the interactive IPython shell."""
     if _using_interactive_ipython(True):
-        ipython_shell.get_shell_hooks().idle_hook = lambda: embedding_utils.sleep(50)
+
+        def _idle_hook():
+            embedding_utils.sleep(50)
 
         def _end_hook():
             app._dispose()
 
+        ipython_shell.get_shell_hooks().idle_hook = _idle_hook
         ipython_shell.get_shell_hooks().end_hook = _end_hook
     else:
         if _use_drain_tracer():

@@ -367,7 +367,7 @@ class App:
             raise Exception("wait_with_dialog is only supported in interactive mode!")
         if self.version < 261:
             raise Exception("wait_with_dialog is only supported with Mechanical 261")
-        """Wait with dialog open."""
+        # Wait with dialog open
         self._app.BlockingModalDialog("Wait with dialog", "PyMechanical")
 
     @property
