@@ -39,4 +39,6 @@ clr.AddReference("Ansys.ACT.Interfaces")
 from Ansys.ACT.Interfaces.Common import *  # noqa isort: skip
 from Ansys.Mechanical.DataModel.Enums import *  # noqa isort: skip
 from Ansys.ACT.Interfaces.Analysis import *  # noqa isort: skip
+from Ansys.ACT.Interfaces.Geometry import *  # noqa isort: skip
 import Ansys  # noqa  isort: skip
+
