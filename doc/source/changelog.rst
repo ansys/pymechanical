@@ -9,6 +9,85 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.36 <https://github.com/ansys/pymechanical/releases/tag/v0.11.36>`_ - November 12, 2025
+============================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add option to trigger scheduled workflow
+          - `#1375 <https://github.com/ansys/pymechanical/pull/1375>`_
+
+        * - Embedding with UI
+          - `#1390 <https://github.com/ansys/pymechanical/pull/1390>`_
+
+        * - Add enum
+          - `#1395 <https://github.com/ansys/pymechanical/pull/1395>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - LS-Dyna test
+          - `#1367 <https://github.com/ansys/pymechanical/pull/1367>`_
+
+        * - Update interactive env for doc build
+          - `#1372 <https://github.com/ansys/pymechanical/pull/1372>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Bump actions/download-artifact from 5.0.0 to 6.0.0
+          - `#1369 <https://github.com/ansys/pymechanical/pull/1369>`_
+
+        * - Update CHANGELOG for v0.11.35
+          - `#1373 <https://github.com/ansys/pymechanical/pull/1373>`_
+
+        * - Update missing or outdated files
+          - `#1376 <https://github.com/ansys/pymechanical/pull/1376>`_
+
+        * - Update runners
+          - `#1377 <https://github.com/ansys/pymechanical/pull/1377>`_
+
+        * - Bump psutil from 7.1.2 to 7.1.3
+          - `#1379 <https://github.com/ansys/pymechanical/pull/1379>`_
+
+        * - Bump mikepenz/action-junit-report from 6.0.0 to 6.0.1 in the actions group
+          - `#1380 <https://github.com/ansys/pymechanical/pull/1380>`_
+
+        * - Pre-commit automatic update
+          - `#1381 <https://github.com/ansys/pymechanical/pull/1381>`_, `#1394 <https://github.com/ansys/pymechanical/pull/1394>`_
+
+        * - Add \`check-actions-security\` action
+          - `#1387 <https://github.com/ansys/pymechanical/pull/1387>`_
+
+        * - Bump the doc group with 2 updates
+          - `#1392 <https://github.com/ansys/pymechanical/pull/1392>`_
+
+
+  .. tab-item:: Test
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Temporarily comment out background app multiple instances test
+          - `#1385 <https://github.com/ansys/pymechanical/pull/1385>`_
+
+
 `0.11.35 <https://github.com/ansys/pymechanical/releases/tag/v0.11.35>`_ - October 30, 2025
 ===========================================================================================
 
