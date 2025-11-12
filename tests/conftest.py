@@ -31,6 +31,7 @@ import subprocess
 import sys
 import time
 
+import ansys.tools.path as atp
 import pytest
 
 import ansys.mechanical.core as pymechanical
@@ -41,7 +42,6 @@ from ansys.mechanical.core.errors import MechanicalExitedError
 from ansys.mechanical.core.examples import download_file
 from ansys.mechanical.core.misc import get_mechanical_bin
 import ansys.mechanical.core.run
-import ansys.tools.path as atp
 
 # to run tests with multiple markers
 # pytest -q --collect-only -m "remote_session_launch"
@@ -131,9 +131,9 @@ def start_embedding_app(version, pytestconfig) -> datetime.timedelta:
     config = AddinConfiguration(pytestconfig.getoption("addin_configuration"))
 
     EMBEDDED_APP = App(version=int(version))
-    assert (
-        not EMBEDDED_APP.readonly
-    ), "Can't run test cases, Mechanical is in readonly mode! Check license configuration."
+    assert not EMBEDDED_APP.readonly, (
+        "Can't run test cases, Mechanical is in readonly mode! Check license configuration."
+    )
     startup_time = (datetime.datetime.now() - start).total_seconds()
     num_cores = os.environ.get("NUM_CORES", None)
     if num_cores is not None:

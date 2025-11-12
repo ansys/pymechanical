@@ -4,17 +4,18 @@ on:
   schedule:
     - cron: '00 22 * * *'
 
-permissions:
-  contents: write
-  packages: write
+permissions: {}
 
 jobs:
   cleanup:
     name: "Delete untagged package versions"
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
     steps:
       - name: "Delete untagged package versions"
-        uses: ansys/actions/hk-package-clean-untagged@v10
+        uses: ansys/actions/hk-package-clean-untagged@21c9de9bee9692173780696d4a39964f20b9cfa3 # v10.1.5
         with:
           package-org: 'ansys'
           package-name: 'mechanical'

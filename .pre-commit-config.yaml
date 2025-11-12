@@ -8,7 +8,7 @@ exclude: '^tests/embedding/assets/.*$|^tests/parts/.*$'
 repos:
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.8.6
+  rev: v0.14.4
   hooks:
     - id: ruff
     - id: ruff-format
