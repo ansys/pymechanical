@@ -120,10 +120,6 @@ def _exec_from_queue(shell) -> bool:
 
     Return whether to break out of loop
     """
-    global CODE_QUEUE
-    global ORIGINAL_RUN_CELL
-    global RESULT_QUEUE
-    global SHELL_HOOKS
     try:
         code = CODE_QUEUE.get_nowait()
     except queue.Empty:
@@ -144,8 +140,6 @@ def _exec_from_queue(shell) -> bool:
 
 def _execution_thread_main():
     global EXECUTION_THREAD_ID
-    global SHUTDOWN_EVENT
-    global SHELL_HOOKS
 
     SHELL_HOOKS.start()
     shell = InteractiveShell.instance()
@@ -160,9 +154,6 @@ def _execution_thread_main():
 
 
 def _run_cell_in_thread(self, raw_cell, store_history=False, silent=False, shell_futures=True):
-    global CODE_QUEUE
-    global RESULT_QUEUE
-    global SHUTDOWN_EVENT
     CODE_QUEUE.put(raw_cell)
     while not SHUTDOWN_EVENT.is_set():
         try:
@@ -178,9 +169,6 @@ def cleanup():
     Must be called before the application exits.
     May be called from an atexit handler.
     """
-    global CODE_QUEUE
-    global SHUTDOWN_EVENT
-    global EXEC_THREAD
     LOG.info("Shutting down execution thread")
     CODE_QUEUE.put(None)  # Unblock the thread
     SHUTDOWN_EVENT.set()
@@ -217,5 +205,4 @@ def post_ipython_blocks():
 
 def get_shell_hooks():
     """Get the shell hooks object."""
-    global SHELL_HOOKS
     return SHELL_HOOKS

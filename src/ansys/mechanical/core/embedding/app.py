@@ -238,6 +238,15 @@ class App:
         # Set messages to None before BUILDING_GALLERY check
         self._messages = None
 
+        version = kwargs.get("version")
+        if version is not None:
+            try:
+                version = int(version)
+            except ValueError:
+                raise ValueError(
+                    "The version must be an integer or of type that can be converted to an integer."
+                )
+
         # If the building gallery flag is set, we need to share the instance
         # This can apply to running the `make -C doc html` command
         if BUILDING_GALLERY:
@@ -257,15 +266,11 @@ class App:
         if len(INSTANCES) > 0:
             raise Exception("Cannot have more than one embedded mechanical instance!")
 
-        version = kwargs.get("version")
-        if version is not None:
-            try:
-                version = int(version)
-            except ValueError:
-                raise ValueError(
-                    "The version must be an integer or of type that can be converted to an integer."
-                )
         self._version = initializer.initialize(version)
+
+        if self._version < 261 and self.interactive:
+            raise Exception("Interactive mode is only supported starting with version 261")
+
         configuration = kwargs.get("config", _get_default_addin_configuration())
 
         if private_appdata:
@@ -281,9 +286,6 @@ class App:
             additional_args = _additional_args(readonly, feature_flags, self._version)
         else:
             additional_args = ""
-
-        if self._version < 261 and self.interactive:
-            raise Exception("Interactive mode is only supported starting with version 261")
 
         self._prepare_interactive_mode()
         runtime.initialize(self._version, pep8_aliases=pep8_alias)
