@@ -41,4 +41,3 @@ from Ansys.Mechanical.DataModel.Enums import *  # noqa isort: skip
 from Ansys.ACT.Interfaces.Analysis import *  # noqa isort: skip
 from Ansys.ACT.Interfaces.Geometry import *  # noqa isort: skip
 import Ansys  # noqa  isort: skip
-
