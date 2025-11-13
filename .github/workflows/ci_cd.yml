@@ -277,9 +277,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.config-matrix.outputs.matrix) }}
-    permissions:
-      contents: read
-      packages: read
     steps:
       - name: Login in Github Container registry
         uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
