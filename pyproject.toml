@@ -49,7 +49,7 @@ Changelog = "https://mechanical.docs.pyansys.com/version/stable/changelog.html"
 
 [project.optional-dependencies]
 tests = [
-    "pytest==8.4.2",
+    "pytest==9.0.0",
     "pytest-cov==7.0.0",
     "pytest-print==1.2.0",
     "psutil==7.1.3",
