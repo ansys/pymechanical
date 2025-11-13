@@ -244,7 +244,7 @@ jobs:
           if [[ "${GH_EVENT_NAME}" == "push" ]] && [[ "$GH_REF" =~ "refs/tags" ]]; then
             echo "matrix={\"mechanical-version\":['24.1.0', '24.2.0', '25.1.0', '25.2.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           else
-            echo "matrix={\"mechanical-version\":["${TEST_DOCKER_IMAGE_VERSION}"],\"experimental\":[false]}" >> $GITHUB_OUTPUT
+            echo "matrix={\"mechanical-version\":['${TEST_DOCKER_IMAGE_VERSION}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           fi
 
   container-stability-check:
@@ -277,6 +277,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.config-matrix.outputs.matrix) }}
+    permissions:
+      contents: read
+      packages: read
     steps:
       - name: Login in Github Container registry
         uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
