@@ -353,7 +353,7 @@ jobs:
         env:
           MAIN_PYTHON_VERSION: ${{ env.MAIN_PYTHON_VERSION }}
         with:
-          python-version: ${MAIN_PYTHON_VERSION}
+          python-version: ${{ env.MAIN_PYTHON_VERSION }}
           pytest-markers: '-m remote_session_connect'
           pytest-extra-args: '-s --junitxml remote_results${MAIN_PYTHON_VERSION}.xml'
 
