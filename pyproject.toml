@@ -4,7 +4,7 @@ build-backend = "pdm.backend"
 
 [project]
 name = "ansys-mechanical-core"
-version = "0.11.36"
+version = "0.11.35"
 description = "A python wrapper for Ansys Mechanical"
 readme = "README.rst"
 requires-python = ">=3.10,<4.0"
