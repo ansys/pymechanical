@@ -390,23 +390,18 @@ jobs:
 
       - name: Get Mechanical container logs
         if: always()
-        env:
-          DOCKER_MECH_CONTAINER_NAME: ${{ env.DOCKER_MECH_CONTAINER_NAME }}
-          MATRIX_MECH_VERSION: ${{ matrix.mechanical-version }}
-        run: |
-          docker logs ${DOCKER_MECH_CONTAINER_NAME} > mechanical_tests_log-${MATRIX_MECH_VERSION}.txt 2>&1
+        run: | # zizmor: ignore[template-injection]
+          docker logs ${{ env.DOCKER_MECH_CONTAINER_NAME }} > mechanical_tests_log-${{ matrix.mechanical-version }}.txt 2>&1
           echo CONTAINER LOGS OUTPUT
-          cat mechanical_tests_log-${MATRIX_MECH_VERSION}.txt
+          cat mechanical_tests_log-${{ matrix.mechanical-version }}.txt
           echo CPU info
           lscpu
 
       - name: Upload container logs
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
-        env:
-          MATRIX_MECH_VERSION: ${{ matrix.mechanical-version }}
         with:
-          name: mechanical_tests_log-${MATRIX_MECH_VERSION}
-          path: mechanical_tests_log-${MATRIX_MECH_VERSION}.txt
+          name: mechanical_tests_log-${{ matrix.mechanical-version }}
+          path: mechanical_tests_log-${{ matrix.mechanical-version }}.txt
           retention-days: 7
 
   embedding-tests:
