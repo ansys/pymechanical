@@ -199,7 +199,11 @@ sphinx_gallery_conf = {
     # Modules for which function level galleries are created.  In
     "doc_module": "ansys-mechanical-core",
     "image_scrapers": (DynamicScraper(), "matplotlib"),
-    "ignore_pattern": "flycheck*",
+    # Files to ignore
+    "ignore_pattern": """flycheck*| \
+        fracture_analysis_contact_debonding.py| \
+        harmonic_acoustics.py| \
+        modal_acoustics_analysis.py""",
     "thumbnail_size": (350, 350),
 }
 
