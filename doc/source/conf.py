@@ -199,8 +199,7 @@ sphinx_gallery_conf = {
     # Modules for which function level galleries are created.  In
     "doc_module": "ansys-mechanical-core",
     "image_scrapers": (DynamicScraper(), "matplotlib"),
-    "filename_pattern": "00_setup/",
-    "ignore_pattern": "flycheck*|01*|03*|04*|05*|06*|07*|08*",
+    "ignore_pattern": "flycheck*",
     "thumbnail_size": (350, 350),
 }
 
