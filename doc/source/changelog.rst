@@ -9,6 +9,230 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.36 <https://github.com/ansys/pymechanical/releases/tag/v0.11.36>`_ - November 13, 2025
+============================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add option to trigger scheduled workflow
+          - `#1375 <https://github.com/ansys/pymechanical/pull/1375>`_
+
+        * - Embedding with UI
+          - `#1390 <https://github.com/ansys/pymechanical/pull/1390>`_
+
+        * - Add enum
+          - `#1395 <https://github.com/ansys/pymechanical/pull/1395>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - LS-Dyna test
+          - `#1367 <https://github.com/ansys/pymechanical/pull/1367>`_
+
+        * - Update interactive env for doc build
+          - `#1372 <https://github.com/ansys/pymechanical/pull/1372>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Bump actions/download-artifact from 5.0.0 to 6.0.0
+          - `#1369 <https://github.com/ansys/pymechanical/pull/1369>`_
+
+        * - Update CHANGELOG for v0.11.35
+          - `#1373 <https://github.com/ansys/pymechanical/pull/1373>`_
+
+        * - Update missing or outdated files
+          - `#1376 <https://github.com/ansys/pymechanical/pull/1376>`_
+
+        * - Update runners
+          - `#1377 <https://github.com/ansys/pymechanical/pull/1377>`_
+
+        * - Bump psutil from 7.1.2 to 7.1.3
+          - `#1379 <https://github.com/ansys/pymechanical/pull/1379>`_
+
+        * - Bump mikepenz/action-junit-report from 6.0.0 to 6.0.1 in the actions group
+          - `#1380 <https://github.com/ansys/pymechanical/pull/1380>`_
+
+        * - Pre-commit automatic update
+          - `#1381 <https://github.com/ansys/pymechanical/pull/1381>`_, `#1394 <https://github.com/ansys/pymechanical/pull/1394>`_
+
+        * - Add \`check-actions-security\` action
+          - `#1387 <https://github.com/ansys/pymechanical/pull/1387>`_
+
+        * - Bump actions-ecosystem/action-add-labels from 1.1.0 to 1.1.3 in the actions group
+          - `#1391 <https://github.com/ansys/pymechanical/pull/1391>`_
+
+        * - Bump the doc group with 2 updates
+          - `#1392 <https://github.com/ansys/pymechanical/pull/1392>`_
+
+        * - Bump pytest from 8.4.2 to 9.0.0
+          - `#1393 <https://github.com/ansys/pymechanical/pull/1393>`_
+
+        * - Revert \"chore: update CHANGELOG for v0.11.36\"
+          - `#1397 <https://github.com/ansys/pymechanical/pull/1397>`_
+
+        * - Fix remote-connect
+          - `#1398 <https://github.com/ansys/pymechanical/pull/1398>`_
+
+
+  .. tab-item:: Test
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Temporarily comment out background app multiple instances test
+          - `#1385 <https://github.com/ansys/pymechanical/pull/1385>`_
+
+
+`0.11.35 <https://github.com/ansys/pymechanical/releases/tag/v0.11.35>`_ - October 30, 2025
+===========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add Engine type option for script execution
+          - `#1332 <https://github.com/ansys/pymechanical/pull/1332>`_
+
+        * - Support additional arguments in App
+          - `#1333 <https://github.com/ansys/pymechanical/pull/1333>`_
+
+        * - Notify maintainers when scheduled run fails
+          - `#1334 <https://github.com/ansys/pymechanical/pull/1334>`_
+
+        * - Add ruff linting
+          - `#1350 <https://github.com/ansys/pymechanical/pull/1350>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update image to see the temperature
+          - `#1329 <https://github.com/ansys/pymechanical/pull/1329>`_
+
+        * - Fix payload in webhook
+          - `#1336 <https://github.com/ansys/pymechanical/pull/1336>`_
+
+        * - Notify on failure or cancellation for nightly runs
+          - `#1340 <https://github.com/ansys/pymechanical/pull/1340>`_
+
+        * - Use different method to check for initialize message
+          - `#1351 <https://github.com/ansys/pymechanical/pull/1351>`_
+
+        * - Lazily instantiate the license preference object
+          - `#1356 <https://github.com/ansys/pymechanical/pull/1356>`_
+
+        * - Update \`list_files\`
+          - `#1361 <https://github.com/ansys/pymechanical/pull/1361>`_
+
+        * - Failing \`execute_script\` tests.
+          - `#1362 <https://github.com/ansys/pymechanical/pull/1362>`_
+
+        * - Update qk07 test
+          - `#1364 <https://github.com/ansys/pymechanical/pull/1364>`_
+
+
+  .. tab-item:: Documentation
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update \`\`CONTRIBUTORS.md\`\` with the latest contributors
+          - `#1326 <https://github.com/ansys/pymechanical/pull/1326>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Remove Helper python file.
+          - `#1052 <https://github.com/ansys/pymechanical/pull/1052>`_
+
+        * - Update CHANGELOG for v0.11.34
+          - `#1325 <https://github.com/ansys/pymechanical/pull/1325>`_
+
+        * - Bump psutil from 7.0.0 to 7.1.0
+          - `#1330 <https://github.com/ansys/pymechanical/pull/1330>`_
+
+        * - Pre-commit automatic update
+          - `#1331 <https://github.com/ansys/pymechanical/pull/1331>`_, `#1347 <https://github.com/ansys/pymechanical/pull/1347>`_
+
+        * - Make notify on failure dependent on the tests and doc build jobs
+          - `#1335 <https://github.com/ansys/pymechanical/pull/1335>`_
+
+        * - Bump docker/login-action from 3.5.0 to 3.6.0 in the actions group
+          - `#1337 <https://github.com/ansys/pymechanical/pull/1337>`_
+
+        * - Add a 30-minute timeout to the doc-build job
+          - `#1338 <https://github.com/ansys/pymechanical/pull/1338>`_
+
+        * - Bump peter-evans/create-or-update-comment from 4 to 5
+          - `#1345 <https://github.com/ansys/pymechanical/pull/1345>`_
+
+        * - Bump ansys-mechanical-stubs from 0.1.6 to 0.1.7 in the core group
+          - `#1346 <https://github.com/ansys/pymechanical/pull/1346>`_
+
+        * - Replace python action with UV install
+          - `#1349 <https://github.com/ansys/pymechanical/pull/1349>`_
+
+        * - Bump the doc group with 2 updates
+          - `#1352 <https://github.com/ansys/pymechanical/pull/1352>`_
+
+        * - Bump pytest-print from 1.1.0 to 1.2.0 in the tests group
+          - `#1353 <https://github.com/ansys/pymechanical/pull/1353>`_
+
+        * - Bump mikepenz/action-junit-report from 5.6.2 to 6.0.0
+          - `#1354 <https://github.com/ansys/pymechanical/pull/1354>`_
+
+        * - Bump github/codeql-action from 3 to 4
+          - `#1355 <https://github.com/ansys/pymechanical/pull/1355>`_
+
+        * - Continuously check for WB Initialize Done message
+          - `#1357 <https://github.com/ansys/pymechanical/pull/1357>`_
+
+        * - Bump psutil from 7.1.0 to 7.1.1
+          - `#1359 <https://github.com/ansys/pymechanical/pull/1359>`_
+
+        * - Bump toolz from 1.0.0 to 1.1.0
+          - `#1360 <https://github.com/ansys/pymechanical/pull/1360>`_
+
+        * - Bump usd-core from 25.8 to 25.11
+          - `#1365 <https://github.com/ansys/pymechanical/pull/1365>`_
+
+        * - Bump psutil from 7.1.1 to 7.1.2
+          - `#1366 <https://github.com/ansys/pymechanical/pull/1366>`_
+
+        * - Bump actions/upload-artifact from 4.6.2 to 5.0.0
+          - `#1368 <https://github.com/ansys/pymechanical/pull/1368>`_
+
+
 `0.11.34 <https://github.com/ansys/pymechanical/releases/tag/v0.11.34>`_ - September 19, 2025
 =============================================================================================
 

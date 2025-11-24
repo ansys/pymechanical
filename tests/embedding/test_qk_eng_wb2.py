@@ -302,33 +302,33 @@ def test_qk_eng_wb2_007(printer, embedded_app, assets):
         MODEL.Solve(True)
 
         FAT_Tool_1_LIFE = LIFE.Minimum.Value
-        assert FAT_Tool_1_LIFE == pytest.approx(
-            1628.0823, rel=0.08
-        ), "Minimum Life For Fatigue Tool 1"
+        assert FAT_Tool_1_LIFE == pytest.approx(1628.0823, rel=0.08), (
+            "Minimum Life For Fatigue Tool 1"
+        )
 
         FAT_TOOL_1_DAMAGE = DAMAGE.Maximum.Value
-        assert FAT_TOOL_1_DAMAGE == pytest.approx(
-            614.2195, rel=0.08
-        ), "Maximum Damage For Fatigue Tool 1"
+        assert FAT_TOOL_1_DAMAGE == pytest.approx(614.2195, rel=0.08), (
+            "Maximum Damage For Fatigue Tool 1"
+        )
 
         FAT_TOOL_1_Safety_Factor = safetyFactor.Minimum.Value
-        assert FAT_TOOL_1_Safety_Factor == pytest.approx(
-            0.0122, rel=0.08
-        ), "Minimum Safety Factor For Fatigue Tool 1"
+        assert FAT_TOOL_1_Safety_Factor == pytest.approx(0.0122, rel=0.08), (
+            "Minimum Safety Factor For Fatigue Tool 1"
+        )
 
         FAT_TOOL_2_LIFE = FAT_TOOL2.Children[0].Minimum.Value
-        assert FAT_TOOL_2_LIFE == pytest.approx(
-            1628.0823, rel=0.08
-        ), "Minimum Life For Fatigue Tool 2"
+        assert FAT_TOOL_2_LIFE == pytest.approx(1628.0823, rel=0.08), (
+            "Minimum Life For Fatigue Tool 2"
+        )
 
         FAT_TOOL_2_DAMAGE = FAT_TOOL2.Children[1].Maximum.Value
-        assert FAT_TOOL_2_DAMAGE == pytest.approx(
-            614.2195, rel=0.08
-        ), "Maximum Damage For Fatigue Tool 2"
+        assert FAT_TOOL_2_DAMAGE == pytest.approx(614.2195, rel=0.08), (
+            "Maximum Damage For Fatigue Tool 2"
+        )
 
         FAT_TOOL_2_Safety_Factor = FAT_TOOL2.Children[2].Minimum.Value
-        assert FAT_TOOL_2_Safety_Factor == pytest.approx(
-            0.0122, rel=0.08
-        ), "Minimum Safety Factor For Fatigue Tool 2"
+        assert FAT_TOOL_2_Safety_Factor == pytest.approx(0.0122, rel=0.08), (
+            "Minimum Safety Factor For Fatigue Tool 2"
+        )
 
     _innertest()

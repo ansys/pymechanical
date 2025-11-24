@@ -71,7 +71,7 @@ class MechanicalExitedError(RuntimeError):
 # handler for protect_grpc
 def handler(sig, frame):  # pragma: no cover
     """Pass signal to custom interrupt handler."""
-    LOG.info("KeyboardInterrupt received.  Waiting until Mechanical " "execution finishes")
+    LOG.info("KeyboardInterrupt received.  Waiting until Mechanical execution finishes")
     SIGINT_TRACKER.append(True)
 
 

@@ -41,10 +41,11 @@ from typing import Optional
 import warnings
 import weakref
 
-import grpc
-
 import ansys.api.mechanical.v0.mechanical_pb2 as mechanical_pb2
 import ansys.api.mechanical.v0.mechanical_pb2_grpc as mechanical_pb2_grpc
+import ansys.tools.path as atp
+import grpc
+
 import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core import LOG
 from ansys.mechanical.core.errors import (
@@ -60,7 +61,6 @@ from ansys.mechanical.core.misc import (
     check_valid_start_instance,
     threaded,
 )
-import ansys.tools.path as atp
 
 # Check if PyPIM is installed
 try:
@@ -882,7 +882,7 @@ class Mechanical(object):
                         f"before throwing the error."
                     )
                     raise RuntimeError(
-                        f"Couldn't connect to Mechanical. " f"Waited for {time_interval_seconds}s."
+                        f"Couldn't connect to Mechanical. Waited for {time_interval_seconds}s."
                     )
 
             time.sleep(sleep_time)
