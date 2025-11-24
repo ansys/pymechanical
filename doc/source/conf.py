@@ -189,7 +189,7 @@ sphinx_gallery_conf = {
     "examples_dirs": ["../../examples/"],
     # path where to save gallery generated examples
     "gallery_dirs": ["examples/gallery_examples"],  # Pattern to search for example files
-    "filename_pattern": r"\.py",
+    # "filename_pattern": r"\.py",
     # Remove the "Download all examples" button from the top level gallery
     "download_all_examples": False,
     # Sort gallery example by file name instead of number of lines (default)
@@ -199,6 +199,7 @@ sphinx_gallery_conf = {
     # Modules for which function level galleries are created.  In
     "doc_module": "ansys-mechanical-core",
     "image_scrapers": (DynamicScraper(), "matplotlib"),
+    "filename_pattern": "/00_setup/",
     "ignore_pattern": "flycheck*|01*|03*|04*|05*|06*|07*|08*",
     "thumbnail_size": (350, 350),
 }
