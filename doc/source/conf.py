@@ -199,7 +199,7 @@ sphinx_gallery_conf = {
     # Modules for which function level galleries are created.  In
     "doc_module": "ansys-mechanical-core",
     "image_scrapers": (DynamicScraper(), "matplotlib"),
-    "ignore_pattern": "flycheck*",
+    "ignore_pattern": "flycheck*|01*|03*|04*|05*|06*|07*|08*",
     "thumbnail_size": (350, 350),
 }
 
@@ -242,7 +242,7 @@ html_theme_options = {
         "sidebar_pages": ["changelog", "index"],
     },
     "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
-    "show_nav_level": 0,
+    # "show_nav_level": 0,
 }
 
 if BUILD_CHEATSHEET:

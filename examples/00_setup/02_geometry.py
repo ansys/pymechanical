@@ -275,7 +275,7 @@ for body in allbodies:
 # Get all Coordinate Systems
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Retrieve all coordinate systems in the model
-tree_CS = Model.CoordinateSystems
+tree_cs = Model.CoordinateSystems
 
 # %%
 # Add a cylindrical coordinate system
