@@ -9,6 +9,53 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.37 <https://github.com/ansys/pymechanical/releases/tag/v0.11.37>`_ - November 25, 2025
+============================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update enums
+          - `#1407 <https://github.com/ansys/pymechanical/pull/1407>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.11.36
+          - `#1401 <https://github.com/ansys/pymechanical/pull/1401>`_
+
+        * - Bump the actions group with 2 updates
+          - `#1402 <https://github.com/ansys/pymechanical/pull/1402>`_
+
+        * - Bump pytest from 9.0.0 to 9.0.1 in the tests group
+          - `#1403 <https://github.com/ansys/pymechanical/pull/1403>`_
+
+        * - Bump pypandoc from 1.16 to 1.16.2 in the doc group
+          - `#1404 <https://github.com/ansys/pymechanical/pull/1404>`_
+
+        * - Pre-commit automatic update
+          - `#1405 <https://github.com/ansys/pymechanical/pull/1405>`_, `#1412 <https://github.com/ansys/pymechanical/pull/1412>`_
+
+        * - Update openssl version
+          - `#1408 <https://github.com/ansys/pymechanical/pull/1408>`_
+
+        * - Bump github/codeql-action from 4.31.3 to 4.31.5 in the actions group
+          - `#1410 <https://github.com/ansys/pymechanical/pull/1410>`_
+
+        * - Bump actions/checkout from 5.0.1 to 6.0.0
+          - `#1411 <https://github.com/ansys/pymechanical/pull/1411>`_
+
+
 `0.11.36 <https://github.com/ansys/pymechanical/releases/tag/v0.11.36>`_ - November 13, 2025
 ============================================================================================
 
