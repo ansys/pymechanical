@@ -200,7 +200,7 @@ sphinx_gallery_conf = {
     "doc_module": "ansys-mechanical-core",
     "image_scrapers": (DynamicScraper(), "matplotlib"),
     # Files to ignore
-    "ignore_pattern": "flycheck*|cooling_holes_thermal_analysis.py|fracture_analysis_contact_debonding.py|bolt_presentation.py",
+    "ignore_pattern": "flycheck*|cooling_holes_thermal_analysis.py|fracture_analysis_contact_debonding.py|harmonic_acoustics.py",
     "thumbnail_size": (350, 350),
 }
 
