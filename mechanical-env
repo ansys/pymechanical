@@ -165,7 +165,7 @@ if [ "$version" = "261" ] || [ "$version" -gt "261" ]; then
 :${!awp_root}/tp/nss/3.89/lib\
 :${!awp_root}/tp/IntelCompiler/2023.1.0/linx64/lib/intel64\
 :${!awp_root}/tp/qt/5.15.19/linx64/lib\
-:${!awp_root}/tp/openssl/3.0/linx64/lib
+:${!awp_root}/tp/openssl/3.5/linx64/lib
 elif [ "$version" = "252" ]; then
     LD_LIBRARY_PATH=${LD_LIBRARY_PATH}\
 :${!awp_root}/tp/IntelMKL/2024.2.0/linx64/lib/intel64\
