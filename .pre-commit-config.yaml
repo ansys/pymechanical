@@ -7,11 +7,11 @@ exclude: '^tests/embedding/assets/.*$|^tests/parts/.*$'
 
 repos:
 
-# - repo: https://github.com/astral-sh/ruff-pre-commit
-#   rev: v0.14.4
-#   hooks:
-#     - id: ruff
-#     - id: ruff-format
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.14.4
+  hooks:
+    - id: ruff
+    - id: ruff-format
 
 - repo: https://github.com/pre-commit-ci/pre-commit-ci-config
   rev: v1.6.1
