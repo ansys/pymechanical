@@ -117,9 +117,7 @@ def _additional_args(readonly: bool, feature_flags: list, start_license: str, ve
         additional_args += " " + " ".join(flag_args)
     if start_license:
         if readonly:
-            LOG.warning(
-                "The start_license argument is ignored when readonly is set to True."
-            )
+            LOG.warning("The start_license argument is ignored when readonly is set to True.")
         additional_args += f"-p {start_license}"
     return additional_args
 
