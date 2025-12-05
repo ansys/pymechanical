@@ -316,15 +316,14 @@ mesh.ElementSize = Quantity(0.5, "in")
 mesh.UseAdaptiveSizing = False
 mesh.CaptureCurvature = True
 mesh.CaptureProximity = True
-mesh.SetMeshSizing(MeshSizingType.Advanced)
 mesh.GrowthRateSF = 1.85
 mesh.DefeatureTolerance = Quantity(0.000375, "in")
-
+ 
 automatic_method = mesh.AddAutomaticMethod()
 automatic_method.ScopingMethod = GeometryDefineByType.Component
 automatic_method.NamedSelection = Both_Plates_NS
 automatic_method.Method = MethodType.AllTriAllTet
-
+ 
 sizing = mesh.AddSizing()
 sizing.ScopingMethod = GeometryDefineByType.Component
 sizing.NamedSelection = Fluidlines_NS
