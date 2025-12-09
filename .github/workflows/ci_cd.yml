@@ -301,8 +301,26 @@ jobs:
         run: |
           docker pull ${MECHANICAL_IMAGE}
 
-          echo "Run docker in detached mode"
-          docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} -p ${PYMECHANICAL_PORT}:10000 ${MECHANICAL_IMAGE}
+          # Check if image name contains 26.1 to determine entrypoint
+          if [[ ${MECHANICAL_IMAGE} == *"26.1"* ]]; then
+            echo "Detected version 26.1 - using custom entrypoint for insecure transport"
+            docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} \
+              -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} \
+              -e ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH=${ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH} \
+              -p ${PYMECHANICAL_PORT}:10000 \
+              --entrypoint="" \
+              --security-opt seccomp=unconfined \
+              ${MECHANICAL_IMAGE} \
+              tini -- xvfb-run /install/ansys_inc/v${matrix.mechanical-version}/aisol/.workbench \
+              -dsapplet -b -grpc 10000 --grpc-host 0.0.0.0 --transport-mode insecure
+          else
+            echo "Using default entrypoint for version ${matrix.mechanical-version}"
+            docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} \
+              -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} \
+              -e ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH=${ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH} \
+              -p ${PYMECHANICAL_PORT}:10000 \
+              ${MECHANICAL_IMAGE}
+          fi
 
           # Wait for Mechanical to initialize with intelligent polling
           max_wait=300  # Maximum wait time in seconds
