@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: write
+      pull-requests: write   # Required to create and manage pull request labels
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
@@ -38,7 +38,7 @@ jobs:
     needs: [label-syncer]
     permissions:
       contents: read
-      pull-requests: write
+      pull-requests: write   # Required to apply labels to pull requests
     runs-on: ubuntu-latest
     steps:
 
@@ -85,7 +85,7 @@ jobs:
     name: "Suggest labels if none applied"
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: write
+      pull-requests: write   # Required to comment on pull requests
     steps:
     - name: Suggest to add labels
       uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
@@ -106,8 +106,8 @@ jobs:
     name: "Create changelog fragment"
     needs: [labeler]
     permissions:
-      contents: write
-      pull-requests: write
+      contents: write        # Required to create changelog fragment files
+      pull-requests: write   # Needed to comment on PR with changelog information
     runs-on: ubuntu-latest
     steps:
     - uses: ansys/actions/doc-changelog@eb7d0fc873deeee6d4740774675ce1741cb6f154 # v10.2.2
