@@ -553,7 +553,7 @@ display_image(image_path)
 
 # Save the project
 mechdat_file = output_path / "cooling_holes_model.mechdat"
-app.save(str(mechdat_file))
+app.save_as(str(mechdat_file), overwrite=True)
 
 # Close the app
 app.close()
