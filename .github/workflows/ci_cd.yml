@@ -50,8 +50,8 @@ jobs:
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags')
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      pull-requests: write
+      contents: write        # Needed to create changelog entries in repository
+      pull-requests: write   # Required to create pull requests for changelog updates
     steps:
       - uses: ansys/actions/doc-deploy-changelog@21c9de9bee9692173780696d4a39964f20b9cfa3 # v10.1.5
         with:
@@ -197,7 +197,7 @@ jobs:
       matrix:
         test_container: ['${{ needs.revn-variations.outputs.test_container }}']
     permissions:
-      packages: read
+      packages: read         # Required to pull Docker images from GitHub Container Registry
     steps:
       - name: Login in Github Container registry
         uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
@@ -279,8 +279,8 @@ jobs:
       matrix: ${{ fromJSON(needs.config-matrix.outputs.matrix) }}
     permissions:
       contents: read
-      packages: read
-      checks: write
+      packages: read         # Required to pull Docker images from GitHub Container Registry
+      checks: write          # Needed to publish test results and status checks
     steps:
       - name: Login in Github Container registry
         uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
@@ -414,10 +414,10 @@ jobs:
         python-version: ['3.10', '3.11', '3.12', '3.13']
     permissions:
       contents: read
-      packages: read
-      checks: write
+      packages: read         # Required to pull Docker images from GitHub Container Registry
+      checks: write          # Needed to publish test results and status checks
     steps:
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           persist-credentials: false
 
@@ -497,10 +497,10 @@ jobs:
         python-version: ['3.10', '3.11', '3.12', '3.13']
     permissions:
       contents: read
-      packages: read
-      checks: write
+      packages: read         # Required to pull Docker images from GitHub Container Registry
+      checks: write          # Needed to publish test results and status checks
     steps:
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           persist-credentials: false
 
@@ -576,10 +576,10 @@ jobs:
         python-version: ['3.10', '3.11', '3.12', '3.13']
     permissions:
       contents: read
-      packages: read
-      checks: write
+      packages: read         # Required to pull Docker images from GitHub Container Registry
+      checks: write          # Needed to publish test results and status checks
     steps:
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           persist-credentials: false
 
@@ -658,11 +658,11 @@ jobs:
     needs: [style, doc-style, revn-variations, container-stability-check, test-container-info]
     permissions:
       contents: read
-      packages: read
+      packages: read         # Required to pull Docker images from GitHub Container Registry
     steps:
 
       - name: Install Git and checkout project
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           persist-credentials: false
 
@@ -757,8 +757,8 @@ jobs:
     needs: [doc-build]
     if: always() && (needs.doc-build.result == 'success' || needs.doc-build.result == 'skipped')
     permissions:
-      contents: write
-      pull-requests: write
+      contents: write        # Required to push documentation to gh-pages branch
+      pull-requests: write   # Needed to comment on PR with documentation link
     steps:
       - uses: ansys/actions/doc-deploy-pr@21c9de9bee9692173780696d4a39964f20b9cfa3 # v10.1.5
         with:
@@ -774,7 +774,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           persist-credentials: false
 
@@ -874,9 +874,9 @@ jobs:
     needs: [smoke-tests, remote-connect, embedding-tests, embedding-scripts-tests, doc-build]
     runs-on: ubuntu-latest
     permissions:
-      attestations: write
+      attestations: write    # Required to generate package attestations for security
       contents: read
-      id-token: write
+      id-token: write        # Needed for OIDC authentication when generating attestations
     steps:
       - name: Build library source and wheel artifacts
         uses: ansys/actions/build-library@21c9de9bee9692173780696d4a39964f20b9cfa3 # v10.1.5
@@ -891,8 +891,8 @@ jobs:
     needs: [package, update-changelog]
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
-      contents: write
+      id-token: write        # Required for OIDC authentication during release
+      contents: write        # Needed to create GitHub releases and upload assets
     steps:
       - name: Release to GitHub
         uses: ansys/actions/release-github@21c9de9bee9692173780696d4a39964f20b9cfa3 # v10.1.5
@@ -907,8 +907,8 @@ jobs:
     needs: [package, update-changelog]
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
-      contents: write
+      id-token: write        # Required for PyPI trusted publisher authentication
+      contents: write        # Needed to download release artifacts
     steps:
       - name: "Download the library artifacts from build-library step"
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v4.3.0
@@ -930,7 +930,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [package]
     permissions:
-      contents: write
+      contents: write        # Required to push documentation to gh-pages branch
     steps:
       - name: Deploy the latest documentation
         uses: ansys/actions/doc-deploy-dev@21c9de9bee9692173780696d4a39964f20b9cfa3 # v10.1.5
@@ -946,7 +946,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [release]
     permissions:
-      contents: write
+      contents: write        # Required to push stable documentation to gh-pages branch
     steps:
       - name: Deploy the stable documentation
         uses: ansys/actions/doc-deploy-stable@21c9de9bee9692173780696d4a39964f20b9cfa3 # v10.1.5
@@ -975,7 +975,7 @@ jobs:
     if: github.event_name == 'schedule' && (failure() || cancelled())
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
+      id-token: write        # Required for OIDC authentication with notification services
       contents: read
     steps:
       - name: Microsoft Teams Notification
