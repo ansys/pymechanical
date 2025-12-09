@@ -292,6 +292,7 @@ jobs:
       - name: Pull, launch, and validate Mechanical service
         env:
           MECHANICAL_IMAGE: ${{ env.DOCKER_PACKAGE }}:${{ matrix.mechanical-version }}
+          MECHANICAL_VERSION: ${{ matrix.mechanical-version }}
           # ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
           # ANSYS_WORKBENCH_LOGGING_DIRECTORY: /log_file  # workbench.log file
           ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH: 0  # turn off autoflush for faster performance
@@ -311,10 +312,10 @@ jobs:
               --entrypoint="" \
               --security-opt seccomp=unconfined \
               ${MECHANICAL_IMAGE} \
-              tini -- xvfb-run /install/ansys_inc/v${matrix.mechanical-version}/aisol/.workbench \
+              tini -- xvfb-run /install/ansys_inc/v${MECHANICAL_VERSION}/aisol/.workbench \
               -dsapplet -b -grpc 10000 --grpc-host 0.0.0.0 --transport-mode insecure
           else
-            echo "Using default entrypoint for version ${matrix.mechanical-version}"
+            echo "Using default entrypoint for version ${MECHANICAL_VERSION}"
             docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} \
               -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} \
               -e ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH=${ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH} \
