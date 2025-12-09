@@ -257,7 +257,7 @@ app.plot()
 
 # %%
 # Define coordinate system
-# ~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~
 # Specify cylindrical coordinate system for applying boundary conditions
 
 coordinate_systems.Activate()
@@ -273,7 +273,7 @@ coordinate_system_101.SecondaryAxisDefineBy = CoordinateSystemAlignmentType.Glob
 
 # %%
 # Define named selections
-# ~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~
 # Create named selections used in the model
 
 HoleFluidNodes_NS = [x for x in Tree.AllObjects if x.Name == "HoleFluidNodes"][0]
@@ -343,7 +343,7 @@ set_camera_and_display_image(camera, graphics, settings_720p, output_path, "mesh
 
 # %%
 # Define analysis
-# ~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~
 # Add a Steady State Thermal Analysis
 
 steady_state_thermal = model.AddSteadyStateThermalAnalysis()
@@ -354,7 +354,7 @@ solution = model.Analyses[0].Solution
 
 # %%
 # Apply loads and boundary conditions
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Add convection loads, body temperatures, and mass flow rates
 
 steady_state_thermal.Activate()
