@@ -73,6 +73,10 @@ def download_file(
     directory_path = "/".join(directory) if directory else ""
 
     # Use ansys.tools.example_download
+    # If no destination is provided, use the default EXAMPLES_PATH
+    if destination is None:
+        destination = pymechanical.EXAMPLES_PATH
+
     local_path = download_manager.download_file(
         filename, directory_path, destination=destination, force=force
     )
