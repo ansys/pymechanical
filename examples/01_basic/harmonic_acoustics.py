@@ -674,7 +674,7 @@ app.print_tree()
 
 # Save the project
 mechdat_file = output_path / "harmonic_acoustics.mechdat"
-app.save(str(mechdat_file))
+app.save_as(str(mechdat_file), overwrite=True)
 
 # Close the app
 app.close()

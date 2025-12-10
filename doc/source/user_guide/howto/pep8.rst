@@ -15,7 +15,7 @@ Snake Case aliases interchangeably, providing backward compatibility while offer
 Python-friendly API.
 
 Enabling PEP 8 aliases
----------------------
+----------------------
 
 To enable PEP 8 aliases, use the ``pep`` parameter when creating an ``App`` instance:
 
