@@ -257,7 +257,7 @@ app.plot()
 
 # %%
 # Define coordinate system
-# ~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~
 # Specify cylindrical coordinate system for applying boundary conditions
 
 coordinate_systems.Activate()
@@ -273,7 +273,7 @@ coordinate_system_101.SecondaryAxisDefineBy = CoordinateSystemAlignmentType.Glob
 
 # %%
 # Define named selections
-# ~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~
 # Create named selections used in the model
 
 HoleFluidNodes_NS = [x for x in Tree.AllObjects if x.Name == "HoleFluidNodes"][0]
@@ -312,19 +312,24 @@ named_selection.Name = r"""HoleElements"""
 # Mesh the model
 
 mesh.Activate()
-mesh.ElementSize = Quantity(2.5, "in")
+mesh.ElementSize = Quantity(0.5, "in")
 mesh.UseAdaptiveSizing = False
 mesh.CaptureCurvature = True
 mesh.CaptureProximity = True
+mesh.GrowthRateSF = 1.85
+mesh.DefeatureTolerance = Quantity(0.000375, "in")
 
 automatic_method = mesh.AddAutomaticMethod()
 automatic_method.ScopingMethod = GeometryDefineByType.Component
 automatic_method.NamedSelection = Both_Plates_NS
 automatic_method.Method = MethodType.AllTriAllTet
+
 sizing = mesh.AddSizing()
 sizing.ScopingMethod = GeometryDefineByType.Component
 sizing.NamedSelection = Fluidlines_NS
 sizing.ElementSize = Quantity(1e-2, "in")
+sizing.CaptureCurvature = False
+sizing.CaptureProximity = False
 mesh.GenerateMesh()
 
 # %%
@@ -338,7 +343,7 @@ set_camera_and_display_image(camera, graphics, settings_720p, output_path, "mesh
 
 # %%
 # Define analysis
-# ~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~
 # Add a Steady State Thermal Analysis
 
 steady_state_thermal = model.AddSteadyStateThermalAnalysis()
@@ -349,7 +354,7 @@ solution = model.Analyses[0].Solution
 
 # %%
 # Apply loads and boundary conditions
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Add convection loads, body temperatures, and mass flow rates
 
 steady_state_thermal.Activate()
@@ -548,7 +553,7 @@ display_image(image_path)
 
 # Save the project
 mechdat_file = output_path / "cooling_holes_model.mechdat"
-app.save(str(mechdat_file))
+app.save_as(str(mechdat_file), overwrite=True)
 
 # Close the app
 app.close()

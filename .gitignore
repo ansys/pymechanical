@@ -152,7 +152,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-
+[eE][nN][vV]*/
+.[eE][nN][vV]*/
 # Spyder project settings
 .spyderproject
 .spyproject
@@ -202,6 +203,7 @@ doc/source/api/*
 examples/01_basic/out/*
 examples/00_setup/out/*
 
+out/
 # pymechanical-specific
 mylocal.ip
 pymechanical_log.txt
