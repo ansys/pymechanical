@@ -8,7 +8,7 @@ Known issues and limitations
 
 It is suggested to use latest stable version of PyMechanical.
 Any issues and limitations for previous versions are not currently documented.
-If you find any other, please create an issue `here <pymechanical_issue_>`_
+If you find any other, please create an issue `here <PyMechanical issue_>`_
 
 Limitations in v0.11
 ^^^^^^^^^^^^^^^^^^^^
