@@ -100,39 +100,75 @@ def _cli_impl(
     exit: bool = False,
     features: str = None,
     enginetype: str = None,
+    transport_mode: str = None,
+    grpc_host: str = None,
+    certs_dir: str = None,
 ):
     if project_file and input_script:
-        raise Exception("Cannot open a project file *and* run a script.")
+        raise click.ClickException("Cannot open a project file *and* run a script.")
 
     if (not graphical) and project_file:
-        raise Exception("Cannot open a project file in batch mode.")
+        raise click.ClickException("Cannot open a project file in batch mode.")
 
     if port:
         if project_file:
-            raise Exception("Cannot open in server mode with a project file.")
+            raise click.ClickException("Cannot open in server mode with a project file.")
         if input_script:
-            raise Exception("Cannot open in server mode with an input script.")
+            raise click.ClickException("Cannot open in server mode with an input script.")
 
     if not input_script and script_args:
-        raise Exception("Cannot add script arguments without an input script.")
+        raise click.ClickException("Cannot add script arguments without an input script.")
 
     if enginetype and not input_script:
-        raise Exception("Cannot specify engine type without an input script (-i).")
+        raise click.ClickException("Cannot specify engine type without an input script (-i).")
 
     if enginetype and enginetype not in ["ironpython", "cpython"]:
-        raise Exception(
+        raise click.ClickException(
             f"Invalid engine type '{enginetype}'. Valid options are: ironpython, cpython"
+        )
+
+    # Validate and set defaults for gRPC options
+    if port:
+        # Set default transport mode based on OS
+        if transport_mode is None:
+            transport_mode = "wnua" if os.name == "nt" else "mtls"
+
+        # Validate transport mode availability per OS
+        if os.name != "nt" and transport_mode == "wnua":
+            raise click.ClickException(
+                "'wnua' transport mode is not available on Linux. "
+                "Available options: 'mtls', 'insecure'"
+            )
+
+        # Set default host for all transport modes
+        if not grpc_host:
+            grpc_host = "localhost"
+
+        # Validate transport mode requirements
+        if transport_mode == "mtls" and not certs_dir:
+            raise click.ClickException(
+                "--certs-dir is required when using 'mtls' transport mode. "
+                "Specify --certs-dir /path/to/certs or use --transport-mode insecure for testing."
+            )
+
+    # Validate that gRPC options are only used with port
+    if not port and (transport_mode or grpc_host or certs_dir):
+        raise click.ClickException(
+            "gRPC options (--transport-mode, --grpc-host, --certs-dir) "
+            "can only be used with --port."
         )
 
     if script_args:
         if '"' in script_args:
-            raise Exception(
+            raise click.ClickException(
                 "Cannot have double quotes around individual arguments in the --script-args string."
             )
 
     # If the input_script and port are missing in batch mode, raise an exception
     if (not graphical) and (input_script is None) and (not port):
-        raise Exception("An input script, -i, or port, --port, are required in batch mode.")
+        raise click.ClickException(
+            "An input script, -i, or port, --port, are required in batch mode."
+        )
 
     args = [exe, "-DSApplet"]
     if (not graphical) or (not show_welcome_screen):
@@ -148,6 +184,19 @@ def _cli_impl(
     if port:
         args.append("-grpc")
         args.append(str(port))
+
+        # Add transport mode
+        args.append("--transport-mode")
+        args.append(transport_mode)
+
+        # Add gRPC host
+        args.append("--grpc-host")
+        args.append(grpc_host)
+
+        # Add certs directory if provided (required for mtls)
+        if certs_dir:
+            args.append("--certs-dir")
+            args.append(certs_dir)
 
     if project_file:
         args.append("-file")
@@ -185,6 +234,27 @@ def _cli_impl(
             #        when logging is off.. Ideally we let Mechanical write it, so
             #        the user only sees the message when the server is ready.
             print(f"Serving on port {port}")
+            print(f"Transport mode: {transport_mode}")
+            print(f"gRPC host: {grpc_host}")
+            if certs_dir:
+                print(f"Certificates directory: {certs_dir}")
+            elif transport_mode == "mtls":
+                print("Warning: mtls mode requires --certs-dir to be specified")
+
+            # Provide helpful information about the configuration
+            if transport_mode == "wnua":
+                print("Using Windows Named User Authentication (wnua) - certificates not required")
+            elif transport_mode == "insecure":
+                print("Using insecure connection - no authentication or encryption")
+            elif transport_mode == "mtls":
+                if certs_dir:
+                    print("Using mutual TLS (mtls) with certificate-based authentication")
+                else:
+                    print("ERROR: mtls mode requires certificate directory to be specified")
+
+            # Show OS-specific information
+            if os.name != "nt":
+                print("Note: On Linux, only 'mtls' and 'insecure' transport modes are available")
 
     if features is not None:
         args.extend(get_command_line_arguments(features.split(";")))
@@ -221,6 +291,25 @@ def _cli_impl(
     "--port",
     type=int,
     help="Start mechanical in server mode with the given port number",
+)
+@click.option(
+    "--transport-mode",
+    type=click.Choice(["wnua", "mtls", "insecure"], case_sensitive=False),
+    default=None,
+    help="Transport mode for gRPC connection. Default: 'wnua' on Windows, 'mtls' on Linux. "
+    "Note: 'wnua' is only available on Windows; Linux supports 'mtls' and 'insecure' only",
+)
+@click.option(
+    "--grpc-host",
+    type=str,
+    default=None,
+    help="Host for gRPC connection. Defaults to 'localhost' for 'wnua' and 'insecure' modes",
+)
+@click.option(
+    "--certs-dir",
+    type=str,
+    default=None,
+    help="Directory containing certificates. Required for 'mtls' mode",
 )
 @click.option(
     "--features",
@@ -302,6 +391,9 @@ def cli(
     exit: bool,
     features: str,
     enginetype: str,
+    transport_mode: str,
+    grpc_host: str,
+    certs_dir: str,
 ):
     """CLI tool to run mechanical.
 
@@ -336,4 +428,7 @@ def cli(
         exit,
         features,
         enginetype,
+        transport_mode,
+        grpc_host,
+        certs_dir,
     )
