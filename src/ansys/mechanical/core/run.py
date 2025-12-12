@@ -33,6 +33,7 @@ import click
 
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 from ansys.mechanical.core.feature_flags import get_command_line_arguments, get_feature_flag_names
+from ansys.mechanical.core.misc import has_grpc_service_pack
 
 DRY_RUN = False
 """Dry run constant."""
@@ -129,27 +130,41 @@ def _cli_impl(
 
     # Validate and set defaults for gRPC options
     if port:
-        # Set default transport mode based on OS
-        if transport_mode is None:
-            transport_mode = "wnua" if os.name == "nt" else "mtls"
+        # Check if version supports advanced gRPC options (Service Pack 4 or above)
+        has_sp4 = has_grpc_service_pack(version)
 
-        # Validate transport mode availability per OS
-        if os.name != "nt" and transport_mode == "wnua":
-            raise click.ClickException(
-                "'wnua' transport mode is not available on Linux. "
-                "Available options: 'mtls', 'insecure'"
-            )
+        if not has_sp4:
+            # Version doesn't support advanced gRPC options
+            if transport_mode or grpc_host or certs_dir:
+                print("Warning: This version does not support advanced gRPC options.")
+                print("Only insecure channel will be established.")
+                print("To establish secure connection, update product to Service Pack 04 or above.")
+            # Clear any gRPC options - only use port
+            transport_mode = None
+            grpc_host = None
+            certs_dir = None
+        else:
+            # Version supports advanced gRPC options - proceed with current behavior
+            # Set default transport mode based on OS
+            if transport_mode is None:
+                transport_mode = "wnua" if os.name == "nt" else "mtls"
 
-        # Set default host for all transport modes
-        if not grpc_host:
-            grpc_host = "localhost"
+            # Validate transport mode availability per OS
+            if os.name != "nt" and transport_mode == "wnua":
+                raise click.ClickException(
+                    "'wnua' transport mode is not available on Linux. "
+                    "Available options: 'mtls', 'insecure'"
+                )
 
-        # Validate transport mode requirements
-        if transport_mode == "mtls" and not certs_dir:
-            raise click.ClickException(
-                "--certs-dir is required when using 'mtls' transport mode. "
-                "Specify --certs-dir /path/to/certs or use --transport-mode insecure for testing."
-            )
+            # Set default host for all transport modes
+            if not grpc_host:
+                grpc_host = "localhost"
+
+            # Validate transport mode requirements
+            if transport_mode == "mtls" and not certs_dir:
+                raise click.ClickException(
+                    "--certs-dir is required when using 'mtls' transport mode. "
+                )
 
     # Validate that gRPC options are only used with port
     if not port and (transport_mode or grpc_host or certs_dir):
@@ -185,18 +200,20 @@ def _cli_impl(
         args.append("-grpc")
         args.append(str(port))
 
-        # Add transport mode
-        args.append("--transport-mode")
-        args.append(transport_mode)
+        # Only add advanced gRPC options if version supports them
+        if has_grpc_service_pack(version):
+            # Add transport mode
+            args.append("--transport-mode")
+            args.append(transport_mode)
 
-        # Add gRPC host
-        args.append("--grpc-host")
-        args.append(grpc_host)
+            # Add gRPC host
+            args.append("--grpc-host")
+            args.append(grpc_host)
 
-        # Add certs directory if provided (required for mtls)
-        if certs_dir:
-            args.append("--certs-dir")
-            args.append(certs_dir)
+            # Add certs directory if provided (required for mtls)
+            if certs_dir:
+                args.append("--certs-dir")
+                args.append(certs_dir)
 
     if project_file:
         args.append("-file")
@@ -234,27 +251,37 @@ def _cli_impl(
             #        when logging is off.. Ideally we let Mechanical write it, so
             #        the user only sees the message when the server is ready.
             print(f"Serving on port {port}")
-            print(f"Transport mode: {transport_mode}")
-            print(f"gRPC host: {grpc_host}")
-            if certs_dir:
-                print(f"Certificates directory: {certs_dir}")
-            elif transport_mode == "mtls":
-                print("Warning: mtls mode requires --certs-dir to be specified")
 
-            # Provide helpful information about the configuration
-            if transport_mode == "wnua":
-                print("Using Windows Named User Authentication (wnua) - certificates not required")
-            elif transport_mode == "insecure":
+            has_sp4 = has_grpc_service_pack(version)
+            if not has_sp4:
+                print("Transport mode: insecure (legacy - no advanced gRPC support)")
                 print("Using insecure connection - no authentication or encryption")
-            elif transport_mode == "mtls":
+            else:
+                print(f"Transport mode: {transport_mode}")
+                print(f"gRPC host: {grpc_host}")
                 if certs_dir:
-                    print("Using mutual TLS (mtls) with certificate-based authentication")
-                else:
-                    print("ERROR: mtls mode requires certificate directory to be specified")
+                    print(f"Certificates directory: {certs_dir}")
+                elif transport_mode == "mtls":
+                    print("Warning: mtls mode requires --certs-dir to be specified")
 
-            # Show OS-specific information
-            if os.name != "nt":
-                print("Note: On Linux, only 'mtls' and 'insecure' transport modes are available")
+                # Provide helpful information about the configuration
+                if transport_mode == "wnua":
+                    print(
+                        "Using Windows Named User Authentication (wnua) - certificates not required"
+                    )
+                elif transport_mode == "insecure":
+                    print("Using insecure connection - no authentication or encryption")
+                elif transport_mode == "mtls":
+                    if certs_dir:
+                        print("Using mutual TLS (mtls) with certificate-based authentication")
+                    else:
+                        print("ERROR: mtls mode requires certificate directory to be specified")
+
+                # Show OS-specific information
+                if os.name != "nt":
+                    print(
+                        "Note: On Linux, only 'mtls' and 'insecure' transport modes are available"
+                    )
 
     if features is not None:
         args.extend(get_command_line_arguments(features.split(";")))

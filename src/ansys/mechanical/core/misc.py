@@ -175,3 +175,87 @@ def is_float(input_string):
         return True
     except ValueError:
         return False
+
+
+def has_grpc_service_pack(version: int) -> bool:
+    """Check if the given Mechanical version has Service Pack 4 or above.
+
+    Parameters
+    ----------
+    version : int
+        Mechanical version number (e.g., 241, 251, 261).
+
+    Returns
+    -------
+    bool
+        ``True`` if the version has Service Pack 4 or above, ``False`` otherwise.
+
+    Notes
+    -----
+    - For version 241: Always returns ``False``
+    - For version 261: Always returns ``True``
+    - For other versions: Checks builddate.txt in the aisol directory for SP04
+
+    Examples
+    --------
+    >>> has_grpc_service_pack(241)
+    False
+    >>> has_grpc_service_pack(261)
+    True
+    >>> has_grpc_service_pack(251)  # Depends on installed version
+    True  # or False depending on actual SP level
+    """
+    # Special cases for specific versions
+    if version == 241:
+        return False
+    elif version == 261:
+        return True
+
+    try:
+        import ansys.tools.path as atp
+
+        # Get the Mechanical executable path
+        exe_path = atp.get_mechanical_path(allow_input=False, version=version)
+        exe_path = Path(exe_path)
+
+        # Navigate to version root directory (v251) where builddate.txt is located
+        # Path structure: .../v251/aisol/bin/winx64/AnsysWBU.exe -> .../v251
+        if is_windows():
+            # Windows: go up from bin/winx64/AnsysWBU.exe to aisol, then to v251
+            version_root = exe_path.parent.parent.parent.parent
+        else:
+            # Linux: path is typically .../v251/aisol/.workbench -> .../v251
+            version_root = exe_path.parent.parent
+
+        builddate_file = version_root / "builddate.txt"
+
+        if not builddate_file.exists():
+            # If builddate.txt doesn't exist, assume no SP04
+            return False
+
+        # Read first two lines and check for SP04 or higher
+        try:
+            with builddate_file.open("r", encoding="utf-8", errors="ignore") as f:
+                line1 = f.readline().strip()
+                line2 = f.readline().strip()
+        except UnicodeDecodeError:
+            # Try with different encoding if UTF-8 fails
+            with builddate_file.open("r", encoding="latin1", errors="ignore") as f:
+                line1 = f.readline().strip()
+                line2 = f.readline().strip()
+
+        # Check if either line contains SP04 or higher service pack
+        combined_text = f"{line1} {line2}".upper()
+
+        # Look for SP04, SP05, SP06, etc. (SP04 through SP19 should be sufficient)
+        for sp_num in range(4, 20):
+            sp_tag = f"SP{sp_num:02d}"
+            if sp_tag in combined_text:
+                return True
+
+        return False
+
+    except Exception:
+        # If any error occurs (file not found, permission issues, etc.),
+        # assume no SP04 for safety
+        return False
