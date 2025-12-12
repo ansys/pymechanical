@@ -9,6 +9,56 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.11.38 <https://github.com/ansys/pymechanical/releases/tag/v0.11.38>`_ - December 10, 2025
+============================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Meshing issue with Cooling holes thermal use case
+          - `#1426 <https://github.com/ansys/pymechanical/pull/1426>`_
+
+        * - Zizmor errors
+          - `#1431 <https://github.com/ansys/pymechanical/pull/1431>`_
+
+        * - Examples
+          - `#1435 <https://github.com/ansys/pymechanical/pull/1435>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.11.37
+          - `#1413 <https://github.com/ansys/pymechanical/pull/1413>`_
+
+        * - Pre-commit automatic update
+          - `#1421 <https://github.com/ansys/pymechanical/pull/1421>`_, `#1430 <https://github.com/ansys/pymechanical/pull/1430>`_
+
+        * - Bump the actions group with 2 updates
+          - `#1422 <https://github.com/ansys/pymechanical/pull/1422>`_
+
+        * - Temporarily ignore examples
+          - `#1423 <https://github.com/ansys/pymechanical/pull/1423>`_
+
+        * - Bump pytest from 9.0.1 to 9.0.2 in the tests group
+          - `#1427 <https://github.com/ansys/pymechanical/pull/1427>`_
+
+        * - Bump the doc group with 2 updates
+          - `#1429 <https://github.com/ansys/pymechanical/pull/1429>`_
+
+        * - Bump actions/checkout from 6.0.0 to 6.0.1 in the actions group across 1 directory
+          - `#1434 <https://github.com/ansys/pymechanical/pull/1434>`_
+
+
 `0.11.37 <https://github.com/ansys/pymechanical/releases/tag/v0.11.37>`_ - November 25, 2025
 ============================================================================================
 

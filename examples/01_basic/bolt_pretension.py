@@ -214,13 +214,13 @@ coordinate_system.PrimaryAxis = CoordinateSystemAxisType.PositiveZAxis
 # and contact type
 def set_contact_region_locations_and_types(
     body: typing.Union[
-        Ansys.ACT.Automation.Mechanical.Connections,
-        Ansys.ACT.Automation.Mechanical.Connections.ConnectionGroup,
+        "Ansys.ACT.Automation.Mechanical.Connections",
+        "Ansys.ACT.Automation.Mechanical.Connections.ConnectionGroup",
     ],
-    source_location: Ansys.ACT.Automation.Mechanical.NamedSelection,
-    target_location: Ansys.ACT.Automation.Mechanical.NamedSelection,
-    contact_type: ContactType,
-) -> Ansys.ACT.Automation.Mechanical.Connections.ContactRegion:
+    source_location: "Ansys.ACT.Automation.Mechanical.NamedSelection",
+    target_location: "Ansys.ACT.Automation.Mechanical.NamedSelection",
+    contact_type: "ContactType",
+) -> "Ansys.ACT.Automation.Mechanical.Connections.ContactRegion":
     """Add a contact region to the body with the specified source location, target location,
     and contact type.
 
@@ -829,7 +829,7 @@ app.print_tree()
 
 # Save the project
 bolt_presentation_mechdat_path = str(output_path / "bolt_pretension.mechdat")
-app.save(bolt_presentation_mechdat_path)
+app.save_as(bolt_presentation_mechdat_path, overwrite=True)
 
 # Close the app
 app.close()
