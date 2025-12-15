@@ -43,6 +43,9 @@ import weakref
 
 import ansys.api.mechanical.v0.mechanical_pb2 as mechanical_pb2
 import ansys.api.mechanical.v0.mechanical_pb2_grpc as mechanical_pb2_grpc
+
+# Import cyberchannel for secure gRPC connections
+from ansys.tools.common.cyberchannel import create_channel
 import ansys.tools.path as atp
 import grpc
 
@@ -59,6 +62,7 @@ from ansys.mechanical.core.misc import (
     check_valid_ip,
     check_valid_port,
     check_valid_start_instance,
+    has_grpc_service_pack,
     threaded,
 )
 
@@ -299,15 +303,24 @@ class Mechanical(object):
 
     def __init__(
         self,
-        ip=None,
-        port=None,
-        timeout=60.0,
-        loglevel="WARNING",
+        channel=None,
+        timeout=120,
+        cleanup_on_exit=True,
+        remote_instance=None,
+        exec_file=None,
+        run_location=None,
+        ip="127.0.0.1",
+        port=10000,
+        host="localhost",
+        transport_mode=None,
+        certs_dir=None,
+        additional_switches="",
+        start_instance=True,
+        cleanup_on_exit_=True,
+        check_build=True,
+        loglevel="ERROR",
         log_file=False,
         log_mechanical=None,
-        cleanup_on_exit=False,
-        channel=None,
-        remote_instance=None,
         keep_connection_alive=True,
         **kwargs,
     ):
@@ -358,6 +371,16 @@ class Mechanical(object):
         keep_connection_alive : bool, optional
             Whether to keep the gRPC connection alive by running a background thread
             and making dummy calls for remote connections. The default is ``True``.
+        transport_mode : string, optional
+            Use the transport mode to connect. The default is ``WNUA`` on Windows
+            and ``MTLS`` on Linux.
+            - ``INSECURE`` use the insecure mode.
+            - ``MTLS`` use the mtls mode.
+            - ``WNUA`` use the windows named security mode - only valid on windows.
+        certs_dir : string, optional
+            when the transport_mode is ``MTLS``, the certificate directory must be specified
+            - The default is ``certs``.
+            - this directory should have ``client.cert``, ``client.key`` and ``ca.cert`` files
 
         Examples
         --------
@@ -391,6 +414,8 @@ class Mechanical(object):
         self._remote_instance = remote_instance
         self._channel = channel
         self._keep_connection_alive = keep_connection_alive
+        self._transport_mode = transport_mode
+        self._certs_dir = certs_dir
 
         self._locked = False  # being used within MechanicalPool
 
@@ -422,7 +447,15 @@ class Mechanical(object):
         self._exiting = False
         self._exited = None
 
-        self._version = None
+        # Try to get version from start parameters for early service pack check
+        if "exec_file" in self._start_parm:
+            try:
+                self._version = atp.version_from_path("mechanical", self._start_parm["exec_file"])
+            except Exception as e:
+                self._version = None
+                self.log_warning(f"Failed to determine version from path: {e}")
+        else:
+            self._version = None
 
         new_python_script_api = kwargs.get("new_python_script_api", None)
         old_python_script_api = kwargs.get("old_python_script_api", None)
@@ -480,11 +513,12 @@ class Mechanical(object):
 
     def __del__(self):  # pragma: no cover
         """Clean up on exit."""
-        if self._cleanup_on_exit:
+        if hasattr(self, "_cleanup_on_exit") and self._cleanup_on_exit:
             try:
                 self.exit(force=True)
             except grpc.RpcError as e:
-                self.log_error(f"exit: {e}")
+                if hasattr(self, "log_error"):
+                    self.log_error(f"exit: {e}")
 
     # def _set_log_level(self, level):
     #     """Set an alias for the log level."""
@@ -629,6 +663,20 @@ class Mechanical(object):
 
         self.log_debug("Established a connection to the Mechanical gRPC server.")
 
+        # Display connection success information
+        print("Successfully connected to Mechanical gRPC server!")
+        print(f"Server: {self._ip}:{self._port}")
+
+        # Show transport mode information
+        if hasattr(self, "_transport_mode") and self._transport_mode:
+            print(f"Transport Mode: {self._transport_mode}")
+            if self._transport_mode in ["wnua", "mtls"]:
+                print("Using secure transport")
+            else:
+                print("Using insecure transport")
+        else:
+            print("Transport Mode: insecure (default)")
+
         self.wait_till_mechanical_is_ready(timeout)
 
         # keeps Mechanical session alive
@@ -716,12 +764,66 @@ class Mechanical(object):
             # except Exception:
             #     continue
 
-    def _create_channel(self, ip, port):
-        """Create an unsecured gRPC channel."""
+    def _create_grpc_channel(self, ip, port, transport_mode, certs_dir):
+        """Create a gRPC channel (secure or insecure based on service pack support)."""
         check_valid_ip(ip)
 
-        # open the channel
         channel_str = f"{ip}:{port}"
+
+        # Check if the version supports advanced gRPC options
+        if self._version and has_grpc_service_pack(self._version):
+            LOG.debug(
+                f"Creating secure channel at {channel_str} with transport mode: {transport_mode}"
+            )
+
+            # If secure transport is explicitly requested, validate and fail if not possible
+            if transport_mode and transport_mode.lower() != "insecure":
+                try:
+                    # Use cyberchannel for secure connections
+                    channel = create_channel(
+                        target=channel_str,
+                        transport_mode=transport_mode,
+                        certs_dir=certs_dir,
+                        options=[
+                            ("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
+                        ],
+                    )
+                    return channel
+                except Exception as e:
+                    # No fallback for explicitly requested secure modes - fail hard
+                    raise Exception(
+                        f"Failed to create secure {transport_mode} channel: {e}. "
+                        f"Check certificates in {certs_dir} or use transport_mode='insecure'."
+                    ) from e
+
+            # Default behavior: try secure first, then fallback (only when no explicit mode)
+            if not transport_mode:
+                try:
+                    # Use cyberchannel for secure connections
+                    from ansys.tools.path.misc import is_linux
+
+                    default_mode = "wnua" if not is_linux() else "mtls"
+                    channel = create_channel(
+                        target=channel_str,
+                        transport_mode=default_mode,
+                        certs_dir=certs_dir,
+                        options=[
+                            ("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
+                        ],
+                    )
+                    return channel
+                except Exception as e:
+                    LOG.warning(f"Failed to create default secure channel: {e}")
+                    LOG.warning("Falling back to insecure channel.")
+        else:
+            if transport_mode or certs_dir != "certs":
+                LOG.warning("This version does not support advanced gRPC options.")
+                LOG.warning("Only insecure channel will be established.")
+                LOG.warning(
+                    "To establish secure connection, update product to Service Pack 04 or above."
+                )
+
+        # Fallback to insecure channel
         LOG.debug(f"Opening insecure channel at {channel_str}.")
         return grpc.insecure_channel(
             channel_str,
@@ -729,6 +831,10 @@ class Mechanical(object):
                 ("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
             ],
         )
+
+    def _create_channel(self, ip, port):
+        """Create gRPC channel using the configured transport mode."""
+        return self._create_grpc_channel(ip, port, self._transport_mode, self._certs_dir)
 
     @property
     def is_alive(self) -> bool:
@@ -892,6 +998,10 @@ class Mechanical(object):
         time_interval_seconds = int(time_interval.total_seconds())
 
         self.log_info(f"Mechanical is ready. It took {time_interval_seconds} seconds to verify.")
+
+        print("Mechanical is ready for operations!")
+        print(f"Startup completed in {time_interval_seconds} seconds")
+        print("=" * 60)
 
     def __is_mechanical_ready(self):
         """Whether the Mechanical gRPC server is ready.
@@ -1936,6 +2046,9 @@ def launch_grpc(
     additional_switches=None,
     additional_envs=None,
     verbose=False,
+    host="127.0.0.1",
+    transport_mode=None,
+    certs_dir="certs",
 ) -> int:
     """Start Mechanical locally in gRPC mode.
 
@@ -1960,6 +2073,17 @@ def launch_grpc(
         Whether to print all output when launching and running Mechanical. The
         default is ``False``. Printing all output is not recommended unless
         you are debugging the startup of Mechanical.
+    host: string, optional
+        Default is ``127.0.0.1``.
+    transport_mode : string, optional
+        Use the transport mode to connect. The default is ``WNUA`` on Windows and ``MTLS`` on Linux.
+        - ``INSECURE`` use the insecure mode.
+        - ``MTLS`` use the mtls mode.
+        - ``WNUA`` use the windows named security mode - only valid on windows.
+    certs_dir : string, optional
+        when the transport_mode is ``MTLS``, the certificate directory must be specified
+            - The default is ``certs``.
+            - this directory should have ``client.cert``, ``client.key`` and ``ca.cert`` files
 
     Returns
     -------
@@ -2002,8 +2126,24 @@ def launch_grpc(
         port += 1
     local_ports.append(port)
 
+    if transport_mode is None:
+        from ansys.tools.path.misc import is_linux
+
+        if is_linux():
+            transport_mode = "MTLS"
+        else:
+            transport_mode = "WNUA"
+
     mechanical_launcher = MechanicalLauncher(
-        batch, port, exec_file, additional_switches, additional_envs, verbose
+        batch,
+        port,
+        exec_file,
+        additional_switches,
+        additional_envs,
+        verbose,
+        host,
+        transport_mode,
+        certs_dir,
     )
     mechanical_launcher.launch()
 
@@ -2116,6 +2256,8 @@ def launch_mechanical(
     version=None,
     keep_connection_alive=True,
     backend="mechanical",
+    transport_mode=None,
+    certs_dir="certs",
 ) -> Mechanical:
     """Start Mechanical locally.
 
@@ -2125,8 +2267,8 @@ def launch_mechanical(
         Whether to allow user input when discovering the path to the Mechanical
         executable file.
     exec_file : str, optional
-        Path for the Mechanical executable file. The default is ``None``,
-        in which case the cached location is used. If PyPIM is configured
+        Path for the Mechanical executable file. The default is ``None``, in which
+        case the cached location is used. If PyPIM is configured
         and this parameter is set to ``None``, PyPIM launches Mechanical
         using its ``version`` parameter.
     batch : bool, optional
@@ -2185,6 +2327,7 @@ def launch_mechanical(
     clear_on_connect : bool, optional
         When ``start_instance`` is ``False``, whether to clear the environment
         when connecting to Mechanical. The default is ``False``. When ``True``,
+
         a fresh environment is provided when you connect to Mechanical.
     cleanup_on_exit : bool, optional
         Whether to exit Mechanical when Python exits. The default is ``True``.
@@ -2319,6 +2462,8 @@ def launch_mechanical(
             timeout=start_timeout,
             cleanup_on_exit=cleanup_on_exit,
             keep_connection_alive=keep_connection_alive,
+            transport_mode=transport_mode,
+            certs_dir=certs_dir,
             local=False,
         )
         if clear_on_connect:
@@ -2356,7 +2501,13 @@ def launch_mechanical(
 
     if backend == "mechanical":
         try:
-            port = launch_grpc(port=port, verbose=verbose_mechanical, **start_parm)
+            port = launch_grpc(
+                port=port,
+                verbose=verbose_mechanical,
+                transport_mode=transport_mode,
+                certs_dir=certs_dir,
+                **start_parm,
+            )
 
             # TODO : Version argument is ignored...
             version = atp.version_from_path("mechanical", exec_file)
@@ -2371,6 +2522,8 @@ def launch_mechanical(
                 timeout=start_timeout,
                 cleanup_on_exit=cleanup_on_exit,
                 keep_connection_alive=keep_connection_alive,
+                transport_mode=transport_mode,
+                certs_dir=certs_dir,
                 **start_parm,
             )
         except Exception as exception:  # pragma: no cover
@@ -2401,6 +2554,8 @@ def connect_to_mechanical(
     clear_on_connect=False,
     cleanup_on_exit=False,
     keep_connection_alive=True,
+    transport_mode=None,
+    certs_dir="certs",
 ) -> Mechanical:
     """Connect to an existing Mechanical server instance.
 
@@ -2471,4 +2626,6 @@ def connect_to_mechanical(
         clear_on_connect=clear_on_connect,
         cleanup_on_exit=cleanup_on_exit,
         keep_connection_alive=keep_connection_alive,
+        transport_mode=transport_mode,
+        certs_dir=certs_dir,
     )

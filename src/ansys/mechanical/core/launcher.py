@@ -29,47 +29,91 @@ from pathlib import Path
 # Subprocess is needed to start the backend. Excluding bandit check.
 import subprocess  # nosec: B404
 
+import ansys.tools.path as atp
+from ansys.tools.path.misc import is_linux
+
 from ansys.mechanical.core import LOG
+from ansys.mechanical.core.misc import has_grpc_service_pack
 
 
 class MechanicalLauncher:
     """Launches Mechanical in batch or UI mode."""
 
     def __init__(
-        self, batch, port, exe_path, additional_args=None, additional_envs=None, verbose=False
+        self,
+        batch,
+        port,
+        exe_file,
+        additional_args=None,
+        additional_envs=None,
+        verbose=False,
+        host="127.0.0.1",
+        transport_mode=None,
+        certs_dir="certs",
     ):
         """Initialize the Mechanical launcher.
 
         Parameters
         ----------
-        batch : bool, optional
+        batch : bool
             Whether to launch Mechanical in batch mode. The default is ``True``. When ``False``,
-            Mechanical is launched in UI mode.
-        port : int, optional
+            Mechanical launches in UI mode.
+        port : int
             Port to connect to the Mechanical gRPC server. Default - find a free port
-        exe_path : str
-            Path to where the executable file for Mechanical is located.
+        exe_file : str
+            Path to the Mechanical executable file.
         additional_args : list, optional
             List of additional arguments to pass. The default is ``None``.
         additional_envs : dict, optional
             List of additional environment variables to pass. The default is ``None``.
         verbose : bool, optional
-            Whether to print all output when launching and running Mechanical. The
-            default is ``False``. Only set this parameter to ``True`` if you are
-            debugging the startup of Mechanical.
+            Whether to print launch output. The default is ``False``. Only set this parameter to
+            ``True`` if you are having trouble launching Mechanical.
+        host : str, optional
+            Default is ``127.0.0.1``.
+        transport_mode : str, optional
+            Use the transport mode to connect. The default is ``WNUA`` on Windows and
+            ``MTLS`` on Linux.
+        certs_dir : str, optional
+            - The default is ``certs``.
         """
+        # Store parameters
         self.batch = batch
         self.port = port
-        self.exe_path = exe_path
-        self.additional_args = additional_args
-        self.additional_envs = additional_envs
+        self.exe_file = exe_file
+        self.additional_args = additional_args or []
+        self.additional_envs = additional_envs or {}
         self.verbose = verbose
+        self.host = host
+        self.transport_mode = transport_mode or ("WNUA" if not is_linux() else "MTLS")
+        self.certs_dir = certs_dir
+
+        # Get version from executable path
+        self.version = atp.version_from_path("mechanical", exe_file) if exe_file else None
+
+        # Check if version supports advanced gRPC features
+        supports_grpc = has_grpc_service_pack(self.version) if self.version else False
+
+        # For versions without service pack, validate transport mode
+        if not supports_grpc and self.transport_mode.upper() != "INSECURE":
+            if not exe_file:
+                raise Exception("No executable path specified for Mechanical launcher")
+            raise Exception(
+                f"Mechanical version {self.version} does not support {self.transport_mode} "
+                f"transport mode. Use transport_mode='insecure' or update to Service Pack 04+."
+            )
+        self.transport_mode = transport_mode
+
+        # Set public attributes for backward compatibility
+        self.host = host or "127.0.0.1"
+        self.port = port or 10000
+        self.certs_dir = certs_dir or "certs"
         self.__ui_arg_list = ["-DSApplet", "-nosplash", "-notabctrl"]
         self.__batch_arg_list = ["-DSApplet", "-b"]
 
-        app_mode_mech_exits = MechanicalLauncher._mode_exists(additional_args, "-AppModeMech")
-        app_mode_mesh_exits = MechanicalLauncher._mode_exists(additional_args, "-AppModeMesh")
-        app_mode_rest_exits = MechanicalLauncher._mode_exists(additional_args, "-AppModeRest")
+        app_mode_mech_exits = MechanicalLauncher._mode_exists(None, "-AppModeMech")
+        app_mode_mesh_exits = MechanicalLauncher._mode_exists(None, "-AppModeMesh")
+        app_mode_rest_exits = MechanicalLauncher._mode_exists(None, "-AppModeRest")
 
         # if we don't have -AppModeMesh or -AppModeRest or -AppModeMech in the additional args
         # then we want to start with -AppModeMech
@@ -90,20 +134,58 @@ class MechanicalLauncher:
         exe_path = self.__get_exe_path()
         MechanicalLauncher.verify_path_exists(exe_path)
 
+        # Display startup information
+        print("=" * 60)
+        print("LAUNCHING MECHANICAL SERVER")
+        print("=" * 60)
+        print(f"Host: {self.host}")
+        print(f"Port: {self.port}")
+        print(f"Transport Mode: {self.transport_mode}")
+        print(f"Mode: {'Batch' if self.batch else 'UI'}")
+
+        # Check service pack support
+        if self.version:
+            has_sp = has_grpc_service_pack(self.version)
+            print(f"Version: {self.version} (Service Pack 4+: {'Yes' if has_sp else 'No'})")
+            if has_sp:
+                print("Secure Options: Enabled")
+                print(f"Certs Directory: {self.certs_dir}")
+            else:
+                print("Secure Options: Not supported (will use insecure)")
+        else:
+            print("Version: Auto-detected")
+
+        print("=" * 60)
+
         env_variables = self.__get_env_variables()
         args_list = self.__get_commandline_args()
 
         LOG.info(f"Starting the process using {args_list}.")
         if self.verbose:
             command = " ".join(args_list)
-            print(f"Running {command}.")
+            print(f"Command: {command}")
+            print("=" * 60)
 
-        process = subprocess.Popen(
-            args_list,
-            stdout=subprocess.PIPE,
-            env=env_variables,
-        )  # nosec: B603
+        if is_linux():
+            process = subprocess.Popen(
+                args_list,
+                start_new_session=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                env=env_variables,
+            )  # nosec: B603
+        else:
+            process = subprocess.Popen(
+                args_list,
+                env=env_variables,
+            )
+
         LOG.info(f"Started the process:{process} using {args_list}.")
+
+        print("Mechanical server started successfully!")
+        print(f"Server address: {self.host}:{self.port}")
+        print(f"Transport: {self.transport_mode}")
+        print("=" * 60)
 
     @staticmethod
     def verify_path_exists(exe_path):
@@ -114,6 +196,8 @@ class MechanicalLauncher:
         exe_path : str
             Path to verify.
         """
+        if exe_path is None:
+            raise ValueError("Executable path cannot be None")
         if not Path(exe_path).exists():
             LOG.info(f"Startup file:{exe_path} doesn't exist.")
             raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), exe_path)
@@ -136,31 +220,125 @@ class MechanicalLauncher:
         return ansyswbu_env
 
     def __get_commandline_args(self):
-        """Get the list of command-line arguments used while launching Mechanical.
+        """Get command line arguments for launching Mechanical."""
+        args = [self.exe_file]
 
-        Returns
-        -------
-        list
-            List of command-line arguments.
-        """
-        args_list = []
+        # Extract version from executable path for service pack detection
+        version = None
+        if self.exe_file:
+            import re
 
-        exe_path = self.__get_exe_path()
-        args_list.append(exe_path)
+            version_match = re.search(r"v(\d{3})", str(self.exe_file))
+            if version_match:
+                version = int(version_match.group(1))
 
-        if self.batch:
-            args_list.extend(self.__batch_arg_list)
-        else:  # pragma: no cover
-            args_list.extend(self.__ui_arg_list)
+        # Check if version supports advanced gRPC features
+        supports_grpc = has_grpc_service_pack(version) if version else False
 
-        args_list.append("-grpc")
-        args_list.append(str(self.port))
+        if self.port:
+            # For versions without service pack, validate transport mode
+            if not supports_grpc:
+                if not self.transport_mode:
+                    raise Exception(
+                        f"Mechanical {version or 'unknown'} does not support secure gRPC. "
+                        "Use transport_mode='insecure' or update to Service Pack 04+."
+                    )
+                elif self.transport_mode != "insecure":
+                    raise Exception(
+                        f"Mechanical {version or 'unknown'} only supports insecure mode. "
+                        "Use transport_mode='insecure' or update to Service Pack 04+."
+                    )
+
+                # For older versions, use simple port argument (legacy behavior)
+                print(
+                    f"Starting Mechanical {version} server on port {self.port} "
+                    f"(insecure - legacy mode)"
+                )
+
+                # Add batch or UI mode arguments first
+                if self.batch:
+                    args.extend(self.__batch_arg_list)
+                else:
+                    args.extend(self.__ui_arg_list)
+
+                # Add gRPC port argument
+                args.extend(["-grpc", str(self.port)])
+                return args
+
+            # For versions with service pack support
+            # Set default transport mode
+            if not self.transport_mode:
+                self.transport_mode = "wnua" if os.name == "nt" else "mtls"
+
+            # Set default host
+            if not self.host:
+                self.host = "localhost"
+
+            # Validate requirements for secure transport modes
+            if self.transport_mode.lower() == "mtls":
+                if not self.certs_dir:
+                    raise Exception("Certificate directory is required for mtls transport mode.")
+
+                # Validate certificate directory exists
+                from pathlib import Path
+
+                cert_path = Path(self.certs_dir)
+                if not cert_path.exists():
+                    raise Exception(f"Certificate directory does not exist: {self.certs_dir}")
+
+                if not cert_path.is_dir():
+                    raise Exception(f"Certificate path is not a directory: {self.certs_dir}")
+
+                # Validate required certificate files exist
+                required_certs = ["client.cert", "client.key", "ca.cert"]
+                missing_certs = []
+
+                for cert_file in required_certs:
+                    cert_file_path = cert_path / cert_file
+                    if not cert_file_path.exists():
+                        missing_certs.append(cert_file)
+
+                if missing_certs:
+                    raise Exception(
+                        f"Missing required certificate files in {self.certs_dir}: "
+                        f"{', '.join(missing_certs)}. Required files: {', '.join(required_certs)}"
+                    )
+
+                print(f"Certificate validation passed: {self.certs_dir}")
+
+            elif self.transport_mode.lower() == "wnua":
+                # WNUA mode validation (Windows only)
+                if is_linux():
+                    raise Exception("WNUA transport mode is only supported on Windows.")
+                print("Using WNUA (Windows Named User Authentication)")
+
+            # Simple startup message
+            print(
+                f"Starting Mechanical {version} server on {self.host}:{self.port} "
+                f"({self.transport_mode})"
+            )
+
+            # Add batch or UI mode arguments first
+            if self.batch:
+                args.extend(self.__batch_arg_list)
+            else:
+                args.extend(self.__ui_arg_list)
+
+            # Add gRPC arguments
+            args.extend(["-grpc", str(self.port)])
+            args.extend(["--transport-mode", self.transport_mode])
+
+            if self.host != "localhost":
+                args.extend(["--grpc-host", self.host])
+
+            if self.certs_dir:
+                args.extend(["--certs-dir", self.certs_dir])
 
         if self.additional_args is not None and isinstance(self.additional_args, list):
             LOG.info(f"Using these additional args: {self.additional_args}.")
-            args_list.extend(self.additional_args)
+            args.extend(self.additional_args)
 
-        return args_list
+        return args
 
     def __get_exe_path(self):
         """Get the path to the executable file used to launch Mechanical.
@@ -170,8 +348,7 @@ class MechanicalLauncher:
         str
             Path to the executable file for launching Mechanical.
         """
-        exe_path = None
-        if self.exe_path is not None and isinstance(self.exe_path, str):
-            exe_path = self.exe_path
-
-        return exe_path
+        if self.exe_file is not None and isinstance(self.exe_file, str):
+            return self.exe_file
+        else:
+            raise ValueError("No executable path specified for Mechanical launcher")

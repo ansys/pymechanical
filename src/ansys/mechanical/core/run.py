@@ -130,24 +130,29 @@ def _cli_impl(
 
     # Validate and set defaults for gRPC options
     if port:
-        # Check if version supports advanced gRPC options (Service Pack 4 or above)
-        has_sp4 = has_grpc_service_pack(version)
+        # Get version for service pack detection
+        detected_version = version
+        supports_grpc = has_grpc_service_pack(detected_version) if detected_version else False
 
-        if not has_sp4:
-            # Version doesn't support advanced gRPC options
-            if transport_mode or grpc_host or certs_dir:
-                print("Warning: This version does not support advanced gRPC options.")
-                print("Only insecure channel will be established.")
-                print("To establish secure connection, update product to Service Pack 04 or above.")
-            # Clear any gRPC options - only use port
-            transport_mode = None
-            grpc_host = None
-            certs_dir = None
-        else:
-            # Version supports advanced gRPC options - proceed with current behavior
-            # Set default transport mode based on OS
-            if transport_mode is None:
-                transport_mode = "wnua" if os.name == "nt" else "mtls"
+        # Check if version supports advanced gRPC features
+        if not supports_grpc:
+            if transport_mode and transport_mode != "insecure":
+                raise click.ClickException(
+                    f"Version {detected_version} does not support {transport_mode} transport mode. "
+                    "Use --transport-mode insecure or update to Service Pack 04+."
+                )
+            elif not transport_mode:
+                raise click.ClickException(
+                    f"Version {detected_version} does not support secure gRPC options. "
+                    "Use --transport-mode insecure or update to Service Pack 04+."
+                )
+            # Force insecure mode and show warning
+            transport_mode = "insecure"
+            print(f"Warning: Version {detected_version} using basic insecure connection")
+
+        # Set defaults for supported versions
+        if supports_grpc and not transport_mode:
+            transport_mode = "wnua" if os.name == "nt" else "mtls"
 
             # Validate transport mode availability per OS
             if os.name != "nt" and transport_mode == "wnua":
