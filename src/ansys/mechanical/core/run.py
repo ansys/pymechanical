@@ -28,7 +28,7 @@ import os
 import sys
 import typing
 
-import ansys.tools.path as atp
+import ansys.tools.common.path as atp
 import click
 
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
