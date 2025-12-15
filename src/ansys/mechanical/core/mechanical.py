@@ -46,7 +46,7 @@ import ansys.api.mechanical.v0.mechanical_pb2_grpc as mechanical_pb2_grpc
 
 # Import cyberchannel for secure gRPC connections
 from ansys.tools.common.cyberchannel import create_channel
-import ansys.tools.path as atp
+import ansys.tools.common.path as atp
 import grpc
 
 import ansys.mechanical.core as pymechanical
@@ -241,7 +241,7 @@ def create_ip_file(ip, path):
 def get_mechanical_path(allow_input=True):
     """Get path.
 
-    Deprecated - use `ansys.tools.path.get_mechanical_path` instead
+    Deprecated - use `ansys.tools.common.path.get_mechanical_path` instead
     """
     return atp.get_mechanical_path(allow_input)
 
@@ -253,7 +253,7 @@ def check_valid_mechanical():
     -----------------
 
     >>> from ansys.mechanical.core import mechanical
-    >>> from ansys.tools.path import change_default_mechanical_path
+    >>> from ansys.tools.common.path import change_default_mechanical_path
     >>> mechanical_path = "C:/Program Files/ANSYS Inc/v252/aisol/bin/win64/AnsysWBU.exe"
     >>> change_default_mechanical_path(mechanical_pth)
     >>> mechanical.check_valid_mechanical()
@@ -271,7 +271,7 @@ def check_valid_mechanical():
 def change_default_mechanical_path(exe_loc):
     """Change default path.
 
-    Deprecated - use `ansys.tools.path.change_default_mechanical_path` instead.
+    Deprecated - use `ansys.tools.common.path.change_default_mechanical_path` instead.
     """
     return atp.change_default_mechanical_path(exe_loc)
 
@@ -279,7 +279,7 @@ def change_default_mechanical_path(exe_loc):
 def save_mechanical_path(exe_loc=None):  # pragma: no cover
     """Save path.
 
-    Deprecated - use `ansys.tools.path.save_mechanical_path` instead.
+    Deprecated - use `ansys.tools.common.path.save_mechanical_path` instead.
     """
     return atp.save_mechanical_path(exe_loc)
 
