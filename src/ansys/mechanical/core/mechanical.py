@@ -819,7 +819,7 @@ class Mechanical(object):
             if not transport_mode:
                 try:
                     # Use cyberchannel for secure connections
-                    from ansys.tools.path.misc import is_linux
+                    from ansys.mechanical.core.misc import is_linux
 
                     default_mode = "wnua" if not is_linux() else "mtls"
                     channel = create_channel(
@@ -2154,7 +2154,7 @@ def launch_grpc(
     local_ports.append(port)
 
     if transport_mode is None:
-        from ansys.tools.path.misc import is_linux
+        from ansys.mechanical.core.misc import is_linux
 
         if is_linux():
             transport_mode = "MTLS"

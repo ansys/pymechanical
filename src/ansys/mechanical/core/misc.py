@@ -206,7 +206,7 @@ def has_grpc_service_pack(version):
         return True
 
     # For other versions, check builddate
-    from ansys.tools.path import get_mechanical_path
+    from ansys.tools.common.path import get_mechanical_path
 
     exe_path = get_mechanical_path(allow_input=False, version=version)
     exe_path = Path(exe_path)
@@ -247,3 +247,13 @@ def has_grpc_service_pack(version):
             return True
 
     return False
+
+
+def is_linux() -> bool:
+    """Check if the host machine is Linux.
+
+    Returns
+    -------
+    ``True`` if the host machine is Linux, ``False`` otherwise.
+    """
+    return os.name == "posix"

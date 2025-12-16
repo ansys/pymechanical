@@ -29,7 +29,7 @@ from pathlib import Path
 # Subprocess is needed to start the backend. Excluding bandit check.
 import subprocess  # nosec: B404
 
-import ansys.tools.path as atp
+import ansys.tools.common.path as atp
 from ansys.tools.path.misc import is_linux
 
 from ansys.mechanical.core import LOG
