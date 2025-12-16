@@ -264,6 +264,16 @@ def graphics_test_mechdb_file():
 def launch_mechanical_instance(cleanup_on_exit=False):
     """Launch a new Mechanical instance."""
     print("launching mechanical instance")
+    if os.name != "nt":
+        # on linux, and container start with insecure mode for testing
+        return pymechanical.launch_mechanical(
+            allow_input=False,
+            verbose_mechanical=True,
+            cleanup_on_exit=cleanup_on_exit,
+            log_mechanical="pymechanical_log.txt",
+            host="0.0.0.0",
+            transport_mode="insecure",
+        )
     return pymechanical.launch_mechanical(
         allow_input=False,
         verbose_mechanical=True,
@@ -391,13 +401,22 @@ def mechanical(request, printer, mechanical_session):
 def mechanical_meshing():
     """Fixture that creates a Mechanical instance in meshing mode."""
     print("current working directory: ", Path.cwd())
-
-    mechanical_meshing = pymechanical.launch_mechanical(
-        additional_switches=["-AppModeMesh"],
-        additional_envs=dict(ENV_VARIABLE="1"),
-        verbose_mechanical=True,
-        cleanup_on_exit=False,
-    )
+    if os.name != "nt":
+        # on linux, always cleanup to avoid orphaned processes
+        mechanical_meshing = pymechanical.launch_mechanical(
+            additional_switches=["-AppModeMesh"],
+            additional_envs=dict(ENV_VARIABLE="1"),
+            verbose_mechanical=True,
+            cleanup_on_exit=True,
+            transport_mode="insecure",
+        )
+    else:
+        mechanical_meshing = pymechanical.launch_mechanical(
+            additional_switches=["-AppModeMesh"],
+            additional_envs=dict(ENV_VARIABLE="1"),
+            verbose_mechanical=True,
+            cleanup_on_exit=False,
+        )
 
     print(mechanical_meshing)
     yield mechanical_meshing
@@ -410,10 +429,17 @@ def mechanical_meshing():
 def mechanical_result():
     """Fixture that creates a Mechanical instance in result mode."""
     print("current working directory: ", Path.cwd())
-
-    mechanical_result = pymechanical.launch_mechanical(
-        additional_switches=["-AppModeRest"], verbose_mechanical=True
-    )
+    if os.name != "nt":
+        # on linux, always cleanup to avoid orphaned processes
+        mechanical_result = pymechanical.launch_mechanical(
+            additional_switches=["-AppModeRest"],
+            verbose_mechanical=True,
+            transport_mode="insecure",
+        )
+    else:
+        mechanical_result = pymechanical.launch_mechanical(
+            additional_switches=["-AppModeRest"], verbose_mechanical=True
+        )
 
     print(mechanical_result)
     yield mechanical_result
@@ -432,7 +458,7 @@ def mechanical_pool():
     exec_file = path
     instances_count = 2
 
-    pool = LocalMechanicalPool(instances_count, exec_file=exec_file)
+    pool = LocalMechanicalPool(instances_count, exec_file=exec_file, transport_mode="insecure")
 
     print(pool)
     assert len(pool.ports) == instances_count
