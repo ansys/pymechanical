@@ -461,12 +461,12 @@ class Mechanical(object):
         self._exiting = False
         self._exited = None
 
-        # Initialize logging components early (before any log calls)
+        # Initialize logging components early (but logger itself is created after channel)
         self._disable_logging = False
         self._logLevel = loglevel
         self._log_file = log_file
         self._log_mechanical = log_mechanical
-        self._log = LOG.add_instance_logger(self.name, self, level=loglevel)  # instance logger
+        self._log = None  # Will be initialized after channel is created
 
         # Try to get version from start parameters for early service patch check
         if "exec_file" in self._start_parm:
@@ -474,7 +474,8 @@ class Mechanical(object):
                 self._version = atp.version_from_path("mechanical", self._start_parm["exec_file"])
             except Exception as e:
                 self._version = None
-                self.log_warning(f"Failed to determine version from path: {e}")
+                # Can't use log_warning yet, logger not initialized
+                LOG.warning(f"Failed to determine version from path: {e}")
         else:
             self._version = None
 
@@ -499,7 +500,8 @@ class Mechanical(object):
         else:
             self._channel = channel
 
-        # Note: _log, _logLevel, etc. are initialized earlier (before any log calls)
+        # Now that channel is created, initialize the instance logger with proper name
+        self._log = LOG.add_instance_logger(self.name, self, level=loglevel)
 
         # adding a file handler to the logger
         if log_file:
@@ -1975,25 +1977,25 @@ for dirPath, _, fileNames in os.walk(rootDir):
 
     def log_debug(self, message):
         """Log the debug message."""
-        if self._disable_logging:
+        if self._disable_logging or self._log is None:
             return
         self._log.debug(message)
 
     def log_info(self, message):
         """Log the info message."""
-        if self._disable_logging:
+        if self._disable_logging or self._log is None:
             return
         self._log.info(message)
 
     def log_warning(self, message):
         """Log the warning message."""
-        if self._disable_logging:
+        if self._disable_logging or self._log is None:
             return
         self._log.warning(message)
 
     def log_error(self, message):
         """Log the error message."""
-        if self._disable_logging:
+        if self._disable_logging or self._log is None:
             return
         self._log.error(message)
 
