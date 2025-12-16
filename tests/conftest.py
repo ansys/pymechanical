@@ -25,7 +25,6 @@ import datetime
 import os
 import pathlib
 from pathlib import Path
-import platform
 import shutil
 import subprocess
 import sys
@@ -283,15 +282,22 @@ def launch_mechanical_instance(cleanup_on_exit=False):
 
 
 def connect_to_mechanical_instance(port=None, clear_on_connect=False):
-    """Connect to an existing Mechanical instance."""
-    print("connecting to a existing mechanical instance")
-    hostname = platform.uname().node  # your machine name
+    """Connect to an existing Mechanical instance.
 
-    # ip needs to be passed or start instance takes precedence
-    # typical for container scenarios use connect
-    # and needs to be treated as remote scenarios
+    For local instances, don't pass an IP (defaults to 127.0.0.1).
+    This ensures proper connection regardless of hostname resolution issues
+    on systems with WSL/Docker Desktop installed.
+
+    If you need to connect to a remote/container instance, pass an explicit IP.
+    """
+    print("connecting to a existing mechanical instance")
+
+    # Don't pass hostname - let it default to 127.0.0.1 for local connections.
+    # On WSL/Docker systems, hostname can resolve to bridge IPs (e.g., 172.28.0.1)
+    # which are not routable for locally-launched Mechanical instances.
+    # For remote/container scenarios, an explicit IP should be passed by the caller.
     mechanical = pymechanical.connect_to_mechanical(
-        ip=hostname, port=port, clear_on_connect=clear_on_connect, cleanup_on_exit=False
+        port=port, clear_on_connect=clear_on_connect, cleanup_on_exit=False
     )
     return mechanical
 
