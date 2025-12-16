@@ -302,9 +302,12 @@ jobs:
         run: |
           docker pull ${MECHANICAL_IMAGE}
 
-          # Check if image name contains 26.1 to determine entrypoint
-          if [[ ${MECHANICAL_IMAGE} == *"26.1"* ]]; then
-            echo "Detected version 26.1 - using custom entrypoint for insecure transport"
+          # Extract the major and minor version from the image name
+          version=$(echo ${MECHANICAL_IMAGE} | grep -oP '\d+\.\d+')
+
+          # Check if image version is above 26.1
+          if (( $(echo "$version > 26.1" | bc -l) )); then
+            echo "Detected version above 26.1 - using custom entrypoint for insecure transport"
             docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} \
               -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} \
               -e ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH=${ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH} \
