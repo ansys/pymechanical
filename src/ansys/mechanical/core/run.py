@@ -136,19 +136,24 @@ def _cli_impl(
 
         # Check if version supports advanced gRPC features
         if not supports_grpc:
+            # For versions without service pack, only insecure mode is allowed
             if transport_mode and transport_mode != "insecure":
+                version_str = f"Version {detected_version}" if detected_version else "This version"
                 raise click.ClickException(
-                    f"Version {detected_version} does not support {transport_mode} transport mode. "
-                    "Use --transport-mode insecure or update to Service Pack 04+."
+                    f"{version_str} does not support {transport_mode} transport mode. "
+                    "Only 'insecure' mode is available. "
+                    "Update to Service Pack 04+ for secure options."
                 )
-            elif not transport_mode:
-                raise click.ClickException(
-                    f"Version {detected_version} does not support secure gRPC options. "
-                    "Use --transport-mode insecure or update to Service Pack 04+."
-                )
-            # Force insecure mode and show warning
-            transport_mode = "insecure"
-            print(f"Warning: Version {detected_version} using basic insecure connection")
+            # Default to insecure mode for legacy versions
+            if not transport_mode:
+                transport_mode = "insecure"
+                if detected_version:
+                    print(
+                        f"Warning: Version {detected_version} does not support secure gRPC."
+                        "Using insecure mode ..."
+                    )
+                else:
+                    print("Warning: Unable to detect version. Using insecure mode.")
 
         # Set defaults for supported versions
         if supports_grpc:
