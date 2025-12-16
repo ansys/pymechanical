@@ -429,12 +429,26 @@ class Mechanical(object):
         elif ip is None:
             ip_temp = "127.0.0.1"
         else:
-            ip_temp = socket.gethostbyname(ip)  # Converting ip or host name to ip
+            # Special handling for 0.0.0.0 (used for server binding, not client connections)
+            if ip == "0.0.0.0":
+                LOG.warning(
+                    "Client cannot connect to 0.0.0.0. Converting to 127.0.0.1 for connection."
+                )
+                ip_temp = "127.0.0.1"
+            else:
+                ip_temp = socket.gethostbyname(ip)  # Converting ip or host name to ip
 
         self._ip = ip_temp
         self._port = port
 
-        self._start_parm = kwargs
+        # Store start parameters, including those that were passed as named params
+        # (named params don't end up in **kwargs, so we need to add them explicitly)
+        self._start_parm = kwargs.copy()
+        self._start_parm["exec_file"] = exec_file
+        self._start_parm["host"] = host
+        self._start_parm["additional_switches"] = additional_switches
+        self._start_parm["transport_mode"] = transport_mode
+        self._start_parm["certs_dir"] = certs_dir
 
         self._cleanup_on_exit = cleanup_on_exit
         self._busy = False  # used to check if running a command on the server
@@ -447,7 +461,14 @@ class Mechanical(object):
         self._exiting = False
         self._exited = None
 
-        # Try to get version from start parameters for early service pack check
+        # Initialize logging components early (before any log calls)
+        self._disable_logging = False
+        self._logLevel = loglevel
+        self._log_file = log_file
+        self._log_mechanical = log_mechanical
+        self._log = LOG.add_instance_logger(self.name, self, level=loglevel)  # instance logger
+
+        # Try to get version from start parameters for early service patch check
         if "exec_file" in self._start_parm:
             try:
                 self._version = atp.version_from_path("mechanical", self._start_parm["exec_file"])
@@ -478,11 +499,8 @@ class Mechanical(object):
         else:
             self._channel = channel
 
-        self._logLevel = loglevel
-        self._log_file = log_file
-        self._log_mechanical = log_mechanical
+        # Note: _log, _logLevel, etc. are initialized earlier (before any log calls)
 
-        self._log = LOG.add_instance_logger(self.name, self, level=loglevel)  # instance logger
         # adding a file handler to the logger
         if log_file:
             if not isinstance(log_file, str):
@@ -496,9 +514,8 @@ class Mechanical(object):
             else:
                 self._log_file_mechanical = log_mechanical
 
-        # temporarily disable logging
-        # useful when we run some dummy calls
-        self._disable_logging = False
+        # Note: _disable_logging is initialized earlier (before any log calls)
+        # It's used to temporarily disable logging when running dummy calls
 
         if self._local:
             self.log_info("Mechanical connection is treated as local.")
@@ -941,12 +958,20 @@ class Mechanical(object):
         batch = self._start_parm.get("batch", True)
         additional_switches = self._start_parm.get("additional_switches", None)
         additional_envs = self._start_parm.get("additional_envs", None)
+        # Preserve transport-related settings from original launch
+        host = self._start_parm.get("host", "127.0.0.1")
+        transport_mode = self._start_parm.get("transport_mode", None)
+        certs_dir = self._start_parm.get("certs_dir", "certs")
+
         port = launch_grpc(
             exec_file=exec_file,
             batch=batch,
             additional_switches=additional_switches,
             additional_envs=additional_envs,
             verbose=True,
+            host=host,
+            transport_mode=transport_mode,
+            certs_dir=certs_dir,
         )
         # update the new cleanup behavior
         self._cleanup_on_exit = cleanup_on_exit
@@ -2249,6 +2274,7 @@ def launch_mechanical(
     start_timeout=120,
     port=None,
     ip=None,
+    host=None,
     start_instance=None,
     verbose_mechanical=False,
     clear_on_connect=False,
@@ -2311,6 +2337,9 @@ def launch_mechanical(
         default is ``None``, in which case ``"127.0.0.1"`` is used. If you
         provide an IP address, ``start_instance`` is set to ``False``.
         A host name can be provided as an alternative to an IP address.
+    host : str, optional
+        Alias for ``ip`` parameter. Host address for the Mechanical gRPC server.
+        If both ``ip`` and ``host`` are provided, ``host`` takes precedence.
     start_instance : bool, optional
         Whether to launch and connect to a new Mechanical instance. The default
         is ``None``, in which case an attempt is made to connect to an existing
@@ -2374,6 +2403,12 @@ def launch_mechanical(
 
     >>> mech = launch_mechanical(start_instance=False, ip="192.168.1.30", port=50001)
     """
+    # Handle host parameter as alias for ip
+    if host is not None:
+        if ip is not None:
+            LOG.warning("Both 'ip' and 'host' parameters provided. Using 'host' value.")
+        ip = host
+
     # Start Mechanical with PyPIM if the environment is configured for it
     # and a directive on how to launch Mechanical was not passed.
     if _HAS_ANSYS_PIM and pypim.is_configured() and exec_file is None:  # pragma: no cover
@@ -2393,8 +2428,13 @@ def launch_mechanical(
     if ip is None:
         ip = os.environ.get("PYMECHANICAL_IP", LOCALHOST)
     else:  # pragma: no cover
-        start_instance = False
-        ip = socket.gethostbyname(ip)  # Converting ip or host name to ip
+        # Only resolve hostname if it's not already a valid IP address
+        # Preserve special addresses like 0.0.0.0 (bind to all interfaces)
+        try:
+            socket.inet_aton(ip)  # Check if it's already a valid IP
+        except socket.error:
+            # Not a valid IP, try to resolve as hostname
+            ip = socket.gethostbyname(ip)
 
     check_valid_ip(ip)  # double check
 
@@ -2492,11 +2532,15 @@ def launch_mechanical(
                 "'exec_file' parameter."
             )
 
+    # Store parameters that will be used by launch() to restart the instance
     start_parm = {
         "exec_file": exec_file,
         "batch": batch,
         "additional_switches": additional_switches,
         "additional_envs": additional_envs,
+        "host": ip,  # Store host for later use in launch()
+        "transport_mode": transport_mode,
+        "certs_dir": certs_dir,
     }
 
     if backend == "mechanical":
@@ -2504,17 +2548,28 @@ def launch_mechanical(
             port = launch_grpc(
                 port=port,
                 verbose=verbose_mechanical,
+                exec_file=exec_file,
+                batch=batch,
+                additional_switches=additional_switches,
+                additional_envs=additional_envs,
+                host=ip,
                 transport_mode=transport_mode,
                 certs_dir=certs_dir,
-                **start_parm,
             )
 
             # TODO : Version argument is ignored...
             version = atp.version_from_path("mechanical", exec_file)
 
             start_parm["local"] = True
+            start_parm["transport_mode"] = transport_mode
+            start_parm["certs_dir"] = certs_dir
+
+            # For client connection: convert 0.0.0.0 to 127.0.0.1
+            # 0.0.0.0 is used for server binding, but not valid for client connections
+            client_ip = "127.0.0.1" if ip == "0.0.0.0" else ip
+
             mechanical = Mechanical(
-                ip=ip,
+                ip=client_ip,  # Use converted IP for client connection
                 port=port,
                 loglevel=loglevel,
                 log_file=log_file,
@@ -2522,8 +2577,6 @@ def launch_mechanical(
                 timeout=start_timeout,
                 cleanup_on_exit=cleanup_on_exit,
                 keep_connection_alive=keep_connection_alive,
-                transport_mode=transport_mode,
-                certs_dir=certs_dir,
                 **start_parm,
             )
         except Exception as exception:  # pragma: no cover

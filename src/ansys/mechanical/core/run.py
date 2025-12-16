@@ -151,8 +151,10 @@ def _cli_impl(
             print(f"Warning: Version {detected_version} using basic insecure connection")
 
         # Set defaults for supported versions
-        if supports_grpc and not transport_mode:
-            transport_mode = "wnua" if os.name == "nt" else "mtls"
+        if supports_grpc:
+            # Set default transport mode if not provided
+            if not transport_mode:
+                transport_mode = "wnua" if os.name == "nt" else "mtls"
 
             # Validate transport mode availability per OS
             if os.name != "nt" and transport_mode == "wnua":
@@ -161,7 +163,7 @@ def _cli_impl(
                     "Available options: 'mtls', 'insecure'"
                 )
 
-            # Set default host for all transport modes
+            # Set default host for all transport modes (always set a default)
             if not grpc_host:
                 grpc_host = "localhost"
 
@@ -211,9 +213,10 @@ def _cli_impl(
             args.append("--transport-mode")
             args.append(transport_mode)
 
-            # Add gRPC host
-            args.append("--grpc-host")
-            args.append(grpc_host)
+            # Add gRPC host (only if not None)
+            if grpc_host is not None:
+                args.append("--grpc-host")
+                args.append(grpc_host)
 
             # Add certs directory if provided (required for mtls)
             if certs_dir:
@@ -298,6 +301,7 @@ def _cli_impl(
     if DRY_RUN:
         return args, env
     else:
+        print(args)
         _run(args, env, False, True)
 
     if private_appdata:
@@ -439,7 +443,6 @@ def cli(
     """
     exe = atp.get_mechanical_path(allow_input=False, version=revision)
     version = atp.version_from_path("mechanical", exe)
-
     # Validate enginetype usage - must be used with input script and version 261
     if enginetype and enginetype != "ironpython" and version < 261:
         raise click.ClickException(

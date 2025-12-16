@@ -85,7 +85,8 @@ class MechanicalLauncher:
         self.additional_envs = additional_envs or {}
         self.verbose = verbose
         self.host = host
-        self.transport_mode = transport_mode or ("WNUA" if not is_linux() else "MTLS")
+        # Store transport_mode, preserving case (will be normalized later if needed)
+        self.transport_mode = transport_mode
         self.certs_dir = certs_dir
 
         # Get version from executable path
@@ -102,12 +103,12 @@ class MechanicalLauncher:
                 f"Mechanical version {self.version} does not support {self.transport_mode} "
                 f"transport mode. Use transport_mode='insecure' or update to Service Pack 04+."
             )
-        self.transport_mode = transport_mode
 
-        # Set public attributes for backward compatibility
-        self.host = host or "127.0.0.1"
-        self.port = port or 10000
-        self.certs_dir = certs_dir or "certs"
+        # Set default values for backward compatibility (only if not already set)
+        if self.port is None:
+            self.port = 10000
+        if self.certs_dir is None:
+            self.certs_dir = "certs"
         self.__ui_arg_list = ["-DSApplet", "-nosplash", "-notabctrl"]
         self.__batch_arg_list = ["-DSApplet", "-b"]
 
@@ -167,13 +168,38 @@ class MechanicalLauncher:
             print("=" * 60)
 
         if is_linux():
-            process = subprocess.Popen(
-                args_list,
-                start_new_session=True,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                env=env_variables,
-            )  # nosec: B603
+            # In verbose mode, capture output to help debug issues
+            if self.verbose:
+                process = subprocess.Popen(
+                    args_list,
+                    start_new_session=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    env=env_variables,
+                    text=True,
+                    bufsize=1,
+                )  # nosec: B603
+                # Print a few lines of output to help debug
+                print("\nMechanical process output (first few lines):")
+                print("-" * 60)
+                import threading
+
+                def print_output():
+                    for i, line in enumerate(process.stdout):
+                        if i < 20:  # Print first 20 lines
+                            print(line, end="")
+                        else:
+                            break
+
+                threading.Thread(target=print_output, daemon=True).start()
+            else:
+                process = subprocess.Popen(
+                    args_list,
+                    start_new_session=True,
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    env=env_variables,
+                )  # nosec: B603
         else:
             process = subprocess.Popen(
                 args_list,
@@ -263,6 +289,10 @@ class MechanicalLauncher:
 
                 # Add gRPC port argument
                 args.extend(["-grpc", str(self.port)])
+
+                # Note: Legacy versions (without SP04) do not support --grpc-host flag
+                # They bind to 0.0.0.0 (all interfaces) by default
+
                 return args
 
             # For versions with service pack support
@@ -270,11 +300,11 @@ class MechanicalLauncher:
             if not self.transport_mode:
                 self.transport_mode = "wnua" if os.name == "nt" else "mtls"
 
-            # Set default host
-            if not self.host:
+            # Set default host only if None
+            if self.host is None:
                 self.host = "localhost"
 
-            # Validate requirements for secure transport modes
+            # Validate requirements for secure transport modes (skip for insecure mode)
             if self.transport_mode.lower() == "mtls":
                 if not self.certs_dir:
                     raise Exception("Certificate directory is required for mtls transport mode.")
@@ -331,7 +361,8 @@ class MechanicalLauncher:
             if self.host != "localhost":
                 args.extend(["--grpc-host", self.host])
 
-            if self.certs_dir:
+            # Only add certs_dir for secure transport modes
+            if self.certs_dir and self.transport_mode.lower() != "insecure":
                 args.extend(["--certs-dir", self.certs_dir])
 
         if self.additional_args is not None and isinstance(self.additional_args, list):

@@ -196,9 +196,8 @@ class PyMechanicalCustomAdapter(logging.LoggerAdapter):
     be specified once.
     """
 
-    level = (
-        None  # This is maintained for compatibility with ``suppress_logging``, but it does nothing.
-    )
+    # Maintained for compatibility with ``suppress_logging``, but it does nothing.
+    level = None
     file_handler = None
     stdout_handler = None
 
@@ -597,8 +596,6 @@ class Logger:
         Exception
             You can only input strings as ``name`` to this method.
         """
-        print(f"add_instance_logger called with the name:{name}")
-
         count_ = 0
         new_name = name
         while new_name in logging.root.manager.__dict__.keys():
