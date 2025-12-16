@@ -53,7 +53,7 @@ jobs:
       contents: write        # Needed to create changelog entries in repository
       pull-requests: write   # Required to create pull requests for changelog updates
     steps:
-      - uses: ansys/actions/doc-deploy-changelog@eb7d0fc873deeee6d4740774675ce1741cb6f154 # v10.2.2
+      - uses: ansys/actions/doc-deploy-changelog@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
         with:
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
           bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
@@ -66,7 +66,7 @@ jobs:
       contents: read
     steps:
       - name: PyAnsys code style checks
-        uses: ansys/actions/code-style@eb7d0fc873deeee6d4740774675ce1741cb6f154 # v10.2.2
+        uses: ansys/actions/code-style@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
@@ -77,7 +77,7 @@ jobs:
       contents: read
     steps:
       - name: PyAnsys documentation style checks
-        uses: ansys/actions/doc-style@eb7d0fc873deeee6d4740774675ce1741cb6f154 # v10.2.2
+        uses: ansys/actions/doc-style@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -89,7 +89,7 @@ jobs:
     steps:
       - name: PyAnsys Vulnerability check (on main)
         if: github.ref == 'refs/heads/main'
-        uses: ansys/actions/check-vulnerabilities@eb7d0fc873deeee6d4740774675ce1741cb6f154 # v10.2.2
+        uses: ansys/actions/check-vulnerabilities@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           python-package-name: ${{ env.PACKAGE_NAME }}
@@ -97,7 +97,7 @@ jobs:
 
       - name: PyAnsys Vulnerability check (on dev mode)
         if: github.ref != 'refs/heads/main'
-        uses: ansys/actions/check-vulnerabilities@eb7d0fc873deeee6d4740774675ce1741cb6f154 # v10.2.2
+        uses: ansys/actions/check-vulnerabilities@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           python-package-name: ${{ env.PACKAGE_NAME }}
@@ -110,7 +110,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: ansys/actions/check-actions-security@eb7d0fc873deeee6d4740774675ce1741cb6f154 # v10.2.2
+      - uses: ansys/actions/check-actions-security@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
         with:
           generate-summary: true
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -135,7 +135,7 @@ jobs:
       contents: read
     steps:
       - name: Build wheelhouse and perform smoke test
-        uses: ansys/actions/build-wheelhouse@eb7d0fc873deeee6d4740774675ce1741cb6f154 # v10.2.2
+        uses: ansys/actions/build-wheelhouse@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
         with:
           library-name: ${{ env.PACKAGE_NAME }}
           operating-system: ${{ matrix.os }}
@@ -292,6 +292,7 @@ jobs:
       - name: Pull, launch, and validate Mechanical service
         env:
           MECHANICAL_IMAGE: ${{ env.DOCKER_PACKAGE }}:${{ matrix.mechanical-version }}
+          MECHANICAL_VERSION: ${{ matrix.mechanical-version }}
           # ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
           # ANSYS_WORKBENCH_LOGGING_DIRECTORY: /log_file  # workbench.log file
           ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH: 0  # turn off autoflush for faster performance
@@ -301,8 +302,28 @@ jobs:
         run: |
           docker pull ${MECHANICAL_IMAGE}
 
-          echo "Run docker in detached mode"
-          docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} -p ${PYMECHANICAL_PORT}:10000 ${MECHANICAL_IMAGE}
+          # Extract the major and minor version from the image name
+          version=$(echo ${MECHANICAL_IMAGE} | grep -oP '\d+\.\d+')
+
+          # Check if image version is above 26.1
+          if (( $(echo "$version > 26.1" | bc -l) )); then
+            echo "Detected version above 26.1 - using custom entrypoint for insecure transport"
+            docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} \
+              -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} \
+              -e ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH=${ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH} \
+              -p ${PYMECHANICAL_PORT}:10000 \
+              --entrypoint="" \
+              ${MECHANICAL_IMAGE} \
+              tini -- xvfb-run ./.workbench \
+              -dsapplet -b -grpc 10000 --grpc-host 0.0.0.0 --transport-mode insecure
+          else
+            echo "Using default entrypoint for version ${MECHANICAL_VERSION}"
+            docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} \
+              -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} \
+              -e ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH=${ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH} \
+              -p ${PYMECHANICAL_PORT}:10000 \
+              ${MECHANICAL_IMAGE}
+          fi
 
           # Wait for Mechanical to initialize with intelligent polling
           max_wait=300  # Maximum wait time in seconds
@@ -350,7 +371,7 @@ jobs:
           echo "::endgroup::"
 
       - name: Testing
-        uses: ansys/actions/tests-pytest@eb7d0fc873deeee6d4740774675ce1741cb6f154 # v10.2.2
+        uses: ansys/actions/tests-pytest@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           pytest-markers: '-m remote_session_connect'
@@ -760,7 +781,7 @@ jobs:
       contents: write        # Required to push documentation to gh-pages branch
       pull-requests: write   # Needed to comment on PR with documentation link
     steps:
-      - uses: ansys/actions/doc-deploy-pr@eb7d0fc873deeee6d4740774675ce1741cb6f154 # v10.2.2
+      - uses: ansys/actions/doc-deploy-pr@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -857,7 +878,7 @@ jobs:
           retention-days: 7
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5.5.1
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
@@ -879,7 +900,7 @@ jobs:
       id-token: write        # Needed for OIDC authentication when generating attestations
     steps:
       - name: Build library source and wheel artifacts
-        uses: ansys/actions/build-library@eb7d0fc873deeee6d4740774675ce1741cb6f154 # v10.2.2
+        uses: ansys/actions/build-library@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
         with:
           library-name: ${{ env.PACKAGE_NAME }}
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
@@ -895,7 +916,7 @@ jobs:
       contents: write        # Needed to create GitHub releases and upload assets
     steps:
       - name: Release to GitHub
-        uses: ansys/actions/release-github@eb7d0fc873deeee6d4740774675ce1741cb6f154 # v10.2.2
+        uses: ansys/actions/release-github@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           library-name: ${{ env.PACKAGE_NAME }}
@@ -933,7 +954,7 @@ jobs:
       contents: write        # Required to push documentation to gh-pages branch
     steps:
       - name: Deploy the latest documentation
-        uses: ansys/actions/doc-deploy-dev@eb7d0fc873deeee6d4740774675ce1741cb6f154 # v10.2.2
+        uses: ansys/actions/doc-deploy-dev@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
@@ -949,7 +970,7 @@ jobs:
       contents: write        # Required to push stable documentation to gh-pages branch
     steps:
       - name: Deploy the stable documentation
-        uses: ansys/actions/doc-deploy-stable@eb7d0fc873deeee6d4740774675ce1741cb6f154 # v10.2.2
+        uses: ansys/actions/doc-deploy-stable@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
