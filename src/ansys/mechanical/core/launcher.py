@@ -30,10 +30,9 @@ from pathlib import Path
 import subprocess  # nosec: B404
 
 import ansys.tools.common.path as atp
-from ansys.tools.path.misc import is_linux
 
 from ansys.mechanical.core import LOG
-from ansys.mechanical.core.misc import has_grpc_service_pack
+from ansys.mechanical.core.misc import has_grpc_service_pack, is_linux
 
 
 class MechanicalLauncher:
