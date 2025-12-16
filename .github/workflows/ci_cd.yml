@@ -302,22 +302,20 @@ jobs:
         run: |
           docker pull ${MECHANICAL_IMAGE}
 
-          # Extract the major and minor version from the image name
-          version=$(echo ${MECHANICAL_IMAGE} | grep -oP '\d+\.\d+')
-
-          # Check if image version is above 26.1
-          if (( $(echo "$version > 26.1" | bc -l) )); then
-            echo "Detected version above 26.1 - using custom entrypoint for insecure transport"
+          # Check if image name contains 26.1 to determine entrypoint
+          if [[ ${MECHANICAL_IMAGE} == *"26.1"* ]]; then
+            echo "Detected version 26.1 - using custom entrypoint for insecure transport"
             docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} \
               -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} \
               -e ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH=${ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH} \
               -p ${PYMECHANICAL_PORT}:10000 \
               --entrypoint="" \
+              --security-opt seccomp=unconfined \
               ${MECHANICAL_IMAGE} \
-              tini -- xvfb-run ./.workbench \
+              tini -- xvfb-run /install/ansys_inc/v${matrix.mechanical-version}/aisol/.workbench \
               -dsapplet -b -grpc 10000 --grpc-host 0.0.0.0 --transport-mode insecure
           else
-            echo "Using default entrypoint for version ${MECHANICAL_VERSION}"
+            echo "Using default entrypoint for version ${matrix.mechanical-version}"
             docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} \
               -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} \
               -e ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH=${ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH} \
