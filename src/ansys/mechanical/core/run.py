@@ -159,7 +159,11 @@ def _cli_impl(
         if supports_grpc:
             # Set default transport mode if not provided
             if not transport_mode:
-                transport_mode = "wnua" if os.name == "nt" else "mtls"
+                if os.name == "nt":
+                    transport_mode = "wnua"
+                else:
+                    # On Linux, default to insecure if certs not provided, mtls if certs provided
+                    transport_mode = "mtls" if certs_dir else "insecure"
 
             # Validate transport mode availability per OS
             if os.name != "nt" and transport_mode == "wnua":

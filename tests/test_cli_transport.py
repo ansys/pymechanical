@@ -44,6 +44,21 @@ class TestCLITransportMode:
 
     def test_cli_transport_mode_wnua_with_sp04(self, disable_cli):
         """Test WNUA transport mode on Windows with SP04."""
+        import os
+
+        if os.name != "nt":
+            # On Linux, wnua should raise an error
+            with pytest.raises(Exception) as exc_info:
+                _cli_impl(
+                    exe="AnsysWBU.exe",
+                    version=261,  # Has SP04
+                    port=10000,
+                    transport_mode="wnua",
+                )
+            assert "wnua" in str(exc_info.value).lower()
+            assert "not available on linux" in str(exc_info.value).lower()
+            return
+
         args, _ = _cli_impl(
             exe="AnsysWBU.exe",
             version=261,  # Has SP04
@@ -63,6 +78,20 @@ class TestCLITransportMode:
                 transport_mode="wnua",
             )
         assert "does not support wnua transport mode" in str(exc_info.value).lower()
+
+    def test_cli_transport_mode_mtls_without_sp04_fails(self, disable_cli):
+        """Test MTLS transport mode fails on version without SP04."""
+        with pytest.raises(Exception) as exc_info:
+            _cli_impl(
+                exe="AnsysWBU.exe",
+                version=252,  # No SP04
+                port=10000,
+                transport_mode="mtls",
+                certs_dir="/path/to/certs",
+            )
+        error_msg = str(exc_info.value).lower()
+        assert "does not support mtls transport mode" in error_msg
+        assert "service pack 04+" in error_msg
 
     def test_cli_transport_mode_mtls_requires_certs(self, disable_cli):
         """Test MTLS transport mode requires --certs-dir."""
@@ -263,6 +292,16 @@ class TestCLITransportModeEdgeCases:
 
     def test_cli_wnua_no_certs_required(self, disable_cli):
         """Test WNUA mode doesn't require certs directory."""
+        import os
+
+        if os.name != "nt":
+            # On Linux, wnua should raise an error
+            with pytest.raises(Exception) as exc_info:
+                _cli_impl(exe="AnsysWBU.exe", version=261, port=10000, transport_mode="wnua")
+            assert "wnua" in str(exc_info.value).lower()
+            assert "not available on linux" in str(exc_info.value).lower()
+            return
+
         args, _ = _cli_impl(exe="AnsysWBU.exe", version=261, port=10000, transport_mode="wnua")
         assert "--transport-mode" in args
         assert "wnua" in args or "WNUA" in args
@@ -313,6 +352,16 @@ class TestCLITransportModeEdgeCases:
 
     def test_cli_version_241_treated_as_sp04(self, disable_cli):
         """Test version 241 is treated as having SP04 support."""
+        import os
+
+        if os.name != "nt":
+            # On Linux, wnua should raise an error
+            with pytest.raises(Exception) as exc_info:
+                _cli_impl(exe="AnsysWBU.exe", version=241, port=10000, transport_mode="wnua")
+            assert "wnua" in str(exc_info.value).lower()
+            assert "not available on linux" in str(exc_info.value).lower()
+            return
+
         args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, port=10000, transport_mode="wnua")
         # Version 241 is assumed to have SP04 in has_grpc_service_pack
         assert "--transport-mode" in args

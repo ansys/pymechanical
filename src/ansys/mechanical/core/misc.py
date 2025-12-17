@@ -209,6 +209,11 @@ def has_grpc_service_pack(version):
     from ansys.tools.common.path import get_mechanical_path
 
     exe_path = get_mechanical_path(allow_input=False, version=version)
+
+    # If the mechanical path cannot be found, assume no SP04
+    if exe_path is None:
+        return False
+
     exe_path = Path(exe_path)
 
     # Navigate to version root directory (v251) where builddate.txt is located
