@@ -4,8 +4,8 @@
   Supports both internal links and external URLs.
   Optimized to work without external CSS files.
 #}
-{% if theme_latest_news %}
-  {% set latest_news_config = theme_latest_news %}
+{% if latest_news %}
+  {% set latest_news_config = latest_news %}
   {% set latest_news_title = latest_news_config.get('title', 'Latest News') %}
   {% set latest_news_items = latest_news_config.get('items', []) %}
   {% set latest_news_show_date = latest_news_config.get('show_date', true) %}

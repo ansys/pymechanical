@@ -213,6 +213,9 @@ html_context = {
     "github_version": "main",
     "doc_path": "doc/source",
     "pyansys_tags": ["Structures"],
+    "secondary_sidebar_items": {
+    "index": ["latest_news_sidebar"],
+  },
     "latest_news": {
         "title": "Latest PyMechanical News",
         "show_date": True,
@@ -240,7 +243,6 @@ html_context = {
         "more_url": "https://github.com/ansys/pymechanical/releases",
         "more_text": "View all releases"
     },
-    "secondary_sidebar_items": ["page-toc", "sourcelink", "latest_news_sidebar"],
 }
 html_theme_options = {
     "logo": "pyansys",
