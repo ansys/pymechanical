@@ -10,7 +10,7 @@
   {% set latest_news_items = latest_news_config.get('items', []) %}
   {% set latest_news_show_date = latest_news_config.get('show_date', true) %}
   {% set latest_news_max_items = latest_news_config.get('max_items', 5) %}
-  
+
   <div class="sidebar-latest-news" aria-label="Latest News">
     <style>
       .sidebar-latest-news {
@@ -123,7 +123,7 @@
         <i class="news-icon">📰</i>
         {{ latest_news_title }}
       </h4>
-      
+
       <div class="news-content">
         {% if latest_news_items %}
           <ul class="news-list">
@@ -133,11 +133,11 @@
               {% set item_date = item.get('date') %}
               {% set item_excerpt = item.get('excerpt') %}
               {% set is_external = item_url and (item_url.startswith('http://') or item_url.startswith('https://')) %}
-              
+
               <li class="news-item">
                 <div class="news-item-content">
                   {% if item_url %}
-                    <a href="{{ item_url }}" 
+                    <a href="{{ item_url }}"
                        class="news-link"
                        {% if is_external %}target="_blank" rel="noopener noreferrer"{% endif %}>
                       <h5 class="news-title">{{ item_title }}</h5>
@@ -145,18 +145,18 @@
                   {% else %}
                     <h5 class="news-title">{{ item_title }}</h5>
                   {% endif %}
-                  
+
                   {% if item_date and latest_news_show_date %}
                     <div class="news-date">
                       <i class="date-icon">📅</i>
                       {{ item_date }}
                     </div>
                   {% endif %}
-                  
+
                   {% if item_excerpt %}
                     <p class="news-excerpt">{{ item_excerpt }}</p>
                   {% endif %}
-                  
+
                   {% if is_external %}
                     <span class="external-link-indicator" title="External Link">🔗</span>
                   {% endif %}
@@ -164,14 +164,14 @@
               </li>
             {% endfor %}
           </ul>
-          
+
           {% if latest_news_config.get('more_url') %}
             {% set more_url = latest_news_config.get('more_url') %}
             {% set more_text = latest_news_config.get('more_text', 'View all news') %}
             {% set more_is_external = more_url.startswith('http://') or more_url.startswith('https://') %}
-            
+
             <div class="news-more">
-              <a href="{{ more_url }}" 
+              <a href="{{ more_url }}"
                  class="news-more-link"
                  {% if more_is_external %}target="_blank" rel="noopener noreferrer"{% endif %}>
                 {{ more_text }} →
