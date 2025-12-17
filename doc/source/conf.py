@@ -213,6 +213,34 @@ html_context = {
     "github_version": "main",
     "doc_path": "doc/source",
     "pyansys_tags": ["Structures"],
+    "latest_news": {
+        "title": "Latest PyMechanical News",
+        "show_date": True,
+        "max_items": 4,
+        "items": [
+            {
+                "title": "PyMechanical v0.11.0 Released",
+                "date": "2024-12-15",
+                "url": "https://github.com/ansys/pymechanical/releases/tag/v0.11.0",
+                "excerpt": "New features include enhanced embedding support and improved documentation."
+            },
+            {
+                "title": "Documentation Update",
+                "date": "2024-12-10", 
+                "url": "/changelog.html",
+                "excerpt": "Updated examples and API documentation for better usability."
+            },
+            {
+                "title": "Community Discussion Forum",
+                "date": "2024-12-01",
+                "url": "https://github.com/ansys/pymechanical/discussions",
+                "excerpt": "Join our community discussions for support and feature requests."
+            }
+        ],
+        "more_url": "https://github.com/ansys/pymechanical/releases",
+        "more_text": "View all releases"
+    },
+    "secondary_sidebar_items": ["page-toc", "sourcelink", "latest_news_sidebar"],
 }
 html_theme_options = {
     "logo": "pyansys",

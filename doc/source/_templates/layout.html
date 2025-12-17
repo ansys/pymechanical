@@ -4,3 +4,8 @@
   {{ super() }}
   <meta name="physics" content="Structures" />
 {% endblock %}
+
+{%- block sidebar %}
+  {{ super() }}
+  {% include "latest_news_sidebar.html" %}
+{% endblock %}
