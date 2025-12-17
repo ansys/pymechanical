@@ -213,9 +213,7 @@ html_context = {
     "github_version": "main",
     "doc_path": "doc/source",
     "pyansys_tags": ["Structures"],
-    "secondary_sidebar_items": {
-    "index": ["latest_news_sidebar"],
-  },
+
     "latest_news": {
         "title": "Latest PyMechanical News",
         "show_date": True,
@@ -271,6 +269,9 @@ html_theme_options = {
         "whatsnew_file_name": "../changelog.d/whatsnew.yml",
         "changelog_file_name": "changelog.rst",
         "sidebar_pages": ["changelog", "index"],
+    },
+    "secondary_sidebar_items": {
+        "index": ["latest_news_sidebar"],
     },
     "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
 }
