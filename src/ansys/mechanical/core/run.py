@@ -25,6 +25,7 @@
 import asyncio
 from asyncio.subprocess import PIPE
 import os
+from pathlib import Path
 import sys
 import typing
 
@@ -181,6 +182,48 @@ def _cli_impl(
                 raise click.ClickException(
                     "--certs-dir is required when using 'mtls' transport mode. "
                 )
+
+            # Validate certificates directory exists and contains required files
+            if transport_mode == "mtls" and certs_dir:
+                certs_path = Path(certs_dir)
+
+                # Check if directory exists
+                if not certs_path.exists():
+                    raise click.ClickException(
+                        f"Certificates directory does not exist: {certs_dir}\n"
+                        "Please provide a valid directory containing TLS certificates."
+                    )
+
+                if not certs_path.is_dir():
+                    raise click.ClickException(
+                        f"Certificates path is not a directory: {certs_dir}\n"
+                        "Please provide a valid directory containing TLS certificates."
+                    )
+
+                # Check for required server certificate files
+                # ansys-mechanical CLI starts the Mechanical gRPC server,
+                # so we only need server certificates
+                required_server_files = ["server.cert", "server.key", "ca.cert"]
+
+                # Check if all required server certificate files exist
+                missing_files = [f for f in required_server_files if not (certs_path / f).exists()]
+
+                if missing_files:
+                    # List what files are in the directory for debugging
+                    existing_files = [f.name for f in certs_path.iterdir() if f.is_file()]
+                    files_info = (
+                        f"Found files: {', '.join(existing_files)}"
+                        if existing_files
+                        else "Directory is empty"
+                    )
+
+                    raise click.ClickException(
+                        f"Missing required server certificate files in: {certs_dir}\n"
+                        f"{files_info}\n"
+                        f"Missing: {', '.join(missing_files)}\n"
+                        f"Required files: server.cert, server.key, ca.cert\n"
+                        "Please provide a directory containing valid server TLS certificates."
+                    )
 
     # Validate that gRPC options are only used with port
     if not port and (transport_mode or grpc_host or certs_dir):

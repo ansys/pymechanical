@@ -105,19 +105,59 @@ class TestCLITransportMode:
             )
         assert "certs-dir is required" in str(exc_info.value).lower()
 
-    def test_cli_transport_mode_mtls_with_certs(self, disable_cli):
+    def test_cli_transport_mode_mtls_validates_certs_dir_exists(self, disable_cli, tmp_path):
+        """Test MTLS transport mode validates that certs directory exists."""
+        nonexistent_dir = tmp_path / "nonexistent"
+
+        with pytest.raises(Exception) as exc_info:
+            _cli_impl(
+                exe="AnsysWBU.exe",
+                version=261,
+                port=10000,
+                transport_mode="mtls",
+                certs_dir=str(nonexistent_dir),
+            )
+        error_msg = str(exc_info.value).lower()
+        assert "certificates directory does not exist" in error_msg
+
+    def test_cli_transport_mode_mtls_validates_certs_present(self, disable_cli, tmp_path):
+        """Test MTLS transport mode validates that certificate files are present."""
+        # Create empty directory
+        empty_dir = tmp_path / "empty_certs"
+        empty_dir.mkdir()
+
+        with pytest.raises(Exception) as exc_info:
+            _cli_impl(
+                exe="AnsysWBU.exe",
+                version=261,
+                port=10000,
+                transport_mode="mtls",
+                certs_dir=str(empty_dir),
+            )
+        error_msg = str(exc_info.value).lower()
+        assert "missing required server certificate files" in error_msg
+        assert "directory is empty" in error_msg
+
+    def test_cli_transport_mode_mtls_with_certs(self, disable_cli, tmp_path):
         """Test MTLS transport mode with certificates directory."""
+        # Create directory with mock certificate files
+        certs_dir = tmp_path / "valid_certs"
+        certs_dir.mkdir()
+        (certs_dir / "server.cert").touch()
+        (certs_dir / "server.key").touch()
+        (certs_dir / "ca.cert").touch()
+
         args, _ = _cli_impl(
             exe="AnsysWBU.exe",
             version=261,
             port=10000,
             transport_mode="mtls",
-            certs_dir="/path/to/certs",
+            certs_dir=str(certs_dir),
         )
         assert "--transport-mode" in args
         assert "mtls" in args
         assert "--certs-dir" in args
-        assert "/path/to/certs" in args
+        assert str(certs_dir) in args
 
     def test_cli_grpc_host_option(self, disable_cli):
         """Test --grpc-host option."""
@@ -222,15 +262,22 @@ class TestCLITransportMode:
         mode_idx = args.index("--transport-mode") + 1
         assert args[mode_idx].lower() == "wnua"
 
-    def test_cli_command_construction_with_all_grpc_options(self, disable_cli):
+    def test_cli_command_construction_with_all_grpc_options(self, disable_cli, tmp_path):
         """Test complete command construction with all gRPC options."""
+        # Create mock certificate directory
+        certs_dir = tmp_path / "custom_certs"
+        certs_dir.mkdir()
+        (certs_dir / "server.cert").touch()
+        (certs_dir / "server.key").touch()
+        (certs_dir / "ca.cert").touch()
+
         args, _ = _cli_impl(
             exe="AnsysWBU.exe",
             version=261,
             port=10000,
             transport_mode="mtls",
             grpc_host="0.0.0.0",
-            certs_dir="/custom/certs",
+            certs_dir=str(certs_dir),
         )
 
         # Verify all options are present
@@ -241,7 +288,7 @@ class TestCLITransportMode:
         assert "--grpc-host" in args
         assert "0.0.0.0" in args
         assert "--certs-dir" in args
-        assert "/custom/certs" in args
+        assert str(certs_dir) in args
 
     def test_cli_legacy_mode_only_port(self, disable_cli):
         """Test legacy version uses --port instead of -grpc."""
@@ -259,22 +306,29 @@ class TestCLITransportMode:
 class TestCLITransportModeEdgeCases:
     """Additional edge case tests for gRPC transport mode."""
 
-    def test_cli_mtls_with_certs_and_host(self, disable_cli):
+    def test_cli_mtls_with_certs_and_host(self, disable_cli, tmp_path):
         """Test mTLS with both certs directory and custom host."""
+        # Create mock certificate directory
+        certs_dir = tmp_path / "test_certs"
+        certs_dir.mkdir()
+        (certs_dir / "server.cert").touch()
+        (certs_dir / "server.key").touch()
+        (certs_dir / "ca.cert").touch()
+
         args, _ = _cli_impl(
             exe="AnsysWBU.exe",
             version=261,
             port=10000,
             transport_mode="mtls",
             grpc_host="0.0.0.0",
-            certs_dir="/path/to/certs",
+            certs_dir=str(certs_dir),
         )
         assert "--transport-mode" in args
         assert "mtls" in args
         assert "--grpc-host" in args
         assert "0.0.0.0" in args
         assert "--certs-dir" in args
-        assert "/path/to/certs" in args
+        assert str(certs_dir) in args
 
     def test_cli_insecure_with_custom_host(self, disable_cli):
         """Test insecure mode with custom host on SP04+ version."""
@@ -324,8 +378,15 @@ class TestCLITransportModeEdgeCases:
         # On Windows, default should be WNUA
         assert "wnua" in args or "WNUA" in args
 
-    def test_cli_multiple_grpc_options_validation(self, disable_cli):
+    def test_cli_multiple_grpc_options_validation(self, disable_cli, tmp_path):
         """Test multiple gRPC options are validated correctly."""
+        # Create mock certificate directory
+        certs_dir = tmp_path / "test_certs"
+        certs_dir.mkdir()
+        (certs_dir / "server.cert").touch()
+        (certs_dir / "server.key").touch()
+        (certs_dir / "ca.cert").touch()
+
         # Valid combination
         try:
             args, _ = _cli_impl(
@@ -334,7 +395,7 @@ class TestCLITransportModeEdgeCases:
                 port=10000,
                 transport_mode="mtls",
                 grpc_host="localhost",
-                certs_dir="/certs",
+                certs_dir=str(certs_dir),
             )
             assert "--transport-mode" in args
             assert "--grpc-host" in args
@@ -394,15 +455,22 @@ class TestCLITransportModeEdgeCases:
         assert "project file" in str(exc_info.value).lower()
         assert "server mode" in str(exc_info.value).lower() or "port" in str(exc_info.value).lower()
 
-    def test_cli_grpc_options_ordering(self, disable_cli):
+    def test_cli_grpc_options_ordering(self, disable_cli, tmp_path):
         """Test that gRPC options appear in correct order in command line."""
+        # Create mock certificate directory
+        certs_dir = tmp_path / "test_certs"
+        certs_dir.mkdir()
+        (certs_dir / "server.cert").touch()
+        (certs_dir / "server.key").touch()
+        (certs_dir / "ca.cert").touch()
+
         args, _ = _cli_impl(
             exe="AnsysWBU.exe",
             version=261,
             port=10000,
             transport_mode="mtls",
             grpc_host="0.0.0.0",
-            certs_dir="/certs",
+            certs_dir=str(certs_dir),
         )
 
         # Find indices of gRPC-related args
