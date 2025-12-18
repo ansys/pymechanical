@@ -11,7 +11,12 @@
 from datetime import datetime
 import os
 from pathlib import Path
+import sys
 import warnings
+
+# Add the extensions directory to the Python path
+sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('_ext'))
 
 from ansys_sphinx_theme import ansys_favicon, get_version_match
 import pyvista
@@ -213,6 +218,32 @@ html_context = {
     "github_version": "main",
     "doc_path": "doc/source",
     "pyansys_tags": ["Structures"],
+    "ansys_mechanical_ads_html": '''
+        <!-- Ansys Mechanical Ads -->
+        <div class="ansys-mechanical-ads-wrapper" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 1000;">
+            <!-- Sidebar Ad -->
+            <div id="ansys-mechanical-sidebar-ad" class="ansys-mechanical-ad-container sidebar-ad" style="position: fixed; top: 100px; right: 20px; max-width: 280px; z-index: 1001; pointer-events: auto;">
+                <div class="loading-spinner">Loading Ansys Content...</div>
+            </div>
+            
+            <!-- Content Area Ad -->
+            <div id="ansys-mechanical-footer-ad" class="ansys-mechanical-ad-container content-ad" style="position: fixed; bottom: 20px; left: 20px; right: 20px; max-width: 600px; margin: 0 auto; z-index: 1001; pointer-events: auto;">
+                <div class="loading-spinner">Loading Ansys Content...</div>
+            </div>
+        </div>
+
+        <!-- Initialize Ads -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('Initializing Ansys Mechanical Ads...');
+                if (typeof AnsysMechanicalAds !== 'undefined') {
+                    AnsysMechanicalAds.init();
+                } else {
+                    console.warn('AnsysMechanicalAds not loaded');
+                }
+            });
+        </script>
+    ''',
 }
 html_theme_options = {
     "logo": "pyansys",

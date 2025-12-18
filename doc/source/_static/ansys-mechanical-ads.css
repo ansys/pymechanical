@@ -1,0 +1,286 @@
+/* Ansys Mechanical Custom Ads Styling */
+
+.ansys-mechanical-ads-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.ansys-mechanical-ad-container {
+    margin: 20px 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #0078d4 0%, #1ba1e2 100%);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 120, 212, 0.2);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    pointer-events: auto;
+}
+
+.ansys-mechanical-ad-container .ad-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+}
+
+.ansys-mechanical-ad-container .ad-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.ansys-mechanical-ad-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 120, 212, 0.3);
+}
+
+.ansys-mechanical-ad-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+    pointer-events: none;
+}
+
+.ansys-mechanical-ad-container * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Sidebar Ad Specific Styling */
+.sidebar-ad {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    max-width: 280px;
+    margin: 0;
+    color: white;
+    text-align: center;
+    z-index: 1001;
+}
+
+.sidebar-ad .ad-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #ffffff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-ad .ad-description {
+    font-size: 14px;
+    line-height: 1.4;
+    margin-bottom: 15px;
+    color: #e6f3ff;
+}
+
+.sidebar-ad .ad-cta {
+    background: #ffffff;
+    color: #0078d4;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    display: inline-block;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.sidebar-ad .ad-cta:hover {
+    background: #f8f9fa;
+    color: #0078d4;
+    text-decoration: none;
+    transform: scale(1.05);
+    border-color: #ffffff;
+}
+
+/* Content Ad Specific Styling */
+.content-ad {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    color: white;
+    text-align: center;
+    background: linear-gradient(135deg, #1ba1e2 0%, #0078d4 100%);
+    z-index: 1001;
+}
+
+.content-ad .ad-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.content-ad .ad-description {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    color: #e6f3ff;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.content-ad .ad-features {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.content-ad .ad-feature {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #e6f3ff;
+}
+
+.content-ad .ad-feature::before {
+    content: '✓';
+    color: #00ff88;
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.content-ad .ad-cta {
+    background: #ffffff;
+    color: #0078d4;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    display: inline-block;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    margin: 0 10px 10px 0;
+}
+
+.content-ad .ad-cta:hover {
+    background: #f8f9fa;
+    color: #0078d4;
+    text-decoration: none;
+    transform: scale(1.05);
+    border-color: #ffffff;
+}
+
+.content-ad .ad-cta.secondary {
+    background: transparent;
+    color: #ffffff;
+    border-color: #ffffff;
+}
+
+.content-ad .ad-cta.secondary:hover {
+    background: #ffffff;
+    color: #0078d4;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+    text-align: center;
+    padding: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .ansys-mechanical-ad-container {
+        margin: 10px;
+        padding: 15px;
+    }
+    
+    .sidebar-ad {
+        max-width: 100%;
+    }
+    
+    .content-ad .ad-features {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .content-ad .ad-title {
+        font-size: 20px;
+    }
+    
+    .content-ad .ad-description {
+        font-size: 14px;
+    }
+}
+
+/* Dark Theme Support */
+@media (prefers-color-scheme: dark) {
+    .ansys-mechanical-ad-container {
+        background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+        box-shadow: 0 4px 12px rgba(26, 54, 93, 0.3);
+    }
+    
+    .ansys-mechanical-ad-container:hover {
+        box-shadow: 0 6px 20px rgba(26, 54, 93, 0.4);
+    }
+}
+
+/* Animation for ad transitions */
+@keyframes slideInFromRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInFromBottom {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.sidebar-ad {
+    animation: slideInFromRight 0.8s ease-out;
+}
+
+.content-ad {
+    animation: slideInFromBottom 0.8s ease-out;
+}
+
+/* Hide ads on print */
+@media print {
+    .ansys-mechanical-ad-container {
+        display: none;
+    }
+}

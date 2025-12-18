@@ -3,4 +3,21 @@
 {%- block extrahead %}
   {{ super() }}
   <meta name="physics" content="Structures" />
+  
+  <!-- Google Analytics (replace GA_MEASUREMENT_ID with your actual ID) -->
+  <!-- Example: G-XXXXXXXXXX for GA4 or UA-XXXXXXXXX-X for Universal Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'GA_MEASUREMENT_ID');
+  </script>
+  
+  <!-- Ansys Mechanical Ads CSS -->
+  <link rel="stylesheet" type="text/css" href="{{ pathto('_static/ansys-mechanical-ads.css', 1) }}" />
+  
+  <!-- Ansys Mechanical Ads JavaScript -->
+  <script type="text/javascript" src="{{ pathto('_static/ansys-mechanical-ads.js', 1) }}"></script>
 {% endblock %}
+
