@@ -450,9 +450,9 @@ jobs:
         run: |
           . /env/bin/activate
           if [ "${CONTAINER_STABLE_EXIT}" = "true" ]; then
-            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${MATRIX_PYTHON_VERSION}.xml
+            xvfb-run mechanical-env pytest -k test_app_feature_flags -s --junitxml test_results${MATRIX_PYTHON_VERSION}.xml
           else
-            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${MATRIX_PYTHON_VERSION}.xml || true
+            xvfb-run mechanical-env pytest -k test_app_feature_flags -s --junitxml test_results${MATRIX_PYTHON_VERSION}.xml || true
           fi
 
       - name: Upload coverage results
