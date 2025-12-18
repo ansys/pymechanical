@@ -30,7 +30,7 @@ import site
 import sys
 import warnings
 
-import ansys.tools.common.path as atp
+import ansys.tools.path as atp
 import click
 
 

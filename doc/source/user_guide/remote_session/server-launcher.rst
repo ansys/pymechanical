@@ -43,8 +43,8 @@ version of Mechanical, run the following:
     new_path = "C:/Program Files/ANSYS Inc/v252/aisol/bin/winx64/AnsysWBU.exe"
     pymechanical.change_default_mechanical_path(new_path)
 
-For more information, see the `change_default_mechanical_path() <../api/_autosummary/ansys.tools.common.path.change_default_mechanical_path.html#ansys.tools.common.path.change_default_mechanical_path>`_
-and `find_mechanical() <../api/_autosummary/ansys.tools.common.path.find_mechanical.html#ansys.tools.common.path.find_mechanical>`_ methods.
+For more information, see the `change_default_mechanical_path() <../api/_autosummary/ansys.tools.path.change_default_mechanical_path.html#ansys.tools.path.change_default_mechanical_path>`_
+and `find_mechanical() <../api/_autosummary/ansys.tools.path.find_mechanical.html#ansys.tools.path.find_mechanical>`_ methods.
 
 Additionally, you can use the ``exec_file`` keyword argument to specify the location of the
 Mechanical executable file.

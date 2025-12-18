@@ -8,6 +8,6 @@ This section provides information on how to use the command line interface (CLI)
    :prog: find-mechanical
    :nested: full
 
-.. click:: ansys.tools.common.path.save:cli
+.. click:: ansys.tools.path.save:cli
    :prog: save-ansys-path
    :nested: full

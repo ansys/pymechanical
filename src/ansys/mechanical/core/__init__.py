@@ -26,7 +26,7 @@ import logging
 import os
 from pathlib import Path
 
-from ansys.tools.common.path import find_mechanical
+from ansys.tools.path import find_mechanical
 import appdirs
 
 USER_DATA_PATH = Path(appdirs.user_data_dir(appname="ansys_mechanical_core", appauthor="Ansys"))

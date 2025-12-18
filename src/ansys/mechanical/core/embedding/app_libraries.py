@@ -53,7 +53,7 @@ from pathlib import Path
 import sys
 import warnings
 
-from ansys.tools.common.path import get_mechanical_path
+from ansys.tools.path import get_mechanical_path
 
 from ansys.mechanical.core.embedding.app import App
 

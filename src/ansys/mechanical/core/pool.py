@@ -26,7 +26,7 @@ from pathlib import Path
 import time
 import warnings
 
-from ansys.tools.common.path import version_from_path
+from ansys.tools.path import version_from_path
 
 from ansys.mechanical.core.errors import VersionError
 from ansys.mechanical.core.mechanical import (

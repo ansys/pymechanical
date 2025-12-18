@@ -26,7 +26,7 @@ from pathlib import Path
 import subprocess
 import sys
 
-import ansys.tools.common.path as atp
+import ansys.tools.path as atp
 from click.testing import CliRunner
 import pytest
 

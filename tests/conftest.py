@@ -31,7 +31,7 @@ import subprocess
 import sys
 import time
 
-import ansys.tools.common.path as atp
+import ansys.tools.path as atp
 import pytest
 
 import ansys.mechanical.core as pymechanical
