@@ -3,10 +3,10 @@
 Ansys tools common path
 =======================
 
-These methods on the ``ansys.tools.path`` module provide helper functions for configuration and discovery
+These methods on the ``ansys.tools.common.path`` module provide helper functions for configuration and discovery
 of the installation path of the Mechanical application.
 
-.. currentmodule:: ansys.tools.path
+.. currentmodule:: ansys.tools.common.path
 
 .. autosummary::
    :toctree: _autosummary

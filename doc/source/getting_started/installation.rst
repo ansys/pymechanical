@@ -62,7 +62,7 @@ This package is required to use PyMechanical.
 
 .. code:: pycon
 
-   >>> from ansys.tools.path import find_mechanical
+   >>> from ansys.tools.common.path import find_mechanical
    >>> find_mechanical()
 
    or
@@ -74,14 +74,14 @@ This package is required to use PyMechanical.
 
 If you install Ansys in a directory other than the default or typical location,
 you can save this directory path using the
-`save_mechanical_path <../api/_autosummary/ansys.tools.path.save_mechanical_path.html#ansys.tools.path.save_mechanical_path>`_
+`save_mechanical_path <../api/_autosummary/ansys.tools.common.path.save_mechanical_path.html#ansys.tools.common.path.save_mechanical_path>`_
 function. Then use
-`get_mechanical_path <../api/_autosummary/ansys.tools.path.get_mechanical_path.html#ansys.tools.path.get_mechanical_path>`_
+`get_mechanical_path <../api/_autosummary/ansys.tools.common.path.get_mechanical_path.html#ansys.tools.common.path.get_mechanical_path>`_
 and ``version_from_path`` functions to verify the path and version.
 
 .. code:: pycon
 
-   >>> from ansys.tools.path import save_mechanical_path, find_mechanical
+   >>> from ansys.tools.common.path import save_mechanical_path, find_mechanical
    >>> save_mechanical_path("home/username/ansys_inc/v252/aisol/.workbench")
    >>> path = get_mechanical_path()
    >>> print(path)

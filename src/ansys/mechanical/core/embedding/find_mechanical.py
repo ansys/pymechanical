@@ -25,7 +25,7 @@ import os
 from pathlib import Path
 import sys
 
-import ansys.tools.path as atp
+import ansys.tools.common.path as atp
 import click
 
 

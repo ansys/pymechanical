@@ -612,7 +612,8 @@ def test_app_start_readonly(run_subprocess, pytestconfig, rootdir, printer):
         assert "The app is started in read-only mode" in stdout
 
 
-@pytest.mark.minimum_version(261)
+# @pytest.mark.minimum_version(261)
+@pytest.mark.skip(reason="Only supported in 26R1 and later")
 @pytest.mark.embedding
 def test_app_feature_flags(run_subprocess, pytestconfig, rootdir, printer):
     """Test app feature flags.
