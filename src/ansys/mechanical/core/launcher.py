@@ -134,28 +134,9 @@ class MechanicalLauncher:
         exe_path = self.__get_exe_path()
         MechanicalLauncher.verify_path_exists(exe_path)
 
-        # Display startup information
-        print("=" * 60)
-        print("LAUNCHING MECHANICAL SERVER")
-        print("=" * 60)
-        print(f"Host: {self.host}")
-        print(f"Port: {self.port}")
-        print(f"Transport Mode: {self.transport_mode}")
-        print(f"Mode: {'Batch' if self.batch else 'UI'}")
-
-        # Check service pack support
-        if self.version:
-            has_sp = has_grpc_service_pack(self.version)
-            print(f"Version: {self.version} (Service Pack 4+: {'Yes' if has_sp else 'No'})")
-            if has_sp:
-                print("Secure Options: Enabled")
-                print(f"Certs Directory: {self.certs_dir}")
-            else:
-                print("Secure Options: Not supported (will use insecure)")
-        else:
-            print("Version: Auto-detected")
-
-        print("=" * 60)
+        # Display minimal startup information only in verbose mode
+        if self.verbose:
+            print(f"Starting Mechanical on {self.host}:{self.port} ({self.transport_mode})")
 
         env_variables = self.__get_env_variables()
         args_list = self.__get_commandline_args()
@@ -164,7 +145,6 @@ class MechanicalLauncher:
         if self.verbose:
             command = " ".join(args_list)
             print(f"Command: {command}")
-            print("=" * 60)
 
         if is_linux():
             # In verbose mode, capture output to help debug issues
@@ -178,19 +158,6 @@ class MechanicalLauncher:
                     text=True,
                     bufsize=1,
                 )  # nosec: B603
-                # Print a few lines of output to help debug
-                print("\nMechanical process output (first few lines):")
-                print("-" * 60)
-                import threading
-
-                def print_output():
-                    for i, line in enumerate(process.stdout):
-                        if i < 20:  # Print first 20 lines
-                            print(line, end="")
-                        else:
-                            break
-
-                threading.Thread(target=print_output, daemon=True).start()
             else:
                 process = subprocess.Popen(
                     args_list,
@@ -206,11 +173,6 @@ class MechanicalLauncher:
             )
 
         LOG.info(f"Started the process:{process} using {args_list}.")
-
-        print("Mechanical server started successfully!")
-        print(f"Server address: {self.host}:{self.port}")
-        print(f"Transport: {self.transport_mode}")
-        print("=" * 60)
 
     @staticmethod
     def verify_path_exists(exe_path):
@@ -275,10 +237,6 @@ class MechanicalLauncher:
                     )
 
                 # For older versions, use simple port argument (legacy behavior)
-                print(
-                    f"Starting Mechanical {version} server on port {self.port} "
-                    f"(insecure - legacy mode)"
-                )
 
                 # Add batch or UI mode arguments first
                 if self.batch:
@@ -313,13 +271,6 @@ class MechanicalLauncher:
                 # WNUA mode validation (Windows only)
                 if is_linux():
                     raise Exception("WNUA transport mode is only supported on Windows.")
-                print("Using WNUA (Windows Named User Authentication)")
-
-            # Simple startup message
-            print(
-                f"Starting Mechanical {version} server on {self.host}:{self.port} "
-                f"({self.transport_mode})"
-            )
 
             # Add batch or UI mode arguments first
             if self.batch:

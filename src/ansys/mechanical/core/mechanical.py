@@ -317,7 +317,6 @@ class Mechanical(object):
         additional_switches="",
         start_instance=True,
         cleanup_on_exit_=True,
-        check_build=True,
         loglevel="ERROR",
         log_file=False,
         log_mechanical=None,
@@ -691,20 +690,6 @@ class Mechanical(object):
 
         self.log_debug("Established a connection to the Mechanical gRPC server.")
 
-        # Display connection success information
-        print("Successfully connected to Mechanical gRPC server!")
-        print(f"Server: {self._ip}:{self._port}")
-
-        # Show transport mode information
-        if hasattr(self, "_transport_mode") and self._transport_mode:
-            print(f"Transport Mode: {self._transport_mode}")
-            if self._transport_mode in ["wnua", "mtls"]:
-                print("Using secure transport")
-            else:
-                print("Using insecure transport")
-        else:
-            print("Transport Mode: insecure (default)")
-
         self.wait_till_mechanical_is_ready(timeout)
 
         # keeps Mechanical session alive
@@ -1035,10 +1020,6 @@ class Mechanical(object):
         time_interval_seconds = int(time_interval.total_seconds())
 
         self.log_info(f"Mechanical is ready. It took {time_interval_seconds} seconds to verify.")
-
-        print("Mechanical is ready for operations!")
-        print(f"Startup completed in {time_interval_seconds} seconds")
-        print("=" * 60)
 
     def __is_mechanical_ready(self):
         """Whether the Mechanical gRPC server is ready.
