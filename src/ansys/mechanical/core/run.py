@@ -200,30 +200,7 @@ def _cli_impl(
                         "Please provide a valid directory containing TLS certificates."
                     )
 
-                # Check for required server certificate files
-                # ansys-mechanical CLI starts the Mechanical gRPC server,
-                # so we only need server certificates
-                required_server_files = ["server.cert", "server.key", "ca.cert"]
-
-                # Check if all required server certificate files exist
-                missing_files = [f for f in required_server_files if not (certs_path / f).exists()]
-
-                if missing_files:
-                    # List what files are in the directory for debugging
-                    existing_files = [f.name for f in certs_path.iterdir() if f.is_file()]
-                    files_info = (
-                        f"Found files: {', '.join(existing_files)}"
-                        if existing_files
-                        else "Directory is empty"
-                    )
-
-                    raise click.ClickException(
-                        f"Missing required server certificate files in: {certs_dir}\n"
-                        f"{files_info}\n"
-                        f"Missing: {', '.join(missing_files)}\n"
-                        f"Required files: server.cert, server.key, ca.cert\n"
-                        "Please provide a directory containing valid server TLS certificates."
-                    )
+                # Certificate validation will be handled by ansys.tools.common.cyberchannel
 
     # Validate that gRPC options are only used with port
     if not port and (transport_mode or grpc_host or certs_dir):

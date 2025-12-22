@@ -427,16 +427,25 @@ class Mechanical(object):
                     "If `channel` is specified, neither `port` nor `ip` can be specified."
                 )
         elif ip is None:
-            ip_temp = "127.0.0.1"
+            # For mTLS, use "localhost" to match certificate CN; otherwise use IP
+            if transport_mode and transport_mode.lower() == "mtls":
+                ip_temp = "localhost"
+            else:
+                ip_temp = "127.0.0.1"
         else:
             # Special handling for 0.0.0.0 (used for server binding, not client connections)
             if ip == "0.0.0.0":
                 LOG.warning(
-                    "Client cannot connect to 0.0.0.0. Converting to 127.0.0.1 for connection."
+                    "Client cannot connect to 0.0.0.0. Converting to localhost for connection."
                 )
-                ip_temp = "127.0.0.1"
+                ip_temp = "localhost"
             else:
-                ip_temp = socket.gethostbyname(ip)  # Converting ip or host name to ip
+                # For mTLS with explicit IP, convert to hostname to match certificates
+                if transport_mode and transport_mode.lower() == "mtls":
+                    # Don't resolve to IP for mTLS - keep hostname for cert validation
+                    ip_temp = ip
+                else:
+                    ip_temp = socket.gethostbyname(ip)  # Converting ip or host name to ip
 
         self._ip = ip_temp
         self._port = port
@@ -789,31 +798,30 @@ class Mechanical(object):
 
         channel_str = f"{ip}:{port}"
 
-        # Check if the version supports advanced gRPC options
+        # If secure transport is explicitly requested, always try to create it
+        # (regardless of version - client connections may not know version yet)
+        if transport_mode and transport_mode.lower() != "insecure":
+            try:
+                # Use cyberchannel for secure connections
+                channel = create_channel(
+                    host=ip,
+                    port=port,
+                    transport_mode=transport_mode,
+                    certs_dir=certs_dir,
+                )
+                return channel
+            except Exception as e:
+                # No fallback for explicitly requested secure modes - fail hard
+                raise Exception(
+                    f"Failed to create secure {transport_mode} channel: {e}. "
+                    f"Check certificates in {certs_dir} or use transport_mode='insecure'."
+                ) from e
+
+        # Check if the version supports advanced gRPC options for default behavior
         if self._version and has_grpc_service_pack(self._version):
             LOG.debug(
                 f"Creating secure channel at {channel_str} with transport mode: {transport_mode}"
             )
-
-            # If secure transport is explicitly requested, validate and fail if not possible
-            if transport_mode and transport_mode.lower() != "insecure":
-                try:
-                    # Use cyberchannel for secure connections
-                    channel = create_channel(
-                        target=channel_str,
-                        transport_mode=transport_mode,
-                        certs_dir=certs_dir,
-                        options=[
-                            ("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
-                        ],
-                    )
-                    return channel
-                except Exception as e:
-                    # No fallback for explicitly requested secure modes - fail hard
-                    raise Exception(
-                        f"Failed to create secure {transport_mode} channel: {e}. "
-                        f"Check certificates in {certs_dir} or use transport_mode='insecure'."
-                    ) from e
 
             # Default behavior: try secure first, then fallback (only when no explicit mode)
             if not transport_mode:
@@ -823,12 +831,10 @@ class Mechanical(object):
 
                     default_mode = "wnua" if not is_linux() else "mtls"
                     channel = create_channel(
-                        target=channel_str,
+                        host=ip,
+                        port=port,
                         transport_mode=default_mode,
                         certs_dir=certs_dir,
-                        options=[
-                            ("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
-                        ],
                     )
                     return channel
                 except Exception as e:
@@ -836,11 +842,15 @@ class Mechanical(object):
                     LOG.warning("Falling back to insecure channel.")
         else:
             if transport_mode or certs_dir != "certs":
-                LOG.warning("This version does not support advanced gRPC options.")
-                LOG.warning("Only insecure channel will be established.")
                 LOG.warning(
-                    "To establish secure connection, update product to Service Pack 04 or above."
+                    "This version does not support advanced gRPC options (or version is unknown)."
                 )
+                if not transport_mode or transport_mode.lower() == "insecure":
+                    LOG.warning("Only insecure channel will be established.")
+                    LOG.warning(
+                        "To establish secure connection, update product to "
+                        "Service Pack 04 or above."
+                    )
 
         # Fallback to insecure channel
         LOG.debug(f"Opening insecure channel at {channel_str}.")
@@ -2161,6 +2171,10 @@ def launch_grpc(
         else:
             transport_mode = "WNUA"
 
+    # For mTLS, use "localhost" to match certificate CN if host is still default
+    if transport_mode and transport_mode.upper() == "MTLS" and host == "127.0.0.1":
+        host = "localhost"
+
     mechanical_launcher = MechanicalLauncher(
         batch,
         port,
@@ -2428,15 +2442,22 @@ def launch_mechanical(
         )
 
     if ip is None:
-        ip = os.environ.get("PYMECHANICAL_IP", LOCALHOST)
+        # For mTLS, default to localhost to match certificate CN; otherwise use IP
+        if transport_mode and transport_mode.lower() == "mtls":
+            ip = os.environ.get("PYMECHANICAL_IP", "localhost")
+        else:
+            ip = os.environ.get("PYMECHANICAL_IP", LOCALHOST)
     else:  # pragma: no cover
-        # Only resolve hostname if it's not already a valid IP address
-        # Preserve special addresses like 0.0.0.0 (bind to all interfaces)
-        try:
-            socket.inet_aton(ip)  # Check if it's already a valid IP
-        except socket.error:
-            # Not a valid IP, try to resolve as hostname
-            ip = socket.gethostbyname(ip)
+        # For mTLS, preserve hostname for certificate validation
+        # Otherwise, resolve hostname to IP address
+        if transport_mode and transport_mode.lower() != "mtls":
+            # Only resolve hostname if it's not already a valid IP address
+            # Preserve special addresses like 0.0.0.0 (bind to all interfaces)
+            try:
+                socket.inet_aton(ip)  # Check if it's already a valid IP
+            except socket.error:
+                # Not a valid IP, try to resolve as hostname
+                ip = socket.gethostbyname(ip)
 
     check_valid_ip(ip)  # double check
 

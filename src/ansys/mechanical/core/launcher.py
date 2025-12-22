@@ -307,33 +307,7 @@ class MechanicalLauncher:
             if self.transport_mode.lower() == "mtls":
                 if not self.certs_dir:
                     raise Exception("Certificate directory is required for mtls transport mode.")
-
-                # Validate certificate directory exists
-                from pathlib import Path
-
-                cert_path = Path(self.certs_dir)
-                if not cert_path.exists():
-                    raise Exception(f"Certificate directory does not exist: {self.certs_dir}")
-
-                if not cert_path.is_dir():
-                    raise Exception(f"Certificate path is not a directory: {self.certs_dir}")
-
-                # Validate required certificate files exist
-                required_certs = ["client.cert", "client.key", "ca.cert"]
-                missing_certs = []
-
-                for cert_file in required_certs:
-                    cert_file_path = cert_path / cert_file
-                    if not cert_file_path.exists():
-                        missing_certs.append(cert_file)
-
-                if missing_certs:
-                    raise Exception(
-                        f"Missing required certificate files in {self.certs_dir}: "
-                        f"{', '.join(missing_certs)}. Required files: {', '.join(required_certs)}"
-                    )
-
-                print(f"Certificate validation passed: {self.certs_dir}")
+                # Certificate validation will be handled by ansys.tools.common.cyberchannel
 
             elif self.transport_mode.lower() == "wnua":
                 # WNUA mode validation (Windows only)
