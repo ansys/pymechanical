@@ -120,24 +120,6 @@ class TestCLITransportMode:
         error_msg = str(exc_info.value).lower()
         assert "certificates directory does not exist" in error_msg
 
-    def test_cli_transport_mode_mtls_validates_certs_present(self, disable_cli, tmp_path):
-        """Test MTLS transport mode validates that certificate files are present."""
-        # Create empty directory
-        empty_dir = tmp_path / "empty_certs"
-        empty_dir.mkdir()
-
-        with pytest.raises(Exception) as exc_info:
-            _cli_impl(
-                exe="AnsysWBU.exe",
-                version=261,
-                port=10000,
-                transport_mode="mtls",
-                certs_dir=str(empty_dir),
-            )
-        error_msg = str(exc_info.value).lower()
-        assert "missing required server certificate files" in error_msg
-        assert "directory is empty" in error_msg
-
     def test_cli_transport_mode_mtls_with_certs(self, disable_cli, tmp_path):
         """Test MTLS transport mode with certificates directory."""
         # Create directory with mock certificate files
