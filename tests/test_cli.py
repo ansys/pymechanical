@@ -277,7 +277,12 @@ def test_cli_batch_required_args(disable_cli):
 
     # ansys-mechanical -r <version> -port 11 => no exception
     try:
-        _cli_impl(exe="AnsysWBU.exe", version=max(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS), port=11)
+        _cli_impl(
+            exe="AnsysWBU.exe",
+            version=max(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS),
+            port=11,
+            transport_mode="insecure",
+        )
     except Exception as e:
         assert False, f"cli raised an exception: {e}"
 
@@ -502,7 +507,8 @@ def test_ideconfig_no_revision():
 @pytest.mark.cli
 def test_cli_engine_type_args(disable_cli, pytestconfig):
     """Test engine type selection arguments."""
-    args, _ = _cli_impl(exe="AnsysWBU.exe", port=11)
+    # Must specify version and transport_mode when using port to avoid SP04 check errors
+    args, _ = _cli_impl(exe="AnsysWBU.exe", port=11, version=261, transport_mode="insecure")
     assert "-engineType" not in args
 
     # Select ironpython engine type

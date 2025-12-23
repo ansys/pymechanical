@@ -175,3 +175,90 @@ def is_float(input_string):
         return True
     except ValueError:
         return False
+
+
+def has_grpc_service_pack(version):
+    """Check if the Mechanical version supports advanced gRPC options.
+
+    Mechanical versions 241 and later support gRPC, but advanced options like
+    transport modes and host binding require Service Pack 04 or later.
+
+    For version 241, this always returns True (assumes SP04+).
+    For version 261, this always returns True (forced override).
+    For other versions, it checks the builddate.txt file.
+
+    Parameters
+    ----------
+    version : int
+        Mechanical version number (e.g., 241, 251, 261).
+
+    Returns
+    -------
+    bool
+        True if version has SP04+ support, False otherwise.
+    """
+    if version == 241:
+        return True
+
+    if version == 261:
+        # FORCED OVERRIDE: Assuming v261 has SP04 support
+        # WARNING: This may not be correct for all v261 installations
+        return True
+
+    # For other versions, check builddate
+    from ansys.tools.common.path import get_mechanical_path
+
+    exe_path = get_mechanical_path(allow_input=False, version=version)
+
+    # If the mechanical path cannot be found, assume no SP04
+    if exe_path is None:
+        return False
+
+    exe_path = Path(exe_path)
+
+    # Navigate to version root directory (v251) where builddate.txt is located
+    # Path structure: .../v251/aisol/bin/winx64/AnsysWBU.exe -> .../v251
+    if is_windows():
+        # Windows: go up from bin/winx64/AnsysWBU.exe to aisol, then to v251
+        version_root = exe_path.parent.parent.parent.parent
+    else:
+        # Linux: path is typically .../v251/aisol/.workbench -> .../v251
+        version_root = exe_path.parent.parent
+
+    builddate_file = version_root / "builddate.txt"
+
+    if not builddate_file.exists():
+        # If builddate.txt doesn't exist, assume no SP04
+        return False
+
+    # Read first two lines and check for SP04 or higher
+    try:
+        with builddate_file.open("r", encoding="utf-8", errors="ignore") as f:
+            line1 = f.readline().strip()
+            line2 = f.readline().strip()
+    except UnicodeDecodeError:
+        # Try with different encoding if UTF-8 fails
+        with builddate_file.open("r", encoding="latin1", errors="ignore") as f:
+            line1 = f.readline().strip()
+            line2 = f.readline().strip()
+
+    # Check if either line contains SP04 or higher service pack
+    combined_text = f"{line1} {line2}".upper()
+
+    # Look for SP04, SP05, SP06, etc. (SP04 through SP19 should be sufficient)
+    for sp_num in range(4, 20):
+        sp_tag = f"SP{sp_num:02d}"
+        if sp_tag in combined_text:
+            return True
+
+    return False
+
+
+def is_linux() -> bool:
+    """Check if the host machine is Linux.
+
+    Returns
+    -------
+    ``True`` if the host machine is Linux, ``False`` otherwise.
+    """
+    return os.name == "posix"
