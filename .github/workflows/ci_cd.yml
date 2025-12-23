@@ -367,7 +367,7 @@ jobs:
           fail_on_failure: true
 
       - name: Upload coverage results
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: matrix.mechanical-version == needs.revn-variations.outputs.test_docker_image_version
         with:
           include-hidden-files: true
@@ -376,7 +376,7 @@ jobs:
           retention-days: 7
 
       - name: Upload coverage results (as .coverage)
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: matrix.mechanical-version == needs.revn-variations.outputs.test_docker_image_version
         with:
           include-hidden-files: true
@@ -394,7 +394,7 @@ jobs:
           lscpu
 
       - name: Upload container logs
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: mechanical_tests_log-${{ matrix.mechanical-version }}
           path: mechanical_tests_log-${{ matrix.mechanical-version }}.txt
@@ -456,7 +456,7 @@ jobs:
           fi
 
       - name: Upload coverage results
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
           include-hidden-files: true
@@ -465,7 +465,7 @@ jobs:
           retention-days: 7
 
       - name: Upload coverage results (as .coverage)
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
           include-hidden-files: true
@@ -535,7 +535,7 @@ jobs:
           pytest -m cli -s --junitxml test_results_cli_scripts${MAIN_PYTHON_VERSION}.xml
 
       - name: Upload coverage results
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
           include-hidden-files: true
@@ -544,7 +544,7 @@ jobs:
           retention-days: 7
 
       - name: Upload coverage results (as .coverage)
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
           include-hidden-files: true
@@ -631,7 +631,7 @@ jobs:
           fail_on_failure: true
 
       - name: Upload coverage results
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
           include-hidden-files: true
@@ -640,7 +640,7 @@ jobs:
           retention-days: 7
 
       - name: Upload coverage results (as .coverage)
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: env.MAIN_PYTHON_VERSION == matrix.python-version
         with:
           include-hidden-files: true
@@ -745,7 +745,7 @@ jobs:
           make -C doc linkcheck
 
       - name: Upload HTML Documentation
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: documentation-html
           path: doc/_build/html
@@ -849,7 +849,7 @@ jobs:
           coverage xml -o .coverage-combined/xml
 
       - name: Upload combined coverage results
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           include-hidden-files: true
           name: combined-coverage-results
