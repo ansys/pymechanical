@@ -149,9 +149,12 @@ def _cli_impl(
             if not transport_mode:
                 transport_mode = "insecure"
                 if detected_version:
+                    from ansys.mechanical.core.misc import get_service_pack_message
+
+                    sp_msg = get_service_pack_message(detected_version)
                     print(
-                        f"Warning: Version {detected_version} does not support secure gRPC."
-                        "Using insecure mode ..."
+                        f"Warning: Version {detected_version} does not support secure gRPC. "
+                        f"{sp_msg} Using insecure mode..."
                     )
                 else:
                     print("Warning: Unable to detect version. Using insecure mode.")

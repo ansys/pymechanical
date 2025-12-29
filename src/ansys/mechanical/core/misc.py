@@ -178,80 +178,122 @@ def is_float(input_string):
 
 
 def has_grpc_service_pack(version):
-    """Check if the Mechanical version supports advanced gRPC options.
+    """Check if the Mechanical version supports advanced gRPC security options.
 
-    Mechanical versions 241 and later support gRPC, but advanced options like
-    transport modes and host binding require Service Pack 04 or later.
-
-    For version 241, this always returns True (assumes SP04+).
-    For version 261, this always returns True (forced override).
-    For other versions, it checks the builddate.txt file.
+    Advanced gRPC options (transport modes and host binding) require specific service packs:
+    - 2024 R2 (242): requires SP05+
+    - 2025 R1 (251): requires SP04+
+    - 2025 R2 (252): requires SP03+
+    - 2026 R1 (261)+: all versions supported
 
     Parameters
     ----------
     version : int
-        Mechanical version number (e.g., 241, 251, 261).
+        Mechanical version number (e.g., 242, 251, 252, 261).
 
     Returns
     -------
     bool
-        True if version has SP04+ support, False otherwise.
+        True if version has required service pack for gRPC security, False otherwise.
     """
-    if version == 241:
+    # Handle None version
+    if version is None:
+        return False
+
+    # Version 261+ has built-in support
+    if version >= 261:
         return True
 
-    if version == 261:
-        # FORCED OVERRIDE: Assuming v261 has SP04 support
-        # WARNING: This may not be correct for all v261 installations
-        return True
+    # Versions before 242 don't support secure gRPC
+    if version < 242:
+        return False
 
-    # For other versions, check builddate
+    # Define minimum required service pack for each version
+    min_service_pack = {
+        242: 5,  # 2024 R2 requires SP05
+        251: 4,  # 2025 R1 requires SP04
+        252: 3,  # 2025 R2 requires SP03
+    }
+
+    # If version not in our supported list, assume no support
+    if version not in min_service_pack:
+        return False
+
+    required_sp = min_service_pack[version]
+
+    # Get the executable path to find builddate.txt
     from ansys.tools.common.path import get_mechanical_path
 
     exe_path = get_mechanical_path(allow_input=False, version=version)
 
-    # If the mechanical path cannot be found, assume no SP04
     if exe_path is None:
         return False
 
     exe_path = Path(exe_path)
 
-    # Navigate to version root directory (v251) where builddate.txt is located
-    # Path structure: .../v251/aisol/bin/winx64/AnsysWBU.exe -> .../v251
+    # Navigate to version root directory where builddate.txt is located
     if is_windows():
-        # Windows: go up from bin/winx64/AnsysWBU.exe to aisol, then to v251
         version_root = exe_path.parent.parent.parent.parent
     else:
-        # Linux: path is typically .../v251/aisol/.workbench -> .../v251
         version_root = exe_path.parent.parent
 
     builddate_file = version_root / "builddate.txt"
 
     if not builddate_file.exists():
-        # If builddate.txt doesn't exist, assume no SP04
         return False
 
-    # Read first two lines and check for SP04 or higher
+    # Read builddate.txt and check for service pack
     try:
         with builddate_file.open("r", encoding="utf-8", errors="ignore") as f:
             line1 = f.readline().strip()
             line2 = f.readline().strip()
     except UnicodeDecodeError:
-        # Try with different encoding if UTF-8 fails
         with builddate_file.open("r", encoding="latin1", errors="ignore") as f:
             line1 = f.readline().strip()
             line2 = f.readline().strip()
 
-    # Check if either line contains SP04 or higher service pack
     combined_text = f"{line1} {line2}".upper()
 
-    # Look for SP04, SP05, SP06, etc. (SP04 through SP19 should be sufficient)
-    for sp_num in range(4, 20):
+    # Check if the installed service pack meets the requirement
+    for sp_num in range(required_sp, 20):
         sp_tag = f"SP{sp_num:02d}"
         if sp_tag in combined_text:
             return True
 
     return False
+
+
+def get_service_pack_message(version):
+    """Get the required service pack message for a given version.
+
+    Parameters
+    ----------
+    version : int
+        Mechanical version number (e.g., 241, 242, 251, 252).
+
+    Returns
+    -------
+    str
+        Message indicating required service pack, or empty string if not applicable.
+    """
+    service_pack_requirements = {
+        242: "SP05",  # 2024 R2
+        251: "SP04",  # 2025 R1
+        252: "SP03",  # 2025 R2
+    }
+
+    if version == 241:
+        # 2024 R1 does not support secure gRPC at all
+        return (
+            "Update to Ansys 2024 R2 or later with required service pack for secure gRPC support."
+        )
+    elif version in service_pack_requirements:
+        sp_required = service_pack_requirements[version]
+        return f"Update to Service Pack {sp_required} or later for secure gRPC support."
+    elif version >= 261:
+        return ""  # Version 261+ has built-in support
+    else:
+        return "Update to Ansys 2024 R2 or later for secure gRPC support."
 
 
 def is_linux() -> bool:

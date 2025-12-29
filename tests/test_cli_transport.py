@@ -393,22 +393,18 @@ class TestCLITransportModeEdgeCases:
         # Note: Warning may be printed even for explicit insecure mode on legacy versions
         # This is acceptable behavior - we don't need to verify the warning text
 
-    def test_cli_version_241_treated_as_sp04(self, disable_cli):
-        """Test version 241 is treated as having SP04 support."""
-        import os
+    def test_cli_version_241_no_secure_support(self, disable_cli):
+        """Test version 241 does not support secure gRPC modes."""
+        # Version 241 (2024 R1) does not support secure gRPC at all
+        # It should only work with insecure mode
+        with pytest.raises(Exception) as exc_info:
+            _cli_impl(exe="AnsysWBU.exe", version=241, port=10000, transport_mode="wnua")
+        assert "241" in str(exc_info.value)
+        assert "does not support" in str(exc_info.value).lower()
 
-        if os.name != "nt":
-            # On Linux, wnua should raise an error
-            with pytest.raises(Exception) as exc_info:
-                _cli_impl(exe="AnsysWBU.exe", version=241, port=10000, transport_mode="wnua")
-            assert "wnua" in str(exc_info.value).lower()
-            assert "not available on linux" in str(exc_info.value).lower()
-            return
-
-        args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, port=10000, transport_mode="wnua")
-        # Version 241 is assumed to have SP04 in has_grpc_service_pack
-        assert "--transport-mode" in args
-        assert "wnua" in args or "WNUA" in args
+        # Insecure mode should work
+        args, _ = _cli_impl(exe="AnsysWBU.exe", version=241, port=10000, transport_mode="insecure")
+        assert "-grpc" in args
 
     def test_cli_port_with_script_fails(self, disable_cli):
         """Test that port cannot be used with input script."""

@@ -225,15 +225,23 @@ class MechanicalLauncher:
         if self.port:
             # For versions without service pack, validate transport mode
             if not supports_grpc:
+                from ansys.mechanical.core.misc import get_service_pack_message
+
+                sp_msg = (
+                    get_service_pack_message(version)
+                    if version
+                    else "Update to a supported version."
+                )
+
                 if not self.transport_mode:
                     raise Exception(
-                        f"Mechanical {version or 'unknown'} does not support secure gRPC. "
-                        "Use transport_mode='insecure' or update to Service Pack 04+."
+                        f"Mechanical version {version or 'unknown'} does not support secure gRPC. "
+                        f"Use transport_mode='insecure' or {sp_msg}"
                     )
                 elif self.transport_mode != "insecure":
                     raise Exception(
-                        f"Mechanical {version or 'unknown'} only supports insecure mode. "
-                        "Use transport_mode='insecure' or update to Service Pack 04+."
+                        f"Mechanical version {version or 'unknown'} only supports insecure mode. "
+                        f"Use transport_mode='insecure' or {sp_msg}"
                     )
 
                 # For older versions, use simple port argument (legacy behavior)
