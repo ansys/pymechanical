@@ -38,6 +38,7 @@ import threading
 import time
 import typing
 from typing import Optional
+import uuid
 import warnings
 import weakref
 
@@ -413,6 +414,9 @@ class Mechanical(object):
         self._transport_mode = transport_mode
         self._certs_dir = certs_dir
 
+        # Generate unique instance ID for this client
+        self._instance_id = str(uuid.uuid4())[:8]
+
         self._locked = False  # being used within MechanicalPool
 
         # ip could be a machine name. Convert it to an IP address.
@@ -592,14 +596,12 @@ class Mechanical(object):
         """Name (unique identifier) of the Mechanical instance."""
         try:
             if self._channel is not None:
-                if self._remote_instance is not None:  # pragma: no cover
-                    return f"GRPC_{self._channel._channel._channel.target().decode()}"
-                else:
-                    return f"GRPC_{self._channel._channel.target().decode()}"
+                target = self._channel._channel.target().decode()
+                return f"GRPC_{target}_[{self._instance_id}]"
         except Exception as e:  # pragma: no cover
             LOG.error(f"Error getting the Mechanical instance name: {str(e)}")
 
-        return f"GRPC_instance_{id(self)}"  # pragma: no cover
+        return f"GRPC_instance_{self._instance_id}"  # pragma: no cover
 
     @property
     def busy(self):
