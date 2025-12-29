@@ -308,15 +308,12 @@ class Mechanical(object):
         cleanup_on_exit=True,
         remote_instance=None,
         exec_file=None,
-        run_location=None,
         ip="127.0.0.1",
         port=10000,
         host="localhost",
         transport_mode=None,
         certs_dir=None,
         additional_switches="",
-        start_instance=True,
-        cleanup_on_exit_=True,
         loglevel="ERROR",
         log_file=False,
         log_mechanical=None,
@@ -543,9 +540,11 @@ class Mechanical(object):
         if hasattr(self, "_cleanup_on_exit") and self._cleanup_on_exit:
             try:
                 self.exit(force=True)
-            except grpc.RpcError as e:
-                if hasattr(self, "log_error"):
-                    self.log_error(f"exit: {e}")
+            except Exception:
+                # Silently ignore all errors during cleanup
+                # Logging may not be available during object destruction
+                # grpc.RpcError is not a valid exception type in newer gRPC versions
+                pass
 
     # def _set_log_level(self, level):
     #     """Set an alias for the log level."""
