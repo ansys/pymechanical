@@ -6,37 +6,58 @@ Securing gRPC Connections
 PyMechanical supports secure gRPC connections using mTLS, WNUA, or insecure modes.
 
 .. warning::
-   Secure connections (mTLS, WNUA) require Ansys 24R2 SP4+ or Ansys 26R1+.
-   Earlier versions only support insecure mode.
+   Secure connections (mTLS, WNUA) require specific service packs for each version.
+   Versions without the required service pack only support insecure mode.
 
-Version Support
----------------
+Version and Service Pack Requirements
+--------------------------------------
 
 .. list-table::
    :header-rows: 1
-   :widths: 25 25 25 25
+   :widths: 20 20 30 30
 
    * - Version
-     - Service Pack
-     - Windows
-     - Linux
-   * - < 24R2 SP4
-     - Any
+     - Required SP for Secure
+     - Windows (default: **wnua**)
+     - Linux (default: **mtls**)
+   * - 2024 R1 (241)
+     - Not supported
      - insecure only
      - insecure only
-   * - 24R2+ / 25R1+ / 25R2+
-     - SP4+
+   * - 2024 R2 (242)
+     - **SP05+**
      - insecure, **wnua**, mtls
-     - insecure, mtls
-   * - 26R1+
-     - All
+     - insecure, **mtls**
+   * - 2025 R1 (251)
+     - **SP04+**
      - insecure, **wnua**, mtls
-     - insecure, mtls
+     - insecure, **mtls**
+   * - 2025 R2 (252)
+     - **SP03+**
+     - insecure, **wnua**, mtls
+     - insecure, **mtls**
+   * - 2026 R1+ (261+)
+     - All SPs
+     - insecure, **wnua**, mtls
+     - insecure, **mtls**
+
+.. note::
+   - Ansys 2024 R1 (241) and earlier versions **only support insecure mode**.
+   - If your installation does not have the required service pack listed above,
+     only insecure mode is available.
+   - To check your service pack version, look at the ``builddate.txt`` file in your
+     Ansys installation directory.
 
 Transport Modes
 ---------------
 
-**mTLS (Mutual TLS)** - Recommended for production. Uses certificates for mutual authentication.
+PyMechanical automatically selects the default transport mode based on your platform:
+- **Windows**: WNUA (Windows Named User Authentication) - default
+- **Linux**: mTLS (Mutual TLS) - default
+
+You can override the default by explicitly specifying ``transport_mode``.
+
+**mTLS (Mutual TLS)** - Recommended for production and default on Linux. Uses certificates for mutual authentication.
 
 .. code-block:: python
 
@@ -49,7 +70,7 @@ Transport Modes
 Certificate directory must contain: ``ca.crt``, ``client.crt``, ``client.key``.
 See `PyAnsys mTLS guide <https://tools.docs.pyansys.com/version/stable/user_guide/secure_grpc.html#generating-certificates-for-mtls>`_.
 
-**WNUA (Windows Named User Authentication)** - Windows only. Uses Windows credentials.
+**WNUA (Windows Named User Authentication)** - Windows only, default on Windows. Uses Windows credentials for seamless authentication.
 
 .. code-block:: python
 
@@ -78,6 +99,13 @@ CLI Usage
 Connecting to Existing Instance
 --------------------------------
 
+When connecting to an existing Mechanical instance, the transport mode must match the server's mode.
+
+.. note::
+   - **Windows**: Default is WNUA. You can also use mTLS or insecure.
+   - **Linux**: Default is mTLS (WNUA is not available). You can also use insecure.
+   - If you don't specify ``transport_mode``, the platform default will be used.
+
 Use ``launch_mechanical()`` with ``start_instance=False``:
 
 .. code-block:: python
@@ -87,7 +115,7 @@ Use ``launch_mechanical()`` with ``start_instance=False``:
        start_instance=False,
        ip="127.0.0.1",
        port=10000,
-       transport_mode="wnua"  # Must match server mode
+       transport_mode="wnua"  # Must match server mode (Windows only)
    )
 
 Or use the ``connect_to_mechanical()`` convenience function:
@@ -96,14 +124,14 @@ Or use the ``connect_to_mechanical()`` convenience function:
 
    from ansys.mechanical.core import connect_to_mechanical
 
-   # WNUA mode
+   # WNUA mode (Windows only, default on Windows)
    mechanical = connect_to_mechanical(
        ip="127.0.0.1",
        port=10000,
        transport_mode="wnua"
    )
 
-   # mTLS mode
+   # mTLS mode (cross-platform, default on Linux)
    mechanical = connect_to_mechanical(
        ip="127.0.0.1",
        port=10000,
@@ -111,7 +139,7 @@ Or use the ``connect_to_mechanical()`` convenience function:
        certs_dir="/path/to/certs"
    )
 
-   # Insecure mode
+   # Insecure mode (cross-platform, for development only)
    mechanical = connect_to_mechanical(
        ip="127.0.0.1",
        port=10000,
