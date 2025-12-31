@@ -1,7 +1,7 @@
 .. _grpc_security:
 
-Securing gRPC Connections
-==========================
+Secure gRPC connections
+=======================
 
 PyMechanical supports secure gRPC connections using mTLS, WNUA, or insecure modes.
 
@@ -9,7 +9,7 @@ PyMechanical supports secure gRPC connections using mTLS, WNUA, or insecure mode
    Secure connections (mTLS, WNUA) require specific service packs for each version.
    Versions without the required service pack only support insecure mode.
 
-Version and Service Pack Requirements
+Version and service pack requirements
 --------------------------------------
 
 .. list-table::
@@ -48,7 +48,7 @@ Version and Service Pack Requirements
    - To check your service pack version, look at the ``builddate.txt`` file in your
      Ansys installation directory.
 
-Transport Modes
+Transport modes
 ---------------
 
 PyMechanical automatically selects the default transport mode based on your platform:
@@ -82,7 +82,7 @@ See `PyAnsys mTLS guide <https://tools.docs.pyansys.com/version/stable/user_guid
 
    mechanical = launch_mechanical(port=10000, transport_mode="insecure")
 
-CLI Usage
+CLI usage
 ---------
 
 .. code-block:: bash
@@ -96,7 +96,7 @@ CLI Usage
    # Insecure mode
    ansys-mechanical --port 10000 --transport-mode insecure
 
-Connecting to Existing Instance
+Connect to an existing instance
 --------------------------------
 
 When connecting to an existing Mechanical instance, the transport mode must match the server's mode.
@@ -104,7 +104,7 @@ When connecting to an existing Mechanical instance, the transport mode must matc
 .. note::
    - **Windows**: Default is WNUA. You can also use mTLS or insecure.
    - **Linux**: Default is mTLS (WNUA is not available). You can also use insecure.
-   - If you don't specify ``transport_mode``, the platform default will be used.
+   - If you don't specify ``transport_mode``, the platform default is used.
 
 Use ``launch_mechanical()`` with ``start_instance=False``:
 
