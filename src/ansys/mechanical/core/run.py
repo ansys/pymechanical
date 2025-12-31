@@ -154,10 +154,11 @@ def _cli_impl(
                     sp_msg = get_service_pack_message(detected_version)
                     print(
                         f"Warning: Version {detected_version} does not support secure gRPC. "
-                        f"{sp_msg} Using insecure mode..."
+                        f"Secure gRPC is recommended for enhanced security."
+                        f"{sp_msg} Falling back to insecure mode."
                     )
                 else:
-                    print("Warning: Unable to detect version. Using insecure mode.")
+                    print("Warning: Unable to detect version. Falling back to insecure mode.")
 
         # Set defaults for supported versions
         if supports_grpc:
