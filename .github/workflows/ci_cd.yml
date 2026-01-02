@@ -292,6 +292,7 @@ jobs:
       - name: Pull, launch, and validate Mechanical service
         env:
           MECHANICAL_IMAGE: ${{ env.DOCKER_PACKAGE }}:${{ matrix.mechanical-version }}
+          MECHANICAL_VERSION: ${{ matrix.mechanical-version }}
           # ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
           # ANSYS_WORKBENCH_LOGGING_DIRECTORY: /log_file  # workbench.log file
           ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH: 0  # turn off autoflush for faster performance
@@ -301,8 +302,29 @@ jobs:
         run: |
           docker pull ${MECHANICAL_IMAGE}
 
-          echo "Run docker in detached mode"
-          docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} -p ${PYMECHANICAL_PORT}:10000 ${MECHANICAL_IMAGE}
+          # Extract version without dots for path (e.g., 26.1.0 -> 261, 26.1_candidate -> 261)
+          VERSION_PATH=$(echo ${MECHANICAL_VERSION} | grep -oP '^\d+\.\d+' | tr -d '.')
+
+          # Check if image name contains 26.1 to determine entrypoint
+          if [[ ${MECHANICAL_IMAGE} == *"26.1"* ]]; then
+            echo "Detected version 26.1 - using custom entrypoint for insecure transport"
+            docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} \
+              -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} \
+              -e ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH=${ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH} \
+              -p ${PYMECHANICAL_PORT}:10000 \
+              --entrypoint="" \
+              --security-opt seccomp=unconfined \
+              ${MECHANICAL_IMAGE} \
+              tini -- xvfb-run /install/ansys_inc/v${VERSION_PATH}/aisol/.workbench \
+              -dsapplet -b -grpc 10000 --grpc-host 0.0.0.0 --transport-mode insecure
+          else
+            echo "Using default entrypoint for version ${MECHANICAL_VERSION}"
+            docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} \
+              -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} \
+              -e ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH=${ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH} \
+              -p ${PYMECHANICAL_PORT}:10000 \
+              ${MECHANICAL_IMAGE}
+          fi
 
           # Wait for Mechanical to initialize with intelligent polling
           max_wait=300  # Maximum wait time in seconds

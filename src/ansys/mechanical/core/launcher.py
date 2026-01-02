@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -29,26 +29,38 @@ from pathlib import Path
 # Subprocess is needed to start the backend. Excluding bandit check.
 import subprocess  # nosec: B404
 
+import ansys.tools.path as atp
+
 from ansys.mechanical.core import LOG
+from ansys.mechanical.core.misc import has_grpc_service_pack, is_linux
 
 
 class MechanicalLauncher:
     """Launches Mechanical in batch or UI mode."""
 
     def __init__(
-        self, batch, port, exe_path, additional_args=None, additional_envs=None, verbose=False
+        self,
+        batch,
+        port,
+        exe_file,
+        additional_args=None,
+        additional_envs=None,
+        verbose=False,
+        host="127.0.0.1",
+        transport_mode=None,
+        certs_dir="certs",
     ):
         """Initialize the Mechanical launcher.
 
         Parameters
         ----------
-        batch : bool, optional
+        batch : bool
             Whether to launch Mechanical in batch mode. The default is ``True``. When ``False``,
-            Mechanical is launched in UI mode.
-        port : int, optional
+            Mechanical launches in UI mode.
+        port : int
             Port to connect to the Mechanical gRPC server. Default - find a free port
-        exe_path : str
-            Path to where the executable file for Mechanical is located.
+        exe_file : str
+            Path to the Mechanical executable file.
         additional_args : list, optional
             List of additional arguments to pass. The default is ``None``.
         additional_envs : dict, optional
@@ -57,13 +69,33 @@ class MechanicalLauncher:
             Whether to print all output when launching and running Mechanical. The
             default is ``False``. Only set this parameter to ``True`` if you are
             debugging the startup of Mechanical.
+        host : str, optional
+            Default is ``127.0.0.1``.
+        transport_mode : str, optional
+            Use the transport mode to connect. The default is ``WNUA`` on Windows and
+            ``MTLS`` on Linux.
+            - ``INSECURE`` use the insecure mode.
+            - ``MTLS`` use the mtls mode.
+            - ``WNUA`` use the windows named security mode - only valid on windows.
+        certs_dir : str, optional
+            when the transport_mode is ``MTLS``, the certificate directory must be specified
+            - The default is ``certs``.
+            - this directory should have ``client.cert``, ``client.key`` and ``ca.cert`` files
         """
         self.batch = batch
         self.port = port
-        self.exe_path = exe_path
+        self.exe_file = exe_file
         self.additional_args = additional_args
         self.additional_envs = additional_envs
         self.verbose = verbose
+        self.host = host
+        self.certs_dir = certs_dir
+        if transport_mode is None:
+            if is_linux():
+                transport_mode = "MTLS"
+            else:
+                transport_mode = "WNUA"
+        self.transport_mode = transport_mode
         self.__ui_arg_list = ["-DSApplet", "-nosplash", "-notabctrl"]
         self.__batch_arg_list = ["-DSApplet", "-b"]
 
@@ -98,11 +130,20 @@ class MechanicalLauncher:
             command = " ".join(args_list)
             print(f"Running {command}.")
 
-        process = subprocess.Popen(
-            args_list,
-            stdout=subprocess.PIPE,
-            env=env_variables,
-        )  # nosec: B603
+        if is_linux():
+            process = subprocess.Popen(
+                args_list,
+                start_new_session=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                env=env_variables,
+            )  # nosec: B603
+        else:
+            process = subprocess.Popen(
+                args_list,
+                env=env_variables,
+            )
+
         LOG.info(f"Started the process:{process} using {args_list}.")
 
     @staticmethod
@@ -156,6 +197,28 @@ class MechanicalLauncher:
         args_list.append("-grpc")
         args_list.append(str(self.port))
 
+        # Check if version supports advanced gRPC features (SP04+)
+        version = atp.version_from_path("mechanical", exe_path) if exe_path else None
+        supports_grpc = has_grpc_service_pack(version) if version else True
+
+        # Validate transport mode requirements
+        if not supports_grpc and self.transport_mode.lower() != "insecure":
+            raise Exception(
+                f"Mechanical version {version} does not support secure transport modes. "
+                f"Please update to Service Pack 04 or later, or use transport_mode='insecure'."
+            )
+
+        # Only add new flags if version supports them
+        if supports_grpc:
+            args_list.append("--grpc-host")
+            args_list.append(str(self.host))
+
+            args_list.append("--transport-mode")
+            args_list.append(self.transport_mode.lower())
+
+            args_list.append("--certs-dir")
+            args_list.append(str(self.certs_dir))
+
         if self.additional_args is not None and isinstance(self.additional_args, list):
             LOG.info(f"Using these additional args: {self.additional_args}.")
             args_list.extend(self.additional_args)
@@ -171,7 +234,7 @@ class MechanicalLauncher:
             Path to the executable file for launching Mechanical.
         """
         exe_path = None
-        if self.exe_path is not None and isinstance(self.exe_path, str):
-            exe_path = self.exe_path
+        if self.exe_file is not None and isinstance(self.exe_file, str):
+            exe_path = self.exe_file
 
         return exe_path
