@@ -621,13 +621,11 @@ class Logger:
         name : str
             Name of the instance logger to be removed.
         """
-        print(f"remove_instance_logger called with the name:{name}")
-
         if name in self._instances.keys():
+            self._instances[name].info(f"Removed instance logger: {name}")
             del self._instances[name]
-            print(f"Removed instanced logger with the name:{name}")
         else:
-            print(f"No instance logger with the name:{name} exists.")
+            self.logger.warning(f"Instance logger '{name}' does not exist")
 
     def __getitem__(self, key):
         """Get the instance logger based on a key.
