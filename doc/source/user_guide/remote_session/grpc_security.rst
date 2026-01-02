@@ -48,6 +48,27 @@ Version and service pack requirements
    - To check your service pack version, look at the ``builddate.txt`` file in your
      Ansys installation directory.
 
+.. warning::
+   **Breaking Change**: Version mismatch behavior
+
+   When using ``launch_mechanical()`` without explicitly specifying ``transport_mode``:
+
+   - If you have a **newer version of PyMechanical** with an **older version of Mechanical**
+     that doesn't support secure connections, the connection will fail.
+   - If you have an **older version of PyMechanical** with a **newer version of Mechanical**
+     that requires secure connections by default, the connection will fail.
+
+   **Solution**: Always explicitly specify ``transport_mode`` to avoid compatibility issues:
+
+   .. code-block:: python
+
+      # For older Mechanical versions (241 or versions without required SP)
+      mechanical = launch_mechanical(transport_mode="insecure")
+
+      # For newer Mechanical versions with secure support
+      mechanical = launch_mechanical(transport_mode="wnua")  # Windows
+      mechanical = launch_mechanical(transport_mode="mtls")  # Linux
+
 Transport modes
 ---------------
 
@@ -70,13 +91,13 @@ You can override the default by explicitly specifying ``transport_mode``.
 Certificate directory must contain: ``ca.crt``, ``client.crt``, ``client.key``.
 See `PyAnsys mTLS guide <https://tools.docs.pyansys.com/version/stable/user_guide/secure_grpc.html#generating-certificates-for-mtls>`_.
 
-**WNUA (Windows Named User Authentication)** - Windows only, default on Windows. Uses Windows credentials for seamless authentication.
+**WNUA (Windows Named User Authentication)** - Windows only, default on Windows.
 
 .. code-block:: python
 
    mechanical = launch_mechanical(port=10000, transport_mode="wnua")
 
-**Insecure** - No encryption. Development/testing only.
+**Insecure** - No encryption. Not recommended.
 
 .. code-block:: python
 
@@ -95,6 +116,8 @@ CLI usage
 
    # Insecure mode
    ansys-mechanical --port 10000 --transport-mode insecure
+
+If ``--transport-mode`` is not specified, the platform default is used.
 
 Connect to an existing instance
 --------------------------------
