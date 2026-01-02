@@ -145,3 +145,36 @@ Or use the ``connect_to_mechanical()`` convenience function:
        port=10000,
        transport_mode="insecure"
    )
+
+Custom gRPC options
+-------------------
+
+Use ``grpc_options`` to pass custom channel options for advanced scenarios.
+
+**Common use case**: Certificate hostname mismatch with ``grpc.default_authority``
+
+When connecting via IP but certificate has CN=localhost:
+
+.. code-block:: python
+
+   mechanical = launch_mechanical(
+       transport_mode="mtls",
+       certs_dir="./certs",
+       ip="127.0.0.1",  # Connecting via IP
+       grpc_options=[("grpc.default_authority", "localhost")]  # Match certificate CN
+   )
+
+**Other options**:
+
+.. code-block:: python
+
+   mechanical = launch_mechanical(
+       grpc_options=[
+           ("grpc.keepalive_time_ms", 10000),
+           ("grpc.keepalive_timeout_ms", 5000),
+           ("grpc.http2.max_pings_without_data", 0),
+       ]
+   )
+
+.. note::
+   ``grpc.max_receive_message_length`` is automatically set and cannot be overridden.
