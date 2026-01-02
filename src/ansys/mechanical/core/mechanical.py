@@ -181,7 +181,7 @@ def check_ports(port_range, ip="localhost"):
     return ports
 
 
-def close_all_local_instances(port_range=None, use_thread=True):
+def close_all_local_instances(port_range=None, use_thread=True, transport_mode=None):
     """Close all Mechanical instances within a port range.
 
     You can use this method when cleaning up from a failed pool or
@@ -197,6 +197,11 @@ def close_all_local_instances(port_range=None, use_thread=True):
     use_thread : bool, optional
         Whether to use threads to close the Mechanical instances.
         The default is ``True``. So this call will return immediately.
+
+    transport_mode : str, optional
+        Transport mode used by the instances to close. The default is ``None``,
+        in which case the OS default is used (wnua on Windows, mtls on Linux).
+        Options are ``"insecure"``, ``"mtls"``, or ``"wnua"``.
 
     Examples
     --------
@@ -215,7 +220,7 @@ def close_all_local_instances(port_range=None, use_thread=True):
 
     def close_mechanical(port, name="Closing Mechanical instance"):
         try:
-            mechanical = Mechanical(port=port)
+            mechanical = Mechanical(port=port, transport_mode=transport_mode)
             LOG.debug(f"{name}: {mechanical.name}.")
             mechanical.exit(force=True)
         except OSError:  # pragma: no cover
@@ -479,9 +484,9 @@ class Mechanical(object):
 
         if transport_mode is None:
             if is_linux():
-                transport_mode = "MTLS"
+                transport_mode = "mtls"
             else:
-                transport_mode = "WNUA"
+                transport_mode = "wnua"
 
         self._transport_mode = transport_mode
 
