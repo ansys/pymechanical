@@ -319,6 +319,7 @@ class Mechanical(object):
         keep_connection_alive=True,
         transport_mode=None,
         certs_dir="certs",
+        grpc_options=None,
         **kwargs,
     ):
         """Initialize the member variable based on the arguments.
@@ -378,6 +379,11 @@ class Mechanical(object):
             when the transport_mode is ``mtls``, the certificate directory must be specified
             - The default is ``certs``.
             - this directory should have ``client.cert``, ``client.key`` and ``ca.cert`` files
+        grpc_options : list of tuple, optional
+            Additional gRPC channel options to pass when creating the channel.
+            For example: ``[("grpc.default_authority", "localhost")]``.
+            See gRPC documentation for available options. The default is ``None``.
+            Note: ``grpc.max_receive_message_length`` is always set and cannot be overridden.
 
         Examples
         --------
@@ -413,6 +419,7 @@ class Mechanical(object):
         self._keep_connection_alive = keep_connection_alive
         self._transport_mode = transport_mode
         self._certs_dir = certs_dir
+        self._grpc_options = grpc_options or []
 
         # Generate unique instance ID for this client
         self._instance_id = str(uuid.uuid4())[:8]
@@ -808,11 +815,16 @@ class Mechanical(object):
         if self._transport_mode.lower() == "wnua":
             print("Connection using Windows Named User Authentication (WNUA) channel established.")
 
+        # Build channel options with required max message length
+        channel_options = [
+            ("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
+        ]
+        # Add user-provided options
+        channel_options.extend(self._grpc_options)
+
         channel = grpc.insecure_channel(
             channel_str,
-            options=[
-                ("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
-            ],
+            options=channel_options,
         )
 
         if self._transport_mode.lower() == "insecure":
@@ -855,13 +867,18 @@ class Mechanical(object):
         channel_str = f"{ip_to_use}:{port}"
 
         print(f"Starting secure channel {channel_str} using TLS.")
+
+        # Build channel options with required max message length
+        channel_options = [
+            ("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
+        ]
+        # Add user-provided options (e.g., grpc.default_authority)
+        channel_options.extend(self._grpc_options)
+
         channel = grpc.secure_channel(
             target=channel_str,
             credentials=creds,
-            options=[
-                ("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
-                # ('grpc.default_authority', 'localhost'),
-            ],
+            options=channel_options,
         )
         print(
             f"Connection established using mTLS on {ip} (cert: {cert_file}, key: {key_file}, "
@@ -2272,6 +2289,7 @@ server.start()
 
 def launch_remote_mechanical(
     version=None,
+    grpc_options=None,
 ) -> tuple[grpc.Channel, Optional[typing.Any]]:  # pragma: no cover
     """Start Mechanical remotely using the Product Instance Management (PIM) API.
 
@@ -2286,6 +2304,10 @@ def launch_remote_mechanical(
         Mechanical version to run in the three-digit format. For example, ``"252"`` to
         run 2025 R2. The default is ``None``, in which case the server runs the latest
         installed version.
+    grpc_options : list of tuple, optional
+        Additional gRPC channel options to pass when creating the channel.
+        For example: ``[("grpc.default_authority", "localhost")]``.
+        The default is ``None``.
 
     Returns
     -------
@@ -2305,11 +2327,14 @@ def launch_remote_mechanical(
     instance.wait_for_ready()
     LOG.info("PyPIM wait for ready has finished.")
 
-    channel = instance.build_grpc_channel(
-        options=[
-            ("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
-        ]
-    )
+    # Build channel options
+    channel_options = [
+        ("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
+    ]
+    if grpc_options:
+        channel_options.extend(grpc_options)
+
+    channel = instance.build_grpc_channel(options=channel_options)
 
     return channel, instance
 
@@ -2336,6 +2361,7 @@ def launch_mechanical(
     backend="mechanical",
     transport_mode=None,
     certs_dir="certs",
+    grpc_options=None,
 ) -> Mechanical:
     """Start Mechanical locally.
 
@@ -2465,7 +2491,9 @@ def launch_mechanical(
     # and a directive on how to launch Mechanical was not passed.
     if _HAS_ANSYS_PIM and pypim.is_configured() and exec_file is None:  # pragma: no cover
         LOG.info("Starting Mechanical remotely. The startup configuration will be ignored.")
-        channel, remote_instance = launch_remote_mechanical(version=version)
+        channel, remote_instance = launch_remote_mechanical(
+            version=version, grpc_options=grpc_options
+        )
         return Mechanical(
             channel=channel,
             remote_instance=remote_instance,
@@ -2556,6 +2584,7 @@ def launch_mechanical(
             keep_connection_alive=keep_connection_alive,
             transport_mode=transport_mode,
             certs_dir=certs_dir,
+            grpc_options=grpc_options,
             local=False,
         )
         if clear_on_connect:
@@ -2615,6 +2644,7 @@ def launch_mechanical(
             start_parm["local"] = True
             start_parm["transport_mode"] = transport_mode
             start_parm["certs_dir"] = certs_dir
+            start_parm["grpc_options"] = grpc_options
 
             mechanical = Mechanical(
                 ip=ip,  # Use converted IP for client connection
@@ -2657,6 +2687,7 @@ def connect_to_mechanical(
     keep_connection_alive=True,
     transport_mode=None,
     certs_dir="certs",
+    grpc_options=None,
 ) -> Mechanical:
     """Connect to an existing Mechanical server instance.
 
@@ -2701,6 +2732,20 @@ def connect_to_mechanical(
     keep_connection_alive : bool, optional
         Whether to keep the gRPC connection alive by running a background thread
         and making dummy calls for remote connections. The default is ``True``.
+    transport_mode : string, optional
+        Use the transport mode to connect. The default is ``wnua`` on Windows
+        and ``mtls`` on Linux.
+        - ``insecure`` use the insecure mode.
+        - ``mtls`` use the mtls mode.
+        - ``wnua`` use the windows named security mode - only valid on windows.
+    certs_dir : string, optional
+        when the transport_mode is ``mtls``, the certificate directory must be specified
+        - The default is ``certs``.
+        - this directory should have ``client.cert``, ``client.key`` and ``ca.cert`` files
+    grpc_options : list of tuple, optional
+        Additional gRPC channel options to pass when creating the channel.
+        For example: ``[("grpc.default_authority", "localhost")]``.
+        See gRPC documentation for available options. The default is ``None``.
 
     Returns
     -------
@@ -2729,4 +2774,5 @@ def connect_to_mechanical(
         keep_connection_alive=keep_connection_alive,
         transport_mode=transport_mode,
         certs_dir=certs_dir,
+        grpc_options=grpc_options,
     )
