@@ -72,13 +72,13 @@ class MechanicalLauncher:
         host : str, optional
             Default is ``127.0.0.1``.
         transport_mode : str, optional
-            Use the transport mode to connect. The default is ``WNUA`` on Windows and
-            ``MTLS`` on Linux.
-            - ``INSECURE`` use the insecure mode.
-            - ``MTLS`` use the mtls mode.
-            - ``WNUA`` use the windows named security mode - only valid on windows.
+            Use the transport mode to connect. The default is ``wnua`` on Windows and
+            ``mtls`` on Linux.
+            - ``insecure`` use the insecure mode.
+            - ``mtls`` use the mtls mode.
+            - ``wnua`` use the windows named security mode - only valid on windows.
         certs_dir : str, optional
-            when the transport_mode is ``MTLS``, the certificate directory must be specified
+            when the transport_mode is ``mtls``, the certificate directory must be specified
             - The default is ``certs``.
             - this directory should have ``client.cert``, ``client.key`` and ``ca.cert`` files
         """
@@ -92,9 +92,9 @@ class MechanicalLauncher:
         self.certs_dir = certs_dir
         if transport_mode is None:
             if is_linux():
-                transport_mode = "MTLS"
+                transport_mode = "mtls"
             else:
-                transport_mode = "WNUA"
+                transport_mode = "wnua"
         self.transport_mode = transport_mode
         self.__ui_arg_list = ["-DSApplet", "-nosplash", "-notabctrl"]
         self.__batch_arg_list = ["-DSApplet", "-b"]

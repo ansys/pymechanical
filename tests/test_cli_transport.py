@@ -66,7 +66,7 @@ class TestCLITransportMode:
             transport_mode="wnua",
         )
         assert "--transport-mode" in args
-        assert "wnua" in args or "WNUA" in args
+        assert "wnua" in args
 
     def test_cli_transport_mode_wnua_without_sp04_fails(self, disable_cli):
         """Test WNUA transport mode fails on version without SP04."""
