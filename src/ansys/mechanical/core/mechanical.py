@@ -181,7 +181,9 @@ def check_ports(port_range, ip="localhost"):
     return ports
 
 
-def close_all_local_instances(port_range=None, use_thread=True, transport_mode=None):
+def close_all_local_instances(
+    port_range=None, use_thread=True, transport_mode=None, certs_dir="certs"
+):
     """Close all Mechanical instances within a port range.
 
     You can use this method when cleaning up from a failed pool or
@@ -202,6 +204,9 @@ def close_all_local_instances(port_range=None, use_thread=True, transport_mode=N
         Transport mode used by the instances to close. The default is ``None``,
         in which case the OS default is used (wnua on Windows, mtls on Linux).
         Options are ``"insecure"``, ``"mtls"``, or ``"wnua"``.
+    certs_dir : str, optional
+        when the transport_mode is ``mtls``, the certificate directory must be specified
+        - The default is ``certs``.
 
     Examples
     --------
@@ -209,6 +214,10 @@ def close_all_local_instances(port_range=None, use_thread=True, transport_mode=N
 
     >>> import ansys.mechanical.core as pymechanical
     >>> pymechanical.close_all_local_instances()
+
+    With specific security mode and certificate directory.
+    >>> import ansys.mechanical.core as pymechanical
+    >>> pymechanical.close_all_local_instances(transport_mode="mtls", certs_dir="my_certs")
 
     """
     if port_range is None:
@@ -220,7 +229,7 @@ def close_all_local_instances(port_range=None, use_thread=True, transport_mode=N
 
     def close_mechanical(port, name="Closing Mechanical instance"):
         try:
-            mechanical = Mechanical(port=port, transport_mode=transport_mode)
+            mechanical = Mechanical(port=port, transport_mode=transport_mode, certs_dir=certs_dir)
             LOG.debug(f"{name}: {mechanical.name}.")
             mechanical.exit(force=True)
         except OSError:  # pragma: no cover

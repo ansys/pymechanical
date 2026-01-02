@@ -32,7 +32,11 @@ import subprocess  # nosec: B404
 import ansys.tools.common.path as atp
 
 from ansys.mechanical.core import LOG
-from ansys.mechanical.core.misc import has_grpc_service_pack, is_linux
+from ansys.mechanical.core.misc import (
+    get_service_pack_message,
+    has_grpc_service_pack,
+    is_linux,
+)
 
 
 class MechanicalLauncher:
@@ -203,9 +207,12 @@ class MechanicalLauncher:
 
         # Validate transport mode requirements
         if not supports_grpc and self.transport_mode.lower() != "insecure":
+            error_message = get_service_pack_message(version)
             raise Exception(
                 f"Mechanical version {version} does not support secure transport modes. "
-                f"Please update to Service Pack 04 or later, or use transport_mode='insecure'."
+                f"{error_message}"
+                f" Please refer to the documentation for more details."
+                f"https://mechanical.docs.pyansys.com/version/stable/user_guide/remote_session/grpc_security.html"
             )
 
         # Only add new flags if version supports them
