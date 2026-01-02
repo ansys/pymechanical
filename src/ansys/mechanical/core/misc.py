@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -199,6 +199,13 @@ def has_grpc_service_pack(version):
     # Handle None version
     if version is None:
         return False
+
+    # Convert string to int if needed
+    if isinstance(version, str):
+        try:
+            version = int(version)
+        except (ValueError, TypeError):
+            return False
 
     # Version 261+ has built-in support
     if version >= 261:

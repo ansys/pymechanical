@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -304,21 +304,18 @@ class Mechanical(object):
 
     def __init__(
         self,
-        channel=None,
-        timeout=120,
-        cleanup_on_exit=True,
-        remote_instance=None,
-        exec_file=None,
-        ip="127.0.0.1",
-        port=10000,
-        host="localhost",
-        transport_mode=None,
-        certs_dir=None,
-        additional_switches="",
-        loglevel="ERROR",
+        ip=None,
+        port=None,
+        timeout=60.0,
+        loglevel="WARNING",
         log_file=False,
         log_mechanical=None,
+        cleanup_on_exit=False,
+        channel=None,
+        remote_instance=None,
         keep_connection_alive=True,
+        transport_mode=None,
+        certs_dir="certs",
         **kwargs,
     ):
         """Initialize the member variable based on the arguments.
@@ -433,29 +430,17 @@ class Mechanical(object):
             else:
                 ip_temp = "127.0.0.1"
         else:
-            # Special handling for 0.0.0.0 (used for server binding, not client connections)
-            if ip == "0.0.0.0":
-                LOG.warning(
-                    "Client cannot connect to 0.0.0.0. Converting to localhost for connection."
-                )
-                ip_temp = "localhost"
+            # For mTLS, preserve hostname for certificate validation
+            if transport_mode and transport_mode.lower() == "mtls":
+                ip_temp = ip
             else:
-                # For mTLS with explicit IP, convert to hostname to match certificates
-                if transport_mode and transport_mode.lower() == "mtls":
-                    # Don't resolve to IP for mTLS - keep hostname for cert validation
-                    ip_temp = ip
-                else:
-                    ip_temp = socket.gethostbyname(ip)  # Converting ip or host name to ip
+                ip_temp = socket.gethostbyname(ip)  # Converting ip or host name to ip
 
         self._ip = ip_temp
         self._port = port
 
-        # Store start parameters, including those that were passed as named params
-        # (named params don't end up in **kwargs, so we need to add them explicitly)
+        # Store start parameters
         self._start_parm = kwargs.copy()
-        self._start_parm["exec_file"] = exec_file
-        self._start_parm["host"] = host
-        self._start_parm["additional_switches"] = additional_switches
         self._start_parm["transport_mode"] = transport_mode
         self._start_parm["certs_dir"] = certs_dir
 
@@ -477,16 +462,8 @@ class Mechanical(object):
         self._log_mechanical = log_mechanical
         self._log = None  # Will be initialized after channel is created
 
-        # Try to get version from start parameters for early service patch check
-        if "exec_file" in self._start_parm:
-            try:
-                self._version = atp.version_from_path("mechanical", self._start_parm["exec_file"])
-            except Exception as e:
-                self._version = None
-                # Can't use log_warning yet, logger not initialized
-                LOG.warning(f"Failed to determine version from path: {e}")
-        else:
-            self._version = None
+        # Version will be retrieved later when needed
+        self._version = None
 
         new_python_script_api = kwargs.get("new_python_script_api", None)
         old_python_script_api = kwargs.get("old_python_script_api", None)
