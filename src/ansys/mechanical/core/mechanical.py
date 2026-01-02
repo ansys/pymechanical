@@ -545,7 +545,7 @@ class Mechanical(object):
         if hasattr(self, "_cleanup_on_exit") and self._cleanup_on_exit:
             try:
                 self.exit(force=True)
-            except Exception:
+            except Exception:  # nosec B110 - intentional in destructor
                 # Silently ignore all errors during cleanup
                 # Logging may not be available during object destruction
                 # grpc.RpcError is not a valid exception type in newer gRPC versions
@@ -555,7 +555,7 @@ class Mechanical(object):
         if hasattr(self, "_log") and self._log is not None:
             try:
                 LOG.remove_instance_logger(self.name)
-            except Exception:
+            except Exception:  # nosec B110 - intentional in destructor
                 # Silently ignore errors during logger cleanup
                 pass
 
@@ -793,7 +793,7 @@ class Mechanical(object):
 
         ip_to_use = ip
 
-        if ip_to_use == "0.0.0.0":
+        if ip_to_use == "0.0.0.0":  # nosec B104 - checking and replacing, not binding
             print(f"Passed ip:{ip_to_use}. Using 127.0.0.1 to connect.")
             ip_to_use = "127.0.0.1"
 
@@ -848,7 +848,7 @@ class Mechanical(object):
 
         ip_to_use = ip
 
-        if ip_to_use == "0.0.0.0":
+        if ip_to_use == "0.0.0.0":  # nosec B104 - checking and replacing, not binding
             print(f"Passed ip:{ip_to_use}. Using 127.0.0.1 to connect.")
             ip_to_use = "127.0.0.1"
 

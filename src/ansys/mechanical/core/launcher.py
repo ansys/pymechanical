@@ -142,7 +142,7 @@ class MechanicalLauncher:
             process = subprocess.Popen(
                 args_list,
                 env=env_variables,
-            )
+            )  # nosec: B603
 
         LOG.info(f"Started the process:{process} using {args_list}.")
 
