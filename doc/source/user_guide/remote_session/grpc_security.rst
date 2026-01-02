@@ -91,6 +91,28 @@ You can override the default by explicitly specifying ``transport_mode``.
 Certificate directory must contain: ``ca.crt``, ``client.crt``, ``client.key``.
 See `PyAnsys mTLS guide <https://tools.docs.pyansys.com/version/stable/user_guide/secure_grpc.html#generating-certificates-for-mtls>`_.
 
+.. note::
+   **Environment Variable**: You can set the ``ANSYS_GRPC_CERTIFICATES`` environment variable
+   to specify the default certificate directory for mTLS connections:
+
+   - **Windows**: Set as a user-level environment variable only. System-level variables are ignored.
+   - **Linux**: Can be set at any level (user or system).
+
+   When this variable is set and ``certs_dir`` is not explicitly specified, PyMechanical will
+   use the path from this environment variable.
+
+   Example (Windows PowerShell):
+
+   .. code-block:: powershell
+
+      [System.Environment]::SetEnvironmentVariable('ANSYS_GRPC_CERTIFICATES', 'C:\path\to\certs', 'User')
+
+   Example (Linux):
+
+   .. code-block:: bash
+
+      export ANSYS_GRPC_CERTIFICATES=/path/to/certs
+
 **WNUA (Windows Named User Authentication)** - Windows only, default on Windows.
 
 .. code-block:: python

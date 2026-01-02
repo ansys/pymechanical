@@ -62,6 +62,7 @@ from ansys.mechanical.core.misc import (
     check_valid_port,
     check_valid_start_instance,
     is_linux,
+    resolve_certs_dir,
     threaded,
 )
 
@@ -220,6 +221,9 @@ def close_all_local_instances(
     >>> pymechanical.close_all_local_instances(transport_mode="mtls", certs_dir="my_certs")
 
     """
+    # Resolve certs_dir using environment variable if needed for mTLS
+    certs_dir = resolve_certs_dir(transport_mode, certs_dir)
+
     if port_range is None:
         port_range = pymechanical.LOCAL_PORTS
 
@@ -427,7 +431,8 @@ class Mechanical(object):
         self._channel = channel
         self._keep_connection_alive = keep_connection_alive
         self._transport_mode = transport_mode
-        self._certs_dir = certs_dir
+        # Resolve certs_dir using environment variable if needed for mTLS
+        self._certs_dir = resolve_certs_dir(transport_mode, certs_dir)
         self._grpc_options = grpc_options or []
 
         # Generate unique instance ID for this client
@@ -2233,6 +2238,9 @@ def launch_grpc(
         else:
             transport_mode = "wnua"
 
+    # Resolve certs_dir using environment variable if needed for mTLS
+    certs_dir = resolve_certs_dir(transport_mode, certs_dir)
+
     # For mTLS, use "localhost" to match certificate CN if host is still default
     if transport_mode and transport_mode.lower() == "mtls" and host == "127.0.0.1":
         host = "localhost"
@@ -2581,6 +2589,9 @@ def launch_mechanical(
         else:
             transport_mode = "wnua"
 
+    # Resolve certs_dir using environment variable if needed for mTLS
+    certs_dir = resolve_certs_dir(transport_mode, certs_dir)
+
     if not start_instance:
         mechanical = Mechanical(
             ip=ip,
@@ -2770,6 +2781,9 @@ def connect_to_mechanical(
     >>> from ansys.mechanical.core import connect_to_mechanical
     >>> pymech = connect_to_mechanical(ip="192.168.1.30", port=50001)
     """
+    # Resolve certs_dir using environment variable if needed for mTLS
+    certs_dir = resolve_certs_dir(transport_mode, certs_dir)
+
     return launch_mechanical(
         start_instance=False,
         loglevel=loglevel,

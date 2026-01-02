@@ -311,3 +311,46 @@ def is_linux() -> bool:
     ``True`` if the host machine is Linux, ``False`` otherwise.
     """
     return os.name == "posix"
+
+
+def resolve_certs_dir(transport_mode, certs_dir="certs"):
+    """Resolve the certificate directory for mTLS connections.
+
+    Checks the ANSYS_GRPC_CERTIFICATES environment variable if:
+    - transport_mode is "mtls"
+    - certs_dir is still the default value "certs"
+    - On Windows: only if the variable is set at user level
+    - On Linux: at any level
+
+    Parameters
+    ----------
+    transport_mode : str
+        Transport mode being used (insecure, mtls, wnua).
+    certs_dir : str, optional
+        Certificate directory path. Default is "certs".
+
+    Returns
+    -------
+    str
+        Resolved certificate directory path.
+    """
+    if transport_mode and transport_mode.lower() == "mtls" and certs_dir == "certs":
+        if is_windows():
+            # On Windows, only read user-level environment variable
+            try:
+                import winreg
+
+                with winreg.OpenKey(
+                    winreg.HKEY_CURRENT_USER, "Environment", 0, winreg.KEY_READ
+                ) as key:
+                    try:
+                        value, _ = winreg.QueryValueEx(key, "ANSYS_GRPC_CERTIFICATES")
+                        return value
+                    except FileNotFoundError:
+                        return "certs"
+            except ImportError:  # pragma: no cover
+                return "certs"
+        else:
+            # On Linux, read at any level
+            return os.environ.get("ANSYS_GRPC_CERTIFICATES", "certs")
+    return certs_dir

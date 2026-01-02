@@ -36,6 +36,7 @@ from ansys.mechanical.core.misc import (
     get_service_pack_message,
     has_grpc_service_pack,
     is_linux,
+    resolve_certs_dir,
 )
 
 
@@ -93,13 +94,14 @@ class MechanicalLauncher:
         self.additional_envs = additional_envs
         self.verbose = verbose
         self.host = host
-        self.certs_dir = certs_dir
         if transport_mode is None:
             if is_linux():
                 transport_mode = "mtls"
             else:
                 transport_mode = "wnua"
         self.transport_mode = transport_mode
+        # Resolve certs_dir using environment variable if needed for mTLS
+        self.certs_dir = resolve_certs_dir(transport_mode, certs_dir)
         self.__ui_arg_list = ["-DSApplet", "-nosplash", "-notabctrl"]
         self.__batch_arg_list = ["-DSApplet", "-b"]
 
