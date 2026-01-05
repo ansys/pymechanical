@@ -183,9 +183,7 @@ def _cli_impl(
 
             # Validate transport mode requirements
             if transport_mode == "mtls" and not certs_dir:
-                raise click.ClickException(
-                    "--certs-dir is required when using 'mtls' transport mode. "
-                )
+                certs_dir = "certs"  # Default certs directory if not provided
 
             # Validate certificates directory exists and contains required files
             if transport_mode == "mtls" and certs_dir:
@@ -204,7 +202,7 @@ def _cli_impl(
                         "Please provide a valid directory containing TLS certificates."
                     )
 
-                # Certificate validation will be handled by ansys.tools.common.cyberchannel
+                # Certificate validation will be handled by grpc channel creation
 
     # Validate that gRPC options are only used with port
     if not port and (transport_mode or grpc_host or certs_dir):
@@ -293,8 +291,7 @@ def _cli_impl(
             #        the user only sees the message when the server is ready.
             print(f"Serving on port {port}")
 
-            has_grpc_service_pack = has_grpc_service_pack(version)
-            if not has_grpc_service_pack:
+            if has_grpc_service_pack(version):
                 print("Transport mode: insecure (legacy - no advanced gRPC support)")
                 print("Using insecure connection - no authentication or encryption")
             else:

@@ -183,7 +183,7 @@ def check_ports(port_range, ip="localhost"):
 
 
 def close_all_local_instances(
-    port_range=None, use_thread=True, transport_mode=None, certs_dir="certs"
+    port_range=None, use_thread=True, transport_mode=None, certs_dir=None
 ):
     """Close all Mechanical instances within a port range.
 
@@ -207,7 +207,8 @@ def close_all_local_instances(
         Options are ``"insecure"``, ``"mtls"``, or ``"wnua"``.
     certs_dir : str, optional
         when the transport_mode is ``mtls``, the certificate directory must be specified
-        - The default is ``certs``.
+        - The default is ``None``, which checks the environment variable,
+        - then defaults to ``certs``.
 
     Examples
     --------
@@ -331,7 +332,7 @@ class Mechanical(object):
         remote_instance=None,
         keep_connection_alive=True,
         transport_mode=None,
-        certs_dir="certs",
+        certs_dir=None,
         grpc_options=None,
         **kwargs,
     ):
@@ -390,7 +391,8 @@ class Mechanical(object):
             - ``wnua`` use the windows named security mode - only valid on windows.
         certs_dir : string, optional
             when the transport_mode is ``mtls``, the certificate directory must be specified
-            - The default is ``certs``.
+            - The default is ``None``, which checks the environment variable,
+            - then defaults to ``certs``.
             - this directory should have ``client.cert``, ``client.key`` and ``ca.cert`` files
         grpc_options : list of tuple, optional
             Additional gRPC channel options to pass when creating the channel.
@@ -2186,7 +2188,8 @@ def launch_grpc(
         - ``wnua`` use the windows named security mode - only valid on windows.
     certs_dir : string, optional
         when the transport_mode is ``mtls``, the certificate directory must be specified
-            - The default is ``certs``.
+            - The default is ``None``, which checks the environment variable,
+            - then defaults to ``certs``.
             - this directory should have ``client.cert``, ``client.key`` and ``ca.cert`` files
 
     Returns
@@ -2377,7 +2380,7 @@ def launch_mechanical(
     keep_connection_alive=True,
     backend="mechanical",
     transport_mode=None,
-    certs_dir="certs",
+    certs_dir=None,
     grpc_options=None,
 ) -> Mechanical:
     """Start Mechanical locally.
@@ -2706,7 +2709,7 @@ def connect_to_mechanical(
     cleanup_on_exit=False,
     keep_connection_alive=True,
     transport_mode=None,
-    certs_dir="certs",
+    certs_dir=None,
     grpc_options=None,
 ) -> Mechanical:
     """Connect to an existing Mechanical server instance.
@@ -2760,7 +2763,8 @@ def connect_to_mechanical(
         - ``wnua`` use the windows named security mode - only valid on windows.
     certs_dir : string, optional
         when the transport_mode is ``mtls``, the certificate directory must be specified
-        - The default is ``certs``.
+        - The default is ``None``, which checks the environment variable,
+        - then defaults to ``certs``.
         - this directory should have ``client.cert``, ``client.key`` and ``ca.cert`` files
     grpc_options : list of tuple, optional
         Additional gRPC channel options to pass when creating the channel.

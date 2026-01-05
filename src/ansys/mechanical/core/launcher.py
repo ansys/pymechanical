@@ -53,7 +53,7 @@ class MechanicalLauncher:
         verbose=False,
         host="127.0.0.1",
         transport_mode=None,
-        certs_dir="certs",
+        certs_dir=None,
     ):
         """Initialize the Mechanical launcher.
 
@@ -84,7 +84,8 @@ class MechanicalLauncher:
             - ``wnua`` use the windows named security mode - only valid on windows.
         certs_dir : str, optional
             when the transport_mode is ``mtls``, the certificate directory must be specified
-            - The default is ``certs``.
+            - The default is ``None``, which checks the environment variable,
+            - then defaults to ``certs``.
             - this directory should have ``client.cert``, ``client.key`` and ``ca.cert`` files
         """
         self.batch = batch
