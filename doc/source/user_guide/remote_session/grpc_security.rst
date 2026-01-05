@@ -10,7 +10,7 @@ PyMechanical supports secure gRPC connections using mTLS, WNUA, or insecure mode
    Versions without the required service pack only support insecure mode.
 
 Version and service pack requirements
---------------------------------------
+-------------------------------------
 
 .. list-table::
    :header-rows: 1
@@ -142,7 +142,7 @@ CLI usage
 If ``--transport-mode`` is not specified, the platform default is used.
 
 Connect to an existing instance
---------------------------------
+-------------------------------
 
 When connecting to an existing Mechanical instance, the transport mode must match the server's mode.
 
@@ -198,7 +198,7 @@ Use ``grpc_options`` to pass custom channel options for advanced scenarios.
 
 **Common use case**: Certificate hostname mismatch with ``grpc.default_authority``
 
-When connecting via IP but certificate has CN=localhost:
+When connecting via IP but certificate has ``CN=localhost``:
 
 .. code-block:: python
 

@@ -209,10 +209,9 @@ class MechanicalLauncher:
 
         # Validate transport mode requirements
         if not supports_grpc and self.transport_mode.lower() != "insecure":
-            error_message = get_service_pack_message(version)
             raise Exception(
                 f"Mechanical version {version} does not support secure transport modes. "
-                f"{error_message}"
+                f"{get_service_pack_message(version)}"
                 f" Please refer to the documentation for more details."
                 f"https://mechanical.docs.pyansys.com/version/stable/user_guide/remote_session/grpc_security.html"
             )
