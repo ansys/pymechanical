@@ -30,12 +30,6 @@ version: '3.3'
 #
 # - The docker image is based on the Mechanical Ubuntu docker image from Ansys.
 # - The entrypoint is defined in the Docker image.
-# - If you need to run a license server, look at the 'docker-compose.license_server.yml' file.
-#   In that case, the command would be:
-#
-#    docker-compose -f docker-compose.yml -f docker-compose.license_server.yml up
-#
-#
 # - If you want to mount the local directory, add the 'volumes' section to the 'mechanical' service.
 #
 #      volumes:
@@ -52,7 +46,7 @@ services:
       - ANSYSLMD_LICENSE_FILE=${ANSYSLMD_LICENSE_FILE}
     ports:
       - '10000:10000'
-    image: 'ghcr.io/ansys/mechanical:25.1.0'
+    image: 'ghcr.io/ansys/mechanical:25.2.0'
     user: "0:0"
     # entrypoint: "/bin/bash tini -- xvfb-run ./.workbench -dsapplet -AppModeMech -b -grpc 10000"
 
