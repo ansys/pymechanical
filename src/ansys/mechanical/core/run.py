@@ -293,8 +293,8 @@ def _cli_impl(
             #        the user only sees the message when the server is ready.
             print(f"Serving on port {port}")
 
-            has_sp4 = has_grpc_service_pack(version)
-            if not has_sp4:
+            has_grpc_service_pack = has_grpc_service_pack(version)
+            if not has_grpc_service_pack:
                 print("Transport mode: insecure (legacy - no advanced gRPC support)")
                 print("Using insecure connection - no authentication or encryption")
             else:
