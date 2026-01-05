@@ -103,7 +103,7 @@ class TestCLITransportMode:
                 transport_mode="mtls",
                 # Missing certs_dir
             )
-        assert "certs-dir is required" in str(exc_info.value).lower()
+        assert "certificates directory does not exist" in str(exc_info.value).lower()
 
     def test_cli_transport_mode_mtls_validates_certs_dir_exists(self, disable_cli, tmp_path):
         """Test MTLS transport mode validates that certs directory exists."""
@@ -481,4 +481,4 @@ class TestCLITransportModeEdgeCases:
             _cli_impl(
                 exe="AnsysWBU.exe", version=261, port=10000, transport_mode="mtls", certs_dir=""
             )
-        assert "certs-dir is required" in str(exc_info.value).lower()
+        assert "certificates directory does not exist" in str(exc_info.value).lower()
