@@ -196,8 +196,9 @@ class PyMechanicalCustomAdapter(logging.LoggerAdapter):
     be specified once.
     """
 
-    # Maintained for compatibility with ``suppress_logging``, but it does nothing.
-    level = None
+    level = (
+        None  # This is maintained for compatibility with ``suppress_logging``, but it does nothing.
+    )
     file_handler = None
     stdout_handler = None
 
@@ -605,27 +606,7 @@ class Logger:
         self._instances[new_name] = self._add_mechanical_instance_logger(
             new_name, mechanical_instance, level
         )
-
-        if name != new_name:
-            print(
-                f"name:{name} already exists. Creating a unique name:{new_name} before adding it."
-            )
-
         return self._instances[new_name]
-
-    def remove_instance_logger(self, name):
-        """Remove a logger for a Mechanical instance.
-
-        Parameters
-        ----------
-        name : str
-            Name of the instance logger to be removed.
-        """
-        if name in self._instances.keys():
-            self._instances[name].info(f"Removed instance logger: {name}")
-            del self._instances[name]
-        else:
-            self.logger.warning(f"Instance logger '{name}' does not exist")
 
     def __getitem__(self, key):
         """Get the instance logger based on a key.
