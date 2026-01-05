@@ -44,8 +44,6 @@ import weakref
 
 import ansys.api.mechanical.v0.mechanical_pb2 as mechanical_pb2
 import ansys.api.mechanical.v0.mechanical_pb2_grpc as mechanical_pb2_grpc
-
-# Import cyberchannel for secure gRPC connections
 import ansys.tools.common.path as atp
 import grpc
 
@@ -65,6 +63,8 @@ from ansys.mechanical.core.misc import (
     resolve_certs_dir,
     threaded,
 )
+
+# TODO : Import cyberchannel from ansys.tools.common for secure gRPC connections
 
 # Check if PyPIM is installed
 try:
