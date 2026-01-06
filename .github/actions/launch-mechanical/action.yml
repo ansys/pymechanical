@@ -1,0 +1,57 @@
+name: 'Launch Mechanical Docker Container'
+description: 'Pull and launch Mechanical Docker container'
+inputs:
+  mechanical-image:
+    description: 'Docker image for Mechanical'
+    required: true
+  container-name:
+    description: 'Name for the Docker container'
+    required: true
+  license-server:
+    description: 'License server address'
+    required: true
+  port:
+    description: 'Port to expose'
+    required: true
+    default: '10000'
+runs:
+  using: 'composite'
+  steps:
+    - name: Pull and launch Mechanical service
+      shell: bash
+      env:
+        MECHANICAL_IMAGE: ${{ inputs.mechanical-image }}
+        DOCKER_MECH_CONTAINER_NAME: ${{ inputs.container-name }}
+        LICENSE_SERVER: ${{ inputs.license-server }}
+        PYMECHANICAL_PORT: ${{ inputs.port }}
+      run: |
+        docker pull ${MECHANICAL_IMAGE}
+
+        echo "Run docker in detached mode"
+        docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} -p ${PYMECHANICAL_PORT}:10000 ${MECHANICAL_IMAGE}
+
+        # Wait for Mechanical to initialize with intelligent polling
+        max_wait=300  # Maximum wait time in seconds
+        check_interval=10  # Check every 10 seconds
+        elapsed=0
+
+        echo "Waiting for Mechanical to initialize..."
+        while [ $elapsed -lt $max_wait ]; do
+          docker logs ${DOCKER_MECH_CONTAINER_NAME} > log.txt
+          if grep -q 'WB Initialize Done' log.txt 2>/dev/null; then
+            echo "Mechanical initialized successfully after ${elapsed} seconds"
+            break
+          fi
+          echo "Waiting for initialization... (${elapsed}/${max_wait}s)"
+          sleep $check_interval
+          elapsed=$((elapsed + check_interval))
+        done
+
+        # Final check
+        docker logs ${DOCKER_MECH_CONTAINER_NAME} > log.txt
+        if ! grep -q 'WB Initialize Done' log.txt 2>/dev/null; then
+          echo "ERROR: Mechanical failed to initialize within ${max_wait} seconds"
+          echo "=== Last 50 lines of log.txt ==="
+          tail -n 50 log.txt || echo "No log file found"
+          exit 1
+        fi

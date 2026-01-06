@@ -1,0 +1,26 @@
+name: 'Setup Test Environment Variables'
+description: 'Set common environment variables for testing jobs'
+inputs:
+  container-stable-exit:
+    description: 'Whether container tests should exit on failure'
+    required: true
+  python-version:
+    description: 'Python version being tested'
+    required: true
+  num-cores:
+    description: 'Number of cores to use'
+    required: false
+    default: '1'
+runs:
+  using: 'composite'
+  steps:
+    - name: Set common test environment
+      shell: bash
+      run: |
+        echo "ANSYS_WORKBENCH_LOGGING_CONSOLE=0" >> $GITHUB_ENV
+        echo "ANSYS_WORKBENCH_LOGGING=0" >> $GITHUB_ENV
+        echo "ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL=2" >> $GITHUB_ENV
+        echo "CONTAINER_STABLE_EXIT=${{ inputs.container-stable-exit }}" >> $GITHUB_ENV
+        echo "MATRIX_PYTHON_VERSION=${{ inputs.python-version }}" >> $GITHUB_ENV
+        echo "NUM_CORES=${{ inputs.num-cores }}" >> $GITHUB_ENV
+        echo "PYTHONUNBUFFERED=1" >> $GITHUB_ENV

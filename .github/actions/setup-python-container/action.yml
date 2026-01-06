@@ -1,0 +1,42 @@
+name: 'Setup Python Environment in Container'
+description: 'Setup Python environment with uv in a container'
+inputs:
+  python-version:
+    description: 'Python version to install'
+    required: true
+  install-testing-deps:
+    description: 'Whether to install testing dependencies'
+    required: false
+    default: 'true'
+  install-doc-deps:
+    description: 'Whether to install documentation dependencies'
+    required: false
+    default: 'false'
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      shell: bash
+      run: |
+        apt update
+        apt install lsb-release xvfb git curl make -y
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        export PATH="$HOME/.local/bin:$PATH"
+        uv python install python${{ inputs.python-version }}
+        uv venv /env
+
+    - name: Install packages for testing
+      if: inputs.install-testing-deps == 'true'
+      shell: bash
+      run: |
+        . /env/bin/activate
+        uv pip install --upgrade pip
+        uv pip install -e .[tests]
+
+    - name: Install packages for documentation
+      if: inputs.install-doc-deps == 'true'
+      shell: bash
+      run: |
+        . /env/bin/activate
+        uv pip install --upgrade pip
+        uv pip install -e .[doc]
