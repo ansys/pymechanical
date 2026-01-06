@@ -47,3 +47,17 @@ repos:
   rev: 0.36.0
   hooks:
     - id: check-github-workflows
+
+- repo: https://github.com/zizmorcore/zizmor-pre-commit
+  rev: 1e30511413f07e516c1844ba91abce8aca984963 # 1.18.0
+  hooks:
+    - id: zizmor
+      args: ["--pedantic"]
+
+# Security checks with bandit
+- repo: https://github.com/PyCQA/bandit
+  rev: ea0d187d78b2e6365e35f676d2eb9b1be264c091 # 1.9.2
+  hooks:
+    - id: bandit
+      args: ['-c', 'pyproject.toml']
+      additional_dependencies: ['bandit[toml]']
