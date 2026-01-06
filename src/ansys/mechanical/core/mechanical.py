@@ -44,6 +44,7 @@ import weakref
 
 import ansys.api.mechanical.v0.mechanical_pb2 as mechanical_pb2
 import ansys.api.mechanical.v0.mechanical_pb2_grpc as mechanical_pb2_grpc
+from ansys.tools.common.cyberchannel import create_channel
 import ansys.tools.common.path as atp
 import grpc
 
@@ -63,8 +64,6 @@ from ansys.mechanical.core.misc import (
     resolve_certs_dir,
     threaded,
 )
-
-# TODO : Import cyberchannel from ansys.tools.common for secure gRPC connections
 
 # Check if PyPIM is installed
 try:
@@ -507,29 +506,14 @@ class Mechanical(object):
 
         if transport_mode is None:
             if is_linux():
-                transport_mode = "mtls"
+                self._transport_mode = "mtls"
             else:
-                transport_mode = "wnua"
-
-        self._transport_mode = transport_mode
+                self._transport_mode = "wnua"
 
         self._certs_dir = certs_dir
 
-        ip_to_use = ip_temp
-
         if self._channel is None:
-            if self._transport_mode.lower() == "mtls":
-                self._channel = self._create_secure_channel(self._ip, self._port, self._certs_dir)
-            else:
-                if self._transport_mode.lower() == "wnua":
-                    if ip_temp == "localhost":
-                        ip_to_use = "127.0.0.1"
-                    elif ip_temp != "127.0.0.1":
-                        raise RuntimeError("WNUA is only valid on local communications")
-                    if ip_temp == "localhost":
-                        print("WNUA: Using IPv4 (127.0.0.1) for FPN library compatibility")
-
-                self._channel = self._create_channel(ip_to_use, self._port)
+            self._channel = self._create_channel()
         else:
             self._channel = channel
 
@@ -720,8 +704,15 @@ class Mechanical(object):
 
         if not self._state._matured:  # pragma: no cover
             return False
-
-        self.log_debug("Established a connection to the Mechanical gRPC server.")
+        if self._transport_mode.lower() == "insecure":
+            self.log_debug(
+                "Connected to Mechanical gRPC server using INSECURE channel. "
+                "Consider using a secure connection."
+            )
+        elif self._transport_mode.lower() == "wnua":
+            self.log_debug("Connected to Mechanical gRPC server using WNUA channel.")
+        else:
+            self.log_debug("Connected to Mechanical gRPC server using MTLS channel.")
 
         self.wait_till_mechanical_is_ready(timeout)
 
@@ -810,95 +801,45 @@ class Mechanical(object):
             # except Exception:
             #     continue
 
-    def _create_channel(self, ip, port):
-        """Create an unsecured gRPC channel."""
-        # check_valid_ip(ip)
-
-        ip_to_use = ip
+    def _create_channel(self):
+        """Create an secure and insecure gRPC channel."""
+        ip_to_use = self._ip
 
         if ip_to_use == "0.0.0.0":  # nosec B104 - checking and replacing, not binding
             print(f"Passed ip:{ip_to_use}. Using 127.0.0.1 to connect.")
             ip_to_use = "127.0.0.1"
 
-        # open the channel
-        channel_str = f"{ip_to_use}:{port}"
+        channel_str = f"{ip_to_use}:{self._port}"
+
+        if self._transport_mode.lower() == "wnua":
+            if self._ip == "localhost":
+                ip_to_use = "127.0.0.1"
+            elif self._ip != "127.0.0.1":
+                raise RuntimeError("WNUA is only valid on local communications")
+            if self._ip == "localhost":
+                LOG.info("WNUA: Using IPv4 (127.0.0.1) for FPN library compatibility")
+            LOG.info(f"Starting connection using WNUA on {channel_str}.")
         if self._transport_mode.lower() == "insecure":
-            print(
+            LOG.info(
                 f"Starting gRPC client without TLS on {channel_str}. "
                 f"This is INSECURE. Consider using a secure connection."
             )
-
-        if self._transport_mode.lower() == "wnua":
-            print("Connection using Windows Named User Authentication (WNUA) channel established.")
-
+        if self._transport_mode.lower() == "mtls":
+            LOG.info(f"Starting secure gRPC client using mTLS on {channel_str}.")
         # Build channel options with required max message length
-        channel_options = [
+        _channel_options = [
             ("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
         ]
+
         # Add user-provided options
-        channel_options.extend(self._grpc_options)
+        _channel_options.extend(self._grpc_options)
 
-        channel = grpc.insecure_channel(
-            channel_str,
-            options=channel_options,
-        )
-
-        if self._transport_mode.lower() == "insecure":
-            print("Connection using insecure channel established.")
-
-        return channel
-
-    def _create_secure_channel(self, ip, port, certs_dir):
-        # TLS setup using environment variables
-        certs_path = Path(certs_dir)
-        cert_file = certs_path / "client.crt"
-        key_file = certs_path / "client.key"
-        ca_file = certs_path / "ca.crt"
-
-        missing = [f for f in (cert_file, key_file, ca_file) if not f.exists()]
-        if missing:
-            raise RuntimeError(
-                f"Missing required TLS file(s) for mutual TLS: {', '.join(str(f) for f in missing)}"
-            )
-
-        with cert_file.open("rb") as f:
-            certificate_chain = f.read()
-        with key_file.open("rb") as f:
-            private_key = f.read()
-        with ca_file.open("rb") as f:
-            root_certificates = f.read()
-
-        creds = grpc.ssl_channel_credentials(
-            root_certificates=root_certificates,
-            private_key=private_key,
-            certificate_chain=certificate_chain,
-        )
-
-        ip_to_use = ip
-
-        if ip_to_use == "0.0.0.0":  # nosec B104 - checking and replacing, not binding
-            print(f"Passed ip:{ip_to_use}. Using 127.0.0.1 to connect.")
-            ip_to_use = "127.0.0.1"
-
-        channel_str = f"{ip_to_use}:{port}"
-
-        print(f"Starting secure channel {channel_str} using TLS.")
-
-        # Build channel options with required max message length
-        channel_options = [
-            ("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
-        ]
-        # Add user-provided options (e.g., grpc.default_authority)
-        channel_options.extend(self._grpc_options)
-
-        channel = grpc.secure_channel(
-            target=channel_str,
-            credentials=creds,
-            options=channel_options,
-        )
-        print(
-            f"Connection established using mTLS on {ip} (cert: {cert_file}, key: {key_file}, "
-            f"server CA: {ca_file}).)"
+        channel = create_channel(
+            transport_mode=self._transport_mode,
+            host=ip_to_use,
+            port=self._port,
+            certs_dir=self._certs_dir,
+            grpc_options=_channel_options,
         )
 
         return channel
@@ -1026,43 +967,11 @@ class Mechanical(object):
         # update the new cleanup behavior
         self._cleanup_on_exit = cleanup_on_exit
         self._port = port
-        ip_to_use = self._ip
 
-        if self._transport_mode.lower() == "mtls":
-            self._channel = self._create_secure_channel(
-                ip_to_use,
-                port,
-                self._client_certificate_path,
-                self._client_key_path,
-                self._ca_certificate_path,
-            )
-        else:
-            if self._transport_mode.lower() == "wnua":
-                if self._ip == "localhost":
-                    ip_to_use = "127.0.0.1"
-                elif self._ip != "127.0.0.1":
-                    raise RuntimeError("WNUA is only valid on local communications")
-                if self._ip == "localhost":
-                    LOG.info("WNUA: Using IPv4 (127.0.0.1) for FPN library compatibility")
+        # Create gRPC channel
+        self._channel = self._create_channel()
 
-            channel_str = f"{ip_to_use}:{port}"
-
-            if self._transport_mode.lower() == "insecure":
-                LOG.info(
-                    f"Starting gRPC client without TLS on {channel_str}. "
-                    f"This is INSECURE. Consider using a secure connection."
-                )
-
-            self._channel = self._create_channel(ip_to_use, port)
-
-            if self._transport_mode.lower() == "wnua":
-                LOG.info(
-                    "Connection using Windows Named User Authentication (WNUA) channel established."
-                )
-            else:
-                LOG.info("Connection using insecure channel established.")
-
-        self._connect(port)
+        self._connect(self._port)
 
         self.log_info("Mechanical is ready to accept gRPC calls.")
 
