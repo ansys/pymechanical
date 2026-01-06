@@ -1,0 +1,32 @@
+name: 'Upload Coverage Results'
+description: 'Upload coverage results as artifacts'
+inputs:
+  coverage-name:
+    description: 'Name suffix for coverage artifacts'
+    required: true
+  python-version:
+    description: 'Python version being tested'
+    required: true
+  main-python-version:
+    description: 'Main Python version to compare against'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Upload coverage results (.cov)
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+      if: inputs.python-version == inputs.main-python-version
+      with:
+        include-hidden-files: true
+        name: coverage-${{ inputs.coverage-name }}
+        path: .cov
+        retention-days: 7
+
+    - name: Upload coverage results (.coverage)
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+      if: inputs.python-version == inputs.main-python-version
+      with:
+        include-hidden-files: true
+        name: coverage-file-${{ inputs.coverage-name }}
+        path: .coverage
+        retention-days: 7
