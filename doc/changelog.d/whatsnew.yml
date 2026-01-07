@@ -1,182 +1,78 @@
 fragments:
-- title: PEP 8 aliases for Mechanical APIs
-  version: 0.11.30
+- title: gRPC Security with mTLS, WNUA, and Insecure Transport Modes
+  version: 0.12.0
   content: |
-    Mechanical APIs now support PEP 8 aliases for improved usability and consistency when used with PyMechanical.
+    PyMechanical now supports comprehensive gRPC security with three transport modes: mTLS (mutual TLS),
+    WNUA (Windows Named User Authentication), and insecure mode. Platform-aware defaults are automatically
+    selected (mTLS on Linux, WNUA on Windows) with automatic service pack detection and validation.
 
-    To enable PEP 8 aliases
+    **Transport Modes**
 
+    - ``mtls``: Mutual TLS authentication (Linux default)
+    - ``wnua``: Windows Named User Authentication (Windows default)
+    - ``insecure``: No authentication (required for older Mechanical versions)
 
-    .. code:: python
+    **New Parameters**
 
-      from ansys.mechanical.core import App
+    All launch and connection APIs now support:
 
-      # Initialize the app and update globals
-      app = App(globals=globals(), pep8=True)
+    - ``transport_mode``: Transport security mode (``"mtls"``, ``"wnua"``, or ``"insecure"``)
+    - ``certs_dir``: Certificate directory path for mTLS (default: ``"certs"``)
+    - ``grpc_options``: Custom gRPC channel options (e.g., ``[("grpc.default_authority", "localhost")]``)
+    - ``host``: Server binding address (default: ``"127.0.0.1"``, launch only)
 
-    Example on how to use the PEP 8 aliases are given below
+    Affected APIs: ``launch_mechanical()``, ``connect_to_mechanical()``, ``launch_remote_mechanical()``,
+    ``Mechanical()``, ``LocalMechanicalPool()``, ``close_all_local_instances()``
 
+    **Service Pack Requirements**
 
-    .. code:: python
+    Automatic detection validates Mechanical versions:
 
-      from ansys.mechanical.core import App
+    - 242 (2024 R2): Requires SP05 or later
+    - 251 (2025 R1): Requires SP04 or later
+    - 252 (2025 R2): Requires SP03 or later
+    - 261+ (2026 R1+): All service packs supported
 
-      app = App(globals=globals(), pep8=True)
-      Model.add_static_structural_analysis()  # Model.AddStaticStructuralAnalysis
-      Model.name = "Test"  # Model.Name = "Test"
-
-- title: Globals parameter in the embedded app
-  version: 0.11.14
-  content: |
-    The ``globals`` parameter of the `App <api/ansys/mechanical/core/embedding/app/App.html>`_
-    class is used to update the global variables. This parameter is optional and interchangeable
-    with `app.update_globals(globals()) <api/ansys/mechanical/core/embedding/app/App.html#App.update_globals>`_.
-    To exclude enums from the global variables, use ``app.update_globals(globals(), False)``.
-    See the `globals <user_guide_embedding/globals.html>`_ page for more information.
-
-    Using the ``globals`` parameter:
-
-    .. code:: python
-
-        from ansys.mechanical.core import App
-
-        # Initialize the app and update globals
-        app = App(globals=globals())
-
-    Using the ``update_globals`` method:
+    **Usage Examples**
 
     .. code:: python
 
-        from ansys.mechanical.core import App
+      from ansys.mechanical.core import launch_mechanical
 
-        # Initialize the app and update globals
-        app = App()
-        app.update_globals(globals())
+      # Platform defaults (mTLS on Linux, WNUA on Windows)
+      mechanical = launch_mechanical()
 
-    Using the ``update_globals`` method excluding enums from global variables:
+      # Explicit transport mode
+      mechanical = launch_mechanical(transport_mode="mtls", certs_dir="./certs")
 
-    .. code:: python
+      # Custom gRPC options
+      mechanical = launch_mechanical(
+        transport_mode="mtls",
+        grpc_options=[("grpc.default_authority", "localhost")]
+      )
 
-        from ansys.mechanical.core import App
+      # For older Mechanical versions (pre-SP04/SP05)
+      mechanical = launch_mechanical(transport_mode="insecure")
 
-        # Initialize the app and update globals
-        app = App()
-        app.update_globals(globals(), False)
+    **CLI Support**
 
-- title: Launch GUI
-  version: 0.11.8
-  content: |
-    The `launch_gui() <api/ansys/mechanical/core/embedding/app/App.html#App.launch_gui>`_ function
-    graphically launches the current state of the embedded instance when the
-    `App <api/ansys/mechanical/core/embedding/app/App.html>`_ has been saved.
+    New command-line flags:
 
-    The `launch_gui()` function saves the active `.mechdb` file and creates a copy of the existing
-    `.mechdb` file with a temporary name. The temporary `.mechdb` file is used to launch the GUI.
-    By default, the temporary `.mechdb` file is deleted after the GUI is closed, but the user can
-    specify whether or not to delete the temporary file.
+    - ``--transport-mode {mtls,wnua,insecure}``
+    - ``--certs-dir PATH``
+    - ``--grpc-host HOST``
 
-    Usage:
-    .. code:: python
+    **Breaking Change**
 
-        from ansys.mechanical.core import App
+    .. warning::
 
-        # Initialize and save the app
-        app = App()
-        app.save()
+        Mechanical versions older than the required service packs (242 SP05, 251 SP04, 252 SP03)
+        will fail to launch with default settings. Explicitly set ``transport_mode="insecure"`` for
+        older versions:
 
-        # Launch the GUI and delete the temporary `.mechdb` file when the GUI is closed
-        app.launch_gui()
+        .. code:: python
 
-        # Launch the GUI and keep the temporary `.mechdb` file when the GUI is closed
-        app.launch_gui(delete_tmp_on_close=False)
+        # Required for old versions
+        mechanical = launch_mechanical(transport_mode="insecure")
 
-- title: Autocomplete settings command
-  version: 0.11.8
-  content: |
-    The ``ansys-mechanical-ideconfig`` command prints the settings that are necessary for
-    autocomplete to work with ``ansys-mechanical-stubs``. This command takes in three arguments:
-    ``--ide vscode``, ``--target user`` or ``--target workspace``, and ``--revision <version>``.
-    If the revision is not provided, ``ansys-tools-path`` will retrieve the Mechanical version
-    from your system.
-
-    Usage:
-    .. code:: shell
-
-        ansys-mechanical-ideconfig --ide vscode --target user --revision 251
-
-    Terminal output for Windows user's settings.json file:
-    .. code:: shell
-
-       Update C:\Users\{username}\AppData\Roaming\Code\User\settings.json with the following information:
-
-        {
-            "python.autoComplete.extraPaths": [
-                "{project_directory}\\.venv\\Lib\\site-packages\\ansys\\mechanical\\stubs\\v251"
-            ],
-            "python.analysis.extraPaths": [
-                "{project_directory}\\.venv\\Lib\\site-packages\\ansys\\mechanical\\stubs\\v251"
-            ]
-        }
-
-- title: Visualize geometry in 3D
-  version: 0.11.4
-  content: |
-    The `app.plot()` function allows you to visualize imported geometry in 3D. This feature is
-    available only from 24R1 or later and requires the `ansys-mechanical-core[graphics]` dependencies
-    to be installed:
-
-    .. code:: shell
-
-        pip install ansys-mechanical-core[graphics]
-
-    Usage:
-    .. code:: python
-
-        from ansys.mechanical.core import App
-
-        # Initialize the app and update globals
-        app = App()
-        app.update_globals(globals())
-
-        # Import the geometry
-        app.open("path/to/file.mechdat")
-
-        # Visualize
-        app.plot()
-
-- title: Print the Mechanical project tree
-  version: 0.11.1
-  content: |
-    The `app.print_tree()` function prints the hierarchical tree representation of the
-    Mechanical project structure and object state.
-
-    Usage:
-    .. code:: python
-
-        from ansys.mechanical.core import App
-
-        # Initialize the app and update globals
-        app = App()
-        app.update_globals(globals())
-
-        # Print the entire tree
-        app.print_tree()
-
-        # Print the entire tree but truncate the output after 2 lines
-        app.print_tree(max_lines=2)
-
-        # Print the tree for the Model and truncate after 3 lines
-        app.print_tree('Model', 3)
-
-    Output for `app.print_tree()`:
-    .. code:: shell
-
-        ├── Project
-        |  ├── Model
-        |  |  ├── Geometry Imports (⚡︎)
-        |  |  ├── Geometry (?)
-        |  |  ├── Materials (✓)
-        |  |  ├── Coordinate Systems (✓)
-        |  |  |  ├── Global Coordinate System (✓)
-        |  |  ├── Remote Points (✓)
-        |  |  ├── Mesh (?)
+    See the `gRPC security documentation <https://mechanical.docs.pyansys.com/version/stable/user_guide/remote_session/grpc_security.html>`_ for complete details on configuration.

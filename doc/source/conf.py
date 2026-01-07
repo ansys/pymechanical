@@ -215,6 +215,11 @@ html_context = {
     "pyansys_tags": ["Structures"],
 }
 html_theme_options = {
+    "announcement": (
+        "Starting with Pymechanical 0.12.0, Remote session uses secure server and connection. "
+        "Refer to <a href='https://mechanical.docs.pyansys.com/version/stable/"
+        "user_guide/remote_session/grpc_security.html'>this page</a> for more information."
+    ),
     "logo": "pyansys",
     "switcher": {
         "json_url": f"https://{cname}/versions.json",
