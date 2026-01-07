@@ -153,6 +153,9 @@ force-sort-within-sections = true
 known-first-party = ["ansys.mechanical.core"]
 
 
+[tool.bandit]
+exclude_dirs = ["examples", "tests"]
+
 # ========================================================
 # Pytest and Coverage Configuration
 # ========================================================
