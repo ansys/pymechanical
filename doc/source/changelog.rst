@@ -9,6 +9,140 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.12.0 <https://github.com/ansys/pymechanical/releases/tag/v0.12.0>`_ - January 07, 2026
+=========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add more pre-commit-hooks
+          - `#1466 <https://github.com/ansys/pymechanical/pull/1466>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update version and zizmor warning
+          - `#1438 <https://github.com/ansys/pymechanical/pull/1438>`_
+
+        * - GRPC changes
+          - `#1455 <https://github.com/ansys/pymechanical/pull/1455>`_
+
+        * - Update docker compose files
+          - `#1457 <https://github.com/ansys/pymechanical/pull/1457>`_
+
+        * - Logging with instance logger
+          - `#1458 <https://github.com/ansys/pymechanical/pull/1458>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Bump the actions group with 3 updates
+          - `#1428 <https://github.com/ansys/pymechanical/pull/1428>`_
+
+        * - Update CHANGELOG for v0.11.38
+          - `#1436 <https://github.com/ansys/pymechanical/pull/1436>`_
+
+        * - Replace \`ansys-tools-path\` with \`ansys-tools-common\`
+          - `#1437 <https://github.com/ansys/pymechanical/pull/1437>`_
+
+        * - Bump ansys-sphinx-theme[autoapi,changelog] from 1.6.3 to 1.6.4 in the doc group
+          - `#1439 <https://github.com/ansys/pymechanical/pull/1439>`_
+
+        * - Bump the actions group with 2 updates
+          - `#1440 <https://github.com/ansys/pymechanical/pull/1440>`_, `#1463 <https://github.com/ansys/pymechanical/pull/1463>`_
+
+        * - Pre-commit automatic update
+          - `#1441 <https://github.com/ansys/pymechanical/pull/1441>`_, `#1451 <https://github.com/ansys/pymechanical/pull/1451>`_
+
+        * - Bump matplotlib from 3.10.7 to 3.10.8 in the doc group
+          - `#1447 <https://github.com/ansys/pymechanical/pull/1447>`_
+
+        * - Bump github/codeql-action from 4.31.7 to 4.31.9 in the actions group
+          - `#1448 <https://github.com/ansys/pymechanical/pull/1448>`_
+
+        * - Bump actions/download-artifact from 6.0.0 to 7.0.0
+          - `#1449 <https://github.com/ansys/pymechanical/pull/1449>`_
+
+        * - Bump actions/upload-artifact from 5.0.0 to 6.0.0
+          - `#1450 <https://github.com/ansys/pymechanical/pull/1450>`_
+
+        * - Bump psutil from 7.1.3 to 7.2.0
+          - `#1454 <https://github.com/ansys/pymechanical/pull/1454>`_
+
+        * - Update license information.
+          - `#1456 <https://github.com/ansys/pymechanical/pull/1456>`_
+
+        * - Bump psutil from 7.2.0 to 7.2.1
+          - `#1462 <https://github.com/ansys/pymechanical/pull/1462>`_
+
+        * - Bump sphinx-autobuild from 2024.10.3 to 2025.8.25
+          - `#1464 <https://github.com/ansys/pymechanical/pull/1464>`_
+
+
+`0.11.38 <https://github.com/ansys/pymechanical/releases/tag/v0.11.38>`_ - December 10, 2025
+============================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Meshing issue with Cooling holes thermal use case
+          - `#1426 <https://github.com/ansys/pymechanical/pull/1426>`_
+
+        * - Zizmor errors
+          - `#1431 <https://github.com/ansys/pymechanical/pull/1431>`_
+
+        * - Examples
+          - `#1435 <https://github.com/ansys/pymechanical/pull/1435>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.11.37
+          - `#1413 <https://github.com/ansys/pymechanical/pull/1413>`_
+
+        * - Pre-commit automatic update
+          - `#1421 <https://github.com/ansys/pymechanical/pull/1421>`_, `#1430 <https://github.com/ansys/pymechanical/pull/1430>`_
+
+        * - Bump the actions group with 2 updates
+          - `#1422 <https://github.com/ansys/pymechanical/pull/1422>`_
+
+        * - Temporarily ignore examples
+          - `#1423 <https://github.com/ansys/pymechanical/pull/1423>`_
+
+        * - Bump pytest from 9.0.1 to 9.0.2 in the tests group
+          - `#1427 <https://github.com/ansys/pymechanical/pull/1427>`_
+
+        * - Bump the doc group with 2 updates
+          - `#1429 <https://github.com/ansys/pymechanical/pull/1429>`_
+
+        * - Bump actions/checkout from 6.0.0 to 6.0.1 in the actions group across 1 directory
+          - `#1434 <https://github.com/ansys/pymechanical/pull/1434>`_
+
+
 `0.11.37 <https://github.com/ansys/pymechanical/releases/tag/v0.11.37>`_ - November 25, 2025
 ============================================================================================
 
