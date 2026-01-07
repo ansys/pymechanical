@@ -2,77 +2,26 @@ fragments:
 - title: gRPC Security with mTLS, WNUA, and Insecure Transport Modes
   version: 0.12.0
   content: |
-    PyMechanical now supports comprehensive gRPC security with three transport modes: mTLS (mutual TLS),
-    WNUA (Windows Named User Authentication), and insecure mode. Platform-aware defaults are automatically
-    selected (mTLS on Linux, WNUA on Windows) with automatic service pack detection and validation.
+    PyMechanical now supports comprehensive gRPC security with three transport modes: ``mtls`` (mutual TLS,
+    Linux default), ``wnua`` (Windows Named User Authentication, Windows default), and ``insecure`` mode.
+    Platform-aware defaults are automatically selected based on the operating system.
 
-    **Transport Modes**
+    The implementation includes automatic service pack detection and validation, custom gRPC channel options
+    support, and new CLI flags (``--transport-mode``, ``--certs-dir``, ``--grpc-host``).
+    All launch and connection APIs (``launch_mechanical()``, ``connect_to_mechanical()``, etc.) now support
+    ``transport_mode``, ``certs_dir``, ``grpc_options``, and ``host`` parameters for configuring gRPC security.
 
-    - ``mtls``: Mutual TLS authentication (Linux default)
-    - ``wnua``: Windows Named User Authentication (Windows default)
-    - ``insecure``: No authentication (required for older Mechanical versions)
 
-    **New Parameters**
-
-    All launch and connection APIs now support:
-
-    - ``transport_mode``: Transport security mode (``"mtls"``, ``"wnua"``, or ``"insecure"``)
-    - ``certs_dir``: Certificate directory path for mTLS (default: ``"certs"``)
-    - ``grpc_options``: Custom gRPC channel options (e.g., ``[("grpc.default_authority", "localhost")]``)
-    - ``host``: Server binding address (default: ``"127.0.0.1"``, launch only)
-
-    Affected APIs: ``launch_mechanical()``, ``connect_to_mechanical()``, ``launch_remote_mechanical()``,
-    ``Mechanical()``, ``LocalMechanicalPool()``, ``close_all_local_instances()``
-
-    **Service Pack Requirements**
-
-    Automatic detection validates Mechanical versions:
-
-    - 242 (2024 R2): Requires SP05 or later
-    - 251 (2025 R1): Requires SP04 or later
-    - 252 (2025 R2): Requires SP03 or later
-    - 261+ (2026 R1+): All service packs supported
-
-    **Usage Examples**
-
+    Usage:
     .. code:: python
 
-      from ansys.mechanical.core import launch_mechanical
+       from ansys.mechanical.core import launch_mechanical
 
-      # Platform defaults (mTLS on Linux, WNUA on Windows)
-      mechanical = launch_mechanical()
+       # Platform defaults (mTLS on Linux, WNUA on Windows)
+       mechanical = launch_mechanical()
 
-      # Explicit transport mode
-      mechanical = launch_mechanical(transport_mode="mtls", certs_dir="./certs")
+       # For older versions without required service packs
+       mechanical = launch_mechanical(transport_mode="insecure")
 
-      # Custom gRPC options
-      mechanical = launch_mechanical(
-        transport_mode="mtls",
-        grpc_options=[("grpc.default_authority", "localhost")]
-      )
 
-      # For older Mechanical versions (pre-SP04/SP05)
-      mechanical = launch_mechanical(transport_mode="insecure")
-
-    **CLI Support**
-
-    New command-line flags:
-
-    - ``--transport-mode {mtls,wnua,insecure}``
-    - ``--certs-dir PATH``
-    - ``--grpc-host HOST``
-
-    **Breaking Change**
-
-    .. warning::
-
-        Mechanical versions older than the required service packs (242 SP05, 251 SP04, 252 SP03)
-        will fail to launch with default settings. Explicitly set ``transport_mode="insecure"`` for
-        older versions:
-
-        .. code:: python
-
-        # Required for old versions
-        mechanical = launch_mechanical(transport_mode="insecure")
-
-    See the `gRPC security documentation <https://mechanical.docs.pyansys.com/version/stable/user_guide/remote_session/grpc_security.html>`_ for complete details on configuration.
+    For complete details, see the `gRPC Security User Guide <https://mechanical.docs.pyansys.com/version/stable/user_guide/remote_session/grpc_security.html>`_.
