@@ -25,3 +25,185 @@ fragments:
 
 
     For complete details, see the `gRPC Security User Guide <https://mechanical.docs.pyansys.com/version/stable/user_guide/remote_session/grpc_security.html>`_.
+
+- title: PEP 8 aliases for Mechanical APIs
+  version: 0.11.30
+  content: |
+    Mechanical APIs now support PEP 8 aliases for improved usability and consistency when used with PyMechanical.
+
+    To enable PEP 8 aliases
+
+
+    .. code:: python
+
+      from ansys.mechanical.core import App
+
+      # Initialize the app and update globals
+      app = App(globals=globals(), pep8=True)
+
+    Example on how to use the PEP 8 aliases are given below
+
+
+    .. code:: python
+
+      from ansys.mechanical.core import App
+
+      app = App(globals=globals(), pep8=True)
+      Model.add_static_structural_analysis()  # Model.AddStaticStructuralAnalysis
+      Model.name = "Test"  # Model.Name = "Test"
+
+- title: Globals parameter in the embedded app
+  version: 0.11.14
+  content: |
+    The ``globals`` parameter of the `App <api/ansys/mechanical/core/embedding/app/App.html>`_
+    class is used to update the global variables. This parameter is optional and interchangeable
+    with `app.update_globals(globals()) <api/ansys/mechanical/core/embedding/app/App.html#App.update_globals>`_.
+    To exclude enums from the global variables, use ``app.update_globals(globals(), False)``.
+    See the `globals <user_guide_embedding/globals.html>`_ page for more information.
+
+    Using the ``globals`` parameter:
+
+    .. code:: python
+
+        from ansys.mechanical.core import App
+
+        # Initialize the app and update globals
+        app = App(globals=globals())
+
+    Using the ``update_globals`` method:
+
+    .. code:: python
+
+        from ansys.mechanical.core import App
+
+        # Initialize the app and update globals
+        app = App()
+        app.update_globals(globals())
+
+    Using the ``update_globals`` method excluding enums from global variables:
+
+    .. code:: python
+
+        from ansys.mechanical.core import App
+
+        # Initialize the app and update globals
+        app = App()
+        app.update_globals(globals(), False)
+
+- title: Launch GUI
+  version: 0.11.8
+  content: |
+    The `launch_gui() <api/ansys/mechanical/core/embedding/app/App.html#App.launch_gui>`_ function
+    graphically launches the current state of the embedded instance when the
+    `App <api/ansys/mechanical/core/embedding/app/App.html>`_ has been saved.
+
+    The `launch_gui()` function saves the active `.mechdb` file and creates a copy of the existing
+    `.mechdb` file with a temporary name. The temporary `.mechdb` file is used to launch the GUI.
+    By default, the temporary `.mechdb` file is deleted after the GUI is closed, but the user can
+    specify whether or not to delete the temporary file.
+
+    Usage:
+    .. code:: python
+
+        from ansys.mechanical.core import App
+
+        # Initialize and save the app
+        app = App()
+        app.save()
+
+        # Launch the GUI and delete the temporary `.mechdb` file when the GUI is closed
+        app.launch_gui()
+
+        # Launch the GUI and keep the temporary `.mechdb` file when the GUI is closed
+        app.launch_gui(delete_tmp_on_close=False)
+
+- title: Autocomplete settings command
+  version: 0.11.8
+  content: |
+    The ``ansys-mechanical-ideconfig`` command prints the settings that are necessary for
+    autocomplete to work with ``ansys-mechanical-stubs``. This command takes in three arguments:
+    ``--ide vscode``, ``--target user`` or ``--target workspace``, and ``--revision <version>``.
+    If the revision is not provided, ``ansys-tools-path`` will retrieve the Mechanical version
+    from your system.
+
+    Usage:
+    .. code:: shell
+
+        ansys-mechanical-ideconfig --ide vscode --target user --revision 251
+
+    Terminal output for Windows user's settings.json file:
+    .. code:: shell
+
+       Update C:\Users\{username}\AppData\Roaming\Code\User\settings.json with the following information:
+
+        {
+            "python.autoComplete.extraPaths": [
+                "{project_directory}\\.venv\\Lib\\site-packages\\ansys\\mechanical\\stubs\\v251"
+            ],
+            "python.analysis.extraPaths": [
+                "{project_directory}\\.venv\\Lib\\site-packages\\ansys\\mechanical\\stubs\\v251"
+            ]
+        }
+
+- title: Visualize geometry in 3D
+  version: 0.11.4
+  content: |
+    The `app.plot()` function allows you to visualize imported geometry in 3D. This feature is
+    available only from 24R1 or later and requires the `ansys-mechanical-core[graphics]` dependencies
+    to be installed:
+
+    .. code:: shell
+
+        pip install ansys-mechanical-core[graphics]
+
+    Usage:
+    .. code:: python
+
+        from ansys.mechanical.core import App
+
+        # Initialize the app and update globals
+        app = App()
+        app.update_globals(globals())
+
+        # Import the geometry
+        app.open("path/to/file.mechdat")
+
+        # Visualize
+        app.plot()
+
+- title: Print the Mechanical project tree
+  version: 0.11.1
+  content: |
+    The `app.print_tree()` function prints the hierarchical tree representation of the
+    Mechanical project structure and object state.
+
+    Usage:
+    .. code:: python
+
+        from ansys.mechanical.core import App
+
+        # Initialize the app and update globals
+        app = App()
+        app.update_globals(globals())
+
+        # Print the entire tree
+        app.print_tree()
+
+        # Print the entire tree but truncate the output after 2 lines
+        app.print_tree(max_lines=2)
+
+        # Print the tree for the Model and truncate after 3 lines
+        app.print_tree('Model', 3)
+
+    Output for `app.print_tree()`:
+    .. code:: shell
+
+        ├── Project
+        |  ├── Model
+        |  |  ├── Geometry Imports (⚡︎)
+        |  |  ├── Geometry (?)
+        |  |  ├── Materials (✓)
+        |  |  ├── Coordinate Systems (✓)
+        |  |  |  ├── Global Coordinate System (✓)
+        |  |  ├── Remote Points (✓)
+        |  |  ├── Mesh (?)

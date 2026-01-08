@@ -139,7 +139,13 @@ CLI usage
    # Insecure mode
    ansys-mechanical --port 10000 --transport-mode insecure
 
+   # Specify custom host for gRPC binding
+   ansys-mechanical --port 10000 --transport-mode wnua --grpc-host 127.0.0.1
+
 If ``--transport-mode`` is not specified, the platform default is used.
+
+The ``--grpc-host`` option specifies the host address for the gRPC server to bind to.
+It defaults to ``localhost`` for WNUA and insecure modes.
 
 Connect to an existing instance
 -------------------------------
