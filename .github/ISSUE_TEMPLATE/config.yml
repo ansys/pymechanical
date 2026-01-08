@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 GitHub Discussions
+    url: https://github.com/ansys/pymechanical/discussions
+    about: Ask questions and discuss with the community
+  - name: 📖 Documentation
+    url: https://mechanical.docs.pyansys.com/
+    about: Read the official PyMechanical documentation
+  - name: 🌐 PyAnsys Community
+    url: https://discuss.ansys.com/
+    about: Join the broader PyAnsys community discussions

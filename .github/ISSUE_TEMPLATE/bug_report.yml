@@ -1,0 +1,114 @@
+name: 🐛 Bug Report
+description: Report a bug or unexpected behavior in PyMechanical
+title: "[BUG] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report! Please provide as much detail as possible.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: Describe the bug...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Import '...'
+        2. Call function '...'
+        3. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What you expected to happen
+      placeholder: Describe what should happen...
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened
+      placeholder: Describe what actually happened...
+    validations:
+      required: true
+
+  - type: textarea
+    id: code
+    attributes:
+      label: Minimal Reproducible Example
+      description: Please provide a minimal code example that reproduces the issue
+      placeholder: |
+        ```python
+        from ansys.mechanical.core import launch_mechanical
+        # Your code here
+        ```
+      render: python
+
+  - type: textarea
+    id: error
+    attributes:
+      label: Error Messages/Stack Trace
+      description: If applicable, paste any error messages or stack traces
+      render: shell
+
+  - type: input
+    id: pymechanical-version
+    attributes:
+      label: PyMechanical Version
+      description: What version of PyMechanical are you using?
+      placeholder: e.g., 0.10.0
+    validations:
+      required: true
+
+  - type: input
+    id: mechanical-version
+    attributes:
+      label: Ansys Mechanical Version
+      description: What version of Ansys Mechanical are you using?
+      placeholder: e.g., 2025 R2 (252)
+    validations:
+      required: true
+
+  - type: input
+    id: python-version
+    attributes:
+      label: Python Version
+      description: What version of Python are you using?
+      placeholder: e.g., 3.11
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      description: What operating system are you using?
+      options:
+        - Windows
+        - Linux
+        - macOS
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here
+      placeholder: Any additional information...

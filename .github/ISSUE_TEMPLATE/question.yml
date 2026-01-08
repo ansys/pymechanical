@@ -1,0 +1,66 @@
+name: ❓ Question
+description: Ask a question about PyMechanical usage
+title: "[QUESTION] "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have a question about using PyMechanical? We're here to help!
+
+        **Note:** For general support, consider using [GitHub Discussions](../../discussions) or the [PyAnsys community](https://discuss.ansys.com/).
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: What would you like to know?
+      placeholder: Ask your question here...
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What are you trying to accomplish?
+      placeholder: Provide context about what you're working on...
+
+  - type: textarea
+    id: attempted
+    attributes:
+      label: What Have You Tried?
+      description: Have you tried anything to solve this already?
+      placeholder: Describe what you've already attempted...
+
+  - type: textarea
+    id: code
+    attributes:
+      label: Code Example
+      description: If applicable, provide a code example
+      placeholder: |
+        ```python
+        # Your code here
+        ```
+      render: python
+
+  - type: input
+    id: pymechanical-version
+    attributes:
+      label: PyMechanical Version
+      description: What version of PyMechanical are you using?
+      placeholder: e.g., 0.10.0
+
+  - type: input
+    id: mechanical-version
+    attributes:
+      label: Ansys Mechanical Version
+      description: What version of Ansys Mechanical are you using?
+      placeholder: e.g., 2025 R2 (252)
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Information
+      description: Any other relevant information
+      placeholder: Any additional context...
