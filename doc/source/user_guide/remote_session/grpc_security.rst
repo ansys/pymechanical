@@ -3,11 +3,15 @@
 Secure gRPC connections
 =======================
 
-PyMechanical supports secure gRPC connections using mTLS, WNUA, or insecure modes.
+PyMechanical supports gRPC connections using mTLS, WNUA, or insecure modes.
 
-.. warning::
-   Secure connections (mTLS, WNUA) require specific service packs for each version.
-   Versions without the required service pack only support insecure mode.
+**Transport mode comparison:**
+
+- **mTLS**: Provides both authentication and encryption. Recommended for production environments.
+- **WNUA** (Windows only): Provides authentication but not encryption.
+- **Insecure**: No authentication or encryption. Not recommended.
+
+See the table below for version-specific support and service pack requirements.
 
 Version and service pack requirements
 -------------------------------------
@@ -49,25 +53,37 @@ Version and service pack requirements
      Ansys installation directory.
 
 .. warning::
-   **Breaking Change**: Version mismatch behavior
+   **Breaking Change**: Version mismatch behavior on Linux
 
-   When using ``launch_mechanical()`` without explicitly specifying ``transport_mode``:
+   **Windows users**: No breaking changes. The default WNUA mode works across all versions
+   and does not require certificates or additional configuration.
 
-   - If you have a **newer version of PyMechanical** with an **older version of Mechanical**
-     that doesn't support secure connections, the connection will fail.
-   - If you have an **older version of PyMechanical** with a **newer version of Mechanical**
-     that requires secure connections by default, the connection will fail.
+   **Linux users**: Breaking change introduced due to mTLS default requiring certificates.
 
-   **Solution**: Always explicitly specify ``transport_mode`` to avoid compatibility issues:
+   When using ``launch_mechanical()`` on Linux without explicitly specifying ``transport_mode``:
+
+   - If you have a **newer version of PyMechanical** (0.12.0+) with an **older version of Mechanical**
+     (without required service pack), the connection will fail because PyMechanical defaults to mTLS
+     but the old Mechanical version doesn't support it.
+   - If you have an **older version of PyMechanical** (< 0.12.0) with a **newer version of Mechanical**
+     (with required service pack), the connection may fail due to security mode mismatch.
+
+   **Solution for Linux users**: Always explicitly specify ``transport_mode``:
 
    .. code-block:: python
 
-      # For older Mechanical versions (241 or versions without required SP)
+      # For older Mechanical versions on Linux (241 or versions without required SP)
       mechanical = launch_mechanical(transport_mode="insecure")
 
-      # For newer Mechanical versions with secure support
-      mechanical = launch_mechanical(transport_mode="wnua")  # Windows
-      mechanical = launch_mechanical(transport_mode="mtls")  # Linux
+      # For newer Mechanical versions on Linux with certificates configured
+      mechanical = launch_mechanical(transport_mode="mtls", certs_dir="/path/to/certs")
+
+   **Windows users** can continue using the default without changes:
+
+   .. code-block:: python
+
+      # Works on all Windows versions (WNUA default)
+      mechanical = launch_mechanical()
 
 Transport modes
 ---------------
@@ -113,7 +129,7 @@ See `PyAnsys mTLS guide <https://tools.docs.pyansys.com/version/stable/user_guid
 
       export ANSYS_GRPC_CERTIFICATES=/path/to/certs
 
-**WNUA (Windows Named User Authentication)** - Windows only, default on Windows.
+**WNUA (Windows Named User Authentication)** - Platform-specific (Windows only, default mode).
 
 .. code-block:: python
 
