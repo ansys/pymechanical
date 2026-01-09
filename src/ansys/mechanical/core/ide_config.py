@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -30,7 +30,7 @@ import site
 import sys
 import warnings
 
-import ansys.tools.path as atp
+import ansys.tools.common.path as atp
 import click
 
 
@@ -47,7 +47,7 @@ def get_stubs_location():
     site_packages_regex = re.compile(f"{prefix_path}.*site-packages$")
     site_packages_paths = list(filter(site_packages_regex.match, site_packages))
 
-    if len(site_packages_paths) == 1:
+    if len(site_packages_paths) >= 1:
         # Get the stubs location
         stubs_location = Path(site_packages_paths[0]) / "ansys" / "mechanical" / "stubs"
         return stubs_location
@@ -70,9 +70,9 @@ def get_stubs_versions(stubs_location: Path):
     """
     # Get revision numbers in stubs folder
     revns = [
-        int(revision[1:])
-        for revision in os.listdir(stubs_location)
-        if os.path.isdir(os.path.join(stubs_location, revision)) and revision.startswith("v")
+        int(revision.name[1:])
+        for revision in stubs_location.iterdir()
+        if revision.is_dir() and revision.name.startswith("v")
     ]
     return revns
 
@@ -89,7 +89,7 @@ def _vscode_impl(
         The type of settings to update. Either "user" or "workspace" in VS Code.
         By default, it's ``user``.
     revision: int
-        The Mechanical revision number. For example, "251".
+        The Mechanical revision number. For example, "252".
         If unspecified, it finds the default Mechanical version from ansys-tools-path.
     """
     # Update the user or workspace settings
@@ -146,7 +146,7 @@ def _cli_impl(
         The type of settings to update. Either "user" or "workspace" in VS Code.
         By default, it's ``user``.
     revision: int
-        The Mechanical revision number. For example, "251".
+        The Mechanical revision number. For example, "252".
         If unspecified, it finds the default Mechanical version from ansys-tools-path.
     """
     # Get the ansys-mechanical-stubs install location
@@ -190,7 +190,7 @@ def _cli_impl(
     "--revision",
     default=None,
     type=int,
-    help='The Mechanical revision number, e.g. "251" or "242". If unspecified,\
+    help='The Mechanical revision number, e.g. "252" or "251". If unspecified,\
 it finds and uses the default version from ansys-tools-path.',
 )
 def cli(ide: str, target: str, revision: int) -> None:
@@ -204,14 +204,14 @@ def cli(ide: str, target: str, revision: int) -> None:
         The type of settings to update. Either "user" or "workspace" in VS Code.
         By default, it's ``user``.
     revision: int
-        The Mechanical revision number. For example, "251".
+        The Mechanical revision number. For example, "252".
         If unspecified, it finds the default Mechanical version from ansys-tools-path.
 
     Usage
     -----
     The following example demonstrates the main use of this tool:
 
-        $ ansys-mechanical-ideconfig --ide vscode --target user --revision 251
+        $ ansys-mechanical-ideconfig --ide vscode --target user --revision 252
 
     """
     if not revision:

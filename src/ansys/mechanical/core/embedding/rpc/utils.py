@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """Utilities necessary for remote calls."""
+
 import typing
 
 from ansys.mechanical.core.mechanical import port_in_use
@@ -27,7 +28,7 @@ from ansys.mechanical.core.mechanical import port_in_use
 PYMECHANICAL_DEFAULT_RPC_PORT = 20000
 
 
-class remote_method:
+class remote_method:  # noqa: N801
     """Decorator for passing remote methods."""
 
     def __init__(self, func):
@@ -117,7 +118,7 @@ def get_remote_methods(
                 yield attrname, prop, MethodType.PROP
                 continue
         result = try_get_remote_method(attrname, obj)
-        if result != None:
+        if result is not None:
             attrname, method = result
             yield attrname, method, MethodType.METHOD
 

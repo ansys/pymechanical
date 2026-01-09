@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -22,55 +22,15 @@
 
 """Functions to download sample datasets from the PyAnsys data repository."""
 
-import os
+from pathlib import Path
 import shutil
 from typing import Optional
-from urllib.parse import urljoin
 
-import requests
+from ansys.tools.common.example_download import download_manager
 
 import ansys.mechanical.core as pymechanical
 
-# __all__ = ['download_file']
-
-
-def _joinurl(base, *paths):
-    for path in paths:
-        if base[-1] != "/":
-            base += "/"
-        base = urljoin(base, path)
-    return base
-
-
-def _get_default_server_and_joiner():
-    return "https://github.com/ansys/example-data/raw/main", _joinurl
-
-
-def _get_filepath_on_default_server(filename: str, *directory: str):
-    server, joiner = _get_default_server_and_joiner()
-    if directory:
-        return joiner(server, *directory, filename)
-    else:
-        return joiner(server, filename)
-
-
-def _retrieve_url(url: str, dest: str) -> str:
-    with requests.get(url, stream=True, timeout=10) as r:
-        r.raise_for_status()
-        with open(dest, "wb") as f:
-            for chunk in r.iter_content(chunk_size=4096):
-                f.write(chunk)
-    return dest
-
-
-def _retrieve_data(url: str, filename: str, dest: str = None, force: bool = False):
-    if dest is None:
-        dest = pymechanical.EXAMPLES_PATH
-    local_path = os.path.join(dest, os.path.basename(filename))
-    if not force and os.path.isfile(local_path):
-        return local_path
-    local_path = _retrieve_url(url, local_path)
-    return local_path
+__all__ = ["download_file", "delete_downloads"]
 
 
 def download_file(
@@ -91,21 +51,35 @@ def download_file(
 
     Returns
     -------
-    Tuple[str, str]
-        Tuple containing filepath to be used and the local filepath of the downloaded directory
-        The two are different in case of containers.
+    str
+        Filepath to the downloaded file
 
     Examples
     --------
     Download a file from the server
 
     >>> from ansys.mechanical.core import examples
-    >>> filename = examples.download_file('example_01_geometry.agdb', 'pymechanical', '00_basic')
+    >>> filename = examples.download_file("example_01_geometry.agdb", "pymechanical", "00_basic")
     >>> filename
     'C:/Users/user/AppData/Local/ansys_mechanical_core/ansys_mechanical_core/examples/example_01_geometry.agdb'
+
+    Download using the download manager
+
+    >>> filename = examples.download_file("11_blades_mode_1_ND_0.csv", "pymapdl", "cfx_mapping")
+    >>> filename
+    'C:/Users/user/AppData/Local/ansys_mechanical_core/ansys_mechanical_core/examples/11_blades_mode_1_ND_0.csv'
     """
-    url = _get_filepath_on_default_server(filename, *directory)
-    local_path = _retrieve_data(url, filename, dest=destination, force=force)
+    # Convert directory tuple to path string
+    directory_path = "/".join(directory) if directory else ""
+
+    # Use ansys.tools.example_download
+    # If no destination is provided, use the default EXAMPLES_PATH
+    if destination is None:
+        destination = pymechanical.EXAMPLES_PATH
+
+    local_path = download_manager.download_file(
+        filename, directory_path, destination=destination, force=force
+    )
     return local_path
 
 
@@ -127,6 +101,8 @@ def delete_downloads() -> bool:
     'True'
 
     """
-    shutil.rmtree(pymechanical.EXAMPLES_PATH)
-    os.makedirs(pymechanical.EXAMPLES_PATH)
+    examples_path = Path(pymechanical.EXAMPLES_PATH)
+    if examples_path.exists():
+        shutil.rmtree(examples_path)
+    examples_path.mkdir(parents=True, exist_ok=True)
     return True

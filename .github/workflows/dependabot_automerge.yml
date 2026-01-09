@@ -1,19 +1,25 @@
 name: Dependabot auto-merge
 on: pull_request
 
-permissions:
-  pull-requests: write
-  contents: write
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
 
 jobs:
   dependabot-automerge:
+    name: "Auto-merge Dependabot PRs"
     runs-on: ubuntu-latest
     if: startsWith(github.head_ref, 'dependabot/')
+    permissions:
+      pull-requests: write   # Required to merge and comment on Dependabot PRs
+      contents: write        # Needed to merge pull requests into main branch
     steps:
 
       - name: Dependabot metadata
         id: metadata
-        uses: dependabot/fetch-metadata@v2
+        uses: dependabot/fetch-metadata@21025c705c08248db411dc16f3619e6b5f9ea21a # v2.5.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 

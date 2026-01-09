@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -20,9 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Analytics embedding tests"""
+"""Analytics embedding tests."""
+
 import json
 import os
+from pathlib import Path
 import sys
 
 import pytest
@@ -36,21 +38,21 @@ def test_analytics(rootdir, run_subprocess, pytestconfig, tmp_path: pytest.TempP
     if int(version) < 252:
         return
 
-    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_analytics.py")
+    embedded_py = Path(rootdir) / "tests" / "scripts" / "run_analytics.py"
 
     analytics_env = os.environ.copy()
     analytics_env["ANS_ENABLE_DATA_ANALYTICS"] = "1"
     analytics_env["ANS_DATA_ANALYTICS_DUMP_FOLDER"] = str(tmp_path)
 
-    args = [sys.executable, embedded_py, "--version", version]
+    args = [sys.executable, str(embedded_py), "--version", version]
     run_subprocess(args, analytics_env)
 
-    temp_files = os.listdir(tmp_path)
+    temp_files = [f.name for f in tmp_path.iterdir()]
     json_files = [file for file in temp_files if file.endswith(".json")]
     assert len(json_files) == 1
-    json_file = os.path.join(tmp_path, json_files[0])
-    assert os.path.isfile(json_file)
-    with open(json_file, "r", encoding="utf-8") as f:
+    json_file = tmp_path / json_files[0]
+    assert json_file.is_file()
+    with json_file.open("r", encoding="utf-8") as f:
         analytics_data = json.load(f)
 
     assert analytics_data["Application.Mode"] == "StandaloneMechanical"

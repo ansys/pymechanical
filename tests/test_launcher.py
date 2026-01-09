@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+"""Test for MechanicalLauncher."""
 
 import pytest
 
@@ -28,6 +29,7 @@ from ansys.mechanical.core.misc import is_windows
 
 @pytest.mark.remote_session_launch
 def test_verify_path_exists():
+    """Test for verifying that the path exists."""
     if is_windows():
         windows_path = (
             "C:\\does_not_exist\\Program Files\\ANSYS Inc\\v111\\aisol\\bin\\winx64\\AnsysWBU.exe"
@@ -42,6 +44,7 @@ def test_verify_path_exists():
 
 @pytest.mark.remote_session_launch
 def test_verify_mode_exists():
+    """Test for verifying that the mode exists."""
     additional_args = None
     assert not launcher.MechanicalLauncher._mode_exists(additional_args, "-AppModeMech")
     assert not launcher.MechanicalLauncher._mode_exists(additional_args, "-AppModeMesh")

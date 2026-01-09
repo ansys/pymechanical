@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Launch remote session."""
+
 import ansys.mechanical.core as pymechanical
 
 # Launch remote session

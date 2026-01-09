@@ -26,8 +26,7 @@ Known issues and limitations
 24R1
 ^^^^
 
-- `Python libraries <https://mechanical.docs.pyansys.com/version/stable/user_guide_embedding/libraries.html>`_
-  that are distributed with the installation of Mechanical does not work when there are syntax differences
+- :ref:`Python libraries <ref_embedding_user_guide_libraries>` that are distributed with the installation of Mechanical does not work when there are syntax differences
   between IronPython and CPython (`#515 <https://github.com/ansys/pymechanical/issues/515>`_).
 - Trace Import fails with PyMechanical Embedding when using ``python 3.10`` only.
 

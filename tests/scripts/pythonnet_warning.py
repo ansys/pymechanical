@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Test script for checking pythonnet warning."""
+
 import sys
 
 from ansys.mechanical.core.embedding import initializer

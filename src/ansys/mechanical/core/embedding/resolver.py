@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""This is the .NET assembly resolving for embedding Ansys Mechanical.
+"""Provides the .NET assembly resolving for embedding Ansys Mechanical.
 
 Note that for some Mechanical Addons - additional resolving may be
 necessary. A resolve handler is shipped with Ansys Mechanical on Windows

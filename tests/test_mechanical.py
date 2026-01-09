@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -19,31 +19,40 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+"""Test for Mechanical Module."""
 
 import json
 import os
-import pathlib
+from pathlib import Path
 import re
 
-import ansys.tools.path
+import ansys.tools.common.path
+import conftest
 import pytest
 
 import ansys.mechanical.core as pymechanical
 import ansys.mechanical.core.errors as errors
 import ansys.mechanical.core.misc as misc
-import conftest
+
+
+def new_python_script_api(mechanical):
+    """Check if the new python script API is available."""
+    api_version = mechanical._get_python_script_api_version()
+    return api_version > 0
 
 
 @pytest.mark.remote_session_connect
 def test_run_python_script_success(mechanical):
+    """Test for running a python script successfully."""
     result = str(mechanical.run_python_script("2+3"))
     assert result == "5"
 
 
 @pytest.mark.remote_session_connect
 def test_run_python_script_success_return_empty(mechanical):
+    """Test for running a python script that returns empty."""
     result = str(mechanical.run_python_script("ExtAPI.DataModel.Project"))
-    if misc.is_windows() and mechanical.backend == "mechanical":
+    if misc.is_windows() and not new_python_script_api(mechanical):
         assert result == ""
     else:
         assert result == "Ansys.ACT.Automation.Mechanical.Project"
@@ -51,12 +60,12 @@ def test_run_python_script_success_return_empty(mechanical):
 
 @pytest.mark.remote_session_connect
 def test_run_python_script_error(mechanical):
-
+    """Test for running a python script that raises an error."""
     with pytest.raises(mechanical._error_type) as exc_info:
         mechanical.run_python_script("import test")
 
     # TODO : we can do custom error with currying poster
-    if mechanical.backend == "mechanical":
+    if not new_python_script_api(mechanical):
         assert exc_info.value.details() == "No module named test"
     else:
         assert "No module named test" in str(exc_info.value)
@@ -64,26 +73,24 @@ def test_run_python_script_error(mechanical):
 
 @pytest.mark.remote_session_connect
 def test_run_python_from_file_success(mechanical):
-    current_working_directory = os.getcwd()
-    script_path = os.path.join(
-        current_working_directory, "tests", "scripts", "run_python_success.py"
-    )
+    """Test for running a python script from a file successfully."""
+    current_working_directory = Path.cwd()
+    script_path = current_working_directory / "tests" / "scripts" / "run_python_success.py"
     print("running python script : ", script_path)
-    result = mechanical.run_python_script_from_file(script_path)
+    result = mechanical.run_python_script_from_file(str(script_path))
 
     assert result == "test"
 
 
 @pytest.mark.remote_session_connect
 def test_run_python_script_from_file_error(mechanical):
+    """Test for running a python script from a file that raises an error."""
     with pytest.raises(mechanical._error_type) as exc_info:
-        current_working_directory = os.getcwd()
-        script_path = os.path.join(
-            current_working_directory, "tests", "scripts", "run_python_error.py"
-        )
+        current_working_directory = Path.cwd()
+        script_path = current_working_directory / "tests" / "scripts" / "run_python_error.py"
         print("running python script : ", script_path)
-        mechanical.run_python_script_from_file(script_path)
-    if mechanical.backend == "mechanical":
+        mechanical.run_python_script_from_file(str(script_path))
+    if not new_python_script_api(mechanical):
         assert exc_info.value.details() == "name 'get_myname' is not defined"
     else:
         assert "name 'get_myname' is not defined" in str(exc_info.value)
@@ -92,17 +99,18 @@ def test_run_python_script_from_file_error(mechanical):
 @pytest.mark.remote_session_connect
 @pytest.mark.parametrize("file_name", [r"hsec.x_t"])
 def test_upload(mechanical, file_name, assets):
+    """Test for uploading a file."""
     directory = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
     print(directory)
 
-    file_path = os.path.join(assets, file_name)
+    file_path = Path(assets) / file_name
     mechanical.upload(
-        file_name=file_path, file_location_destination=directory, chunk_size=1024 * 1024
+        file_name=str(file_path), file_location_destination=directory, chunk_size=1024 * 1024
     )
 
-    base_name = os.path.basename(file_path)
-    combined_path = os.path.join(directory, base_name)
-    file_path_modified = combined_path.replace("\\", "\\\\")
+    base_name = file_path.name
+    combined_path = Path(directory) / base_name
+    file_path_modified = str(combined_path).replace("\\", "\\\\")
     # we are working with iron python 2.7 on mechanical side
     # use python 2.7 style formatting
     # path = '%s' % file_path_modified
@@ -118,14 +126,16 @@ def test_upload(mechanical, file_name, assets):
 # ideally this will be 64*1024, 1024*1024, etc.
 @pytest.mark.parametrize("chunk_size", [10, 50, 100])
 def test_upload_with_different_chunk_size(mechanical, chunk_size, assets):
-    file_path = os.path.join(assets, "hsec.x_t")
+    """Test for uploading a file with different chunk sizes."""
+    file_path = Path(assets) / "hsec.x_t"
     directory = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
     mechanical.upload(
-        file_name=file_path, file_location_destination=directory, chunk_size=chunk_size
+        file_name=str(file_path), file_location_destination=directory, chunk_size=chunk_size
     )
 
 
 def get_solve_out_path(mechanical):
+    """Get the path to the solve.out file."""
     solve_out_path = ""
     for file_path in mechanical.list_files():
         if file_path.find("solve.out") != -1:
@@ -136,12 +146,15 @@ def get_solve_out_path(mechanical):
 
 
 def write_file_contents_to_console(path):
-    with open(path, "rt") as file:
+    """Write the contents of a file to the console."""
+    path = Path(path)
+    with path.open("rt") as file:
         for line in file:
             print(line, end="")
 
 
 def disable_distributed_solve(mechanical):
+    """Disable distributed solve."""
     script = (
         'ExtAPI.Application.SolveConfigurations["My Computer"].'
         "SolveProcessSettings.DistributeSolution = False"
@@ -150,6 +163,7 @@ def disable_distributed_solve(mechanical):
 
 
 def enable_distributed_solve(mechanical):
+    """Enable distributed solve."""
     script = (
         'ExtAPI.Application.SolveConfigurations["My Computer"].'
         "SolveProcessSettings.DistributeSolution = True"
@@ -158,18 +172,19 @@ def enable_distributed_solve(mechanical):
 
 
 def solve_and_return_results(mechanical):
-    current_working_directory = os.getcwd()
-    file_path = os.path.join(current_working_directory, "tests", "assets", "hsec.x_t")
+    """Solve the model and return the results."""
+    current_working_directory = Path.cwd()
+    file_path = current_working_directory / "tests" / "assets" / "hsec.x_t"
 
     mechanical.clear()
     directory = mechanical.project_directory
     mechanical.upload(
-        file_name=file_path, file_location_destination=directory, chunk_size=1024 * 1024
+        file_name=str(file_path), file_location_destination=directory, chunk_size=1024 * 1024
     )
 
-    python_script = os.path.join(current_working_directory, "tests", "scripts", "api.py")
+    python_script = current_working_directory / "tests" / "scripts" / "api.py"
 
-    text_file = open(python_script, "r")
+    text_file = python_script.open("r")
     # read whole file to a string
     data = text_file.read()
     # close file
@@ -201,7 +216,7 @@ return_total_deformation()
         print(f"downloading {solve_out_path} from server")
         print(f"downloading to {current_working_directory}")
         solve_out_local_path_list = mechanical.download(
-            solve_out_path, target_dir=current_working_directory
+            solve_out_path, target_dir=str(current_working_directory)
         )
         solve_out_local_path = solve_out_local_path_list[0]
         print(solve_out_local_path)
@@ -209,12 +224,13 @@ return_total_deformation()
         write_file_contents_to_console(solve_out_local_path)
 
         # done with solve.out - remove it
-        os.remove(solve_out_local_path)
+        Path(solve_out_local_path).unlink()
 
     return result
 
 
 def verify_project_download(mechanical, tmpdir):
+    """Verify that the project can be downloaded."""
     files = mechanical.list_files()
     number_of_files = len(files)
 
@@ -227,42 +243,42 @@ def verify_project_download(mechanical, tmpdir):
     project_directory = mechanical.project_directory
     print(f"project directory: {project_directory}")
 
-    target_dir = os.path.join(tmpdir, "mechanical_project")
+    target_dir = Path(tmpdir) / "mechanical_project"
     # add a trailing path separator
-    target_dir = os.path.join(target_dir, "")
+    target_dir = target_dir / ""
     print(f"creating target directory {target_dir}")
-    if not os.path.exists(target_dir):
-        os.mkdir(target_dir)
+    target_dir.mkdir(exist_ok=True)
 
-    out_files = mechanical.download_project(target_dir=target_dir)
+    out_files = mechanical.download_project(target_dir=str(target_dir))
     print("downloaded files:")
     for file in out_files:
         print(file)
-        assert os.path.exists(file) and os.path.getsize(file) > 0
+        file_path = Path(file)
+        assert file_path.exists() and file_path.stat().st_size > 0
 
     files = mechanical.list_files()
     assert len(files) == len(out_files)
 
-    target_dir = os.path.join(tmpdir, "mechanical_project2")
+    target_dir = Path(tmpdir) / "mechanical_project2"
     # add a trailing path separator
-    target_dir = os.path.join(target_dir, "")
+    target_dir = target_dir / ""
     print(f"creating target directory {target_dir}")
-    if not os.path.exists(target_dir):
-        os.mkdir(target_dir)
+    target_dir.mkdir(exist_ok=True)
 
     # project not saved.
     # no mechdb available.
     extensions = ["mechdb"]
     with pytest.raises(ValueError):
-        mechanical.download_project(extensions=extensions, target_dir=target_dir)
+        mechanical.download_project(extensions=extensions, target_dir=str(target_dir))
 
     extensions = ["xml", "rst"]
-    out_files = mechanical.download_project(extensions=extensions, target_dir=target_dir)
+    out_files = mechanical.download_project(extensions=extensions, target_dir=str(target_dir))
     print(f"downloaded files for extensions: {extensions}")
     for file in out_files:
         print(file)
-        assert os.path.exists(file) and os.path.getsize(file) > 0
-        extension = pathlib.Path(file).suffix
+        file_path = Path(file)
+        assert file_path.exists() and file_path.stat().st_size > 0
+        extension = file_path.suffix
         extension_without_dot = extension[1:]
         assert extension_without_dot in extensions
 
@@ -271,6 +287,7 @@ def verify_project_download(mechanical, tmpdir):
 # @pytest.mark.wip
 # @pytest.mark.skip(reason="avoid long running")
 def test_upload_attach_mesh_solve_use_api_non_distributed_solve(mechanical, tmpdir):
+    """Test for uploading, attaching mesh, solving using API with non-distributed solve."""
     # default is distributed solve
     # let's disable the distributed solve and then solve
     # enable the distributed solve back
@@ -293,8 +310,7 @@ def test_upload_attach_mesh_solve_use_api_non_distributed_solve(mechanical, tmpd
     print(f"min_value = {min_value} max_value = {max_value} avg_value = {avg_value}")
 
     result = mechanical.run_python_script("ExtAPI.DataModel.Project.Model.Analyses[0].ObjectState")
-    # TODO: Investigate why the result is different for grpc
-    if mechanical.backend == "mechanical":
+    if not new_python_script_api(mechanical):
         assert "5" == result
     else:
         assert "Solved" == str(result)
@@ -304,6 +320,7 @@ def test_upload_attach_mesh_solve_use_api_non_distributed_solve(mechanical, tmpd
 
 @pytest.mark.remote_session_connect
 def test_upload_attach_mesh_solve_use_api_distributed_solve(mechanical, tmpdir):
+    """Test for uploading, attaching mesh, solving using API with distributed solve."""
     result = solve_and_return_results(mechanical)
 
     dict_result = json.loads(result)
@@ -315,7 +332,7 @@ def test_upload_attach_mesh_solve_use_api_distributed_solve(mechanical, tmpdir):
     print(f"min_value = {min_value} max_value = {max_value} avg_value = {avg_value}")
 
     result = mechanical.run_python_script("ExtAPI.DataModel.Project.Model.Analyses[0].ObjectState")
-    if mechanical.backend == "mechanical":
+    if not new_python_script_api(mechanical):
         assert "5" == result
     else:
         assert "Solved" == str(result)
@@ -324,32 +341,35 @@ def test_upload_attach_mesh_solve_use_api_distributed_solve(mechanical, tmpdir):
 
 
 def verify_download(mechanical, tmpdir, file_name, chunk_size):
+    """Verify downloading a file with different chunk sizes."""
     directory = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
     print(directory)
 
-    current_working_directory = os.getcwd()
-    file_path = os.path.join(current_working_directory, "tests", "assets", file_name)
+    current_working_directory = Path.cwd()
+    file_path = current_working_directory / "tests" / "assets" / file_name
     mechanical.upload(
-        file_name=file_path, file_location_destination=directory, chunk_size=1024 * 1024
+        file_name=str(file_path), file_location_destination=directory, chunk_size=1024 * 1024
     )
 
     print(f"using the temporary directory: {tmpdir}")
-    file_path = os.path.join(directory, file_name)
+    file_path = Path(directory) / file_name
     local_directory = tmpdir.strpath
 
     # test with different download chunk_size
     local_path_list = mechanical.download(
-        files=file_path, target_dir=local_directory, chunk_size=chunk_size
+        files=str(file_path), target_dir=local_directory, chunk_size=chunk_size
     )
     print("downloaded files:")
     for local_path in local_path_list:
         print(f" downloaded file: {local_path}")
-        assert os.path.exists(local_path) and os.path.getsize(local_path) > 0
+        local_file = Path(local_path)
+        assert local_file.exists() and local_file.stat().st_size > 0
 
 
 @pytest.mark.remote_session_connect
 @pytest.mark.parametrize("file_name", ["hsec.x_t"])
 def test_download_file(mechanical, tmpdir, file_name):
+    """Test for downloading a file."""
     verify_download(mechanical, tmpdir, file_name, 1024 * 1024)
 
 
@@ -359,6 +379,7 @@ def test_download_file(mechanical, tmpdir, file_name):
 # ideally this will be 64*1024, 1024*1024, etc.
 @pytest.mark.parametrize("chunk_size", [10, 50, 100])
 def test_download_file_different_chunk_size1(mechanical, tmpdir, chunk_size):
+    """Test for downloading a file with different chunk sizes."""
     file_name = "hsec.x_t"
 
     verify_download(mechanical, tmpdir, file_name, chunk_size)
@@ -366,18 +387,21 @@ def test_download_file_different_chunk_size1(mechanical, tmpdir, chunk_size):
 
 @pytest.mark.remote_session_launch
 def test_launch_meshing_mode(mechanical_meshing):
+    """Test for launching in meshing mode."""
     result = mechanical_meshing.run_python_script("2+3")
     assert result == "5"
 
 
 @pytest.mark.remote_session_launch
 def test_launch_result_mode(mechanical_result):
+    """Test for launching in result mode."""
     result = mechanical_result.run_python_script("2+3")
     assert result == "5"
 
 
 @pytest.mark.remote_session_launch
-def test_close_all_Local_instances(tmpdir):
+def test_close_all_local_instances(tmpdir):
+    """Test for closing all local instances."""
     list_ports = []
     mechanical = conftest.launch_mechanical_instance(cleanup_on_exit=False)
     print(mechanical.name)
@@ -394,35 +418,41 @@ def test_close_all_Local_instances(tmpdir):
     print(mechanical.name)
     list_ports.append(mechanical._port)
 
-    pymechanical.close_all_local_instances(list_ports, use_thread=False)
+    # Close instances using the same transport mode they were launched with
+    transport_mode = "insecure" if os.name != "nt" else None
+    pymechanical.close_all_local_instances(
+        list_ports, use_thread=False, transport_mode=transport_mode
+    )
     for value in list_ports:
         assert value not in pymechanical.LOCAL_PORTS
 
 
 @pytest.mark.remote_session_launch
 def test_find_mechanical_path():
+    """Test for finding the Mechanical executable path."""
     if pymechanical.mechanical.get_start_instance():
-        path = ansys.tools.path.get_mechanical_path()
-        version = ansys.tools.path.version_from_path("mechanical", path)
+        path = ansys.tools.common.path.get_mechanical_path()
+        version = ansys.tools.common.path.version_from_path("mechanical", path)
 
         if misc.is_windows():
             assert "AnsysWBU.exe" in path
         else:
             assert ".workbench" in path
 
-        assert re.match(r"\d{3}", str(version)) and version >= 232
+        assert re.match(r"\d{3}", str(version)) and version >= 241
 
 
 @pytest.mark.remote_session_launch
 def test_change_default_mechanical_path():
+    """Test for changing the default Mechanical executable path."""
     if pymechanical.mechanical.get_start_instance():
-        path = ansys.tools.path.get_mechanical_path()
-        version = ansys.tools.path.version_from_path("mechanical", path)
+        path = ansys.tools.common.path.get_mechanical_path()
+        version = ansys.tools.common.path.version_from_path("mechanical", path)
 
         pymechanical.change_default_mechanical_path(path)
 
-        path_new = ansys.tools.path.get_mechanical_path()
-        version_new = ansys.tools.path.version_from_path("mechanical", path)
+        path_new = ansys.tools.common.path.get_mechanical_path()
+        version_new = ansys.tools.common.path.version_from_path("mechanical", path)
 
         assert path_new == path
         assert version_new == version
@@ -430,22 +460,24 @@ def test_change_default_mechanical_path():
 
 @pytest.mark.remote_session_launch
 def test_version_from_path():
+    """Test for getting version from path."""
     windows_path = "C:\\Program Files\\ANSYS Inc\\v251\\aisol\\bin\\winx64\\AnsysWBU.exe"
-    version = ansys.tools.path.version_from_path("mechanical", windows_path)
+    version = ansys.tools.common.path.version_from_path("mechanical", windows_path)
     assert version == 251
 
     linux_path = "/usr/ansys_inc/v251/aisol/.workbench"
-    version = ansys.tools.path.version_from_path("mechanical", linux_path)
+    version = ansys.tools.common.path.version_from_path("mechanical", linux_path)
     assert version == 251
 
     with pytest.raises(RuntimeError):
         # doesn't contain version
         path = "C:\\Program Files\\ANSYS Inc\\aisol\\bin\\winx64\\AnsysWBU.exe"
-        ansys.tools.path.version_from_path("mechanical", path)
+        ansys.tools.common.path.version_from_path("mechanical", path)
 
 
 @pytest.mark.remote_session_launch
 def test_valid_port():
+    """Test for valid port."""
     # no error thrown when everything is ok.
     pymechanical.mechanical.check_valid_port(10000, 1000, 60000)
 
@@ -458,6 +490,7 @@ def test_valid_port():
 
 @pytest.mark.remote_session_launch
 def test_server_log_level():
+    """Test for server log level conversion."""
     server_log_level = pymechanical.mechanical.Mechanical.convert_to_server_log_level("DEBUG")
     assert 1 == server_log_level
 
@@ -479,55 +512,27 @@ def test_server_log_level():
 
 @pytest.mark.remote_session_launch
 def test_launch_mechanical_non_existent_path():
-    cwd = os.getcwd()
+    """Test for launching Mechanical with a non-existent path."""
+    cwd = Path.cwd()
 
     if misc.is_windows():
-        exec_file = os.path.join(cwd, "test", "AnsysWBU.exe")
+        exec_file = cwd / "test" / "AnsysWBU.exe"
     else:
-        exec_file = os.path.join(cwd, "test", ".workbench")
+        exec_file = cwd / "test" / ".workbench"
 
     with pytest.raises(FileNotFoundError):
-        pymechanical.launch_mechanical(exec_file=exec_file)
+        pymechanical.launch_mechanical(exec_file=str(exec_file))
 
 
 @pytest.mark.remote_session_launch
 def test_launch_grpc_not_supported_version():
-    cwd = os.getcwd()
+    """Test for launching grpc with not supported version."""
+    cwd = Path.cwd()
 
     if misc.is_windows():
-        exec_file = os.path.join(cwd, "ANSYS Inc", "v230", "aisol", "bin", "win64", "AnsysWBU.exe")
+        exec_file = cwd / "ANSYS Inc" / "v230" / "aisol" / "bin" / "win64" / "AnsysWBU.exe"
     else:
-        exec_file = os.path.join(cwd, "ansys_inc", "v230", "aisol", ".workbench")
+        exec_file = cwd / "ansys_inc" / "v230" / "aisol" / ".workbench"
 
     with pytest.raises(errors.VersionError):
-        pymechanical.mechanical.launch_grpc(exec_file=exec_file)
-
-
-# def test_call_before_launch_or_connect():
-#     import ansys.mechanical.core as pymechanical
-#     from ansys.mechanical.core.errors import MechanicalExitedError
-#
-#     # we are not checking any valid value passed to each call,
-#     # we just verify an exception being raised.
-#
-#     mechanical1 = pymechanical.launch_mechanical(start_instance=True)
-#     mechanical1.exit()
-#
-#     error = "Mechanical has already exited."
-#
-#     with pytest.raises(MechanicalExitedError, match=error):
-#         mechanical1.run_python_script("2+5")
-#
-#     with pytest.raises(MechanicalExitedError, match=error):
-#         mechanical1.run_python_script_from_file("test.py")
-#
-#     # currently we exit silently
-#     # with pytest.raises(ValueError, match=error):
-#     #     mechanical.exit(force_exit=True)
-#
-#     with pytest.raises(MechanicalExitedError, match=error):
-#         mechanical1.upload(file_name="test.x_t", file_location_destination="some_destination",
-#                           chunk_size=1024)
-#
-#     with pytest.raises(MechanicalExitedError, match=error):
-#         mechanical1.download(files="test.x_t", target_dir="some_local_directory", chunk_size=1024)
+        pymechanical.mechanical.launch_grpc(exec_file=str(exec_file))

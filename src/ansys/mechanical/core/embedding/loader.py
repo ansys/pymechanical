@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -21,21 +21,23 @@
 # SOFTWARE.
 
 """clr_loader for pymechanical embedding. This loads the CLR on both windows and linux."""
+
 import os
+from pathlib import Path
 import warnings
 
 
 def __get_mono(assembly_dir, config_dir):
     import clr_loader
 
-    libmono = os.path.join(assembly_dir, "libmonosgen-2.0.so")
+    libmono = str(Path(assembly_dir) / "libmonosgen-2.0.so")
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         mono = clr_loader.get_mono(
             set_signal_chaining=True,
             libmono=libmono,  # TODO: find_mono is broken on clr-loader v0.2.6
-            assembly_dir=assembly_dir,
-            config_dir=config_dir,
+            assembly_dir=str(assembly_dir),
+            config_dir=str(config_dir),
         )
     return mono
 
@@ -51,9 +53,9 @@ def _load_mono(install_loc):
     from pythonnet import load
 
     _set_mono_trace()
-    mono_dir = os.path.join(install_loc, "Tools", "mono", "Linux64")
-    assembly_dir = os.path.join(mono_dir, "lib")
-    config_dir = os.path.join(mono_dir, "etc")
+    mono_dir = Path(install_loc) / "Tools" / "mono" / "Linux64"
+    assembly_dir = mono_dir / "lib"
+    config_dir = mono_dir / "etc"
     mono = __get_mono(assembly_dir, config_dir)
     load(mono)
 

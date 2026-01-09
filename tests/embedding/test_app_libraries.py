@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -20,12 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Testing app libraries"""
+"""Testing app libraries."""
 
 import os
+from pathlib import Path
 import sys
 
-from ansys.tools.path import get_mechanical_path
+from ansys.tools.common.path import get_mechanical_path
 import pytest
 
 from ansys.mechanical.core.embedding import add_mechanical_python_libraries
@@ -37,11 +38,11 @@ def test_app_library(embedded_app):
     _version = embedded_app.version
 
     # Test with version as input
-    exe = get_mechanical_path(_version)
-    while os.path.basename(exe) != f"v{_version}":
-        exe = os.path.dirname(exe)
-    exe = exe.replace("\\\\", "\\")
-    location = os.path.join(exe, "Addins", "ACT", "libraries", "Mechanical")
+    exe = get_mechanical_path(version=embedded_app.version)
+    exe_path = Path(exe)
+    while exe_path.name != f"v{_version}":
+        exe_path = exe_path.parent
+    location = str(exe_path / "Addins" / "ACT" / "libraries" / "Mechanical")
     add_mechanical_python_libraries(_version)
     assert location in sys.path
     sys.path.remove(location)
@@ -50,8 +51,8 @@ def test_app_library(embedded_app):
     # Test with app as input
     add_mechanical_python_libraries(embedded_app)
     installdir = os.environ[f"AWP_ROOT{embedded_app.version}"]
-    location = os.path.join(installdir, "Addins", "ACT", "libraries", "Mechanical")
-    assert location in sys.path
+    location = Path(installdir) / "Addins" / "ACT" / "libraries" / "Mechanical"
+    assert str(location) in sys.path
 
     # import mechanical library and test a method
 
@@ -60,8 +61,8 @@ def test_app_library(embedded_app):
     analysis_name = AnalysisTypeName(0)
     assert analysis_name == "Static"
 
-    sys.path.remove(location)
-    assert location not in sys.path
+    sys.path.remove(str(location))
+    assert str(location) not in sys.path
 
     # Test value error
     with pytest.raises(ValueError):

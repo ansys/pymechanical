@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Initializer for Mechanical embedding. Sets up paths and resolvers."""
+
 from importlib.metadata import distribution
 import os
 from pathlib import Path
@@ -36,10 +37,10 @@ INITIALIZED_VERSION = None
 """Constant for the initialized version."""
 
 SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS = {
+    252: "2025R2",
     251: "2025R1",
     242: "2024R2",
     241: "2024R1",
-    232: "2023R2",
 }
 """Supported Mechanical embedding versions on Windows."""
 
@@ -91,9 +92,11 @@ def _get_latest_default_version() -> int:
 
     versions_found = []
     for path in awp_roots:
-        folder = os.path.basename(os.path.normpath(path))
-        version = folder.split("v")[-1]
-        versions_found.append(int(version))
+        resolved_path = Path(path).resolve()
+        folder = resolved_path.name
+        if folder.startswith("v") and folder[1:].isdigit():
+            version = int(folder[1:])
+            versions_found.append(version)
 
     LOG.info(f"Available versions of Mechanical: {versions_found}")
 
@@ -141,7 +144,7 @@ def __windows_store_workaround(version: int) -> None:
         return
 
     # Nothing to do if it isn't a Windows store application
-    if r"Microsoft\WindowsApps" not in sys.executable:
+    if r"WindowsApps\PythonSoftwareFoundation" not in sys.base_prefix:
         return
 
     # Get the AWP_ROOT environment variable for the specified version
@@ -172,6 +175,15 @@ def __windows_store_workaround(version: int) -> None:
                 awp_root_tp / "qt" / "5.15.17" / "winx64" / "bin",
             ]
         )
+    elif version == 252:
+        paths.extend(
+            [
+                awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
+                awp_root_tp / "IntelMKL" / "2024.2.3" / "winx64",
+                awp_root_tp / "hdf5" / "winx64",
+                awp_root_tp / "qt" / "5.15.18" / "winx64" / "bin",
+            ]
+        )
     else:
         return
 
@@ -188,10 +200,13 @@ def __set_environment(version: int) -> None:
 
     # Set an environment variable to use the custom CLR host
     # for embedding.
-    # In the future (>251), it would always be used.
-    if version == 251:
+    # In the future (>252), it would always be used.
+    if version == 251 or version == 252:
         if "PYMECHANICAL_NO_CLR_HOST_LITE" not in os.environ:
             os.environ["ANSYS_MECHANICAL_EMBEDDING_CLR_HOST"] = "1"
+    if version > 252:
+        if "PYMECHANICAL_NO_CLR_HOST_LITE" in os.environ:
+            os.environ["ANSYS_MECHANICAL_EMBEDDING_CLR_HOST"] = "0"
 
 
 def __check_for_mechanical_env():
@@ -210,9 +225,9 @@ def __is_lib_loaded(libname: str):  # pragma: no cover
     """Return whether a library is loaded."""
     import ctypes
 
-    RTLD_NOLOAD = 4
+    rtld_noload = 4
     try:
-        ctypes.CDLL(libname, RTLD_NOLOAD)
+        ctypes.CDLL(libname, rtld_noload)
     except OSError:
         return False
     return True

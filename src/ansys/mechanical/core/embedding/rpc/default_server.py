@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -22,7 +22,7 @@
 """Remote Procedure Call (RPC) server."""
 
 import fnmatch
-import os
+from pathlib import Path
 
 from ansys.mechanical.core.embedding.app import App
 
@@ -74,16 +74,18 @@ class DefaultServiceMethods:
     @remote_method
     def list_files(self):
         """List all files in the project directory."""
-        list = []
-        mechdbPath = self._app.ExtAPI.DataModel.Project.FilePath
-        if mechdbPath != "":
-            list.append(mechdbPath)
-        rootDir = self._app.ExtAPI.DataModel.Project.ProjectDirectory
+        file_list = []
+        mechdb_path = self._app.ExtAPI.DataModel.Project.FilePath
+        if mechdb_path != "":
+            file_list.append(mechdb_path)
+        root_dir = self._app.ExtAPI.DataModel.Project.ProjectDirectory
 
-        for dirPath, dirNames, fileNames in os.walk(rootDir):
-            for fileName in fileNames:
-                list.append(os.path.join(dirPath, fileName))
-        files_out = "\n".join(list).splitlines()
+        root_path = Path(root_dir)
+        for file_path in root_path.rglob("*"):
+            if file_path.is_file():
+                file_list.append(str(file_path))
+
+        files_out = "\n".join(file_list).splitlines()
         if not files_out:  # pragma: no cover
             print("No files listed")
         return files_out

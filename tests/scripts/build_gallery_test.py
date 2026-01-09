@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Launch embedded instance with build gallery flag."""
+
 import sys
 
 import ansys.mechanical.core as pymechanical
@@ -40,7 +41,6 @@ if __name__ == "__main__":
     app1 = launch_app(version)
 
     if build_gallery_flag == "True":
-
         pymechanical.BUILDING_GALLERY = True
 
         app2 = launch_app(version)

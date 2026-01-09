@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -110,6 +110,6 @@ class BackgroundApp:
                 break
             try:
                 utils.sleep(40)
-            except:
-                raise Exception("BackgroundApp cannot sleep.")  # pragma: no cover
+            except Exception as e:  # pragma: no cover
+                raise Exception("BackgroundApp cannot sleep.") from e  # pragma: no cover
         BackgroundApp.__stopped = True

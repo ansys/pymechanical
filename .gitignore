@@ -152,7 +152,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-
+[eE][nN][vV]*/
+.[eE][nN][vV]*/
 # Spyder project settings
 .spyderproject
 .spyproject
@@ -199,8 +200,8 @@ doc/source/api/*
 !doc/source/api/path.rst
 
 # Examples files downloaded when building docs
-examples/embedding_n_remote/download/*
-
+examples/01_basic/out/*
+out/
 # pymechanical-specific
 mylocal.ip
 pymechanical_log.txt

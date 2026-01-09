@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -20,8 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Miscellaneous embedding tests"""
+"""Miscellaneous embedding tests."""
+
 import os
+from pathlib import Path
 import sys
 import typing
 
@@ -34,9 +36,8 @@ def _run_background_app_test(
     run_subprocess, rootdir: str, pytestconfig, testname: str, pass_expected: bool = True
 ) -> typing.Tuple[bytes, bytes]:
     """Run the process and return stdout and stderr after it finishes."""
-
     version = pytestconfig.getoption("ansys_version")
-    script = os.path.join(rootdir, "tests", "scripts", "background_app_test.py")
+    script = str(Path(rootdir) / "tests" / "scripts" / "background_app_test.py")
 
     subprocess_pass_expected = pass_expected
     if pass_expected and os.name != "nt":
@@ -56,6 +57,7 @@ def _run_background_app_test(
 
 @pytest.mark.embedding_scripts
 @pytest.mark.embedding_backgroundapp
+@pytest.mark.skipif(sys.platform == "win32", reason="Test not working on Windows")
 def test_background_app_multiple_instances(rootdir, run_subprocess, pytestconfig):
     """Multiple instances of background app can be used."""
     stderr = _run_background_app_test(

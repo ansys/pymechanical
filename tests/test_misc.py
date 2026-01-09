@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+"""Test for Miscellaneous Functions."""
 
 import pytest
 
@@ -27,13 +28,14 @@ import ansys.mechanical.core.misc as misc
 
 @pytest.mark.remote_session_launch
 def test_valid_start_instance():
+    """Test for valid start instance."""
     assert misc.check_valid_start_instance("true")
 
-    assert False == misc.check_valid_start_instance("false")
+    assert not misc.check_valid_start_instance("false")
 
     assert misc.check_valid_start_instance("True")
 
-    assert False == misc.check_valid_start_instance("False")
+    assert not misc.check_valid_start_instance("False")
 
     with pytest.raises(ValueError):
         misc.check_valid_start_instance([])
@@ -44,6 +46,7 @@ def test_valid_start_instance():
 
 @pytest.mark.remote_session_launch
 def test_is_float():
+    """Test for is_float function."""
     assert misc.is_float("1.3")
 
-    assert False == misc.is_float("hello")
+    assert not misc.is_float("hello")

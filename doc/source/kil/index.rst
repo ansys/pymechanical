@@ -37,12 +37,12 @@ Support
 =======
 
 If you encounter any issues or limitations with PyMechanical that hinder your work, please create
-an issue or discussion so our team can address them promptly:
+an issue or discussion so the team can address them promptly:
 
 * `PyMechanical Issues <https://github.com/ansys/pymechanical/issues>`_: Report bugs and request new features.
 * `PyMechanical Discussions <https://github.com/ansys/pymechanical/discussions>`_: Post questions, share ideas, and get community feedback.
 
-For issues pertaining to `Mechanical scripting <https://mechanical.docs.pyansys.com/version/stable/user_guide_scripting/index.html>`_,
+For issues pertaining to :ref:`Mechanical Scripting <ref_scripting>`,
 please make a post on the `Ansys Developer Forum for Mechanical <https://discuss.ansys.com/categories/structures>`_.
 
 If you have general questions about PyAnsys or are unsure which repository to place an issue in,

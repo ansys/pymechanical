@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -21,9 +21,17 @@
 # SOFTWARE.
 
 """Common plotting utilities."""
+
+from __future__ import annotations
+
+import os
 import typing
+from typing import TYPE_CHECKING
 
 import numpy as np
+
+if TYPE_CHECKING:
+    from ansys.mechanical.core.embedding import App
 
 
 def bgr_to_rgb_tuple(bgr_int: int) -> typing.Tuple[int, int, int]:
@@ -34,38 +42,71 @@ def bgr_to_rgb_tuple(bgr_int: int) -> typing.Tuple[int, int, int]:
     return r, g, b
 
 
-def _reshape_3cols(arr: np.array, name: str = "array"):
-    """Reshapes the given array into 3 columns.
+def _reshape_ncols(arr: np.array, ncols: int, name: str = "array"):
+    """Reshapes the given array into `ncols` columns.
 
-    Precondition - the array's length must be divisible by 3.
+    Precondition - the array's length must be divisible by `ncols`.
     """
     err = f"{name} must be of the form (x0,y0,z0,x1,y1,z1,...,xn,yn,zn).\
         Given {name} are not divisible by 3!"
-    if arr.size % 3 != 0:
+    if arr.size % ncols != 0:
         raise ValueError(err)
-    numrows = int(arr.size / 3)
-    numcols = 3
-    arr = np.reshape(arr, (numrows, numcols))
+    numrows = int(arr.size / ncols)
+    arr = np.reshape(arr, (numrows, ncols))
     return arr
 
 
-def get_nodes_and_coords(tri_tessellation: "Ansys.Mechanical.Scenegraph.TriTessellationNode"):
-    """Extract the nodes and coordinates from the TriTessellationNode.
+def get_line_nodes_and_coords(
+    line_tessellation: "Ansys.Mechanical.Scenegraph.LineTessellationNode",  # noqa: F821
+):
+    """Extract the nodes and coordinates from the LineTessellationNode.
 
     The TriTessellationNode contains "Coordinates" and "Indices"
     that are flat arrays. This function converts them to numpy arrays
     """
-    np_coordinates = _reshape_3cols(
-        np.array(tri_tessellation.Coordinates, dtype=np.double), "coordinates"
+    np_coordinates = _reshape_ncols(
+        np.array(line_tessellation.Coordinates, dtype=np.double), 3, "coordinates"
     )
-    np_indices = _reshape_3cols(np.array(tri_tessellation.Indices, dtype=np.int32), "indices")
+
+    np_indices = _reshape_ncols(np.array(line_tessellation.Indices, dtype=np.int32), 2, "indices")
     return np_coordinates, np_indices
 
 
-def get_scene(
-    app: "ansys.mechanical.core.embedding.App",
-) -> "Ansys.Mechanical.Scenegraph.GroupNode":
-    """Get the scene of the model."""
+def get_tri_nodes_and_coords(tri_tessellation: "Ansys.Mechanical.Scenegraph.TriTessellationNode"):  # noqa: F821
+    """Extract the nodes and coordinates from the TriTessellationNode.
+
+    The TriTessellationNode contains "Coordinates" and "Indices"
+    that are flat arrays. This function converts them to numpy arrays of the appropriate shape.
+    """
+    np_coordinates = _reshape_ncols(
+        np.array(tri_tessellation.Coordinates, dtype=np.double), 3, "coordinates"
+    )
+    np_indices = _reshape_ncols(np.array(tri_tessellation.Indices, dtype=np.int32), 3, "indices")
+    return np_coordinates, np_indices
+
+
+def get_tri_result_disp_and_results(
+    tri_tessellation: "Ansys.Mechanical.Scenegraph.TriTessellationResultNode",  # noqa: F821
+):
+    """Extract the defomation and results from the TriTessellationResultNode.
+
+    The TriTessellationResultNode contains "Displacements" and "Results"
+    that are flat arrays. This function converts them to numpy arrays of the appropriate shape.
+    """
+    np_disp = _reshape_ncols(
+        np.array(tri_tessellation.Displacements, dtype=np.double), 3, "deformation"
+    )
+    np_results = np.array(tri_tessellation.Results, dtype=np.double)
+    return np_disp, np_results
+
+
+def _get_geometry_scene(
+    app: App,
+) -> "Ansys.Mechanical.Scenegraph.GroupNode":  # noqa: F821
+    """Get the scene for the geometry.
+
+    using the undocumented apis under ScenegraphHelpers.
+    """
     import clr
 
     clr.AddReference("Ansys.Mechanical.DataModel")
@@ -89,3 +130,41 @@ def get_scene(
         )
         group_node.AddChild(attribute_node)
     return group_node.Build()
+
+
+def get_scene(
+    app: App,
+) -> "Ansys.Mechanical.Scenegraph.GroupNode":  # noqa: F821
+    """Get the scene of the model."""
+    return _get_geometry_scene(app)
+
+
+def _get_scene_for_object(app: App, obj) -> "Ansys.Mechanical.Scenegraph.Node":  # noqa: F821
+    from Ansys.Mechanical.DataModel.Enums import DataModelObjectCategory
+
+    if obj.DataModelObjectCategory == DataModelObjectCategory.Geometry:
+        scene = get_scene(app)
+        return scene
+    if app.version < 261:
+        return None
+    active_objects = app.Tree.ActiveObjects
+    app.Tree.Activate([obj])
+    scenegraph_node = app.Graphics.GetScenegraphForActiveObject()
+    app.Tree.Activate(active_objects)
+    return scenegraph_node
+
+
+def get_scene_for_object(app: App, obj) -> "Ansys.Mechanical.Scenegraph.Node":  # noqa: F821
+    """Get the scene for the given object.
+
+    2025R2 and before: only geometry is supported
+    later, Mesh and some Results will be supported.
+    """
+    node = _get_scene_for_object(app, obj)
+    if node is not None:
+        save_file = os.environ.get("PYMECHANICAL_SAVE_SCENE_FILE", None)
+        if save_file is not None:
+            import Ansys
+
+            Ansys.Mechanical.Scenegraph.Persistence.SaveToFile(save_file, node)
+    return node

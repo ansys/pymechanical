@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -25,21 +25,22 @@
 import asyncio
 from asyncio.subprocess import PIPE
 import os
+from pathlib import Path
 import sys
 import typing
-import warnings
 
-import ansys.tools.path as atp
+import ansys.tools.common.path as atp
 import click
 
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 from ansys.mechanical.core.feature_flags import get_command_line_arguments, get_feature_flag_names
+from ansys.mechanical.core.misc import has_grpc_service_pack
 
 DRY_RUN = False
 """Dry run constant."""
 
-# TODO - add logging options (reuse env var based logging initialization)
-# TODO - add timeout
+# TODO : add logging options (reuse env var based logging initialization)
+# TODO : add timeout
 
 
 async def _read_and_display(cmd, env, do_display: bool):
@@ -100,39 +101,131 @@ def _cli_impl(
     private_appdata: bool = False,
     exit: bool = False,
     features: str = None,
+    enginetype: str = None,
+    transport_mode: str = None,
+    grpc_host: str = None,
+    certs_dir: str = None,
 ):
     if project_file and input_script:
-        raise Exception("Cannot open a project file *and* run a script.")
+        raise click.ClickException("Cannot open a project file *and* run a script.")
 
     if (not graphical) and project_file:
-        raise Exception("Cannot open a project file in batch mode.")
+        raise click.ClickException("Cannot open a project file in batch mode.")
 
     if port:
         if project_file:
-            raise Exception("Cannot open in server mode with a project file.")
+            raise click.ClickException("Cannot open in server mode with a project file.")
         if input_script:
-            raise Exception("Cannot open in server mode with an input script.")
+            raise click.ClickException("Cannot open in server mode with an input script.")
 
     if not input_script and script_args:
-        raise Exception("Cannot add script arguments without an input script.")
+        raise click.ClickException("Cannot add script arguments without an input script.")
+
+    if enginetype and not input_script:
+        raise click.ClickException("Cannot specify engine type without an input script (-i).")
+
+    if enginetype and enginetype not in ["ironpython", "cpython"]:
+        raise click.ClickException(
+            f"Invalid engine type '{enginetype}'. Valid options are: ironpython, cpython"
+        )
+
+    # Validate and set defaults for gRPC options
+    if port:
+        # Get version for service pack detection
+        detected_version = version
+        supports_grpc = has_grpc_service_pack(detected_version) if detected_version else False
+
+        # Check if version supports advanced gRPC features
+        if not supports_grpc:
+            # For versions without service pack, only insecure mode is allowed
+            if transport_mode and transport_mode != "insecure":
+                version_str = f"Version {detected_version}" if detected_version else "This version"
+                raise click.ClickException(
+                    f"{version_str} does not support {transport_mode} transport mode. "
+                    "Only 'insecure' mode is available. "
+                    "Update to Service Pack 04+ for secure options."
+                )
+            # Default to insecure mode for legacy versions
+            if not transport_mode:
+                transport_mode = "insecure"
+                if detected_version:
+                    from ansys.mechanical.core.misc import get_service_pack_message
+
+                    sp_msg = get_service_pack_message(detected_version)
+                    print(
+                        f"Warning: Version {detected_version} does not support secure gRPC. "
+                        f"Secure gRPC is recommended for enhanced security."
+                        f"{sp_msg} Falling back to insecure mode."
+                    )
+                else:
+                    print("Warning: Unable to detect version. Falling back to insecure mode.")
+
+        # Set defaults for supported versions
+        if supports_grpc:
+            # Set default transport mode if not provided
+            if not transport_mode:
+                if os.name == "nt":
+                    transport_mode = "wnua"
+                else:
+                    # On Linux, default to insecure if certs not provided, mtls if certs provided
+                    transport_mode = "mtls" if certs_dir else "insecure"
+
+            # Validate transport mode availability per OS
+            if os.name != "nt" and transport_mode == "wnua":
+                raise click.ClickException(
+                    "'wnua' transport mode is not available on Linux. "
+                    "Available options: 'mtls', 'insecure'"
+                )
+
+            # Set default host for all transport modes (always set a default)
+            if not grpc_host:
+                grpc_host = "localhost"
+
+            # Validate transport mode requirements
+            if transport_mode == "mtls" and not certs_dir:
+                certs_dir = "certs"  # Default certs directory if not provided
+
+            # Validate certificates directory exists and contains required files
+            if transport_mode == "mtls" and certs_dir:
+                certs_path = Path(certs_dir)
+
+                # Check if directory exists
+                if not certs_path.exists():
+                    raise click.ClickException(
+                        f"Certificates directory does not exist: {certs_dir}\n"
+                        "Please provide a valid directory containing TLS certificates."
+                    )
+
+                if not certs_path.is_dir():
+                    raise click.ClickException(
+                        f"Certificates path is not a directory: {certs_dir}\n"
+                        "Please provide a valid directory containing TLS certificates."
+                    )
+
+                # Certificate validation will be handled by grpc channel creation
+
+    # Validate that gRPC options are only used with port
+    if not port and (transport_mode or grpc_host or certs_dir):
+        raise click.ClickException(
+            "gRPC options (--transport-mode, --grpc-host, --certs-dir) "
+            "can only be used with --port."
+        )
 
     if script_args:
         if '"' in script_args:
-            raise Exception(
+            raise click.ClickException(
                 "Cannot have double quotes around individual arguments in the --script-args string."
             )
 
     # If the input_script and port are missing in batch mode, raise an exception
     if (not graphical) and (input_script is None) and (not port):
-        raise Exception("An input script, -i, or port, --port, are required in batch mode.")
+        raise click.ClickException(
+            "An input script, -i, or port, --port, are required in batch mode."
+        )
 
     args = [exe, "-DSApplet"]
     if (not graphical) or (not show_welcome_screen):
         args.append("-AppModeMech")
-
-    if version < 232:
-        args.append("-nosplash")
-        args.append("-notabctrl")
 
     if not graphical:
         args.append("-b")
@@ -144,6 +237,22 @@ def _cli_impl(
     if port:
         args.append("-grpc")
         args.append(str(port))
+
+        # Only add advanced gRPC options if version supports them
+        if has_grpc_service_pack(version):
+            # Add transport mode
+            args.append("--transport-mode")
+            args.append(transport_mode)
+
+            # Add gRPC host (only if not None)
+            if grpc_host is not None:
+                args.append("--grpc-host")
+                args.append(grpc_host)
+
+            # Add certs directory if provided (required for mtls)
+            if certs_dir:
+                args.append("--certs-dir")
+                args.append(certs_dir)
 
     if project_file:
         args.append("-file")
@@ -159,14 +268,8 @@ def _cli_impl(
 
     if (not graphical) and input_script:
         exit = True
-        if version < 241:
-            warnings.warn(
-                "Please ensure ExtAPI.Application.Close() is at the end of your script. "
-                "Without this command, Batch mode will not terminate.",
-                stacklevel=2,
-            )
 
-    if exit and input_script and version >= 241:
+    if exit and input_script:
         args.append("-x")
 
     profile: UniqueUserProfile = None
@@ -183,17 +286,52 @@ def _cli_impl(
             mode = "Batch"
         print(f"Starting Ansys Mechanical version {version_name} in {mode} mode...")
         if port:
-            # TODO - Mechanical doesn't write anything to the stdout in grpc mode
+            # TODO : Mechanical doesn't write anything to the stdout in grpc mode
             #        when logging is off.. Ideally we let Mechanical write it, so
             #        the user only sees the message when the server is ready.
             print(f"Serving on port {port}")
 
+            if has_grpc_service_pack(version):
+                print("Transport mode: insecure (legacy - no advanced gRPC support)")
+                print("Using insecure connection - no authentication or encryption")
+            else:
+                print(f"Transport mode: {transport_mode}")
+                print(f"gRPC host: {grpc_host}")
+                if certs_dir:
+                    print(f"Certificates directory: {certs_dir}")
+                elif transport_mode == "mtls":
+                    print("Warning: mtls mode requires --certs-dir to be specified")
+
+                # Provide helpful information about the configuration
+                if transport_mode == "wnua":
+                    print(
+                        "Using Windows Named User Authentication (wnua) - certificates not required"
+                    )
+                elif transport_mode == "insecure":
+                    print("Using insecure connection - no authentication or encryption")
+                elif transport_mode == "mtls":
+                    if certs_dir:
+                        print("Using mutual TLS (mtls) with certificate-based authentication")
+                    else:
+                        print("ERROR: mtls mode requires certificate directory to be specified")
+
+                # Show OS-specific information
+                if os.name != "nt":
+                    print(
+                        "Note: On Linux, only 'mtls' and 'insecure' transport modes are available"
+                    )
+
     if features is not None:
         args.extend(get_command_line_arguments(features.split(";")))
+
+    if enginetype and input_script:
+        args.append("-engineType")
+        args.append(enginetype)
 
     if DRY_RUN:
         return args, env
     else:
+        print(args)
         _run(args, env, False, True)
 
     if private_appdata:
@@ -221,11 +359,38 @@ def _cli_impl(
     help="Start mechanical in server mode with the given port number",
 )
 @click.option(
+    "--transport-mode",
+    type=click.Choice(["wnua", "mtls", "insecure"], case_sensitive=False),
+    default=None,
+    help="Transport mode for gRPC connection. Default: 'wnua' on Windows, 'mtls' on Linux. "
+    "Note: 'wnua' is only available on Windows; Linux supports 'mtls' and 'insecure' only",
+)
+@click.option(
+    "--grpc-host",
+    type=str,
+    default=None,
+    help="Host for gRPC connection. Defaults to 'localhost' for 'wnua' and 'insecure' modes",
+)
+@click.option(
+    "--certs-dir",
+    type=str,
+    default=None,
+    help="Directory containing certificates. Required for 'mtls' mode",
+)
+@click.option(
     "--features",
     type=str,
     default=None,
     help=f"Beta feature flags to set, as a semicolon delimited list.\
  Options: {get_feature_flag_names()}",
+)
+@click.option(
+    "--enginetype",
+    type=click.Choice(["ironpython", "cpython"], case_sensitive=False),
+    default=None,
+    help="Engine type to use with input scripts. Only applicable for version 261 "
+    "when used with -i/--input-script."
+    "Default is 'ironpython'.",
 )
 @click.option(
     "-i",
@@ -269,7 +434,7 @@ The ``exit`` command is only supported in version 2024 R1 or later.",
     "--revision",
     default=None,
     type=int,
-    help='Ansys Revision number, e.g. "251" or "242". If none is specified\
+    help='Ansys Revision number, e.g. "251" or "252". If none is specified\
 , uses the default from ansys-tools-path',
 )
 @click.option(
@@ -291,6 +456,10 @@ def cli(
     private_appdata: bool,
     exit: bool,
     features: str,
+    enginetype: str,
+    transport_mode: str,
+    grpc_host: str,
+    certs_dir: str,
 ):
     """CLI tool to run mechanical.
 
@@ -298,12 +467,17 @@ def cli(
 
     The following example demonstrates the main use of this tool:
 
-        $ ansys-mechanical -r 251 -g
+        $ ansys-mechanical -r 252 -g
 
-        Starting Ansys Mechanical version 2025R1 in graphical mode...
+        Starting Ansys Mechanical version 2025R2 in graphical mode...
     """
     exe = atp.get_mechanical_path(allow_input=False, version=revision)
     version = atp.version_from_path("mechanical", exe)
+    # Validate enginetype usage - must be used with input script and version 261
+    if enginetype and enginetype != "ironpython" and version < 261:
+        raise click.ClickException(
+            "--enginetype option for cpython is only applicable for version 261 or later."
+        )
 
     return _cli_impl(
         project_file,
@@ -318,4 +492,8 @@ def cli(
         private_appdata,
         exit,
         features,
+        enginetype,
+        transport_mode,
+        grpc_host,
+        certs_dir,
     )

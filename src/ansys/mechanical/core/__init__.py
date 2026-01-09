@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -21,23 +21,23 @@
 # SOFTWARE.
 
 """Initialize the package level imports."""
+
 import logging
 import os
+from pathlib import Path
 
-from ansys.tools.path import find_mechanical
+from ansys.tools.common.path import find_mechanical
 import appdirs
 
-USER_DATA_PATH = appdirs.user_data_dir(appname="ansys_mechanical_core", appauthor="Ansys")
+USER_DATA_PATH = Path(appdirs.user_data_dir(appname="ansys_mechanical_core", appauthor="Ansys"))
 """User data directory."""
 
-if not os.path.exists(USER_DATA_PATH):
-    os.makedirs(USER_DATA_PATH)
+USER_DATA_PATH.mkdir(parents=True, exist_ok=True)
 
-EXAMPLES_PATH = os.path.join(USER_DATA_PATH, "examples")
+EXAMPLES_PATH = USER_DATA_PATH / "examples"
 """Examples path."""
 
-if not os.path.exists(EXAMPLES_PATH):
-    os.makedirs(EXAMPLES_PATH)
+EXAMPLES_PATH.mkdir(parents=True, exist_ok=True)
 
 from ansys.mechanical.core.logging import Logger
 
@@ -62,7 +62,7 @@ try:
 
     HAS_EMBEDDING = True
     """Whether or not Mechanical embedding is being used."""
-except:
+except ImportError:
     HAS_EMBEDDING = False
 
 LOCAL_PORTS = []

@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -28,21 +28,21 @@ import pytest
 @pytest.mark.embedding
 @pytest.mark.windows_only
 def test_remote_solve(printer, embedded_app, graphics_test_mechdb_file):
-    """Test to check My Computer Background solve"""
+    """Test to check My Computer Background solve."""
     printer(embedded_app)
     embedded_app.update_globals(globals())
     embedded_app.open(graphics_test_mechdb_file)
-    solution = Model.Analyses[0].Solution
+    solution = embedded_app.Model.Analyses[0].Solution
     solution.ClearGeneratedData()
     assert str(solution.Status) == "SolveRequired"
 
-    printer(f"Test My Computer Solve")
+    printer("Test My Computer Solve")
     solution.Solve(True, "My Computer")
     assert str(solution.Status) == "Done"
     solution.ClearGeneratedData()
     assert str(solution.Status) == "SolveRequired"
 
-    printer(f"Test My Computer Background Solve")
+    printer("Test My Computer Background Solve")
     solution.Solve(True, "My Computer, Background")
     solution.GetResults()
     assert str(solution.Status) == "Done"

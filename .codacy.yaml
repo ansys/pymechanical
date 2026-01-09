@@ -1,0 +1,5 @@
+exclude_paths:
+  - "examples/**"
+
+  # _run_cell_in_thread.__get__ causes an incorrect critical codacy error
+  - "src/ansys/mechanical/core/embedding/ipython_shell.py"

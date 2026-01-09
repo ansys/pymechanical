@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -21,8 +21,22 @@
 # SOFTWARE.
 
 """Miscellaneous utilities."""
+
 import ctypes
 import os
+
+TEST_HELPER = None
+
+
+def _get_test_helper():
+    global TEST_HELPER
+    import clr
+
+    clr.AddReference("Ans.Common.WB1ManagedUtils")
+    import Ansys
+
+    TEST_HELPER = Ansys.Common.WB1ManagedUtils.TestHelper()
+    return TEST_HELPER
 
 
 def sleep(ms: int) -> None:
@@ -30,12 +44,15 @@ def sleep(ms: int) -> None:
 
     Mechanical should still work during the sleep.
     """
-    import clr
+    _get_test_helper().Wait(ms)
 
-    clr.AddReference("Ans.Common.WB1ManagedUtils")
-    import Ansys
 
-    Ansys.Common.WB1ManagedUtils.TestHelper().Wait(ms)
+def drain() -> None:
+    """Execute all pending work on the main thread.
+
+    Blocks until all the UI messages and other scheduled work complete.
+    """
+    _get_test_helper().Drain()
 
 
 def load_library_windows(library: str) -> int:  # pragma: no cover
@@ -44,10 +61,10 @@ def load_library_windows(library: str) -> int:  # pragma: no cover
         return 0
 
     try:
-        LOAD_WITH_ALTERED_SEARCH_PATH = 8
+        load_with_altered_search_path = 8
         dll = ctypes.CDLL(
-            library, use_errno=True, use_last_error=True, winmode=LOAD_WITH_ALTERED_SEARCH_PATH
+            library, use_errno=True, use_last_error=True, winmode=load_with_altered_search_path
         )
         return dll._handle
-    except:
+    except OSError:
         return 0

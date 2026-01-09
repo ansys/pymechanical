@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """RPC and Mechanical service implementation."""
+
 from .client import Client
 from .default_server import DefaultServiceMethods, MechanicalDefaultServer
 from .server import (
@@ -29,4 +30,4 @@ from .server import (
 )
 from .utils import get_remote_methods, remote_method
 
-# todo - combine Server and MechanicalService
+# TODO : Combine Server and MechanicalService

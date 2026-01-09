@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -21,23 +21,28 @@
 # SOFTWARE.
 
 """Main application class for embedded Mechanical."""
+
 from __future__ import annotations
 
 import atexit
 import os
 from pathlib import Path
-import shutil
 import typing
-import warnings
 
 from ansys.mechanical.core import LOG
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 from ansys.mechanical.core.embedding.imports import global_entry_points, global_variables
+from ansys.mechanical.core.embedding.license_manager import LicenseManager
+from ansys.mechanical.core.embedding.mechanical_warnings import (
+    connect_warnings,
+    disconnect_warnings,
+)
 from ansys.mechanical.core.embedding.poster import Poster
+import ansys.mechanical.core.embedding.shell as shell
 from ansys.mechanical.core.embedding.ui import launch_ui
-from ansys.mechanical.core.embedding.warnings import connect_warnings, disconnect_warnings
+from ansys.mechanical.core.feature_flags import get_command_line_arguments
 
 if typing.TYPE_CHECKING:
     # Make sure to run ``ansys-mechanical-ideconfig`` to add the autocomplete settings to VS Code
@@ -52,6 +57,8 @@ try:
 except ImportError:
     HAS_ANSYS_GRAPHICS = False
 
+shell.initialize_ipython_shell()
+
 
 def _get_default_addin_configuration() -> AddinConfiguration:
     configuration = AddinConfiguration()
@@ -62,17 +69,22 @@ INSTANCES = []
 """List of instances."""
 
 
-def _dispose_embedded_app(instances):  # pragma: nocover
+def _atexit_embedded_app(instances):  # pragma: nocover
     if len(instances) > 0:
         instance = instances[0]
-        instance._dispose()
+        if instance._started_interactive_shell:
+            shell.end_interactive_shell()
+        else:
+            instance._dispose()
 
 
 def _cleanup_private_appdata(profile: UniqueUserProfile):
     profile.cleanup()
 
 
-def _start_application(configuration: AddinConfiguration, version, db_file) -> "App":
+def _start_application(
+    configuration: AddinConfiguration, version, db_file, _addtional_args
+) -> "App":
     import clr
 
     clr.AddReference("Ansys.Mechanical.Embedding")
@@ -82,12 +94,28 @@ def _start_application(configuration: AddinConfiguration, version, db_file) -> "
         os.environ["ANSYS_MECHANICAL_STANDALONE_NO_ACT_EXTENSIONS"] = "1"
 
     addin_configuration_name = configuration.addin_configuration
-    # Starting with version 241 we can pass a configuration name to the constructor
-    # of Application
-    if int(version) >= 241:
+    if version < 261:
         return Ansys.Mechanical.Embedding.Application(db_file, addin_configuration_name)
-    else:
-        return Ansys.Mechanical.Embedding.Application(db_file)
+    return Ansys.Mechanical.Embedding.Application(
+        db_file, addin_configuration_name, _addtional_args
+    )
+
+
+def _additional_args(readonly: bool, feature_flags: list, version: int) -> str:
+    """Generate additional command line arguments for the application."""
+    if version < 261:
+        LOG.warning(
+            "The readonly and feature_flags arguments are only supported "
+            "with version 2026R1 and later."
+        )
+        return ""
+    additional_args = ""
+    if readonly:
+        additional_args += " -readonly"
+    if feature_flags:
+        flag_args = get_command_line_arguments(feature_flags)
+        additional_args += " " + " ".join(flag_args)
+    return additional_args
 
 
 def is_initialized():
@@ -141,13 +169,20 @@ class App:
         Whether to enable logging. Default is True.
     log_level : str, optional
         The logging level for the application. Default is "WARNING".
+    pep8 : bool, optional
+        Whether to enable PEP 8 style binding for the assembly. Default is False.
+    readonly : bool, optional
+        Whether to open the application in read-only mode. Default is False.
+    feature_flags : list, optional
+        List of feature flag names to enable. Default is [].
+        Available flags include: 'ThermalShells', 'MultistageHarmonic', 'CPython'.
 
     Examples
     --------
     Create App with Mechanical project file and version:
 
     >>> from ansys.mechanical.core import App
-    >>> app = App(db_file="path/to/file.mechdat", version=251)
+    >>> app = App(db_file="path/to/file.mechdat", version=252)
 
     Disable copying the user profile when private appdata is enabled
 
@@ -167,9 +202,17 @@ class App:
 
     Set log level
 
-    >>> app = App(log_level='INFO')
+    >>> app = App(log_level="INFO")
 
     ... INFO -  -  app - log_info - Starting Mechanical Application
+
+    Create App in read-only mode
+
+    >>> app = App(readonly=True)
+
+    Create App with feature flags enabled
+
+    >>> app = App(feature_flags=["CPython", "ThermalShells"])
 
     """
 
@@ -189,8 +232,20 @@ class App:
         # Get the globals dictionary from kwargs
         globals = kwargs.get("globals")
 
+        # Get the interactive mode from kwargs
+        self._interactive_mode = kwargs.get("interactive", False)
+
         # Set messages to None before BUILDING_GALLERY check
         self._messages = None
+
+        version = kwargs.get("version")
+        if version is not None:
+            try:
+                version = int(version)
+            except ValueError:
+                raise ValueError(
+                    "The version must be an integer or of type that can be converted to an integer."
+                )
 
         # If the building gallery flag is set, we need to share the instance
         # This can apply to running the `make -C doc html` command
@@ -211,15 +266,11 @@ class App:
         if len(INSTANCES) > 0:
             raise Exception("Cannot have more than one embedded mechanical instance!")
 
-        version = kwargs.get("version")
-        if version is not None:
-            try:
-                version = int(version)
-            except ValueError:
-                raise ValueError(
-                    "The version must be an integer or of type that can be converted to an integer."
-                )
         self._version = initializer.initialize(version)
+
+        if self._version < 261 and self.interactive:
+            raise Exception("Interactive mode is only supported starting with version 261")
+
         configuration = kwargs.get("config", _get_default_addin_configuration())
 
         if private_appdata:
@@ -228,14 +279,27 @@ class App:
             profile = UniqueUserProfile(new_profile_name, copy_profile=copy_profile)
             profile.update_environment(os.environ)
 
-        runtime.initialize(self._version)
-        self._app = _start_application(configuration, self._version, db_file)
-        connect_warnings(self)
-        self._poster = None
+        pep8_alias = kwargs.get("pep8", False)
+        readonly = kwargs.get("readonly", False)
+        feature_flags = kwargs.get("feature_flags", [])
+        if readonly or feature_flags:
+            additional_args = _additional_args(readonly, feature_flags, self._version)
+        else:
+            additional_args = ""
+
+        self._prepare_interactive_mode()
+        runtime.initialize(self._version, pep8_aliases=pep8_alias)
+
+        self._app = _start_application(configuration, self._version, db_file, additional_args)
 
         self._disposed = False
-        atexit.register(_dispose_embedded_app, INSTANCES)
+        atexit.register(_atexit_embedded_app, INSTANCES)
         INSTANCES.append(self)
+
+        self._handle_interactive_shell()
+
+        connect_warnings(self)
+        self._poster = None
 
         # Clean up the private appdata directory on exit if private_appdata is True
         if private_appdata:
@@ -245,6 +309,11 @@ class App:
         self._subscribe()
         if globals:
             self.update_globals(globals)
+
+        # Licensing API is available only for version 2025R2 and later
+        self._license_manager = None
+        if self.version >= 252:
+            self._license_manager = LicenseManager(self)
 
     def __repr__(self):
         """Get the product info."""
@@ -271,6 +340,41 @@ class App:
         self._app.Dispose()
         self._disposed = True
 
+    def _prepare_interactive_mode(self):
+        if not self.interactive:
+            return
+        if self._version < 261:
+            raise Exception("Interactive mode is only supported starting with version 261")
+        if os.name != "nt":
+            if os.environ.get("ANSYS_MECHANICAL_EMBEDDING_LINUX_UI", False) is False:
+                raise Exception("Interactive mode is only supported on windows")
+        os.environ["ANSYS_MECHANICAL_EMBEDDING_START_WITH_UI"] = "1"
+
+    def _handle_interactive_shell(self):
+        self._started_interactive_shell = False
+        if not self.interactive:
+            return
+        shell.start_interactive_shell(self)
+        self._started_interactive_shell = True
+
+    def wait_with_dialog(self):
+        """Block python while an interactive pop-up is displayed.
+
+        While that pop-up is displayed, Mechanical's main thread will
+        not be blocked.
+        """
+        if not self.interactive:
+            raise Exception("wait_with_dialog is only supported in interactive mode!")
+        if self.version < 261:
+            raise Exception("wait_with_dialog is only supported with Mechanical 261")
+        # Wait with dialog open
+        self._app.BlockingModalDialog("Wait with dialog", "PyMechanical")
+
+    @property
+    def interactive(self) -> bool:
+        """Get whether the application is running in interactive mode."""
+        return self._interactive_mode
+
     def open(self, db_file, remove_lock=False):
         """Open the db file.
 
@@ -286,11 +390,9 @@ class App:
             lock_file = Path(self.DataModel.Project.ProjectDirectory) / ".mech_lock"
             # Remove the lock file if it exists before opening the project file
             if lock_file.exists():
-                warnings.warn(
-                    f"Removing the lock file, {lock_file}, before opening the project. \
-This may corrupt the project file.",
-                    UserWarning,
-                    stacklevel=2,
+                self.log_warning(
+                    f"Removing the lock file, {lock_file}, before opening the project. "
+                    "This may corrupt the project file."
                 )
                 lock_file.unlink()
 
@@ -303,7 +405,7 @@ This may corrupt the project file.",
         else:
             self.DataModel.Project.Save()
 
-    def save_as(self, path: str, overwrite: bool = False):
+    def save_as(self, path: str, overwrite: bool = False, remove_lock: bool = False):
         """
         Save the project as a new file.
 
@@ -315,18 +417,15 @@ This may corrupt the project file.",
             The path where the file needs to be saved.
         overwrite : bool, optional
             Whether the file should be overwritten if it already exists (default is False).
+        remove_lock : bool, optional
+            Whether to remove the lock file if it exists before saving the project file.
 
         Raises
         ------
         Exception
             If the file already exists at the specified path and `overwrite` is False.
-
-        Notes
-        -----
-        For version 232, if `overwrite` is True, the existing file and its associated directory
-        (if any) will be removed before saving the new file.
         """
-        if not os.path.exists(path):
+        if not Path(path).exists():
             self.DataModel.Project.SaveAs(path)
             return
 
@@ -335,19 +434,28 @@ This may corrupt the project file.",
                 f"File already exists in {path}, Use ``overwrite`` flag to "
                 "replace the existing file."
             )
-        if self.version < 241:  # pragma: no cover
-            file_name = os.path.basename(path)
-            file_dir = os.path.dirname(path)
-            associated_dir = os.path.join(file_dir, os.path.splitext(file_name)[0] + "_Mech_Files")
 
-            # Remove existing files and associated folder
-            os.remove(path)
-            if os.path.exists(associated_dir):
-                shutil.rmtree(associated_dir)
-            # Save the new file
-            self.DataModel.Project.SaveAs(path)
-        else:
+        if remove_lock:
+            file_path = Path(path)
+            associated_dir = file_path.parent / f"{file_path.stem}_Mech_Files"
+            lock_file = associated_dir / ".mech_lock"
+            # Remove the lock file if it exists before saving the project file
+            if lock_file.exists():
+                self.log_warning(f"Removing the lock file, {lock_file}... ")
+                lock_file.unlink()
+        try:
             self.DataModel.Project.SaveAs(path, overwrite)
+        except Exception as e:
+            error_msg = str(e)
+            if "The project is locked by" in error_msg:
+                self.log_error(
+                    f"Failed to save project as {path}: {error_msg}\n"
+                    "Hint: The project file is locked. "
+                    "Try using the 'remove_lock=True' option when saving the project."
+                )
+            else:
+                self.log_error(f"Failed to save project as {path}: {error_msg}")
+            raise e
 
     def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
         """Launch the GUI."""
@@ -366,31 +474,28 @@ This may corrupt the project file.",
     def exit(self):
         """Exit the application."""
         self._unsubscribe()
-        if self.version < 241:
-            self.ExtAPI.Application.Close()
-        else:
-            self.ExtAPI.Application.Exit()
+        self.ExtAPI.Application.Exit()
 
     def execute_script(self, script: str) -> typing.Any:
         """Execute the given script with the internal IronPython engine."""
-        SCRIPT_SCOPE = "pymechanical-internal"
+        script_scope = "pymechanical-internal"
         if not hasattr(self, "script_engine"):
             import clr
 
             clr.AddReference("Ansys.Mechanical.Scripting")
             import Ansys
 
-            engine_type = Ansys.Mechanical.Scripting.ScriptEngineType.IronPython
-            script_engine = Ansys.Mechanical.Scripting.EngineFactory.CreateEngine(engine_type)
+            # CreateEngine API without parameters creates an IronPython engine
+            script_engine = Ansys.Mechanical.Scripting.EngineFactory.CreateEngine()
             empty_scope = False
             debug_mode = False
-            script_engine.CreateScope(SCRIPT_SCOPE, empty_scope, debug_mode)
+            script_engine.CreateScope(script_scope, empty_scope, debug_mode)
             self.script_engine = script_engine
         light_mode = True
         args = None
         rets = None
-        script_result = self.script_engine.ExecuteCode(script, SCRIPT_SCOPE, light_mode, args, rets)
-        error_msg = f"Failed to execute the script"
+        script_result = self.script_engine.ExecuteCode(script, script_scope, light_mode, args, rets)
+        error_msg = "Failed to execute the script"
         if script_result is None:
             raise Exception(error_msg)
         if script_result.Error is not None:
@@ -400,12 +505,15 @@ This may corrupt the project file.",
 
     def execute_script_from_file(self, file_path=None):
         """Execute the given script from file with the internal IronPython engine."""
-        text_file = open(file_path, "r", encoding="utf-8")
+        file_path = Path(file_path)
+        if not file_path.is_file():
+            raise FileNotFoundError(f"The file {file_path} does not exist.")
+        text_file = file_path.open("r", encoding="utf-8")
         data = text_file.read()
         text_file.close()
         return self.execute_script(data)
 
-    def plotter(self) -> None:
+    def plotter(self, obj=None) -> None:
         """Return ``ansys.tools.visualization_interface.Plotter`` object."""
         if not HAS_ANSYS_GRAPHICS:
             LOG.warning(
@@ -417,13 +525,13 @@ This may corrupt the project file.",
             LOG.warning("Plotting is only supported with version 2024R2 and later!")
             return
 
-        # TODO Check if anything loaded inside app or else show warning and return
+        # TODO : Check if anything loaded inside app or else show warning and return
 
         from ansys.mechanical.core.embedding.graphics.embedding_plotter import to_plotter
 
-        return to_plotter(self)
+        return to_plotter(self, obj)
 
-    def plot(self) -> None:
+    def plot(self, obj=None) -> None:
         """Visualize the model in 3d.
 
         Requires installation using the graphics option. E.g.
@@ -436,9 +544,13 @@ This may corrupt the project file.",
         >>> app.open("path/to/file.mechdat")
         >>> app.plot()
         """
-        _plotter = self.plotter()
+        if self.interactive:
+            raise Exception("Plotting is not allowed in interactive mode")
+
+        _plotter = self.plotter(obj)
 
         if _plotter is None:
+            print("nothing to plot!")
             return
 
         return _plotter.show()
@@ -451,27 +563,27 @@ This may corrupt the project file.",
         return self._poster
 
     @property
-    def DataModel(self) -> Ansys.Mechanical.DataModel.Interfaces.DataModelObject:
+    def DataModel(self) -> Ansys.Mechanical.DataModel.Interfaces.DataModelObject:  # noqa: N802
         """Return the DataModel."""
         return GetterWrapper(self._app, lambda app: app.DataModel)
 
     @property
-    def ExtAPI(self) -> Ansys.ACT.Interfaces.Mechanical.IMechanicalExtAPI:
+    def ExtAPI(self) -> Ansys.ACT.Interfaces.Mechanical.IMechanicalExtAPI:  # noqa: N802
         """Return the ExtAPI object."""
         return GetterWrapper(self._app, lambda app: app.ExtAPI)
 
     @property
-    def Tree(self) -> Ansys.ACT.Automation.Mechanical.Tree:
+    def Tree(self) -> Ansys.ACT.Automation.Mechanical.Tree:  # noqa: N802
         """Return the Tree object."""
         return GetterWrapper(self._app, lambda app: app.DataModel.Tree)
 
     @property
-    def Model(self) -> Ansys.ACT.Automation.Mechanical.Model:
+    def Model(self) -> Ansys.ACT.Automation.Mechanical.Model:  # noqa: N802
         """Return the Model object."""
         return GetterWrapper(self._app, lambda app: app.DataModel.Project.Model)
 
     @property
-    def Graphics(self) -> Ansys.ACT.Common.Graphics.MechanicalGraphicsWrapper:
+    def Graphics(self) -> Ansys.ACT.Common.Graphics.MechanicalGraphicsWrapper:  # noqa: N802
         """Return the Graphics object."""
         return GetterWrapper(self._app, lambda app: app.ExtAPI.Graphics)
 
@@ -500,6 +612,13 @@ This may corrupt the project file.",
 
             self._messages = MessageManager(self._app)
         return self._messages
+
+    @property
+    def license_manager(self):
+        """Return license manager."""
+        if self._license_manager is None:
+            raise Exception("LicenseManager is only available for version 252 and later.")
+        return self._license_manager
 
     def _share(self, other) -> None:
         """Shares the state of self with other.
@@ -538,7 +657,7 @@ This may corrupt the project file.",
             # EventSource isn't defined on the IApplication interface
             self.ExtAPI.Application.EventSource.OnWorkbenchReady += self._on_workbench_ready
             self._subscribed = True
-        except:
+        except Exception:
             self._subscribed = False
 
     def _unsubscribe(self):

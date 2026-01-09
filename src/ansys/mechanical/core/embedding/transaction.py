@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -29,8 +29,7 @@ class Transaction:  # When ansys-pythonnet issue #14 is fixed, this class will b
     Example
     -------
     >>> with Transaction() as transaction:
-    ...     pass   # Perform bulk user interactions here
-    ...
+    ...     pass  # Perform bulk user interactions here
     """
 
     def __init__(self):

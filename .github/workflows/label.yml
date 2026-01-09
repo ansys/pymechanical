@@ -14,14 +14,22 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions: {}
+
 jobs:
 
   label-syncer:
     name: Syncer
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write   # Required to create and manage pull request labels
     steps:
-      - uses: actions/checkout@v4
-      - uses: micnncim/action-label-syncer@v1
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          persist-credentials: false
+
+      - uses: micnncim/action-label-syncer@3abd5ab72fda571e69fffd97bd4e0033dd5f495c # v1.3.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -30,51 +38,57 @@ jobs:
     needs: [label-syncer]
     permissions:
       contents: read
-      pull-requests: write
+      pull-requests: write   # Required to apply labels to pull requests
     runs-on: ubuntu-latest
     steps:
 
     # Label based on modified files
     - name: Label based on changed files
-      uses: actions/labeler@v5
+      uses: actions/labeler@634933edcd8ababfe52f92936142cc22ac488b1b # v6.0.1
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         sync-labels: false
 
     # Label based on branch name
-    - uses: actions-ecosystem/action-add-labels@v1
+    - uses: actions-ecosystem/action-add-labels@18f1af5e3544586314bbe15c0273249c770b2daf # v1.1.3
       if: |
         startsWith(github.event.pull_request.head.ref, 'doc') ||
         startsWith(github.event.pull_request.head.ref, 'docs')
       with:
         labels: documentation
+        github_token: ${{ secrets.GITHUB_TOKEN }}
 
-    - uses: actions-ecosystem/action-add-labels@v1
+    - uses: actions-ecosystem/action-add-labels@18f1af5e3544586314bbe15c0273249c770b2daf # v1.1.3
       if: |
         startsWith(github.event.pull_request.head.ref, 'maint') ||
         startsWith(github.event.pull_request.head.ref, 'no-ci') ||
         startsWith(github.event.pull_request.head.ref, 'ci')
       with:
         labels: maintenance
+        github_token: ${{ secrets.GITHUB_TOKEN }}
 
-    - uses: actions-ecosystem/action-add-labels@v1
+    - uses: actions-ecosystem/action-add-labels@18f1af5e3544586314bbe15c0273249c770b2daf # v1.1.3
       if: startsWith(github.event.pull_request.head.ref, 'feat')
       with:
-        labels: |
-          enhancement
+        labels: enhancement
+        github_token: ${{ secrets.GITHUB_TOKEN }}
 
-    - uses: actions-ecosystem/action-add-labels@v1
+    - uses: actions-ecosystem/action-add-labels@18f1af5e3544586314bbe15c0273249c770b2daf # v1.1.3
       if: |
         startsWith(github.event.pull_request.head.ref, 'fix') ||
         startsWith(github.event.pull_request.head.ref, 'patch')
       with:
         labels: bug
+        github_token: ${{ secrets.GITHUB_TOKEN }}
 
   commenter:
+    name: "Suggest labels if none applied"
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write   # Required to comment on pull requests
     steps:
     - name: Suggest to add labels
-      uses: peter-evans/create-or-update-comment@v4
+      uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
       # Execute only when no labels have been applied to the pull request
       if: toJSON(github.event.pull_request.labels.*.name) == '{}'
       with:
@@ -92,11 +106,11 @@ jobs:
     name: "Create changelog fragment"
     needs: [labeler]
     permissions:
-      contents: write
-      pull-requests: write
+      contents: write        # Required to create changelog fragment files
+      pull-requests: write   # Needed to comment on PR with changelog information
     runs-on: ubuntu-latest
     steps:
-    - uses: ansys/actions/doc-changelog@v10
+    - uses: ansys/actions/doc-changelog@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
       with:
         token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
         use-conventional-commits: true
