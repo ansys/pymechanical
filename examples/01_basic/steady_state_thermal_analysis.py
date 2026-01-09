@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -700,12 +700,12 @@ plt.show()
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Get the working directory for the steady state thermal analysis
-solve_path = stat_therm.WorkingDir
+solve_path = Path(stat_therm.WorkingDir)
 # Get the path to the solve.out file
-solve_out_path = solve_path + "solve.out"
+solve_out_path = solve_path / "solve.out"
 # Print the output of the solve.out file if applicable
 if solve_out_path:
-    with Path.open(solve_out_path, "rt") as file:
+    with solve_out_path.open("rt") as file:
         for line in file:
             print(line, end="")
 

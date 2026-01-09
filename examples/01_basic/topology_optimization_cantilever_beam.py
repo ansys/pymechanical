@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -321,7 +321,7 @@ app.print_tree()
 
 # Save the project file
 mechdat_file = output_path / "cantilever_beam_topology_optimization.mechdat"
-app.save(str(mechdat_file))
+app.save_as(str(mechdat_file), overwrite=True)
 
 # Close the app
 app.close()

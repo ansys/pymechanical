@@ -67,3 +67,6 @@ windows
 WSL
 wsl
 alls
+wnua
+mtls
+SPs

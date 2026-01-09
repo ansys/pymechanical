@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -25,13 +25,12 @@ import datetime
 import os
 import pathlib
 from pathlib import Path
-import platform
 import shutil
 import subprocess
 import sys
 import time
 
-import ansys.tools.path as atp
+import ansys.tools.common.path as atp
 import pytest
 
 import ansys.mechanical.core as pymechanical
@@ -74,7 +73,7 @@ for rver in valid_rver:
 # minimum version on linux.
 # Override this if running on CI/CD and PYMAPDL_PORT has been specified
 ON_CI = "PYMECHANICAL_START_INSTANCE" in os.environ and "PYMECHANICAL_PORT" in os.environ
-HAS_GRPC = int(rver) >= 232 or ON_CI
+HAS_GRPC = int(rver) >= 241 or ON_CI
 
 
 def pytest_collection_modifyitems(config, items):
@@ -264,6 +263,16 @@ def graphics_test_mechdb_file():
 def launch_mechanical_instance(cleanup_on_exit=False):
     """Launch a new Mechanical instance."""
     print("launching mechanical instance")
+    if os.name != "nt":
+        # on linux, and container start with insecure mode for testing
+        return pymechanical.launch_mechanical(
+            allow_input=False,
+            verbose_mechanical=True,
+            cleanup_on_exit=cleanup_on_exit,
+            log_mechanical="pymechanical_log.txt",
+            host="0.0.0.0",
+            transport_mode="insecure",
+        )
     return pymechanical.launch_mechanical(
         allow_input=False,
         verbose_mechanical=True,
@@ -273,16 +282,33 @@ def launch_mechanical_instance(cleanup_on_exit=False):
 
 
 def connect_to_mechanical_instance(port=None, clear_on_connect=False):
-    """Connect to an existing Mechanical instance."""
-    print("connecting to a existing mechanical instance")
-    hostname = platform.uname().node  # your machine name
+    """Connect to an existing Mechanical instance.
 
-    # ip needs to be passed or start instance takes precedence
-    # typical for container scenarios use connect
-    # and needs to be treated as remote scenarios
-    mechanical = pymechanical.connect_to_mechanical(
-        ip=hostname, port=port, clear_on_connect=clear_on_connect, cleanup_on_exit=False
-    )
+    For local instances, don't pass an IP (defaults to 127.0.0.1).
+    This ensures proper connection regardless of hostname resolution issues
+    on systems with WSL/Docker Desktop installed.
+
+    If you need to connect to a remote/container instance, pass an explicit IP.
+    """
+    print("connecting to a existing mechanical instance")
+
+    # Don't pass hostname - let it default to 127.0.0.1 for local connections.
+    # On WSL/Docker systems, hostname can resolve to bridge IPs (e.g., 172.28.0.1)
+    # which are not routable for locally-launched Mechanical instances.
+    # For remote/container scenarios, an explicit IP should be passed by the caller.
+    if os.name != "nt":
+        # Linux/container uses insecure mode for testing
+        mechanical = pymechanical.connect_to_mechanical(
+            port=port,
+            clear_on_connect=clear_on_connect,
+            cleanup_on_exit=False,
+            transport_mode="insecure",
+        )
+    else:
+        # Windows uses WNUA by default
+        mechanical = pymechanical.connect_to_mechanical(
+            port=port, clear_on_connect=clear_on_connect, cleanup_on_exit=False
+        )
     return mechanical
 
 
@@ -391,13 +417,22 @@ def mechanical(request, printer, mechanical_session):
 def mechanical_meshing():
     """Fixture that creates a Mechanical instance in meshing mode."""
     print("current working directory: ", Path.cwd())
-
-    mechanical_meshing = pymechanical.launch_mechanical(
-        additional_switches=["-AppModeMesh"],
-        additional_envs=dict(ENV_VARIABLE="1"),
-        verbose_mechanical=True,
-        cleanup_on_exit=False,
-    )
+    if os.name != "nt":
+        # on linux, always cleanup to avoid orphaned processes
+        mechanical_meshing = pymechanical.launch_mechanical(
+            additional_switches=["-AppModeMesh"],
+            additional_envs=dict(ENV_VARIABLE="1"),
+            verbose_mechanical=True,
+            cleanup_on_exit=True,
+            transport_mode="insecure",
+        )
+    else:
+        mechanical_meshing = pymechanical.launch_mechanical(
+            additional_switches=["-AppModeMesh"],
+            additional_envs=dict(ENV_VARIABLE="1"),
+            verbose_mechanical=True,
+            cleanup_on_exit=False,
+        )
 
     print(mechanical_meshing)
     yield mechanical_meshing
@@ -410,10 +445,17 @@ def mechanical_meshing():
 def mechanical_result():
     """Fixture that creates a Mechanical instance in result mode."""
     print("current working directory: ", Path.cwd())
-
-    mechanical_result = pymechanical.launch_mechanical(
-        additional_switches=["-AppModeRest"], verbose_mechanical=True
-    )
+    if os.name != "nt":
+        # on linux, always cleanup to avoid orphaned processes
+        mechanical_result = pymechanical.launch_mechanical(
+            additional_switches=["-AppModeRest"],
+            verbose_mechanical=True,
+            transport_mode="insecure",
+        )
+    else:
+        mechanical_result = pymechanical.launch_mechanical(
+            additional_switches=["-AppModeRest"], verbose_mechanical=True
+        )
 
     print(mechanical_result)
     yield mechanical_result
@@ -432,7 +474,10 @@ def mechanical_pool():
     exec_file = path
     instances_count = 2
 
-    pool = LocalMechanicalPool(instances_count, exec_file=exec_file)
+    if os.name != "nt":
+        pool = LocalMechanicalPool(instances_count, exec_file=exec_file, transport_mode="insecure")
+    else:
+        pool = LocalMechanicalPool(instances_count, exec_file=exec_file)
 
     print(pool)
     assert len(pool.ports) == instances_count
