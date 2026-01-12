@@ -52,38 +52,28 @@ Version and service pack requirements
    - To check your service pack version, look at the ``builddate.txt`` file in your
      Ansys installation directory.
 
-.. warning::
-   **Breaking Change**: Version mismatch behavior on Linux
+.. note::
+   **Backward Compatibility**: Version mismatch behavior
 
-   **Windows users**: No breaking changes. The default WNUA mode works across all versions
-   and does not require certificates or additional configuration.
+   When using ``launch_mechanical()`` without explicitly specifying ``transport_mode``:
 
-   **Linux users**: Breaking change introduced due to mTLS default requiring certificates.
+   - If you have a **newer version of PyMechanical** with an **older version of Mechanical**
+     that doesn't support secure connections, PyMechanical automatically falls back to
+     **insecure mode** with a warning. The connection succeeds.
+   - If you have an **older version of PyMechanical** with a **newer version of Mechanical**
+     that requires secure connections by default, you may need to update PyMechanical.
 
-   When using ``launch_mechanical()`` on Linux without explicitly specifying ``transport_mode``:
-
-   - If you have a **newer version of PyMechanical** (0.12.0+) with an **older version of Mechanical**
-     (without required service pack), the connection will fail because PyMechanical defaults to mTLS
-     but the old Mechanical version doesn't support it.
-   - If you have an **older version of PyMechanical** (< 0.12.0) with a **newer version of Mechanical**
-     (with required service pack), the connection may fail due to security mode mismatch.
-
-   **Solution for Linux users**: Always explicitly specify ``transport_mode``:
+   **Best Practice**: Explicitly specify ``transport_mode`` to avoid warnings and ensure
+   predictable behavior:
 
    .. code-block:: python
 
-      # For older Mechanical versions on Linux (241 or versions without required SP)
+      # For older Mechanical versions (241 or versions without required SP)
       mechanical = launch_mechanical(transport_mode="insecure")
 
-      # For newer Mechanical versions on Linux with certificates configured
-      mechanical = launch_mechanical(transport_mode="mtls", certs_dir="/path/to/certs")
-
-   **Windows users** can continue using the default without changes:
-
-   .. code-block:: python
-
-      # Works on all Windows versions (WNUA default)
-      mechanical = launch_mechanical()
+      # For newer Mechanical versions with secure support
+      mechanical = launch_mechanical(transport_mode="wnua")  # Windows
+      mechanical = launch_mechanical(transport_mode="mtls")  # Linux
 
 Transport modes
 ---------------
@@ -114,8 +104,8 @@ See `PyAnsys mTLS guide <https://tools.docs.pyansys.com/version/stable/user_guid
    - **Windows**: Set as a user-level environment variable only. System-level variables are ignored.
    - **Linux**: Can be set at any level (user or system).
 
-   When this variable is set and ``certs_dir`` is not explicitly specified, PyMechanical will
-   use the path from this environment variable.
+   When this variable is set and ``certs_dir`` is not explicitly specified, PyMechanical
+   uses the path from this environment variable.
 
    Example (Windows PowerShell):
 
@@ -129,7 +119,7 @@ See `PyAnsys mTLS guide <https://tools.docs.pyansys.com/version/stable/user_guid
 
       export ANSYS_GRPC_CERTIFICATES=/path/to/certs
 
-**WNUA (Windows Named User Authentication)** - Platform-specific (Windows only, default mode).
+**WNUA (Windows Named User Authentication)** - Windows only, default on Windows.
 
 .. code-block:: python
 
@@ -155,13 +145,7 @@ CLI usage
    # Insecure mode
    ansys-mechanical --port 10000 --transport-mode insecure
 
-   # Specify custom host for gRPC binding
-   ansys-mechanical --port 10000 --transport-mode wnua --grpc-host 127.0.0.1
-
 If ``--transport-mode`` is not specified, the platform default is used.
-
-The ``--grpc-host`` option specifies the host address for the gRPC server to bind to.
-It defaults to ``localhost`` for WNUA and insecure modes.
 
 Connect to an existing instance
 -------------------------------
