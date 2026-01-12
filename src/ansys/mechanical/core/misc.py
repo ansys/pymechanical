@@ -42,6 +42,16 @@ def is_windows():
     return False
 
 
+def is_linux() -> bool:
+    """Check if the host machine is Linux.
+
+    Returns
+    -------
+    ``True`` if the host machine is Linux, ``False`` otherwise.
+    """
+    return os.name == "posix"
+
+
 def get_mechanical_bin(release_version):
     """Get the path for the Mechanical executable file based on the release version.
 
@@ -301,16 +311,6 @@ def get_service_pack_message(version):
         return ""  # Version 261+ has built-in support
     else:
         return "Update to Ansys 2024 R2 or later for secure gRPC support."
-
-
-def is_linux() -> bool:
-    """Check if the host machine is Linux.
-
-    Returns
-    -------
-    ``True`` if the host machine is Linux, ``False`` otherwise.
-    """
-    return os.name == "posix"
 
 
 def resolve_certs_dir(transport_mode, certs_dir=None):
