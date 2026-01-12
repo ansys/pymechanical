@@ -355,3 +355,31 @@ def resolve_certs_dir(transport_mode, certs_dir=None):
             # On Linux, read at any level
             return os.environ.get("ANSYS_GRPC_CERTIFICATES", "certs")
     return certs_dir if certs_dir is not None else "certs"
+
+
+def check_sever_certs_exist(certs_dir: str) -> None:
+    """Check if the required certificate files exist in the specified directory.
+
+    Parameters
+    ----------
+    certs_dir : str
+        Directory path where the certificate files are expected.
+
+    Raises
+    ------
+    FileNotFoundError
+        If any of the required certificate files are missing.
+    """
+    required_files_server = ["server.cert", "server.key", "ca.cert"]
+    missing_files = []
+    for filename in required_files_server:
+        file_path = Path(certs_dir) / filename
+        if not file_path.is_file():
+            missing_files.append(filename)
+
+    if missing_files:
+        missing_str = ", ".join(missing_files)
+        raise FileNotFoundError(
+            f"Could not launch Ansys Mechanical in mtls transport mode. "
+            f"The following certificate files are missing in '{certs_dir}': {missing_str}"
+        )
