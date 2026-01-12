@@ -33,11 +33,11 @@ import ansys.tools.common.path as atp
 
 from ansys.mechanical.core import LOG
 from ansys.mechanical.core.misc import (
-    check_sever_certs_exist,
     get_service_pack_message,
     has_grpc_service_pack,
     is_linux,
     resolve_certs_dir,
+    verify_server_certificates,
 )
 
 
@@ -107,7 +107,7 @@ class MechanicalLauncher:
         self.certs_dir = resolve_certs_dir(transport_mode, certs_dir)
         if transport_mode.lower() == "mtls":
             # Check that certs exist if needed for mTLS
-            check_sever_certs_exist(self.certs_dir)
+            verify_server_certificates(self.certs_dir)
         self.__ui_arg_list = ["-DSApplet", "-nosplash", "-notabctrl"]
         self.__batch_arg_list = ["-DSApplet", "-b"]
 

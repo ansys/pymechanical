@@ -357,8 +357,8 @@ def resolve_certs_dir(transport_mode, certs_dir=None):
     return certs_dir if certs_dir is not None else "certs"
 
 
-def check_sever_certs_exist(certs_dir: str) -> None:
-    """Check if the required certificate files exist in the specified directory.
+def verify_server_certificates(certs_dir: str) -> None:
+    """Check if the required server certificate files exist in the specified directory.
 
     Parameters
     ----------
