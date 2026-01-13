@@ -42,6 +42,7 @@ warnings.filterwarnings(
     "so cannot show the figure.",
 )
 
+
 # -- Project information -----------------------------------------------------
 
 project = "ansys.mechanical.core"
@@ -49,11 +50,9 @@ copyright = f"(c) {datetime.now().year} ANSYS, Inc. All rights reserved"
 author = "ANSYS Inc."
 release = version = pymechanical.__version__
 cname = os.getenv("DOCUMENTATION_CNAME", default="mechanical.docs.pyansys.com")
+switcher_version = get_version_match(version)
 
 
-# Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-# ones.
 # -- General configuration ---------------------------------------------------
 # Sphinx extensions
 extensions = [
@@ -87,6 +86,7 @@ intersphinx_mapping = {
     "grpc": ("https://grpc.github.io/grpc/python/", None),
     "pypim": ("https://pypim.docs.pyansys.com/version/dev/", None),
 }
+
 
 suppress_warnings = ["label.*", "autoapi.python_import_resolution", "design.grid", "config.cache"]
 # supress_warnings = ["ref.option"]
@@ -329,20 +329,20 @@ epub_exclude_files = ["search.html"]
 linkcheck_ignore = [
     "https://github.com/ansys/pymechanical/pkgs/container/.*",
     "https://ansyshelp.ansys.com/*",
-    "https://ansysaccount.b2clogin.com/*",
     "https://answers.microsoft.com/en-us/windows/forum/all/*",
     "https://download.ansys.com/*",
     "https://support.ansys.com/*",
     "https://discuss.ansys.com/*",
     "https://www.ansys.com/*",
-    "../api/*",  # Remove this after release 0.10.12
-    "api/*",
-    "path.html",
-    "user_guide_embedding/*",
-    "changelog.html",
+    "../api/*",
 ]
 
 linkcheck_anchors = False
+
+
+linkcheck_exclude_documents = [
+    "changelog",
+]
 
 # If we are on a release, we have to ignore the "release" URLs, since it is not
 # available until the release is published.
