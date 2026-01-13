@@ -292,6 +292,7 @@ jobs:
       - name: Pull, launch, and validate Mechanical service
         env:
           MECHANICAL_IMAGE: ${{ env.DOCKER_PACKAGE }}:${{ matrix.mechanical-version }}
+          MECHANICAL_VERSION: ${{ matrix.mechanical-version }}
           # ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
           # ANSYS_WORKBENCH_LOGGING_DIRECTORY: /log_file  # workbench.log file
           ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH: 0  # turn off autoflush for faster performance
@@ -301,8 +302,29 @@ jobs:
         run: |
           docker pull ${MECHANICAL_IMAGE}
 
-          echo "Run docker in detached mode"
-          docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} -p ${PYMECHANICAL_PORT}:10000 ${MECHANICAL_IMAGE}
+          # Extract version without dots for path (e.g., 26.1.0 -> 261, 26.1_candidate -> 261)
+          VERSION_PATH=$(echo ${MECHANICAL_VERSION} | grep -oP '^\d+\.\d+' | tr -d '.')
+
+          # Check if image name contains 26.1 to determine entrypoint
+          if [[ ${MECHANICAL_IMAGE} == *"26.1"* ]]; then
+            echo "Detected version 26.1 - using custom entrypoint for insecure transport"
+            docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} \
+              -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} \
+              -e ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH=${ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH} \
+              -p ${PYMECHANICAL_PORT}:10000 \
+              --entrypoint="" \
+              --security-opt seccomp=unconfined \
+              ${MECHANICAL_IMAGE} \
+              tini -- xvfb-run /install/ansys_inc/v${VERSION_PATH}/aisol/.workbench \
+              -dsapplet -b -grpc 10000 --grpc-host 0.0.0.0 --transport-mode insecure
+          else
+            echo "Using default entrypoint for version ${MECHANICAL_VERSION}"
+            docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} \
+              -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} \
+              -e ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH=${ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH} \
+              -p ${PYMECHANICAL_PORT}:10000 \
+              ${MECHANICAL_IMAGE}
+          fi
 
           # Wait for Mechanical to initialize with intelligent polling
           max_wait=300  # Maximum wait time in seconds
@@ -357,7 +379,7 @@ jobs:
           pytest-extra-args: '-s --junitxml remote_results${{ env.MAIN_PYTHON_VERSION }}.xml'
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@e08919a3b1fb83a78393dfb775a9c37f17d8eea6 # v6.0.1
+        uses: mikepenz/action-junit-report@a294a61c909bd8a4b563024a2faa28897fd53ebc # v6.1.0
         if: always()
         with:
           report_paths: '**/remote_results*.xml'
@@ -474,7 +496,7 @@ jobs:
           retention-days: 7
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@e08919a3b1fb83a78393dfb775a9c37f17d8eea6 # v6.0.1
+        uses: mikepenz/action-junit-report@a294a61c909bd8a4b563024a2faa28897fd53ebc # v6.1.0
         if: always()
         with:
           report_paths: '**/test_results*.xml'
@@ -553,7 +575,7 @@ jobs:
           retention-days: 7
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@e08919a3b1fb83a78393dfb775a9c37f17d8eea6 # v6.0.1
+        uses: mikepenz/action-junit-report@a294a61c909bd8a4b563024a2faa28897fd53ebc # v6.1.0
         if: always()
         with:
           report_paths: '**/test_results*.xml'
@@ -621,7 +643,7 @@ jobs:
           fi
 
       - name: Publish Launch Test Report
-        uses: mikepenz/action-junit-report@e08919a3b1fb83a78393dfb775a9c37f17d8eea6 # v6.0.1
+        uses: mikepenz/action-junit-report@a294a61c909bd8a4b563024a2faa28897fd53ebc # v6.1.0
         if: always()
         with:
           report_paths: '**/launch_test_results*.xml'

@@ -22,6 +22,7 @@
 """Test for Mechanical Module."""
 
 import json
+import os
 from pathlib import Path
 import re
 
@@ -417,7 +418,11 @@ def test_close_all_local_instances(tmpdir):
     print(mechanical.name)
     list_ports.append(mechanical._port)
 
-    pymechanical.close_all_local_instances(list_ports, use_thread=False)
+    # Close instances using the same transport mode they were launched with
+    transport_mode = "insecure" if os.name != "nt" else None
+    pymechanical.close_all_local_instances(
+        list_ports, use_thread=False, transport_mode=transport_mode
+    )
     for value in list_ports:
         assert value not in pymechanical.LOCAL_PORTS
 
