@@ -4,8 +4,8 @@
 Overview
 ========
 
-The `launch_mechanical() <../api/ansys/mechanical/core/mechanical/index.html#mechanical.launch_mechanical>`_ method
-creates an instance of the `Mechanical <../api/ansys/mechanical/core/mechanical/Mechanical.html>`_
+The   :func:`launch_mechanical() <ansys.mechanical.core.Mechanical.launch_mechanical>` method
+creates an instance of the :class:`Mechanical <ansys.mechanical.core.Mechanical>`
 class in the background and sends commands to it as a service. Because errors and warnings
 are processed Pythonically, you can develop a script in real time without worrying about
 whether the script runs correctly when deployed in batch mode.
