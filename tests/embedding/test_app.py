@@ -614,6 +614,27 @@ def test_app_start_readonly(run_subprocess, pytestconfig, rootdir, printer):
 
 @pytest.mark.minimum_version(261)
 @pytest.mark.embedding
+def test_app_start_license(run_subprocess, pytestconfig, rootdir, printer):
+    """Test that the app is started with a specific license."""
+    version = pytestconfig.getoption("ansys_version")
+    embedded_py = Path(rootdir) / "tests" / "scripts" / "run_embedded_app.py"
+    printer(f"Testing start_license for version {version}")
+    process, stdout, stderr = run_subprocess(
+        [
+            sys.executable,
+            str(embedded_py),
+            "--version",
+            version,
+            "--test_start_license",
+        ]
+    )
+    stdout = stdout.decode()
+    printer(f"Output:\n{stdout}")
+    assert "Ansys Mechanical Enterprise PrepPost" in stdout
+
+
+@pytest.mark.minimum_version(261)
+@pytest.mark.embedding
 def test_app_feature_flags(run_subprocess, pytestconfig, rootdir, printer):
     """Test app feature flags.
 
