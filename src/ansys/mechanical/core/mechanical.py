@@ -2291,6 +2291,8 @@ def launch_mechanical(
     transport_mode=None,
     certs_dir=None,
     grpc_options=None,
+    start_license=None,
+    read_only=False,
 ) -> Mechanical:
     """Start Mechanical locally.
 
@@ -2380,6 +2382,13 @@ def launch_mechanical(
     backend : str, optional
         Type of RPC to use. The default is ``"mechanical"`` which uses grpc.
         The other option is ``"python"`` which uses RPyC.
+    start_license : str, optional
+        License type to use when starting Mechanical. The default is ``None``.
+        When provided, the ``-p <license>`` argument is passed to Mechanical.
+        Common values include ``"mech_1"``, ``"mech_2"`` etc.
+        This parameter is only used when ``start_instance`` is ``True``.
+    read_only : bool, optional
+        Whether to start Mechanical in read-only mode. The default is ``False``.
 
     Returns
     -------
@@ -2409,6 +2418,10 @@ def launch_mechanical(
     ``50001``.
 
     >>> mech = launch_mechanical(start_instance=False, ip="192.168.1.30", port=50001)
+
+    Launch Mechanical with a specific license type.
+
+    >>> mech = launch_mechanical(start_license="mech_1")
     """
     # Handle host parameter as alias for ip
     if host is not None:
@@ -2544,6 +2557,19 @@ def launch_mechanical(
                 "Enter a path manually by specifying a value for the "
                 "'exec_file' parameter."
             )
+
+    # Handle additional switches for read_only and license parameters
+    if read_only or start_license is not None:
+        if additional_switches is None:
+            additional_switches = []
+        else:
+            # Make a copy to avoid modifying the original list
+            additional_switches = list(additional_switches)
+
+        if read_only:
+            additional_switches.extend(["-readonly"])
+        if start_license is not None:
+            additional_switches.extend(["-p", str(start_license)])
 
     # Store parameters that will be used by launch() to restart the instance
     start_parm = {
