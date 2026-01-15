@@ -16,6 +16,7 @@ import warnings
 from ansys_sphinx_theme import ansys_favicon, get_version_match
 import pyvista
 from pyvista.plotting.utilities.sphinx_gallery import DynamicScraper
+import requests
 from sphinx_gallery.sorting import FileNameSortKey
 
 import ansys.mechanical.core as pymechanical
@@ -244,6 +245,47 @@ html_theme_options = {
     },
     "ansys_sphinx_theme_autoapi": {"project": project},
 }
+
+
+def intersphinx_pymechanical(switcher_version: str):
+    """Auxiliary method to build the intersphinx mapping for PyMechanical.
+
+    Parameters
+    ----------
+    switcher_version : str
+        Version of the PyMechanical package.
+
+    Returns
+    -------
+    str
+        The intersphinx mapping for PyMechanical.
+
+    Notes
+    -----
+    If the objects.inv file is not found whenever it is a release, the method
+    will default to the "dev" version. If the objects.inv file is not found
+    for the "dev" version, the method will return an empty string.
+    """
+    prefix = "https://mechanical.docs.pyansys.com/version"
+
+    # Check if the object.inv file exists
+    response = requests.get(f"{prefix}/{switcher_version}/objects.inv", timeout=5)
+
+    if response.status_code == 404:
+        if switcher_version == "dev":
+            return ""
+        else:
+            return intersphinx_pymechanical("dev")
+    else:
+        return f"{prefix}/{switcher_version}"
+
+
+if intersphinx_pymechanical(switcher_version):
+    intersphinx_mapping["ansys.mechanical.core"] = (
+        intersphinx_pymechanical(switcher_version),
+        None,
+    )
+
 
 if BUILD_CHEATSHEET:
     html_theme_options["cheatsheet"] = {
