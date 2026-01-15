@@ -615,7 +615,7 @@ def test_app_start_readonly(run_subprocess, pytestconfig, rootdir, printer):
 @pytest.mark.minimum_version(261)
 @pytest.mark.embedding
 def test_app_start_license(run_subprocess, pytestconfig, rootdir, printer):
-    """Test the app is started with a specific license."""
+    """Test that the app is started with a specific license."""
     version = pytestconfig.getoption("ansys_version")
     embedded_py = Path(rootdir) / "tests" / "scripts" / "run_embedded_app.py"
     printer(f"Testing start_license for version {version}")

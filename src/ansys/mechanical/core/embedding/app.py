@@ -106,7 +106,7 @@ def _additional_args(readonly: bool, feature_flags: list, start_license: str, ve
     additional_args = ""
     if version < 261:
         LOG.warning(
-            "The readonly and feature_flags and start_license arguments are only supported "
+            "The readonly, feature_flags and start_license arguments are only supported "
             "with version 2026R1 and later."
         )
         return additional_args
