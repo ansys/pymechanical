@@ -74,6 +74,7 @@ Quick start
    result = mechanical.run_python_script("2+3")
 
 **Embedded instance:**
+
 .. code:: python
 
    import ansys.mechanical.core as pymechanical
