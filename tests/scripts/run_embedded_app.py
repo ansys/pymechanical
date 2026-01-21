@@ -64,6 +64,15 @@ def launch_app(args):
             print("The app is started in read-only mode")
         else:
             print("The app is not in read-only mode")
+    elif args.test_start_license:
+        app = pymechanical.App(
+            version=int(args.version),
+            private_appdata=args.private_appdata,
+            copy_profile=False,
+            globals=globals(),
+            start_license="preppost",
+        )
+        print(app)
     else:
         app = pymechanical.App(
             version=int(args.version),
@@ -119,6 +128,7 @@ if __name__ == "__main__":
     )  # 'store_true' implies default=False
     parser.add_argument("--test_readonly", action="store_true")  # Add the missing argument
     parser.add_argument("--test_feature_flags", action="store_true")
+    parser.add_argument("--test_start_license", action="store_true")
     # Get and set args from subprocess
     args = parser.parse_args()
     action = args.action
