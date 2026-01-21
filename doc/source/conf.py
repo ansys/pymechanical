@@ -213,6 +213,39 @@ html_context = {
     "github_version": "main",
     "doc_path": "doc/source",
     "pyansys_tags": ["Structures"],
+    "latest_news": {
+        "title": "Latest News & related articles",
+        "show_date": True,
+        "max_items": 5,
+        "items": [
+            {
+                "title": "[Video] PyMechanical Tutorial",
+                "date": "2024-12-15",
+                "url": "https://www.youtube.com/watch?v=9OZckJ36DFM",
+                "excerpt": "Watch this video tutorial to learn PyMechanical basics and workflows.",
+            },
+            {
+                "title": "[News] Mechanical 26R1 is Released",
+                "date": "2024-12-15",
+                "url": "https://github.com/ansys/pymechanical/releases/tag/v0.11.0",
+                "excerpt": "Download new Ansys Mechanical 26R1",
+            },
+            {
+                "title": "[Blog] Getting Started with PyMechanical",
+                "date": "2024-11-20",
+                "url": "https://blog.ozeninc.com/resources/getting-started-with-pyansys-a-pymechanical-workflow-for-beginners",
+                "excerpt": "Learn the basics of PyMechanical with this beginner-friendly workflow guide.",
+            },
+            {
+                "title": "[Blog] First Steps with PyAnsys Using an End-to-End Example",
+                "date": "2024-11-15",
+                "url": "https://blog.cadfem.net/en/first-steps-with-pyansys-using-an-end-to-end-example",
+                "excerpt": "Explore PyAnsys through a comprehensive end-to-end example.",
+            },
+        ],
+        "more_url": "https://github.com/ansys/pymechanical/releases",
+        "more_text": "View all releases",
+    },
 }
 html_theme_options = {
     "logo": "pyansys",
@@ -241,6 +274,9 @@ html_theme_options = {
         "whatsnew_file_name": "../changelog.d/whatsnew.yml",
         "changelog_file_name": "changelog.rst",
         "sidebar_pages": ["changelog", "index"],
+    },
+    "secondary_sidebar_items": {
+        "index": ["latest_news_sidebar"],
     },
     "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
 }
