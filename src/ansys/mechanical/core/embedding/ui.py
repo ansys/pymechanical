@@ -116,9 +116,27 @@ class UILauncher:
             str(app.version),
         ]
         if not self._dry_run:
-            # The subprocess that uses ansys-mechanical to launch the GUI of the temporary
-            # mechdb file
-            process = Popen(args)  # nosec: B603 # pragma: no cover
+            try:
+                # The subprocess that uses ansys-mechanical to launch the GUI of the temporary
+                # mechdb file
+                process = Popen(args)  # nosec: B603 # pragma: no cover
+            except Exception:
+                print("Failed to launch Mechanical GUI with args: ", args)
+                print("Retrieving the path to the Mechanical executable directly...")
+                try:
+                    import ansys.tools.common.path as atp
+                except ImportError:
+                    import ansys.tools.path as atp
+                exe = atp.get_mechanical_path(allow_input=False, version=app.version)
+                args = [
+                    exe,
+                    "--project-file",
+                    str(temp_file),
+                    "--graphical",
+                    "--revision",
+                    str(app.version),
+                ]
+                process = Popen(args)  # nosec: B603 # pragma: no cover
             return process
         else:
             # Return a string containing the args
