@@ -100,9 +100,9 @@ geometry_import_preferences.ProcessNamedSelections = True
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Download the geometry file from the ansys/example-data repository
-geometry_path = download_file("example_06_bolt_pret_geom.agdb", "pymechanical", "00_basic")
+geometry_path = download_file("example_06_bolt_pret_geom.pmdb", "pymechanical", "00_basic")
 
-# Import/reload the geometry from the CAD (.agdb) file using the provided preferences
+# Import/reload the geometry from the CAD (pmdb) file using the provided preferences
 geometry_import.Import(geometry_path, geometry_import_format, geometry_import_preferences)
 
 # sphinx_gallery_start_ignore
