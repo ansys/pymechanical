@@ -93,7 +93,7 @@ Python API to interact with `Ansys Mechanical`_ (FEA software for structural eng
    getting_started/index
    user_guide/index
    examples/index
-   API reference <api/ansys/mechanical/core/index>
+   api/index
    contribute
    faq
    kil/index

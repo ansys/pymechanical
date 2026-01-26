@@ -163,7 +163,6 @@ exclude_dirs = ["examples", "tests"]
 [tool.coverage.run]
 relative_files = true
 source = ["ansys.mechanical"]
-patch = ["subprocess"]
 
 [tool.coverage.report]
 show_missing = true

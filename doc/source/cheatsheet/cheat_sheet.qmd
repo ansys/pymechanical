@@ -35,72 +35,6 @@ jupyter:
     name: python3
 ---
 
-
-# Load a Mechanical embedded instance
-
-
-## Start an instance of App with global API entry points
-```{python}
-#| eval: false
-from ansys.mechanical.core import App
-
-# Create an instance of the app
-# Extract global API entry points from Mechanical
-# Merge them into your Python global variables
-app = App(version=252, globals=globals())
-print(app)
-```
-Access entry points from Python:
-```{python}
-#| eval: false
-
-ExtAPI # Application.ExtAPI
-DataModel # Application.DataModel
-Model # Application.DataModel.Project.Model
-Tree # Application.DataModel.Tree
-Graphics # Application.ExtAPI.Graphics
-```
-Import a file and print the count of bodies
-```{python}
-#| eval: false
-
-file = r"D:\\Workdir\\bracket.mechdb"
-app.open(file)
-allbodies = Model.GetChildren(
-  DataModelObjectCategory.Body, True)
-print(allbodies.Count)
-```
-## Turn on warning logging:
-```{python}
-#| eval: false
-
-import logging
-from ansys.mechanical.core import App
-from ansys.mechanical.core.embedding.logger
-import Configuration,Logger
-Configuration.configure(level=logging.WARNING,
-to_stdout=True)
-app = App(version=252, globals=globals())
-Logger.error("Test Error Message")
-```
-## Visualize geometry in 3D:
-```{python}
-#| eval: false
-# requires Mechanical version >= 24R2
-app.plot()
-```
-## Print project structure as tree:
-```{python}
-#| eval: false
-app.print_tree()
-# print only 20 lines
-app.print_tree(max_lines=20)
-```
-
-```{python}
-#| eval: false
-```
-
 # Connect to Mechanical Remote session
 
 ## Launch and connect to session
@@ -208,4 +142,69 @@ mechanical._log.info("This is a useful message.")
 mechanical.log_message("INFO", "info message")
 # Exit
 mechanical.exit(force=True)
+```
+
+# Load a Mechanical embedded instance
+
+
+## Start an instance of App with global API entry points
+```{python}
+#| eval: false
+from ansys.mechanical.core import App
+
+# Create an instance of the app
+# Extract global API entry points from Mechanical
+# Merge them into your Python global variables
+app = App(version=252, globals=globals())
+print(app)
+```
+Access entry points from Python:
+```{python}
+#| eval: false
+
+ExtAPI # Application.ExtAPI
+DataModel # Application.DataModel
+Model # Application.DataModel.Project.Model
+Tree # Application.DataModel.Tree
+Graphics # Application.ExtAPI.Graphics
+```
+Import a file and print the count of bodies
+```{python}
+#| eval: false
+
+file = r"D:\\Workdir\\bracket.mechdb"
+app.open(file)
+allbodies = Model.GetChildren(
+  DataModelObjectCategory.Body, True)
+print(allbodies.Count)
+```
+## Turn on warning logging:
+```{python}
+#| eval: false
+
+import logging
+from ansys.mechanical.core import App
+from ansys.mechanical.core.embedding.logger
+import Configuration,Logger
+Configuration.configure(level=logging.WARNING,
+to_stdout=True)
+app = App(version=252)
+Logger.error("Test Error Message")
+```
+## Visualize geometry in 3D:
+```{python}
+#| eval: false
+# requires Mechanical version >= 24R2
+app.plot()
+```
+## Print project structure as tree:
+```{python}
+#| eval: false
+app.print_tree()
+# print only 20 lines
+app.print_tree(max_lines=20)
+```
+
+```{python}
+#| eval: false
 ```

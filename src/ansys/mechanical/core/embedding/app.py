@@ -101,24 +101,20 @@ def _start_application(
     )
 
 
-def _additional_args(readonly: bool, feature_flags: list, start_license: str, version: int) -> str:
+def _additional_args(readonly: bool, feature_flags: list, version: int) -> str:
     """Generate additional command line arguments for the application."""
-    additional_args = ""
     if version < 261:
         LOG.warning(
-            "The readonly, feature_flags and start_license arguments are only supported "
+            "The readonly and feature_flags arguments are only supported "
             "with version 2026R1 and later."
         )
-        return additional_args
+        return ""
+    additional_args = ""
     if readonly:
         additional_args += " -readonly"
     if feature_flags:
         flag_args = get_command_line_arguments(feature_flags)
         additional_args += " " + " ".join(flag_args)
-    if start_license:
-        if readonly:
-            LOG.warning("The start_license argument is ignored when readonly is set to True.")
-        additional_args += f"-p {start_license}"
     return additional_args
 
 
@@ -285,9 +281,12 @@ class App:
 
         pep8_alias = kwargs.get("pep8", False)
         readonly = kwargs.get("readonly", False)
-        start_license = kwargs.get("start_license", "")
         feature_flags = kwargs.get("feature_flags", [])
-        additional_args = _additional_args(readonly, feature_flags, start_license, self._version)
+        if readonly or feature_flags:
+            additional_args = _additional_args(readonly, feature_flags, self._version)
+        else:
+            additional_args = ""
+
         self._prepare_interactive_mode()
         runtime.initialize(self._version, pep8_aliases=pep8_alias)
 

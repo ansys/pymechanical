@@ -29,7 +29,6 @@ detailed how-to guides on specific topics. The user guide is divided into the fo
    howto/overview
    howto/configuration
    howto/globals
-   howto/licensing
    howto/libraries
    howto/logging
    howto/pep8

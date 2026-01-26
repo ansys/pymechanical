@@ -16,7 +16,6 @@ import warnings
 from ansys_sphinx_theme import ansys_favicon, get_version_match
 import pyvista
 from pyvista.plotting.utilities.sphinx_gallery import DynamicScraper
-import requests
 from sphinx_gallery.sorting import FileNameSortKey
 
 import ansys.mechanical.core as pymechanical
@@ -43,7 +42,6 @@ warnings.filterwarnings(
     "so cannot show the figure.",
 )
 
-
 # -- Project information -----------------------------------------------------
 
 project = "ansys.mechanical.core"
@@ -51,9 +49,11 @@ copyright = f"(c) {datetime.now().year} ANSYS, Inc. All rights reserved"
 author = "ANSYS Inc."
 release = version = pymechanical.__version__
 cname = os.getenv("DOCUMENTATION_CNAME", default="mechanical.docs.pyansys.com")
-switcher_version = get_version_match(version)
 
 
+# Add any Sphinx extension module names here, as strings. They can be
+# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
+# ones.
 # -- General configuration ---------------------------------------------------
 # Sphinx extensions
 extensions = [
@@ -87,7 +87,6 @@ intersphinx_mapping = {
     "grpc": ("https://grpc.github.io/grpc/python/", None),
     "pypim": ("https://pypim.docs.pyansys.com/version/dev/", None),
 }
-
 
 suppress_warnings = ["label.*", "autoapi.python_import_resolution", "design.grid", "config.cache"]
 # supress_warnings = ["ref.option"]
@@ -201,7 +200,7 @@ sphinx_gallery_conf = {
     "doc_module": "ansys-mechanical-core",
     "image_scrapers": (DynamicScraper(), "matplotlib"),
     # Files to ignore
-    "ignore_pattern": "flycheck*",  # noqa: E501
+    "ignore_pattern": "flycheck*|fracture_analysis_contact_debonding.py|harmonic_acoustics.py|modal_acoustics_analysis.py",  # noqa: E501
     "thumbnail_size": (350, 350),
 }
 
@@ -243,49 +242,8 @@ html_theme_options = {
         "changelog_file_name": "changelog.rst",
         "sidebar_pages": ["changelog", "index"],
     },
-    "ansys_sphinx_theme_autoapi": {"project": project},
+    "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
 }
-
-
-def intersphinx_pymechanical(switcher_version: str):
-    """Auxiliary method to build the intersphinx mapping for PyMechanical.
-
-    Parameters
-    ----------
-    switcher_version : str
-        Version of the PyMechanical package.
-
-    Returns
-    -------
-    str
-        The intersphinx mapping for PyMechanical.
-
-    Notes
-    -----
-    If the objects.inv file is not found whenever it is a release, the method
-    will default to the "dev" version. If the objects.inv file is not found
-    for the "dev" version, the method will return an empty string.
-    """
-    prefix = "https://mechanical.docs.pyansys.com/version"
-
-    # Check if the object.inv file exists
-    response = requests.get(f"{prefix}/{switcher_version}/objects.inv", timeout=5)
-
-    if response.status_code == 404:
-        if switcher_version == "dev":
-            return ""
-        else:
-            return intersphinx_pymechanical("dev")
-    else:
-        return f"{prefix}/{switcher_version}"
-
-
-if intersphinx_pymechanical(switcher_version):
-    intersphinx_mapping["ansys.mechanical.core"] = (
-        intersphinx_pymechanical(switcher_version),
-        None,
-    )
-
 
 if BUILD_CHEATSHEET:
     html_theme_options["cheatsheet"] = {
@@ -371,20 +329,20 @@ epub_exclude_files = ["search.html"]
 linkcheck_ignore = [
     "https://github.com/ansys/pymechanical/pkgs/container/.*",
     "https://ansyshelp.ansys.com/*",
+    "https://ansysaccount.b2clogin.com/*",
     "https://answers.microsoft.com/en-us/windows/forum/all/*",
     "https://download.ansys.com/*",
     "https://support.ansys.com/*",
     "https://discuss.ansys.com/*",
     "https://www.ansys.com/*",
-    "../api/*",
+    "../api/*",  # Remove this after release 0.10.12
+    "api/*",
+    "path.html",
+    "user_guide_embedding/*",
+    "changelog.html",
 ]
 
 linkcheck_anchors = False
-
-
-linkcheck_exclude_documents = [
-    "changelog",
-]
 
 # If we are on a release, we have to ignore the "release" URLs, since it is not
 # available until the release is published.

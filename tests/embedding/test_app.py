@@ -22,7 +22,6 @@
 
 """Miscellaneous embedding tests."""
 
-import logging
 import os
 from pathlib import Path
 import shutil
@@ -36,7 +35,6 @@ import pytest
 from ansys.mechanical.core.embedding.app import is_initialized
 from ansys.mechanical.core.embedding.cleanup_gui import cleanup_gui
 from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
-from ansys.mechanical.core.embedding.logger import Logger
 from ansys.mechanical.core.embedding.ui import _launch_ui
 import ansys.mechanical.core.embedding.utils as utils
 
@@ -94,13 +92,13 @@ def test_app_save_open(embedded_app, tmp_path: pytest.TempPathFactory):
 
 
 @pytest.mark.embedding
-def test_app_update_globals_after_open(embedded_app, assets, graphics_test_mechdb_file):
+def test_app_update_globals_after_open(embedded_app, assets):
     """Test save and open of the Application class."""
     embedded_app.update_globals(globals())
     # unless the global "Model" has been redirected to point to the new model from the project file
     # this will throw an exception
     embedded_app.new()
-    embedded_app.open(str(graphics_test_mechdb_file))
+    embedded_app.open(str(Path(assets) / "cube-hole.mechdb"))
     Model.AddNamedSelection()  # noqa
 
 
@@ -454,32 +452,6 @@ def test_launch_gui_exception(embedded_app):
     embedded_app.close()
 
 
-@pytest.mark.embedding
-def test_launch_gui_no_exe(embedded_app, monkeypatch, tmp_path: pytest.TempPathFactory, capfd):
-    """Test executable is retrieved directly when ansys-mechanical can't find path."""
-    mechdb_path = tmp_path / "test.mechdb"
-    embedded_app.save(str(mechdb_path))
-
-    # Patch get_mechanical_path to return None
-    def mock_popen(args=[]):
-        raise Exception("Could not find Mechanical executable")
-
-    monkeypatch.setattr(
-        "ansys.mechanical.core.embedding.ui.Popen",
-        mock_popen,
-    )
-
-    with pytest.raises(Exception):
-        embedded_app.launch_gui()
-
-        out, err = capfd.readouterr()
-        assert "Could not find Mechanical executable" in err
-        assert Logger.can_log_message(logging.INFO) is True
-        assert Logger.can_log_message(logging.WARNING) is True
-
-    embedded_app.close()
-
-
 @pytest.mark.embedding_scripts
 def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory):
     """Test cleanup function to remove the temporary mechdb file and folder."""
@@ -638,27 +610,6 @@ def test_app_start_readonly(run_subprocess, pytestconfig, rootdir, printer):
         assert "The app is not in read-only mode" in stdout
     else:
         assert "The app is started in read-only mode" in stdout
-
-
-@pytest.mark.minimum_version(261)
-@pytest.mark.embedding
-def test_app_start_license(run_subprocess, pytestconfig, rootdir, printer):
-    """Test that the app is started with a specific license."""
-    version = pytestconfig.getoption("ansys_version")
-    embedded_py = Path(rootdir) / "tests" / "scripts" / "run_embedded_app.py"
-    printer(f"Testing start_license for version {version}")
-    process, stdout, stderr = run_subprocess(
-        [
-            sys.executable,
-            str(embedded_py),
-            "--version",
-            version,
-            "--test_start_license",
-        ]
-    )
-    stdout = stdout.decode()
-    printer(f"Output:\n{stdout}")
-    assert "Ansys Mechanical Enterprise PrepPost" in stdout
 
 
 @pytest.mark.minimum_version(261)

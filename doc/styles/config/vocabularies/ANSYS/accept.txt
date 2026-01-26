@@ -70,5 +70,3 @@ alls
 wnua
 mtls
 SPs
-start_license
-PrepPost
