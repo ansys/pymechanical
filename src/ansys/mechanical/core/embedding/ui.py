@@ -36,10 +36,6 @@ import sys
 import tempfile
 import typing
 
-import ansys.tools.common.path as atp
-
-from ansys.mechanical.core.embedding.logger import Logger
-
 
 class UILauncher:
     """Launch the GUI using a temporary mechdb file."""
@@ -120,23 +116,9 @@ class UILauncher:
             str(app.version),
         ]
         if not self._dry_run:
-            try:
-                # The subprocess that uses ansys-mechanical to launch the GUI of the temporary
-                # mechdb file
-                process = Popen(args)  # nosec: B603 # pragma: no cover
-            except Exception:
-                Logger.warning(f"Failed to launch Mechanical GUI with args: {args}")
-                Logger.info("Retrieving the path to the Mechanical executable directly...")
-                exe = atp.get_mechanical_path(allow_input=False, version=app.version)
-                args = [
-                    exe,
-                    "--project-file",
-                    str(temp_file),
-                    "--graphical",
-                    "--revision",
-                    str(app.version),
-                ]
-                process = Popen(args)  # nosec: B603 # pragma: no cover
+            # The subprocess that uses ansys-mechanical to launch the GUI of the temporary
+            # mechdb file
+            process = Popen(args)  # nosec: B603 # pragma: no cover
             return process
         else:
             # Return a string containing the args
