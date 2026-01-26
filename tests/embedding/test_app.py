@@ -94,13 +94,13 @@ def test_app_save_open(embedded_app, tmp_path: pytest.TempPathFactory):
 
 
 @pytest.mark.embedding
-def test_app_update_globals_after_open(embedded_app, assets):
+def test_app_update_globals_after_open(embedded_app, assets, graphics_test_mechdb_file):
     """Test save and open of the Application class."""
     embedded_app.update_globals(globals())
     # unless the global "Model" has been redirected to point to the new model from the project file
     # this will throw an exception
     embedded_app.new()
-    embedded_app.open(str(Path(assets) / "cube-hole.mechdb"))
+    embedded_app.open(str(graphics_test_mechdb_file))
     Model.AddNamedSelection()  # noqa
 
 
