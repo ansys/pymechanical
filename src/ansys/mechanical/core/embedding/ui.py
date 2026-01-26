@@ -36,6 +36,10 @@ import sys
 import tempfile
 import typing
 
+import ansys.tools.common.path as atp
+
+from ansys.mechanical.core.embedding.logger import Logger
+
 
 class UILauncher:
     """Launch the GUI using a temporary mechdb file."""
@@ -121,12 +125,8 @@ class UILauncher:
                 # mechdb file
                 process = Popen(args)  # nosec: B603 # pragma: no cover
             except Exception:
-                print("Failed to launch Mechanical GUI with args: ", args)
-                print("Retrieving the path to the Mechanical executable directly...")
-                try:
-                    import ansys.tools.common.path as atp
-                except ImportError:
-                    import ansys.tools.path as atp
+                Logger.warning(f"Failed to launch Mechanical GUI with args: {args}")
+                Logger.info("Retrieving the path to the Mechanical executable directly...")
                 exe = atp.get_mechanical_path(allow_input=False, version=app.version)
                 args = [
                     exe,
