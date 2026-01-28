@@ -9,6 +9,78 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.12.1 <https://github.com/ansys/pymechanical/releases/tag/v0.12.1>`_ - January 28, 2026
+=========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add option to chose license check out when starting App
+          - `#1424 <https://github.com/ansys/pymechanical/pull/1424>`_
+
+        * - Add option for starting license and read only mode
+          - `#1474 <https://github.com/ansys/pymechanical/pull/1474>`_
+
+        * - Update readme
+          - `#1477 <https://github.com/ansys/pymechanical/pull/1477>`_
+
+        * - Whatsnew update
+          - `#1496 <https://github.com/ansys/pymechanical/pull/1496>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Replace agdb with pmdb files
+          - `#1483 <https://github.com/ansys/pymechanical/pull/1483>`_
+
+        * - Revert ignored example
+          - `#1489 <https://github.com/ansys/pymechanical/pull/1489>`_
+
+        * - Find Mechanical executable directly if ansys-mechanical fails to find it in launch_gui
+          - `#1490 <https://github.com/ansys/pymechanical/pull/1490>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.12.0
+          - `#1468 <https://github.com/ansys/pymechanical/pull/1468>`_
+
+        * - Pre-commit automatic update
+          - `#1475 <https://github.com/ansys/pymechanical/pull/1475>`_, `#1479 <https://github.com/ansys/pymechanical/pull/1479>`_, `#1492 <https://github.com/ansys/pymechanical/pull/1492>`_
+
+        * - Update api ref docs
+          - `#1476 <https://github.com/ansys/pymechanical/pull/1476>`_
+
+        * - Remove local asset and use remote
+          - `#1478 <https://github.com/ansys/pymechanical/pull/1478>`_
+
+        * - Bump github/codeql-action from 4.31.9 to 4.31.10 in the actions group
+          - `#1480 <https://github.com/ansys/pymechanical/pull/1480>`_
+
+        * - Update cheat sheet
+          - `#1482 <https://github.com/ansys/pymechanical/pull/1482>`_
+
+        * - Add coverage for subprocess tests
+          - `#1491 <https://github.com/ansys/pymechanical/pull/1491>`_
+
+        * - Bump actions/checkout from 6.0.1 to 6.0.2 in the actions group
+          - `#1494 <https://github.com/ansys/pymechanical/pull/1494>`_
+
+
 `0.12.0 <https://github.com/ansys/pymechanical/releases/tag/v0.12.0>`_ - January 07, 2026
 =========================================================================================
 
