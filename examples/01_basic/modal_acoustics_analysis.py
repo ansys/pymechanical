@@ -165,7 +165,7 @@ settings_720p.CurrentGraphicsDisplay = False
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Download the geometry file from the ansys/example-data repository
-geometry_path = download_file("sloshing_geometry.agdb", "pymechanical", "embedding")
+geometry_path = download_file("sloshing_geometry.pmdb", "pymechanical", "embedding")
 # Download the water material file from the ansys/example-data repository
 mat_path = download_file("Water_material_explicit.xml", "pymechanical", "embedding")
 
