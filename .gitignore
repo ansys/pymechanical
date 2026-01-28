@@ -201,6 +201,8 @@ doc/source/api/*
 
 # Examples files downloaded when building docs
 examples/01_basic/out/*
+examples/00_setup/out/*
+
 out/
 # pymechanical-specific
 mylocal.ip
