@@ -372,6 +372,7 @@ linkcheck_ignore = [
     "https://github.com/ansys/pymechanical/pkgs/container/.*",
     "https://ansyshelp.ansys.com/*",
     "https://answers.microsoft.com/en-us/windows/forum/all/*",
+    "https://docutils.sourceforge.io/*",
     "https://download.ansys.com/*",
     "https://support.ansys.com/*",
     "https://discuss.ansys.com/*",
@@ -380,7 +381,6 @@ linkcheck_ignore = [
 ]
 
 linkcheck_anchors = False
-
 
 linkcheck_exclude_documents = [
     "changelog",
