@@ -27,6 +27,7 @@ import os
 from pathlib import Path
 import platform
 import sys
+import typing
 import warnings
 
 from ansys.mechanical.core.embedding.loader import load_clr
@@ -45,7 +46,7 @@ SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS = {
 """Supported Mechanical embedding versions on Windows."""
 
 
-def __add_sys_path(version: int) -> str:
+def __add_sys_path(version: int) -> None:
     install_path = Path(os.environ[f"AWP_ROOT{version}"])
     platform_string = "winx64" if os.name == "nt" else "linx64"
     bin_path = install_path / "aisol" / "bin" / platform_string
@@ -64,7 +65,7 @@ def __workaround_material_server(version: int) -> None:
         os.environ["ENGRDATA_SERVER_SERIAL"] = "1"
 
 
-def __check_for_supported_version(version) -> None:
+def __check_for_supported_version(version: int) -> int:
     """Check if Mechanical version is supported with current version of PyMechanical.
 
     If specific environment variable is enabled, then users can overwrite the supported versions.
@@ -233,12 +234,12 @@ def __is_lib_loaded(libname: str):  # pragma: no cover
     return True
 
 
-def __check_loaded_libs(version: int = None):  # pragma: no cover
+def __check_loaded_libs(version: typing.Optional[int] = None):  # pragma: no cover
     """Ensure that incompatible libraries aren't loaded prior to PyMechanical load."""
     if platform.system() != "Linux":
         return
 
-    if version < 251:
+    if version is None or version < 251:
         return
 
     # For 2025 R1, PyMechanical will crash on shutdown if libX11.so is already loaded
@@ -250,7 +251,7 @@ def __check_loaded_libs(version: int = None):  # pragma: no cover
         )
 
 
-def initialize(version: int = None):
+def initialize(version: typing.Optional[int] = None):
     """Initialize Mechanical embedding."""
     global INITIALIZED_VERSION
     if version is None:

@@ -22,7 +22,7 @@
 
 """License Manager."""
 
-from typing import List, Optional, Union
+from typing import Any, List, Optional, Union
 
 from ansys.mechanical.core import LOG
 
@@ -54,7 +54,7 @@ class LicenseManager:
 
     def get_license_status(
         self, license_name: str
-    ) -> "Ansys.Mechanical.DataModel.Enums.LicenseStatus":  # noqa: F821
+    ) -> Any:  # Returns Ansys.Mechanical.DataModel.Enums.LicenseStatus
         """Return status of the specific license.
 
         Parameters

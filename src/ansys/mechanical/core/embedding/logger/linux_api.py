@@ -67,7 +67,7 @@ def _get_sink_id(standard_sink_type: int) -> ctypes.c_int32:
     }[standard_sink_type]
 
 
-def _str_to_utf8_ptr(value: str) -> ctypes.c_char_p:
+def _str_to_utf8_ptr(value: str):  # type: ignore[return-value]
     return ctypes.create_string_buffer(value.encode())
 
 
