@@ -48,7 +48,7 @@
 .. _pip: https://pypi.org/project/pip/
 .. _Tox: https://tox.wiki/en/stable/
 .. _Sphinx: https://www.sphinx-doc.org/en/master/
-.. _reStructuredText: https://docutils.sourceforge.io/rst.html
+.. _reStructuredText: https://docutils.sourceforge.io/docs/user/rst/quickstart.html
 .. _Markdown: https://www.markdownguide.org/
 .. _myst-parser: https://myst-parser.readthedocs.io/en/latest/
 .. _jupytext: https://jupytext.readthedocs.io/en/latest/
