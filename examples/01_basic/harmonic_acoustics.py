@@ -157,7 +157,7 @@ camera.Rotate(180, CameraAxisType.ScreenY)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Download the geometry file from the ansys/example-data repository
-geometry_path = download_file("C_GEOMETRY.agdb", "pymechanical", "embedding")
+geometry_path = download_file("C_GEOMETRY.pmdb", "pymechanical", "embedding")
 # Download the material file from the ansys/example-data repository
 mat_path = download_file("Air-material.xml", "pymechanical", "embedding")
 
