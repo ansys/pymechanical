@@ -141,7 +141,7 @@ def __windows_store_workaround(version: int) -> None:
         The version of Mechanical to set the DLL paths for.
     """
     # Nothing to do on Linux
-    if os.name != "nt":
+    if sys.platform != "win32":
         return
 
     # Nothing to do if it isn't a Windows store application
@@ -190,7 +190,7 @@ def __windows_store_workaround(version: int) -> None:
 
     # Add each path to the DLL search path
     for path in paths:
-        os.add_dll_directory(str(path))
+        os.add_dll_directory(str(path))  # type: ignore
 
 
 def __set_environment(version: int) -> None:
