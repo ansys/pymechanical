@@ -47,12 +47,30 @@ Overview
 PyMechanical is a Python interface for Ansys Mechanical, enabling automation and integration
 of complex simulation analysis workflows. It supports both remote sessions and embedded instances.
 
+
+Compatibility
+~~~~~~~~~~~~~
+
+**Supported versions:**
+
+* **Python**: 3.10 - 3.13
+* **Mechanical**: 2024 R1 (v241) to 2025 R2 (v252)
+* **Platforms**: Windows, Linux
+
 Installation
 ------------
 
 Install from PyPI::
 
    pip install ansys-mechanical-core
+
+For graphics support::
+
+   pip install ansys-mechanical-core[graphics]
+
+For RPC functionality::
+
+   pip install ansys-mechanical-core[rpc]
 
 **Requirements:**
 
@@ -70,8 +88,22 @@ Quick start
 
    import ansys.mechanical.core as pymechanical
 
+   # Launch a new Mechanical instance
    mechanical = pymechanical.launch_mechanical()
    result = mechanical.run_python_script("2+3")
+   print(result)  # Output: 5
+   mechanical.exit()
+
+**Connect to existing instance:**
+
+.. code:: python
+
+   import ansys.mechanical.core as pymechanical
+
+   # Connect to a running instance on port 10000
+   mechanical = pymechanical.connect_to_mechanical(port=10000)
+   result = mechanical.run_python_script("Model.Name")
+   print(result)
 
 **Embedded instance:**
 
@@ -79,9 +111,28 @@ Quick start
 
    import ansys.mechanical.core as pymechanical
 
+   # Create an embedded Mechanical app
    app = pymechanical.App()
    app.update_globals(globals())
+
+   # Access Mechanical objects directly
    print(DataModel.Project.ProjectDirectory)
+
+   # Add analysis and solve
+   model = Model
+   static = model.AddStaticStructuralAnalysis()
+   static.Solution.Solve(True)
+
+
+Troubleshooting
+---------------
+
+**Common issues:**
+
+* **Connection refused**: Ensure Mechanical is running and the port is accessible
+* **License error**: Verify your Ansys license is properly configured
+* **Import error**: Check that ``ansys-pythonnet`` is installed (not ``pythonnet``)
+* **Linux embedding**: Use `mechanical-env` to run python scripts for embedded mode.
 
 Documentation and support
 -------------------------
