@@ -31,6 +31,7 @@ user-defined functions can be executed during idle time between blocks.
 import queue
 import threading
 import time
+import typing
 
 from ansys.mechanical.core import LOG
 
@@ -44,12 +45,12 @@ except ImportError:
     FROM_IPYTHON = False
     HAS_IPYTHON = False
 
-CODE_QUEUE = queue.Queue()
-RESULT_QUEUE = queue.Queue()
+CODE_QUEUE: queue.Queue[typing.Any] = queue.Queue()
+RESULT_QUEUE: queue.Queue[typing.Any] = queue.Queue()
 SHUTDOWN_EVENT = threading.Event()
 EXEC_THREAD = None
 ORIGINAL_RUN_CELL = None
-EXECUTION_THREAD_ID: int = None
+EXECUTION_THREAD_ID: typing.Optional[int] = None
 
 
 def _idle_sleep():
@@ -62,36 +63,36 @@ DEFAULT_IDLE_HOOK = _idle_sleep
 class ShellHooks:
     """IPython shell lifetime hooks."""
 
-    def __init__(self):
-        self._idle_hook: callable = DEFAULT_IDLE_HOOK
-        self._start_hook: callable = None
-        self._end_hook: callable = None
+    def __init__(self) -> None:
+        self._idle_hook: typing.Callable = DEFAULT_IDLE_HOOK
+        self._start_hook: typing.Optional[typing.Callable] = None
+        self._end_hook: typing.Optional[typing.Callable] = None
 
     @property
-    def idle_hook(self) -> callable:
+    def idle_hook(self) -> typing.Callable:
         """Function to call between IPython block executions."""
         return self._idle_hook
 
     @idle_hook.setter
-    def idle_hook(self, value: callable) -> None:
+    def idle_hook(self, value: typing.Callable) -> None:
         self._idle_hook = value
 
     @property
-    def start_hook(self) -> callable:
+    def start_hook(self) -> typing.Optional[typing.Callable]:
         """Function to call at the start of the block thread."""
         return self._start_hook
 
     @start_hook.setter
-    def start_hook(self, value: callable) -> None:
+    def start_hook(self, value: typing.Callable) -> None:
         self._start_hook = value
 
     @property
-    def end_hook(self) -> callable:
+    def end_hook(self) -> typing.Optional[typing.Callable]:
         """Function to call when the shell is exited."""
         return self._end_hook
 
     @end_hook.setter
-    def end_hook(self, value: callable) -> None:
+    def end_hook(self, value: typing.Callable) -> None:
         self._end_hook = value
 
     def start(self):
@@ -133,8 +134,9 @@ def _exec_from_queue(shell) -> bool:
     if code is None:
         return True
     LOG.info(f"execution thread {threading.get_ident()}")
-    result = ORIGINAL_RUN_CELL(shell, code, store_history=True)
-    RESULT_QUEUE.put(result)
+    if ORIGINAL_RUN_CELL is not None:
+        result = ORIGINAL_RUN_CELL(shell, code, store_history=True)
+        RESULT_QUEUE.put(result)
     return False
 
 

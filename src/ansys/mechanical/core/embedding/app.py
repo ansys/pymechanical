@@ -65,7 +65,7 @@ def _get_default_addin_configuration() -> AddinConfiguration:
     return configuration
 
 
-INSTANCES = []
+INSTANCES: list["App"] = []
 """List of instances."""
 
 
@@ -220,7 +220,12 @@ class App:
 
     """
 
-    def __init__(self, db_file=None, private_appdata=False, **kwargs):
+    def __init__(
+        self,
+        db_file: typing.Optional[str] = None,
+        private_appdata: bool = False,
+        **kwargs: typing.Any,
+    ) -> None:
         """Construct an instance of the mechanical Application."""
         global INSTANCES
         from ansys.mechanical.core import BUILDING_GALLERY
@@ -514,17 +519,17 @@ class App:
         text_file.close()
         return self.execute_script(data)
 
-    def plotter(self, obj=None) -> None:
+    def plotter(self, obj=None) -> typing.Optional[typing.Any]:
         """Return ``ansys.tools.visualization_interface.Plotter`` object."""
         if not HAS_ANSYS_GRAPHICS:
             LOG.warning(
                 "Use ``pip install ansys-mechanical-core[graphics]`` to enable this option."
             )
-            return
+            return None
 
         if self.version < 242:
             LOG.warning("Plotting is only supported with version 2024R2 and later!")
-            return
+            return None
 
         # TODO : Check if anything loaded inside app or else show warning and return
 
@@ -637,7 +642,6 @@ class App:
         self.new()
 
         # set up the type hint (typing.Self is python3.11+)
-        other: App = other
 
         # copy `self` state to other.
         other._app = self._app

@@ -68,7 +68,7 @@ class UniqueUserProfile:
             )
 
     @property
-    def location(self) -> str:
+    def location(self) -> Path:
         """Return the profile name."""
         return self._location
 

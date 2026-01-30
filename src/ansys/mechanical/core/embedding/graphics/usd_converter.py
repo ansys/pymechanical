@@ -137,7 +137,6 @@ def load_into_usd_stage(scene: "Ansys.Mechanical.Scenegraph.GroupNode", stage: U
     root_prim = UsdGeom.Xform.Define(stage, "/root")
 
     for child in scene.Children:
-        child: "Ansys.Mechanical.Scenegraph.AttributeNode" = child  # noqa: F821
         child_path = root_prim.GetPath().AppendPath(child.Tag)
         _convert_attribute_node(child, stage, child_path)
 
