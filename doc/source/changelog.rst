@@ -9,6 +9,25 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.12.2 <https://github.com/ansys/pymechanical/releases/tag/v0.12.2>`_ - January 30, 2026
+=========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.12.1
+          - `#1498 <https://github.com/ansys/pymechanical/pull/1498>`_
+
+        * - Set protobuf upper limit to 7
+          - `#1500 <https://github.com/ansys/pymechanical/pull/1500>`_
+
+
 `0.12.1 <https://github.com/ansys/pymechanical/releases/tag/v0.12.1>`_ - January 28, 2026
 =========================================================================================
 
