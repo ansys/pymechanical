@@ -205,3 +205,8 @@ out/
 # pymechanical-specific
 mylocal.ip
 pymechanical_log.txt
+
+
+# copilot
+.github/copilot-instructions.md
+AGENT.md

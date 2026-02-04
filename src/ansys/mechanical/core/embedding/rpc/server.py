@@ -262,14 +262,15 @@ class MechanicalEmbeddedServer:
 
     def __init__(
         self,
-        port: int = None,
-        version: int = None,
+        port: typing.Optional[int] = None,
+        version: typing.Optional[int] = None,
         methods: typing.List[typing.Callable] = [],
         impl: typing.List = [],
     ):
         """Initialize the server."""
         self._exited = False
         use_background_app = False
+        self._backend: typing.Union[BackgroundAppBackend, ForegroundAppBackend]
         if use_background_app:
             self._app_instance = BackgroundApp(version=version)
             self._backend = BackgroundAppBackend(self._app_instance)
@@ -300,7 +301,7 @@ class MechanicalEmbeddedServer:
 
     def _start_background_app(self) -> None:
         """Start server on specified port."""
-        self._exit_thread: threading.Thread = None
+        self._exit_thread: typing.Optional[threading.Thread] = None
         self._server.start()
         print("Server exited!")
         self._wait_exit()

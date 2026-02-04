@@ -13,6 +13,14 @@ repos:
     - id: ruff
     - id: ruff-format
 
+- repo: https://github.com/pre-commit/mirrors-mypy
+  rev: v1.11.0
+  hooks:
+    - id: mypy
+      additional_dependencies: [types-requests, types-tqdm]
+      args: [--ignore-missing-imports]
+      exclude: ^(tests|examples|doc)/
+
 - repo: https://github.com/pre-commit-ci/pre-commit-ci-config
   rev: v1.6.1
   hooks:

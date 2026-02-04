@@ -68,7 +68,7 @@ class Client:
         self._error_type = Exception
         self._has_exited = False
 
-    def _get_python_script_api_version(self) -> bool:
+    def _get_python_script_api_version(self) -> int:
         """Get the python api version."""
         return 1
 
