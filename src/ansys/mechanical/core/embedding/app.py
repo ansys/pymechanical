@@ -42,6 +42,7 @@ from ansys.mechanical.core.embedding.mechanical_warnings import (
 from ansys.mechanical.core.embedding.poster import Poster
 import ansys.mechanical.core.embedding.shell as shell
 from ansys.mechanical.core.embedding.ui import launch_ui
+from ansys.mechanical.core.embedding.utils import GetterWrapper
 from ansys.mechanical.core.feature_flags import get_command_line_arguments
 
 if typing.TYPE_CHECKING:
@@ -125,29 +126,6 @@ def _additional_args(readonly: bool, feature_flags: list, start_license: str, ve
 def is_initialized():
     """Check if the app has been initialized."""
     return len(INSTANCES) != 0
-
-
-class GetterWrapper(object):
-    """Wrapper class around an attribute of an object."""
-
-    def __init__(self, obj, getter):
-        """Create a new instance of GetterWrapper."""
-        # immortal class which provides wrapped object
-        self.__dict__["_immortal_object"] = obj
-        # function to get the wrapped object from the immortal class
-        self.__dict__["_get_wrapped_object"] = getter
-
-    def __getattr__(self, attr):
-        """Wrap getters to the wrapped object."""
-        if attr in self.__dict__:
-            return getattr(self, attr)
-        return getattr(self._get_wrapped_object(self._immortal_object), attr)
-
-    def __setattr__(self, attr, value):
-        """Wrap setters to the wrapped object."""
-        if attr in self.__dict__:
-            setattr(self, attr, value)
-        setattr(self._get_wrapped_object(self._immortal_object), attr, value)
 
 
 class App:
@@ -315,6 +293,9 @@ class App:
         self._license_manager = None
         if self.version >= 252:
             self._license_manager = LicenseManager(self)
+
+        # Initialize helpers
+        self._helpers = None
 
     def __repr__(self):
         """Get the product info."""
@@ -621,6 +602,15 @@ class App:
             raise Exception("LicenseManager is only available for version 252 and later.")
         return self._license_manager
 
+    @property
+    def helpers(self):
+        """Return the Helpers instance."""
+        if self._helpers is None:
+            from ansys.mechanical.core.embedding.helpers import Helpers
+
+            self._helpers = Helpers(self)
+        return self._helpers
+
     def _share(self, other) -> None:
         """Shares the state of self with other.
 
@@ -644,6 +634,20 @@ class App:
         other._version = self._version
         other._poster = self._poster
         other._updated_scopes = self._updated_scopes
+        other._helpers = self._helpers
+
+        # Share logging configuration
+        other._enable_logging = self._enable_logging
+        other._log = self._log
+        other._log_level = self._log_level
+
+        # Share interactive mode and shell state
+        other._interactive_mode = self._interactive_mode
+        other._started_interactive_shell = self._started_interactive_shell
+
+        # Share lazy-loaded instances
+        other._messages = self._messages
+        other._license_manager = self._license_manager
 
         # all events will be handled by the original App instance
         other._subscribed = False
@@ -695,56 +699,6 @@ class App:
         for scope in self._updated_scopes:
             scope.update(global_entry_points(self))
 
-    def _print_tree(self, node, max_lines, lines_count, indentation):
-        """Recursively print till provided maximum lines limit.
-
-        Each object in the tree is expected to have the following attributes:
-         - Name: The name of the object.
-         - Suppressed : Print as suppressed, if object is suppressed.
-         - Children: Checks if object have children.
-           Each child node is expected to have the all these attributes.
-
-        Parameters
-        ----------
-        lines_count: int, optional
-            The current count of lines printed. Default is 0.
-        indentation: str, optional
-            The indentation string used for printing the tree structure. Default is "".
-        """
-        if lines_count >= max_lines and max_lines != -1:
-            print(f"... truncating after {max_lines} lines")
-            return lines_count
-
-        if not hasattr(node, "Name"):
-            raise AttributeError("Object must have a 'Name' attribute")
-
-        node_name = node.Name
-        if hasattr(node, "Suppressed") and node.Suppressed is True:
-            node_name += " (Suppressed)"
-        if hasattr(node, "ObjectState"):
-            if str(node.ObjectState) == "UnderDefined":
-                node_name += " (?)"
-            elif str(node.ObjectState) == "Solved" or str(node.ObjectState) == "FullyDefined":
-                node_name += " (✓)"
-            elif str(node.ObjectState) == "NotSolved" or str(node.ObjectState) == "Obsolete":
-                node_name += " (⚡︎)"
-            elif str(node.ObjectState) == "SolveFailed":
-                node_name += " (✕)"
-        print(f"{indentation}├── {node_name}")
-        lines_count += 1
-
-        if lines_count >= max_lines and max_lines != -1:
-            print(f"... truncating after {max_lines} lines")
-            return lines_count
-
-        if hasattr(node, "Children") and node.Children is not None and node.Children.Count > 0:
-            for child in node.Children:
-                lines_count = self._print_tree(child, max_lines, lines_count, indentation + "|  ")
-                if lines_count >= max_lines and max_lines != -1:
-                    break
-
-        return lines_count
-
     def print_tree(self, node=None, max_lines=80, lines_count=0, indentation=""):
         """
         Print the hierarchical tree representation of the Mechanical project structure.
@@ -787,10 +741,7 @@ class App:
         ... |  ├── Model
         ... ... truncating after 2 lines
         """
-        if node is None:
-            node = self.DataModel.Project
-
-        self._print_tree(node, max_lines, lines_count, indentation)
+        self.helpers.print_tree(node, max_lines)
 
     def log_debug(self, message):
         """Log the debug message."""
