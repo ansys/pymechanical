@@ -130,16 +130,42 @@ class Helpers:
         except Exception as e:
             raise RuntimeError(f"Geometry Import unsuccessful: {e}")
 
+    def import_materials(self, file_path: str):
+        r"""Import materials from a specified material database file.
+
+        Parameters
+        ----------
+        file_path : str
+            The path to the material database file to be imported.
+
+        Examples
+        --------
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
+        >>> app.helpers.import_materials("C:\\path\\to\\materials.xml")
+        """
+        # Add materials to the model and import the material files
+        materials = self._app.Model.Materials
+
+        try:
+            materials.Import(file_path)
+            self._app.log_info(
+                f"Imported materials from {file_path} successfully."
+                f"Object State: {materials.ObjectState}"
+            )
+        except Exception as e:
+            raise RuntimeError(f"Material Import unsuccessful: {e}")
+
     def export_image(
         self,
         obj=None,
         file_path: str = None,
         width: int = 1920,
         height: int = 1080,
-        background: str = "White",
-        resolution: str = "Enhanced",
+        background: str = "white",
+        resolution: str = "enhanced",
         current_graphics_display: bool = False,
-        image_format: str = "PNG",
+        image_format: str = "png",
     ):
         r"""Export an image of the specified object.
 
@@ -157,25 +183,25 @@ class Helpers:
             The height of the exported image in pixels. Default is 1080.
         background : str, optional
             Background type for the exported image. Options are:
-            - "White": White background
-            - "Appearance": Use graphics appearance setting
-            Default is "White".
+            - "white": White background
+            - "appearance": Use graphics appearance setting
+            Default is "white".
         resolution : str, optional
             Resolution type for the exported image. Options are:
-            - "Normal": Normal resolution (1:1)
-            - "Enhanced": Enhanced resolution (2:1) - Default
-            - "High": High resolution (4:1)
-            Default is "Enhanced".
+            - "normal": Normal resolution (1:1)
+            - "enhanced": Enhanced resolution (2:1) - Default
+            - "high": High resolution (4:1)
+            Default is "enhanced".
         current_graphics_display : bool, optional
             Whether to use current graphics display. Default is False.
         image_format : str, optional
             Image format for export. Options are:
-            - "PNG": PNG image format - Default
-            - "JPG": JPG image format
-            - "BMP": BMP image format
-            - "TIF": TIFF image format
-            - "EPS": EPS image format
-            Default is "PNG".
+            - "png": PNG image format - Default
+            - "jpg": JPG image format
+            - "bmp": BMP image format
+            - "tif": TIFF image format
+            - "eps": EPS image format
+            Default is "png".
 
         Examples
         --------
@@ -189,9 +215,9 @@ class Helpers:
         >>> app.helpers.export_image(
         ...     result,
         ...     "C:\\path\\to\\result.jpg",
-        ...     background="Appearance",
-        ...     resolution="High",
-        ...     image_format="JPG",
+        ...     background="appearance",
+        ...     resolution="high",
+        ...     image_format="jpg",
         ... )
         """
         from pathlib import Path
@@ -283,7 +309,7 @@ class Helpers:
         file_path: str = None,
         width: int = 1280,
         height: int = 720,
-        animation_format: str = "GIF",
+        animation_format: str = "gif",
     ):
         r"""Export an animation of the specified object.
 
@@ -302,11 +328,11 @@ class Helpers:
             The height of the exported animation in pixels. Default is 720.
         animation_format : str, optional
             Animation format for export. Options are:
-            - "GIF": GIF animation format - Default
-            - "AVI": AVI video format
-            - "MP4": MP4 video format
-            - "WMV": WMV video format
-            Default is "GIF".
+            - "gif": GIF animation format - Default
+            - "avi": AVI video format
+            - "mp4": MP4 video format
+            - "wmv": WMV video format
+            Default is "gif".
 
         Examples
         --------
@@ -318,7 +344,7 @@ class Helpers:
 
         >>> # Export as MP4 with custom resolution
         >>> app.helpers.export_animation(
-        ...     result, "result_animation.mp4", width=1920, height=1080, animation_format="MP4"
+        ...     result, "result_animation.mp4", width=1920, height=1080, animation_format="mp4"
         ... )
         """
         from pathlib import Path
@@ -373,6 +399,171 @@ class Helpers:
             self._app.log_info(f"Exported animation to {file_path} successfully.")
         except Exception as e:
             raise RuntimeError(f"Animation export unsuccessful: {e}")
+
+    def setup_graphics(
+        self,
+        orientation: str = "iso",
+        fit: bool = True,
+        width: int = 1280,
+        height: int = 720,
+        resolution: str = "enhanced",
+        background: str = "white",
+        image_format: str = "png",
+    ):
+        """Configure graphics settings for image export.
+
+        This is a convenience method that sets up camera orientation and creates
+        pre-configured image export settings. Commonly used at the start of examples
+        to prepare for exporting images.
+
+        Parameters
+        ----------
+        orientation : str, optional
+            Camera view orientation. Options are:
+            - "iso": Isometric view - Default
+            - "front": Front view
+            - "back": Back view
+            - "top": Top view
+            - "bottom": Bottom view
+            - "left": Left view
+            - "right": Right view
+            Default is "iso".
+        fit : bool, optional
+            Whether to fit the camera to the model. Default is True.
+        width : int, optional
+            Width of exported images in pixels. Default is 1280.
+        height : int, optional
+            Height of exported images in pixels. Default is 720.
+        resolution : str, optional
+            Resolution type for exported images. Options are:
+            - "normal": Normal resolution (1:1)
+            - "enhanced": Enhanced resolution (2:1) - Default
+            - "high": High resolution (4:1)
+            Default is "enhanced".
+        background : str, optional
+            Background type for exported images. Options are:
+            - "white": White background - Default
+            - "appearance": Use graphics appearance setting
+            Default is "white".
+        image_format : str, optional
+            Default image format for exports. Options are:
+            - "png": PNG image format - Default
+            - "jpg": JPG image format
+            - "bmp": BMP image format
+            - "tif": TIFF image format
+            - "eps": EPS image format
+            Default is "png".
+
+        Returns
+        -------
+        tuple
+            A tuple containing (camera, settings, format) where:
+            - camera: The configured camera object
+            - settings: GraphicsImageExportSettings with specified parameters
+            - format: GraphicsImageExportFormat enum value
+
+        Examples
+        --------
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
+        >>> # Set up graphics with default settings (Iso view, 720p)
+        >>> camera, settings, img_format = app.helpers.setup_graphics()
+
+        >>> # Set up graphics with custom orientation and 1080p resolution
+        >>> camera, settings, img_format = app.helpers.setup_graphics(
+        ...     orientation="front", width=1920, height=1080, resolution="high"
+        ... )
+
+        >>> # Use the configured settings to export an image
+        >>> app.Graphics.ExportImage("output.png", img_format, settings)
+        """
+        from ansys.mechanical.core.embedding.enum_importer import (
+            GraphicsBackgroundType,
+            GraphicsImageExportFormat,
+            GraphicsResolutionType,
+            ViewOrientationType,
+        )
+
+        # Get graphics and camera
+        graphics = self._app.Graphics
+        camera = graphics.Camera
+
+        # Set camera orientation
+        orientation_lower = orientation.lower()
+        if orientation_lower == "iso":
+            camera.SetSpecificViewOrientation(ViewOrientationType.Iso)
+        elif orientation_lower == "front":
+            camera.SetSpecificViewOrientation(ViewOrientationType.Front)
+        elif orientation_lower == "back":
+            camera.SetSpecificViewOrientation(ViewOrientationType.Back)
+        elif orientation_lower == "top":
+            camera.SetSpecificViewOrientation(ViewOrientationType.Top)
+        elif orientation_lower == "bottom":
+            camera.SetSpecificViewOrientation(ViewOrientationType.Bottom)
+        elif orientation_lower == "left":
+            camera.SetSpecificViewOrientation(ViewOrientationType.Left)
+        elif orientation_lower == "right":
+            camera.SetSpecificViewOrientation(ViewOrientationType.Right)
+        else:
+            raise ValueError(
+                f"Invalid orientation: {orientation}. "
+                "Valid options are 'Iso', 'Front', 'Back', 'Top', 'Bottom', 'Left', or 'Right'."
+            )
+
+        # Fit camera if requested
+        if fit:
+            camera.SetFit()
+
+        # Create graphics image export settings
+        settings = self.Ansys.Mechanical.Graphics.GraphicsImageExportSettings()
+        settings.Width = width
+        settings.Height = height
+        settings.CurrentGraphicsDisplay = False
+
+        # Set resolution
+        resolution_lower = resolution.lower()
+        if resolution_lower == "enhanced":
+            settings.Resolution = GraphicsResolutionType.EnhancedResolution
+        elif resolution_lower == "high":
+            settings.Resolution = GraphicsResolutionType.HighResolution
+        elif resolution_lower == "normal":
+            settings.Resolution = GraphicsResolutionType.NormalResolution
+        else:
+            raise ValueError(
+                f"Invalid resolution: {resolution}. "
+                "Valid options are 'Normal', 'Enhanced', or 'High'."
+            )
+
+        # Set background
+        background_lower = background.lower()
+        if background_lower == "white":
+            settings.Background = GraphicsBackgroundType.White
+        elif background_lower == "appearance":
+            settings.Background = GraphicsBackgroundType.GraphicsAppearanceSetting
+        else:
+            raise ValueError(
+                f"Invalid background: {background}. Valid options are 'White' or 'Appearance'."
+            )
+
+        # Set image format
+        format_lower = image_format.lower()
+        if format_lower == "png":
+            img_format = GraphicsImageExportFormat.PNG
+        elif format_lower == "jpg" or format_lower == "jpeg":
+            img_format = GraphicsImageExportFormat.JPG
+        elif format_lower == "bmp":
+            img_format = GraphicsImageExportFormat.BMP
+        elif format_lower == "tif" or format_lower == "tiff":
+            img_format = GraphicsImageExportFormat.TIF
+        elif format_lower == "eps":
+            img_format = GraphicsImageExportFormat.EPS
+        else:
+            raise ValueError(
+                f"Invalid image format: {image_format}. "
+                "Valid options are 'PNG', 'JPG', 'BMP', 'TIF', or 'EPS'."
+            )
+
+        return camera, settings, img_format
 
 
 # Helper function to print the tree recursively
