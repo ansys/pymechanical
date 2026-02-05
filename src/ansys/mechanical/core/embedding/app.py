@@ -741,6 +741,8 @@ class App:
         ... |  ├── Model
         ... ... truncating after 2 lines
         """
+        if node is None:
+            node = self.DataModel.Project
         self.helpers.print_tree(node, max_lines)
 
     def log_debug(self, message):

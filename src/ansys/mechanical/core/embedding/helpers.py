@@ -85,15 +85,33 @@ class Helpers:
 
         _print_tree(node, max_lines, 0, "")
 
-    def import_geometry(self, file_path: str, process_named_selections: bool = True):
+    def import_geometry(
+        self,
+        file_path: str,
+        process_named_selections: bool = False,
+        named_selection_key: str = "NS",
+        process_material_properties: bool = False,
+        process_coordinate_systems: bool = False,
+    ):
         r"""Import geometry file into the current Mechanical model.
+
+        Returns
+        -------
+        Ansys.ACT.Automation.Mechanical.GeometryImport
+            The geometry import object.
 
         Parameters
         ----------
         file_path : str
             The path to the geometry file to be imported.
         process_named_selections : bool, optional
-            Whether to process named selections during import. Default is True.
+            Whether to process named selections during import. Default is False.
+        named_selection_key : str, optional
+            Named selection key for filtering. Default is "NS".
+        process_material_properties : bool, optional
+            Whether to process material properties during import. Default is False.
+        process_coordinate_systems : bool, optional
+            Whether to process coordinate systems during import. Default is False.
 
         Examples
         --------
@@ -104,6 +122,15 @@ class Helpers:
         >>> # Import without processing named selections
         >>> app.helpers.import_geometry(
         ...     "C:\\path\\to\\geometry.step", process_named_selections=False
+        ... )
+
+        >>> # Import with all options specified
+        >>> app.helpers.import_geometry(
+        ...     "C:\\path\\to\\geometry.pmdb",
+        ...     process_named_selections=True,
+        ...     named_selection_key="",
+        ...     process_material_properties=True,
+        ...     process_coordinate_systems=True,
         ... )
         """
         # Import Ansys and enums - same way as when App(globals=globals()) is used
@@ -121,12 +148,16 @@ class Helpers:
             self.Ansys.ACT.Mechanical.Utilities.GeometryImportPreferences()
         )
         geometry_import_preferences.ProcessNamedSelections = process_named_selections
+        geometry_import_preferences.NamedSelectionKey = named_selection_key
+        geometry_import_preferences.ProcessMaterialProperties = process_material_properties
+        geometry_import_preferences.ProcessCoordinateSystems = process_coordinate_systems
         try:
             geometry_import.Import(file_path, geometry_import_format, geometry_import_preferences)
             self._app.log_info(
                 f"Imported geometry from {file_path} successfully."
                 f"Object State: {geometry_import.ObjectState}"
             )
+            return geometry_import
         except Exception as e:
             raise RuntimeError(f"Geometry Import unsuccessful: {e}")
 
@@ -141,7 +172,6 @@ class Helpers:
         Examples
         --------
         >>> from ansys.mechanical.core import App
-        >>> app = App()
         >>> app.helpers.import_materials("C:\\path\\to\\materials.xml")
         """
         # Add materials to the model and import the material files
@@ -400,15 +430,13 @@ class Helpers:
         except Exception as e:
             raise RuntimeError(f"Animation export unsuccessful: {e}")
 
-    def setup_graphics(
+    def setup_view(
         self,
         orientation: str = "iso",
         fit: bool = True,
-        width: int = 1280,
-        height: int = 720,
-        resolution: str = "enhanced",
-        background: str = "white",
-        image_format: str = "png",
+        rotation: int = None,
+        axis: str = "x",
+        scene_height=None,
     ):
         """Configure graphics settings for image export.
 
@@ -430,57 +458,26 @@ class Helpers:
             Default is "iso".
         fit : bool, optional
             Whether to fit the camera to the model. Default is True.
-        width : int, optional
-            Width of exported images in pixels. Default is 1280.
-        height : int, optional
-            Height of exported images in pixels. Default is 720.
-        resolution : str, optional
-            Resolution type for exported images. Options are:
-            - "normal": Normal resolution (1:1)
-            - "enhanced": Enhanced resolution (2:1) - Default
-            - "high": High resolution (4:1)
-            Default is "enhanced".
-        background : str, optional
-            Background type for exported images. Options are:
-            - "white": White background - Default
-            - "appearance": Use graphics appearance setting
-            Default is "white".
-        image_format : str, optional
-            Default image format for exports. Options are:
-            - "png": PNG image format - Default
-            - "jpg": JPG image format
-            - "bmp": BMP image format
-            - "tif": TIFF image format
-            - "eps": EPS image format
-            Default is "png".
-
-        Returns
-        -------
-        tuple
-            A tuple containing (camera, settings, format) where:
-            - camera: The configured camera object
-            - settings: GraphicsImageExportSettings with specified parameters
-            - format: GraphicsImageExportFormat enum value
+        rotation : int, optional
+            Rotation angle in degrees. Default is None (no rotation).
+        axis : str, optional
+            Axis to rotate around. Options are "x", "y", or "z". Default is "x".
+        scene_height : Quantity, optional
+            Scene height for the camera view. Default is None (no scene height adjustment).
 
         Examples
         --------
         >>> from ansys.mechanical.core import App
         >>> app = App()
-        >>> # Set up graphics with default settings (Iso view, 720p)
-        >>> camera, settings, img_format = app.helpers.setup_graphics()
 
-        >>> # Set up graphics with custom orientation and 1080p resolution
-        >>> camera, settings, img_format = app.helpers.setup_graphics(
-        ...     orientation="front", width=1920, height=1080, resolution="high"
-        ... )
+        >>> # Set up view with scene height
+        >>> app.helpers.setup_view(scene_height=Quantity(2.0, "in"))
 
         >>> # Use the configured settings to export an image
         >>> app.Graphics.ExportImage("output.png", img_format, settings)
         """
         from ansys.mechanical.core.embedding.enum_importer import (
-            GraphicsBackgroundType,
-            GraphicsImageExportFormat,
-            GraphicsResolutionType,
+            CameraAxisType,
             ViewOrientationType,
         )
 
@@ -507,63 +504,72 @@ class Helpers:
         else:
             raise ValueError(
                 f"Invalid orientation: {orientation}. "
-                "Valid options are 'Iso', 'Front', 'Back', 'Top', 'Bottom', 'Left', or 'Right'."
+                "Valid options are 'iso', 'front', 'back', 'top', 'bottom', 'left', or 'right'."
             )
+        # Set scene height if provided
+        if scene_height is not None:
+            camera.SceneHeight = scene_height
 
         # Fit camera if requested
         if fit:
             camera.SetFit()
 
-        # Create graphics image export settings
-        settings = self.Ansys.Mechanical.Graphics.GraphicsImageExportSettings()
-        settings.Width = width
-        settings.Height = height
-        settings.CurrentGraphicsDisplay = False
+        if rotation is not None:
+            if axis.lower() == "x":
+                camera.Rotate(rotation, CameraAxisType.ScreenX)
+            elif axis.lower() == "y":
+                camera.Rotate(rotation, CameraAxisType.ScreenY)
+            elif axis.lower() == "z":
+                camera.Rotate(rotation, CameraAxisType.ScreenZ)
+            else:
+                raise ValueError(f"Invalid axis: {axis}. Valid options are 'x', 'y', or 'z'.")
 
-        # Set resolution
-        resolution_lower = resolution.lower()
-        if resolution_lower == "enhanced":
-            settings.Resolution = GraphicsResolutionType.EnhancedResolution
-        elif resolution_lower == "high":
-            settings.Resolution = GraphicsResolutionType.HighResolution
-        elif resolution_lower == "normal":
-            settings.Resolution = GraphicsResolutionType.NormalResolution
-        else:
-            raise ValueError(
-                f"Invalid resolution: {resolution}. "
-                "Valid options are 'Normal', 'Enhanced', or 'High'."
-            )
+    def display_image(
+        self,
+        image_path: str,
+        figsize: tuple = (16, 9),
+        xticks: list = [],
+        yticks: list = [],
+        axis: str = "off",
+    ):
+        """Display an image using matplotlib.
 
-        # Set background
-        background_lower = background.lower()
-        if background_lower == "white":
-            settings.Background = GraphicsBackgroundType.White
-        elif background_lower == "appearance":
-            settings.Background = GraphicsBackgroundType.GraphicsAppearanceSetting
-        else:
-            raise ValueError(
-                f"Invalid background: {background}. Valid options are 'White' or 'Appearance'."
-            )
+        Parameters
+        ----------
+        image_path : str
+            The path to the image file to display.
+        figsize : tuple, optional
+            The size of the figure in inches (width, height). Default is (16, 9).
+        xticks : list, optional
+            The x-ticks to display on the plot. Default is [].
+        yticks : list, optional
+            The y-ticks to display on the plot. Default is [].
+        axis : str, optional
+            The axis visibility setting ('on' or 'off'). Default is "off".
 
-        # Set image format
-        format_lower = image_format.lower()
-        if format_lower == "png":
-            img_format = GraphicsImageExportFormat.PNG
-        elif format_lower == "jpg" or format_lower == "jpeg":
-            img_format = GraphicsImageExportFormat.JPG
-        elif format_lower == "bmp":
-            img_format = GraphicsImageExportFormat.BMP
-        elif format_lower == "tif" or format_lower == "tiff":
-            img_format = GraphicsImageExportFormat.TIF
-        elif format_lower == "eps":
-            img_format = GraphicsImageExportFormat.EPS
-        else:
-            raise ValueError(
-                f"Invalid image format: {image_format}. "
-                "Valid options are 'PNG', 'JPG', 'BMP', 'TIF', or 'EPS'."
-            )
+        Examples
+        --------
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
+        >>> app.helpers.export_image(app.Model.Geometry, "geometry.png")
+        >>> app.helpers.display_image("geometry.png")
 
-        return camera, settings, img_format
+        >>> # Display with custom figure size
+        >>> app.helpers.display_image("result.png", figsize=(10, 6))
+        """
+        from matplotlib import image as mpimg, pyplot as plt
+
+        # Set the figure size
+        plt.figure(figsize=figsize)
+        # Read and display the image
+        plt.imshow(mpimg.imread(image_path))
+        # Set the tick locations and labels
+        plt.xticks(xticks)
+        plt.yticks(yticks)
+        # Turn axis on or off
+        plt.axis(axis)
+        # Display the figure
+        plt.show()
 
 
 # Helper function to print the tree recursively
