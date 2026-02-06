@@ -61,7 +61,7 @@ from ansys.mechanical.core.embedding.transaction import Transaction
 
 # %%
 # Configure view and path for image export
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 app.helpers.setup_view(orientation="iso", fit=True, rotation=180, axis="y")
 # Set the path for the output files (images, gifs, mechdat)

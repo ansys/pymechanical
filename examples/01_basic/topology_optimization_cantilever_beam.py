@@ -37,6 +37,10 @@ load, which is then transferred to the topology optimization.
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from matplotlib import pyplot as plt
+import matplotlib.animation as animation
+from PIL import Image
+
 from ansys.mechanical.core import App
 from ansys.mechanical.core.examples import delete_downloads, download_file
 
@@ -200,6 +204,32 @@ app.helpers.display_image(image_path)
 
 topology_optimized_gif = output_path / "topology_opitimized.gif"
 app.helpers.export_animation(topology_density, topology_optimized_gif)
+
+# %%
+# Display the topology optimized animation
+
+# Open the GIF file and create an animation
+gif = Image.open(topology_optimized_gif)
+fig, ax = plt.subplots(figsize=(8, 4))
+ax.axis("off")
+image = ax.imshow(gif.convert("RGBA"))
+
+
+# Animation update function
+def update_frame(frame):
+    """Update the frame for the animation."""
+    gif.seek(frame)
+    image.set_array(gif.convert("RGBA"))
+    return (image,)
+
+
+# Create and display animation
+ani = animation.FuncAnimation(
+    fig, update_frame, frames=gif.n_frames, interval=200, blit=True, repeat=True
+)
+
+# Show the animation
+plt.show()
 
 # %%
 # Review the results
