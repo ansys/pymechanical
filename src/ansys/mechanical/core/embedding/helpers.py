@@ -92,6 +92,7 @@ class Helpers:
         named_selection_key: str = "NS",
         process_material_properties: bool = False,
         process_coordinate_systems: bool = False,
+        analysis_type: str = "3d",
     ):
         r"""Import geometry file into the current Mechanical model.
 
@@ -112,6 +113,9 @@ class Helpers:
             Whether to process material properties during import. Default is False.
         process_coordinate_systems : bool, optional
             Whether to process coordinate systems during import. Default is False.
+        analysis_type : str, optional
+            The type of analysis for the geometry import. Default is "3d".
+            Options are "2d" or "3d".
 
         Examples
         --------
@@ -151,6 +155,14 @@ class Helpers:
         geometry_import_preferences.NamedSelectionKey = named_selection_key
         geometry_import_preferences.ProcessMaterialProperties = process_material_properties
         geometry_import_preferences.ProcessCoordinateSystems = process_coordinate_systems
+        if analysis_type.lower() == "2d":
+            geometry_import_preferences.AnalysisType = (
+                self.Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.AnalysisType.Type2D
+            )
+        else:
+            geometry_import_preferences.AnalysisType = (
+                self.Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.AnalysisType.Type3D
+            )
         try:
             geometry_import.Import(file_path, geometry_import_format, geometry_import_preferences)
             self._app.log_info(
