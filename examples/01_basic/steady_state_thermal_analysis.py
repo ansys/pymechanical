@@ -540,7 +540,7 @@ app.helpers.display_image(image_path)
 
 # Export the directional heat flux animation as a GIF
 directional_heat_flux_gif = output_path / "directional_heat_flux.gif"
-app.helpers.export_animation(directional_heat_flux_gif)
+app.helpers.export_animation(directional_heat_flux, directional_heat_flux_gif)
 
 
 # %%
