@@ -234,6 +234,9 @@ app.Tree.Activate([mesh])
 
 # Set the camera to fit the model and export the image
 app.helpers.setup_view()
+image_path = output_path / "mesh.png"
+app.helpers.export_image(mesh, image_path)
+app.helpers.display_image(image_path)
 
 # %%
 # Define analysis
@@ -436,11 +439,12 @@ app.helpers.display_image(image_path)
 # Activate the temperature results for fluid lines
 app.Tree.Activate([temp_plot_fluidlines])
 # Set the camera to fit the model and export the image
-# Set the camera to fit the model and export the image
 image_path = output_path / "temp_plot_fluidlines.png"
 app.helpers.export_image(temp_plot_fluidlines, image_path)
 # Display the exported image
 app.helpers.display_image(image_path)
+
+
 # %%
 # Clean up the project
 # ~~~~~~~~~~~~~~~~~~~~

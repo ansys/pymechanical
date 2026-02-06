@@ -55,18 +55,10 @@ if TYPE_CHECKING:
 app = App(globals=globals())
 print(app)
 
-# %%
-# Create functions to set camera and display images
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 # Set the path for the output files (images, gifs, mechdat)
 output_path = Path.cwd() / "out"
 
-
-# %%
-# Configure graphics for image export
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+# Set the camera orientation
 app.helpers.setup_view(orientation="iso", rotation=180, axis="y")
 
 # %%
@@ -470,11 +462,6 @@ app.helpers.display_image(image_path)
 
 # %%
 # Display the total acoustic velocity
-
-app.Tree.Activate([acoustic_pressure_result_1])
-image_path = output_path / "total_velocity.png"
-app.helpers.export_image(file_path=image_path)
-app.helpers.display_image(image_path)
 
 app.Tree.Activate([acoustic_spl])
 image_path = output_path / "sound_pressure_level.png"

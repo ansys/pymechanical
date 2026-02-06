@@ -163,9 +163,6 @@ part2_object.Material = get_child_object(
 # Define the contact and contact regions
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# %%
-# Activate the contact region
-
 # Get the contact from the connection group
 contact = get_child_object(
     connections, Ansys.ACT.Automation.Mechanical.Connections.ConnectionGroup, "Contacts"
@@ -439,13 +436,9 @@ app.helpers.display_image(image_path)
 # Export the animation
 # ~~~~~~~~~~~~~~~~~~~~
 
-# Set the path for the contact status GIF
 force_reaction_gif_path = output_path / "force_reaction.gif"
-
-# Export the force reaction animation to a GIF file
 app.helpers.export_animation(force_reaction, force_reaction_gif_path)
 
-# Open the GIF file and create an animation
 
 # %%
 # Display the contact status animation

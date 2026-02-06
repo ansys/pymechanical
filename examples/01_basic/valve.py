@@ -68,6 +68,7 @@ geometry_path = download_file("Valve.pmdb", "pymechanical", "embedding")
 
 # %%
 # Import the geometry
+# ~~~~~~~~~~~~~~~~~~~
 
 # Define the model
 model = app.Model
@@ -104,6 +105,7 @@ material_assignment.Location = selection_info
 
 # %%
 # Define the mesh settings and generate the mesh
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Define the mesh
 mesh = model.Mesh
@@ -155,6 +157,7 @@ app.helpers.display_image(image_path)
 
 # %%
 # Add results to the analysis solution
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Define the solution for the analysis
 solution = analysis.Solution
@@ -186,6 +189,7 @@ app.messages.show()
 
 # %%
 # Show the total deformation image
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Activate the total deformation result and display the image
 app.Tree.Activate([deformation])
@@ -196,6 +200,7 @@ app.helpers.display_image(image_path)
 
 # %%
 # Show the equivalent stress image
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Activate the equivalent stress result and display the image
 app.Tree.Activate([stress])
@@ -207,6 +212,7 @@ app.helpers.display_image(image_path)
 
 # %%
 # Export the stress animation
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 app.helpers.setup_view()
 valve_gif = output_path / "valve.gif"
