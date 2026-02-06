@@ -37,13 +37,11 @@ load, which is then transferred to the topology optimization.
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from matplotlib import image as mpimg, pyplot as plt
-
 from ansys.mechanical.core import App
 from ansys.mechanical.core.examples import delete_downloads, download_file
 
 if TYPE_CHECKING:
-    import Ansys
+    pass
 
 # %%
 # Initialize the embedded application
@@ -53,97 +51,14 @@ app = App(globals=globals())
 print(app)
 
 # %%
-# Create functions to set camera and display images
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Setup the output path and camera
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Set the path for the output files (images, gifs, mechdat)
 output_path = Path.cwd() / "out"
 
-
-def set_camera_and_display_image(
-    camera,
-    graphics,
-    graphics_image_export_settings,
-    image_output_path: Path,
-    image_name: str,
-) -> None:
-    """Set the camera to fit the model and display the image.
-
-    Parameters
-    ----------
-    camera : Ansys.ACT.Common.Graphics.MechanicalCameraWrapper
-        The camera object to set the view.
-    graphics : Ansys.ACT.Common.Graphics.MechanicalGraphicsWrapper
-        The graphics object to export the image.
-    graphics_image_export_settings : Ansys.Mechanical.Graphics.GraphicsImageExportSettings
-        The settings for exporting the image.
-    image_output_path : Path
-        The path to save the exported image.
-    image_name : str
-        The name of the exported image file.
-    """
-    # Set the camera to fit the mesh
-    camera.SetFit()
-    # Export the mesh image with the specified settings
-    image_path = image_output_path / image_name
-    graphics.ExportImage(str(image_path), image_export_format, graphics_image_export_settings)
-    # Display the exported mesh image
-    display_image(image_path)
-
-
-def display_image(
-    image_path: str,
-    pyplot_figsize_coordinates: tuple = (16, 9),
-    plot_xticks: list = [],
-    plot_yticks: list = [],
-    plot_axis: str = "off",
-) -> None:
-    """Display the image with the specified parameters.
-
-    Parameters
-    ----------
-    image_path : str
-        The path to the image file to display.
-    pyplot_figsize_coordinates : tuple
-        The size of the figure in inches (width, height).
-    plot_xticks : list
-        The x-ticks to display on the plot.
-    plot_yticks : list
-        The y-ticks to display on the plot.
-    plot_axis : str
-        The axis visibility setting ('on' or 'off').
-    """
-    # Set the figure size based on the coordinates specified
-    plt.figure(figsize=pyplot_figsize_coordinates)
-    # Read the image from the file into an array
-    plt.imshow(mpimg.imread(image_path))
-    # Get or set the current tick locations and labels of the x-axis
-    plt.xticks(plot_xticks)
-    # Get or set the current tick locations and labels of the y-axis
-    plt.yticks(plot_yticks)
-    # Turn off the axis
-    plt.axis(plot_axis)
-    # Display the figure
-    plt.show()
-
-
-# %%
-# Configure graphics for image export
-
-graphics = app.Graphics
-camera = graphics.Camera
-
 # Set the camera orientation to the front view
-camera.SetSpecificViewOrientation(ViewOrientationType.Front)
-
-# Set the image export format and settings
-image_export_format = GraphicsImageExportFormat.PNG
-settings_720p = Ansys.Mechanical.Graphics.GraphicsImageExportSettings()
-settings_720p.Resolution = GraphicsResolutionType.EnhancedResolution
-settings_720p.Background = GraphicsBackgroundType.White
-settings_720p.Width = 1280
-settings_720p.Height = 720
-settings_720p.CurrentGraphicsDisplay = False
+app.helpers.setup_view("front")
 
 # %%
 # Import the structural analysis model
@@ -181,13 +96,18 @@ assert struct_sln.Status == SolutionStatusType.Done, "Solution status is not 'Do
 # Activate the total deformation result and display the image
 
 struct_sln.Children[1].Activate()
-set_camera_and_display_image(camera, graphics, settings_720p, output_path, "total_deformation.png")
-
+image_path = output_path / "total_deformation.png"
+app.helpers.setup_view()
+app.helpers.export_image(struct_sln.Children[1], image_path)
+app.helpers.display_image(image_path)
 # %%
 # Activate the equivalent stress result and display the image
 
 struct_sln.Children[2].Activate()
-set_camera_and_display_image(camera, graphics, settings_720p, output_path, "equivalent_stress.png")
+image_path = output_path / "equivalent_stress.png"
+app.helpers.setup_view()
+app.helpers.export_image(struct_sln.Children[2], image_path)
+app.helpers.display_image(image_path)
 
 # %%
 # Topology optimization
@@ -227,9 +147,9 @@ mem_size_manufacturing_constraint.MinSize = Quantity("2.4 [m]")
 
 # Activate the topology optimization analysis and display the image
 topology_optimization.Activate()
-set_camera_and_display_image(
-    camera, graphics, settings_720p, output_path, "boundary_conditions.png"
-)
+app.helpers.setup_view()
+app.helpers.export_image(topology_optimization, output_path / "boundary_conditions.png")
+app.helpers.display_image(output_path / "boundary_conditions.png")
 
 # %%
 # Solve the solution
@@ -270,29 +190,16 @@ topology_optimization.Solution.EvaluateAllResults()
 
 # Activate the topology density result after smoothing and display the image
 topology_density.Children[0].Activate()
-set_camera_and_display_image(
-    camera, graphics, settings_720p, output_path, "topo_opitimized_smooth.png"
-)
+image_path = output_path / "topo_opitimized_smooth.png"
+app.helpers.setup_view()
+app.helpers.export_image(topology_density.Children[0], image_path)
+app.helpers.display_image(image_path)
 
 # %%
 # Export the animation
 
-app.Tree.Activate([topology_density])
-
-# Set the animation export format and settings
-animation_export_format = Ansys.Mechanical.DataModel.Enums.GraphicsAnimationExportFormat.GIF
-settings_720p = Ansys.Mechanical.Graphics.AnimationExportSettings()
-settings_720p.Width = 1280
-settings_720p.Height = 720
-
-# Export the animation of the topology density result
 topology_optimized_gif = output_path / "topology_opitimized.gif"
-topology_density.ExportAnimation(
-    str(topology_optimized_gif), animation_export_format, settings_720p
-)
-
-# %%
-# .. image:: /_static/basic/Topo_opitimized.gif
+app.helpers.export_animation(topology_density, topology_optimized_gif)
 
 # %%
 # Review the results
