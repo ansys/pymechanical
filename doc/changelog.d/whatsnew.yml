@@ -1,4 +1,39 @@
 fragments:
+- title: Helper functions for common workflows
+  version: 0.12.3
+  content: |
+    New helper functions simplify common Mechanical workflows through the
+    `Helpers` class.
+    These methods streamline geometry import, material management, visualization, and export operations.
+
+    Available helper functions:
+
+    - **print_tree()**: Display hierarchical project structure with object states
+    - **import_geometry()**: Import CAD geometry with flexible options
+    - **import_materials()**: Load material definitions from XML files
+    - **export_image()**: Export high-quality images of the current view
+    - **export_animation()**: Create animations in multiple formats (GIF, MP4, AVI, WMV)
+    - **setup_view()**: Configure camera and display settings
+    - **display_image()**: Show exported images inline in notebooks
+
+    Usage:
+    .. code:: python
+
+        from ansys.mechanical.core import App
+
+        app = App()
+        helpers = app.DataModel.Project.Helpers
+
+        # Import geometry and materials
+        helpers.import_geometry("bracket.x_t")
+        helpers.import_materials("steel_aluminum.xml")
+
+        # Configure and export visualization
+        helpers.setup_view(fit=True, view_type="iso")
+        helpers.export_image("result.png", width=1920, height=1080)
+
+    For complete details, see the `Helpers User Guide <https://mechanical.docs.pyansys.com/version/stable/user_guide/howto/helpers.html>`_.
+
 - title: gRPC Security with mTLS, WNUA, and Insecure Transport Modes
   version: 0.12.0
   content: |

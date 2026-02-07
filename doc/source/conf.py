@@ -203,6 +203,7 @@ sphinx_gallery_conf = {
     # Files to ignore
     "ignore_pattern": "flycheck*",  # noqa: E501
     "thumbnail_size": (350, 350),
+    "matplotlib_animations": True,
 }
 
 # -- Options for HTML output -------------------------------------------------
@@ -377,6 +378,7 @@ linkcheck_ignore = [
     "https://support.ansys.com/*",
     "https://discuss.ansys.com/*",
     "https://www.ansys.com/*",
+    "https://developer.ansys.com/.*",
     "../api/*",
 ]
 
