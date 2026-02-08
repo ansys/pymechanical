@@ -74,9 +74,9 @@ For RPC functionality::
 
 **Requirements:**
 
-* Licensed copy of `Ansys Mechanical <https://www.ansys.com/products/structures/ansys-mechanical>`_ (2024 R1+ on Windows/Linux)
-* For embedded instances: Local Mechanical installation required
-* For remote sessions: Network access to a running Mechanical instance
+* Licensed copy of `Ansys Mechanical <https://www.ansys.com/products/structures/ansys-mechanical>`_ (2024 R1+ on Windows/Linux).
+* For embedded instances: Local Mechanical installation required.
+* For remote sessions: Network access to a running Mechanical instance.
 * Python 3.10 - 3.13
 
 Quick start
@@ -129,9 +129,9 @@ Troubleshooting
 
 **Common issues:**
 
-* **Connection refused**: Ensure Mechanical is running and the port is accessible
-* **License error**: Verify your Ansys license is properly configured
-* **Import error**: Check that ``ansys-pythonnet`` is installed (not ``pythonnet``)
+* **Connection refused**: Ensure Mechanical is running and the port is accessible.
+* **License error**: Verify your Ansys license is properly configured.
+* **Import error**: Check that ``ansys-pythonnet`` is installed (not ``pythonnet``).
 * **Linux embedding**: Use `mechanical-env` to run python scripts for embedded mode.
 
 Documentation and support
