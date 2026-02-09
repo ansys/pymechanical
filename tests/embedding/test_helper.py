@@ -45,58 +45,6 @@ def test_helpers_initialization(embedded_app):
 
 
 @pytest.mark.embedding
-def test_print_tree(embedded_app, assets, capsys, printer):
-    """Test print_tree with various options and scenarios."""
-    printer("Testing print_tree functionality")
-    geometry_file = str(Path(assets) / "Eng157.x_t")
-    embedded_app.helpers.import_geometry(geometry_file)
-
-    # Test 1: Default parameters - prints entire project tree
-    embedded_app.helpers.print_tree()
-    captured = capsys.readouterr()
-    assert "├── Project" in captured.out
-    printer("Default tree print successful")
-
-    # Test 2: Custom starting node
-    embedded_app.helpers.print_tree(node=embedded_app.Model)
-    captured = capsys.readouterr()
-    assert "├── Model" in captured.out
-    printer("Custom node tree print successful")
-
-    # Test 3: Max lines limit
-    embedded_app.Model.AddStaticStructuralAnalysis()
-    embedded_app.helpers.print_tree(max_lines=3)
-    captured = capsys.readouterr()
-    assert "truncating after 3 lines" in captured.out
-    printer("Max lines limit working")
-
-    # Test 4: Unlimited lines
-    embedded_app.helpers.print_tree(max_lines=-1)
-    captured = capsys.readouterr()
-    assert "truncating" not in captured.out
-    printer("Unlimited lines working")
-
-    # Test 5: Suppressed objects display
-    embedded_app.update_globals(globals())
-    allbodies = embedded_app.Model.GetChildren(DataModelObjectCategory.Body, True)  # noqa: F821
-    if allbodies.Count > 0:
-        allbodies[0].Suppressed = True
-        embedded_app.helpers.print_tree()
-        captured = capsys.readouterr()
-        assert "(Suppressed)" in captured.out or "├──" in captured.out
-        printer("Suppressed objects shown correctly")
-
-    # Test 6: Object state indicators
-    embedded_app.helpers.print_tree()
-    captured = capsys.readouterr()
-    # Check for object state symbols: (?), (✓), (⚡︎), (✕)
-    assert any(marker in captured.out for marker in ["(?)", "(✓)", "(⚡︎)", "(✕)", "├──"]), (
-        "Expected object state markers in tree output"
-    )
-    printer("Object state indicators working correctly")
-
-
-@pytest.mark.embedding
 def test_import_geometry(embedded_app, assets, printer):
     """Test geometry import with basic and all options."""
     printer("Testing geometry import")

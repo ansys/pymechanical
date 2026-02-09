@@ -36,7 +36,6 @@ class Helpers:
     >>> from ansys.mechanical.core import App
     >>> app = App()
     >>> helpers = app.helpers
-    >>> helpers.print_tree()
     """
 
     def __init__(self, app):
@@ -47,43 +46,6 @@ class Helpers:
         from ansys.mechanical.core.embedding.global_importer import Ansys
 
         self.Ansys = Ansys
-
-    def print_tree(self, node=None, max_lines=80):
-        """
-        Print the hierarchical tree representation of the Mechanical project structure.
-
-        Parameters
-        ----------
-        node : DataModel object, optional
-            The starting object of the tree. If not provided, starts from the Project.
-        max_lines : int, optional
-            The maximum number of lines to print. Default is 80.
-            If set to -1, no limit is applied.
-
-        Raises
-        ------
-        AttributeError
-            If the node does not have the required attributes.
-
-        Examples
-        --------
-        >>> from ansys.mechanical.core import App
-        >>> app = App()
-        >>> app.helpers.print_tree()
-        ... ├── Project
-        ... |  ├── Model
-        ... |  |  ├── Geometry Imports (⚡︎)
-
-        >>> app.helpers.print_tree(app.Model, max_lines=3)
-        ... ├── Model
-        ... |  ├── Geometry Imports (⚡︎)
-        ... |  ├── Geometry (?)
-        ... ... truncating after 3 lines
-        """
-        if node is None:
-            node = self._app.DataModel.Project
-
-        _print_tree(node, max_lines, 0, "")
 
     def import_geometry(
         self,
@@ -582,55 +544,3 @@ class Helpers:
         plt.axis(axis)
         # Display the figure
         plt.show()
-
-
-# Helper function to print the tree recursively
-def _print_tree(node, max_lines, lines_count, indentation):
-    """Recursively print till provided maximum lines limit.
-
-    Each object in the tree is expected to have the following attributes:
-        - Name: The name of the object.
-        - Suppressed : Print as suppressed, if object is suppressed.
-        - Children: Checks if object have children.
-        Each child node is expected to have the all these attributes.
-
-    Parameters
-    ----------
-    lines_count: int, optional
-        The current count of lines printed. Default is 0.
-    indentation: str, optional
-        The indentation string used for printing the tree structure. Default is "".
-    """
-    if lines_count >= max_lines and max_lines != -1:
-        print(f"... truncating after {max_lines} lines")
-        return lines_count
-
-    if not hasattr(node, "Name"):
-        raise AttributeError("Object must have a 'Name' attribute")
-
-    node_name = node.Name
-    if hasattr(node, "Suppressed") and node.Suppressed is True:
-        node_name += " (Suppressed)"
-    if hasattr(node, "ObjectState"):
-        if str(node.ObjectState) == "UnderDefined":
-            node_name += " (?)"
-        elif str(node.ObjectState) == "Solved" or str(node.ObjectState) == "FullyDefined":
-            node_name += " (✓)"
-        elif str(node.ObjectState) == "NotSolved" or str(node.ObjectState) == "Obsolete":
-            node_name += " (⚡︎)"
-        elif str(node.ObjectState) == "SolveFailed":
-            node_name += " (✕)"
-    print(f"{indentation}├── {node_name}")
-    lines_count += 1
-
-    if lines_count >= max_lines and max_lines != -1:
-        print(f"... truncating after {max_lines} lines")
-        return lines_count
-
-    if hasattr(node, "Children") and node.Children is not None and node.Children.Count > 0:
-        for child in node.Children:
-            lines_count = _print_tree(child, max_lines, lines_count, indentation + "|  ")
-            if lines_count >= max_lines and max_lines != -1:
-                break
-
-    return lines_count

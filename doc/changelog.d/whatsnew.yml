@@ -8,7 +8,6 @@ fragments:
 
     Available helper functions:
 
-    - **print_tree()**: Display hierarchical project structure with object states
     - **import_geometry()**: Import CAD geometry with flexible options
     - **import_materials()**: Load material definitions from XML files
     - **export_image()**: Export high-quality images of the current view
@@ -22,7 +21,7 @@ fragments:
         from ansys.mechanical.core import App
 
         app = App()
-        helpers = app.DataModel.Project.Helpers
+        helpers = app.helpers
 
         # Import geometry and materials
         helpers.import_geometry("bracket.x_t")
