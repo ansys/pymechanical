@@ -34,6 +34,7 @@ detailed how-to guides on specific topics. The user guide is divided into the fo
    howto/libraries
    howto/logging
    howto/pep8
+   howto/autocomplete
 
 .. toctree::
    :maxdepth: 1

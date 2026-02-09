@@ -378,7 +378,7 @@ linkcheck_ignore = [
     "https://support.ansys.com/*",
     "https://discuss.ansys.com/*",
     "https://www.ansys.com/*",
-    "https://developer.ansys.com/.*",
+    "https://developer.ansys.com/*",
     "../api/*",
 ]
 
