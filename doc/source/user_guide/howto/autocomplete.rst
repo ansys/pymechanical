@@ -4,7 +4,7 @@ Autocomplete
 ============
 
 The ``ansys-mechanical-stubs`` package provides typehints for Mechanical scripting.
-This package is automatically installed when you install PyMechanical from v0.11.9 and on.
+This package is automatically installed when you install PyMechanical.
 
 Setting up autocomplete in VS Code
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -12,7 +12,7 @@ Setting up autocomplete in VS Code
 The ``ansys-mechanical-ideconfig`` command prints the settings that are necessary for
 autocomplete to work with the ``ansys-mechanical-stubs`` dependency. This command takes in
 three arguments: ``--ide vscode``, ``--target user`` or ``--target workspace``,
-and ``--revision <version>``. If the revision is not provided, ``ansys-tools-path``
+and ``--revision <version>``. If the revision is not provided, ``ansys-tools-common``
 retrieves the Mechanical version from your system.
 
 Usage:
