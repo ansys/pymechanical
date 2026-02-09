@@ -21,50 +21,6 @@ The Helpers class is accessible through the ``helpers`` attribute of the
 All helper methods are designed to work seamlessly with the embedded Mechanical instance and
 provide clear error messages when operations fail.
 
-Visualizing project structure
-------------------------------
-
-The ``print_tree()`` method displays a hierarchical tree representation of your Mechanical project,
-making it easy to understand the structure and status of objects.
-
-**Basic usage**
-
-.. code:: python
-
-   from ansys.mechanical.core import App
-
-   app = App(globals=globals())
-   app.helpers.print_tree()
-
-This prints the entire project tree starting from the Project node, showing object states with
-visual indicators:
-
-- ``(?)`` - UnderDefined
-- ``(✓)`` - Solved or FullyDefined
-- ``(⚡︎)`` - NotSolved or Obsolete
-- ``(✕)`` - SolveFailed
-- ``(Suppressed)`` - Object is suppressed
-
-**Custom starting node**
-
-You can print a sub-tree starting from any node:
-
-.. code:: python
-
-   # Print only the Model sub-tree
-   app.helpers.print_tree(node=app.Model)
-
-**Limiting output**
-
-Control the number of lines printed to avoid overwhelming output:
-
-.. code:: python
-
-   # Print only first 20 lines
-   app.helpers.print_tree(max_lines=20)
-
-   # Print unlimited lines
-   app.helpers.print_tree(max_lines=-1)
 
 Importing geometry
 ------------------
