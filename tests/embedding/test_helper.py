@@ -358,8 +358,6 @@ def test_display_image(embedded_app, assets, tmp_path, printer, monkeypatch):
     embedded_app.helpers.display_image(
         str(image_path_custom),
         figsize=(10, 6),
-        xticks=[0, 100, 200],
-        yticks=[0, 100, 200],
         axis="on",
     )
     assert len(show_called) == 2

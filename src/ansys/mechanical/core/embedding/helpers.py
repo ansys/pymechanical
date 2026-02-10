@@ -502,8 +502,6 @@ class Helpers:
         self,
         image_path: str,
         figsize: tuple = (16, 9),
-        xticks: list = [],
-        yticks: list = [],
         axis: str = "off",
     ):
         """Display an image using matplotlib.
@@ -514,10 +512,6 @@ class Helpers:
             The path to the image file to display.
         figsize : tuple, optional
             The size of the figure in inches (width, height). Default is (16, 9).
-        xticks : list, optional
-            The x-ticks to display on the plot. Default is [].
-        yticks : list, optional
-            The y-ticks to display on the plot. Default is [].
         axis : str, optional
             The axis visibility setting ('on' or 'off'). Default is "off".
 
@@ -537,9 +531,6 @@ class Helpers:
         plt.figure(figsize=figsize)
         # Read and display the image
         plt.imshow(mpimg.imread(image_path))
-        # Set the tick locations and labels
-        plt.xticks(xticks)
-        plt.yticks(yticks)
         # Turn axis on or off
         plt.axis(axis)
         # Display the figure

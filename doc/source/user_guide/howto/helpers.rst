@@ -3,13 +3,13 @@
 Helpers
 =======
 
-The `Helpers <../api/ansys/mechanical/core/embedding/helpers/Helpers.html>`_ class provides
+The `Helpers <../api/ansys/mechanical/core/embedding/helpers/Helpers.html#ansys.mechanical.core.embedding.helpers.Helpers>`_ class provides
 convenient utility methods for common Mechanical operations. These helpers simplify tasks such as
 importing geometry and materials, exporting images and animations, configuring views, and
 visualizing the project tree structure.
 
 The Helpers class is accessible through the ``helpers`` attribute of the
-`App <../api/ansys/mechanical/core/embedding/app/App.html>`_ instance:
+`App <../api/ansys/mechanical/core/embedding/app/App.html#ansys.mechanical.core.embedding.app.App>`_ instance:
 
 .. code:: python
 
@@ -300,8 +300,6 @@ Python environment. This is particularly useful in Jupyter notebooks or interact
    app.helpers.display_image(
        "geometry.png",
        figsize=(12, 8),  # Figure size in inches
-       xticks=[],  # Hide x-axis ticks
-       yticks=[],  # Hide y-axis ticks
        axis="off"  # Hide axes completely
    )
 
@@ -356,26 +354,7 @@ Export images from different angles for documentation:
            file_path=f"part_{view}.png"
        )
 
-**Project inspection workflow**
 
-Use ``print_tree()`` to inspect and document your project structure:
-
-.. code:: python
-
-   from ansys.mechanical.core import App
-
-   app = App(globals=globals())
-   # Build your model...
-   app.helpers.import_geometry("assembly.x_t")
-   analysis = app.Model.AddStaticStructuralAnalysis()
-
-   # Print the complete project tree
-   print("Complete Project Structure:")
-   app.helpers.print_tree()
-
-   # Print just the analysis branch
-   print("\nAnalysis Details:")
-   app.helpers.print_tree(node=analysis, max_lines=50)
 
 Error handling
 --------------
@@ -427,13 +406,10 @@ Best practices
 3. **Use appropriate image formats**: PNG for technical documentation, JPG for presentations,
    EPS for publications.
 
-4. **Use ``print_tree()`` for debugging**: When troubleshooting model issues, use ``print_tree()``
-   to inspect object states and hierarchy.
-
-5. **Handle errors gracefully**: Wrap helper method calls in try-except blocks to handle
+4. **Handle errors gracefully**: Wrap helper method calls in try-except blocks to handle
    potential failures gracefully in production scripts.
 
-6. **Verify imports**: After importing geometry or materials, verify the object state:
+5. **Verify imports**: After importing geometry or materials, verify the object state:
 
    .. code:: python
 
