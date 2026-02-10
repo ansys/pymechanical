@@ -55,7 +55,7 @@ while [ "$#" -gt 0 ]; do
             shift 2
             ;;
         *)
-            command="$@"
+            command=("$@")
             break
             ;;
     esac
@@ -211,6 +211,6 @@ PYMECHANICAL_EMBEDDING=TRUE
 export PYMECHANICAL_EMBEDDING
 
 # Evaluate the command and get the return code of the process
-eval $@
+eval "${command[@]}"
 returnCode=$?
 exit $returnCode
