@@ -699,6 +699,56 @@ class App:
         for scope in self._updated_scopes:
             scope.update(global_entry_points(self))
 
+    def _print_tree(self, node, max_lines, lines_count, indentation):
+        """Recursively print till provided maximum lines limit.
+
+        Each object in the tree is expected to have the following attributes:
+         - Name: The name of the object.
+         - Suppressed : Print as suppressed, if object is suppressed.
+         - Children: Checks if object have children.
+           Each child node is expected to have the all these attributes.
+
+        Parameters
+        ----------
+        lines_count: int, optional
+            The current count of lines printed. Default is 0.
+        indentation: str, optional
+            The indentation string used for printing the tree structure. Default is "".
+        """
+        if lines_count >= max_lines and max_lines != -1:
+            print(f"... truncating after {max_lines} lines")
+            return lines_count
+
+        if not hasattr(node, "Name"):
+            raise AttributeError("Object must have a 'Name' attribute")
+
+        node_name = node.Name
+        if hasattr(node, "Suppressed") and node.Suppressed is True:
+            node_name += " (Suppressed)"
+        if hasattr(node, "ObjectState"):
+            if str(node.ObjectState) == "UnderDefined":
+                node_name += " (?)"
+            elif str(node.ObjectState) == "Solved" or str(node.ObjectState) == "FullyDefined":
+                node_name += " (✓)"
+            elif str(node.ObjectState) == "NotSolved" or str(node.ObjectState) == "Obsolete":
+                node_name += " (⚡︎)"
+            elif str(node.ObjectState) == "SolveFailed":
+                node_name += " (✕)"
+        print(f"{indentation}├── {node_name}")
+        lines_count += 1
+
+        if lines_count >= max_lines and max_lines != -1:
+            print(f"... truncating after {max_lines} lines")
+            return lines_count
+
+        if hasattr(node, "Children") and node.Children is not None and node.Children.Count > 0:
+            for child in node.Children:
+                lines_count = self._print_tree(child, max_lines, lines_count, indentation + "|  ")
+                if lines_count >= max_lines and max_lines != -1:
+                    break
+
+        return lines_count
+
     def print_tree(self, node=None, max_lines=80, lines_count=0, indentation=""):
         """
         Print the hierarchical tree representation of the Mechanical project structure.
@@ -743,7 +793,7 @@ class App:
         """
         if node is None:
             node = self.DataModel.Project
-        self.helpers.print_tree(node, max_lines)
+        self._print_tree(node, max_lines, lines_count, indentation)
 
     def log_debug(self, message):
         """Log the debug message."""
