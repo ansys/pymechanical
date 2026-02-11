@@ -34,7 +34,7 @@ env:
   MAIN_PYTHON_VERSION: '3.12'
   # DEV_REVN & its Docker image are used in scheduled or registry package runs
   STABLE_REVN: '252'
-  DEV_REVN: '261'
+  DEV_REVN: '271'
   LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
   ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
 
