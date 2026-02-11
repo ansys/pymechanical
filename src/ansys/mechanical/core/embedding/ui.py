@@ -179,7 +179,7 @@ def _is_saved(app: App) -> bool:
     try:
         app.save()
     except Exception as e:
-        raise Exception("The App must have already been saved before using launch_ui!") from e
+        raise RuntimeError("The App must have already been saved before using launch_ui!") from e
     return True
 
 

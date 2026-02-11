@@ -34,7 +34,7 @@ from ansys.mechanical.core.embedding.resolver import resolve
 from ansys.mechanical.core.mechanical import LOG
 
 INITIALIZED_VERSION = None
-"""Constant for the initialized version."""
+"""The currently initialized Mechanical version, or None."""
 
 SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS = {
     252: "2025R2",
@@ -64,7 +64,7 @@ def __workaround_material_server(version: int) -> None:
         os.environ["ENGRDATA_SERVER_SERIAL"] = "1"
 
 
-def __check_for_supported_version(version) -> None:
+def __check_for_supported_version(version) -> int:
     """Check if Mechanical version is supported with current version of PyMechanical.
 
     If specific environment variable is enabled, then users can overwrite the supported versions.
@@ -88,7 +88,7 @@ def _get_latest_default_version() -> int:
     """
     awp_roots = [value for key, value in os.environ.items() if key.startswith("AWP_ROOT")]
     if not awp_roots:
-        raise Exception("No Mechanical installations found.")
+        raise RuntimeError("No Mechanical installations found.")
 
     versions_found = []
     for path in awp_roots:
@@ -112,7 +112,7 @@ def _get_latest_default_version() -> int:
 def __check_python_interpreter_architecture() -> None:
     """Embedding support only 64 bit architecture."""
     if platform.architecture()[0] != "64bit":
-        raise Exception("Mechanical Embedding requires a 64-bit Python environment.")
+        raise RuntimeError("Mechanical Embedding requires a 64-bit Python environment.")
 
 
 def __windows_store_workaround(version: int) -> None:
@@ -156,36 +156,24 @@ def __windows_store_workaround(version: int) -> None:
     ]
     # Set the path to the tp directory within the AWP_ROOTXYZ directory
     awp_root_tp = awp_root / "tp"
-    # Add paths to the IntelCompiler, IntelMKL, HDF5, and Qt DLLs for 2024R2 and 2025R1
-    if version == 242:
-        paths.extend(
-            [
-                awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
-                awp_root_tp / "IntelMKL" / "2023.1.0" / "winx64",
-                awp_root_tp / "hdf5" / "1.12.2" / "winx64",
-                awp_root_tp / "qt" / "5.15.16" / "winx64" / "bin",
-            ]
-        )
-    elif version == 251:
-        paths.extend(
-            [
-                awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
-                awp_root_tp / "IntelMKL" / "2023.1.0" / "winx64",
-                awp_root_tp / "hdf5" / "1.12.2" / "winx64",
-                awp_root_tp / "qt" / "5.15.17" / "winx64" / "bin",
-            ]
-        )
-    elif version == 252:
-        paths.extend(
-            [
-                awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
-                awp_root_tp / "IntelMKL" / "2024.2.3" / "winx64",
-                awp_root_tp / "hdf5" / "winx64",
-                awp_root_tp / "qt" / "5.15.18" / "winx64" / "bin",
-            ]
-        )
-    else:
+    # Version-specific DLL path configurations for IntelMKL, HDF5, and Qt
+    _dll_path_configs = {
+        242: {"IntelMKL": "2023.1.0", "hdf5": "1.12.2", "qt": "5.15.16"},
+        251: {"IntelMKL": "2023.1.0", "hdf5": "1.12.2", "qt": "5.15.17"},
+        252: {"IntelMKL": "2024.2.3", "hdf5": None, "qt": "5.15.18"},
+    }
+
+    config = _dll_path_configs.get(version)
+    if config is None:
         return
+
+    paths.append(awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64")
+    paths.append(awp_root_tp / "IntelMKL" / config["IntelMKL"] / "winx64")
+    if config["hdf5"] is not None:
+        paths.append(awp_root_tp / "hdf5" / config["hdf5"] / "winx64")
+    else:
+        paths.append(awp_root_tp / "hdf5" / "winx64")
+    paths.append(awp_root_tp / "qt" / config["qt"] / "winx64" / "bin")
 
     # Add each path to the DLL search path
     for path in paths:
@@ -212,10 +200,10 @@ def __set_environment(version: int) -> None:
 def __check_for_mechanical_env():
     """Embedding in linux platform must use mechanical-env."""
     if platform.system() == "Linux" and os.environ.get("PYMECHANICAL_EMBEDDING") != "TRUE":
-        raise Exception(
-            "On linux, embedding an instance of the Mechanical process using"
-            "the App class requires running python inside of a Mechanical environment."
-            "Use the `mechanical-env` script to do this. For more information, refer to:"
+        raise RuntimeError(
+            "On linux, embedding an instance of the Mechanical process using "
+            "the App class requires running python inside of a Mechanical environment. "
+            "Use the `mechanical-env` script to do this. For more information, refer to: "
             "https://mechanical.docs.pyansys.com/version/stable/"
             "getting_started/running_mechanical.html#embed-a-mechanical-instance"
         )
