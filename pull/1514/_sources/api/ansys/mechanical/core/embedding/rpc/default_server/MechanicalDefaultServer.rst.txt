@@ -1,0 +1,49 @@
+
+
+
+
+
+
+:class:`MechanicalDefaultServer`
+================================
+
+
+.. py:class:: ansys.mechanical.core.embedding.rpc.default_server.MechanicalDefaultServer(**kwargs)
+
+   Bases: :py:obj:`ansys.mechanical.core.embedding.rpc.server.MechanicalEmbeddedServer`
+
+
+   
+   Default server with default service methods.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.mechanical.core.embedding.rpc.default_server import MechanicalDefaultServer
+
+
+
+
+
