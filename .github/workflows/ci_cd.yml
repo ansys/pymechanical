@@ -8,13 +8,14 @@ on:
         type: choice
         options:
         - 'candidate'
+        - '271'
         - '261'
         - '252'
         - '251'
         - '242'
         - '241'
         description: 'The Mechanical revision number to run tests on.'
-        default: '252' #stable version is 252, must match $stable_container
+        default: '261' # Same as STABLE_REVN
   schedule:
     - cron: '00 22 * * *'  # UTC time, may start 5-15 mins later than scheduled time
   push:
@@ -32,8 +33,8 @@ env:
   PACKAGE_NAME: ansys-mechanical-core
   DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
   MAIN_PYTHON_VERSION: '3.12'
+  STABLE_REVN: '261'
   # DEV_REVN & its Docker image are used in scheduled or registry package runs
-  STABLE_REVN: '252'
   DEV_REVN: '271'
   LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
   ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
@@ -242,7 +243,7 @@ jobs:
         run: |
           # if a tag(release) is pushed, test all versions
           if [[ "${GH_EVENT_NAME}" == "push" ]] && [[ "$GH_REF" =~ "refs/tags" ]]; then
-            echo "matrix={\"mechanical-version\":['24.1.0', '24.2.0', '25.1.0', '25.2.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
+            echo "matrix={\"mechanical-version\":['24.1.0', '24.2.0', '25.1.0', '25.2.0', '26.1.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           else
             echo "matrix={\"mechanical-version\":['${TEST_DOCKER_IMAGE_VERSION}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           fi
@@ -302,12 +303,12 @@ jobs:
         run: |
           docker pull ${MECHANICAL_IMAGE}
 
-          # Extract version without dots for path (e.g., 26.1.0 -> 261, 26.1_candidate -> 261)
+          # Extract version without dots for path (e.g., 27.1.0 -> 271, 27.1_candidate -> 271)
           VERSION_PATH=$(echo ${MECHANICAL_VERSION} | grep -oP '^\d+\.\d+' | tr -d '.')
 
-          # Check if image name contains 26.1 to determine entrypoint
-          if [[ ${MECHANICAL_IMAGE} == *"26.1"* ]]; then
-            echo "Detected version 26.1 - using custom entrypoint for insecure transport"
+          # Check if image name contains 27.1 to determine entrypoint
+          if [[ ${MECHANICAL_IMAGE} == *"27.1"* ]]; then
+            echo "Detected version 27.1 - using custom entrypoint for insecure transport"
             docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} \
               -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} \
               -e ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH=${ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH} \
