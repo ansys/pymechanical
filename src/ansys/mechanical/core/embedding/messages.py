@@ -89,9 +89,9 @@ class MessageManager:
 
     def __getitem__(self, index):
         """Allow indexed access to messages."""
-        if len(self._messages) == 0:
+        if self._messages.Count == 0:
             raise IndexError("No messages are available.")
-        if index >= len(self._messages) or index < 0:
+        if index >= self._messages.Count or index < 0:
             raise IndexError("Message index out of range.")
         return self._messages[index]
 
