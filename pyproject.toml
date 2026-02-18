@@ -49,46 +49,52 @@ Changelog = "https://mechanical.docs.pyansys.com/version/stable/changelog.html"
 
 [project.optional-dependencies]
 tests = [
-    "pytest==9.0.2",
-    "pytest-cov==7.0.0",
-    "pytest-print==1.2.0",
-    "psutil==7.2.2",
+    "pytest>=9.0.2,<10",
+    "pytest-cov>=7.0.0,<8",
+    "pytest-print>=1.2.0,<2",
+    "psutil>=7.2.2,<8",
 ]
 
 doc = [
-    "sphinx==8.2.3",
-    "ansys-sphinx-theme[autoapi,changelog]==1.6.4",
-    "imageio-ffmpeg==0.6.0",
-    "imageio==2.37.2",
-    "jupyter_sphinx==0.5.3",
-    "jupyterlab>=3.2.8",
-    "matplotlib==3.10.8",
-    "numpy==2.2.6",
-    "numpydoc==1.8.0",
-    "pypandoc==1.16.2",
-    "sphinx-autobuild==2025.8.25",
-    "sphinx-autodoc-typehints==3.1.0",
-    "sphinx-copybutton==0.5.2",
-    "sphinx_design==0.6.1",
-    "sphinx-gallery==0.20.0",
-    "sphinx-notfound-page==1.1.0",
-    "sphinxcontrib-websupport==2.0.0",
-    "sphinx-click==6.2.0",
+    "sphinx>=8.2.3,<9",
+    "ansys-sphinx-theme[autoapi,changelog]>=1.7.0,<2",
+    "imageio-ffmpeg>=0.6.0,<1",
+    "imageio>=2.37.2,<3",
+    "jupyter_sphinx>=0.5.3,<1",
+    "jupyterlab>=3.2.8,<5",
+    "matplotlib>=3.10.8,<4",
+    "numpy>=2.2.6,<3",
+    "numpydoc>=1.8.0,<2",
+    "pypandoc>=1.16.2,<2",
+    "sphinx-autobuild>=2025.8.25,<2026",
+    "sphinx-autodoc-typehints>=3.1.0,<4",
+    "sphinx-copybutton>=0.5.2,<1",
+    "sphinx-gallery>=0.20.0,<1",
+    "sphinx-notfound-page>=1.1.0,<2",
+    "sphinxcontrib-websupport>=2.0.0,<3",
+    "sphinx-click>=6.2.0,<7",
     "ansys-tools-visualization-interface>=0.2.6",
 ]
 
 graphics = [
     "ansys-tools-visualization-interface>=0.2.6",
-    "usd-core==25.11",
+    "usd-core>=25.11,<26",
 ]
 
 rpc = [
-    "rpyc==6.0.2",
-    "toolz==1.1.0",
+    "rpyc>=6.0.2,<7",
+    "toolz>=1.1.0,<2",
 ]
 
 pim = [
     "ansys-platform-instancemanagement>=1.0.1",
+]
+
+dev = [
+    "pre-commit>=3.0.0",
+    "ruff>=0.14.14",
+    "mypy>=1.19.1,<2",
+    "uv>=0.9.28",
 ]
 
 [project.scripts]
