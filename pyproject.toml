@@ -52,12 +52,8 @@ tests = [
     "pytest==9.0.2",
     "pytest-cov==7.0.0",
     "pytest-print==1.2.0",
-<<<<<<< feat/utilities
-    "psutil==7.2.1",
     "matplotlib==3.10.8",
-=======
     "psutil==7.2.2",
->>>>>>> main
 ]
 
 doc = [
