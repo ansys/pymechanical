@@ -309,6 +309,9 @@ jobs:
           # Extract major.minor version for comparison (e.g., 27.1.0 -> 27.1, 27.1_candidate -> 27.1)
           VERSION_NUM=$(echo ${MECHANICAL_VERSION} | grep -oP '^\d+\.\d+')
 
+          # Install bc for version comparison
+          sudo apt-get update -qq && sudo apt-get install -y -qq bc
+
           # Check if version is greater than 26.1 to determine entrypoint
           if (( $(echo "$VERSION_NUM > 26.1" | bc -l) )); then
             echo "Detected version $VERSION_NUM (> 26.1) - using custom entrypoint for insecure transport"
