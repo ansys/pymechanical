@@ -40,11 +40,9 @@ class UniqueUserProfile:
         self.initialize()
 
     def initialize(self) -> None:
-        """
-        Initialize the new profile location.
+        """Initialize the new profile location.
 
-        Args:
-            copy_profile (bool): If False, the copy_profile method will be skipped.
+        If ``copy_profile`` is False, the copy_profile step will be skipped.
         """
         if self._dry_run:
             return
@@ -69,7 +67,7 @@ class UniqueUserProfile:
 
     @property
     def location(self) -> Path:
-        """Return the profile name."""
+        """Return the profile location path."""
         return self._location
 
     def update_environment(self, env) -> None:
@@ -86,6 +84,8 @@ class UniqueUserProfile:
             env["TEMP"] = appdata_local_temp
         elif "lin" in sys.platform:
             env["HOME"] = str(home)
+        else:
+            raise RuntimeError(f"Unsupported platform: {sys.platform}")
 
     def exists(self) -> bool:
         """Check if unique profile name already exists."""
@@ -98,6 +98,8 @@ class UniqueUserProfile:
             locs = ["AppData/Roaming", "AppData/Local", "Documents"]
         elif "lin" in sys.platform:
             locs = [".config", "temp/reports"]
+        else:
+            raise RuntimeError(f"Unsupported platform: {sys.platform}")
 
         for loc in locs:
             dir_name = self.location / loc
@@ -109,6 +111,8 @@ class UniqueUserProfile:
             locs = ["AppData/Roaming/Ansys", "AppData/Local/Ansys"]
         elif "lin" in sys.platform:
             locs = [".mw/Application Data/Ansys", ".config/Ansys"]
+        else:
+            raise RuntimeError(f"Unsupported platform: {sys.platform}")
         for loc in locs:
             default_profile_loc = self._default_profile / loc
             temp_appdata_loc = self.location / loc

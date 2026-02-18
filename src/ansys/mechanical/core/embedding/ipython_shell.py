@@ -179,7 +179,7 @@ def cleanup():
 
 def _can_post_ipython_blocks():
     if not HAS_IPYTHON:
-        raise Exception("`post_ipython_blocks` requires ipython")
+        raise RuntimeError("`post_ipython_blocks` requires ipython")
 
 
 def in_ipython():

@@ -36,7 +36,7 @@ class LicenseManager:
     """
 
     def __init__(self, app):
-        """Initialize the message manager."""
+        """Initialize the license manager."""
         self._app = app
         self._license_preference = None
         import Ansys
