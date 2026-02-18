@@ -52,12 +52,12 @@ tests = [
     "pytest>=9.0.2,<10",
     "pytest-cov>=7.0.0,<8",
     "pytest-print>=1.2.0,<2",
-    "psutil>=7.2.1,<8",
+    "psutil>=7.2.2,<8",
 ]
 
 doc = [
     "sphinx>=8.2.3,<9",
-    "ansys-sphinx-theme[autoapi,changelog]>=1.6.4,<2",
+    "ansys-sphinx-theme[autoapi,changelog]>=1.7.0,<2",
     "imageio-ffmpeg>=0.6.0,<1",
     "imageio>=2.37.2,<3",
     "jupyter_sphinx>=0.5.3,<1",
@@ -69,7 +69,6 @@ doc = [
     "sphinx-autobuild>=2025.8.25,<2026",
     "sphinx-autodoc-typehints>=3.1.0,<4",
     "sphinx-copybutton>=0.5.2,<1",
-    "sphinx_design>=0.6.1,<1",
     "sphinx-gallery>=0.20.0,<1",
     "sphinx-notfound-page>=1.1.0,<2",
     "sphinxcontrib-websupport>=2.0.0,<3",
