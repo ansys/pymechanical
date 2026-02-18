@@ -22,6 +22,7 @@
 
 """Miscellaneous embedding tests."""
 
+import logging
 import os
 from pathlib import Path
 import shutil
@@ -35,6 +36,7 @@ import pytest
 from ansys.mechanical.core.embedding.app import is_initialized
 from ansys.mechanical.core.embedding.cleanup_gui import cleanup_gui
 from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
+from ansys.mechanical.core.embedding.logger import Logger
 from ansys.mechanical.core.embedding.ui import _launch_ui
 import ansys.mechanical.core.embedding.utils as utils
 
@@ -92,13 +94,13 @@ def test_app_save_open(embedded_app, tmp_path: pytest.TempPathFactory):
 
 
 @pytest.mark.embedding
-def test_app_update_globals_after_open(embedded_app, assets):
+def test_app_update_globals_after_open(embedded_app, assets, graphics_test_mechdb_file):
     """Test save and open of the Application class."""
     embedded_app.update_globals(globals())
     # unless the global "Model" has been redirected to point to the new model from the project file
     # this will throw an exception
     embedded_app.new()
-    embedded_app.open(str(Path(assets) / "cube-hole.mechdb"))
+    embedded_app.open(str(graphics_test_mechdb_file))
     Model.AddNamedSelection()  # noqa
 
 
@@ -449,6 +451,32 @@ def test_launch_gui_exception(embedded_app):
     # Assert that an exception is raised
     with pytest.raises(Exception):
         embedded_app.launch_gui(delete_tmp_on_close=False)
+    embedded_app.close()
+
+
+@pytest.mark.embedding
+def test_launch_gui_no_exe(embedded_app, monkeypatch, tmp_path: pytest.TempPathFactory, capfd):
+    """Test executable is retrieved directly when ansys-mechanical can't find path."""
+    mechdb_path = tmp_path / "test.mechdb"
+    embedded_app.save(str(mechdb_path))
+
+    # Patch get_mechanical_path to return None
+    def mock_popen(args=[]):
+        raise Exception("Could not find Mechanical executable")
+
+    monkeypatch.setattr(
+        "ansys.mechanical.core.embedding.ui.Popen",
+        mock_popen,
+    )
+
+    with pytest.raises(Exception):
+        embedded_app.launch_gui()
+
+        out, err = capfd.readouterr()
+        assert "Could not find Mechanical executable" in err
+        assert Logger.can_log_message(logging.INFO) is True
+        assert Logger.can_log_message(logging.WARNING) is True
+
     embedded_app.close()
 
 

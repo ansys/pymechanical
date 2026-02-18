@@ -204,7 +204,7 @@ sphinx_gallery_conf = {
     "doc_module": "ansys-mechanical-core",
     "image_scrapers": (DynamicScraper(), "matplotlib"),
     # Files to ignore
-    "ignore_pattern": "flycheck*|fracture_analysis_contact_debonding.py",  # noqa: E501
+    "ignore_pattern": "flycheck*",  # noqa: E501
     "thumbnail_size": (350, 350),
 }
 
@@ -375,15 +375,16 @@ linkcheck_ignore = [
     "https://github.com/ansys/pymechanical/pkgs/container/.*",
     "https://ansyshelp.ansys.com/*",
     "https://answers.microsoft.com/en-us/windows/forum/all/*",
+    "https://docutils.sourceforge.io/*",
     "https://download.ansys.com/*",
     "https://support.ansys.com/*",
     "https://discuss.ansys.com/*",
     "https://www.ansys.com/*",
+    "https://developer.ansys.com/*",
     "../api/*",
 ]
 
 linkcheck_anchors = False
-
 
 linkcheck_exclude_documents = [
     "changelog",

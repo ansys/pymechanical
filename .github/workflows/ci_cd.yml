@@ -53,7 +53,7 @@ jobs:
       contents: write        # Needed to create changelog entries in repository
       pull-requests: write   # Required to create pull requests for changelog updates
     steps:
-      - uses: ansys/actions/doc-deploy-changelog@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
+      - uses: ansys/actions/doc-deploy-changelog@3931ac9351b13ae11b1203c2ef6b51e5c75502ea # v10.2.5
         with:
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
           bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
@@ -66,7 +66,7 @@ jobs:
       contents: read
     steps:
       - name: PyAnsys code style checks
-        uses: ansys/actions/code-style@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
+        uses: ansys/actions/code-style@3931ac9351b13ae11b1203c2ef6b51e5c75502ea # v10.2.5
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
@@ -77,7 +77,7 @@ jobs:
       contents: read
     steps:
       - name: PyAnsys documentation style checks
-        uses: ansys/actions/doc-style@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
+        uses: ansys/actions/doc-style@3931ac9351b13ae11b1203c2ef6b51e5c75502ea # v10.2.5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -89,7 +89,7 @@ jobs:
     steps:
       - name: PyAnsys Vulnerability check (on main)
         if: github.ref == 'refs/heads/main'
-        uses: ansys/actions/check-vulnerabilities@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
+        uses: ansys/actions/check-vulnerabilities@3931ac9351b13ae11b1203c2ef6b51e5c75502ea # v10.2.5
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           python-package-name: ${{ env.PACKAGE_NAME }}
@@ -97,7 +97,7 @@ jobs:
 
       - name: PyAnsys Vulnerability check (on dev mode)
         if: github.ref != 'refs/heads/main'
-        uses: ansys/actions/check-vulnerabilities@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
+        uses: ansys/actions/check-vulnerabilities@3931ac9351b13ae11b1203c2ef6b51e5c75502ea # v10.2.5
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           python-package-name: ${{ env.PACKAGE_NAME }}
@@ -110,7 +110,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: ansys/actions/check-actions-security@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
+      - uses: ansys/actions/check-actions-security@3931ac9351b13ae11b1203c2ef6b51e5c75502ea # v10.2.5
         with:
           generate-summary: true
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -135,7 +135,7 @@ jobs:
       contents: read
     steps:
       - name: Build wheelhouse and perform smoke test
-        uses: ansys/actions/build-wheelhouse@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
+        uses: ansys/actions/build-wheelhouse@3931ac9351b13ae11b1203c2ef6b51e5c75502ea # v10.2.5
         with:
           library-name: ${{ env.PACKAGE_NAME }}
           operating-system: ${{ matrix.os }}
@@ -200,7 +200,7 @@ jobs:
       packages: read         # Required to pull Docker images from GitHub Container Registry
     steps:
       - name: Login in Github Container registry
-        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -283,7 +283,7 @@ jobs:
       checks: write          # Needed to publish test results and status checks
     steps:
       - name: Login in Github Container registry
-        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -372,14 +372,14 @@ jobs:
           echo "::endgroup::"
 
       - name: Testing
-        uses: ansys/actions/tests-pytest@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
+        uses: ansys/actions/tests-pytest@3931ac9351b13ae11b1203c2ef6b51e5c75502ea # v10.2.5
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
           pytest-markers: '-m remote_session_connect'
           pytest-extra-args: '-s --junitxml remote_results${{ env.MAIN_PYTHON_VERSION }}.xml'
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@a294a61c909bd8a4b563024a2faa28897fd53ebc # v6.1.0
+        uses: mikepenz/action-junit-report@74626db7353a25a20a72816467ebf035f674c5f8 # v6.2.0
         if: always()
         with:
           report_paths: '**/remote_results*.xml'
@@ -439,7 +439,7 @@ jobs:
       packages: read         # Required to pull Docker images from GitHub Container Registry
       checks: write          # Needed to publish test results and status checks
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
 
@@ -496,7 +496,7 @@ jobs:
           retention-days: 7
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@a294a61c909bd8a4b563024a2faa28897fd53ebc # v6.1.0
+        uses: mikepenz/action-junit-report@74626db7353a25a20a72816467ebf035f674c5f8 # v6.2.0
         if: always()
         with:
           report_paths: '**/test_results*.xml'
@@ -522,7 +522,7 @@ jobs:
       packages: read         # Required to pull Docker images from GitHub Container Registry
       checks: write          # Needed to publish test results and status checks
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
 
@@ -575,7 +575,7 @@ jobs:
           retention-days: 7
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@a294a61c909bd8a4b563024a2faa28897fd53ebc # v6.1.0
+        uses: mikepenz/action-junit-report@74626db7353a25a20a72816467ebf035f674c5f8 # v6.2.0
         if: always()
         with:
           report_paths: '**/test_results*.xml'
@@ -601,7 +601,7 @@ jobs:
       packages: read         # Required to pull Docker images from GitHub Container Registry
       checks: write          # Needed to publish test results and status checks
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
 
@@ -643,7 +643,7 @@ jobs:
           fi
 
       - name: Publish Launch Test Report
-        uses: mikepenz/action-junit-report@a294a61c909bd8a4b563024a2faa28897fd53ebc # v6.1.0
+        uses: mikepenz/action-junit-report@74626db7353a25a20a72816467ebf035f674c5f8 # v6.2.0
         if: always()
         with:
           report_paths: '**/launch_test_results*.xml'
@@ -684,7 +684,7 @@ jobs:
     steps:
 
       - name: Install Git and checkout project
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
 
@@ -782,7 +782,7 @@ jobs:
       contents: write        # Required to push documentation to gh-pages branch
       pull-requests: write   # Needed to comment on PR with documentation link
     steps:
-      - uses: ansys/actions/doc-deploy-pr@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
+      - uses: ansys/actions/doc-deploy-pr@3931ac9351b13ae11b1203c2ef6b51e5c75502ea # v10.2.5
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -796,12 +796,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
 
       - name: Set up Python
-        uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
 
@@ -901,7 +901,7 @@ jobs:
       id-token: write        # Needed for OIDC authentication when generating attestations
     steps:
       - name: Build library source and wheel artifacts
-        uses: ansys/actions/build-library@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
+        uses: ansys/actions/build-library@3931ac9351b13ae11b1203c2ef6b51e5c75502ea # v10.2.5
         with:
           library-name: ${{ env.PACKAGE_NAME }}
           python-version: ${{ env.MAIN_PYTHON_VERSION }}
@@ -917,7 +917,7 @@ jobs:
       contents: write        # Needed to create GitHub releases and upload assets
     steps:
       - name: Release to GitHub
-        uses: ansys/actions/release-github@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
+        uses: ansys/actions/release-github@3931ac9351b13ae11b1203c2ef6b51e5c75502ea # v10.2.5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           library-name: ${{ env.PACKAGE_NAME }}
@@ -955,7 +955,7 @@ jobs:
       contents: write        # Required to push documentation to gh-pages branch
     steps:
       - name: Deploy the latest documentation
-        uses: ansys/actions/doc-deploy-dev@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
+        uses: ansys/actions/doc-deploy-dev@3931ac9351b13ae11b1203c2ef6b51e5c75502ea # v10.2.5
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
@@ -971,7 +971,7 @@ jobs:
       contents: write        # Required to push stable documentation to gh-pages branch
     steps:
       - name: Deploy the stable documentation
-        uses: ansys/actions/doc-deploy-stable@41f86da4c9ead510db9135e428e33df9cc6f92e1 # v10.2.3
+        uses: ansys/actions/doc-deploy-stable@3931ac9351b13ae11b1203c2ef6b51e5c75502ea # v10.2.5
         with:
           cname: ${{ env.DOCUMENTATION_CNAME }}
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
