@@ -30,14 +30,11 @@ version_info = 0, 58, 'dev0'
 
 """
 
-try:
-    import importlib.metadata as importlib_metadata
-except ModuleNotFoundError:  # pragma: no cover
-    import importlib_metadata
+import importlib.metadata
 
 # Read from the pyproject.toml
 # major, minor, patch
-__version__ = importlib_metadata.version("ansys-mechanical-core")
+__version__ = importlib.metadata.version("ansys-mechanical-core")
 
 SUPPORTED_MECHANICAL_VERSIONS = {
     252: "2025R2",

@@ -54,7 +54,7 @@ try:
     import ansys.tools.visualization_interface  # noqa: F401
 
     HAS_ANSYS_GRAPHICS = True
-    """Whether or not PyVista exists."""
+    """Whether or not ansys-tools-visualization-interface is available."""
 except ImportError:
     HAS_ANSYS_GRAPHICS = False
 
@@ -66,7 +66,7 @@ def _get_default_addin_configuration() -> AddinConfiguration:
     return configuration
 
 
-INSTANCES = []
+INSTANCES: list["App"] = []
 """List of instances."""
 
 
@@ -84,7 +84,7 @@ def _cleanup_private_appdata(profile: UniqueUserProfile):
 
 
 def _start_application(
-    configuration: AddinConfiguration, version, db_file, _addtional_args
+    configuration: AddinConfiguration, version, db_file, _additional_args
 ) -> "App":
     import clr
 
@@ -98,7 +98,7 @@ def _start_application(
     if version < 261:
         return Ansys.Mechanical.Embedding.Application(db_file, addin_configuration_name)
     return Ansys.Mechanical.Embedding.Application(
-        db_file, addin_configuration_name, _addtional_args
+        db_file, addin_configuration_name, _additional_args
     )
 
 
@@ -119,11 +119,11 @@ def _additional_args(readonly: bool, feature_flags: list, start_license: str, ve
     if start_license:
         if readonly:
             LOG.warning("The start_license argument is ignored when readonly is set to True.")
-        additional_args += f"-p {start_license}"
+        additional_args += f" -p {start_license}"
     return additional_args
 
 
-def is_initialized():
+def is_initialized() -> bool:
     """Check if the app has been initialized."""
     return len(INSTANCES) != 0
 
@@ -198,7 +198,12 @@ class App:
 
     """
 
-    def __init__(self, db_file=None, private_appdata=False, **kwargs):
+    def __init__(
+        self,
+        db_file: typing.Optional[str] = None,
+        private_appdata: bool = False,
+        **kwargs: typing.Any,
+    ) -> None:
         """Construct an instance of the mechanical Application."""
         global INSTANCES
         from ansys.mechanical.core import BUILDING_GALLERY
@@ -212,7 +217,7 @@ class App:
         self.log_info("Starting Mechanical Application")
 
         # Get the globals dictionary from kwargs
-        globals = kwargs.get("globals")
+        user_globals = kwargs.get("globals")
 
         # Get the interactive mode from kwargs
         self._interactive_mode = kwargs.get("interactive", False)
@@ -238,20 +243,20 @@ class App:
                 # Point to the same underlying application object
                 instance._share(self)
                 # Update the globals if provided in kwargs
-                if globals:
+                if user_globals:
                     # The next line is covered by test_globals_kwarg_building_gallery
-                    instance.update_globals(globals)  # pragma: nocover
+                    instance.update_globals(user_globals)  # pragma: nocover
                 # Open the mechdb file if provided
                 if db_file is not None:
                     self.open(db_file)
                 return
         if len(INSTANCES) > 0:
-            raise Exception("Cannot have more than one embedded mechanical instance!")
+            raise RuntimeError("Cannot have more than one embedded mechanical instance!")
 
         self._version = initializer.initialize(version)
 
         if self._version < 261 and self.interactive:
-            raise Exception("Interactive mode is only supported starting with version 261")
+            raise RuntimeError("Interactive mode is only supported starting with version 261")
 
         configuration = kwargs.get("config", _get_default_addin_configuration())
 
@@ -286,8 +291,8 @@ class App:
 
         self._updated_scopes: typing.List[typing.Dict[str, typing.Any]] = []
         self._subscribe()
-        if globals:
-            self.update_globals(globals)
+        if user_globals:
+            self.update_globals(user_globals)
 
         # Licensing API is available only for version 2025R2 and later
         self._license_manager = None
@@ -326,10 +331,10 @@ class App:
         if not self.interactive:
             return
         if self._version < 261:
-            raise Exception("Interactive mode is only supported starting with version 261")
+            raise RuntimeError("Interactive mode is only supported starting with version 261")
         if os.name != "nt":
             if os.environ.get("ANSYS_MECHANICAL_EMBEDDING_LINUX_UI", False) is False:
-                raise Exception("Interactive mode is only supported on windows")
+                raise RuntimeError("Interactive mode is only supported on windows")
         os.environ["ANSYS_MECHANICAL_EMBEDDING_START_WITH_UI"] = "1"
 
     def _handle_interactive_shell(self):
@@ -346,9 +351,9 @@ class App:
         not be blocked.
         """
         if not self.interactive:
-            raise Exception("wait_with_dialog is only supported in interactive mode!")
+            raise RuntimeError("wait_with_dialog is only supported in interactive mode!")
         if self.version < 261:
-            raise Exception("wait_with_dialog is only supported with Mechanical 261")
+            raise RuntimeError("wait_with_dialog is only supported with Mechanical 261")
         # Wait with dialog open
         self._app.BlockingModalDialog("Wait with dialog", "PyMechanical")
 
@@ -412,7 +417,7 @@ class App:
             return
 
         if not overwrite:
-            raise Exception(
+            raise FileExistsError(
                 f"File already exists in {path}, Use ``overwrite`` flag to "
                 "replace the existing file."
             )
@@ -479,10 +484,10 @@ class App:
         script_result = self.script_engine.ExecuteCode(script, script_scope, light_mode, args, rets)
         error_msg = "Failed to execute the script"
         if script_result is None:
-            raise Exception(error_msg)
+            raise RuntimeError(error_msg)
         if script_result.Error is not None:
             error_msg += f": {script_result.Error.Message}"
-            raise Exception(error_msg)
+            raise RuntimeError(error_msg)
         return script_result.Value
 
     def execute_script_from_file(self, file_path=None):
@@ -490,22 +495,20 @@ class App:
         file_path = Path(file_path)
         if not file_path.is_file():
             raise FileNotFoundError(f"The file {file_path} does not exist.")
-        text_file = file_path.open("r", encoding="utf-8")
-        data = text_file.read()
-        text_file.close()
+        data = file_path.read_text(encoding="utf-8")
         return self.execute_script(data)
 
-    def plotter(self, obj=None) -> None:
+    def plotter(self, obj=None) -> typing.Optional[typing.Any]:
         """Return ``ansys.tools.visualization_interface.Plotter`` object."""
         if not HAS_ANSYS_GRAPHICS:
             LOG.warning(
                 "Use ``pip install ansys-mechanical-core[graphics]`` to enable this option."
             )
-            return
+            return None
 
         if self.version < 242:
             LOG.warning("Plotting is only supported with version 2024R2 and later!")
-            return
+            return None
 
         # TODO : Check if anything loaded inside app or else show warning and return
 
@@ -527,7 +530,7 @@ class App:
         >>> app.plot()
         """
         if self.interactive:
-            raise Exception("Plotting is not allowed in interactive mode")
+            raise RuntimeError("Plotting is not allowed in interactive mode")
 
         _plotter = self.plotter(obj)
 
@@ -599,7 +602,7 @@ class App:
     def license_manager(self):
         """Return license manager."""
         if self._license_manager is None:
-            raise Exception("LicenseManager is only available for version 252 and later.")
+            raise RuntimeError("LicenseManager is only available for version 252 and later.")
         return self._license_manager
 
     @property
@@ -627,7 +630,6 @@ class App:
         self.new()
 
         # set up the type hint (typing.Self is python3.11+)
-        other: App = other
 
         # copy `self` state to other.
         other._app = self._app
@@ -722,18 +724,20 @@ class App:
         if not hasattr(node, "Name"):
             raise AttributeError("Object must have a 'Name' attribute")
 
+        state_icons = {
+            "UnderDefined": " (?)",
+            "Solved": " (✓)",
+            "FullyDefined": " (✓)",
+            "NotSolved": " (⚡︎)",
+            "Obsolete": " (⚡︎)",
+            "SolveFailed": " (✕)",
+        }
+
         node_name = node.Name
         if hasattr(node, "Suppressed") and node.Suppressed is True:
             node_name += " (Suppressed)"
         if hasattr(node, "ObjectState"):
-            if str(node.ObjectState) == "UnderDefined":
-                node_name += " (?)"
-            elif str(node.ObjectState) == "Solved" or str(node.ObjectState) == "FullyDefined":
-                node_name += " (✓)"
-            elif str(node.ObjectState) == "NotSolved" or str(node.ObjectState) == "Obsolete":
-                node_name += " (⚡︎)"
-            elif str(node.ObjectState) == "SolveFailed":
-                node_name += " (✕)"
+            node_name += state_icons.get(str(node.ObjectState), "")
         print(f"{indentation}├── {node_name}")
         lines_count += 1
 

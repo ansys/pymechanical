@@ -41,11 +41,11 @@ def _exit(background_app: "BackgroundApp"):
 class BackgroundApp:
     """Background App."""
 
-    __app: mech.App = None
-    __app_thread: threading.Thread = None
+    __app: typing.Optional[mech.App] = None
+    __app_thread: typing.Optional[threading.Thread] = None
     __stopped: bool = False
     __stop_signaled: bool = False
-    __poster: Poster = None
+    __poster: typing.Optional[Poster] = None
 
     def __init__(self, **kwargs):
         """Construct an instance of BackgroundApp."""
@@ -79,6 +79,8 @@ class BackgroundApp:
     def _post(self, callable: typing.Callable, try_post: bool = False):
         if BackgroundApp.__stopped:
             raise RuntimeError("Cannot use BackgroundApp after stopping it.")
+        if BackgroundApp.__poster is None:
+            raise RuntimeError("BackgroundApp poster not initialized.")
         if try_post:
             return BackgroundApp.__poster.try_post(callable)
         return BackgroundApp.__poster.post(callable)
@@ -111,5 +113,5 @@ class BackgroundApp:
             try:
                 utils.sleep(40)
             except Exception as e:  # pragma: no cover
-                raise Exception("BackgroundApp cannot sleep.") from e  # pragma: no cover
+                raise RuntimeError("BackgroundApp cannot sleep.") from e  # pragma: no cover
         BackgroundApp.__stopped = True

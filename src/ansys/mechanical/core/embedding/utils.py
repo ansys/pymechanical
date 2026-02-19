@@ -53,6 +53,8 @@ class GetterWrapper(object):
 
 def _get_test_helper():
     global TEST_HELPER
+    if TEST_HELPER is not None:
+        return TEST_HELPER
     import clr
 
     clr.AddReference("Ans.Common.WB1ManagedUtils")

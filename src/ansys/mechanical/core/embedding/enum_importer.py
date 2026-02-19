@@ -29,7 +29,7 @@ Ansys Inc/v{NNN}/ACT/apis/Mechanical.py
 from ansys.mechanical.core.embedding.app import is_initialized
 
 if not is_initialized():
-    raise Exception("Enums cannot be imported until the embedded app is initialized.")
+    raise RuntimeError("Enums cannot be imported until the embedded app is initialized.")
 
 import clr
 

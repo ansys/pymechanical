@@ -60,7 +60,6 @@ from ansys.mechanical.core.embedding.app import App
 
 def add_mechanical_python_libraries(app_or_version):
     """Add the Mechanical libraries path to sys.path."""
-    installdir = []
     if isinstance(app_or_version, int):
         warnings.warn(
             "Passing version to add_mechanical_python_libraries() is deprecated."
@@ -71,11 +70,11 @@ def add_mechanical_python_libraries(app_or_version):
         exe_path = Path(get_mechanical_path(allow_input=False, version=app_or_version))
         while exe_path.name != f"v{app_or_version}":
             exe_path = exe_path.parent
-        installdir.append(str(exe_path))
+        install_dir = str(exe_path)
     elif isinstance(app_or_version, App):
-        installdir.append(os.environ[f"AWP_ROOT{app_or_version.version}"])
+        install_dir = os.environ[f"AWP_ROOT{app_or_version.version}"]
     else:
         raise ValueError("Invalid input: expected an integer (version) or an instance of App().")
 
-    location = Path(installdir[0]) / "Addins" / "ACT" / "libraries" / "Mechanical"
+    location = Path(install_dir) / "Addins" / "ACT" / "libraries" / "Mechanical"
     sys.path.append(str(location))
