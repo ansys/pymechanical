@@ -117,6 +117,7 @@ class EnvironBackend:
             return level >= logging.ERROR
         if wb_int_level == 5:
             return level >= logging.CRITICAL
+        return False
 
     def log_message(self, level: int, context: str, message: str) -> None:
         """Log the message to the configured logging mechanism."""

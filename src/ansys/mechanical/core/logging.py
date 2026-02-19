@@ -385,7 +385,7 @@ class Logger:
     file_handler = None
     std_out_handler = None
     _level = logging.DEBUG
-    _instances = {}
+    _instances: dict[str, "PyMechanicalCustomAdapter"] = {}
 
     def __init__(self, level=logging.DEBUG, to_file=False, to_stdout=True, filename=FILE_NAME):
         """Customize the logger for PyMechanical.
