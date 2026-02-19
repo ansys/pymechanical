@@ -44,7 +44,7 @@ the fluid only and ignores any fluid-structure interaction.
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from matplotlib import image as mpimg, pyplot as plt
+from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation
 from PIL import Image
 
@@ -61,104 +61,9 @@ if TYPE_CHECKING:
 app = App(globals=globals())
 print(app)
 
-# %%
-# Create functions to set camera and display images
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 # Set the path for the output files (images, gifs, mechdat)
 output_path = Path.cwd() / "out"
-
-
-def set_camera_and_display_image(
-    camera,
-    graphics,
-    graphics_image_export_settings,
-    image_output_path: Path,
-    image_name: str,
-    set_fit: bool = False,
-) -> None:
-    """Set the camera to fit the model and display the image.
-
-    Parameters
-    ----------
-    camera : Ansys.ACT.Common.Graphics.MechanicalCameraWrapper
-        The camera object to set the view.
-    graphics : Ansys.ACT.Common.Graphics.MechanicalGraphicsWrapper
-        The graphics object to export the image.
-    graphics_image_export_settings : Ansys.Mechanical.Graphics.GraphicsImageExportSettings
-        The settings for exporting the image.
-    image_output_path : Path
-        The path to save the exported image.
-    image_name : str
-        The name of the exported image file.
-    set_fit: bool, Optional
-        If True, set the camera to fit the mesh.
-        If False, do not set the camera to fit the mesh.
-    """
-    if set_fit:
-        # Set the camera to fit the mesh
-        camera.SetFit()
-    # Export the mesh image with the specified settings
-    image_path = image_output_path / image_name
-    graphics.ExportImage(str(image_path), image_export_format, graphics_image_export_settings)
-    # Display the exported mesh image
-    display_image(image_path)
-
-
-def display_image(
-    image_path: str,
-    pyplot_figsize_coordinates: tuple = (16, 9),
-    plot_xticks: list = [],
-    plot_yticks: list = [],
-    plot_axis: str = "off",
-) -> None:
-    """Display the image with the specified parameters.
-
-    Parameters
-    ----------
-    image_path : str
-        The path to the image file to display.
-    pyplot_figsize_coordinates : tuple
-        The size of the figure in inches (width, height).
-    plot_xticks : list
-        The x-ticks to display on the plot.
-    plot_yticks : list
-        The y-ticks to display on the plot.
-    plot_axis : str
-        The axis visibility setting ('on' or 'off').
-    """
-    # Set the figure size based on the coordinates specified
-    plt.figure(figsize=pyplot_figsize_coordinates)
-    # Read the image from the file into an array
-    plt.imshow(mpimg.imread(image_path))
-    # Get or set the current tick locations and labels of the x-axis
-    plt.xticks(plot_xticks)
-    # Get or set the current tick locations and labels of the y-axis
-    plt.yticks(plot_yticks)
-    # Turn off the axis
-    plt.axis(plot_axis)
-    # Display the figure
-    plt.show()
-
-
-# %%
-# Configure the graphics for image export
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-graphics = app.Graphics
-camera = graphics.Camera
-
-# Set the camera orientation to isometric view
-camera.SetSpecificViewOrientation(ViewOrientationType.Iso)
-
-# Set the image export format and settings
-image_export_format = GraphicsImageExportFormat.PNG
-settings_720p = Ansys.Mechanical.Graphics.GraphicsImageExportSettings()
-settings_720p.Resolution = GraphicsResolutionType.EnhancedResolution
-settings_720p.Background = GraphicsBackgroundType.White
-settings_720p.Width = 1280
-settings_720p.Height = 720
-settings_720p.CurrentGraphicsDisplay = False
+app.helpers.setup_view()
 
 # %%
 # Download the geometry and material files
@@ -173,28 +78,14 @@ mat_path = download_file("Water_material_explicit.xml", "pymechanical", "embeddi
 # Import and display the geometry
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Define the model
-model = app.Model
-
-# Add the geometry import group and set its preferences
-geometry_import_group = model.GeometryImportGroup
-geometry_import = geometry_import_group.AddGeometryImport()
-geometry_import_format = Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.Format.Automatic
-geometry_import_preferences = Ansys.ACT.Mechanical.Utilities.GeometryImportPreferences()
-geometry_import_preferences.ProcessNamedSelections = True
-
-# Import the geometry file with the specified format and preferences
-geometry_import.Import(geometry_path, geometry_import_format, geometry_import_preferences)
-
-# Set the camera to fit the model and display the image
-set_camera_and_display_image(
-    camera, graphics, settings_720p, output_path, "geometry.png", set_fit=True
-)
+app.helpers.import_geometry(geometry_path, process_named_selections=True)
+app.plot()
 
 # %%
 # Store all variables necessary for analysis
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+model = app.Model
 geometry = model.Geometry
 mesh = model.Mesh
 named_selections = model.NamedSelections
@@ -210,7 +101,7 @@ model.AddModalAcousticAnalysis()
 # Set the unit system to Standard MKS
 app.ExtAPI.Application.ActiveUnitSystem = MechanicalUnitSystem.StandardMKS
 # Import the water material from the specified XML file
-materials.Import(mat_path)
+app.helpers.import_materials(mat_path)
 
 # %%
 # Assign material to solid bodies
@@ -355,7 +246,11 @@ method3.SourceTargetSelection = 4
 # Generate the mesh and display the image
 
 mesh.GenerateMesh()
-set_camera_and_display_image(camera, graphics, settings_720p, output_path, "mesh.png")
+
+image_path = output_path / "mesh.png"
+app.helpers.setup_view()
+app.helpers.export_image(mesh, image_path)
+app.helpers.display_image(image_path)
 
 # %%
 # Set up the contact regions in the connection group
@@ -526,9 +421,12 @@ fixed_support = modal_acst.AddFixedSupport()
 # Set the location of the fixed support to the geometry entities
 fixed_support.Location = fvert
 
-# Activate the modal acoustic analysis and display the image
+# Activate the modal acoustic analysis and display boundary conditions
 modal_acst.Activate()
-set_camera_and_display_image(camera, graphics, settings_720p, output_path, "geometry.png")
+image_path = output_path / "geometry.png"
+app.helpers.setup_view()
+app.helpers.export_image(modal_acst, image_path)
+app.helpers.display_image(image_path)
 
 # %%
 # Add results to the solution
@@ -584,16 +482,18 @@ app.messages.show()
 # Activate the first total deformation result and display the image
 
 app.Tree.Activate([total_deformation_results[0]])
-set_camera_and_display_image(
-    camera, graphics, settings_720p, output_path, "total_deformation.png", set_fit=True
-)
+image_path = output_path / "total_deformation.png"
+app.helpers.setup_view()
+app.helpers.export_image(total_deformation_results[0], image_path)
+app.helpers.display_image(image_path)
 
 # %%
 # Activate the acoustic pressure result and display the image
 
-app.Tree.Activate([acoustic_pressure_result])
-set_camera_and_display_image(camera, graphics, settings_720p, output_path, "acoustic_pressure.png")
-
+image_path = output_path / "acoustic_pressure.png"
+app.helpers.setup_view()
+app.helpers.export_image(acoustic_pressure_result, image_path)
+app.helpers.display_image(image_path)
 # %%
 # Display all modal frequency, force reaction, and acoustic pressure values
 
@@ -620,65 +520,33 @@ print("Force reaction x-axis : ", force_reaction_1_x)
 print("Force reaction z-axis : ", force_reaction_1_z)
 
 # %%
-# Create a function to update the animation frames
-
-
-def update_animation(frame: int) -> list[mpimg.AxesImage]:
-    """Update the animation frame for the GIF.
-
-    Parameters
-    ----------
-    frame : int
-        The frame number to update the animation.
-
-    Returns
-    -------
-    list[mpimg.AxesImage]
-        A list containing the updated image for the animation.
-    """
-    # Seeks to the given frame in this sequence file
-    gif.seek(frame)
-    # Set the image array to the current frame of the GIF
-    image.set_data(gif.convert("RGBA"))
-    # Return the updated image
-    return [image]
+# Display the total deformation animation
+deformation_gif = output_path / "total_deformation_results.gif"
+app.helpers.setup_view()
+app.helpers.export_animation(total_deformation_results[-1], deformation_gif)
 
 
 # %%
-# Play the total deformation animation
-
-# Set the animation export format to GIF
-animation_export_format = Ansys.Mechanical.DataModel.Enums.GraphicsAnimationExportFormat.GIF
-
-# Set the export settings for the animation
-settings_720p = Ansys.Mechanical.Graphics.AnimationExportSettings()
-settings_720p.Width = 1280
-settings_720p.Height = 720
-
-# Export the total deformation animation for the last result
-deformation_gif = output_path / f"total_deformation_{len(total_deformation_results)}.gif"
-total_deformation_results[-1].ExportAnimation(
-    str(deformation_gif), animation_export_format, settings_720p
-)
+# Display the total deformation animation
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Open the GIF file and create an animation
 gif = Image.open(deformation_gif)
-# Set the subplots for the animation and turn off the axis
-figure, axes = plt.subplots(figsize=(16, 9))
-axes.axis("off")
-# Change the color of the image
-image = axes.imshow(gif.convert("RGBA"))
+fig, ax = plt.subplots(figsize=(8, 4))
+ax.axis("off")
+image = ax.imshow(gif.convert("RGBA"))
 
-# Create the animation using the figure, update_animation function, and the GIF frames
-# Set the interval between frames to 200 milliseconds and repeat the animation
-FuncAnimation(
-    figure,
-    update_animation,
-    frames=range(gif.n_frames),
-    interval=100,
-    repeat=True,
-    blit=True,
-)
+
+# Animation update function
+def update_frame(frame):
+    """Update the frame for the animation."""
+    gif.seek(frame)
+    image.set_array(gif.convert("RGBA"))
+    return (image,)
+
+
+# Create and display animation
+ani = FuncAnimation(fig, update_frame, frames=gif.n_frames, interval=200, blit=True, repeat=True)
 
 # Show the animation
 plt.show()
