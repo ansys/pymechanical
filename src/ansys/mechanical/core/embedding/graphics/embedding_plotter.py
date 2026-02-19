@@ -59,9 +59,11 @@ class Plottable:
 
     # TODO : Make this a list of overridable attributes
     color: typing.Optional[pv.Color] = None
-    transform: pv.transform.Transform = None
-    children: typing.List["Plottable"] = None
-    kwargs: typing.Dict = None
+    transform: pv.transform.Transform = dataclasses.field(
+        default_factory=lambda: pv.transform.Transform(np.identity(4))
+    )
+    children: typing.List["Plottable"] = dataclasses.field(default_factory=list)
+    kwargs: typing.Optional[typing.Dict] = None
 
     def __post_init__(self):
         """Initialize the plottable.
@@ -69,9 +71,7 @@ class Plottable:
         The transform will be identity.
         The children will be an empty list.
         """
-        self.transform = np.identity(4)
-        self.transform = pv.transform.Transform(np.identity(4))
-        self.children = list()
+        pass
 
 
 def _transform_to_pyvista(transform: "Ansys.ACT.Math.Matrix4D") -> pv.transform.Transform:
@@ -139,7 +139,7 @@ class ScenegraphNodeVisitor:
     def _visit_tri_tessellation_node(
         self,
         node: "Ansys.Mechanical.Scenegraph.TriTessellationNode",
-    ) -> Plottable:
+    ) -> typing.Optional[Plottable]:
         np_coordinates, np_indices = get_tri_nodes_and_coords(node)
         if np_coordinates is None or np_indices is None:
             return None
@@ -150,7 +150,7 @@ class ScenegraphNodeVisitor:
     def _visit_tri_tessellation_result_node(
         self,
         node: "Ansys.Mechanical.Scenegraph.TriTessellationResultNode",
-    ) -> Plottable:
+    ) -> typing.Optional[Plottable]:
         coords, indices = get_tri_nodes_and_coords(node)
         if coords is None or indices is None:
             return None
@@ -160,18 +160,23 @@ class ScenegraphNodeVisitor:
         deformed_coords = coords + disps
 
         plottable = Plottable(pv.PolyData(deformed_coords, indices))
-        plottable.polydata.point_data["Results"] = results
+        if plottable.polydata is not None:
+            plottable.polydata.point_data["Results"] = results
         plottable.kwargs = {"cmap": "viridis", "show_edges": True, "remove_color": 1}
         return plottable
 
-    def _visit_transform_node(self, node: "Ansys.Mechanical.Scenegraph.TransformNode") -> Plottable:
+    def _visit_transform_node(
+        self, node: "Ansys.Mechanical.Scenegraph.TransformNode"
+    ) -> typing.Optional[Plottable]:
         plottable = self.visit_node(node.Child)
         if plottable is None:
             return None
         plottable.transform = _transform_to_pyvista(node.Transform)
         return plottable
 
-    def _visit_attribute_node(self, node: "Ansys.Mechanical.Scenegraph.AttributeNode") -> Plottable:
+    def _visit_attribute_node(
+        self, node: "Ansys.Mechanical.Scenegraph.AttributeNode"
+    ) -> typing.Optional[Plottable]:
         """Return the plottable of the child node with the color attached."""
         plottable = self.visit_node(node.Child)
         if plottable is None:
@@ -181,7 +186,7 @@ class ScenegraphNodeVisitor:
 
     def _visit_mesh_oriented_transform_node(
         self, node: "Ansys.Mechanical.Scenegraph.MeshOrientedTransformNode"
-    ) -> Plottable:
+    ) -> typing.Optional[Plottable]:
         if "PYMECHANICAL_SCENE_VISIT_MESH_ORIENTED_TRANSFORM_NODE" not in os.environ:
             self._app.log_warning("Ignoring MeshOrientedTransformNode")
             return None
@@ -209,7 +214,7 @@ class ScenegraphNodeVisitor:
         plottable.kwargs = {"render_points_as_spheres": True}
         return plottable
 
-    def visit_node(self, node: "Ansys.Mechanical.Scenegraph.Node") -> Plottable:
+    def visit_node(self, node: "Ansys.Mechanical.Scenegraph.Node") -> typing.Optional[Plottable]:
         """Visit an arbitrary node.
 
         Return a plottable object of that node.
@@ -237,7 +242,7 @@ class ScenegraphNodeVisitor:
             return self._visit_point_cloud_node(node)
         else:
             self._app.log_warning(f"Unexpected node: {node}")
-        return None
+            return None
 
 
 def _add_plottable(plotter: Plotter, plottable: Plottable, plot_settings: PlotSettings):
@@ -269,15 +274,17 @@ def _get_plotter_for_scene(
     app: App,
     node: "Ansys.Mechanical.Scenegraph.Node",
     plot_settings: PlotSettings,
-) -> Plotter:
+) -> typing.Optional[Plotter]:
     visitor = ScenegraphNodeVisitor(app, plot_settings)
     plottable = visitor.visit_node(node)
+    if plottable is None:
+        return None
     plotter = Plotter()
     _add_plottable(plotter, plottable, plot_settings)
     return plotter
 
 
-def _plot_object(app: App, obj, plot_settings: PlotSettings) -> Plotter:
+def _plot_object(app: App, obj, plot_settings: PlotSettings) -> typing.Optional[Plotter]:
     """Get a ``ansys.tools.visualization_interface.Plotter`` instance for `obj`."""
     scene = get_scene_for_object(app, obj)
     if scene is None:
@@ -287,7 +294,9 @@ def _plot_object(app: App, obj, plot_settings: PlotSettings) -> Plotter:
     return plotter
 
 
-def to_plotter(app: App, obj=None, plot_settings: PlotSettings = None) -> Plotter:
+def to_plotter(
+    app: App, obj=None, plot_settings: typing.Optional[PlotSettings] = None
+) -> typing.Optional[Plotter]:
     """Convert the scene for `obj` to an ``ansys.tools.visualization_interface.Plotter`` instance.
 
     If the `obj` is None, default to the Geometry object.

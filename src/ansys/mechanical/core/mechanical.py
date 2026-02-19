@@ -139,7 +139,7 @@ LOCALHOST = "127.0.0.1"
 MECHANICAL_DEFAULT_PORT = 10000
 """Default Mechanical port."""
 
-GALLERY_INSTANCE = [None]
+GALLERY_INSTANCE: list[typing.Optional[dict[str, typing.Any]]] = [None]
 """List of gallery instances."""
 
 
@@ -2246,7 +2246,7 @@ def launch_remote_mechanical(
         warnings.warn(
             "Installation of pim option required! Use ``pip install ansys-mechanical-core[pim]``."
         )
-        return
+        return None, None
 
     pim = pypim.connect()
     instance = pim.create_instance(product_name="mechanical", product_version=version)

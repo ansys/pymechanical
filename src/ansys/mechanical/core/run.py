@@ -48,7 +48,12 @@ async def _read_and_display(cmd, env, do_display: bool):
     # start process
     process = await asyncio.create_subprocess_exec(*cmd, stdout=PIPE, stderr=PIPE, env=env)
     # read child's stdout/stderr concurrently
-    stdout, stderr = [], []  # stderr, stdout buffers
+    stdout: list[bytes] = []
+    stderr: list[bytes] = []  # stderr, stdout buffers
+
+    if process.stdout is None or process.stderr is None:
+        raise RuntimeError("Process streams not available.")
+
     tasks = {
         asyncio.Task(process.stdout.readline()): (stdout, process.stdout, sys.stdout.buffer),
         asyncio.Task(process.stderr.readline()): (stderr, process.stderr, sys.stderr.buffer),
@@ -89,22 +94,22 @@ def _run(args, env, check=False, display=False):
 
 
 def _cli_impl(
-    project_file: str = None,
+    project_file: typing.Optional[str] = None,
     port: int = 0,
     debug: bool = False,
-    input_script: str = None,
-    script_args: str = None,
-    exe: str = None,
-    version: int = None,
+    input_script: typing.Optional[str] = None,
+    script_args: typing.Optional[str] = None,
+    exe: typing.Optional[str] = None,
+    version: typing.Optional[int] = None,
     graphical: bool = False,
     show_welcome_screen: bool = False,
     private_appdata: bool = False,
     exit: bool = False,
-    features: str = None,
-    enginetype: str = None,
-    transport_mode: str = None,
-    grpc_host: str = None,
-    certs_dir: str = None,
+    features: typing.Optional[str] = None,
+    enginetype: typing.Optional[str] = None,
+    transport_mode: typing.Optional[str] = None,
+    grpc_host: typing.Optional[str] = None,
+    certs_dir: typing.Optional[str] = None,
 ):
     if project_file and input_script:
         raise click.ClickException("Cannot open a project file *and* run a script.")
