@@ -13,6 +13,7 @@
 * [Dipin](https://github.com/dipinknair)
 * [Eric Clevenger](https://github.com/eric-clevenger)
 * [German](https://github.com/germa89)
+* [Gillanius](https://github.com/Acartuerk)
 * [Jorge Martínez](https://github.com/jorgepiloto)
 * [Kathy Pippert](https://github.com/PipKat)
 * [Kerry McAdams](https://github.com/klmcadams)
