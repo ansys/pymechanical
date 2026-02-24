@@ -208,8 +208,8 @@ def cli(ide: str, target: str, revision: int) -> None:
         The Mechanical revision number. For example, "252".
         If unspecified, it finds the default Mechanical version from ansys-tools-path.
 
-    Usage
-    -----
+    Examples
+    --------
     The following example demonstrates the main use of this tool:
 
         $ ansys-mechanical-ideconfig --ide vscode --target user --revision 252

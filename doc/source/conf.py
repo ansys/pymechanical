@@ -116,6 +116,9 @@ numpydoc_validation_checks = {
 numpydoc_validation_exclude = {  # set of regex
     # grpc files
     r"\.*pb2\.*",
+    # Exclude built-in exception attributes from all exception classes
+    r".*__cause__$",
+    r".*__context__$",
 }
 
 # Favicon
@@ -227,7 +230,7 @@ html_theme_options = {
     "show_breadcrumbs": True,
     "collapse_navigation": True,
     "use_edit_page_button": True,
-    "header_links_before_dropdown": 5,  # number of links before the dropdown menu
+    "header_links_before_dropdown": 6,  # number of links before the dropdown menu
     "additional_breadcrumbs": [
         ("PyAnsys", "https://docs.pyansys.com/"),
     ],

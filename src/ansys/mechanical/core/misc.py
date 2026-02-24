@@ -42,6 +42,16 @@ def is_windows():
     return False
 
 
+def is_linux() -> bool:
+    """Check if the host machine is Linux.
+
+    Returns
+    -------
+    ``True`` if the host machine is Linux, ``False`` otherwise.
+    """
+    return os.name == "posix"
+
+
 def get_mechanical_bin(release_version):
     """Get the path for the Mechanical executable file based on the release version.
 
@@ -303,16 +313,6 @@ def get_service_pack_message(version):
         return "Update to Ansys 2024 R2 or later for secure gRPC support."
 
 
-def is_linux() -> bool:
-    """Check if the host machine is Linux.
-
-    Returns
-    -------
-    ``True`` if the host machine is Linux, ``False`` otherwise.
-    """
-    return os.name == "posix"
-
-
 def resolve_certs_dir(transport_mode, certs_dir=None):
     """Resolve the certificate directory for mTLS connections.
 
@@ -355,3 +355,31 @@ def resolve_certs_dir(transport_mode, certs_dir=None):
             # On Linux, read at any level
             return os.environ.get("ANSYS_GRPC_CERTIFICATES", "certs")
     return certs_dir if certs_dir is not None else "certs"
+
+
+def verify_server_certificates(certs_dir: str) -> None:
+    """Check if the required server certificate files exist in the specified directory.
+
+    Parameters
+    ----------
+    certs_dir : str
+        Directory path where the certificate files are expected.
+
+    Raises
+    ------
+    FileNotFoundError
+        If any of the required certificate files are missing.
+    """
+    required_files_server = ["server.cert", "server.key", "ca.cert"]
+    missing_files = []
+    for filename in required_files_server:
+        file_path = Path(certs_dir) / filename
+        if not file_path.is_file():
+            missing_files.append(filename)
+
+    if missing_files:
+        missing_str = ", ".join(missing_files)
+        raise FileNotFoundError(
+            f"Could not launch Ansys Mechanical in mtls transport mode. "
+            f"The following certificate files are missing in '{certs_dir}': {missing_str}"
+        )

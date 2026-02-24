@@ -41,7 +41,7 @@ EXAMPLES_PATH.mkdir(parents=True, exist_ok=True)
 
 from ansys.mechanical.core.logging import Logger
 
-LOG = Logger(level=logging.ERROR, to_file=False, to_stdout=True)
+LOG = Logger(level=logging.WARN, to_file=False, to_stdout=True)
 """Create logger for package level use."""
 
 

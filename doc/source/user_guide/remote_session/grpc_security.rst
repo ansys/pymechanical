@@ -3,11 +3,15 @@
 Secure gRPC connections
 =======================
 
-PyMechanical supports secure gRPC connections using mTLS, WNUA, or insecure modes.
+PyMechanical supports gRPC connections using mTLS, WNUA, or insecure modes.
 
-.. warning::
-   Secure connections (mTLS, WNUA) require specific service packs for each version.
-   Versions without the required service pack only support insecure mode.
+**Transport mode comparison:**
+
+- **mTLS**: Provides both authentication and encryption. Recommended for production environments.
+- **WNUA** (Windows only): Provides authentication but not encryption.
+- **Insecure**: No authentication or encryption. Not recommended.
+
+See the table below for version-specific support and service pack requirements.
 
 Version and service pack requirements
 -------------------------------------
@@ -49,25 +53,33 @@ Version and service pack requirements
      Ansys installation directory.
 
 .. warning::
-   **Breaking Change**: Version mismatch behavior
+   **Breaking Change for Linux Users**
 
-   When using ``launch_mechanical()`` without explicitly specifying ``transport_mode``:
+   If you have the **latest PyMechanical** with an **older version of Mechanical**
+   that doesn't support secure connections (pre-2024 R2 or without required service pack):
 
-   - If you have a **newer version of PyMechanical** with an **older version of Mechanical**
-     that doesn't support secure connections, the connection will fail.
-   - If you have an **older version of PyMechanical** with a **newer version of Mechanical**
-     that requires secure connections by default, the connection will fail.
+   - **Linux**: The default transport mode is ``mtls``. Calling ``launch_mechanical()``
+     without explicitly specifying ``transport_mode="insecure"`` **will fail** because
+     old Mechanical versions don't support mtls.
 
-   **Solution**: Always explicitly specify ``transport_mode`` to avoid compatibility issues:
+   - **Windows**: The default transport mode is ``wnua``. A warning is issued and the
+     connection **automatically falls back to insecure mode**. The connection succeeds,
+     but you should explicitly specify ``transport_mode="insecure"`` to avoid the warning.
+
+   **Required Action for Linux**: Always explicitly specify ``transport_mode="insecure"``
+   when using old Mechanical versions:
 
    .. code-block:: python
 
-      # For older Mechanical versions (241 or versions without required SP)
+      # Required for Mechanical 241 or versions without required SP
       mechanical = launch_mechanical(transport_mode="insecure")
 
-      # For newer Mechanical versions with secure support
-      mechanical = launch_mechanical(transport_mode="wnua")  # Windows
-      mechanical = launch_mechanical(transport_mode="mtls")  # Linux
+.. note::
+   **Forward Compatibility**
+
+   If you have an **older version of PyMechanical** with a **newer version of Mechanical**
+   that supports secure connections by default, you may need to update PyMechanical to
+   take advantage of secure transport modes.
 
 Transport modes
 ---------------
@@ -98,8 +110,8 @@ See `PyAnsys mTLS guide <https://tools.docs.pyansys.com/version/stable/user_guid
    - **Windows**: Set as a user-level environment variable only. System-level variables are ignored.
    - **Linux**: Can be set at any level (user or system).
 
-   When this variable is set and ``certs_dir`` is not explicitly specified, PyMechanical will
-   use the path from this environment variable.
+   When this variable is set and ``certs_dir`` is not explicitly specified, PyMechanical
+   uses the path from this environment variable.
 
    Example (Windows PowerShell):
 
