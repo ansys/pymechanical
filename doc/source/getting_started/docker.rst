@@ -32,8 +32,8 @@ Build your own Mechanical Docker image
 Because the Mechanical Docker image is for internal use, you must build your own image
 from a local Mechanical installation. The following steps summarize the process.
 For full details, see the
-`Dockerfile <https://github.com/ansys/pymechanical/tree/main/docker/252/Dockerfile>`_ and
-`.dockerignore <https://github.com/ansys/pymechanical/tree/main/docker/252/.dockerignore>`_
+`Dockerfile <https://github.com/ansys/pymechanical/blob/main/docker/252/Dockerfile>`_ and
+`.dockerignore <https://github.com/ansys/pymechanical/blob/main/docker/252/dockerignore>`_
 files in the PyMechanical repository.
 
 **Step 1: Download Mechanical**
