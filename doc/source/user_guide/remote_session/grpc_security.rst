@@ -9,6 +9,8 @@ PyMechanical supports secure gRPC connections using mTLS, WNUA, or insecure mode
    Secure connections (mTLS, WNUA) require specific service packs for each version.
    Versions without the required service pack only support insecure mode.
 
+.. _grpc_security_version_requirements:
+
 Version and service pack requirements
 -------------------------------------
 
