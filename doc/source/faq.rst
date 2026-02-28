@@ -5,6 +5,26 @@ FAQs
 
 This section provides answers to frequently asked questions.
 
+.. dropdown:: My script works in the Mechanical GUI but fails with PyMechanical embedding. Is this a PyMechanical bug?
+    :animate: fade-in-slide-down
+
+    Not necessarily. PyMechanical embedding executes scripts the same way
+    Mechanical runs them in **batch mode**, not in the interactive GUI.
+    If your script works in the Mechanical Scripting window but fails under
+    embedding, the issue is likely a Mechanical batch-mode limitation, not a
+    PyMechanical bug.
+
+    You can verify this by running your script directly in batch mode using
+    the ``ansys-mechanical`` CLI:
+
+    .. code-block:: bash
+
+        ansys-mechanical -i script.py
+
+    If the script also fails here, the problem is with Mechanical's batch mode
+    and should be reported as a Mechanical issue. For more details on the CLI,
+    see the `CLI documentation <https://mechanical.docs.pyansys.com/version/stable/user_guide/cli/ansys-mechanical.html>`_.
+
 .. dropdown:: How do you report issues?
     :animate: fade-in-slide-down
 
