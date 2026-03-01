@@ -52,12 +52,13 @@ if TYPE_CHECKING:
 app = App(globals=globals())
 print(app)
 
-# %%
-# Create functions to set camera and display images
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 # Set the path for the output files (images, gifs, mechdat)
 output_path = Path.cwd() / "out"
+
+# Set camera and graphics
+
+graphics = app.Graphics
+camera = graphics.Camera
 
 # %%
 # Download and import the geometry file
@@ -117,7 +118,7 @@ mesh.GenerateMesh()
 
 # Activate the mesh and display the image
 image_path = output_path / "mesh.png"
-app.helpers.setup_view()
+camera.SetFit()
 app.helpers.export_image(mesh, image_path)
 app.helpers.display_image(image_path)
 
@@ -151,7 +152,7 @@ pressure.Magnitude.Output.DiscreteValues = [Quantity("0 [Pa]"), Quantity("15 [MP
 
 # Activate the analysis and display the image
 image_path = output_path / "boundary_conditions.png"
-app.helpers.setup_view()
+camera.SetFit()
 app.helpers.export_image(analysis, image_path)
 app.helpers.display_image(image_path)
 
@@ -194,7 +195,7 @@ app.messages.show()
 # Activate the total deformation result and display the image
 app.Tree.Activate([deformation])
 image_path = output_path / "total_deformation_valve.png"
-app.helpers.setup_view()
+camera.SetFit()
 app.helpers.export_image(deformation, image_path)
 app.helpers.display_image(image_path)
 
@@ -205,7 +206,7 @@ app.helpers.display_image(image_path)
 # Activate the equivalent stress result and display the image
 app.Tree.Activate([stress])
 image_path = output_path / "stress_valve.png"
-app.helpers.setup_view()
+camera.SetFit()
 app.helpers.export_image(stress, image_path)
 app.helpers.display_image(image_path)
 
@@ -214,7 +215,7 @@ app.helpers.display_image(image_path)
 # Export the stress animation
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-app.helpers.setup_view()
+camera.SetFit()
 valve_gif = output_path / "valve.gif"
 app.helpers.export_animation(stress, valve_gif)
 

@@ -75,6 +75,8 @@ print(app)
 
 # Set the path for the output files (images, gifs, mechdat)
 output_path = Path.cwd() / "out"
+graphics = app.Graphics
+camera = graphics.Camera
 
 
 # %%
@@ -233,7 +235,7 @@ mesh.GenerateMesh()
 app.Tree.Activate([mesh])
 
 # Set the camera to fit the model and export the image
-app.helpers.setup_view()
+camera.SetFit()
 image_path = output_path / "mesh.png"
 app.helpers.export_image(mesh, image_path)
 app.helpers.display_image(image_path)
@@ -416,8 +418,8 @@ STAT_SS = solution.Status
 # Postprocessing
 # ~~~~~~~~~~~~~~
 
-app.helpers.setup_view(scene_height=Quantity(2.0, "in"))
-
+camera.SetFit()
+camera.SceneHeight = Quantity(2.0, "in")
 # %%
 # Display the temperature plots for both plates
 

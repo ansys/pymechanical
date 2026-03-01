@@ -63,7 +63,13 @@ from ansys.mechanical.core.embedding.transaction import Transaction
 # Configure view and path for image export
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-app.helpers.setup_view(orientation="iso", fit=True, rotation=180, axis="y")
+# Set camera orientation
+graphics = app.Graphics
+camera = graphics.Camera
+camera.SetSpecificViewOrientation(ViewOrientationType.Iso)
+camera.SetFit()
+camera.Rotate(180, CameraAxisType.ScreenY)
+
 # Set the path for the output files (images, gifs, mechdat)
 output_path = Path.cwd() / "out"
 
@@ -474,7 +480,7 @@ mesh.GenerateMesh()
 
 # Set the image export format, path and export the image
 mesh_image_path = str(output_path / "mesh.png")
-app.helpers.setup_view()
+camera.SetFit()
 app.helpers.export_image(mesh, mesh_image_path)
 
 # %%
@@ -572,7 +578,7 @@ app.Tree.Activate([bolt_presentation])
 loads_boundary_conditions_image_path = str(output_path / "loads_boundary_conditions.png")
 # Export the image of the loads and boundary conditions
 
-app.helpers.setup_view()
+camera.SetFit()
 app.helpers.export_image(bolt_presentation, loads_boundary_conditions_image_path)
 # Display the image of the loads and boundary conditions
 app.helpers.display_image(loads_boundary_conditions_image_path)
@@ -638,7 +644,7 @@ app.messages.show()
 # Set the image name and path for the object
 image_path = str(output_path / "total_deformation.png")
 # Export the image of the object
-app.helpers.setup_view()
+camera.SetFit()
 app.helpers.export_image(total_deformation, file_path=image_path)
 # Display the image of the object
 app.helpers.display_image(image_path)
@@ -649,7 +655,7 @@ app.helpers.display_image(image_path)
 # Set the image name and path for the object
 image_path = str(output_path / "equivalent_stress_all_bodies.png")
 # Export the image of the object
-app.helpers.setup_view()
+camera.SetFit()
 app.helpers.export_image(equivalent_stress_1, file_path=image_path)
 # Display the image of the object
 app.helpers.display_image(image_path)
@@ -660,7 +666,7 @@ app.helpers.display_image(image_path)
 # Set the image name and path for the object
 image_path = str(output_path / "equivalent_stress_shank.png")
 # Export the image of the object
-app.helpers.setup_view()
+camera.SetFit()
 app.helpers.export_image(equivalent_stress_2, file_path=image_path)
 # Display the image of the object
 app.helpers.display_image(image_path)
@@ -674,7 +680,7 @@ post_contact_tool_status = post_contact_tool.Children[0]
 
 # Set the path for the contact status GIF
 contact_status_gif_path = str(output_path / "contact_status.gif")
-app.helpers.setup_view()
+camera.SetFit()
 app.helpers.export_animation(post_contact_tool_status, contact_status_gif_path)
 
 # %%

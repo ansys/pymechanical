@@ -60,8 +60,9 @@ print(app)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Set camera orientation
-app.helpers.setup_view("front")
-
+graphics = app.Graphics
+camera = graphics.Camera
+camera.SetSpecificViewOrientation(ViewOrientationType.Front)
 
 # %%
 # Create functions to set camera and display images
@@ -258,7 +259,7 @@ mesh.Activate()
 mesh.GenerateMesh()
 
 # Display the mesh image
-app.helpers.setup_view("front")
+camera.SetFit()
 image_path = Path(output_path) / "boundary_conditions.png"
 app.helpers.export_image(mesh, image_path)
 app.helpers.display_image(image_path)
@@ -368,7 +369,7 @@ displacement2_vertex = add_displacement(
 
 static_structural_analysis.Activate()
 
-app.helpers.setup_view("front")
+camera.SetFit()
 image_path = Path(output_path) / "boundary_conditions.png"
 app.helpers.export_image(static_structural_analysis, image_path)
 app.helpers.display_image(image_path)

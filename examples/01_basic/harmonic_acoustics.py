@@ -59,7 +59,12 @@ print(app)
 output_path = Path.cwd() / "out"
 
 # Set the camera orientation
-app.helpers.setup_view(orientation="iso", rotation=180, axis="y")
+graphics = app.Graphics
+camera = graphics.Camera
+
+# Set the camera orientation to isometric view
+camera.SetSpecificViewOrientation(ViewOrientationType.Iso)
+camera.Rotate(180, CameraAxisType.ScreenY)
 
 # %%
 # Download geometry and materials files
@@ -313,7 +318,7 @@ absorption_surface.AbsorptionCoefficient.Output.DiscreteValues = [Quantity("0.02
 # Activate the harmonic acoustics analysis
 harmonic_acoustics.Activate()
 # Set the camera to fit the mesh and export the image
-app.helpers.setup_view(fit=True)
+camera.SetFit()
 image_path = output_path / "boundary_conditions.png"
 app.helpers.export_image(file_path=image_path)
 app.helpers.display_image(image_path)

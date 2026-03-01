@@ -63,7 +63,8 @@ print(app)
 
 # Set the path for the output files (images, gifs, mechdat)
 output_path = Path.cwd() / "out"
-app.helpers.setup_view()
+graphics = app.Graphics
+camera = graphics.Camera
 
 # %%
 # Download the geometry and material files
@@ -248,7 +249,7 @@ method3.SourceTargetSelection = 4
 mesh.GenerateMesh()
 
 image_path = output_path / "mesh.png"
-app.helpers.setup_view()
+camera.SetFit()
 app.helpers.export_image(mesh, image_path)
 app.helpers.display_image(image_path)
 
@@ -424,7 +425,7 @@ fixed_support.Location = fvert
 # Activate the modal acoustic analysis and display boundary conditions
 modal_acst.Activate()
 image_path = output_path / "geometry.png"
-app.helpers.setup_view()
+camera.SetFit()
 app.helpers.export_image(modal_acst, image_path)
 app.helpers.display_image(image_path)
 
@@ -483,7 +484,7 @@ app.messages.show()
 
 app.Tree.Activate([total_deformation_results[0]])
 image_path = output_path / "total_deformation.png"
-app.helpers.setup_view()
+camera.SetFit()
 app.helpers.export_image(total_deformation_results[0], image_path)
 app.helpers.display_image(image_path)
 
@@ -491,7 +492,7 @@ app.helpers.display_image(image_path)
 # Activate the acoustic pressure result and display the image
 
 image_path = output_path / "acoustic_pressure.png"
-app.helpers.setup_view()
+camera.SetFit()
 app.helpers.export_image(acoustic_pressure_result, image_path)
 app.helpers.display_image(image_path)
 # %%
@@ -522,7 +523,7 @@ print("Force reaction z-axis : ", force_reaction_1_z)
 # %%
 # Display the total deformation animation
 deformation_gif = output_path / "total_deformation_results.gif"
-app.helpers.setup_view()
+camera.SetFit()
 app.helpers.export_animation(total_deformation_results[-1], deformation_gif)
 
 

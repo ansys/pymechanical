@@ -61,7 +61,11 @@ print(app)
 output_path = Path.cwd() / "out"
 
 # Set the camera orientation to isometric view
-app.helpers.setup_view("iso")
+graphics = app.Graphics
+camera = graphics.Camera
+
+# Set the camera orientation to isometric view
+camera.SetSpecificViewOrientation(ViewOrientationType.Iso)
 
 # %%
 # Download the geometry file
@@ -383,7 +387,7 @@ analysis_settings.CalculateVolumeEnergy = True
 
 # Activate the static thermal analysis and display the image
 image_path = output_path / "bc_steady_state.png"
-app.helpers.setup_view()
+camera.SetFit()
 app.helpers.export_image(stat_therm, image_path)
 app.helpers.display_image(image_path)
 
@@ -503,7 +507,7 @@ app.messages.show()
 
 # Activate the total body temperature and display the image
 image_path = output_path / "total_body_temp.png"
-app.helpers.setup_view()
+camera.SetFit()
 app.helpers.export_image(stat_therm, image_path)
 app.helpers.display_image(image_path)
 
@@ -512,7 +516,7 @@ app.helpers.display_image(image_path)
 
 # Activate the temperature on part of the body and display the image
 image_path = output_path / "part_temp_body.png"
-app.helpers.setup_view()
+camera.SetFit()
 app.helpers.export_image(stat_therm, image_path)
 app.helpers.display_image(image_path)
 
@@ -521,7 +525,7 @@ app.helpers.display_image(image_path)
 
 # Activate the temperature distribution along the specific path and display the image
 image_path = output_path / "path_temp_distribution.png"
-app.helpers.setup_view()
+camera.SetFit()
 app.helpers.export_image(stat_therm, image_path)
 app.helpers.display_image(image_path)
 
@@ -530,7 +534,7 @@ app.helpers.display_image(image_path)
 
 # Activate the temperature of the bottom surface and display the image
 image_path = output_path / "bottom_surface_temp.png"
-app.helpers.setup_view()
+camera.SetFit()
 app.helpers.export_image(stat_therm, image_path)
 app.helpers.display_image(image_path)
 

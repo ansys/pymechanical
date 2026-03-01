@@ -62,7 +62,11 @@ print(app)
 output_path = Path.cwd() / "out"
 
 # Set the camera orientation to the front view
-app.helpers.setup_view("front")
+graphics = app.Graphics
+camera = graphics.Camera
+
+# Set the camera orientation to the front view
+camera.SetSpecificViewOrientation(ViewOrientationType.Front)
 
 # %%
 # Import the structural analysis model
@@ -101,7 +105,7 @@ assert struct_sln.Status == SolutionStatusType.Done, "Solution status is not 'Do
 
 struct_sln.Children[1].Activate()
 image_path = output_path / "total_deformation.png"
-app.helpers.setup_view()
+camera.SetFit()
 app.helpers.export_image(struct_sln.Children[1], image_path)
 app.helpers.display_image(image_path)
 # %%
@@ -109,7 +113,7 @@ app.helpers.display_image(image_path)
 
 struct_sln.Children[2].Activate()
 image_path = output_path / "equivalent_stress.png"
-app.helpers.setup_view()
+camera.SetFit()
 app.helpers.export_image(struct_sln.Children[2], image_path)
 app.helpers.display_image(image_path)
 
@@ -151,7 +155,7 @@ mem_size_manufacturing_constraint.MinSize = Quantity("2.4 [m]")
 
 # Activate the topology optimization analysis and display the image
 topology_optimization.Activate()
-app.helpers.setup_view()
+camera.SetFit()
 app.helpers.export_image(topology_optimization, output_path / "boundary_conditions.png")
 app.helpers.display_image(output_path / "boundary_conditions.png")
 
@@ -195,7 +199,7 @@ topology_optimization.Solution.EvaluateAllResults()
 # Activate the topology density result after smoothing and display the image
 topology_density.Children[0].Activate()
 image_path = output_path / "topo_opitimized_smooth.png"
-app.helpers.setup_view()
+camera.SetFit()
 app.helpers.export_image(topology_density.Children[0], image_path)
 app.helpers.display_image(image_path)
 

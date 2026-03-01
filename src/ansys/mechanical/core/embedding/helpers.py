@@ -163,7 +163,7 @@ class Helpers:
     def export_image(
         self,
         obj=None,
-        file_path: str = None,
+        file_path: "str | None" = None,
         width: int = 1920,
         height: int = 1080,
         background: str = "white",
@@ -235,14 +235,14 @@ class Helpers:
         # Set default file path if not provided
         if file_path is None:
             raise ValueError("file_path must be provided for image export.")
-        else:
-            file_path = Path(file_path)
-            # If only filename provided (no directory), save to current working directory
-            if not file_path.parent or file_path.parent == Path():
-                file_path = Path.cwd() / file_path.name
+
+        resolved_path = Path(file_path)
+        # If only filename provided (no directory), save to current working directory
+        if not resolved_path.parent or resolved_path.parent == Path():
+            resolved_path = Path.cwd() / resolved_path.name
 
         # Convert to string for API call
-        file_path = str(file_path)
+        file_path = str(resolved_path)
 
         # Activate the object if provided
         if obj is not None:
@@ -310,7 +310,7 @@ class Helpers:
     def export_animation(
         self,
         obj=None,
-        file_path: str = None,
+        file_path: "str | None" = None,
         width: int = 1280,
         height: int = 720,
         animation_format: str = "gif",
@@ -360,14 +360,14 @@ class Helpers:
         # Set default file path if not provided
         if file_path is None:
             raise ValueError("file_path must be provided for animation export.")
-        else:
-            file_path = Path(file_path)
-            # If only filename provided (no directory), save to current working directory
-            if not file_path.parent or file_path.parent == Path():
-                file_path = Path.cwd() / file_path.name
+
+        resolved_path = Path(file_path)
+        # If only filename provided (no directory), save to current working directory
+        if not resolved_path.parent or resolved_path.parent == Path():
+            resolved_path = Path.cwd() / resolved_path.name
 
         # Convert to string for API call
-        file_path = str(file_path)
+        file_path = str(resolved_path)
 
         # Activate the object if provided
         if obj is None:
@@ -403,100 +403,6 @@ class Helpers:
             self._app.log_info(f"Exported animation to {file_path} successfully.")
         except Exception as e:
             raise RuntimeError(f"Animation export unsuccessful: {e}")
-
-    def setup_view(
-        self,
-        orientation: str = "iso",
-        fit: bool = True,
-        rotation: int = None,
-        axis: str = "x",
-        scene_height=None,
-    ):
-        """Configure graphics settings for image export.
-
-        This is a convenience method that sets up camera orientation and creates
-        pre-configured image export settings. Commonly used at the start of examples
-        to prepare for exporting images.
-
-        Parameters
-        ----------
-        orientation : str, optional
-            Camera view orientation. Options are:
-            - "iso": Isometric view - Default
-            - "front": Front view
-            - "back": Back view
-            - "top": Top view
-            - "bottom": Bottom view
-            - "left": Left view
-            - "right": Right view
-            Default is "iso".
-        fit : bool, optional
-            Whether to fit the camera to the model. Default is True.
-        rotation : int, optional
-            Rotation angle in degrees. Default is None (no rotation).
-        axis : str, optional
-            Axis to rotate around. Options are "x", "y", or "z". Default is "x".
-        scene_height : Quantity, optional
-            Scene height for the camera view. Default is None (no scene height adjustment).
-
-        Examples
-        --------
-        >>> from ansys.mechanical.core import App
-        >>> app = App()
-
-        >>> # Set up view with scene height
-        >>> app.helpers.setup_view(scene_height=Quantity(2.0, "in"))
-
-        >>> # Use the configured settings to export an image
-        >>> app.Graphics.ExportImage("output.png", img_format, settings)
-        """
-        from ansys.mechanical.core.embedding.enum_importer import (
-            CameraAxisType,
-            ViewOrientationType,
-        )
-
-        # Get graphics and camera
-        graphics = self._app.Graphics
-        camera = graphics.Camera
-
-        # Set camera orientation
-        orientation_lower = orientation.lower()
-        if orientation_lower == "iso":
-            camera.SetSpecificViewOrientation(ViewOrientationType.Iso)
-        elif orientation_lower == "front":
-            camera.SetSpecificViewOrientation(ViewOrientationType.Front)
-        elif orientation_lower == "back":
-            camera.SetSpecificViewOrientation(ViewOrientationType.Back)
-        elif orientation_lower == "top":
-            camera.SetSpecificViewOrientation(ViewOrientationType.Top)
-        elif orientation_lower == "bottom":
-            camera.SetSpecificViewOrientation(ViewOrientationType.Bottom)
-        elif orientation_lower == "left":
-            camera.SetSpecificViewOrientation(ViewOrientationType.Left)
-        elif orientation_lower == "right":
-            camera.SetSpecificViewOrientation(ViewOrientationType.Right)
-        else:
-            raise ValueError(
-                f"Invalid orientation: {orientation}. "
-                "Valid options are 'iso', 'front', 'back', 'top', 'bottom', 'left', or 'right'."
-            )
-        # Set scene height if provided
-        if scene_height is not None:
-            camera.SceneHeight = scene_height
-
-        # Fit camera if requested
-        if fit:
-            camera.SetFit()
-
-        if rotation is not None:
-            if axis.lower() == "x":
-                camera.Rotate(rotation, CameraAxisType.ScreenX)
-            elif axis.lower() == "y":
-                camera.Rotate(rotation, CameraAxisType.ScreenY)
-            elif axis.lower() == "z":
-                camera.Rotate(rotation, CameraAxisType.ScreenZ)
-            else:
-                raise ValueError(f"Invalid axis: {axis}. Valid options are 'x', 'y', or 'z'.")
 
     def display_image(
         self,
