@@ -1,0 +1,2625 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Steady state thermal analysis &#8212; PyMechanical</title>
+  
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/ansys-sphinx-theme.css?v=a23b20f3" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/ansys-sphinx-theme.css?v=a23b20f3" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://www.nerdfonts.com/assets/css/webfont.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+
+  <!-- Include desired assets -->
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  
+
+  
+    <link href="../../../_static/css/breadcrumbs.css" rel="stylesheet" />
+  
+    <script src="../../../_static/documentation_options.js?v=142dd74e"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/thebelab-helper.js"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=49e1bf35"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'examples/gallery_examples/01_basic/steady_state_thermal_analysis';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://mechanical.docs.pyansys.com/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'dev';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+    <link rel="icon" href="../../../_static/ansys-favicon.png"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Topology optimization of a simple cantilever beam" href="topology_optimization_cantilever_beam.html" />
+    <link rel="prev" title="Modal acoustics analysis" href="modal_acoustics_analysis.html" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.12.dev0" />
+  <meta property="og:site_name" content="PyAnsys" />
+  <meta name="physics" content="Structures" />
+  <meta name="physics" content="Structures" />
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="https://docs.pyansys.com/">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/pyansys_logo_transparent_black.png" class="logo__image only-light" alt="PyMechanical - Home"/>
+    <img src="../../../_static/pyansys_logo_transparent_white.png" class="logo__image only-dark pst-js-only" alt="PyMechanical - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../index.html" title="PyMechanical home">Home</a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started/index.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide/index.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/ansys/mechanical/core/index.html">
+    API reference
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../contribute.html">
+    Contribute
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../faq.html">
+    FAQs
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../kil/index.html">
+    Known issues and limitations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../changelog.html">
+    Release notes
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav>
+</div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+<div class="search-bar pst-js-only" id="search-bar">
+  <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="search" class="form-control" name="q" placeholder="Search the docs ..."
+      aria-label="Search the docs ..." autocomplete="off" autocorrect="off"
+      autocapitalize="off" spellcheck="false" />
+    <span class="search-button__kbd-shortcut">
+      <kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd>
+    </span>
+  </form>
+  
+  <div id="static-search-results" class="static-search-results" style="display:none;" tabindex="0"></div>
+  
+</div></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical/discussions" title="Support" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa fa-comment fa-fw fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Support</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+  
+    
+<!--
+  Announcement Version Loader
+  Dynamically loads the announcement.html content into the announcement_msg div.
+-->
+<div id="announcement_msg" aria-live="polite"></div>
+<script>
+  // Fetch and inject the announcement HTML content
+  fetch("announcement.html")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status} Announcement.html file not found, Please ignore this, if you are in dev/stable documentation`);
+      }
+      return response.text();
+    })
+    .then((text) => {
+      var msgDiv = document.getElementById("announcement_msg");
+      if (msgDiv) {
+        msgDiv.innerHTML = text;
+      }
+    })
+    .catch((error) => {
+      // Log only unexpected fetch errors
+      if (!(error.message && error.message.startsWith("HTTP error: 404"))) {
+        console.error(`Fetch problem: ${error.message} Announcement.html could not be loaded.`);
+      }
+    });
+</script>
+  
+
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../index.html" title="PyMechanical home">Home</a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started/index.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide/index.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/ansys/mechanical/core/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../contribute.html">
+    Contribute
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../faq.html">
+    FAQs
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../kil/index.html">
+    Known issues and limitations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../changelog.html">
+    Release notes
+  </a>
+</li>
+
+  </ul>
+</nav>
+</div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="search-bar pst-js-only" id="search-bar">
+  <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="search" class="form-control" name="q" placeholder="Search the docs ..."
+      aria-label="Search the docs ..." autocomplete="off" autocorrect="off"
+      autocapitalize="off" spellcheck="false" />
+    <span class="search-button__kbd-shortcut">
+      <kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd>
+    </span>
+  </form>
+  
+  <div id="static-search-results" class="static-search-results" style="display:none;" tabindex="0"></div>
+  
+</div></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical/discussions" title="Support" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa fa-comment fa-fw fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Support</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Basic Examples</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="bolt_pretension.html">Bolt pretension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cooling_holes_thermal_analysis.html">Steady State Thermal Analysis of cooling holes on a representative model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fracture_analysis_contact_debonding.html">Fracture analysis - contact debonding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harmonic_acoustics.html">Harmonic acoustic analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modal_acoustics_analysis.html">Modal acoustics analysis</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Steady state thermal analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology_optimization_cantilever_beam.html">Topology optimization of a simple cantilever beam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="valve.html">Basic valve implementation</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference external" href="https://embedding.examples.mechanical.docs.pyansys.com/examples/index.html">Advanced Examples</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference external" href="https://examples.mechanical.docs.pyansys.com/index.html">Remote Sessions</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+         
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="https://docs.pyansys.com/" class="nav-link">PyAnsys</a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a
+        href="../../../index.html"
+        class="nav-link"
+        aria-label="Home"
+      >
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a href="../../index.html" class="nav-link">Examples</a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a href="index.html" class="nav-link">Basic Examples</a>
+    </li>
+      
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Steady state thermal analysis</span></li>
+    
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#sphx-glr-download-examples-gallery-examples-01-basic-steady-state-thermal-analysis-py"><span class="std std-ref">Go to the end</span></a>
+to download the full example code.</p>
+</div>
+<section class="sphx-glr-example-title" id="steady-state-thermal-analysis">
+<span id="ref-steady-state-thermal"></span><span id="sphx-glr-examples-gallery-examples-01-basic-steady-state-thermal-analysis-py"></span><h1>Steady state thermal analysis<a class="headerlink" href="#steady-state-thermal-analysis" title="Link to this heading">#</a></h1>
+<p>This example problem demonstrates the use of a
+simple steady-state thermal analysis to determine the temperatures,
+thermal gradients, heat flow rates, and heat fluxes that are caused
+by thermal loads that do not vary over time. A steady-state thermal
+analysis calculates the effects of steady thermal loads on a system
+or component, in this example, a long bar model.</p>
+<section id="import-the-necessary-libraries">
+<h2>Import the necessary libraries<a class="headerlink" href="#import-the-necessary-libraries" title="Link to this heading">#</a></h2>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="pathlib.Path" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class"><span class="n">Path</span></a>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <a href="https://docs.python.org/3/library/functions.html#bool" title="builtins.bool" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">TYPE_CHECKING</span></a>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <a href="https://matplotlib.org/stable/api/image_api.html#matplotlib.image.AxesImage" title="matplotlib.image.AxesImage" class="sphx-glr-backref-module-matplotlib-image sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">image</span></a> <span class="k">as</span> <span class="n">mpimg</span><span class="p">,</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.animation</span><span class="w"> </span><span class="kn">import</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.animation.FuncAnimation.html#matplotlib.animation.FuncAnimation" title="matplotlib.animation.FuncAnimation" class="sphx-glr-backref-module-matplotlib-animation sphx-glr-backref-type-py-class"><span class="n">FuncAnimation</span></a>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PIL</span><span class="w"> </span><span class="kn">import</span> <span class="n">Image</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">ansys.mechanical.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">App</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ansys.mechanical.core.examples</span><span class="w"> </span><span class="kn">import</span> <span class="n">delete_downloads</span><span class="p">,</span> <span class="n">download_file</span>
+
+<span class="k">if</span> <a href="https://docs.python.org/3/library/functions.html#bool" title="builtins.bool" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">TYPE_CHECKING</span></a><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">Ansys</span>
+</pre></div>
+</div>
+</section>
+<section id="initialize-the-embedded-application">
+<h2>Initialize the embedded application<a class="headerlink" href="#initialize-the-embedded-application" title="Link to this heading">#</a></h2>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="nb">globals</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Ansys Mechanical [Ansys Mechanical Enterprise]
+Product Version:261
+Software build date: 01/30/2026 18:48:37
+</pre></div>
+</div>
+</section>
+<section id="create-functions-to-set-camera-and-display-images">
+<h2>Create functions to set camera and display images<a class="headerlink" href="#create-functions-to-set-camera-and-display-images" title="Link to this heading">#</a></h2>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set the path for the output files (images, gifs, mechdat)</span>
+<a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">output_path</span></a> <span class="o">=</span> <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.cwd" title="pathlib.Path.cwd" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-method"><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span></a><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;out&quot;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">set_camera_and_display_image</span><span class="p">(</span>
+    <span class="n">camera</span><span class="p">,</span>
+    <span class="n">graphics</span><span class="p">,</span>
+    <span class="n">graphics_image_export_settings</span><span class="p">,</span>
+    <span class="n">image_output_path</span><span class="p">:</span> <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="pathlib.Path" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class"><span class="n">Path</span></a><span class="p">,</span>
+    <span class="n">image_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the camera to fit the model and display the image.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    camera : Ansys.ACT.Common.Graphics.MechanicalCameraWrapper</span>
+<span class="sd">        The camera object to set the view.</span>
+<span class="sd">    graphics : Ansys.ACT.Common.Graphics.MechanicalGraphicsWrapper</span>
+<span class="sd">        The graphics object to export the image.</span>
+<span class="sd">    graphics_image_export_settings : Ansys.Mechanical.Graphics.GraphicsImageExportSettings</span>
+<span class="sd">        The settings for exporting the image.</span>
+<span class="sd">    image_output_path : Path</span>
+<span class="sd">        The path to save the exported image.</span>
+<span class="sd">    image_name : str</span>
+<span class="sd">        The name of the exported image file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Set the camera to fit the mesh</span>
+    <span class="n">camera</span><span class="o">.</span><span class="n">SetFit</span><span class="p">()</span>
+    <span class="c1"># Export the mesh image with the specified settings</span>
+    <span class="n">image_path</span> <span class="o">=</span> <span class="n">image_output_path</span> <span class="o">/</span> <span class="n">image_name</span>
+    <span class="n">graphics</span><span class="o">.</span><span class="n">ExportImage</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">image_path</span><span class="p">),</span> <span class="n">image_export_format</span><span class="p">,</span> <span class="n">graphics_image_export_settings</span><span class="p">)</span>
+    <span class="c1"># Display the exported mesh image</span>
+    <span class="n">display_image</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">display_image</span><span class="p">(</span>
+    <span class="n">image_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">pyplot_figsize_coordinates</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span>
+    <span class="n">plot_xticks</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
+    <span class="n">plot_yticks</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
+    <span class="n">plot_axis</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;off&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Display the image with the specified parameters.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    image_path : str</span>
+<span class="sd">        The path to the image file to display.</span>
+<span class="sd">    pyplot_figsize_coordinates : tuple</span>
+<span class="sd">        The size of the figure in inches (width, height).</span>
+<span class="sd">    plot_xticks : list</span>
+<span class="sd">        The x-ticks to display on the plot.</span>
+<span class="sd">    plot_yticks : list</span>
+<span class="sd">        The y-ticks to display on the plot.</span>
+<span class="sd">    plot_axis : str</span>
+<span class="sd">        The axis visibility setting (&#39;on&#39; or &#39;off&#39;).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Set the figure size based on the coordinates specified</span>
+    <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.figure.html#matplotlib.pyplot.figure" title="matplotlib.pyplot.figure" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">figure</span></a><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">pyplot_figsize_coordinates</span><span class="p">)</span>
+    <span class="c1"># Read the image from the file into an array</span>
+    <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.imshow.html#matplotlib.pyplot.imshow" title="matplotlib.pyplot.imshow" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">imshow</span></a><span class="p">(</span><a href="https://matplotlib.org/stable/api/image_api.html#matplotlib.image.imread" title="matplotlib.image.imread" class="sphx-glr-backref-module-matplotlib-image sphx-glr-backref-type-py-function"><span class="n">mpimg</span><span class="o">.</span><span class="n">imread</span></a><span class="p">(</span><span class="n">image_path</span><span class="p">))</span>
+    <span class="c1"># Get or set the current tick locations and labels of the x-axis</span>
+    <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.xticks.html#matplotlib.pyplot.xticks" title="matplotlib.pyplot.xticks" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">xticks</span></a><span class="p">(</span><span class="n">plot_xticks</span><span class="p">)</span>
+    <span class="c1"># Get or set the current tick locations and labels of the y-axis</span>
+    <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.yticks.html#matplotlib.pyplot.yticks" title="matplotlib.pyplot.yticks" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">yticks</span></a><span class="p">(</span><span class="n">plot_yticks</span><span class="p">)</span>
+    <span class="c1"># Turn off the axis</span>
+    <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.axis.html#matplotlib.pyplot.axis" title="matplotlib.pyplot.axis" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">axis</span></a><span class="p">(</span><span class="n">plot_axis</span><span class="p">)</span>
+    <span class="c1"># Display the figure</span>
+    <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="configure-graphics-for-image-export">
+<h2>Configure graphics for image export<a class="headerlink" href="#configure-graphics-for-image-export" title="Link to this heading">#</a></h2>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">graphics</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">Graphics</span>
+<span class="n">camera</span> <span class="o">=</span> <span class="n">graphics</span><span class="o">.</span><span class="n">Camera</span>
+
+<span class="c1"># Set the camera orientation to isometric view</span>
+<span class="n">camera</span><span class="o">.</span><span class="n">SetSpecificViewOrientation</span><span class="p">(</span><span class="n">ViewOrientationType</span><span class="o">.</span><span class="n">Iso</span><span class="p">)</span>
+<span class="n">camera</span><span class="o">.</span><span class="n">SetFit</span><span class="p">()</span>
+
+<span class="c1"># Set the image export format and settings</span>
+<span class="n">image_export_format</span> <span class="o">=</span> <span class="n">GraphicsImageExportFormat</span><span class="o">.</span><span class="n">PNG</span>
+<span class="n">settings_720p</span> <span class="o">=</span> <span class="n">Ansys</span><span class="o">.</span><span class="n">Mechanical</span><span class="o">.</span><span class="n">Graphics</span><span class="o">.</span><span class="n">GraphicsImageExportSettings</span><span class="p">()</span>
+<span class="n">settings_720p</span><span class="o">.</span><span class="n">Resolution</span> <span class="o">=</span> <span class="n">GraphicsResolutionType</span><span class="o">.</span><span class="n">EnhancedResolution</span>
+<span class="n">settings_720p</span><span class="o">.</span><span class="n">Background</span> <span class="o">=</span> <span class="n">GraphicsBackgroundType</span><span class="o">.</span><span class="n">White</span>
+<a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">settings_720p</span><span class="o">.</span><span class="n">Width</span></a> <span class="o">=</span> <span class="mi">1280</span>
+<a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">settings_720p</span><span class="o">.</span><span class="n">Height</span></a> <span class="o">=</span> <span class="mi">720</span>
+<span class="n">settings_720p</span><span class="o">.</span><span class="n">CurrentGraphicsDisplay</span> <span class="o">=</span> <span class="kc">False</span>
+</pre></div>
+</div>
+</section>
+<section id="download-the-geometry-file">
+<h2>Download the geometry file<a class="headerlink" href="#download-the-geometry-file" title="Link to this heading">#</a></h2>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download the geometry file from the ansys/example-data repository</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">geometry_path</span></a> <span class="o">=</span> <span class="n">download_file</span><span class="p">(</span><span class="s2">&quot;LONGBAR.x_t&quot;</span><span class="p">,</span> <span class="s2">&quot;pymechanical&quot;</span><span class="p">,</span> <span class="s2">&quot;embedding&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="import-the-geometry">
+<h2>Import the geometry<a class="headerlink" href="#import-the-geometry" title="Link to this heading">#</a></h2>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define the model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">Model</span>
+
+<span class="c1"># Add the geometry import group and set its preferences</span>
+<span class="n">geometry_import_group</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">GeometryImportGroup</span>
+<span class="n">geometry_import</span> <span class="o">=</span> <span class="n">geometry_import_group</span><span class="o">.</span><span class="n">AddGeometryImport</span><span class="p">()</span>
+<span class="n">geometry_import_format</span> <span class="o">=</span> <span class="n">Ansys</span><span class="o">.</span><span class="n">Mechanical</span><span class="o">.</span><span class="n">DataModel</span><span class="o">.</span><span class="n">Enums</span><span class="o">.</span><span class="n">GeometryImportPreference</span><span class="o">.</span><span class="n">Format</span><span class="o">.</span><span class="n">Automatic</span>
+<span class="n">geometry_import_preferences</span> <span class="o">=</span> <span class="n">Ansys</span><span class="o">.</span><span class="n">ACT</span><span class="o">.</span><span class="n">Mechanical</span><span class="o">.</span><span class="n">Utilities</span><span class="o">.</span><span class="n">GeometryImportPreferences</span><span class="p">()</span>
+<a href="https://docs.python.org/3/library/functions.html#bool" title="builtins.bool" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">geometry_import_preferences</span><span class="o">.</span><span class="n">ProcessNamedSelections</span></a> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="c1"># Import the geometry file with the specified format and preferences</span>
+<span class="n">geometry_import</span><span class="o">.</span><span class="n">Import</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">geometry_path</span></a><span class="p">,</span> <span class="n">geometry_import_format</span><span class="p">,</span> <span class="n">geometry_import_preferences</span><span class="p">)</span>
+
+<span class="c1"># Visualize the model in 3D</span>
+<span class="n">app</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+<img src="../../../_images/sphx_glr_steady_state_thermal_analysis_001.png" srcset="../../../_images/sphx_glr_steady_state_thermal_analysis_001.png" alt="steady state thermal analysis" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>[]
+</pre></div>
+</div>
+</section>
+<section id="add-steady-state-thermal-analysis">
+<h2>Add steady state thermal analysis<a class="headerlink" href="#add-steady-state-thermal-analysis" title="Link to this heading">#</a></h2>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add a steady state thermal analysis to the model</span>
+<span class="n">model</span><span class="o">.</span><span class="n">AddSteadyStateThermalAnalysis</span><span class="p">()</span>
+<span class="c1"># Set the Mechanical unit system to Standard MKS</span>
+<span class="n">app</span><span class="o">.</span><span class="n">ExtAPI</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">ActiveUnitSystem</span> <span class="o">=</span> <span class="n">MechanicalUnitSystem</span><span class="o">.</span><span class="n">StandardMKS</span>
+
+<span class="c1"># Get the steady state thermal analysis</span>
+<span class="n">stat_therm</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Analyses</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># Add a coordinate system to the model</span>
+<span class="n">coordinate_systems</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">CoordinateSystems</span>
+
+<span class="c1"># Add two coordinate systems</span>
+<span class="n">lcs1</span> <span class="o">=</span> <span class="n">coordinate_systems</span><span class="o">.</span><span class="n">AddCoordinateSystem</span><span class="p">()</span>
+<span class="n">lcs1</span><span class="o">.</span><span class="n">OriginX</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;0 [m]&quot;</span><span class="p">)</span>
+
+<span class="n">lcs2</span> <span class="o">=</span> <span class="n">coordinate_systems</span><span class="o">.</span><span class="n">AddCoordinateSystem</span><span class="p">()</span>
+<span class="n">lcs2</span><span class="o">.</span><span class="n">OriginX</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;0 [m]&quot;</span><span class="p">)</span>
+<span class="n">lcs2</span><span class="o">.</span><span class="n">PrimaryAxisDefineBy</span> <span class="o">=</span> <span class="n">CoordinateSystemAlignmentType</span><span class="o">.</span><span class="n">GlobalY</span>
+</pre></div>
+</div>
+</section>
+<section id="create-named-selections-and-construction-geometry">
+<h2>Create named selections and construction geometry<a class="headerlink" href="#create-named-selections-and-construction-geometry" title="Link to this heading">#</a></h2>
+<p>Create a function to add a named selection</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">setup_named_selection</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">scoping_method</span><span class="o">=</span><span class="n">GeometryDefineByType</span><span class="o">.</span><span class="n">Worksheet</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a named selection with the specified scoping method and name.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        The name of the named selection.</span>
+<span class="sd">    scoping_method : GeometryDefineByType</span>
+<span class="sd">        The scoping method for the named selection.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Ansys.ACT.Automation.Mechanical.NamedSelection</span>
+<span class="sd">        The created named selection.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ns</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">AddNamedSelection</span><span class="p">()</span>
+    <span class="n">ns</span><span class="o">.</span><span class="n">ScopingMethod</span> <span class="o">=</span> <span class="n">scoping_method</span>
+    <span class="n">ns</span><span class="o">.</span><span class="n">Name</span> <span class="o">=</span> <span class="n">name</span>
+    <span class="k">return</span> <span class="n">ns</span>
+</pre></div>
+</div>
+<p>Create a function to add generation criteria to the named selection</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">add_generation_criteria</span><span class="p">(</span>
+    <span class="n">named_selection</span><span class="p">,</span>
+    <span class="n">value</span><span class="p">,</span>
+    <span class="n">set_active_action_criteria</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">active</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">action</span><span class="o">=</span><span class="n">SelectionActionType</span><span class="o">.</span><span class="n">Add</span><span class="p">,</span>
+    <span class="n">entity_type</span><span class="o">=</span><span class="n">SelectionType</span><span class="o">.</span><span class="n">GeoFace</span><span class="p">,</span>
+    <span class="n">criterion</span><span class="o">=</span><span class="n">SelectionCriterionType</span><span class="o">.</span><span class="n">Size</span><span class="p">,</span>
+    <span class="n">operator</span><span class="o">=</span><span class="n">SelectionOperatorType</span><span class="o">.</span><span class="n">Equal</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add generation criteria to the named selection.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    named_selection : Ansys.ACT.Automation.Mechanical.NamedSelection</span>
+<span class="sd">        The named selection to which the criteria will be added.</span>
+<span class="sd">    value : Quantity</span>
+<span class="sd">        The value for the criteria.</span>
+<span class="sd">    active : bool</span>
+<span class="sd">        Whether the criteria is active.</span>
+<span class="sd">    action : SelectionActionType</span>
+<span class="sd">        The action type for the criteria.</span>
+<span class="sd">    entity_type : SelectionType</span>
+<span class="sd">        The entity type for the criteria.</span>
+<span class="sd">    criterion : SelectionCriterionType</span>
+<span class="sd">        The criterion type for the criteria.</span>
+<span class="sd">    operator : SelectionOperatorType</span>
+<span class="sd">        The operator for the criteria.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">generation_criteria</span> <span class="o">=</span> <span class="n">named_selection</span><span class="o">.</span><span class="n">GenerationCriteria</span>
+    <span class="n">criteria</span> <span class="o">=</span> <span class="n">Ansys</span><span class="o">.</span><span class="n">ACT</span><span class="o">.</span><span class="n">Automation</span><span class="o">.</span><span class="n">Mechanical</span><span class="o">.</span><span class="n">NamedSelectionCriterion</span><span class="p">()</span>
+
+    <span class="n">set_criteria_properties</span><span class="p">(</span>
+        <span class="n">criteria</span><span class="p">,</span>
+        <span class="n">value</span><span class="p">,</span>
+        <span class="n">set_active_action_criteria</span><span class="p">,</span>
+        <span class="n">active</span><span class="p">,</span>
+        <span class="n">action</span><span class="p">,</span>
+        <span class="n">entity_type</span><span class="p">,</span>
+        <span class="n">criterion</span><span class="p">,</span>
+        <span class="n">operator</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">set_active_action_criteria</span><span class="p">:</span>
+        <span class="n">generation_criteria</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">criteria</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Create a function to set the properties of the generation criteria</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">set_criteria_properties</span><span class="p">(</span>
+    <span class="n">criteria</span><span class="p">,</span>
+    <span class="n">value</span><span class="p">,</span>
+    <span class="n">set_active_action_criteria</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">active</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">action</span><span class="o">=</span><span class="n">SelectionActionType</span><span class="o">.</span><span class="n">Add</span><span class="p">,</span>
+    <span class="n">entity_type</span><span class="o">=</span><span class="n">SelectionType</span><span class="o">.</span><span class="n">GeoFace</span><span class="p">,</span>
+    <span class="n">criterion</span><span class="o">=</span><span class="n">SelectionCriterionType</span><span class="o">.</span><span class="n">Size</span><span class="p">,</span>
+    <span class="n">operator</span><span class="o">=</span><span class="n">SelectionOperatorType</span><span class="o">.</span><span class="n">Equal</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the properties of the generation criteria.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    criteria : Ansys.ACT.Automation.Mechanical.NamedSelectionCriterion</span>
+<span class="sd">        The generation criteria to set properties for.</span>
+<span class="sd">    active : bool</span>
+<span class="sd">        Whether the criteria is active.</span>
+<span class="sd">    action : SelectionActionType</span>
+<span class="sd">        The action type for the criteria.</span>
+<span class="sd">    entity_type : SelectionType</span>
+<span class="sd">        The entity type for the criteria.</span>
+<span class="sd">    criterion : SelectionCriterionType</span>
+<span class="sd">        The criterion type for the criteria.</span>
+<span class="sd">    operator : SelectionOperatorType</span>
+<span class="sd">        The operator for the criteria.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">set_active_action_criteria</span><span class="p">:</span>
+        <span class="n">criteria</span><span class="o">.</span><span class="n">Active</span> <span class="o">=</span> <span class="n">active</span>
+        <span class="n">criteria</span><span class="o">.</span><span class="n">Action</span> <span class="o">=</span> <span class="n">action</span>
+
+    <span class="n">criteria</span><span class="o">.</span><span class="n">EntityType</span> <span class="o">=</span> <span class="n">entity_type</span>
+    <span class="n">criteria</span><span class="o">.</span><span class="n">Criterion</span> <span class="o">=</span> <span class="n">criterion</span>
+    <span class="n">criteria</span><span class="o">.</span><span class="n">Operator</span> <span class="o">=</span> <span class="n">operator</span>
+    <span class="n">criteria</span><span class="o">.</span><span class="n">Value</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">return</span> <span class="n">criteria</span>
+</pre></div>
+</div>
+<p>Add named selections to the model</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">face1</span> <span class="o">=</span> <span class="n">setup_named_selection</span><span class="p">(</span><span class="s2">&quot;Face1&quot;</span><span class="p">)</span>
+<span class="n">add_generation_criteria</span><span class="p">(</span><span class="n">face1</span><span class="p">,</span> <span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;20 [m]&quot;</span><span class="p">),</span> <span class="n">criterion</span><span class="o">=</span><span class="n">SelectionCriterionType</span><span class="o">.</span><span class="n">LocationZ</span><span class="p">)</span>
+<span class="n">face1</span><span class="o">.</span><span class="n">Activate</span><span class="p">()</span>
+<span class="n">face1</span><span class="o">.</span><span class="n">Generate</span><span class="p">()</span>
+
+<span class="n">face2</span> <span class="o">=</span> <span class="n">setup_named_selection</span><span class="p">(</span><span class="s2">&quot;Face2&quot;</span><span class="p">)</span>
+<span class="n">add_generation_criteria</span><span class="p">(</span><span class="n">face2</span><span class="p">,</span> <span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;0 [m]&quot;</span><span class="p">),</span> <span class="n">criterion</span><span class="o">=</span><span class="n">SelectionCriterionType</span><span class="o">.</span><span class="n">LocationZ</span><span class="p">)</span>
+<span class="n">face2</span><span class="o">.</span><span class="n">Activate</span><span class="p">()</span>
+<span class="n">face2</span><span class="o">.</span><span class="n">Generate</span><span class="p">()</span>
+
+<span class="n">face3</span> <span class="o">=</span> <span class="n">setup_named_selection</span><span class="p">(</span><span class="s2">&quot;Face3&quot;</span><span class="p">)</span>
+<span class="n">add_generation_criteria</span><span class="p">(</span><span class="n">face3</span><span class="p">,</span> <span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;1 [m]&quot;</span><span class="p">),</span> <span class="n">criterion</span><span class="o">=</span><span class="n">SelectionCriterionType</span><span class="o">.</span><span class="n">LocationX</span><span class="p">)</span>
+<span class="n">add_generation_criteria</span><span class="p">(</span>
+    <span class="n">face3</span><span class="p">,</span>
+    <span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;2 [m]&quot;</span><span class="p">),</span>
+    <span class="n">criterion</span><span class="o">=</span><span class="n">SelectionCriterionType</span><span class="o">.</span><span class="n">LocationY</span><span class="p">,</span>
+    <span class="n">action</span><span class="o">=</span><span class="n">SelectionActionType</span><span class="o">.</span><span class="n">Filter</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">add_generation_criteria</span><span class="p">(</span>
+    <span class="n">face3</span><span class="p">,</span>
+    <span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;12 [m]&quot;</span><span class="p">),</span>
+    <span class="n">criterion</span><span class="o">=</span><span class="n">SelectionCriterionType</span><span class="o">.</span><span class="n">LocationZ</span><span class="p">,</span>
+    <span class="n">action</span><span class="o">=</span><span class="n">SelectionActionType</span><span class="o">.</span><span class="n">Filter</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">add_generation_criteria</span><span class="p">(</span><span class="n">face3</span><span class="p">,</span> <span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;4.5 [m]&quot;</span><span class="p">),</span> <span class="n">criterion</span><span class="o">=</span><span class="n">SelectionCriterionType</span><span class="o">.</span><span class="n">LocationZ</span><span class="p">)</span>
+<span class="n">add_generation_criteria</span><span class="p">(</span>
+    <span class="n">face3</span><span class="p">,</span>
+    <span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;2 [m]&quot;</span><span class="p">),</span>
+    <span class="n">criterion</span><span class="o">=</span><span class="n">SelectionCriterionType</span><span class="o">.</span><span class="n">LocationY</span><span class="p">,</span>
+    <span class="n">action</span><span class="o">=</span><span class="n">SelectionActionType</span><span class="o">.</span><span class="n">Filter</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">face3</span><span class="o">.</span><span class="n">Activate</span><span class="p">()</span>
+<span class="n">face3</span><span class="o">.</span><span class="n">Generate</span><span class="p">()</span>
+
+<span class="n">body1</span> <span class="o">=</span> <span class="n">setup_named_selection</span><span class="p">(</span><span class="s2">&quot;Body1&quot;</span><span class="p">)</span>
+<span class="n">body1</span><span class="o">.</span><span class="n">GenerationCriteria</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">set_criteria_properties</span><span class="p">(</span>
+    <span class="n">body1</span><span class="o">.</span><span class="n">GenerationCriteria</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+    <span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;1 [m]&quot;</span><span class="p">),</span>
+    <span class="n">set_active_action_criteria</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">criterion</span><span class="o">=</span><span class="n">SelectionCriterionType</span><span class="o">.</span><span class="n">LocationZ</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">body1</span><span class="o">.</span><span class="n">GenerationCriteria</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">set_criteria_properties</span><span class="p">(</span>
+    <span class="n">body1</span><span class="o">.</span><span class="n">GenerationCriteria</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;1 [m]&quot;</span><span class="p">),</span>
+    <span class="n">set_active_action_criteria</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">criterion</span><span class="o">=</span><span class="n">SelectionCriterionType</span><span class="o">.</span><span class="n">LocationZ</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">body1</span><span class="o">.</span><span class="n">Generate</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Create construction geometry</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add construction geometry to the model</span>
+<span class="n">construction_geometry</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">AddConstructionGeometry</span><span class="p">()</span>
+<span class="c1"># Add a path to the construction geometry</span>
+<span class="n">construction_geom_path</span> <span class="o">=</span> <span class="n">construction_geometry</span><span class="o">.</span><span class="n">AddPath</span><span class="p">()</span>
+
+<span class="c1"># Set the coordinate system for the construction geometry path</span>
+<span class="n">construction_geom_path</span><span class="o">.</span><span class="n">StartYCoordinate</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span>
+<span class="n">construction_geom_path</span><span class="o">.</span><span class="n">StartZCoordinate</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span>
+<span class="n">construction_geom_path</span><span class="o">.</span><span class="n">StartZCoordinate</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span>
+<span class="n">construction_geom_path</span><span class="o">.</span><span class="n">EndXCoordinate</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span>
+
+<span class="c1"># Add a surface to the construction geometry</span>
+<span class="n">surface</span> <span class="o">=</span> <span class="n">construction_geometry</span><span class="o">.</span><span class="n">AddSurface</span><span class="p">()</span>
+<span class="c1"># Set the coordinate system for the surface</span>
+<span class="n">surface</span><span class="o">.</span><span class="n">CoordinateSystem</span> <span class="o">=</span> <span class="n">lcs2</span>
+<span class="c1"># Update the solids in the construction geometry</span>
+<span class="n">construction_geometry</span><span class="o">.</span><span class="n">UpdateAllSolids</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="define-the-boundary-condition-and-add-results">
+<h2>Define the boundary condition and add results<a class="headerlink" href="#define-the-boundary-condition-and-add-results" title="Link to this heading">#</a></h2>
+<p>Create a function to set the location and output for the temperature boundary condition</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">set_loc_and_output</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add a temperature set output to the boundary condition.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    temp : Ansys.Mechanical.DataModel.SteadyStateThermal.Temperature</span>
+<span class="sd">        The temperature boundary condition.</span>
+<span class="sd">    location : Ansys.Mechanical.DataModel.Geometry.GeometryObject</span>
+<span class="sd">        The location of the temperature boundary condition.</span>
+<span class="sd">    values : list[Quantity]</span>
+<span class="sd">        The list of values for the temperature.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">temp</span><span class="o">.</span><span class="n">Location</span> <span class="o">=</span> <span class="n">location</span>
+    <span class="n">temp</span><span class="o">.</span><span class="n">Magnitude</span><span class="o">.</span><span class="n">Output</span><span class="o">.</span><span class="n">DiscreteValues</span> <span class="o">=</span> <span class="p">[</span><span class="n">Quantity</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Create a function to set the inputs and outputs for the temperature boundary condition</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">set_inputs_and_outputs</span><span class="p">(</span>
+    <span class="n">condition</span><span class="p">,</span>
+    <span class="n">input_quantities</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;0 [sec]&quot;</span><span class="p">,</span> <span class="s2">&quot;1 [sec]&quot;</span><span class="p">,</span> <span class="s2">&quot;2 [sec]&quot;</span><span class="p">],</span>
+    <span class="n">output_quantities</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;22[C]&quot;</span><span class="p">,</span> <span class="s2">&quot;30[C]&quot;</span><span class="p">,</span> <span class="s2">&quot;40[C]&quot;</span><span class="p">],</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the temperature inputs for the boundary condition.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    condition : Ansys.Mechanical.DataModel.SteadyStateThermal.Temperature</span>
+<span class="sd">        The temperature boundary condition.</span>
+<span class="sd">    inputs : list[Quantity]</span>
+<span class="sd">        The list of input values for the temperature.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Set the magnitude for temperature or the ambient temperature for radiation</span>
+    <span class="k">if</span> <span class="s2">&quot;Temperature&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">condition</span><span class="p">)):</span>
+        <span class="n">prop</span> <span class="o">=</span> <span class="n">condition</span><span class="o">.</span><span class="n">Magnitude</span>
+    <span class="k">elif</span> <span class="s2">&quot;Radiation&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">condition</span><span class="p">)):</span>
+        <span class="n">prop</span> <span class="o">=</span> <span class="n">condition</span><span class="o">.</span><span class="n">AmbientTemperature</span>
+
+    <span class="c1"># Set the inputs and outputs for the temperature or radiation</span>
+    <span class="n">prop</span><span class="o">.</span><span class="n">Inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">DiscreteValues</span> <span class="o">=</span> <span class="p">[</span><span class="n">Quantity</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">input_quantities</span><span class="p">]</span>
+    <span class="n">prop</span><span class="o">.</span><span class="n">Output</span><span class="o">.</span><span class="n">DiscreteValues</span> <span class="o">=</span> <span class="p">[</span><span class="n">Quantity</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">output_quantities</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Add temperature boundary conditions to the steady state thermal analysis</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">temp</span> <span class="o">=</span> <span class="n">stat_therm</span><span class="o">.</span><span class="n">AddTemperature</span><span class="p">()</span>
+<span class="n">set_loc_and_output</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">face1</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;22[C]&quot;</span><span class="p">,</span> <span class="s2">&quot;30[C]&quot;</span><span class="p">])</span>
+<span class="n">temp2</span> <span class="o">=</span> <span class="n">stat_therm</span><span class="o">.</span><span class="n">AddTemperature</span><span class="p">()</span>
+<span class="n">set_loc_and_output</span><span class="p">(</span><span class="n">temp2</span><span class="p">,</span> <span class="n">face2</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;22[C]&quot;</span><span class="p">,</span> <span class="s2">&quot;60[C]&quot;</span><span class="p">])</span>
+
+<span class="n">set_inputs_and_outputs</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+<span class="n">set_inputs_and_outputs</span><span class="p">(</span><span class="n">temp2</span><span class="p">,</span> <span class="n">output_quantities</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;22[C]&quot;</span><span class="p">,</span> <span class="s2">&quot;50[C]&quot;</span><span class="p">,</span> <span class="s2">&quot;80[C]&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Add radiation</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add a radiation boundary condition to the steady state thermal analysis</span>
+<span class="n">radiation</span> <span class="o">=</span> <span class="n">stat_therm</span><span class="o">.</span><span class="n">AddRadiation</span><span class="p">()</span>
+<span class="n">radiation</span><span class="o">.</span><span class="n">Location</span> <span class="o">=</span> <span class="n">face3</span>
+<span class="n">set_inputs_and_outputs</span><span class="p">(</span><span class="n">radiation</span><span class="p">)</span>
+<span class="n">radiation</span><span class="o">.</span><span class="n">Correlation</span> <span class="o">=</span> <span class="n">RadiationType</span><span class="o">.</span><span class="n">SurfaceToSurface</span>
+</pre></div>
+</div>
+<p>Set up the analysis settings</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">analysis_settings</span> <span class="o">=</span> <span class="n">stat_therm</span><span class="o">.</span><span class="n">AnalysisSettings</span>
+<span class="n">analysis_settings</span><span class="o">.</span><span class="n">NumberOfSteps</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">analysis_settings</span><span class="o">.</span><span class="n">CalculateVolumeEnergy</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="c1"># Activate the static thermal analysis and display the image</span>
+<span class="n">stat_therm</span><span class="o">.</span><span class="n">Activate</span><span class="p">()</span>
+<span class="n">set_camera_and_display_image</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="n">graphics</span><span class="p">,</span> <span class="n">settings_720p</span><span class="p">,</span> <a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">output_path</span></a><span class="p">,</span> <span class="s2">&quot;bc_steady_state.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img src="../../../_images/sphx_glr_steady_state_thermal_analysis_002.png" srcset="../../../_images/sphx_glr_steady_state_thermal_analysis_002.png" alt="steady state thermal analysis" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/__w/pymechanical/pymechanical/examples/01_basic/steady_state_thermal_analysis.py:479: UserWarning: Obsolete: &#39;AnalysisSettings&#39;: Property is obsolete, use IAnalysisSettings instead.
+  analysis_settings = stat_therm.AnalysisSettings
+</pre></div>
+</div>
+</section>
+<section id="add-results">
+<h2>Add results<a class="headerlink" href="#add-results" title="Link to this heading">#</a></h2>
+<p>Add temperature results to the solution</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get the solution object for the steady state thermal analysis</span>
+<span class="n">stat_therm_soln</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Analyses</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">Solution</span>
+
+<span class="c1"># Add four temperature results to the solution</span>
+<span class="n">temp_rst</span> <span class="o">=</span> <span class="n">stat_therm_soln</span><span class="o">.</span><span class="n">AddTemperature</span><span class="p">()</span>
+<span class="n">temp_rst</span><span class="o">.</span><span class="n">By</span> <span class="o">=</span> <span class="n">SetDriverStyle</span><span class="o">.</span><span class="n">MaximumOverTime</span>
+
+<span class="c1"># Set the temperature location to the body1 named selection</span>
+<span class="n">temp_rst2</span> <span class="o">=</span> <span class="n">stat_therm_soln</span><span class="o">.</span><span class="n">AddTemperature</span><span class="p">()</span>
+<span class="n">temp_rst2</span><span class="o">.</span><span class="n">Location</span> <span class="o">=</span> <span class="n">body1</span>
+
+<span class="c1"># Set the temperature location to the construction geometry path</span>
+<span class="n">temp_rst3</span> <span class="o">=</span> <span class="n">stat_therm_soln</span><span class="o">.</span><span class="n">AddTemperature</span><span class="p">()</span>
+<span class="n">temp_rst3</span><span class="o">.</span><span class="n">Location</span> <span class="o">=</span> <span class="n">construction_geom_path</span>
+
+<span class="c1"># Set the temperaature location to the construction geometry surface</span>
+<span class="n">temp_rst4</span> <span class="o">=</span> <span class="n">stat_therm_soln</span><span class="o">.</span><span class="n">AddTemperature</span><span class="p">()</span>
+<span class="n">temp_rst4</span><span class="o">.</span><span class="n">Location</span> <span class="o">=</span> <span class="n">surface</span>
+</pre></div>
+</div>
+<p>Add the total and directional heat flux to the solution</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">total_heat_flux</span> <span class="o">=</span> <span class="n">stat_therm_soln</span><span class="o">.</span><span class="n">AddTotalHeatFlux</span><span class="p">()</span>
+<span class="n">directional_heat_flux</span> <span class="o">=</span> <span class="n">stat_therm_soln</span><span class="o">.</span><span class="n">AddTotalHeatFlux</span><span class="p">()</span>
+
+<span class="c1"># Set the thermal result type and normal orientation for the directional heat flux</span>
+<span class="n">directional_heat_flux</span><span class="o">.</span><span class="n">ThermalResultType</span> <span class="o">=</span> <span class="n">TotalOrDirectional</span><span class="o">.</span><span class="n">Directional</span>
+<span class="n">directional_heat_flux</span><span class="o">.</span><span class="n">NormalOrientation</span> <span class="o">=</span> <span class="n">NormalOrientationType</span><span class="o">.</span><span class="n">ZAxis</span>
+
+<span class="c1"># Set the coordinate system&#39;s primary axis for the directional heat flux</span>
+<span class="n">lcs2</span><span class="o">.</span><span class="n">PrimaryAxisDefineBy</span> <span class="o">=</span> <span class="n">CoordinateSystemAlignmentType</span><span class="o">.</span><span class="n">GlobalZ</span>
+<span class="n">directional_heat_flux</span><span class="o">.</span><span class="n">CoordinateSystem</span> <span class="o">=</span> <span class="n">lcs2</span>
+
+<span class="c1"># Set the display option for the directional heat flux</span>
+<span class="n">directional_heat_flux</span><span class="o">.</span><span class="n">DisplayOption</span> <span class="o">=</span> <span class="n">ResultAveragingType</span><span class="o">.</span><span class="n">Averaged</span>
+</pre></div>
+</div>
+<p>Add thermal error and temperature probes</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add a thermal error to the solution</span>
+<span class="n">thermal_error</span> <span class="o">=</span> <span class="n">stat_therm_soln</span><span class="o">.</span><span class="n">AddThermalError</span><span class="p">()</span>
+
+<span class="c1"># Add a temperature probe to the solution</span>
+<span class="n">temp_probe</span> <span class="o">=</span> <span class="n">stat_therm_soln</span><span class="o">.</span><span class="n">AddTemperatureProbe</span><span class="p">()</span>
+
+<span class="c1"># Set the temperature probe location to the face1 named selection</span>
+<span class="n">temp_probe</span><span class="o">.</span><span class="n">GeometryLocation</span> <span class="o">=</span> <span class="n">face1</span>
+
+<span class="c1"># Set the temperature probe location method to the coordinate system</span>
+<span class="n">temp_probe</span><span class="o">.</span><span class="n">LocationMethod</span> <span class="o">=</span> <span class="n">LocationDefinitionMethod</span><span class="o">.</span><span class="n">CoordinateSystem</span>
+<span class="n">temp_probe</span><span class="o">.</span><span class="n">CoordinateSystemSelection</span> <span class="o">=</span> <span class="n">lcs2</span>
+</pre></div>
+</div>
+<p>Add a heat flux probe</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">hflux_probe</span> <span class="o">=</span> <span class="n">stat_therm_soln</span><span class="o">.</span><span class="n">AddHeatFluxProbe</span><span class="p">()</span>
+
+<span class="c1"># Set the location method for the heat flux probe</span>
+<span class="n">hflux_probe</span><span class="o">.</span><span class="n">LocationMethod</span> <span class="o">=</span> <span class="n">LocationDefinitionMethod</span><span class="o">.</span><span class="n">CoordinateSystem</span>
+<span class="c1"># Set the coordinate system for the heat flux probe</span>
+<span class="n">hflux_probe</span><span class="o">.</span><span class="n">CoordinateSystemSelection</span> <span class="o">=</span> <span class="n">lcs2</span>
+<span class="c1"># Set the result selection to the z-axis for the heat flux probe</span>
+<span class="n">hflux_probe</span><span class="o">.</span><span class="n">ResultSelection</span> <span class="o">=</span> <span class="n">ProbeDisplayFilter</span><span class="o">.</span><span class="n">ZAxis</span>
+</pre></div>
+</div>
+<p>Add a reaction probe</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Update the analysis settings to allow output control nodal forces</span>
+<span class="n">analysis_settings</span><span class="o">.</span><span class="n">NodalForces</span> <span class="o">=</span> <span class="n">OutputControlsNodalForcesType</span><span class="o">.</span><span class="n">Yes</span>
+
+<span class="c1"># Add a reaction probe to the solution</span>
+<span class="n">reaction_probe</span> <span class="o">=</span> <span class="n">stat_therm_soln</span><span class="o">.</span><span class="n">AddReactionProbe</span><span class="p">()</span>
+<span class="c1"># Set the reaction probe geometry location to the face1 named selection</span>
+<span class="n">reaction_probe</span><span class="o">.</span><span class="n">LocationMethod</span> <span class="o">=</span> <span class="n">LocationDefinitionMethod</span><span class="o">.</span><span class="n">GeometrySelection</span>
+<span class="n">reaction_probe</span><span class="o">.</span><span class="n">GeometryLocation</span> <span class="o">=</span> <span class="n">face1</span>
+</pre></div>
+</div>
+<p>Add a radiation probe</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">radiation_probe</span> <span class="o">=</span> <span class="n">stat_therm_soln</span><span class="o">.</span><span class="n">AddRadiationProbe</span><span class="p">()</span>
+<span class="c1"># Set the radiation probe boundary condition to the radiation boundary condition</span>
+<span class="n">radiation_probe</span><span class="o">.</span><span class="n">BoundaryConditionSelection</span> <span class="o">=</span> <span class="n">radiation</span>
+<span class="c1"># Display all results for the radiation probe</span>
+<span class="n">radiation_probe</span><span class="o">.</span><span class="n">ResultSelection</span> <span class="o">=</span> <span class="n">ProbeDisplayFilter</span><span class="o">.</span><span class="n">All</span>
+</pre></div>
+</div>
+</section>
+<section id="solve-the-solution">
+<h2>Solve the solution<a class="headerlink" href="#solve-the-solution" title="Link to this heading">#</a></h2>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Solve the steady state thermal analysis solution</span>
+<span class="n">stat_therm_soln</span><span class="o">.</span><span class="n">Solve</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="show-messages">
+<h2>Show messages<a class="headerlink" href="#show-messages" title="Link to this heading">#</a></h2>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print all messages from Mechanical</span>
+<span class="n">app</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Severity: Warning
+DisplayString: A result is scoped to a construction geometry object which might have points shared with multiple bodies. Please check the results.   Object=Surface   Result=Temperature 4
+Severity: Info
+DisplayString: The requested license was received from the License Manager after 32 seconds.
+</pre></div>
+</div>
+</section>
+<section id="display-the-results">
+<h2>Display the results<a class="headerlink" href="#display-the-results" title="Link to this heading">#</a></h2>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Activate the total body temperature and display the image</span>
+<span class="n">app</span><span class="o">.</span><span class="n">Tree</span><span class="o">.</span><span class="n">Activate</span><span class="p">([</span><span class="n">temp_rst</span><span class="p">])</span>
+<span class="n">set_camera_and_display_image</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="n">graphics</span><span class="p">,</span> <span class="n">settings_720p</span><span class="p">,</span> <a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">output_path</span></a><span class="p">,</span> <span class="s2">&quot;total_body_temp.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img src="../../../_images/sphx_glr_steady_state_thermal_analysis_003.png" srcset="../../../_images/sphx_glr_steady_state_thermal_analysis_003.png" alt="steady state thermal analysis" class = "sphx-glr-single-img"/><p>Temperature on part of the body</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Activate the temperature on part of the body and display the image</span>
+<span class="n">app</span><span class="o">.</span><span class="n">Tree</span><span class="o">.</span><span class="n">Activate</span><span class="p">([</span><span class="n">temp_rst2</span><span class="p">])</span>
+<span class="n">set_camera_and_display_image</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="n">graphics</span><span class="p">,</span> <span class="n">settings_720p</span><span class="p">,</span> <a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">output_path</span></a><span class="p">,</span> <span class="s2">&quot;part_temp_body.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img src="../../../_images/sphx_glr_steady_state_thermal_analysis_004.png" srcset="../../../_images/sphx_glr_steady_state_thermal_analysis_004.png" alt="steady state thermal analysis" class = "sphx-glr-single-img"/><p>Temperature distribution along the specific path</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Activate the temperature distribution along the specific path and display the image</span>
+<span class="n">app</span><span class="o">.</span><span class="n">Tree</span><span class="o">.</span><span class="n">Activate</span><span class="p">([</span><span class="n">temp_rst3</span><span class="p">])</span>
+<span class="n">set_camera_and_display_image</span><span class="p">(</span>
+    <span class="n">camera</span><span class="p">,</span> <span class="n">graphics</span><span class="p">,</span> <span class="n">settings_720p</span><span class="p">,</span> <a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">output_path</span></a><span class="p">,</span> <span class="s2">&quot;path_temp_distribution.png&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<img src="../../../_images/sphx_glr_steady_state_thermal_analysis_005.png" srcset="../../../_images/sphx_glr_steady_state_thermal_analysis_005.png" alt="steady state thermal analysis" class = "sphx-glr-single-img"/><p>Temperature of bottom surface</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Activate the temperature of the bottom surface and display the image</span>
+<span class="n">app</span><span class="o">.</span><span class="n">Tree</span><span class="o">.</span><span class="n">Activate</span><span class="p">([</span><span class="n">temp_rst4</span><span class="p">])</span>
+<span class="n">set_camera_and_display_image</span><span class="p">(</span>
+    <span class="n">camera</span><span class="p">,</span> <span class="n">graphics</span><span class="p">,</span> <span class="n">settings_720p</span><span class="p">,</span> <a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">output_path</span></a><span class="p">,</span> <span class="s2">&quot;bottom_surface_temp.png&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<img src="../../../_images/sphx_glr_steady_state_thermal_analysis_006.png" srcset="../../../_images/sphx_glr_steady_state_thermal_analysis_006.png" alt="steady state thermal analysis" class = "sphx-glr-single-img"/></section>
+<section id="export-the-directional-heat-flux-animation">
+<h2>Export the directional heat flux animation<a class="headerlink" href="#export-the-directional-heat-flux-animation" title="Link to this heading">#</a></h2>
+<p>Create a function to update the animation frames</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">update_animation</span><span class="p">(</span><span class="n">frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><a href="https://matplotlib.org/stable/api/image_api.html#matplotlib.image.AxesImage" title="matplotlib.image.AxesImage" class="sphx-glr-backref-module-matplotlib-image sphx-glr-backref-type-py-class"><span class="n">mpimg</span><span class="o">.</span><span class="n">AxesImage</span></a><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Update the animation frame for the GIF.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    frame : int</span>
+<span class="sd">        The frame number to update the animation.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list[mpimg.AxesImage]</span>
+<span class="sd">        A list containing the updated image for the animation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Seeks to the given frame in this sequence file</span>
+    <span class="n">gif</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+    <span class="c1"># Set the image array to the current frame of the GIF</span>
+    <a href="https://matplotlib.org/stable/api/image_api.html#matplotlib.image.AxesImage" title="matplotlib.image.AxesImage" class="sphx-glr-backref-module-matplotlib-image sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">image</span></a><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">gif</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;RGBA&quot;</span><span class="p">))</span>
+    <span class="c1"># Return the updated image</span>
+    <span class="k">return</span> <span class="p">[</span><a href="https://matplotlib.org/stable/api/image_api.html#matplotlib.image.AxesImage" title="matplotlib.image.AxesImage" class="sphx-glr-backref-module-matplotlib-image sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">image</span></a><span class="p">]</span>
+</pre></div>
+</div>
+<p>Show the directional heat flux animation</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Activate the directional heat flux</span>
+<span class="n">app</span><span class="o">.</span><span class="n">Tree</span><span class="o">.</span><span class="n">Activate</span><span class="p">([</span><span class="n">directional_heat_flux</span><span class="p">])</span>
+
+<span class="c1"># Set the animation export format and settings</span>
+<span class="n">animation_export_format</span> <span class="o">=</span> <span class="n">Ansys</span><span class="o">.</span><span class="n">Mechanical</span><span class="o">.</span><span class="n">DataModel</span><span class="o">.</span><span class="n">Enums</span><span class="o">.</span><span class="n">GraphicsAnimationExportFormat</span><span class="o">.</span><span class="n">GIF</span>
+<span class="n">settings_720p</span> <span class="o">=</span> <span class="n">Ansys</span><span class="o">.</span><span class="n">Mechanical</span><span class="o">.</span><span class="n">Graphics</span><span class="o">.</span><span class="n">AnimationExportSettings</span><span class="p">()</span>
+<a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">settings_720p</span><span class="o">.</span><span class="n">Width</span></a> <span class="o">=</span> <span class="mi">1280</span>
+<a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">settings_720p</span><span class="o">.</span><span class="n">Height</span></a> <span class="o">=</span> <span class="mi">720</span>
+
+<span class="c1"># Export the directional heat flux animation as a GIF</span>
+<a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">directional_heat_flux_gif</span></a> <span class="o">=</span> <a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">output_path</span></a> <span class="o">/</span> <span class="s2">&quot;directional_heat_flux.gif&quot;</span>
+<span class="n">directional_heat_flux</span><span class="o">.</span><span class="n">ExportAnimation</span><span class="p">(</span>
+    <span class="nb">str</span><span class="p">(</span><a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">directional_heat_flux_gif</span></a><span class="p">),</span> <span class="n">animation_export_format</span><span class="p">,</span> <span class="n">settings_720p</span>
+<span class="p">)</span>
+
+<span class="c1"># Open the GIF file and create an animation</span>
+<span class="n">gif</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">directional_heat_flux_gif</span></a><span class="p">)</span>
+<span class="c1"># Set the subplots for the animation and turn off the axis</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="matplotlib.figure.Figure" class="sphx-glr-backref-module-matplotlib-figure sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">figure</span></a><span class="p">,</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="matplotlib.axes.Axes" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">axes</span></a> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html#matplotlib.pyplot.subplots" title="matplotlib.pyplot.subplots" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span></a><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.axis.html#matplotlib.axes.Axes.axis" title="matplotlib.axes.Axes.axis" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-method"><span class="n">axes</span><span class="o">.</span><span class="n">axis</span></a><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+<span class="c1"># Change the color of the image</span>
+<a href="https://matplotlib.org/stable/api/image_api.html#matplotlib.image.AxesImage" title="matplotlib.image.AxesImage" class="sphx-glr-backref-module-matplotlib-image sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">image</span></a> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.imshow.html#matplotlib.axes.Axes.imshow" title="matplotlib.axes.Axes.imshow" class="sphx-glr-backref-module-matplotlib-axes sphx-glr-backref-type-py-method"><span class="n">axes</span><span class="o">.</span><span class="n">imshow</span></a><span class="p">(</span><span class="n">gif</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;RGBA&quot;</span><span class="p">))</span>
+
+<span class="c1"># Create the animation using the figure, update_animation function, and the GIF frames</span>
+<span class="c1"># Set the interval between frames to 200 milliseconds and repeat the animation</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.animation.FuncAnimation.html#matplotlib.animation.FuncAnimation" title="matplotlib.animation.FuncAnimation" class="sphx-glr-backref-module-matplotlib-animation sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ani</span></a> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.animation.FuncAnimation.html#matplotlib.animation.FuncAnimation" title="matplotlib.animation.FuncAnimation" class="sphx-glr-backref-module-matplotlib-animation sphx-glr-backref-type-py-class"><span class="n">FuncAnimation</span></a><span class="p">(</span>
+    <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="matplotlib.figure.Figure" class="sphx-glr-backref-module-matplotlib-figure sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">figure</span></a><span class="p">,</span>
+    <span class="n">update_animation</span><span class="p">,</span>
+    <span class="n">frames</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="n">gif</span><span class="o">.</span><span class="n">n_frames</span><span class="p">),</span>
+    <span class="n">interval</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">repeat</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">blit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Show the animation</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
+</pre></div>
+</div>
+<img src="../../../_images/sphx_glr_steady_state_thermal_analysis_007.png" srcset="../../../_images/sphx_glr_steady_state_thermal_analysis_007.png" alt="steady state thermal analysis" class = "sphx-glr-single-img"/></section>
+<section id="display-the-output-file-from-the-solve">
+<h2>Display the output file from the solve<a class="headerlink" href="#display-the-output-file-from-the-solve" title="Link to this heading">#</a></h2>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get the working directory for the steady state thermal analysis</span>
+<a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">solve_path</span></a> <span class="o">=</span> <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="pathlib.Path" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class"><span class="n">Path</span></a><span class="p">(</span><span class="n">stat_therm</span><span class="o">.</span><span class="n">WorkingDir</span><span class="p">)</span>
+<span class="c1"># Get the path to the solve.out file</span>
+<a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">solve_out_path</span></a> <span class="o">=</span> <a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">solve_path</span></a> <span class="o">/</span> <span class="s2">&quot;solve.out&quot;</span>
+<span class="c1"># Print the output of the solve.out file if applicable</span>
+<span class="k">if</span> <a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">solve_out_path</span></a><span class="p">:</span>
+    <span class="k">with</span> <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.open" title="pathlib.Path.open" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-method"><span class="n">solve_out_path</span><span class="o">.</span><span class="n">open</span></a><span class="p">(</span><span class="s2">&quot;rt&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="k">for</span> <a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">line</span></a> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">line</span></a><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span> Ansys Mechanical Enterprise
+
+
+ *------------------------------------------------------------------*
+ |                                                                  |
+ |   W E L C O M E   T O   T H E   A N S Y S (R)  P R O G R A M     |
+ |                                                                  |
+ *------------------------------------------------------------------*
+
+
+
+
+ ***************************************************************
+ *         ANSYS MAPDL 2026 R1          LEGAL NOTICES          *
+ ***************************************************************
+ *                                                             *
+ * Copyright (c) 2026 Synopsys, Inc. and ANSYS, Inc.           *
+ * All rights reserved.                                        *
+ * Unauthorized use, distribution or duplication is            *
+ * prohibited.                                                 *
+ *                                                             *
+ * Ansys is a registered trademark of Ansys, Inc. or its       *
+ * subsidiaries in the United States or other countries.       *
+ * See the Ansys, Inc. online documentation or the Ansys, Inc. *
+ * documentation CD or online help for the complete Legal      *
+ * Notice.                                                     *
+ *                                                             *
+ ***************************************************************
+ *                                                             *
+ * THIS ANSYS SOFTWARE PRODUCT AND PROGRAM DOCUMENTATION       *
+ * INCLUDE TRADE SECRETS AND CONFIDENTIAL AND PROPRIETARY      *
+ * PRODUCTS OF ANSYS, INC., ITS SUBSIDIARIES, OR LICENSORS.    *
+ * The software products and documentation are furnished by    *
+ * Ansys, Inc. or its subsidiaries under a software license    *
+ * agreement that contains provisions concerning               *
+ * non-disclosure, copying, length and nature of use,          *
+ * compliance with exporting laws, warranties, disclaimers,    *
+ * limitations of liability, and remedies, and other           *
+ * provisions.  The software products and documentation may be *
+ * used, disclosed, transferred, or copied only in accordance  *
+ * with the terms and conditions of that software license      *
+ * agreement.                                                  *
+ *                                                             *
+ * Ansys, Inc. is a UL registered                              *
+ * ISO 9001:2015 company.                                      *
+ *                                                             *
+ ***************************************************************
+ *                                                             *
+ * This product is subject to U.S. laws governing export and   *
+ * re-export.                                                  *
+ *                                                             *
+ * For U.S. Government users, except as specifically granted   *
+ * by the Ansys, Inc. software license agreement, the use,     *
+ * duplication, or disclosure by the United States Government  *
+ * is subject to restrictions stated in the Ansys, Inc.        *
+ * software license agreement and FAR 12.212 (for non-DOD      *
+ * licenses).                                                  *
+ *                                                             *
+ ***************************************************************
+
+ 2026 R1
+
+ Point Releases and Patches installed:
+
+ Ansys, Inc. License Manager 2026 R1
+ LS-DYNA 2026 R1
+ Core WB Files 2026 R1
+ Mechanical Products 2026 R1
+
+
+          *****  MAPDL COMMAND LINE ARGUMENTS  *****
+  BATCH MODE REQUESTED (-b)    = NOLIST
+  INPUT FILE COPY MODE (-c)    = COPY
+  DISTRIBUTED MEMORY PARALLEL REQUESTED
+       4 PARALLEL PROCESSES REQUESTED WITH SINGLE THREAD PER PROCESS
+    TOTAL OF     4 CORES REQUESTED
+  INPUT FILE NAME              = /github/home/.mw/Application Data/Ansys/v261/AnsysMechFDB2/Project_Mech_Files/SteadyStateThermal/dummy.dat
+  OUTPUT FILE NAME             = /github/home/.mw/Application Data/Ansys/v261/AnsysMechFDB2/Project_Mech_Files/SteadyStateThermal/solve.out
+  START-UP FILE MODE           = NOREAD
+  STOP FILE MODE               = NOREAD
+
+ RELEASE= 2026 R1              BUILD= 26.1      UP20260202   VERSION=LINUX x64
+ CURRENT JOBNAME=file0  23:18:03  FEB 28, 2026  Elapsed Time=       0.258
+
+
+ PARAMETER _DS_PROGRESS =     999.0000000
+
+ /INPUT FILE= ds.dat  LINE=       0
+
+
+
+ *** NOTE ***                            ELAPSED TIME =       0.689   TIME= 23:18:03
+ The /CONFIG,NOELDB command is not valid in a distributed memory
+ parallel solution.  Command is ignored.
+
+ *GET  _WALLSTRT  FROM  ACTI  ITEM=TIME WALL  VALUE= 0.192140804E-03
+
+ TITLE=
+ --Steady-State Thermal
+
+
+ SET PARAMETER DIMENSIONS ON  _WB_PROJECTSCRATCH_DIR
+  TYPE=STRI  DIMENSIONS=      248        1        1
+
+ PARAMETER _WB_PROJECTSCRATCH_DIR(1) = /github/home/.mw/Application Data/Ansys/v261/AnsysMechFDB2/Project_Mech_Files/SteadyStateThermal/
+
+ SET PARAMETER DIMENSIONS ON  _WB_SOLVERFILES_DIR
+  TYPE=STRI  DIMENSIONS=      248        1        1
+
+ PARAMETER _WB_SOLVERFILES_DIR(1) = /github/home/.mw/Application Data/Ansys/v261/AnsysMechFDB2/Project_Mech_Files/SteadyStateThermal/
+
+ SET PARAMETER DIMENSIONS ON  _WB_USERFILES_DIR
+  TYPE=STRI  DIMENSIONS=      248        1        1
+
+ PARAMETER _WB_USERFILES_DIR(1) = /github/home/.mw/Application Data/Ansys/v261/AnsysMechFDB2/Project_Mech_Files/UserFiles/
+ --- Data in consistent MKS units. See Solving Units in the help system for more
+
+ MKS UNITS SPECIFIED FOR INTERNAL
+  LENGTH        (l)  = METER (M)
+  MASS          (M)  = KILOGRAM (KG)
+  TIME          (t)  = SECOND (SEC)
+  TEMPERATURE   (T)  = CELSIUS (C)
+  TOFFSET            = 273.0
+  CHARGE        (Q)  = COULOMB
+  FORCE         (f)  = NEWTON (N) (KG-M/SEC2)
+  HEAT               = JOULE (N-M)
+
+  PRESSURE           = PASCAL (NEWTON/M**2)
+  ENERGY        (W)  = JOULE (N-M)
+  POWER         (P)  = WATT (N-M/SEC)
+  CURRENT       (i)  = AMPERE (COULOMBS/SEC)
+  CAPACITANCE   (C)  = FARAD
+  INDUCTANCE    (L)  = HENRY
+  MAGNETIC FLUX      = WEBER
+  RESISTANCE    (R)  = OHM
+  ELECTRIC POTENTIAL = VOLT
+
+ INPUT  UNITS ARE ALSO SET TO MKS
+
+ *** MAPDL - ENGINEERING ANALYSIS SYSTEM  RELEASE 2026 R1          26.1     ***
+ Ansys Mechanical Enterprise
+ 00000000  VERSION=LINUX x64     23:18:03  FEB 28, 2026 Elapsed Time=      0.693
+
+ --Steady-State Thermal
+
+
+
+          ***** MAPDL ANALYSIS DEFINITION (PREP7) *****
+ *********** Send User Defined Coordinate System(s) ***********
+ *********** Nodes for the whole assembly ***********
+ *********** Elements for Body 1 &#39;Part4&#39; ***********
+ *********** Elements for Body 2 &#39;Part3&#39; ***********
+ *********** Elements for Body 3 &#39;Part2&#39; ***********
+ *********** Elements for Body 4 &#39;Part1&#39; ***********
+ *********** Send Materials ***********
+ *********** Create Contact &quot;Contact Region&quot; ***********
+             Real Constant Set For Above Contact Is 6 &amp; 5
+ *********** Create Contact &quot;Contact Region 2&quot; ***********
+             Real Constant Set For Above Contact Is 8 &amp; 7
+ *********** Create Contact &quot;Contact Region 3&quot; ***********
+             Real Constant Set For Above Contact Is 10 &amp; 9
+ *********** Send Named Selection as Node Component ***********
+ *********** Send Named Selection as Node Component ***********
+ *********** Send Named Selection as Node Component ***********
+ *********** Send Named Selection as Node Component ***********
+ *********** Define Temperature Constraint ***********
+ *********** Define Temperature Constraint ***********
+ *********** Create &quot;ToSurface(Open)&quot; Radiation ***********
+ ***************** Define Uniform Initial temperature ***************
+
+
+ ***** ROUTINE COMPLETED *****  ELAPSED TIME =         0.707
+
+
+ --- Number of total nodes = 3566
+ --- Number of contact elements = 200
+ --- Number of spring elements = 0
+ --- Number of bearing elements = 0
+ --- Number of solid elements = 586
+ --- Number of condensed parts = 0
+ --- Number of total elements = 786
+
+ *GET  _WALLBSOL  FROM  ACTI  ITEM=TIME WALL  VALUE= 0.196527945E-03
+ ****************************************************************************
+ *************************    SOLUTION       ********************************
+ ****************************************************************************
+
+ *****  MAPDL SOLUTION ROUTINE  *****
+
+
+ PERFORM A STATIC ANALYSIS
+  THIS WILL BE A NEW ANALYSIS
+
+ CONTACT INFORMATION PRINTOUT LEVEL       1
+
+ CHECK INITIAL OPEN/CLOSED STATUS OF SELECTED CONTACT ELEMENTS
+      AND LIST DETAILED CONTACT PAIR INFORMATION
+
+ SPLIT CONTACT SURFACES AT SOLVE PHASE
+
+    NUMBER OF SPLITTING TBD BY PROGRAM
+
+ DO NOT SAVE ANY RESTART FILES AT ALL
+
+ DO NOT COMBINE ELEMENT MATRIX FILES (.emat) AFTER DISTRIBUTED PARALLEL SOLUTION
+
+ DO NOT COMBINE ELEMENT SAVE DATA FILES (.esav) AFTER DISTRIBUTED PARALLEL SOLUTION
+ ****************************************************
+ ******************* SOLVE FOR LS 1 OF 2 ****************
+
+ SPECIFIED CONSTRAINT TEMP FOR PICKED NODES
+ SET ACCORDING TO TABLE PARAMETER = _LOADVARI63
+
+ SPECIFIED CONSTRAINT TEMP FOR PICKED NODES
+ SET ACCORDING TO TABLE PARAMETER = _LOADVARI65
+
+ SPECIFIED SURFACE LOAD RDSF FOR ALL PICKED ELEMENTS  LKEY = 6   KVAL = 1
+     VALUES =     1.0000         1.0000         1.0000         1.0000
+
+ SPECIFIED SURFACE LOAD RDSF FOR ALL PICKED ELEMENTS  LKEY = 6   KVAL = 2
+     VALUES =     1.0000         1.0000         1.0000         1.0000
+
+ ALL SELECT   FOR ITEM=NODE COMPONENT=
+  IN RANGE         1 TO       3566 STEP          1
+
+       3566  NODES (OF       3566  DEFINED) SELECTED BY NSEL  COMMAND.
+
+ ALL SELECT   FOR ITEM=ELEM COMPONENT=
+  IN RANGE         1 TO       1504 STEP          1
+
+        786  ELEMENTS (OF        786  DEFINED) SELECTED BY  ESEL  COMMAND.
+
+ SPECIFIED CONSTRAINT TEMP FOR PICKED NODES
+ SET ACCORDING TO TABLE PARAMETER = _LOADVARI67
+
+ ALL SELECT   FOR ITEM=NODE COMPONENT=
+  IN RANGE         1 TO       3566 STEP          1
+
+       3566  NODES (OF       3566  DEFINED) SELECTED BY NSEL  COMMAND.
+
+ ALL SELECT   FOR ITEM=ELEM COMPONENT=
+  IN RANGE         1 TO       1504 STEP          1
+
+        786  ELEMENTS (OF        786  DEFINED) SELECTED BY  ESEL  COMMAND.
+
+ PRINTOUT RESUMED BY /GOP
+
+ USE AUTOMATIC TIME STEPPING THIS LOAD STEP
+
+ USE       1 SUBSTEPS INITIALLY THIS LOAD STEP FOR ALL  DEGREES OF FREEDOM
+ FOR AUTOMATIC TIME STEPPING:
+   USE     10 SUBSTEPS AS A MAXIMUM
+   USE      1 SUBSTEPS AS A MINIMUM
+
+ TIME=  1.0000
+
+ ERASE THE CURRENT DATABASE OUTPUT CONTROL TABLE.
+
+
+ WRITE ALL  ITEMS TO THE DATABASE WITH A FREQUENCY OF NONE
+   FOR ALL APPLICABLE ENTITIES
+
+ WRITE NSOL ITEMS TO THE DATABASE WITH A FREQUENCY OF ALL
+   FOR ALL APPLICABLE ENTITIES
+
+ WRITE RSOL ITEMS TO THE DATABASE WITH A FREQUENCY OF ALL
+   FOR ALL APPLICABLE ENTITIES
+
+ WRITE EANG ITEMS TO THE DATABASE WITH A FREQUENCY OF ALL
+   FOR ALL APPLICABLE ENTITIES
+
+ WRITE VENG ITEMS TO THE DATABASE WITH A FREQUENCY OF ALL
+   FOR ALL APPLICABLE ENTITIES
+
+ WRITE FFLU ITEMS TO THE DATABASE WITH A FREQUENCY OF ALL
+   FOR ALL APPLICABLE ENTITIES
+
+ WRITE CONT ITEMS TO THE DATABASE WITH A FREQUENCY OF ALL
+   FOR ALL APPLICABLE ENTITIES
+
+ WRITE NLOA ITEMS TO THE DATABASE WITH A FREQUENCY OF ALL
+   FOR ALL APPLICABLE ENTITIES
+
+ WRITE MISC ITEMS TO THE DATABASE WITH A FREQUENCY OF ALL
+   FOR ALL APPLICABLE ENTITIES
+
+ CONVERGENCE ON HEAT BASED ON THE NORM OF THE N-R LOAD
+   WITH A TOLERANCE OF 0.1000E-03 AND A MINIMUM REFERENCE VALUE OF 0.1000E-05
+   USING THE L2 NORM (CHECK THE SRSS VALUE)
+
+ UNDER RELAXATION FOR RADIATION FLUX=   0.10000
+
+ TOLERENCE FOR RADIOSITY FLUX=   0.00010
+
+ USING JACOBI ITERATIVE SOLVER FOR RADIOSITY SOLUTION
+ FOR 3D ENCLOSURES.
+ USING GSEIDEL ITERATIVE SOLVER FOR RADIOSITY SOLUTION
+ FOR 2D ENCLOSURES.
+
+ MAXIMUM NUMBER OF ITERATIONS=  1000
+ TOLERENCE FOR ITERATIVE SOLVER=   0.10000
+ RELAXATION FOR ITERATIVE SOLVER=   0.10000
+
+ HEMICUBE RESOLUTION=   10
+
+ MIN NORMALIZED DIST BEFORE AUTO SUBDIVIDE= 1.000000000E-06
+
+ SELECT      COMPONENT _CM67
+
+ SELECT      ALL ELEMENTS HAVING ANY NODE IN NODAL SET.
+
+        110 ELEMENTS (OF        786  DEFINED) SELECTED FROM
+      310 SELECTED NODES BY  ESLN COMMAND.
+
+BEFORE SYMMETRIZATION:
+
+NUMBER OF RADIATION NODES CREATED =        115
+
+NUMBER OF RADIOSITY SURFACE ELEMENTS CREATED =         82
+
+AFTER SYMMETRIZATION:
+
+FULL NUMBER OF RADIATION NODES CREATED =        115
+
+FULL NUMBER OF RADIOSITY SURFACE ELEMENTS CREATED =        82
+
+ ALL SELECT   FOR ITEM=NODE COMPONENT=
+  IN RANGE         1 TO       3681 STEP          1
+
+       3681  NODES (OF       3681  DEFINED) SELECTED BY NSEL  COMMAND.
+
+ ALL SELECT   FOR ITEM=ELEM COMPONENT=
+  IN RANGE         1 TO       1586 STEP          1
+
+        868  ELEMENTS (OF        868  DEFINED) SELECTED BY  ESEL  COMMAND.
+
+ *GET  ANSINTER_  FROM  ACTI  ITEM=INT        VALUE=  0.00000000
+
+ *IF  ANSINTER_  ( =   0.00000     )  NE
+      0  ( =   0.00000     )  THEN
+
+ *ENDIF
+
+ *** NOTE ***                            ELAPSED TIME =       0.727   TIME= 23:18:03
+ The automatic domain decomposition logic has selected the MESH domain
+ decomposition method with 4 processes per solution.
+
+ *****  MAPDL SOLVE    COMMAND  *****
+
+ CALCULATING VIEW FACTORS USING HEMICUBE METHOD
+
+ RETRIEVED    1 ENCLOSURES.
+ TOTAL OF       82 DEFINED ELEMENT FACES.
+
+ # ENCLOSURE =     1 # SURFACES =    82 # NODES =   115
+
+ELAPSED TIME OF CALCULATION FOR THIS ENCLOSURE =   0.947407E-03
+
+ CHECKING VIEW FACTOR SUM
+
+ *** NOTE ***                            ELAPSED TIME =       0.735   TIME= 23:18:03
+ Some of the rows in the viewfactor matrix have all zeros for enclosure
+ 1.
+
+ VIEW FACTOR CALCULATION COMPLETE
+
+ WRITING VIEW FACTORS TO FILE file0.vf
+ VIEW FACTORS WERE WRITTEN TO FILE file0.vf
+
+ *** WARNING ***                         ELAPSED TIME =       0.736   TIME= 23:18:03
+ Element shape checking is currently inactive.  Issue SHPP,ON or
+ SHPP,WARN to reactivate, if desired.
+
+ *** NOTE ***                            ELAPSED TIME =       0.739   TIME= 23:18:03
+ The model data was checked and warning messages were found.
+  Please review output or errors file ( /github/home/.mw/Application
+ Data/Ansys/v261/AnsysMechFDB2/Project_Mech_Files/SteadyStateThermal/fil
+ le0.err ) for these warning messages.
+
+ *** MAPDL - ENGINEERING ANALYSIS SYSTEM  RELEASE 2026 R1          26.1     ***
+ Ansys Mechanical Enterprise
+ 00000000  VERSION=LINUX x64     23:18:03  FEB 28, 2026 Elapsed Time=      0.739
+
+ --Steady-State Thermal
+
+
+
+                       S O L U T I O N   O P T I O N S
+
+   PROBLEM DIMENSIONALITY. . . . . . . . . . . . .3-D
+   DEGREES OF FREEDOM. . . . . . TEMP
+   ANALYSIS TYPE . . . . . . . . . . . . . . . . .STATIC (STEADY-STATE)
+   OFFSET TEMPERATURE FROM ABSOLUTE ZERO . . . . .  273.15
+   GLOBALLY ASSEMBLED MATRIX . . . . . . . . . . .SYMMETRIC
+
+ *** NOTE ***                            ELAPSED TIME =       0.741   TIME= 23:18:03
+ This nonlinear analysis defaults to using the full Newton-Raphson
+ solution procedure.  This can be modified using the NROPT command.
+
+ *** NOTE ***                            ELAPSED TIME =       0.741   TIME= 23:18:03
+ The conditions for direct assembly have been met.  No .emat or .erot
+ files will be produced.
+
+ TRIM CONTACT/TARGET SURFACE
+ START TRIMMING SMALL/BONDED CONTACT PAIRS FOR DMP RUN.
+
+      34 CONTACT ELEMENTS &amp;      66 TARGET ELEMENTS ARE DELETED DUE TO TRIMMING LOGIC.
+       3 CONTACT PAIRS ARE REMOVED.
+
+ CHECK INITIAL OPEN/CLOSED STATUS OF SELECTED CONTACT ELEMENTS
+      AND LIST DETAILED CONTACT PAIR INFORMATION
+
+ *** NOTE ***                            ELAPSED TIME =       0.764   TIME= 23:18:03
+ The largest contact pair has few number of contact elements than the
+ optimal domain size for the specified number of CPU domains.  As a
+ result, no contact pairs were split.
+
+ *** NOTE ***                            ELAPSED TIME =       0.765   TIME= 23:18:03
+ The maximum number of contact elements in any single contact pair is
+ 25, which is smaller than the optimal domain size of 120 elements for
+ the given number of CPU domains (4).  Therefore, no contact pairs are
+ being split by the CNCH,DMP logic.
+
+ *** NOTE ***                            ELAPSED TIME =       0.775   TIME= 23:18:03
+ Deformable-deformable contact pair identified by real constant set 5
+ and contact element type 5 has been set up.
+ Pure thermal contact is activated.
+ The emissivity is defined through the material property.
+ Thermal convection coefficient, environment temperature, and
+  heat flux are defined using the SFE command.
+ Target temperature is used for convection/radiation calculation
+  for near field contact.
+ Small sliding logic is assumed
+ Contact detection at: Gauss integration point
+ Average contact surface length               0.40000
+ Average contact pair depth                   0.42857
+ Average target surface length                0.66667
+ Default pinball region factor PINB           0.25000
+ The resulting pinball region                 0.10714
+ Initial penetration/gap is excluded.
+ Bonded contact (always) is defined.
+ Thermal contact conductance coef. TCC         29952.
+ Heat radiation is excluded.
+
+ *** NOTE ***                            ELAPSED TIME =       0.775   TIME= 23:18:03
+ Max.  Initial penetration 3.552713679E-15 was detected between contact
+ element 1331 and target element 1366.
+ ****************************************
+
+
+ *** NOTE ***                            ELAPSED TIME =       0.775   TIME= 23:18:03
+ Deformable-deformable contact pair identified by real constant set 8
+ and contact element type 7 has been set up.
+ Pure thermal contact is activated.
+ The emissivity is defined through the material property.
+ Thermal convection coefficient, environment temperature, and
+  heat flux are defined using the SFE command.
+ Target temperature is used for convection/radiation calculation
+  for near field contact.
+ Small sliding logic is assumed
+ Contact detection at: Gauss integration point
+ Average contact surface length               0.50000
+ Average contact pair depth                   0.50000
+ Average target surface length                0.66667
+ Default pinball region factor PINB           0.25000
+ The resulting pinball region                 0.12500
+ Initial penetration/gap is excluded.
+ Bonded contact (always) is defined.
+ Thermal contact conductance coef. TCC         29952.
+ Heat radiation is excluded.
+
+ *** NOTE ***                            ELAPSED TIME =       0.775   TIME= 23:18:03
+ Max.  Initial penetration 1.776356839E-15 was detected between contact
+ element 1395 and target element 1375.
+ ****************************************
+
+
+ *** NOTE ***                            ELAPSED TIME =       0.775   TIME= 23:18:03
+ Deformable-deformable contact pair identified by real constant set 10
+ and contact element type 9 has been set up.
+ Pure thermal contact is activated.
+ The emissivity is defined through the material property.
+ Thermal convection coefficient, environment temperature, and
+  heat flux are defined using the SFE command.
+ Target temperature is used for convection/radiation calculation
+  for near field contact.
+ Small sliding logic is assumed
+ Contact detection at: Gauss integration point
+ Average contact surface length               0.40000
+ Average contact pair depth                   0.40000
+ Average target surface length                0.50000
+ Default pinball region factor PINB           0.25000
+ The resulting pinball region                 0.10000
+ Initial penetration/gap is excluded.
+ Bonded contact (always) is defined.
+ Thermal contact conductance coef. TCC         29952.
+ Heat radiation is excluded.
+
+ *** NOTE ***                            ELAPSED TIME =       0.775   TIME= 23:18:03
+ Max.  Initial penetration 4.440892099E-16 was detected between contact
+ element 1455 and target element 1426.
+ ****************************************
+
+
+
+
+
+
+     D I S T R I B U T E D   D O M A I N   D E C O M P O S E R
+
+  ...Number of elements: 768
+  ...Number of nodes:    3681
+  ...Decompose to 4 CPU domains
+  ...Element load balance ratio =     1.092
+
+
+                      L O A D   S T E P   O P T I O N S
+
+   LOAD STEP NUMBER. . . . . . . . . . . . . . . .     1
+   TIME AT END OF THE LOAD STEP. . . . . . . . . .  1.0000
+   AUTOMATIC TIME STEPPING . . . . . . . . . . . .    ON
+      INITIAL NUMBER OF SUBSTEPS . . . . . . . . .     1
+      MAXIMUM NUMBER OF SUBSTEPS . . . . . . . . .    10
+      MINIMUM NUMBER OF SUBSTEPS . . . . . . . . .     1
+   MAXIMUM NUMBER OF EQUILIBRIUM ITERATIONS. . . .    15
+   STEP CHANGE BOUNDARY CONDITIONS . . . . . . . .    NO
+   TERMINATE ANALYSIS IF NOT CONVERGED . . . . . .YES (EXIT)
+   CONVERGENCE CONTROLS
+      LABEL   REFERENCE    TOLERANCE  NORM     MINREF
+       HEAT    0.000       0.1000E-03   2     0.1000E-05
+   PRINT OUTPUT CONTROLS . . . . . . . . . . . . .NO PRINTOUT
+   DATABASE OUTPUT CONTROLS
+      ITEM     FREQUENCY   COMPONENT
+       ALL       NONE
+      NSOL        ALL
+      RSOL        ALL
+      EANG        ALL
+      VENG        ALL
+      FFLU        ALL
+      CONT        ALL
+      NLOA        ALL
+      MISC        ALL
+
+
+ SOLUTION MONITORING INFO IS WRITTEN TO FILE= file.mntr
+ MAXIMUM NUMBER OF EQUILIBRIUM ITERATIONS HAS BEEN MODIFIED
+  TO BE, NEQIT = 1000, BY SOLUTION CONTROL LOGIC.
+
+ RADIOSITY SOLVER CALCULATION
+ ENCLOSURE NUMBER=   1
+ RADIOSITY SOLVER CONVERGED AFTER   59 ITERATIONS
+ ELAPSED TIME OF RADIOSITY SOLVER FOR ENCLOSURE=  0.997486E-03
+ RAD FLUX CONVERGENCE VALUE=   1.00000     CRITERION=  0.100000E-03
+
+
+
+
+
+            **** CENTER OF MASS, MASS, AND MASS MOMENTS OF INERTIA ****
+
+  CALCULATIONS ASSUME ELEMENT MASS AT ELEMENT CENTROID
+
+  TOTAL MASS =  0.62800E+06
+
+                           MOM. OF INERTIA         MOM. OF INERTIA
+  CENTER OF MASS            ABOUT ORIGIN        ABOUT CENTER OF MASS
+
+  XC =   1.0000          IXX =   0.8453E+08      IXX =   0.2111E+08
+  YC =   1.0000          IYY =   0.8453E+08      IYY =   0.2111E+08
+  ZC =   10.000          IZZ =   0.1641E+07      IZZ =   0.3847E+06
+                         IXY =  -0.6280E+06      IXY =  -0.1164E-09
+                         IYZ =  -0.6280E+07      IYZ =  -0.1256E-03
+                         IZX =  -0.6280E+07      IZX =  -0.1256E-03
+
+
+  *** MASS SUMMARY BY ELEMENT TYPE ***
+
+  TYPE      MASS
+     1   94200.0
+     2   314000.
+     3   157000.
+     4   62800.0
+
+ Range of element maximum matrix coefficients in global coordinates
+ Maximum = 2872.34701 at element 1392.
+ Minimum = 23.5644444 at element 562.
+
+   *** ELEMENT MATRIX FORMULATION TIMES
+     TYPE    NUMBER     ENAME   TOTAL ELAPSED   AVG ELAPSED
+
+        1       175  SOLID279          0.0107   0.000061423
+        2       126  SOLID279          0.0070   0.000055777
+        3       160  SOLID279          0.0092   0.000057511
+        4       125  SOLID279          0.0073   0.000058597
+        5        25  CONTA174          0.0049   0.000196637
+        6         9  TARGE170          0.0000   0.000003041
+        7        16  CONTA174          0.0033   0.000206086
+        8         9  TARGE170          0.0000   0.000002005
+        9        25  CONTA174          0.0047   0.000186967
+       10        16  TARGE170          0.0000   0.000001939
+       11        82   SURF252          0.0011   0.000013150
+ Elapsed Time at end of element matrix formulation = 0.855438328.
+     HT FLOW CONVERGENCE VALUE=  0.1041E+05  CRITERION=   1.043
+
+ DISTRIBUTED SPARSE MATRIX DIRECT SOLVER.
+  Number of equations =        3373,    Maximum wavefront =    114
+
+
+  Memory allocated on only this MPI rank (rank     0)
+  -------------------------------------------------------------------
+  Equation solver memory allocated                     =     2.298 MB
+  Equation solver memory required for in-core mode     =     2.213 MB
+  Equation solver memory required for out-of-core mode =     1.694 MB
+  Total (solver and non-solver) memory allocated       =   525.404 MB
+
+
+  Total memory summed across all MPI ranks on this machines
+  -------------------------------------------------------------------
+  Equation solver memory allocated                     =     8.421 MB
+  Equation solver memory required for in-core mode     =     8.103 MB
+  Equation solver memory required for out-of-core mode =     6.122 MB
+  Total (solver and non-solver) memory allocated       =  1267.659 MB
+
+ *** NOTE ***                            ELAPSED TIME =       0.880   TIME= 23:18:03
+ The Distributed Sparse Matrix Solver is currently running in the
+ in-core memory mode.  This memory mode uses the most amount of memory
+ in order to avoid using the hard drive as much as possible, which most
+ often results in the fastest solution time.  This mode is recommended
+ if enough physical memory is present to accommodate all of the solver
+ data.
+ Distributed sparse solver maximum pivot= 2717.07614 at node 1844 TEMP.
+ Distributed sparse solver minimum pivot= 14.7755695 at node 2950 TEMP.
+ Distributed sparse solver minimum pivot in absolute value= 14.7755695
+ at node 2950 TEMP.
+    EQUIL ITER   1 COMPLETED.  NEW TRIANG MATRIX.  MAX DOF INC=   28.00
+     HT FLOW CONVERGENCE VALUE=  0.6476E-09  CRITERION=  0.6227E-01 &lt;&lt;&lt; CONVERGED
+    &gt;&gt;&gt; SOLUTION CONVERGED AFTER EQUILIBRIUM ITERATION   1
+
+ RADIOSITY SOLVER CALCULATION
+ ENCLOSURE NUMBER=   1
+ RADIOSITY SOLVER CONVERGED AFTER   48 ITERATIONS
+ ELAPSED TIME OF RADIOSITY SOLVER FOR ENCLOSURE=  0.676847E-03
+ RAD FLUX CONVERGENCE VALUE=  0.164309     CRITERION=  0.100000E-03
+
+     HT FLOW CONVERGENCE VALUE=   4.683      CRITERION=  0.6197E-01
+    EQUIL ITER   2 COMPLETED.  NEW TRIANG MATRIX.  MAX DOF INC= -0.1700
+     HT FLOW CONVERGENCE VALUE=  0.1012E-08  CRITERION=  0.6203E-01 &lt;&lt;&lt; CONVERGED
+    &gt;&gt;&gt; SOLUTION CONVERGED AFTER EQUILIBRIUM ITERATION   2
+
+ RADIOSITY SOLVER CALCULATION
+ ENCLOSURE NUMBER=   1
+ RADIOSITY SOLVER CONVERGED AFTER    1 ITERATIONS
+ ELAPSED TIME OF RADIOSITY SOLVER FOR ENCLOSURE=  0.835118E-04
+ RAD FLUX CONVERGENCE VALUE=  0.596247E-04 CRITERION=  0.100000E-03
+
+ RADIOSITY FLUX CONVERGED AFTER ITERATION=    3 SUBSTEP=    1
+
+     HT FLOW CONVERGENCE VALUE=   1.620      CRITERION=  0.6314E-01
+    EQUIL ITER   3 COMPLETED.  NEW TRIANG MATRIX.  MAX DOF INC= -0.6831E-01
+     HT FLOW CONVERGENCE VALUE=  0.9330E-09  CRITERION=  0.6316E-01 &lt;&lt;&lt; CONVERGED
+    &gt;&gt;&gt; SOLUTION CONVERGED AFTER EQUILIBRIUM ITERATION   3
+
+   *** ELEMENT RESULT CALCULATION TIMES
+     TYPE    NUMBER     ENAME   TOTAL ELAPSED   AVG ELAPSED
+
+        1       175  SOLID279          0.0037   0.000021320
+        2       126  SOLID279          0.0030   0.000023690
+        3       160  SOLID279          0.0039   0.000024648
+        4       125  SOLID279          0.0027   0.000021621
+        5        25  CONTA174          0.0013   0.000050772
+        7        16  CONTA174          0.0008   0.000052271
+        9        25  CONTA174          0.0012   0.000048493
+       11        82   SURF252          0.0006   0.000007023
+
+   *** NODAL LOAD CALCULATION TIMES
+     TYPE    NUMBER     ENAME   TOTAL ELAPSED   AVG ELAPSED
+
+        1       175  SOLID279          0.0022   0.000012639
+        2       126  SOLID279          0.0016   0.000012435
+        3       160  SOLID279          0.0019   0.000012126
+        4       125  SOLID279          0.0015   0.000012159
+        5        25  CONTA174          0.0001   0.000003921
+        7        16  CONTA174          0.0001   0.000003685
+        9        25  CONTA174          0.0001   0.000004292
+       11        82   SURF252          0.0001   0.000001584
+ *** LOAD STEP     1   SUBSTEP     1  COMPLETED.    CUM ITER =      3
+ *** TIME =   1.00000         TIME INC =   1.00000
+
+
+ *** MAPDL BINARY FILE STATISTICS
+  BUFFER SIZE USED= 16384
+        0.125 MB WRITTEN ON ELEMENT SAVED DATA FILE: file0.esav
+        0.500 MB WRITTEN ON ASSEMBLED MATRIX FILE: file0.full
+        0.500 MB WRITTEN ON RESULTS FILE: file0.rth
+ *************** Write FE CONNECTORS *********
+
+ WRITE OUT CONSTRAINT EQUATIONS TO FILE= file.ce
+ ****************************************************
+ *************** FINISHED SOLVE FOR LS 1 *************
+ ****************************************************
+ ******************* SOLVE FOR LS 2 OF 2 ****************
+
+ PRINTOUT RESUMED BY /GOP
+
+ USE AUTOMATIC TIME STEPPING THIS LOAD STEP
+
+ USE       1 SUBSTEPS INITIALLY THIS LOAD STEP FOR ALL  DEGREES OF FREEDOM
+ FOR AUTOMATIC TIME STEPPING:
+   USE     10 SUBSTEPS AS A MAXIMUM
+   USE      1 SUBSTEPS AS A MINIMUM
+
+ TIME=  2.0000
+
+ ERASE THE CURRENT DATABASE OUTPUT CONTROL TABLE.
+
+
+ WRITE ALL  ITEMS TO THE DATABASE WITH A FREQUENCY OF NONE
+   FOR ALL APPLICABLE ENTITIES
+
+ WRITE NSOL ITEMS TO THE DATABASE WITH A FREQUENCY OF ALL
+   FOR ALL APPLICABLE ENTITIES
+
+ WRITE RSOL ITEMS TO THE DATABASE WITH A FREQUENCY OF ALL
+   FOR ALL APPLICABLE ENTITIES
+
+ WRITE EANG ITEMS TO THE DATABASE WITH A FREQUENCY OF ALL
+   FOR ALL APPLICABLE ENTITIES
+
+ WRITE VENG ITEMS TO THE DATABASE WITH A FREQUENCY OF ALL
+   FOR ALL APPLICABLE ENTITIES
+
+ WRITE FFLU ITEMS TO THE DATABASE WITH A FREQUENCY OF ALL
+   FOR ALL APPLICABLE ENTITIES
+
+ WRITE CONT ITEMS TO THE DATABASE WITH A FREQUENCY OF ALL
+   FOR ALL APPLICABLE ENTITIES
+
+ WRITE NLOA ITEMS TO THE DATABASE WITH A FREQUENCY OF ALL
+   FOR ALL APPLICABLE ENTITIES
+
+ WRITE MISC ITEMS TO THE DATABASE WITH A FREQUENCY OF ALL
+   FOR ALL APPLICABLE ENTITIES
+
+ CONVERGENCE ON HEAT BASED ON THE NORM OF THE N-R LOAD
+   WITH A TOLERANCE OF 0.1000E-03 AND A MINIMUM REFERENCE VALUE OF 0.1000E-05
+   USING THE L2 NORM (CHECK THE SRSS VALUE)
+
+ UNDER RELAXATION FOR RADIATION FLUX=   0.10000
+
+ TOLERENCE FOR RADIOSITY FLUX=   0.00010
+
+ USING JACOBI ITERATIVE SOLVER FOR RADIOSITY SOLUTION
+ FOR 3D ENCLOSURES.
+ USING GSEIDEL ITERATIVE SOLVER FOR RADIOSITY SOLUTION
+ FOR 2D ENCLOSURES.
+
+ MAXIMUM NUMBER OF ITERATIONS=  1000
+ TOLERENCE FOR ITERATIVE SOLVER=   0.10000
+ RELAXATION FOR ITERATIVE SOLVER=   0.10000
+
+ HEMICUBE RESOLUTION=   10
+
+ MIN NORMALIZED DIST BEFORE AUTO SUBDIVIDE= 1.000000000E-06
+
+ *****  MAPDL SOLVE    COMMAND  *****
+
+ *** NOTE ***                            ELAPSED TIME =       1.000   TIME= 23:18:03
+ This nonlinear analysis defaults to using the full Newton-Raphson
+ solution procedure.  This can be modified using the NROPT command.
+
+ *** MAPDL - ENGINEERING ANALYSIS SYSTEM  RELEASE 2026 R1          26.1     ***
+ Ansys Mechanical Enterprise
+ 00000000  VERSION=LINUX x64     23:18:03  FEB 28, 2026 Elapsed Time=      1.008
+
+ --Steady-State Thermal
+
+
+
+                      L O A D   S T E P   O P T I O N S
+
+   LOAD STEP NUMBER. . . . . . . . . . . . . . . .     2
+   TIME AT END OF THE LOAD STEP. . . . . . . . . .  2.0000
+   AUTOMATIC TIME STEPPING . . . . . . . . . . . .    ON
+      INITIAL NUMBER OF SUBSTEPS . . . . . . . . .     1
+      MAXIMUM NUMBER OF SUBSTEPS . . . . . . . . .    10
+      MINIMUM NUMBER OF SUBSTEPS . . . . . . . . .     1
+   MAXIMUM NUMBER OF EQUILIBRIUM ITERATIONS. . . .    15
+   STEP CHANGE BOUNDARY CONDITIONS . . . . . . . .    NO
+   TERMINATE ANALYSIS IF NOT CONVERGED . . . . . .YES (EXIT)
+   CONVERGENCE CONTROLS
+      LABEL   REFERENCE    TOLERANCE  NORM     MINREF
+       HEAT    0.000       0.1000E-03   2     0.1000E-05
+   PRINT OUTPUT CONTROLS . . . . . . . . . . . . .NO PRINTOUT
+   DATABASE OUTPUT CONTROLS
+      ITEM     FREQUENCY   COMPONENT
+       ALL       NONE
+      NSOL        ALL
+      RSOL        ALL
+      EANG        ALL
+      VENG        ALL
+      FFLU        ALL
+      CONT        ALL
+      NLOA        ALL
+      MISC        ALL
+
+
+ SOLUTION MONITORING INFO IS WRITTEN TO FILE= file.mntr
+ MAXIMUM NUMBER OF EQUILIBRIUM ITERATIONS HAS BEEN MODIFIED
+  TO BE, NEQIT = 1000, BY SOLUTION CONTROL LOGIC.
+
+ RADIOSITY SOLVER CALCULATION
+ ENCLOSURE NUMBER=   1
+ RADIOSITY SOLVER CONVERGED AFTER    1 ITERATIONS
+ ELAPSED TIME OF RADIOSITY SOLVER FOR ENCLOSURE=  0.434343E-04
+ RAD FLUX CONVERGENCE VALUE=  0.108870E-03 CRITERION=  0.100000E-03
+
+
+     HT FLOW CONVERGENCE VALUE=  0.1129E+05  CRITERION=   1.132
+    EQUIL ITER   1 COMPLETED.  NEW TRIANG MATRIX.  MAX DOF INC=   30.00
+     HT FLOW CONVERGENCE VALUE=  0.1111E-08  CRITERION=  0.9169E-01 &lt;&lt;&lt; CONVERGED
+    &gt;&gt;&gt; SOLUTION CONVERGED AFTER EQUILIBRIUM ITERATION   1
+
+ RADIOSITY SOLVER CALCULATION
+ ENCLOSURE NUMBER=   1
+ RADIOSITY SOLVER CONVERGED AFTER   51 ITERATIONS
+ ELAPSED TIME OF RADIOSITY SOLVER FOR ENCLOSURE=  0.519805E-03
+ RAD FLUX CONVERGENCE VALUE=  0.176949     CRITERION=  0.100000E-03
+
+     HT FLOW CONVERGENCE VALUE=   31.78      CRITERION=  0.9632E-01
+    EQUIL ITER   2 COMPLETED.  NEW TRIANG MATRIX.  MAX DOF INC=  -1.134
+     HT FLOW CONVERGENCE VALUE=  0.1010E-08  CRITERION=  0.9668E-01 &lt;&lt;&lt; CONVERGED
+    &gt;&gt;&gt; SOLUTION CONVERGED AFTER EQUILIBRIUM ITERATION   2
+
+ RADIOSITY SOLVER CALCULATION
+ ENCLOSURE NUMBER=   1
+ RADIOSITY SOLVER CONVERGED AFTER   21 ITERATIONS
+ ELAPSED TIME OF RADIOSITY SOLVER FOR ENCLOSURE=  0.260647E-03
+ RAD FLUX CONVERGENCE VALUE=  0.665886E-02 CRITERION=  0.100000E-03
+
+     HT FLOW CONVERGENCE VALUE=   1.853      CRITERION=  0.9890E-01
+    EQUIL ITER   3 COMPLETED.  NEW TRIANG MATRIX.  MAX DOF INC= -0.6860E-01
+     HT FLOW CONVERGENCE VALUE=  0.9998E-09  CRITERION=  0.9893E-01 &lt;&lt;&lt; CONVERGED
+    &gt;&gt;&gt; SOLUTION CONVERGED AFTER EQUILIBRIUM ITERATION   3
+
+ RADIOSITY SOLVER CALCULATION
+ ENCLOSURE NUMBER=   1
+ RADIOSITY SOLVER CONVERGED AFTER    4 ITERATIONS
+ ELAPSED TIME OF RADIOSITY SOLVER FOR ENCLOSURE=  0.817834E-04
+ RAD FLUX CONVERGENCE VALUE=  0.506736E-03 CRITERION=  0.100000E-03
+
+     HT FLOW CONVERGENCE VALUE=  0.5470      CRITERION=  0.9983E-01
+    EQUIL ITER   4 COMPLETED.  NEW TRIANG MATRIX.  MAX DOF INC= -0.1926E-01
+     HT FLOW CONVERGENCE VALUE=  0.9312E-09  CRITERION=  0.9983E-01 &lt;&lt;&lt; CONVERGED
+    &gt;&gt;&gt; SOLUTION CONVERGED AFTER EQUILIBRIUM ITERATION   4
+
+ RADIOSITY SOLVER CALCULATION
+ ENCLOSURE NUMBER=   1
+ RADIOSITY SOLVER CONVERGED AFTER    1 ITERATIONS
+ ELAPSED TIME OF RADIOSITY SOLVER FOR ENCLOSURE=  0.456427E-04
+ RAD FLUX CONVERGENCE VALUE=  0.109888E-03 CRITERION=  0.100000E-03
+
+     HT FLOW CONVERGENCE VALUE=  0.2185      CRITERION=  0.1002
+    EQUIL ITER   5 COMPLETED.  NEW TRIANG MATRIX.  MAX DOF INC= -0.7222E-02
+     HT FLOW CONVERGENCE VALUE=  0.1154E-08  CRITERION=  0.1002     &lt;&lt;&lt; CONVERGED
+    &gt;&gt;&gt; SOLUTION CONVERGED AFTER EQUILIBRIUM ITERATION   5
+
+ RADIOSITY SOLVER CALCULATION
+ ENCLOSURE NUMBER=   1
+ RADIOSITY SOLVER CONVERGED AFTER    1 ITERATIONS
+ ELAPSED TIME OF RADIOSITY SOLVER FOR ENCLOSURE=  0.570534E-04
+ RAD FLUX CONVERGENCE VALUE=  0.102317E-03 CRITERION=  0.100000E-03
+
+     HT FLOW CONVERGENCE VALUE=  0.1112      CRITERION=  0.1002
+    EQUIL ITER   6 COMPLETED.  NEW TRIANG MATRIX.  MAX DOF INC=  0.4308E-02
+     HT FLOW CONVERGENCE VALUE=  0.9423E-09  CRITERION=  0.1002     &lt;&lt;&lt; CONVERGED
+    &gt;&gt;&gt; SOLUTION CONVERGED AFTER EQUILIBRIUM ITERATION   6
+
+ RADIOSITY SOLVER CALCULATION
+ ENCLOSURE NUMBER=   1
+ RADIOSITY SOLVER CONVERGED AFTER    1 ITERATIONS
+ ELAPSED TIME OF RADIOSITY SOLVER FOR ENCLOSURE=  0.494396E-04
+ RAD FLUX CONVERGENCE VALUE=  0.884660E-04 CRITERION=  0.100000E-03
+
+ RADIOSITY FLUX CONVERGED AFTER ITERATION=    7 SUBSTEP=    1
+
+     HT FLOW CONVERGENCE VALUE=  0.2106      CRITERION=  0.1000
+    EQUIL ITER   7 COMPLETED.  NEW TRIANG MATRIX.  MAX DOF INC=  0.8012E-02
+     HT FLOW CONVERGENCE VALUE=  0.1082E-08  CRITERION=  0.1000     &lt;&lt;&lt; CONVERGED
+    &gt;&gt;&gt; SOLUTION CONVERGED AFTER EQUILIBRIUM ITERATION   7
+ *** LOAD STEP     2   SUBSTEP     1  COMPLETED.    CUM ITER =     10
+ *** TIME =   2.00000         TIME INC =   1.00000
+ ****************************************************
+ *************** FINISHED SOLVE FOR LS 2 *************
+
+ FINISH SOLUTION PROCESSING
+
+
+ ***** ROUTINE COMPLETED *****  ELAPSED TIME =         1.253
+
+
+
+ *GET  _WALLASOL  FROM  ACTI  ITEM=TIME WALL  VALUE= 0.348217589E-03
+
+ *** MAPDL - ENGINEERING ANALYSIS SYSTEM  RELEASE 2026 R1          26.1     ***
+ Ansys Mechanical Enterprise
+ 00000000  VERSION=LINUX x64     23:18:04  FEB 28, 2026 Elapsed Time=      1.255
+
+ --Steady-State Thermal
+
+
+
+          ***** MAPDL RESULTS INTERPRETATION (POST1) *****
+
+ *** NOTE ***                            ELAPSED TIME =       1.255   TIME= 23:18:04
+ Reading results into the database (SET command) will update the current
+ displacement and force boundary conditions in the database with the
+ values from the results file for that load set.  Note that any
+ subsequent solutions will use these values unless action is taken to
+ either SAVE the current values or not overwrite them (/EXIT,NOSAVE).
+
+ Set Encoding of XML File to:ISO-8859-1
+
+ Set Output of XML File to:
+     PARM,     ,     ,     ,     ,     ,     ,     ,     ,     ,     ,     ,
+         ,     ,     ,     ,     ,     ,     ,
+
+ DATABASE WRITTEN ON FILE  parm.xml
+
+ EXIT THE MAPDL POST1 DATABASE PROCESSOR
+
+
+ ***** ROUTINE COMPLETED *****  ELAPSED TIME =         1.256
+
+
+
+ PRINTOUT RESUMED BY /GOP
+
+ *GET  _WALLDONE  FROM  ACTI  ITEM=TIME WALL  VALUE= 0.348838388E-03
+
+ PARAMETER _PREPTIME =    0.1579370718E-01
+
+ PARAMETER _SOLVTIME =    0.5460827182
+
+ PARAMETER _POSTTIME =    0.2234875612E-02
+
+ PARAMETER _TOTALTIM =    0.5641113010
+
+ *GET  _DLBRATIO  FROM  ACTI  ITEM=SOLU DLBR  VALUE=  1.09239130
+
+ *GET  _COMBTIME  FROM  ACTI  ITEM=SOLU COMB  VALUE= 0.457756321E-02
+
+ *GET  _SSMODE   FROM  ACTI  ITEM=SOLU SSMM  VALUE=  2.00000000
+
+ *GET  _NDOFS    FROM  ACTI  ITEM=SOLU NDOF  VALUE=  3373.00000
+
+ /FCLEAN COMMAND REMOVING ALL LOCAL FILES
+ --- Total number of nodes = 3566
+ --- Total number of elements = 786
+ --- Element load balance ratio = 1.0923913
+ --- Time to combine distributed files = 4.577563214E-03
+ --- Sparse memory mode = 2
+ --- Number of DOF = 3373
+
+ EXIT MAPDL WITHOUT SAVING DATABASE
+
+
+ NUMBER OF WARNING MESSAGES ENCOUNTERED=          1
+ NUMBER OF ERROR   MESSAGES ENCOUNTERED=          0
+
++--------------------- M A P D L   S T A T I S T I C S ------------------------+
+
+Release: 2026 R1            Build: 26.1       Update: UP20260202   Platform: LINUX x64
+Date Run: 02/28/2026   Time: 23:18     Process ID: 20688
+Operating System: Ubuntu 22.04.5 LTS
+
+Processor Model: AMD EPYC 7763 64-Core Processor
+
+Compiler: Intel(R) Fortran Compiler Classic Version 2021.9  (Build: 20230302)
+          Intel(R) C/C++ Compiler Classic Version 2021.9  (Build: 20230302)
+          AOCL-BLAS 5.1.1 Build 20251007
+          Intel(R) oneAPI Math Kernel Library Version 2024.2-Product Build 20240605
+
+Number of machines requested            :    1
+Total number of cores available         :   16
+Number of physical cores available      :    8
+Number of processes requested           :    4
+Number of threads per process requested :    1
+Total number of cores requested         :    4 (Distributed Memory Parallel)
+MPI Type: OPENMPI
+MPI Version: Open MPI v4.1.8
+
+
+GPU Acceleration: Not Requested
+
+Job Name: file0
+Input File: dummy.dat
+
+  Core                Machine Name   Working Directory
+ -----------------------------------------------------
+     0                fd5668e1017d   /github/home/.mw/Application Data/Ansys/v261/AnsysMechFDB2/Project_Mech_Files/SteadyStateThermal
+     1                fd5668e1017d   /github/home/.mw/Application Data/Ansys/v261/AnsysMechFDB2/Project_Mech_Files/SteadyStateThermal
+     2                fd5668e1017d   /github/home/.mw/Application Data/Ansys/v261/AnsysMechFDB2/Project_Mech_Files/SteadyStateThermal
+     3                fd5668e1017d   /github/home/.mw/Application Data/Ansys/v261/AnsysMechFDB2/Project_Mech_Files/SteadyStateThermal
+
+Latency time from master to core     1 =    2.570 microseconds
+Latency time from master to core     2 =    2.553 microseconds
+Latency time from master to core     3 =    2.565 microseconds
+
+Communication speed from master to core     1 = 17259.02 MB/sec
+Communication speed from master to core     2 = 18367.27 MB/sec
+Communication speed from master to core     3 = 17264.65 MB/sec
+
+Total CPU time for main thread                    :        1.0 seconds
+Total CPU time summed for all threads             :        2.7 seconds
+
+Elapsed time spent obtaining a license            :        0.4 seconds
+Elapsed time spent pre-processing model (/PREP7)  :        0.0 seconds
+Elapsed time spent solution - preprocessing       :        0.1 seconds
+Elapsed time spent computing solution             :        0.4 seconds
+   Elapsed time in element formation &amp; assembly   :        0.2 seconds
+   Elapsed time in equation solver                :        0.1 seconds
+   Elapsed time in element result calculations    :        0.0 seconds
+Elapsed time spent solution - postprocessing      :        0.0 seconds
+Elapsed time spent post-processing model (/POST1) :        0.0 seconds
+
+Equation solver used                              :            Sparse (symmetric)
+Sparse direct equation solver computational rate  :       11.6 Gflops
+Sparse direct equation solver effective I/O rate  :        9.9 GB/sec
+
+Sum of disk space used on all processes           :        5.5 MB
+
+Sum of memory used on all processes               :      198.0 MB
+Sum of memory allocated on all processes          :     2880.0 MB
+Physical memory available                         :         63 GB
+Total amount of I/O written to disk               :        0.0 GB
+Total amount of I/O read from disk                :        0.0 GB
+
++------------------ E N D   M A P D L   S T A T I S T I C S -------------------+
+
+
+ *-----------------------------------------------------------------------------*
+ |                                                                             |
+ |                               RUN COMPLETED                                 |
+ |                                                                             |
+ |-----------------------------------------------------------------------------|
+ |                                                                             |
+ |  Ansys MAPDL 2026 R1         Build 26.1         UP20260202    LINUX x64     |
+ |                                                                             |
+ |-----------------------------------------------------------------------------|
+ |                                                                             |
+ |  Database Requested(-db)     1024 MB     Scratch Memory Requested   1024 MB |
+ |  Max Database Used(Master)      3 MB     Max Scratch Used(Master)     48 MB |
+ |  Max Database Used(Workers)     1 MB     Max Scratch Used(Workers)    48 MB |
+ |  Sum Database Used(All)         6 MB     Sum Scratch Used(All)       192 MB |
+ |                                                                             |
+ |-----------------------------------------------------------------------------|
+ |                                                                             |
+ |        CP Time      (sec) =          2.718       Time  =  23:18:04          |
+ |        Elapsed Time (sec) =          1.500       Date  =  02/28/2026        |
+ |                                                                             |
+ *-----------------------------------------------------------------------------*
+</pre></div>
+</div>
+</section>
+<section id="print-the-project-tree">
+<h2>Print the project tree<a class="headerlink" href="#print-the-project-tree" title="Link to this heading">#</a></h2>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">app</span><span class="o">.</span><span class="n">print_tree</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>├── Project
+|  ├── Model
+|  |  ├── Geometry Imports (✓)
+|  |  |  ├── Geometry Import (✓)
+|  |  ├── Geometry (✓)
+|  |  |  ├── Part4
+|  |  |  |  ├── Part4
+|  |  |  ├── Part3
+|  |  |  |  ├── Part3
+|  |  |  ├── Part2
+|  |  |  |  ├── Part2
+|  |  |  ├── Part1
+|  |  |  |  ├── Part1
+|  |  ├── Construction Geometry (✓)
+|  |  |  ├── Path (✓)
+|  |  |  ├── Surface (✓)
+|  |  ├── Materials (✓)
+|  |  |  ├── Structural Steel (✓)
+|  |  ├── Coordinate Systems (✓)
+|  |  |  ├── Global Coordinate System (✓)
+|  |  |  ├── Coordinate System (✓)
+|  |  |  ├── Coordinate System 2 (✓)
+|  |  ├── Remote Points (✓)
+|  |  ├── Connections (✓)
+|  |  |  ├── Contacts (✓)
+|  |  |  |  ├── Contact Region (✓)
+|  |  |  |  ├── Contact Region 2 (✓)
+|  |  |  |  ├── Contact Region 3 (✓)
+|  |  ├── Mesh (✓)
+|  |  ├── Named Selections
+|  |  |  ├── Face1 (✓)
+|  |  |  ├── Face2 (✓)
+|  |  |  ├── Face3 (✓)
+|  |  |  ├── Body1 (✓)
+|  |  ├── Steady-State Thermal (✓)
+|  |  |  ├── Initial Temperature (✓)
+|  |  |  ├── Analysis Settings (✓)
+|  |  |  ├── Temperature (✓)
+|  |  |  ├── Temperature 2 (✓)
+|  |  |  ├── Radiation (✓)
+|  |  |  ├── Solution (✓)
+|  |  |  |  ├── Solution Information (✓)
+|  |  |  |  ├── Temperature (✓)
+|  |  |  |  ├── Temperature 2 (✓)
+|  |  |  |  ├── Temperature 3 (✓)
+|  |  |  |  ├── Temperature 4 (✓)
+|  |  |  |  ├── Total Heat Flux (✓)
+|  |  |  |  ├── Directional Heat Flux (✓)
+|  |  |  |  ├── Thermal Error (✓)
+|  |  |  |  ├── Temperature Probe (✓)
+|  |  |  |  ├── Heat Flux Probe (✓)
+|  |  |  |  ├── Reaction Probe (✓)
+|  |  |  |  ├── Radiation Probe (✓)
+</pre></div>
+</div>
+</section>
+<section id="clean-up-the-app-and-downloaded-files">
+<h2>Clean up the app and downloaded files<a class="headerlink" href="#clean-up-the-app-and-downloaded-files" title="Link to this heading">#</a></h2>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Save the project file</span>
+<a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">mechdat_path</span></a> <span class="o">=</span> <a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">output_path</span></a> <span class="o">/</span> <span class="s2">&quot;steady_state_thermal.mechdat&quot;</span>
+<span class="n">app</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">mechdat_path</span></a><span class="p">))</span>
+
+<span class="c1"># Close the app</span>
+<span class="n">app</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="c1"># Delete the example files</span>
+<span class="n">delete_downloads</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 19.277 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-examples-gallery-examples-01-basic-steady-state-thermal-analysis-py">
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../../../_downloads/de1819f0b723845b4c427ed3c6798760/steady_state_thermal_analysis.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">steady_state_thermal_analysis.ipynb</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../../../_downloads/92ba57404024b7290efb017749a326be/steady_state_thermal_analysis.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">steady_state_thermal_analysis.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-zip docutils container">
+<p><a class="reference download internal" download="" href="../../../_downloads/53dd586d58e1823e513389a1177d8858/steady_state_thermal_analysis.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">zipped:</span> <span class="pre">steady_state_thermal_analysis.zip</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-the-necessary-libraries">Import the necessary libraries</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#initialize-the-embedded-application">Initialize the embedded application</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-functions-to-set-camera-and-display-images">Create functions to set camera and display images</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configure-graphics-for-image-export">Configure graphics for image export</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#download-the-geometry-file">Download the geometry file</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-the-geometry">Import the geometry</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#add-steady-state-thermal-analysis">Add steady state thermal analysis</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-named-selections-and-construction-geometry">Create named selections and construction geometry</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#define-the-boundary-condition-and-add-results">Define the boundary condition and add results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#add-results">Add results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solve-the-solution">Solve the solution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#show-messages">Show messages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#display-the-results">Display the results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#export-the-directional-heat-flux-animation">Export the directional heat flux animation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#display-the-output-file-from-the-solve">Display the output file from the solve</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#print-the-project-tree">Print the project tree</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clean-up-the-app-and-downloaded-files">Clean up the app and downloaded files</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+
+  
+  <nav class="tocsection editthispage" aria-label="Edit this page">
+    <a href="https://github.com/pyansys/pymechanical/edit/main/doc/source/examples/gallery_examples/01_basic/steady_state_thermal_analysis.rst" rel="noopener noreferrer">
+      <i class="fa-solid fa-pencil" aria-hidden="true"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </nav>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+
+  <!-- Include desired assets -->
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.7/require.min.js"></script>
+
+<script>
+// Passing the search options to the search.js file
+const SEARCH_OPTIONS = JSON.parse('{"keys": ["title", "text", "objectID"], "limit": 10, "threshold": 0.2}');
+const SEARCH_FILE = "../../../_static/search.json";
+const ADVANCE_SEARCH_PATH = "../../../search.html";
+const EXTRA_SOURCES = JSON.parse('""');
+</script>
+
+
+<script src="../../../_static/js/search.js"></script>
+
+  
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright (c) 2026 ANSYS, Inc. All rights reserved.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<!--
+  Theme Version Footer
+  Displays the Sphinx theme version and the last updated date.
+  Accessibility and semantic improvements included.
+-->
+<footer class="theme-version" aria-label="Theme version and last update">
+  <span>
+    
+      Built with the
+      <a href="https://sphinxdocs.ansys.com/version/stable/index.html" target="_blank" rel="noopener noreferrer">
+        Ansys Sphinx Theme
+      </a>
+      1.7.1.
+    
+  </span>
+  <br />
+  <span>Last updated on <time id="ast_build_date"></time></span>
+</footer>
+<script>
+  // Set the last updated date in a readable format
+  (function() {
+    var options = { day: "numeric", month: "long", year: "numeric" };
+    var ast_lastModifiedDate = new Date(document.lastModified);
+    var ast_build_date = ast_lastModifiedDate.toLocaleDateString("en-US", options);
+    var dateElem = document.getElementById("ast_build_date");
+    if (dateElem) {
+      dateElem.textContent = ast_build_date;
+    }
+  })();
+</script></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,1379 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Steady State Thermal Analysis of cooling holes on a representative model &#8212; PyMechanical</title>
+  
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/ansys-sphinx-theme.css?v=a23b20f3" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/ansys-sphinx-theme.css?v=a23b20f3" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://www.nerdfonts.com/assets/css/webfont.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+
+  <!-- Include desired assets -->
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  
+
+  
+    <link href="../../../_static/css/breadcrumbs.css" rel="stylesheet" />
+  
+    <script src="../../../_static/documentation_options.js?v=142dd74e"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/thebelab-helper.js"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=49e1bf35"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'examples/gallery_examples/01_basic/cooling_holes_thermal_analysis';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://mechanical.docs.pyansys.com/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'dev';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+    <link rel="icon" href="../../../_static/ansys-favicon.png"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Fracture analysis - contact debonding" href="fracture_analysis_contact_debonding.html" />
+    <link rel="prev" title="Bolt pretension" href="bolt_pretension.html" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.12.dev0" />
+  <meta property="og:site_name" content="PyAnsys" />
+  <meta name="physics" content="Structures" />
+  <meta name="physics" content="Structures" />
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="https://docs.pyansys.com/">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/pyansys_logo_transparent_black.png" class="logo__image only-light" alt="PyMechanical - Home"/>
+    <img src="../../../_static/pyansys_logo_transparent_white.png" class="logo__image only-dark pst-js-only" alt="PyMechanical - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../index.html" title="PyMechanical home">Home</a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started/index.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide/index.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/ansys/mechanical/core/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../contribute.html">
+    Contribute
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../faq.html">
+    FAQs
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../contribute.html">
+    Contribute
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../kil/index.html">
+    Known issues and limitations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../changelog.html">
+    Release notes
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav>
+</div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+<div class="search-bar pst-js-only" id="search-bar">
+  <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="search" class="form-control" name="q" placeholder="Search the docs ..."
+      aria-label="Search the docs ..." autocomplete="off" autocorrect="off"
+      autocapitalize="off" spellcheck="false" />
+    <span class="search-button__kbd-shortcut">
+      <kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd>
+    </span>
+  </form>
+  
+  <div id="static-search-results" class="static-search-results" style="display:none;" tabindex="0"></div>
+  
+</div></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical/discussions" title="Support" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa fa-comment fa-fw fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Support</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+  
+    
+<!--
+  Announcement Version Loader
+  Dynamically loads the announcement.html content into the announcement_msg div.
+-->
+<div id="announcement_msg" aria-live="polite"></div>
+<script>
+  // Fetch and inject the announcement HTML content
+  fetch("announcement.html")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status} Announcement.html file not found, Please ignore this, if you are in dev/stable documentation`);
+      }
+      return response.text();
+    })
+    .then((text) => {
+      var msgDiv = document.getElementById("announcement_msg");
+      if (msgDiv) {
+        msgDiv.innerHTML = text;
+      }
+    })
+    .catch((error) => {
+      // Log only unexpected fetch errors
+      if (!(error.message && error.message.startsWith("HTTP error: 404"))) {
+        console.error(`Fetch problem: ${error.message} Announcement.html could not be loaded.`);
+      }
+    });
+</script>
+  
+
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../index.html" title="PyMechanical home">Home</a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started/index.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide/index.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/ansys/mechanical/core/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../contribute.html">
+    Contribute
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../faq.html">
+    FAQs
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../contribute.html">
+    Contribute
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../kil/index.html">
+    Known issues and limitations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../changelog.html">
+    Release notes
+  </a>
+</li>
+
+  </ul>
+</nav>
+</div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="search-bar pst-js-only" id="search-bar">
+  <form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="search" class="form-control" name="q" placeholder="Search the docs ..."
+      aria-label="Search the docs ..." autocomplete="off" autocorrect="off"
+      autocapitalize="off" spellcheck="false" />
+    <span class="search-button__kbd-shortcut">
+      <kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd>
+    </span>
+  </form>
+  
+  <div id="static-search-results" class="static-search-results" style="display:none;" tabindex="0"></div>
+  
+</div></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical/discussions" title="Support" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa fa-comment fa-fw fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Support</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Basic Examples</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="bolt_pretension.html">Bolt pretension</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Steady State Thermal Analysis of cooling holes on a representative model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fracture_analysis_contact_debonding.html">Fracture analysis - contact debonding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harmonic_acoustics.html">Harmonic acoustic analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modal_acoustics_analysis.html">Modal acoustics analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="steady_state_thermal_analysis.html">Steady state thermal analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topology_optimization_cantilever_beam.html">Topology optimization of a simple cantilever beam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="valve.html">Basic valve implementation</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference external" href="https://embedding.examples.mechanical.docs.pyansys.com/examples/index.html">Advanced Examples</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference external" href="https://examples.mechanical.docs.pyansys.com/index.html">Remote Sessions</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+         
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="https://docs.pyansys.com/" class="nav-link">PyAnsys</a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a
+        href="../../../index.html"
+        class="nav-link"
+        aria-label="Home"
+      >
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a href="../../index.html" class="nav-link">Examples</a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a href="index.html" class="nav-link">Basic Examples</a>
+    </li>
+      
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Steady State Thermal Analysis of cooling holes on a representative model</span></li>
+    
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#sphx-glr-download-examples-gallery-examples-01-basic-cooling-holes-thermal-analysis-py"><span class="std std-ref">Go to the end</span></a>
+to download the full example code.</p>
+</div>
+<section class="sphx-glr-example-title" id="steady-state-thermal-analysis-of-cooling-holes-on-a-representative-model">
+<span id="ref-cooling-holes-thermal-analysis"></span><span id="sphx-glr-examples-gallery-examples-01-basic-cooling-holes-thermal-analysis-py"></span><h1>Steady State Thermal Analysis of cooling holes on a representative model<a class="headerlink" href="#steady-state-thermal-analysis-of-cooling-holes-on-a-representative-model" title="Link to this heading">#</a></h1>
+<p>This example illustrates the process of adding a Steady State Thermal
+analysis to a new standalone Mechanical session, followed by executing
+Python scripting commands to set boundary conditions and solve a thermal
+simulation of a model with cooling holes. The scripts then assess the
+results, including temperature plots of plates and fluid lines modeled
+with Fluid116 elements.</p>
+<p>Cooling holes are carefully designed small channels within turbine blades
+that release cool air, creating a protective layer on the blade’s surface
+to shield it from the intense heat of combustion gases. This film cooling
+technique helps maintain optimal temperatures, boost turbine efficiency,
+and ensure safe operation. The size, shape, and location of these holes
+are crucial for their effectiveness and to prevent premature failure.</p>
+<p>The model features two plates: one equipped with cooling holes and the
+other without them. Fluid116 elements simulate the flow network through
+the holes without requiring the holes to be physically present in the
+geometry.</p>
+<p>The plates are constructed from structural steel, with air
+flowing through the holes. The simulation involves applying convection
+boundary conditions to the plate surfaces, temperature boundary conditions
+at the line vertices, and mass flow rate boundary conditions at the
+fluid lines. After solving the simulation, the results are visualized with
+temperature plots, showing the temperature distribution on the plates
+and fluid lines using matplotlib.</p>
+<section id="import-the-necessary-libraries">
+<h2>Import the necessary libraries<a class="headerlink" href="#import-the-necessary-libraries" title="Link to this heading">#</a></h2>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="pathlib.Path" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class"><span class="n">Path</span></a>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <a href="https://docs.python.org/3/library/functions.html#bool" title="builtins.bool" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">TYPE_CHECKING</span></a>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">image</span> <span class="k">as</span> <span class="n">mpimg</span><span class="p">,</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">ansys.mechanical.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">App</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ansys.mechanical.core.examples</span><span class="w"> </span><span class="kn">import</span> <span class="n">delete_downloads</span><span class="p">,</span> <span class="n">download_file</span>
+
+<span class="k">if</span> <a href="https://docs.python.org/3/library/functions.html#bool" title="builtins.bool" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">TYPE_CHECKING</span></a><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">Ansys</span>
+</pre></div>
+</div>
+</section>
+<section id="initialize-the-embedded-application">
+<h2>Initialize the embedded application<a class="headerlink" href="#initialize-the-embedded-application" title="Link to this heading">#</a></h2>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="nb">globals</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Ansys Mechanical [Ansys Mechanical Enterprise]
+Product Version:252
+Software build date: 06/13/2025 11:25:56
+</pre></div>
+</div>
+</section>
+<section id="create-functions-to-set-camera-and-display-images">
+<h2>Create functions to set camera and display images<a class="headerlink" href="#create-functions-to-set-camera-and-display-images" title="Link to this heading">#</a></h2>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set the path for the output files (images, gifs, mechdat)</span>
+<a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">output_path</span></a> <span class="o">=</span> <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path.cwd" title="pathlib.Path.cwd" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-method"><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span></a><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;out&quot;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">set_camera_and_display_image</span><span class="p">(</span>
+    <span class="n">camera</span><span class="p">,</span>
+    <span class="n">graphics</span><span class="p">,</span>
+    <span class="n">graphics_image_export_settings</span><span class="p">,</span>
+    <span class="n">image_output_path</span><span class="p">:</span> <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="pathlib.Path" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class"><span class="n">Path</span></a><span class="p">,</span>
+    <span class="n">image_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the camera to fit the model and display the image.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    camera : Ansys.ACT.Common.Graphics.MechanicalCameraWrapper</span>
+<span class="sd">        The camera object to set the view.</span>
+<span class="sd">    graphics : Ansys.ACT.Common.Graphics.MechanicalGraphicsWrapper</span>
+<span class="sd">        The graphics object to export the image.</span>
+<span class="sd">    graphics_image_export_settings : Ansys.Mechanical.Graphics.GraphicsImageExportSettings</span>
+<span class="sd">        The settings for exporting the image.</span>
+<span class="sd">    image_output_path : Path</span>
+<span class="sd">        The path to save the exported image.</span>
+<span class="sd">    image_name : str</span>
+<span class="sd">        The name of the exported image file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Set the camera to fit the mesh</span>
+    <span class="n">camera</span><span class="o">.</span><span class="n">SetFit</span><span class="p">()</span>
+    <span class="c1"># Export the image with the specified settings</span>
+    <a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">image_path</span></a> <span class="o">=</span> <span class="n">image_output_path</span> <span class="o">/</span> <span class="n">image_name</span>
+    <span class="n">graphics</span><span class="o">.</span><span class="n">ExportImage</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">image_path</span></a><span class="p">),</span> <span class="n">image_export_format</span><span class="p">,</span> <span class="n">graphics_image_export_settings</span><span class="p">)</span>
+    <span class="c1"># Display the exported image</span>
+    <span class="n">display_image</span><span class="p">(</span><a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">image_path</span></a><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">display_image</span><span class="p">(</span>
+    <a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">image_path</span></a><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">pyplot_figsize_coordinates</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span>
+    <span class="n">plot_xticks</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
+    <span class="n">plot_yticks</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
+    <span class="n">plot_axis</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;off&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Display the image with the specified parameters.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    image_path : str</span>
+<span class="sd">        The path to the image file to display.</span>
+<span class="sd">    pyplot_figsize_coordinates : tuple</span>
+<span class="sd">        The size of the figure in inches (width, height).</span>
+<span class="sd">    plot_xticks : list</span>
+<span class="sd">        The x-ticks to display on the plot.</span>
+<span class="sd">    plot_yticks : list</span>
+<span class="sd">        The y-ticks to display on the plot.</span>
+<span class="sd">    plot_axis : str</span>
+<span class="sd">        The axis visibility setting (&#39;on&#39; or &#39;off&#39;).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Set the figure size based on the coordinates specified</span>
+    <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.figure.html#matplotlib.pyplot.figure" title="matplotlib.pyplot.figure" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">figure</span></a><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">pyplot_figsize_coordinates</span><span class="p">)</span>
+    <span class="c1"># Read the image from the file into an array</span>
+    <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.imshow.html#matplotlib.pyplot.imshow" title="matplotlib.pyplot.imshow" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">imshow</span></a><span class="p">(</span><a href="https://matplotlib.org/stable/api/image_api.html#matplotlib.image.imread" title="matplotlib.image.imread" class="sphx-glr-backref-module-matplotlib-image sphx-glr-backref-type-py-function"><span class="n">mpimg</span><span class="o">.</span><span class="n">imread</span></a><span class="p">(</span><a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">image_path</span></a><span class="p">))</span>
+    <span class="c1"># Get or set the current tick locations and labels of the x-axis</span>
+    <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.xticks.html#matplotlib.pyplot.xticks" title="matplotlib.pyplot.xticks" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">xticks</span></a><span class="p">(</span><span class="n">plot_xticks</span><span class="p">)</span>
+    <span class="c1"># Get or set the current tick locations and labels of the y-axis</span>
+    <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.yticks.html#matplotlib.pyplot.yticks" title="matplotlib.pyplot.yticks" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">yticks</span></a><span class="p">(</span><span class="n">plot_yticks</span><span class="p">)</span>
+    <span class="c1"># Turn off the axis</span>
+    <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.axis.html#matplotlib.pyplot.axis" title="matplotlib.pyplot.axis" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">axis</span></a><span class="p">(</span><span class="n">plot_axis</span><span class="p">)</span>
+    <span class="c1"># Display the figure</span>
+    <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="download-the-required-files">
+<h2>Download the required files<a class="headerlink" href="#download-the-required-files" title="Link to this heading">#</a></h2>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download the geometry file</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">geometry_path</span></a> <span class="o">=</span> <span class="n">download_file</span><span class="p">(</span><span class="s2">&quot;cooling_holes_geometry.pmdb&quot;</span><span class="p">,</span> <span class="s2">&quot;pymechanical&quot;</span><span class="p">,</span> <span class="s2">&quot;embedding&quot;</span><span class="p">)</span>
+
+<span class="c1"># Download the material file</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">mat_path</span></a> <span class="o">=</span> <span class="n">download_file</span><span class="p">(</span><span class="s2">&quot;cooling_holes_material_file.xml&quot;</span><span class="p">,</span> <span class="s2">&quot;pymechanical&quot;</span><span class="p">,</span> <span class="s2">&quot;embedding&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="configure-graphics-for-image-export">
+<h2>Configure graphics for image export<a class="headerlink" href="#configure-graphics-for-image-export" title="Link to this heading">#</a></h2>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define the graphics and camera objects</span>
+<span class="n">graphics</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">Graphics</span>
+<span class="n">camera</span> <span class="o">=</span> <span class="n">graphics</span><span class="o">.</span><span class="n">Camera</span>
+
+<span class="c1"># Set the camera orientation to the isometric view and set the camera to fit the model</span>
+<span class="n">camera</span><span class="o">.</span><span class="n">SetSpecificViewOrientation</span><span class="p">(</span><span class="n">ViewOrientationType</span><span class="o">.</span><span class="n">Iso</span><span class="p">)</span>
+<span class="n">camera</span><span class="o">.</span><span class="n">SetFit</span><span class="p">()</span>
+
+<span class="c1"># Set the image export format and settings</span>
+<span class="n">image_export_format</span> <span class="o">=</span> <span class="n">GraphicsImageExportFormat</span><span class="o">.</span><span class="n">PNG</span>
+<span class="n">settings_720p</span> <span class="o">=</span> <span class="n">Ansys</span><span class="o">.</span><span class="n">Mechanical</span><span class="o">.</span><span class="n">Graphics</span><span class="o">.</span><span class="n">GraphicsImageExportSettings</span><span class="p">()</span>
+<span class="n">settings_720p</span><span class="o">.</span><span class="n">Resolution</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Ansys</span><span class="o">.</span><span class="n">Mechanical</span><span class="o">.</span><span class="n">DataModel</span><span class="o">.</span><span class="n">Enums</span><span class="o">.</span><span class="n">GraphicsResolutionType</span><span class="o">.</span><span class="n">EnhancedResolution</span>
+<span class="p">)</span>
+<span class="n">settings_720p</span><span class="o">.</span><span class="n">Background</span> <span class="o">=</span> <span class="n">Ansys</span><span class="o">.</span><span class="n">Mechanical</span><span class="o">.</span><span class="n">DataModel</span><span class="o">.</span><span class="n">Enums</span><span class="o">.</span><span class="n">GraphicsBackgroundType</span><span class="o">.</span><span class="n">White</span>
+<a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">settings_720p</span><span class="o">.</span><span class="n">Width</span></a> <span class="o">=</span> <span class="mi">1280</span>
+<a href="https://docs.python.org/3/library/functions.html#int" title="builtins.int" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">settings_720p</span><span class="o">.</span><span class="n">Height</span></a> <span class="o">=</span> <span class="mi">720</span>
+<a href="https://docs.python.org/3/library/functions.html#bool" title="builtins.bool" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">settings_720p</span><span class="o">.</span><span class="n">CurrentGraphicsDisplay</span></a> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="c1"># Define the model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">Model</span>
+</pre></div>
+</div>
+</section>
+<section id="define-python-variables">
+<h2>Define Python variables<a class="headerlink" href="#define-python-variables" title="Link to this heading">#</a></h2>
+<p>Store all main tree nodes as variables</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">geometry</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Geometry</span>
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Mesh</span>
+<span class="n">materials</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Materials</span>
+<span class="n">coordinate_systems</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">CoordinateSystems</span>
+<span class="n">named_selections</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">NamedSelections</span>
+</pre></div>
+</div>
+</section>
+<section id="import-the-geometry">
+<h2>Import the geometry<a class="headerlink" href="#import-the-geometry" title="Link to this heading">#</a></h2>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add the geometry import to the geometry import group</span>
+<span class="n">geometry_import_group</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">GeometryImportGroup</span>
+<span class="n">geometry_import</span> <span class="o">=</span> <span class="n">geometry_import_group</span><span class="o">.</span><span class="n">AddGeometryImport</span><span class="p">()</span>
+
+<span class="c1"># Set the geometry import format and settings</span>
+<span class="n">geometry_import_format</span> <span class="o">=</span> <span class="n">Ansys</span><span class="o">.</span><span class="n">Mechanical</span><span class="o">.</span><span class="n">DataModel</span><span class="o">.</span><span class="n">Enums</span><span class="o">.</span><span class="n">GeometryImportPreference</span><span class="o">.</span><span class="n">Format</span><span class="o">.</span><span class="n">Automatic</span>
+<span class="n">geometry_import_preferences</span> <span class="o">=</span> <span class="n">Ansys</span><span class="o">.</span><span class="n">ACT</span><span class="o">.</span><span class="n">Mechanical</span><span class="o">.</span><span class="n">Utilities</span><span class="o">.</span><span class="n">GeometryImportPreferences</span><span class="p">()</span>
+<a href="https://docs.python.org/3/library/functions.html#bool" title="builtins.bool" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">geometry_import_preferences</span><span class="o">.</span><span class="n">ProcessNamedSelections</span></a> <span class="o">=</span> <span class="kc">True</span>
+<a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">geometry_import_preferences</span><span class="o">.</span><span class="n">NamedSelectionKey</span></a> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<a href="https://docs.python.org/3/library/functions.html#bool" title="builtins.bool" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">geometry_import_preferences</span><span class="o">.</span><span class="n">ProcessMaterialProperties</span></a> <span class="o">=</span> <span class="kc">True</span>
+<a href="https://docs.python.org/3/library/functions.html#bool" title="builtins.bool" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">geometry_import_preferences</span><span class="o">.</span><span class="n">ProcessCoordinateSystems</span></a> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="c1"># Import the geometry with the specified settings</span>
+<span class="n">geometry_import</span><span class="o">.</span><span class="n">Import</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">geometry_path</span></a><span class="p">,</span> <span class="n">geometry_import_format</span><span class="p">,</span> <span class="n">geometry_import_preferences</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="define-and-select-bin-units-system">
+<h2>Define and select BIN units system<a class="headerlink" href="#define-and-select-bin-units-system" title="Link to this heading">#</a></h2>
+<p>Define the unit system for the model as Standard BIN (BTU, inch).</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">app</span><span class="o">.</span><span class="n">ExtAPI</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">ActiveUnitSystem</span> <span class="o">=</span> <span class="n">MechanicalUnitSystem</span><span class="o">.</span><span class="n">StandardBIN</span>
+</pre></div>
+</div>
+</section>
+<section id="assign-materials">
+<h2>Assign materials<a class="headerlink" href="#assign-materials" title="Link to this heading">#</a></h2>
+<p>Import material from xml file and assign it to bodies</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">materials</span><span class="o">.</span><span class="n">Import</span><span class="p">(</span><a href="https://docs.python.org/3/library/stdtypes.html#str" title="builtins.str" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">mat_path</span></a><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;System.Collections.Generic.List[Material] object at 0x7fb3669c5340&gt;
+</pre></div>
+</div>
+</section>
+<section id="assign-geometrical-and-material-properties">
+<h2>Assign geometrical and material properties<a class="headerlink" href="#assign-geometrical-and-material-properties" title="Link to this heading">#</a></h2>
+<p>Specify section properties and assign them to geometry</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">geometry</span><span class="o">.</span><span class="n">Activate</span><span class="p">()</span>
+<span class="n">fluid_line1</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">Children</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">Children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># Activate fluid line Body</span>
+<span class="n">fluid_line1</span><span class="o">.</span><span class="n">ModelType</span> <span class="o">=</span> <span class="n">PrototypeModelType</span><span class="o">.</span><span class="n">ModelPhysicsTypeFluid</span>
+<span class="n">fluid_line1</span><span class="o">.</span><span class="n">Material</span> <span class="o">=</span> <span class="s2">&quot;Air&quot;</span>
+<span class="n">fluid_line1</span><span class="o">.</span><span class="n">FluidCrossArea</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="mf">3.1414</span><span class="p">,</span> <span class="s2">&quot;in in&quot;</span><span class="p">)</span>
+
+<span class="n">fluid_line2</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">Children</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">Children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># Activate fluid line Body</span>
+<span class="n">fluid_line2</span><span class="o">.</span><span class="n">ModelType</span> <span class="o">=</span> <span class="n">PrototypeModelType</span><span class="o">.</span><span class="n">ModelPhysicsTypeFluid</span>
+<span class="n">fluid_line2</span><span class="o">.</span><span class="n">Material</span> <span class="o">=</span> <span class="s2">&quot;Air&quot;</span>
+<span class="n">fluid_line2</span><span class="o">.</span><span class="n">FluidCrossArea</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="mf">3.1414</span><span class="p">,</span> <span class="s2">&quot;in in&quot;</span><span class="p">)</span>
+
+<span class="c1"># Visualize the model in 3D</span>
+<span class="n">app</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+<img src="../../../_images/sphx_glr_cooling_holes_thermal_analysis_001.png" srcset="../../../_images/sphx_glr_cooling_holes_thermal_analysis_001.png" alt="cooling holes thermal analysis" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>[]
+</pre></div>
+</div>
+</section>
+<section id="define-coordinate-system">
+<h2>Define coordinate system<a class="headerlink" href="#define-coordinate-system" title="Link to this heading">#</a></h2>
+<p>Specify cylindrical coordinate system for applying boundary conditions</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">coordinate_systems</span><span class="o">.</span><span class="n">Activate</span><span class="p">()</span>
+<span class="n">coordinate_system_101</span> <span class="o">=</span> <span class="n">coordinate_systems</span><span class="o">.</span><span class="n">AddCoordinateSystem</span><span class="p">()</span>
+<span class="n">coordinate_system_101</span><span class="o">.</span><span class="n">CoordinateSystemType</span> <span class="o">=</span> <span class="n">CoordinateSystemTypeEnum</span><span class="o">.</span><span class="n">Cylindrical</span>
+<span class="n">coordinate_system_101</span><span class="o">.</span><span class="n">OriginDefineBy</span> <span class="o">=</span> <span class="n">CoordinateSystemAlignmentType</span><span class="o">.</span><span class="n">Component</span>
+<span class="n">coordinate_system_101</span><span class="o">.</span><span class="n">OriginDefineBy</span> <span class="o">=</span> <span class="n">CoordinateSystemAlignmentType</span><span class="o">.</span><span class="n">Fixed</span>
+<span class="n">coordinate_system_101</span><span class="o">.</span><span class="n">OriginX</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;in&quot;</span><span class="p">)</span>
+<span class="n">coordinate_system_101</span><span class="o">.</span><span class="n">OriginZ</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;in&quot;</span><span class="p">)</span>
+<span class="n">coordinate_system_101</span><span class="o">.</span><span class="n">PrimaryAxis</span> <span class="o">=</span> <span class="n">CoordinateSystemAxisType</span><span class="o">.</span><span class="n">PositiveZAxis</span>
+<span class="n">coordinate_system_101</span><span class="o">.</span><span class="n">PrimaryAxisDefineBy</span> <span class="o">=</span> <span class="n">CoordinateSystemAlignmentType</span><span class="o">.</span><span class="n">GlobalY</span>
+<span class="n">coordinate_system_101</span><span class="o">.</span><span class="n">SecondaryAxisDefineBy</span> <span class="o">=</span> <span class="n">CoordinateSystemAlignmentType</span><span class="o">.</span><span class="n">GlobalZ</span>
+</pre></div>
+</div>
+</section>
+<section id="define-named-selections">
+<h2>Define named selections<a class="headerlink" href="#define-named-selections" title="Link to this heading">#</a></h2>
+<p>Create named selections used in the model</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">HoleFluidNodes_NS</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">Tree</span><span class="o">.</span><span class="n">AllObjects</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">Name</span> <span class="o">==</span> <span class="s2">&quot;HoleFluidNodes&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">Both_Plates_NS</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">Tree</span><span class="o">.</span><span class="n">AllObjects</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">Name</span> <span class="o">==</span> <span class="s2">&quot;Both_Plates&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">Fluid_Line1_NS</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">Tree</span><span class="o">.</span><span class="n">AllObjects</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">Name</span> <span class="o">==</span> <span class="s2">&quot;Fluid_Line1&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">Fluid_Line2_NS</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">Tree</span><span class="o">.</span><span class="n">AllObjects</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">Name</span> <span class="o">==</span> <span class="s2">&quot;Fluid_Line2&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">Line1_vertex_NS</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">Tree</span><span class="o">.</span><span class="n">AllObjects</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">Name</span> <span class="o">==</span> <span class="s2">&quot;Line1_vertex&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">Line2_vertex_NS</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">Tree</span><span class="o">.</span><span class="n">AllObjects</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">Name</span> <span class="o">==</span> <span class="s2">&quot;Line2_vertex&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">Bottom_Surface_Plates_NS</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">Tree</span><span class="o">.</span><span class="n">AllObjects</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">Name</span> <span class="o">==</span> <span class="s2">&quot;Bottom_Surface_Plates&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">Top_Surface_Plates_NS</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">Tree</span><span class="o">.</span><span class="n">AllObjects</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">Name</span> <span class="o">==</span> <span class="s2">&quot;Top_Surface_Plates&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">Hole_Cyl_Surface_NS</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">Tree</span><span class="o">.</span><span class="n">AllObjects</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">Name</span> <span class="o">==</span> <span class="s2">&quot;Hole_Cyl_Surface&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">Fluidlines_NS</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">Tree</span><span class="o">.</span><span class="n">AllObjects</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">Name</span> <span class="o">==</span> <span class="s2">&quot;Fluidlines&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># Create named selection for elements at the hole</span>
+<span class="n">named_selections</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">NamedSelections</span>
+<span class="n">named_selection</span> <span class="o">=</span> <span class="n">named_selections</span><span class="o">.</span><span class="n">AddNamedSelection</span><span class="p">()</span>
+<span class="n">named_selection</span><span class="o">.</span><span class="n">ScopingMethod</span> <span class="o">=</span> <span class="n">GeometryDefineByType</span><span class="o">.</span><span class="n">Worksheet</span>
+<span class="n">named_selection</span><span class="o">.</span><span class="n">GenerationCriteria</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">named_selection</span><span class="o">.</span><span class="n">GenerationCriteria</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">EntityType</span> <span class="o">=</span> <span class="n">SelectionType</span><span class="o">.</span><span class="n">MeshElement</span>
+<span class="n">named_selection</span><span class="o">.</span><span class="n">GenerationCriteria</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">Criterion</span> <span class="o">=</span> <span class="n">SelectionCriterionType</span><span class="o">.</span><span class="n">LocationX</span>
+<span class="n">named_selection</span><span class="o">.</span><span class="n">GenerationCriteria</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">Operator</span> <span class="o">=</span> <span class="n">SelectionOperatorType</span><span class="o">.</span><span class="n">LessThanOrEqual</span>
+<span class="n">named_selection</span><span class="o">.</span><span class="n">GenerationCriteria</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">Value</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="s2">&quot;2.5e-2 [in]&quot;</span><span class="p">)</span>
+<span class="n">cyl_cs</span> <span class="o">=</span> <span class="n">DataModel</span><span class="o">.</span><span class="n">GetObjectsByName</span><span class="p">(</span><span class="s2">&quot;Coordinate System&quot;</span><span class="p">)</span>
+<span class="n">named_selection</span><span class="o">.</span><span class="n">GenerationCriteria</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">CoordinateSystem</span> <span class="o">=</span> <span class="n">cyl_cs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">named_selection</span><span class="o">.</span><span class="n">GenerationCriteria</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">named_selection</span><span class="o">.</span><span class="n">GenerationCriteria</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">Action</span> <span class="o">=</span> <span class="n">SelectionActionType</span><span class="o">.</span><span class="n">Convert</span>
+<span class="n">named_selection</span><span class="o">.</span><span class="n">GenerationCriteria</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">EntityType</span> <span class="o">=</span> <span class="n">SelectionType</span><span class="o">.</span><span class="n">MeshNode</span>
+<span class="n">active_sel</span> <span class="o">=</span> <span class="n">named_selection</span><span class="o">.</span><span class="n">GenerationCriteria</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<a href="https://docs.python.org/3/library/functions.html#bool" title="builtins.bool" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">active_sel</span><span class="o">.</span><span class="n">Active</span></a> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">named_selection</span><span class="o">.</span><span class="n">Generate</span><span class="p">()</span>
+<span class="n">named_selection</span><span class="o">.</span><span class="n">Name</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;HoleElements&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="define-mesh-controls-and-generate-the-mesh">
+<h2>Define mesh controls and generate the mesh<a class="headerlink" href="#define-mesh-controls-and-generate-the-mesh" title="Link to this heading">#</a></h2>
+<p>Mesh the model</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">mesh</span><span class="o">.</span><span class="n">Activate</span><span class="p">()</span>
+<span class="n">mesh</span><span class="o">.</span><span class="n">ElementSize</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;in&quot;</span><span class="p">)</span>
+<a href="https://docs.python.org/3/library/functions.html#bool" title="builtins.bool" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">mesh</span><span class="o">.</span><span class="n">UseAdaptiveSizing</span></a> <span class="o">=</span> <span class="kc">False</span>
+<a href="https://docs.python.org/3/library/functions.html#bool" title="builtins.bool" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">mesh</span><span class="o">.</span><span class="n">CaptureCurvature</span></a> <span class="o">=</span> <span class="kc">True</span>
+<a href="https://docs.python.org/3/library/functions.html#bool" title="builtins.bool" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">mesh</span><span class="o">.</span><span class="n">CaptureProximity</span></a> <span class="o">=</span> <span class="kc">True</span>
+<a href="https://docs.python.org/3/library/functions.html#float" title="builtins.float" class="sphx-glr-backref-module-builtins sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">mesh</span><span class="o">.</span><span class="n">GrowthRateSF</span></a> <span class="o">=</span> <span class="mf">1.85</span>
+<span class="n">mesh</span><span class="o">.</span><span class="n">DefeatureTolerance</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="mf">0.000375</span><span class="p">,</span> <span class="s2">&quot;in&quot;</span><span class="p">)</span>
+
+<span class="n">automatic_method</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">AddAutomaticMethod</span><span class="p">()</span>
+<span class="n">automatic_method</span><span class="o">.</span><span class="n">ScopingMethod</span> <span class="o">=</span> <span class="n">GeometryDefineByType</span><span class="o">.</span><span class="n">Component</span>
+<span class="n">automatic_method</span><span class="o">.</span><span class="n">NamedSelection</span> <span class="o">=</span> <span class="n">Both_Plates_NS</span>
+<span class="n">automatic_method</span><span class="o">.</span><span class="n">Method</span> <span class="o">=</span> <span class="n">MethodType</span><span class="o">.</span><span class="n">AllTriAllTet</span>
+
+<span class="n">sizing</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">AddSizing</span><span class="p">()</span>
+<span class="n">sizing</span><span class="o">.</span><span class="n">ScopingMethod</span> <span class="o">=</span> <span class="n">GeometryDefineByType</span><span class="o">.</span><span class="n">Component</span>
+<span class="n">sizing</span><span class="o">.</span><span class="n">NamedSelection</span> <span class="o">=</span> <span class="n">Fluidlines_NS</span>
+<span class="n">sizing</span><span class="o">.</span><span class="n">ElementSize</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="mf">1e-2</span><span class="p">,</span> <span class="s2">&quot;in&quot;</span><span class="p">)</span>
+<span class="n">sizing</span><span class="o">.</span><span class="n">CaptureCurvature</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">sizing</span><span class="o">.</span><span class="n">CaptureProximity</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">mesh</span><span class="o">.</span><span class="n">GenerateMesh</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Display the mesh</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Activate the mesh for visualization</span>
+<span class="n">app</span><span class="o">.</span><span class="n">Tree</span><span class="o">.</span><span class="n">Activate</span><span class="p">([</span><span class="n">mesh</span><span class="p">])</span>
+
+<span class="c1"># Set the camera to fit the model and export the image</span>
+<span class="n">set_camera_and_display_image</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="n">graphics</span><span class="p">,</span> <span class="n">settings_720p</span><span class="p">,</span> <a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">output_path</span></a><span class="p">,</span> <span class="s2">&quot;mesh.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img src="../../../_images/sphx_glr_cooling_holes_thermal_analysis_002.png" srcset="../../../_images/sphx_glr_cooling_holes_thermal_analysis_002.png" alt="cooling holes thermal analysis" class = "sphx-glr-single-img"/></section>
+<section id="define-analysis">
+<h2>Define analysis<a class="headerlink" href="#define-analysis" title="Link to this heading">#</a></h2>
+<p>Add a Steady State Thermal Analysis</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">steady_state_thermal</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">AddSteadyStateThermalAnalysis</span><span class="p">()</span>
+<span class="n">steady_state_thermal_analysis</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Analyses</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">AnalysisSettings</span>
+
+<span class="c1"># Define the static structural analysis solution</span>
+<span class="n">solution</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Analyses</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">Solution</span>
+</pre></div>
+</div>
+</section>
+<section id="apply-loads-and-boundary-conditions">
+<h2>Apply loads and boundary conditions<a class="headerlink" href="#apply-loads-and-boundary-conditions" title="Link to this heading">#</a></h2>
+<p>Add convection loads, body temperatures, and mass flow rates</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">steady_state_thermal</span><span class="o">.</span><span class="n">Activate</span><span class="p">()</span>
+
+<span class="c1"># Apply convection at the surfaces</span>
+<span class="n">convection_1</span> <span class="o">=</span> <span class="n">steady_state_thermal</span><span class="o">.</span><span class="n">AddConvection</span><span class="p">()</span>
+<span class="n">convection_1</span><span class="o">.</span><span class="n">Location</span> <span class="o">=</span> <span class="n">Top_Surface_Plates_NS</span>
+<span class="n">convection_1</span><span class="o">.</span><span class="n">FilmCoefficient</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="mf">2.9e-4</span><span class="p">,</span> <span class="s2">&quot;BTU sec^-1 in^-1 in^-1 F^-1&quot;</span><span class="p">)</span>
+<span class="n">convection_1</span><span class="o">.</span><span class="n">AmbientTemperature</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="mi">1700</span><span class="p">,</span> <span class="s2">&quot;F&quot;</span><span class="p">)</span>
+
+<span class="n">convection_2</span> <span class="o">=</span> <span class="n">steady_state_thermal</span><span class="o">.</span><span class="n">AddConvection</span><span class="p">()</span>
+<span class="n">convection_2</span><span class="o">.</span><span class="n">Location</span> <span class="o">=</span> <span class="n">Bottom_Surface_Plates_NS</span>
+<span class="n">convection_2</span><span class="o">.</span><span class="n">FilmCoefficient</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="mf">5e-4</span><span class="p">,</span> <span class="s2">&quot;BTU sec^-1 in^-1 in^-1 F^-1&quot;</span><span class="p">)</span>
+<span class="n">convection_2</span><span class="o">.</span><span class="n">AmbientTemperature</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="s2">&quot;F&quot;</span><span class="p">)</span>
+
+<span class="n">convection_3</span> <span class="o">=</span> <span class="n">steady_state_thermal</span><span class="o">.</span><span class="n">AddConvection</span><span class="p">()</span>
+<span class="n">convection_3</span><span class="o">.</span><span class="n">Location</span> <span class="o">=</span> <span class="n">Hole_Cyl_Surface_NS</span>
+<span class="n">convection_3</span><span class="o">.</span><span class="n">FilmCoefficient</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="mf">9.65e-4</span><span class="p">,</span> <span class="s2">&quot;BTU sec^-1 in^-1 in^-1 F^-1&quot;</span><span class="p">)</span>
+<span class="n">convection_3</span><span class="o">.</span><span class="n">AmbientTemperature</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="s2">&quot;F&quot;</span><span class="p">)</span>
+<span class="n">convection_3</span><span class="o">.</span><span class="n">HasFluidFlow</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">convection_3</span><span class="o">.</span><span class="n">DisplayConnectionLines</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">convection_3</span><span class="o">.</span><span class="n">FluidFlowSelection</span> <span class="o">=</span> <span class="n">Fluid_Line1_NS</span>
+
+<span class="c1"># Apply temperature at the line vertices</span>
+<span class="n">temperature_1</span> <span class="o">=</span> <span class="n">steady_state_thermal</span><span class="o">.</span><span class="n">AddTemperature</span><span class="p">()</span>
+<span class="n">temperature_1</span><span class="o">.</span><span class="n">Location</span> <span class="o">=</span> <span class="n">Line1_vertex_NS</span>
+<span class="n">temperature_1</span><span class="o">.</span><span class="n">Magnitude</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="s2">&quot;F&quot;</span><span class="p">)</span>
+
+<span class="n">temperature_2</span> <span class="o">=</span> <span class="n">steady_state_thermal</span><span class="o">.</span><span class="n">AddTemperature</span><span class="p">()</span>
+<span class="n">temperature_2</span><span class="o">.</span><span class="n">Location</span> <span class="o">=</span> <span class="n">Line2_vertex_NS</span>
+<span class="n">temperature_2</span><span class="o">.</span><span class="n">Magnitude</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="s2">&quot;F&quot;</span><span class="p">)</span>
+
+<span class="c1"># Apply mass flow rate at the fluid lines</span>
+<span class="n">mass_flow_rate_1</span> <span class="o">=</span> <span class="n">steady_state_thermal</span><span class="o">.</span><span class="n">AddMassFlowRate</span><span class="p">()</span>
+<span class="n">mass_flow_rate_1</span><span class="o">.</span><span class="n">Location</span> <span class="o">=</span> <span class="n">Fluid_Line1_NS</span>
+<span class="n">mass_flow_rate_1</span><span class="o">.</span><span class="n">Magnitude</span><span class="o">.</span><span class="n">Output</span><span class="o">.</span><span class="n">SetDiscreteValue</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Quantity</span><span class="p">(</span><span class="mf">9.9999e-4</span><span class="p">,</span> <span class="s2">&quot;lbm sec^-1&quot;</span><span class="p">))</span>
+
+<span class="n">mass_flow_rate_2</span> <span class="o">=</span> <span class="n">steady_state_thermal</span><span class="o">.</span><span class="n">AddMassFlowRate</span><span class="p">()</span>
+<span class="n">mass_flow_rate_2</span><span class="o">.</span><span class="n">Location</span> <span class="o">=</span> <span class="n">Fluid_Line2_NS</span>
+<span class="n">mass_flow_rate_2</span><span class="o">.</span><span class="n">Magnitude</span><span class="o">.</span><span class="n">Output</span><span class="o">.</span><span class="n">SetDiscreteValue</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Quantity</span><span class="p">(</span><span class="mf">9.9999e-4</span><span class="p">,</span> <span class="s2">&quot;lbm sec^-1&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="insert-command-snippet-to-create-surface-effect-elements-at-the-hole">
+<h2>Insert command snippet to create surface effect elements at the hole<a class="headerlink" href="#insert-command-snippet-to-create-surface-effect-elements-at-the-hole" title="Link to this heading">#</a></h2>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">command_snippet</span> <span class="o">=</span> <span class="n">steady_state_thermal</span><span class="o">.</span><span class="n">AddCommandSnippet</span><span class="p">()</span>
+
+<span class="n">command_snippet</span><span class="o">.</span><span class="n">Input</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">FINISH</span>
+
+<span class="s2">/prep7</span>
+<span class="s2">cmsel,s,HoleElements        !Select elements that represent where the hole is</span>
+<span class="s2">nsle,s                                      !Select the nodes for these elements</span>
+<span class="s2">cm,holenodes,node           !Store the nodes for these elements as a component</span>
+
+<span class="s2">esel,inve                       !Switch selection to inverse of these elements</span>
+<span class="s2">esel,r,ename,,291       !Reselect just the solid elements</span>
+<span class="s2">nsle,s                                  !Select the nodes for these elements</span>
+<span class="s2">cmsel,r,holenodes       !reselect nodes from the holenodes component</span>
+<span class="s2">                        !results in nodes at the interfaces being selected</span>
+
+<span class="s2">/com, now nodes at the interface are selected and elements</span>
+<span class="s2">/com, (minus the elements where the hole would be) are selected</span>
+<span class="s2">/com, Create a new surface effect element type</span>
+
+<span class="s2">*get,maxetyp,ETYP,0,NUM,MAX</span>
+<span class="s2">newsurftyp=maxetyp+1</span>
+<span class="s2">ET,newsurftyp,SURF152</span>
+<span class="s2">mat,newsurftyp</span>
+<span class="s2">type,newsurftyp</span>
+<span class="s2">real,newsurftyp</span>
+<span class="s2">esurf,all</span>
+
+<span class="s2">KEYOPT,newsurftyp,5,1</span>
+<span class="s2">KEYOPT,newsurftyp,8,2</span>
+
+<span class="s2">/com, Now need to attach these new surface effect elements to the fluid 116 elements</span>
+<span class="s2">/com, that pass through where the hole will be store the element centroids of the new</span>
+<span class="s2">/com, surface effect elements using mask arrays. First get a list of the new surface</span>
+<span class="s2">/com, effect elements and the mask array</span>
+<span class="s2">esel,s,type,,newsurftyp</span>
+<span class="s2">*del,elemnums,,nopr</span>
+<span class="s2">*vget,elemnums,elem,,elist</span>
+<span class="s2">*del,elemmask,,nopr</span>
+<span class="s2">*vget,elemmask,elem,,esel</span>
+
+<span class="s2">/com, Get count of new surface effect elements and maxelement number for loops</span>
+<span class="s2">*get,surfelemcount,elem,,count</span>
+<span class="s2">*get,maxelem,elem,,num,maxd</span>
+
+<span class="s2">/com, store array of all centroids in model</span>
+<span class="s2">*del,elemcent,,nopr</span>
+<span class="s2">*dim,elemcent,array,maxelem,3</span>
+<span class="s2">*vget,elemcent(1,1),elem,,cent,x</span>
+<span class="s2">*vget,elemcent(1,2),elem,,cent,y</span>
+<span class="s2">*vget,elemcent(1,3),elem,,cent,z</span>
+
+<span class="s2">/com, Compress down to centroids of new surface effect elements</span>
+<span class="s2">*del,surfelemcent,,nopr</span>
+<span class="s2">*dim,surfelemcent,array,surfelemcount,3</span>
+<span class="s2">*vmask,elemmask</span>
+<span class="s2">*vfun,surfelemcent(1,1),comp,elemcent(1,1)</span>
+<span class="s2">*vmask,elemmask</span>
+<span class="s2">*vfun,surfelemcent(1,2),comp,elemcent(1,2)</span>
+<span class="s2">*vmask,elemmask</span>
+<span class="s2">*vfun,surfelemcent(1,3),comp,elemcent(1,3)</span>
+<span class="s2">*del,elemcent,,nopr</span>
+<span class="s2">*del,elemmask,,nopr</span>
+
+<span class="s2">cmsel,s,holefluidnodes</span>
+
+<span class="s2">/com, Loop through each surface effect element and find the closest fluid node</span>
+<span class="s2">/com, then assign it as the extra node for that surface effect element</span>
+<span class="s2">totalarea=0</span>
+<span class="s2">*do,eliter,1,surfelemcount,1</span>
+<span class="s2">    closestnode=node(surfelemcent(eliter,1),surfelemcent(eliter,2),surfelemcent(eliter,3))</span>
+<span class="s2">    !For SURF152 elements with midside nodes (KEYOPT4=0)</span>
+<span class="s2">    emodif,elemnums(eliter),-9,closestnode</span>
+<span class="s2">    *get,elemarea,elem,elemnums(eliter),area</span>
+<span class="s2">    totalarea=totalarea+elemarea</span>
+<span class="s2">*enddo</span>
+
+<span class="s2">/com, Add convection boundary conditions to new surface effect elements.</span>
+<span class="s2">/com, Use expected hole surface area ratioed to actual surface effect element area</span>
+<span class="s2">/com, to dial in proper heat transfer</span>
+<span class="s2">/solu</span>
+<span class="s2">alls</span>
+<span class="s2">esel,s,type,,newsurftyp</span>
+<span class="s2">ApplyHTC = 9.65e-4*778.2*12         !Convert to proper units, in BIN so convert BTU to in-lbf</span>
+
+<span class="s2">/com, Calculate expected hole area (here it is calculated as a straight hole with known</span>
+<span class="s2">/com, diameter and length). Could also just hardcode in surface area of the hole</span>
+<span class="s2">HoleDia = 0.05</span>
+<span class="s2">HoleLength = 0.05</span>
+<span class="s2">HoleArea = 3.141592654*HoleDia*HoleLength</span>
+
+<span class="s2">/com, Adjust HTC by ratio of desired area vs actual surface effect area</span>
+<span class="s2">AdjustHTC = ApplyHTC*HoleArea/totalarea</span>
+<span class="s2">sf,all,conv,AdjustHTC,900</span>
+
+<span class="s2">alls &quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="insert-results">
+<h2>Insert results<a class="headerlink" href="#insert-results" title="Link to this heading">#</a></h2>
+<p>Insert temperature results</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">temp_plot_both_plates</span> <span class="o">=</span> <span class="n">solution</span><span class="o">.</span><span class="n">AddTemperature</span><span class="p">()</span>
+<span class="n">temp_plot_both_plates</span><span class="o">.</span><span class="n">Location</span> <span class="o">=</span> <span class="n">Both_Plates_NS</span>
+<span class="n">temp_plot_fluidlines</span> <span class="o">=</span> <span class="n">solution</span><span class="o">.</span><span class="n">AddTemperature</span><span class="p">()</span>
+<span class="n">temp_plot_fluidlines</span><span class="o">.</span><span class="n">Location</span> <span class="o">=</span> <span class="n">Fluidlines_NS</span>
+</pre></div>
+</div>
+</section>
+<section id="solve">
+<h2>Solve<a class="headerlink" href="#solve" title="Link to this heading">#</a></h2>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">solution</span><span class="o">.</span><span class="n">Solve</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">STAT_SS</span> <span class="o">=</span> <span class="n">solution</span><span class="o">.</span><span class="n">Status</span>
+</pre></div>
+</div>
+</section>
+<section id="postprocessing">
+<h2>Postprocessing<a class="headerlink" href="#postprocessing" title="Link to this heading">#</a></h2>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">camera</span><span class="o">.</span><span class="n">SetFit</span><span class="p">()</span>
+<span class="n">camera</span><span class="o">.</span><span class="n">SceneHeight</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="s2">&quot;in&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Display the temperature plots for both plates</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Activate the temperature results for both plates</span>
+<span class="n">app</span><span class="o">.</span><span class="n">Tree</span><span class="o">.</span><span class="n">Activate</span><span class="p">([</span><span class="n">temp_plot_both_plates</span><span class="p">])</span>
+<span class="c1"># Set the extra model display to no wireframe</span>
+<span class="n">graphics</span><span class="o">.</span><span class="n">ViewOptions</span><span class="o">.</span><span class="n">ResultPreference</span><span class="o">.</span><span class="n">ExtraModelDisplay</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Ansys</span><span class="o">.</span><span class="n">Mechanical</span><span class="o">.</span><span class="n">DataModel</span><span class="o">.</span><span class="n">MechanicalEnums</span><span class="o">.</span><span class="n">Graphics</span><span class="o">.</span><span class="n">ExtraModelDisplay</span><span class="o">.</span><span class="n">NoWireframe</span>
+<span class="p">)</span>
+<span class="c1"># Set the camera to fit the model and export the image</span>
+<a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">image_path</span></a> <span class="o">=</span> <a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">output_path</span></a> <span class="o">/</span> <span class="s2">&quot;temp_plot_both_plates.png&quot;</span>
+<span class="n">graphics</span><span class="o">.</span><span class="n">ExportImage</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">image_path</span></a><span class="p">),</span> <span class="n">image_export_format</span><span class="p">,</span> <span class="n">settings_720p</span><span class="p">)</span>
+<span class="c1"># Display the exported image</span>
+<span class="n">display_image</span><span class="p">(</span><a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">image_path</span></a><span class="p">)</span>
+</pre></div>
+</div>
+<img src="../../../_images/sphx_glr_cooling_holes_thermal_analysis_003.png" srcset="../../../_images/sphx_glr_cooling_holes_thermal_analysis_003.png" alt="cooling holes thermal analysis" class = "sphx-glr-single-img"/><p>Display the temperature plots for fluid lines</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Activate the temperature results for fluid lines</span>
+<span class="n">app</span><span class="o">.</span><span class="n">Tree</span><span class="o">.</span><span class="n">Activate</span><span class="p">([</span><span class="n">temp_plot_fluidlines</span><span class="p">])</span>
+<span class="c1"># Set the camera to fit the model and export the image</span>
+<span class="c1"># Set the camera to fit the model and export the image</span>
+<a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">image_path</span></a> <span class="o">=</span> <a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">output_path</span></a> <span class="o">/</span> <span class="s2">&quot;temp_plot_fluidlines.png&quot;</span>
+<span class="n">graphics</span><span class="o">.</span><span class="n">ExportImage</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">image_path</span></a><span class="p">),</span> <span class="n">image_export_format</span><span class="p">,</span> <span class="n">settings_720p</span><span class="p">)</span>
+<span class="c1"># Display the exported image</span>
+<span class="n">display_image</span><span class="p">(</span><a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">image_path</span></a><span class="p">)</span>
+</pre></div>
+</div>
+<img src="../../../_images/sphx_glr_cooling_holes_thermal_analysis_004.png" srcset="../../../_images/sphx_glr_cooling_holes_thermal_analysis_004.png" alt="cooling holes thermal analysis" class = "sphx-glr-single-img"/></section>
+<section id="clean-up-the-project">
+<h2>Clean up the project<a class="headerlink" href="#clean-up-the-project" title="Link to this heading">#</a></h2>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Save the project</span>
+<a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">mechdat_file</span></a> <span class="o">=</span> <a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">output_path</span></a> <span class="o">/</span> <span class="s2">&quot;cooling_holes_model.mechdat&quot;</span>
+<span class="n">app</span><span class="o">.</span><span class="n">save_as</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><a href="https://docs.python.org/3/library/pathlib.html#pathlib.PosixPath" title="pathlib.PosixPath" class="sphx-glr-backref-module-pathlib sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">mechdat_file</span></a><span class="p">),</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Close the app</span>
+<span class="n">app</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="c1"># Delete the example file</span>
+<span class="n">delete_downloads</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 31.066 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-examples-gallery-examples-01-basic-cooling-holes-thermal-analysis-py">
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../../../_downloads/e5a5e658a84fa0432f6a781b6ed4b007/cooling_holes_thermal_analysis.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">cooling_holes_thermal_analysis.ipynb</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../../../_downloads/f46615ea77ed83362a8b728251170879/cooling_holes_thermal_analysis.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">cooling_holes_thermal_analysis.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-zip docutils container">
+<p><a class="reference download internal" download="" href="../../../_downloads/39e99453cd8fdb2301dbf179df5aec56/cooling_holes_thermal_analysis.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">zipped:</span> <span class="pre">cooling_holes_thermal_analysis.zip</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-the-necessary-libraries">Import the necessary libraries</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#initialize-the-embedded-application">Initialize the embedded application</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-functions-to-set-camera-and-display-images">Create functions to set camera and display images</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#download-the-required-files">Download the required files</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configure-graphics-for-image-export">Configure graphics for image export</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#define-python-variables">Define Python variables</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-the-geometry">Import the geometry</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#define-and-select-bin-units-system">Define and select BIN units system</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assign-materials">Assign materials</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assign-geometrical-and-material-properties">Assign geometrical and material properties</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#define-coordinate-system">Define coordinate system</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#define-named-selections">Define named selections</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#define-mesh-controls-and-generate-the-mesh">Define mesh controls and generate the mesh</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#define-analysis">Define analysis</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#apply-loads-and-boundary-conditions">Apply loads and boundary conditions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#insert-command-snippet-to-create-surface-effect-elements-at-the-hole">Insert command snippet to create surface effect elements at the hole</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#insert-results">Insert results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solve">Solve</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#postprocessing">Postprocessing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clean-up-the-project">Clean up the project</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+
+  
+  <nav class="tocsection editthispage" aria-label="Edit this page">
+    <a href="https://github.com/pyansys/pymechanical/edit/main/doc/source/examples/gallery_examples/01_basic/cooling_holes_thermal_analysis.rst" rel="noopener noreferrer">
+      <i class="fa-solid fa-pencil" aria-hidden="true"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </nav>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+
+  <!-- Include desired assets -->
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.7/require.min.js"></script>
+
+<script>
+// Passing the search options to the search.js file
+const SEARCH_OPTIONS = JSON.parse('{"keys": ["title", "text", "objectID"], "limit": 10, "threshold": 0.2}');
+const SEARCH_FILE = "../../../_static/search.json";
+const ADVANCE_SEARCH_PATH = "../../../search.html";
+const EXTRA_SOURCES = JSON.parse('""');
+</script>
+
+
+<script src="../../../_static/js/search.js"></script>
+
+  
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright (c) 2026 ANSYS, Inc. All rights reserved.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<!--
+  Theme Version Footer
+  Displays the Sphinx theme version and the last updated date.
+  Accessibility and semantic improvements included.
+-->
+<footer class="theme-version" aria-label="Theme version and last update">
+  <span>
+    
+      Built with the
+      <a href="https://sphinxdocs.ansys.com/version/stable/index.html" target="_blank" rel="noopener noreferrer">
+        Ansys Sphinx Theme
+      </a>
+      1.7.0.
+    
+  </span>
+  <br />
+  <span>Last updated on <time id="ast_build_date"></time></span>
+</footer>
+<script>
+  // Set the last updated date in a readable format
+  (function() {
+    var options = { day: "numeric", month: "long", year: "numeric" };
+    var ast_lastModifiedDate = new Date(document.lastModified);
+    var ast_build_date = ast_lastModifiedDate.toLocaleDateString("en-US", options);
+    var dateElem = document.getElementById("ast_build_date");
+    if (dateElem) {
+      dateElem.textContent = ast_build_date;
+    }
+  })();
+</script></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

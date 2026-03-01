@@ -1,0 +1,6 @@
+﻿find\_mechanical
+================
+
+.. currentmodule:: ansys.tools.common.path
+
+.. autofunction:: find_mechanical

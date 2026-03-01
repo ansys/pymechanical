@@ -1,0 +1,383 @@
+
+
+
+
+
+
+:class:`Helpers`
+================
+
+
+.. py:class:: ansys.mechanical.core.embedding.helpers.Helpers(app)
+
+   
+   Helper utilities for Mechanical embedding application.
+
+
+   :Parameters:
+
+       **app** : :obj:`App`
+           The Mechanical embedding application instance.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   .. rubric:: Examples
+
+   >>> from ansys.mechanical.core import App
+   >>> app = App()
+   >>> helpers = app.helpers
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: Helpers
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~import_geometry`
+            - Import geometry file into the current Mechanical model.
+          * - :py:attr:`~import_materials`
+            - Import materials from a specified material database file.
+          * - :py:attr:`~export_image`
+            - Export an image of the specified object.
+          * - :py:attr:`~export_animation`
+            - Export an animation of the specified object.
+          * - :py:attr:`~display_image`
+            - Display an image using matplotlib.
+
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~Ansys`
+            - 
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.mechanical.core.embedding.helpers import Helpers
+
+
+Attribute detail
+----------------
+
+.. py:attribute:: Ansys
+
+
+
+Method detail
+-------------
+
+.. py:method:: import_geometry(file_path: str, process_named_selections: bool = False, named_selection_key: str = 'NS', process_material_properties: bool = False, process_coordinate_systems: bool = False, analysis_type: str = '3d')
+
+   
+   Import geometry file into the current Mechanical model.
+
+
+   :Parameters:
+
+       **file_path** : :class:`python:str`
+           The path to the geometry file to be imported.
+
+       **process_named_selections** : :ref:`bool <python:bltin-boolean-values>`, :obj:`optional`
+           Whether to process named selections during import. Default is False.
+
+       **named_selection_key** : :class:`python:str`, :obj:`optional`
+           Named selection key for filtering. Default is "NS".
+
+       **process_material_properties** : :ref:`bool <python:bltin-boolean-values>`, :obj:`optional`
+           Whether to process material properties during import. Default is False.
+
+       **process_coordinate_systems** : :ref:`bool <python:bltin-boolean-values>`, :obj:`optional`
+           Whether to process coordinate systems during import. Default is False.
+
+       **analysis_type** : :class:`python:str`, :obj:`optional`
+           The type of analysis for the geometry import. Default is "3d".
+           Options are "2d" or "3d".
+
+
+
+   :Returns:
+
+       :obj:`Ansys.ACT.Automation.Mechanical.GeometryImport`
+           The geometry import object.
+
+
+
+
+
+
+
+
+
+
+   .. rubric:: Examples
+
+   >>> from ansys.mechanical.core import App
+   >>> app = App()
+   >>> app.helpers.import_geometry("C:\\path\\to\\geometry.pmdb")
+
+   >>> # Import without processing named selections
+   >>> app.helpers.import_geometry(
+   ...     "C:\\path\\to\\geometry.step", process_named_selections=False
+   ... )
+
+   >>> # Import with all options specified
+   >>> app.helpers.import_geometry(
+   ...     "C:\\path\\to\\geometry.pmdb",
+   ...     process_named_selections=True,
+   ...     named_selection_key="",
+   ...     process_material_properties=True,
+   ...     process_coordinate_systems=True,
+   ... )
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: import_materials(file_path: str)
+
+   
+   Import materials from a specified material database file.
+
+
+   :Parameters:
+
+       **file_path** : :class:`python:str`
+           The path to the material database file to be imported.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   .. rubric:: Examples
+
+   >>> from ansys.mechanical.core import App
+   >>> app.helpers.import_materials("C:\\path\\to\\materials.xml")
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: export_image(obj=None, file_path: str | None = None, width: int = 1920, height: int = 1080, background: str = 'white', resolution: str = 'enhanced', current_graphics_display: bool = False, image_format: str = 'png')
+
+   
+   Export an image of the specified object.
+
+
+   :Parameters:
+
+       **obj** : :obj:`optional`
+           The object to activate and export. If None, exports the current graphics display.
+           Can be any Mechanical object such as Geometry, Mesh, or Results.
+
+       **file_path** : :class:`python:str`, :obj:`optional`
+           The path where the image will be saved. If None, defaults to "mechanical_export.png"
+           in the project directory.
+
+       **width** : :class:`python:int`, :obj:`optional`
+           The width of the exported image in pixels. Default is 1920.
+
+       **height** : :class:`python:int`, :obj:`optional`
+           The height of the exported image in pixels. Default is 1080.
+
+       **background** : :class:`python:str`, :obj:`optional`
+           Background type for the exported image. Options are:
+           - "white": White background
+           - "appearance": Use graphics appearance setting
+           Default is "white".
+
+       **resolution** : :class:`python:str`, :obj:`optional`
+           Resolution type for the exported image. Options are:
+           - "normal": Normal resolution (1:1)
+           - "enhanced": Enhanced resolution (2:1) - Default
+           - "high": High resolution (4:1)
+           Default is "enhanced".
+
+       **current_graphics_display** : :ref:`bool <python:bltin-boolean-values>`, :obj:`optional`
+           Whether to use current graphics display. Default is False.
+
+       **image_format** : :class:`python:str`, :obj:`optional`
+           Image format for export. Options are:
+           - "png": PNG image format - Default
+           - "jpg": JPG image format
+           - "bmp": BMP image format
+           - "tif": TIFF image format
+           - "eps": EPS image format
+           Default is "png".
+
+
+
+
+
+
+
+
+
+
+
+
+
+   .. rubric:: Examples
+
+   >>> from ansys.mechanical.core import App
+   >>> app = App()
+   >>> # Export the geometry
+   >>> app.helpers.export_image(app.Model.Geometry, "C:\\path\\to\\geometry.png")
+
+   >>> # Export a specific result with custom settings
+   >>> result = app.Model.Analyses[0].Solution.Children[0]
+   >>> app.helpers.export_image(
+   ...     result,
+   ...     "C:\\path\\to\\result.jpg",
+   ...     background="appearance",
+   ...     resolution="high",
+   ...     image_format="jpg",
+   ... )
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: export_animation(obj=None, file_path: str | None = None, width: int = 1280, height: int = 720, animation_format: str = 'gif')
+
+   
+   Export an animation of the specified object.
+
+
+   :Parameters:
+
+       **obj** : :obj:`optional`
+           The object to activate and export animation. If None, exports animation of the
+           current graphics display. Can be any Mechanical object that supports animation
+           such as results with multiple time steps or modal analysis results.
+
+       **file_path** : :class:`python:str`, :obj:`optional`
+           The path where the animation will be saved. If None, raises ValueError.
+           If only a filename is provided, saves to current working directory.
+
+       **width** : :class:`python:int`, :obj:`optional`
+           The width of the exported animation in pixels. Default is 1280.
+
+       **height** : :class:`python:int`, :obj:`optional`
+           The height of the exported animation in pixels. Default is 720.
+
+       **animation_format** : :class:`python:str`, :obj:`optional`
+           Animation format for export. Options are:
+           - "gif": GIF animation format - Default
+           - "avi": AVI video format
+           - "mp4": MP4 video format
+           - "wmv": WMV video format
+           Default is "gif".
+
+
+
+
+
+
+
+
+
+
+
+
+
+   .. rubric:: Examples
+
+   >>> from ansys.mechanical.core import App
+   >>> app = App()
+   >>> # Export animation of a result
+   >>> result = app.Model.Analyses[0].Solution.Children[0]
+   >>> app.helpers.export_animation(result, "result_animation.gif")
+
+   >>> # Export as MP4 with custom resolution
+   >>> app.helpers.export_animation(
+   ...     result, "result_animation.mp4", width=1920, height=1080, animation_format="mp4"
+   ... )
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: display_image(image_path: str, figsize: tuple = (16, 9), axis: str = 'off')
+
+   
+   Display an image using matplotlib.
+
+
+   :Parameters:
+
+       **image_path** : :class:`python:str`
+           The path to the image file to display.
+
+       **figsize** : :class:`python:tuple`, :obj:`optional`
+           The size of the figure in inches (width, height). Default is (16, 9).
+
+       **axis** : :class:`python:str`, :obj:`optional`
+           The axis visibility setting ('on' or 'off'). Default is "off".
+
+
+
+
+
+
+
+
+
+
+
+
+
+   .. rubric:: Examples
+
+   >>> from ansys.mechanical.core import App
+   >>> app = App()
+   >>> app.helpers.export_image(app.Model.Geometry, "geometry.png")
+   >>> app.helpers.display_image("geometry.png")
+
+   >>> # Display with custom figure size
+   >>> app.helpers.display_image("result.png", figsize=(10, 6))
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+

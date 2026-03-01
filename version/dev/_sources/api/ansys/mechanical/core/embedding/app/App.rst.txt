@@ -1,0 +1,1084 @@
+
+
+
+
+
+
+:class:`App`
+============
+
+
+.. py:class:: ansys.mechanical.core.embedding.app.App(db_file: Optional[str] = None, private_appdata: bool = False, **kwargs: Any)
+
+   
+   Mechanical embedding Application.
+
+
+   :Parameters:
+
+       **db_file** : :class:`python:str`, :obj:`optional`
+           Path to a mechanical database file (.mechdat or .mechdb).
+
+       **version** : :class:`python:int`, :obj:`optional`
+           Version number of the Mechanical application.
+
+       **private_appdata** : :ref:`bool <python:bltin-boolean-values>`, :obj:`optional`
+           Setting for a temporary AppData directory. Default is False.
+           Enables running parallel instances of Mechanical.
+
+       **globals** : :class:`python:dict`, :obj:`optional`
+           Global variables to be updated. For example, globals().
+           Replaces "app.update_globals(globals())".
+
+       **config** : :obj:`AddinConfiguration`, :obj:`optional`
+           Configuration for addins. By default "Mechanical" is used and ACT Addins are disabled.
+
+       **copy_profile** : :ref:`bool <python:bltin-boolean-values>`, :obj:`optional`
+           Whether to copy the user profile when private_appdata is True. Default is True.
+
+       **enable_logging** : :ref:`bool <python:bltin-boolean-values>`, :obj:`optional`
+           Whether to enable logging. Default is True.
+
+       **log_level** : :class:`python:str`, :obj:`optional`
+           The logging level for the application. Default is "WARNING".
+
+       **pep8** : :ref:`bool <python:bltin-boolean-values>`, :obj:`optional`
+           Whether to enable PEP 8 style binding for the assembly. Default is False.
+
+       **readonly** : :ref:`bool <python:bltin-boolean-values>`, :obj:`optional`
+           Whether to open the application in read-only mode. Default is False.
+
+       **feature_flags** : :class:`python:list`, :obj:`optional`
+           List of feature flag names to enable. Default is [].
+           Available flags include: 'ThermalShells', 'MultistageHarmonic', 'CPython'.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   .. rubric:: Examples
+
+   Create App with Mechanical project file and version:
+
+   >>> from ansys.mechanical.core import App
+   >>> app = App(db_file="path/to/file.mechdat", version=252)
+
+   Disable copying the user profile when private appdata is enabled
+
+   >>> app = App(private_appdata=True, copy_profile=False)
+
+   Update the global variables with globals
+
+   >>> app = App(globals=globals())
+
+   Create App with "Mechanical" configuration and no ACT Addins
+
+   >>> from ansys.mechanical.core.embedding import AddinConfiguration
+   >>> from ansys.mechanical.core import App
+   >>> config = AddinConfiguration("Mechanical")
+   >>> config.no_act_addins = True
+   >>> app = App(config=config)
+
+   Set log level
+
+   >>> app = App(log_level="INFO")
+
+   ... INFO -  -  app - log_info - Starting Mechanical Application
+
+   Create App in read-only mode
+
+   >>> app = App(readonly=True)
+
+   Create App with feature flags enabled
+
+   >>> app = App(feature_flags=["CPython", "ThermalShells"])
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+.. py:currentmodule:: App
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~wait_with_dialog`
+            - Block python while an interactive pop-up is displayed.
+          * - :py:attr:`~open`
+            - Open the db file.
+          * - :py:attr:`~save`
+            - Save the project.
+          * - :py:attr:`~save_as`
+            - Save the project as a new file.
+          * - :py:attr:`~launch_gui`
+            - Launch the GUI.
+          * - :py:attr:`~new`
+            - Clear to a new application.
+          * - :py:attr:`~close`
+            - Close the active project.
+          * - :py:attr:`~exit`
+            - Exit the application.
+          * - :py:attr:`~execute_script`
+            - Execute the given script with the internal IronPython engine.
+          * - :py:attr:`~execute_script_from_file`
+            - Execute the given script from file with the internal IronPython engine.
+          * - :py:attr:`~plotter`
+            - Return ``ansys.tools.visualization_interface.Plotter`` object.
+          * - :py:attr:`~plot`
+            - Visualize the model in 3d.
+          * - :py:attr:`~update_globals`
+            - Update global variables.
+          * - :py:attr:`~print_tree`
+            - Print the hierarchical tree representation of the Mechanical project structure.
+          * - :py:attr:`~log_debug`
+            - Log the debug message.
+          * - :py:attr:`~log_info`
+            - Log the info message.
+          * - :py:attr:`~log_warning`
+            - Log the warning message.
+          * - :py:attr:`~log_error`
+            - Log the error message.
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~interactive`
+            - Get whether the application is running in interactive mode.
+          * - :py:attr:`~poster`
+            - Returns an instance of Poster.
+          * - :py:attr:`~DataModel`
+            - Return the DataModel.
+          * - :py:attr:`~ExtAPI`
+            - Return the ExtAPI object.
+          * - :py:attr:`~Tree`
+            - Return the Tree object.
+          * - :py:attr:`~Model`
+            - Return the Model object.
+          * - :py:attr:`~Graphics`
+            - Return the Graphics object.
+          * - :py:attr:`~readonly`
+            - Return whether the Mechanical object is read-only.
+          * - :py:attr:`~version`
+            - Returns the version of the app.
+          * - :py:attr:`~project_directory`
+            - Returns the current project directory.
+          * - :py:attr:`~messages`
+            - Lazy-load the MessageManager.
+          * - :py:attr:`~license_manager`
+            - Return license manager.
+
+
+
+
+   .. tab-item:: Special methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~__repr__`
+            - Get the product info.
+          * - :py:attr:`~__enter__`
+            - Enter the scope.
+          * - :py:attr:`~__exit__`
+            - Exit the scope.
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.mechanical.core.embedding.app import App
+
+Property detail
+---------------
+
+.. py:property:: interactive
+   :type: bool
+
+
+   
+   Get whether the application is running in interactive mode.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: poster
+   :type: ansys.mechanical.core.embedding.poster.Poster
+
+
+   
+   Returns an instance of Poster.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: DataModel
+   :type: Ansys.Mechanical.DataModel.Interfaces.DataModelObject
+
+
+   
+   Return the DataModel.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: ExtAPI
+   :type: Ansys.ACT.Interfaces.Mechanical.IMechanicalExtAPI
+
+
+   
+   Return the ExtAPI object.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: Tree
+   :type: Ansys.ACT.Automation.Mechanical.Tree
+
+
+   
+   Return the Tree object.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: Model
+   :type: Ansys.ACT.Automation.Mechanical.Model
+
+
+   
+   Return the Model object.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: Graphics
+   :type: Ansys.ACT.Common.Graphics.MechanicalGraphicsWrapper
+
+
+   
+   Return the Graphics object.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: readonly
+
+   
+   Return whether the Mechanical object is read-only.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: version
+
+   
+   Returns the version of the app.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: project_directory
+
+   
+   Returns the current project directory.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: messages
+
+   
+   Lazy-load the MessageManager.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: license_manager
+
+   
+   Return license manager.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+Method detail
+-------------
+
+.. py:method:: __repr__()
+
+   
+   Get the product info.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: __enter__()
+
+   
+   Enter the scope.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: __exit__(exc_type, exc_val, exc_tb)
+
+   
+   Exit the scope.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: wait_with_dialog()
+
+   
+   Block python while an interactive pop-up is displayed.
+
+   While that pop-up is displayed, Mechanical's main thread will
+   not be blocked.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: open(db_file, remove_lock=False)
+
+   
+   Open the db file.
+
+
+   :Parameters:
+
+       **db_file** : :class:`python:str`
+           Path to a Mechanical database file (.mechdat or .mechdb).
+
+       **remove_lock** : :ref:`bool <python:bltin-boolean-values>`, :obj:`optional`
+           Whether or not to remove the lock file if it exists before opening the project file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: save(path=None)
+
+   
+   Save the project.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: save_as(path: str, overwrite: bool = False, remove_lock: bool = False)
+
+   
+   Save the project as a new file.
+
+   If the `overwrite` flag is enabled, the current saved file is replaced with the new file.
+
+   :Parameters:
+
+       **path** : :class:`python:str`
+           The path where the file needs to be saved.
+
+       **overwrite** : :ref:`bool <python:bltin-boolean-values>`, :obj:`optional`
+           Whether the file should be overwritten if it already exists (default is False).
+
+       **remove_lock** : :ref:`bool <python:bltin-boolean-values>`, :obj:`optional`
+           Whether to remove the lock file if it exists before saving the project file.
+
+
+
+
+
+
+
+   :Raises:
+
+       :obj:`Exception`
+           If the file already exists at the specified path and `overwrite` is False.
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: launch_gui(delete_tmp_on_close: bool = True, dry_run: bool = False)
+
+   
+   Launch the GUI.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: new()
+
+   
+   Clear to a new application.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: close()
+
+   
+   Close the active project.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: exit()
+
+   
+   Exit the application.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: execute_script(script: str) -> Any
+
+   
+   Execute the given script with the internal IronPython engine.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: execute_script_from_file(file_path=None)
+
+   
+   Execute the given script from file with the internal IronPython engine.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: plotter(obj=None) -> Optional[Any]
+
+   
+   Return ``ansys.tools.visualization_interface.Plotter`` object.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: plot(obj=None) -> None
+
+   
+   Visualize the model in 3d.
+
+   Requires installation using the graphics option. E.g.
+   pip install ansys-mechanical-core[graphics]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   .. rubric:: Examples
+
+   >>> from ansys.mechanical.core import App
+   >>> app = App()
+   >>> app.open("path/to/file.mechdat")
+   >>> app.plot()
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: update_globals(globals_dict: Dict[str, Any], enums: bool = True) -> None
+
+   
+   Update global variables.
+
+   When scripting inside Mechanical, the Mechanical UI automatically
+   sets global variables in Python. PyMechanical cannot do that automatically,
+   but this method can be used.
+
+   By default, all enums will be imported too. To avoid including enums, set
+   the `enums` argument to False.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   .. rubric:: Examples
+
+   >>> from ansys.mechanical.core import App
+   >>> app = App()
+   >>> app.update_globals(globals())
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: print_tree(node=None, max_lines=80, lines_count=0, indentation='')
+
+   
+   Print the hierarchical tree representation of the Mechanical project structure.
+
+
+   :Parameters:
+
+       **node: DataModel object, optional**
+           The starting object of the tree.
+
+       **max_lines: int, optional**
+           The maximum number of lines to print. Default is 80. If set to -1, no limit is applied.
+
+
+
+
+
+
+
+   :Raises:
+
+       :obj:`AttributeError`
+           If the node does not have the required attributes.
+
+
+
+
+
+
+   .. rubric:: Examples
+
+   >>> from ansys.mechanical.core import App
+   >>> app = App(globals=globals())
+   >>> app.print_tree()
+   ... ├── Project
+   ... |  ├── Model
+   ... |  |  ├── Geometry Imports (⚡︎)
+   ... |  |  ├── Geometry (?)
+   ... |  |  ├── Materials (✓)
+   ... |  |  ├── Coordinate Systems (✓)
+   ... |  |  |  ├── Global Coordinate System (✓)
+   ... |  |  ├── Remote Points (✓)
+   ... |  |  ├── Mesh (?)
+
+   >>> app.print_tree(Model, 3)
+   ... ├── Model
+   ... |  ├── Geometry Imports (⚡︎)
+   ... |  ├── Geometry (?)
+   ... ... truncating after 3 lines
+
+   >>> app.print_tree(max_lines=2)
+   ... ├── Project
+   ... |  ├── Model
+   ... ... truncating after 2 lines
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: log_debug(message)
+
+   
+   Log the debug message.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: log_info(message)
+
+   
+   Log the info message.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: log_warning(message)
+
+   
+   Log the warning message.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: log_error(message)
+
+   
+   Log the error message.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+

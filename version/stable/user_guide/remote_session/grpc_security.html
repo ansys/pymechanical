@@ -1,0 +1,978 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Secure gRPC connections &#8212; PyMechanical</title>
+  
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/ansys-sphinx-theme.css?v=9e79609d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/ansys-sphinx-theme.css?v=9e79609d" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://www.nerdfonts.com/assets/css/webfont.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+
+  <!-- Include desired assets -->
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  
+
+  
+    <link href="../../_static/css/breadcrumbs.css" rel="stylesheet" />
+  
+    <script src="../../_static/documentation_options.js?v=3e3a806a"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/thebelab-helper.js"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=49e1bf35"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/remote_session/grpc_security';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://mechanical.docs.pyansys.com/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '0.12';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+    <link rel="icon" href="../../_static/ansys-favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Create a pool of Mechanical servers" href="pool.html" />
+    <link rel="prev" title="Initial setup for launching a Mechanical session on the local machine" href="server-launcher.html" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.12.2" />
+  <meta property="og:site_name" content="PyAnsys" />
+  <meta name="physics" content="Structures" />
+  <meta name="physics" content="Structures" />
+
+  <link rel="canonical" href="https://mechanical.docs.pyansys.com/version/stable/user_guide/remote_session/grpc_security.html" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="https://docs.pyansys.com/">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/pyansys_logo_transparent_black.png" class="logo__image only-light" alt="PyMechanical - Home"/>
+    <img src="../../_static/pyansys_logo_transparent_white.png" class="logo__image only-dark pst-js-only" alt="PyMechanical - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html" title="PyMechanical home">Home</a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/ansys/mechanical/core/index.html">
+    API reference
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute.html">
+    Contribute
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq.html">
+    FAQs
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../kil/index.html">
+    Known issues and limitations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../changelog.html">
+    Release notes
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav>
+</div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+<div class="search-bar pst-js-only" id="search-bar">
+  <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="search" class="form-control" name="q" placeholder="Search the docs ..."
+      aria-label="Search the docs ..." autocomplete="off" autocorrect="off"
+      autocapitalize="off" spellcheck="false" />
+    <span class="search-button__kbd-shortcut">
+      <kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd>
+    </span>
+  </form>
+  <div id="static-search-results" class="static-search-results" style="display:none;" tabindex="0"></div>
+</div></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical/discussions" title="Support" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa fa-comment fa-fw fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Support</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+  
+    <div id="announcement_msg"></div>
+<script>
+  fetch("announcement.html")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(
+      (text) => (document.getElementById("announcement_msg").innerHTML = text),
+    )
+    .catch((error) => console.error(`Fetch problem: ${error.message}`));
+</script>
+  
+
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html" title="PyMechanical home">Home</a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/ansys/mechanical/core/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute.html">
+    Contribute
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq.html">
+    FAQs
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../kil/index.html">
+    Known issues and limitations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../changelog.html">
+    Release notes
+  </a>
+</li>
+
+  </ul>
+</nav>
+</div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="search-bar pst-js-only" id="search-bar">
+  <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="search" class="form-control" name="q" placeholder="Search the docs ..."
+      aria-label="Search the docs ..." autocomplete="off" autocorrect="off"
+      autocapitalize="off" spellcheck="false" />
+    <span class="search-button__kbd-shortcut">
+      <kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd>
+    </span>
+  </form>
+  <div id="static-search-results" class="static-search-results" style="display:none;" tabindex="0"></div>
+</div></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical/discussions" title="Support" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa fa-comment fa-fw fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Support</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Mechanical Scripting</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../scripting/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/threading.html">Threading</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">How to</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../howto/overview.html">Overview</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../howto/configuration.html">Addin configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howto/globals.html">Globals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howto/licensing.html">License management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howto/libraries.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howto/logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howto/pep8.html">PEP 8 aliases</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Command Line Interface (CLI)</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../cli/ansys-mechanical.html">ansys-mechanical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/ansys-mechanical-ideconfig.html">ansys-mechanical-ideconfig</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/find-mechanical.html">CLI for finding and saving path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/mechanical-env.html">mechanical-env</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Remote session</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server-launcher.html">Initial setup for launching a Mechanical session on the local machine</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Secure gRPC connections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pool.html">Create a pool of Mechanical servers</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+         
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="https://docs.pyansys.com/" class="nav-link">PyAnsys</a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a
+        href="../../index.html"
+        class="nav-link"
+        aria-label="Home"
+      >
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a href="../index.html" class="nav-link">User guide</a>
+    </li>
+      
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Secure gRPC connections</span></li>
+    
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="secure-grpc-connections">
+<span id="grpc-security"></span><h1>Secure gRPC connections<a class="headerlink" href="#secure-grpc-connections" title="Link to this heading">#</a></h1>
+<p>PyMechanical supports secure gRPC connections using mTLS, WNUA, or insecure modes.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Secure connections (mTLS, WNUA) require specific service packs for each version.
+Versions without the required service pack only support insecure mode.</p>
+</div>
+<section id="version-and-service-pack-requirements">
+<h2>Version and service pack requirements<a class="headerlink" href="#version-and-service-pack-requirements" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 30.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Version</p></th>
+<th class="head"><p>Required SP for Secure</p></th>
+<th class="head"><p>Windows (default: <strong>wnua</strong>)</p></th>
+<th class="head"><p>Linux (default: <strong>mtls</strong>)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>2024 R1 (241)</p></td>
+<td><p>Not supported</p></td>
+<td><p>insecure only</p></td>
+<td><p>insecure only</p></td>
+</tr>
+<tr class="row-odd"><td><p>2024 R2 (242)</p></td>
+<td><p><strong>SP05+</strong></p></td>
+<td><p>insecure, <strong>wnua</strong>, mtls</p></td>
+<td><p>insecure, <strong>mtls</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>2025 R1 (251)</p></td>
+<td><p><strong>SP04+</strong></p></td>
+<td><p>insecure, <strong>wnua</strong>, mtls</p></td>
+<td><p>insecure, <strong>mtls</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>2025 R2 (252)</p></td>
+<td><p><strong>SP03+</strong></p></td>
+<td><p>insecure, <strong>wnua</strong>, mtls</p></td>
+<td><p>insecure, <strong>mtls</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>2026 R1+ (261+)</p></td>
+<td><p>All SPs</p></td>
+<td><p>insecure, <strong>wnua</strong>, mtls</p></td>
+<td><p>insecure, <strong>mtls</strong></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>Ansys 2024 R1 (241) and earlier versions <strong>only support insecure mode</strong>.</p></li>
+<li><p>If your installation does not have the required service pack listed above,
+only insecure mode is available.</p></li>
+<li><p>To check your service pack version, look at the <code class="docutils literal notranslate"><span class="pre">builddate.txt</span></code> file in your
+Ansys installation directory.</p></li>
+</ul>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>Breaking Change</strong>: Version mismatch behavior</p>
+<p>When using <code class="docutils literal notranslate"><span class="pre">launch_mechanical()</span></code> without explicitly specifying <code class="docutils literal notranslate"><span class="pre">transport_mode</span></code>:</p>
+<ul class="simple">
+<li><p>If you have a <strong>newer version of PyMechanical</strong> with an <strong>older version of Mechanical</strong>
+that doesn’t support secure connections, the connection will fail.</p></li>
+<li><p>If you have an <strong>older version of PyMechanical</strong> with a <strong>newer version of Mechanical</strong>
+that requires secure connections by default, the connection will fail.</p></li>
+</ul>
+<p><strong>Solution</strong>: Always explicitly specify <code class="docutils literal notranslate"><span class="pre">transport_mode</span></code> to avoid compatibility issues:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># For older Mechanical versions (241 or versions without required SP)</span>
+<span class="n">mechanical</span> <span class="o">=</span> <span class="n">launch_mechanical</span><span class="p">(</span><span class="n">transport_mode</span><span class="o">=</span><span class="s2">&quot;insecure&quot;</span><span class="p">)</span>
+
+<span class="c1"># For newer Mechanical versions with secure support</span>
+<span class="n">mechanical</span> <span class="o">=</span> <span class="n">launch_mechanical</span><span class="p">(</span><span class="n">transport_mode</span><span class="o">=</span><span class="s2">&quot;wnua&quot;</span><span class="p">)</span>  <span class="c1"># Windows</span>
+<span class="n">mechanical</span> <span class="o">=</span> <span class="n">launch_mechanical</span><span class="p">(</span><span class="n">transport_mode</span><span class="o">=</span><span class="s2">&quot;mtls&quot;</span><span class="p">)</span>  <span class="c1"># Linux</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="transport-modes">
+<h2>Transport modes<a class="headerlink" href="#transport-modes" title="Link to this heading">#</a></h2>
+<p>PyMechanical automatically selects the default transport mode based on your platform:
+- <strong>Windows</strong>: WNUA (Windows Named User Authentication) - default
+- <strong>Linux</strong>: mTLS (Mutual TLS) - default</p>
+<p>You can override the default by explicitly specifying <code class="docutils literal notranslate"><span class="pre">transport_mode</span></code>.</p>
+<p><strong>mTLS (Mutual TLS)</strong> - Recommended for production and default on Linux. Uses certificates for mutual authentication.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mechanical</span> <span class="o">=</span> <span class="n">launch_mechanical</span><span class="p">(</span>
+    <span class="n">port</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span>
+    <span class="n">transport_mode</span><span class="o">=</span><span class="s2">&quot;mtls&quot;</span><span class="p">,</span>
+    <span class="n">certs_dir</span><span class="o">=</span><span class="s2">&quot;/path/to/certs&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Certificate directory must contain: <code class="docutils literal notranslate"><span class="pre">ca.crt</span></code>, <code class="docutils literal notranslate"><span class="pre">client.crt</span></code>, <code class="docutils literal notranslate"><span class="pre">client.key</span></code>.
+See <a class="reference external" href="https://tools.docs.pyansys.com/version/stable/user_guide/secure_grpc.html#generating-certificates-for-mtls">PyAnsys mTLS guide</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Environment Variable</strong>: You can set the <code class="docutils literal notranslate"><span class="pre">ANSYS_GRPC_CERTIFICATES</span></code> environment variable
+to specify the default certificate directory for mTLS connections:</p>
+<ul class="simple">
+<li><p><strong>Windows</strong>: Set as a user-level environment variable only. System-level variables are ignored.</p></li>
+<li><p><strong>Linux</strong>: Can be set at any level (user or system).</p></li>
+</ul>
+<p>When this variable is set and <code class="docutils literal notranslate"><span class="pre">certs_dir</span></code> is not explicitly specified, PyMechanical will
+use the path from this environment variable.</p>
+<p>Example (Windows PowerShell):</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="no">[System.Environment]</span><span class="p">::</span><span class="n">SetEnvironmentVariable</span><span class="p">(</span><span class="s1">&#39;ANSYS_GRPC_CERTIFICATES&#39;</span><span class="p">,</span> <span class="s1">&#39;C:\path\to\certs&#39;</span><span class="p">,</span> <span class="s1">&#39;User&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Example (Linux):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ANSYS_GRPC_CERTIFICATES</span><span class="o">=</span>/path/to/certs
+</pre></div>
+</div>
+</div>
+<p><strong>WNUA (Windows Named User Authentication)</strong> - Windows only, default on Windows.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mechanical</span> <span class="o">=</span> <span class="n">launch_mechanical</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">transport_mode</span><span class="o">=</span><span class="s2">&quot;wnua&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Insecure</strong> - No encryption. Not recommended.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mechanical</span> <span class="o">=</span> <span class="n">launch_mechanical</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">transport_mode</span><span class="o">=</span><span class="s2">&quot;insecure&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="cli-usage">
+<h2>CLI usage<a class="headerlink" href="#cli-usage" title="Link to this heading">#</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Windows with WNUA</span>
+ansys-mechanical<span class="w"> </span>--port<span class="w"> </span><span class="m">10000</span><span class="w"> </span>--transport-mode<span class="w"> </span>wnua
+
+<span class="c1"># Linux with mTLS</span>
+ansys-mechanical<span class="w"> </span>--port<span class="w"> </span><span class="m">10000</span><span class="w"> </span>--transport-mode<span class="w"> </span>mtls<span class="w"> </span>--certs-dir<span class="w"> </span>/path/to/certs
+
+<span class="c1"># Insecure mode</span>
+ansys-mechanical<span class="w"> </span>--port<span class="w"> </span><span class="m">10000</span><span class="w"> </span>--transport-mode<span class="w"> </span>insecure
+</pre></div>
+</div>
+<p>If <code class="docutils literal notranslate"><span class="pre">--transport-mode</span></code> is not specified, the platform default is used.</p>
+</section>
+<section id="connect-to-an-existing-instance">
+<h2>Connect to an existing instance<a class="headerlink" href="#connect-to-an-existing-instance" title="Link to this heading">#</a></h2>
+<p>When connecting to an existing Mechanical instance, the transport mode must match the server’s mode.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p><strong>Windows</strong>: Default is WNUA. You can also use mTLS or insecure.</p></li>
+<li><p><strong>Linux</strong>: Default is mTLS (WNUA is not available). You can also use insecure.</p></li>
+<li><p>If you don’t specify <code class="docutils literal notranslate"><span class="pre">transport_mode</span></code>, the platform default is used.</p></li>
+</ul>
+</div>
+<p>Use <code class="docutils literal notranslate"><span class="pre">launch_mechanical()</span></code> with <code class="docutils literal notranslate"><span class="pre">start_instance=False</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Connect with matching transport mode</span>
+<span class="n">mechanical</span> <span class="o">=</span> <span class="n">launch_mechanical</span><span class="p">(</span>
+    <span class="n">start_instance</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">ip</span><span class="o">=</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
+    <span class="n">port</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span>
+    <span class="n">transport_mode</span><span class="o">=</span><span class="s2">&quot;wnua&quot;</span>  <span class="c1"># Must match server mode (Windows only)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Or use the <code class="docutils literal notranslate"><span class="pre">connect_to_mechanical()</span></code> convenience function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ansys.mechanical.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">connect_to_mechanical</span>
+
+<span class="c1"># WNUA mode (Windows only, default on Windows)</span>
+<span class="n">mechanical</span> <span class="o">=</span> <span class="n">connect_to_mechanical</span><span class="p">(</span>
+    <span class="n">ip</span><span class="o">=</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
+    <span class="n">port</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span>
+    <span class="n">transport_mode</span><span class="o">=</span><span class="s2">&quot;wnua&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># mTLS mode (cross-platform, default on Linux)</span>
+<span class="n">mechanical</span> <span class="o">=</span> <span class="n">connect_to_mechanical</span><span class="p">(</span>
+    <span class="n">ip</span><span class="o">=</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
+    <span class="n">port</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span>
+    <span class="n">transport_mode</span><span class="o">=</span><span class="s2">&quot;mtls&quot;</span><span class="p">,</span>
+    <span class="n">certs_dir</span><span class="o">=</span><span class="s2">&quot;/path/to/certs&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Insecure mode (cross-platform, for development only)</span>
+<span class="n">mechanical</span> <span class="o">=</span> <span class="n">connect_to_mechanical</span><span class="p">(</span>
+    <span class="n">ip</span><span class="o">=</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
+    <span class="n">port</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span>
+    <span class="n">transport_mode</span><span class="o">=</span><span class="s2">&quot;insecure&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-grpc-options">
+<h2>Custom gRPC options<a class="headerlink" href="#custom-grpc-options" title="Link to this heading">#</a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">grpc_options</span></code> to pass custom channel options for advanced scenarios.</p>
+<p><strong>Common use case</strong>: Certificate hostname mismatch with <code class="docutils literal notranslate"><span class="pre">grpc.default_authority</span></code></p>
+<p>When connecting via IP but certificate has <code class="docutils literal notranslate"><span class="pre">CN=localhost</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mechanical</span> <span class="o">=</span> <span class="n">launch_mechanical</span><span class="p">(</span>
+    <span class="n">transport_mode</span><span class="o">=</span><span class="s2">&quot;mtls&quot;</span><span class="p">,</span>
+    <span class="n">certs_dir</span><span class="o">=</span><span class="s2">&quot;./certs&quot;</span><span class="p">,</span>
+    <span class="n">ip</span><span class="o">=</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>  <span class="c1"># Connecting via IP</span>
+    <span class="n">grpc_options</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;grpc.default_authority&quot;</span><span class="p">,</span> <span class="s2">&quot;localhost&quot;</span><span class="p">)]</span>  <span class="c1"># Match certificate CN</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Other options</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mechanical</span> <span class="o">=</span> <span class="n">launch_mechanical</span><span class="p">(</span>
+    <span class="n">grpc_options</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;grpc.keepalive_time_ms&quot;</span><span class="p">,</span> <span class="mi">10000</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;grpc.keepalive_timeout_ms&quot;</span><span class="p">,</span> <span class="mi">5000</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;grpc.http2.max_pings_without_data&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">grpc.max_receive_message_length</span></code> is automatically set and cannot be overridden.</p>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-and-service-pack-requirements">Version and service pack requirements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#transport-modes">Transport modes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cli-usage">CLI usage</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#connect-to-an-existing-instance">Connect to an existing instance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#custom-grpc-options">Custom gRPC options</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item"> 
+<div class="tocsection editthispage">
+  <a href="https://github.com/pyansys/pymechanical/edit/main/doc/source/user_guide/remote_session/grpc_security.rst">
+    <i class="fa-solid fa-pencil"></i>
+       Edit
+    on GitHub  
+  </a>
+</div>
+
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+
+  <!-- Include desired assets -->
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.7/require.min.js"></script>
+
+<script>
+// Passing the search options to the search.js file
+const SEARCH_OPTIONS = JSON.parse('{"keys": ["title", "text", "objectID"], "limit": 10, "threshold": 0.2}');
+const SEARCH_FILE = "../../_static/search.json";
+const ADVANCE_SEARCH_PATH = "../../search.html";
+const EXTRA_SOURCES = JSON.parse('""');
+</script>
+
+
+<script src="../../_static/js/search.js"></script>
+
+  
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright (c) 2026 ANSYS, Inc. All rights reserved.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the
+  <a href="https://sphinxdocs.ansys.com/version/stable/index.html"
+    >Ansys Sphinx Theme</a
+  >
+  1.6.4. <br />Last updated on
+  <span id="ast_build_date"></span>
+</p>
+<script>
+  var options = { day: "numeric", month: "long", year: "numeric" };
+  var ast_lastModifiedDate = new Date(document.lastModified);
+  var ast_build_date = ast_lastModifiedDate.toLocaleDateString("en-US", options);
+  document.getElementById("ast_build_date").innerHTML = ast_build_date;
+</script></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

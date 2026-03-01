@@ -1,0 +1,1161 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Helpers &#8212; PyMechanical</title>
+  
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/ansys-sphinx-theme.css?v=a23b20f3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/ansys-sphinx-theme.css?v=a23b20f3" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://www.nerdfonts.com/assets/css/webfont.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+
+  <!-- Include desired assets -->
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  
+
+  
+    <link href="../../_static/css/breadcrumbs.css" rel="stylesheet" />
+  
+    <script src="../../_static/documentation_options.js?v=142dd74e"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/thebelab-helper.js"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=49e1bf35"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/howto/helpers';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://mechanical.docs.pyansys.com/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'dev';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+    <link rel="icon" href="../../_static/ansys-favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="License management" href="licensing.html" />
+    <link rel="prev" title="Globals" href="globals.html" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.12.dev0" />
+  <meta property="og:site_name" content="PyAnsys" />
+  <meta name="physics" content="Structures" />
+  <meta name="physics" content="Structures" />
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="https://docs.pyansys.com/">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/pyansys_logo_transparent_black.png" class="logo__image only-light" alt="PyMechanical - Home"/>
+    <img src="../../_static/pyansys_logo_transparent_white.png" class="logo__image only-dark pst-js-only" alt="PyMechanical - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html" title="PyMechanical home">Home</a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/ansys/mechanical/core/index.html">
+    API reference
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute.html">
+    Contribute
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq.html">
+    FAQs
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../kil/index.html">
+    Known issues and limitations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../changelog.html">
+    Release notes
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav>
+</div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+<div class="search-bar pst-js-only" id="search-bar">
+  <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="search" class="form-control" name="q" placeholder="Search the docs ..."
+      aria-label="Search the docs ..." autocomplete="off" autocorrect="off"
+      autocapitalize="off" spellcheck="false" />
+    <span class="search-button__kbd-shortcut">
+      <kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd>
+    </span>
+  </form>
+  
+  <div id="static-search-results" class="static-search-results" style="display:none;" tabindex="0"></div>
+  
+</div></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical/discussions" title="Support" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa fa-comment fa-fw fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Support</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+  
+    
+<!--
+  Announcement Version Loader
+  Dynamically loads the announcement.html content into the announcement_msg div.
+-->
+<div id="announcement_msg" aria-live="polite"></div>
+<script>
+  // Fetch and inject the announcement HTML content
+  fetch("announcement.html")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status} Announcement.html file not found, Please ignore this, if you are in dev/stable documentation`);
+      }
+      return response.text();
+    })
+    .then((text) => {
+      var msgDiv = document.getElementById("announcement_msg");
+      if (msgDiv) {
+        msgDiv.innerHTML = text;
+      }
+    })
+    .catch((error) => {
+      // Log only unexpected fetch errors
+      if (!(error.message && error.message.startsWith("HTTP error: 404"))) {
+        console.error(`Fetch problem: ${error.message} Announcement.html could not be loaded.`);
+      }
+    });
+</script>
+  
+
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html" title="PyMechanical home">Home</a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/ansys/mechanical/core/index.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute.html">
+    Contribute
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq.html">
+    FAQs
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../kil/index.html">
+    Known issues and limitations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../changelog.html">
+    Release notes
+  </a>
+</li>
+
+  </ul>
+</nav>
+</div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="search-bar pst-js-only" id="search-bar">
+  <form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="search" class="form-control" name="q" placeholder="Search the docs ..."
+      aria-label="Search the docs ..." autocomplete="off" autocorrect="off"
+      autocapitalize="off" spellcheck="false" />
+    <span class="search-button__kbd-shortcut">
+      <kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd>
+    </span>
+  </form>
+  
+  <div id="static-search-results" class="static-search-results" style="display:none;" tabindex="0"></div>
+  
+</div></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical/discussions" title="Support" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa fa-comment fa-fw fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Support</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Mechanical Scripting</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../scripting/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripting/threading.html">Threading</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">How to</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Addin configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="globals.html">Globals</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="licensing.html">License management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libraries.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pep8.html">PEP 8 aliases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autocomplete.html">Autocomplete</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Command Line Interface (CLI)</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../cli/ansys-mechanical.html">ansys-mechanical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/ansys-mechanical-ideconfig.html">ansys-mechanical-ideconfig</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/find-mechanical.html">CLI for finding and saving path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/mechanical-env.html">mechanical-env</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Remote session</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../remote_session/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../remote_session/server-launcher.html">Initial setup for launching a Mechanical session on the local machine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../remote_session/grpc_security.html">Secure gRPC connections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../remote_session/pool.html">Create a pool of Mechanical servers</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+         
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="https://docs.pyansys.com/" class="nav-link">PyAnsys</a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a
+        href="../../index.html"
+        class="nav-link"
+        aria-label="Home"
+      >
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a href="../index.html" class="nav-link">User guide</a>
+    </li>
+      
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Helpers</span></li>
+    
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="helpers">
+<span id="ref-embedding-user-guide-helpers"></span><h1>Helpers<a class="headerlink" href="#helpers" title="Link to this heading">#</a></h1>
+<p>The <a class="reference external" href="../api/ansys/mechanical/core/embedding/helpers/Helpers.html#ansys.mechanical.core.embedding.helpers.Helpers">Helpers</a> class provides
+convenient utility methods for common Mechanical operations. These helpers simplify tasks such as
+importing geometry and materials, exporting images and animations, configuring views, and
+visualizing the project tree structure.</p>
+<p>The Helpers class is accessible through the <code class="docutils literal notranslate"><span class="pre">helpers</span></code> attribute of the
+<a class="reference external" href="../api/ansys/mechanical/core/embedding/app/App.html#ansys.mechanical.core.embedding.app.App">App</a> instance:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ansys.mechanical.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">App</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="nb">globals</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
+<span class="n">helpers</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">helpers</span>
+</pre></div>
+</div>
+<p>All helper methods are designed to work seamlessly with the embedded Mechanical instance and
+provide clear error messages when operations fail.</p>
+<section id="importing-geometry">
+<h2>Importing geometry<a class="headerlink" href="#importing-geometry" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">import_geometry()</span></code> method simplifies importing geometry files into your Mechanical model.
+It supports various CAD formats and provides options for processing named selections, material
+properties, and coordinate systems.</p>
+<p><strong>Basic geometry import</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ansys.mechanical.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">App</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="nb">globals</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
+<span class="n">geometry_import</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">import_geometry</span><span class="p">(</span><span class="s2">&quot;path/to/geometry.x_t&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Import with named selections</strong></p>
+<p>Process named selections from the geometry file:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">geometry_import</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">import_geometry</span><span class="p">(</span>
+    <span class="s2">&quot;path/to/geometry.pmdb&quot;</span><span class="p">,</span>
+    <span class="n">process_named_selections</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">named_selection_key</span><span class="o">=</span><span class="s2">&quot;NS&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Import with all options</strong></p>
+<p>Import geometry with material properties and coordinate systems:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">geometry_import</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">import_geometry</span><span class="p">(</span>
+    <span class="s2">&quot;path/to/geometry.step&quot;</span><span class="p">,</span>
+    <span class="n">process_named_selections</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">named_selection_key</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">process_material_properties</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">process_coordinate_systems</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">analysis_type</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>2D analysis</strong></p>
+<p>For 2D analyses, specify the analysis type:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">geometry_import</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">import_geometry</span><span class="p">(</span>
+    <span class="s2">&quot;path/to/geometry.agdb&quot;</span><span class="p">,</span>
+    <span class="n">analysis_type</span><span class="o">=</span><span class="s2">&quot;2d&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The method automatically determines the geometry format and returns the geometry import object.
+If the import fails, a <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code> is raised with details about the failure.</p>
+</div>
+</section>
+<section id="importing-materials">
+<h2>Importing materials<a class="headerlink" href="#importing-materials" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">import_materials()</span></code> method imports materials from XML material database files.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ansys.mechanical.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">App</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="nb">globals</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
+<span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">import_materials</span><span class="p">(</span><span class="s2">&quot;path/to/materials.xml&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This method adds the materials to the <code class="docutils literal notranslate"><span class="pre">Model.Materials</span></code> collection. If the import fails,
+a <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code> is raised.</p>
+</section>
+<section id="exporting-images">
+<h2>Exporting images<a class="headerlink" href="#exporting-images" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">export_image()</span></code> method exports high-quality images of your model, geometry, mesh, or results.
+It provides extensive control over image resolution, format, and appearance.</p>
+<p><strong>Basic image export</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ansys.mechanical.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">App</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="nb">globals</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
+<span class="c1"># Import geometry first</span>
+<span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">import_geometry</span><span class="p">(</span><span class="s2">&quot;path/to/geometry.x_t&quot;</span><span class="p">)</span>
+
+<span class="c1"># Export an image of the geometry</span>
+<span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">export_image</span><span class="p">(</span>
+    <span class="n">obj</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">Model</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span>
+    <span class="n">file_path</span><span class="o">=</span><span class="s2">&quot;geometry_image.png&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Custom image settings</strong></p>
+<p>Control image dimensions, resolution, background, and format:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">export_image</span><span class="p">(</span>
+    <span class="n">obj</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">Model</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span>
+    <span class="n">file_path</span><span class="o">=</span><span class="s2">&quot;custom_image.jpg&quot;</span><span class="p">,</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">1920</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">1080</span><span class="p">,</span>
+    <span class="n">background</span><span class="o">=</span><span class="s2">&quot;appearance&quot;</span><span class="p">,</span>  <span class="c1"># or &quot;white&quot;</span>
+    <span class="n">resolution</span><span class="o">=</span><span class="s2">&quot;high&quot;</span><span class="p">,</span>  <span class="c1"># &quot;normal&quot;, &quot;enhanced&quot;, or &quot;high&quot;</span>
+    <span class="n">image_format</span><span class="o">=</span><span class="s2">&quot;jpg&quot;</span>  <span class="c1"># &quot;png&quot;, &quot;jpg&quot;, &quot;bmp&quot;, &quot;tif&quot;, or &quot;eps&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Export current graphics display</strong></p>
+<p>Export whatever is currently displayed without specifying an object:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">export_image</span><span class="p">(</span>
+    <span class="n">file_path</span><span class="o">=</span><span class="s2">&quot;current_view.png&quot;</span><span class="p">,</span>
+    <span class="n">current_graphics_display</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Supported formats</strong></p>
+<ul class="simple">
+<li><p><strong>PNG</strong> - Recommended for technical documentation (lossless)</p></li>
+<li><p><strong>JPG</strong> - Good for photographs and presentations (compressed format)</p></li>
+<li><p><strong>BMP</strong> - Uncompressed bitmap</p></li>
+<li><p><strong>TIF</strong> - Tagged image format (lossless)</p></li>
+<li><p><strong>EPS</strong> - Vector format for publications</p></li>
+</ul>
+<p><strong>Resolution options</strong></p>
+<ul class="simple">
+<li><p><strong>normal</strong> - 1:1 pixel ratio (fastest)</p></li>
+<li><p><strong>enhanced</strong> - 2:1 pixel ratio (default, good quality)</p></li>
+<li><p><strong>high</strong> - 4:1 pixel ratio (best quality, slower)</p></li>
+</ul>
+</section>
+<section id="exporting-animations">
+<h2>Exporting animations<a class="headerlink" href="#exporting-animations" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">export_animation()</span></code> method exports animations of results that have multiple time steps
+or mode shapes, such as transient analyses or modal analyses.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ansys.mechanical.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">App</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="nb">globals</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
+<span class="c1"># Set up and solve an analysis...</span>
+<span class="n">analysis</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">Model</span><span class="o">.</span><span class="n">AddStaticStructuralAnalysis</span><span class="p">()</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">analysis</span><span class="o">.</span><span class="n">Solution</span><span class="o">.</span><span class="n">AddTotalDeformation</span><span class="p">()</span>
+
+<span class="c1"># After solving, export animation</span>
+<span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">export_animation</span><span class="p">(</span>
+    <span class="n">obj</span><span class="o">=</span><span class="n">result</span><span class="p">,</span>
+    <span class="n">file_path</span><span class="o">=</span><span class="s2">&quot;deformation.gif&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Custom animation settings</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">export_animation</span><span class="p">(</span>
+    <span class="n">obj</span><span class="o">=</span><span class="n">result</span><span class="p">,</span>
+    <span class="n">file_path</span><span class="o">=</span><span class="s2">&quot;deformation.mp4&quot;</span><span class="p">,</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">1920</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">1080</span><span class="p">,</span>
+    <span class="n">animation_format</span><span class="o">=</span><span class="s2">&quot;mp4&quot;</span>  <span class="c1"># &quot;gif&quot;, &quot;avi&quot;, &quot;mp4&quot;, or &quot;wmv&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Supported animation formats</strong></p>
+<ul class="simple">
+<li><p><strong>GIF</strong> - Widely supported, good for web</p></li>
+<li><p><strong>AVI</strong> - Uncompressed video</p></li>
+<li><p><strong>MP4</strong> - Compressed video, good for presentations</p></li>
+<li><p><strong>WMV</strong> - Windows Media Video format</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Animation export requires that the result has been solved and has multiple steps or modes
+to animate. Attempting to export an animation of unsolved results raises a <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code>.</p>
+</div>
+</section>
+<section id="setting-up-camera-views">
+<h2>Setting up camera views<a class="headerlink" href="#setting-up-camera-views" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">setup_view()</span></code> method configures the camera orientation and view settings for your graphics
+display. This is particularly useful before exporting images to ensure consistent viewpoints.</p>
+<p><strong>Basic view orientations</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ansys.mechanical.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">App</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="nb">globals</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
+<span class="c1"># Import geometry first</span>
+<span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">import_geometry</span><span class="p">(</span><span class="s2">&quot;path/to/geometry.x_t&quot;</span><span class="p">)</span>
+
+<span class="c1"># Set isometric view</span>
+<span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">setup_view</span><span class="p">(</span><span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;iso&quot;</span><span class="p">)</span>
+
+<span class="c1"># Set front view</span>
+<span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">setup_view</span><span class="p">(</span><span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;front&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Available orientations</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;iso&quot;</span></code> - Isometric view (default)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;front&quot;</span></code> - Front view</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;back&quot;</span></code> - Back view</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;top&quot;</span></code> - Top view</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;bottom&quot;</span></code> - Bottom view</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;left&quot;</span></code> - Left side view</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;right&quot;</span></code> - Right side view</p></li>
+</ul>
+<p><strong>View with rotation</strong></p>
+<p>Add rotation to any standard view:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Isometric view rotated 45 degrees around X axis</span>
+<span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">setup_view</span><span class="p">(</span><span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;iso&quot;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+
+<span class="c1"># Front view rotated 90 degrees around Y axis</span>
+<span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">setup_view</span><span class="p">(</span><span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;front&quot;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">)</span>
+
+<span class="c1"># Top view rotated 180 degrees around Z axis</span>
+<span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">setup_view</span><span class="p">(</span><span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;top&quot;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">180</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Controlling camera fit</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set view and fit to model (default)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">setup_view</span><span class="p">(</span><span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;iso&quot;</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Set view without auto-fit</span>
+<span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">setup_view</span><span class="p">(</span><span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;iso&quot;</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Advanced: Scene height</strong></p>
+<p>Control the zoom level by setting the scene height:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Requires Quantity type from Mechanical</span>
+<span class="n">app</span><span class="o">.</span><span class="n">update_globals</span><span class="p">(</span><span class="nb">globals</span><span class="p">())</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">setup_view</span><span class="p">(</span>
+    <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;iso&quot;</span><span class="p">,</span>
+    <span class="n">scene_height</span><span class="o">=</span><span class="n">Quantity</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="s2">&quot;in&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="displaying-images">
+<h2>Displaying images<a class="headerlink" href="#displaying-images" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">display_image()</span></code> method uses <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> to display exported images directly in your
+Python environment. This is particularly useful in Jupyter notebooks or interactive sessions.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ansys.mechanical.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">App</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="nb">globals</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
+<span class="c1"># Export an image</span>
+<span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">export_image</span><span class="p">(</span>
+    <span class="n">obj</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">Model</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span>
+    <span class="n">file_path</span><span class="o">=</span><span class="s2">&quot;geometry.png&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Display it</span>
+<span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">display_image</span><span class="p">(</span><span class="s2">&quot;geometry.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Custom display settings</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">display_image</span><span class="p">(</span>
+    <span class="s2">&quot;geometry.png&quot;</span><span class="p">,</span>
+    <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span>  <span class="c1"># Figure size in inches</span>
+    <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;off&quot;</span>  <span class="c1"># Hide axes completely</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="workflow-examples">
+<h2>Workflow examples<a class="headerlink" href="#workflow-examples" title="Link to this heading">#</a></h2>
+<p><strong>Complete geometry visualization workflow</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ansys.mechanical.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">App</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="nb">globals</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
+
+<span class="c1"># Step 1: Import geometry</span>
+<span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">import_geometry</span><span class="p">(</span><span class="s2">&quot;bracket.x_t&quot;</span><span class="p">)</span>
+
+<span class="c1"># Step 2: Import materials</span>
+<span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">import_materials</span><span class="p">(</span><span class="s2">&quot;materials.xml&quot;</span><span class="p">)</span>
+
+<span class="c1"># Step 3: Set up the view</span>
+<span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">setup_view</span><span class="p">(</span><span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;iso&quot;</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Step 4: Export image</span>
+<span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">export_image</span><span class="p">(</span>
+    <span class="n">obj</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">Model</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span>
+    <span class="n">file_path</span><span class="o">=</span><span class="s2">&quot;bracket_iso.png&quot;</span><span class="p">,</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">1920</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">1080</span><span class="p">,</span>
+    <span class="n">resolution</span><span class="o">=</span><span class="s2">&quot;enhanced&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Step 5: Display it</span>
+<span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">display_image</span><span class="p">(</span><span class="s2">&quot;bracket_iso.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Multiple view angles</strong></p>
+<p>Export images from different angles for documentation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ansys.mechanical.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">App</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="nb">globals</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
+<span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">import_geometry</span><span class="p">(</span><span class="s2">&quot;part.step&quot;</span><span class="p">)</span>
+
+<span class="n">views</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;front&quot;</span><span class="p">,</span> <span class="s2">&quot;top&quot;</span><span class="p">,</span> <span class="s2">&quot;iso&quot;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">views</span><span class="p">:</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">setup_view</span><span class="p">(</span><span class="n">orientation</span><span class="o">=</span><span class="n">view</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">export_image</span><span class="p">(</span>
+        <span class="n">obj</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">Model</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span>
+        <span class="n">file_path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;part_</span><span class="si">{</span><span class="n">view</span><span class="si">}</span><span class="s2">.png&quot;</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="error-handling">
+<h2>Error handling<a class="headerlink" href="#error-handling" title="Link to this heading">#</a></h2>
+<p>All helper methods raise descriptive exceptions when operations fail:</p>
+<p><strong>Geometry import errors</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ansys.mechanical.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">App</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="nb">globals</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">import_geometry</span><span class="p">(</span><span class="s2">&quot;nonexistent.x_t&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Geometry import failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Image export errors</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">export_image</span><span class="p">(</span>
+        <span class="n">obj</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">Model</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span>
+        <span class="n">file_path</span><span class="o">=</span><span class="kc">None</span>  <span class="c1"># Missing required parameter</span>
+    <span class="p">)</span>
+<span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid parameter: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Invalid options</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">setup_view</span><span class="p">(</span><span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;invalid&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid orientation: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="best-practices">
+<h2>Best practices<a class="headerlink" href="#best-practices" title="Link to this heading">#</a></h2>
+<ol class="arabic">
+<li><p><strong>Always check paths</strong>: Use absolute paths or <code class="docutils literal notranslate"><span class="pre">pathlib.Path</span></code> objects for file operations
+to avoid path-related errors.</p></li>
+<li><p><strong>Set up views before exporting</strong>: Use <code class="docutils literal notranslate"><span class="pre">setup_view()</span></code> before <code class="docutils literal notranslate"><span class="pre">export_image()</span></code> to ensure
+consistent viewpoints across multiple exports.</p></li>
+<li><p><strong>Use appropriate image formats</strong>: PNG for technical documentation, JPG for presentations,
+EPS for publications.</p></li>
+<li><p><strong>Handle errors gracefully</strong>: Wrap helper method calls in try-except blocks to handle
+potential failures gracefully in production scripts.</p></li>
+<li><p><strong>Verify imports</strong>: After importing geometry or materials, verify the object state:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">geometry_import</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">helpers</span><span class="o">.</span><span class="n">import_geometry</span><span class="p">(</span><span class="s2">&quot;part.x_t&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">geometry_import</span><span class="o">.</span><span class="n">ObjectState</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;FullyDefined&quot;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Geometry imported successfully&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: Geometry state is </span><span class="si">{</span><span class="n">geometry_import</span><span class="o">.</span><span class="n">ObjectState</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importing-geometry">Importing geometry</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importing-materials">Importing materials</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exporting-images">Exporting images</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exporting-animations">Exporting animations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-camera-views">Setting up camera views</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#displaying-images">Displaying images</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#workflow-examples">Workflow examples</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#error-handling">Error handling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#best-practices">Best practices</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+
+  
+  <nav class="tocsection editthispage" aria-label="Edit this page">
+    <a href="https://github.com/pyansys/pymechanical/edit/main/doc/source/user_guide/howto/helpers.rst" rel="noopener noreferrer">
+      <i class="fa-solid fa-pencil" aria-hidden="true"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </nav>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+
+  <!-- Include desired assets -->
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.7/require.min.js"></script>
+
+<script>
+// Passing the search options to the search.js file
+const SEARCH_OPTIONS = JSON.parse('{"keys": ["title", "text", "objectID"], "limit": 10, "threshold": 0.2}');
+const SEARCH_FILE = "../../_static/search.json";
+const ADVANCE_SEARCH_PATH = "../../search.html";
+const EXTRA_SOURCES = JSON.parse('""');
+</script>
+
+
+<script src="../../_static/js/search.js"></script>
+
+  
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright (c) 2026 ANSYS, Inc. All rights reserved.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<!--
+  Theme Version Footer
+  Displays the Sphinx theme version and the last updated date.
+  Accessibility and semantic improvements included.
+-->
+<footer class="theme-version" aria-label="Theme version and last update">
+  <span>
+    
+      Built with the
+      <a href="https://sphinxdocs.ansys.com/version/stable/index.html" target="_blank" rel="noopener noreferrer">
+        Ansys Sphinx Theme
+      </a>
+      1.7.1.
+    
+  </span>
+  <br />
+  <span>Last updated on <time id="ast_build_date"></time></span>
+</footer>
+<script>
+  // Set the last updated date in a readable format
+  (function() {
+    var options = { day: "numeric", month: "long", year: "numeric" };
+    var ast_lastModifiedDate = new Date(document.lastModified);
+    var ast_build_date = ast_lastModifiedDate.toLocaleDateString("en-US", options);
+    var dateElem = document.getElementById("ast_build_date");
+    if (dateElem) {
+      dateElem.textContent = ast_build_date;
+    }
+  })();
+</script></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

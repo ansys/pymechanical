@@ -1,0 +1,80 @@
+
+
+
+
+
+
+The ``license_manager.py`` module
+=================================
+
+.. py:module:: ansys.mechanical.core.embedding.license_manager
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: license_manager
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.mechanical.core.embedding.license_manager.LicenseManager`
+            - Class to manage licenses in Ansys Mechanical.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> LicenseManager</api/ansys/mechanical/core/embedding/license_manager/LicenseManager>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+License Manager.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+
