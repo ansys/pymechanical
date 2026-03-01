@@ -38,7 +38,7 @@ double cantilever beam.
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from matplotlib import image as mpimg, pyplot as plt
+from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation
 from PIL import Image
 
@@ -64,15 +64,6 @@ graphics = app.Graphics
 camera = graphics.Camera
 camera.SetSpecificViewOrientation(ViewOrientationType.Front)
 
-# Set camera settings for 720p resolution
-image_export_format = GraphicsImageExportFormat.PNG
-graphics_image_export_settings = Ansys.Mechanical.Graphics.GraphicsImageExportSettings()
-graphics_image_export_settings.Resolution = GraphicsResolutionType.EnhancedResolution
-graphics_image_export_settings.Background = GraphicsBackgroundType.White
-graphics_image_export_settings.CurrentGraphicsDisplay = False
-graphics_image_export_settings.Width = 1280
-graphics_image_export_settings.Height = 720
-
 # %%
 # Create functions to set camera and display images
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -80,96 +71,17 @@ graphics_image_export_settings.Height = 720
 # Set the path for the output files (images, gifs, mechdat)
 output_path = Path.cwd() / "out"
 
-
-def set_camera_and_display_image(
-    camera,
-    graphics,
-    graphics_image_export_settings,
-    image_output_path: Path,
-    image_name: str,
-) -> None:
-    """Set the camera to fit the model and display the image.
-
-    Parameters
-    ----------
-    camera : Ansys.ACT.Common.Graphics.MechanicalCameraWrapper
-        The camera object to set the view.
-    graphics : Ansys.ACT.Common.Graphics.MechanicalGraphicsWrapper
-        The graphics object to export the image.
-    image_output_path : Path
-        The path to save the exported image.
-    image_name : str
-        The name of the exported image file.
-    """
-    # Set the camera to fit the mesh
-    camera.SetFit()
-    # Export the mesh image with the specified settings
-    image_path = image_output_path / image_name
-    graphics.ExportImage(str(image_path), image_export_format, graphics_image_export_settings)
-    # Display the exported mesh image
-    display_image(image_path)
-
-
-def display_image(
-    image_path: str,
-    pyplot_figsize_coordinates: tuple = (16, 9),
-    plot_xticks: list = [],
-    plot_yticks: list = [],
-    plot_axis: str = "off",
-) -> None:
-    """Display the image with the specified parameters.
-
-    Parameters
-    ----------
-    image_path : str
-        The path to the image file to display.
-    pyplot_figsize_coordinates : tuple
-        The size of the figure in inches (width, height).
-    plot_xticks : list
-        The x-ticks to display on the plot.
-    plot_yticks : list
-        The y-ticks to display on the plot.
-    plot_axis : str
-        The axis visibility setting ('on' or 'off').
-    """
-    # Set the figure size based on the coordinates specified
-    plt.figure(figsize=pyplot_figsize_coordinates)
-    # Read the image from the file into an array
-    plt.imshow(mpimg.imread(image_path))
-    # Get or set the current tick locations and labels of the x-axis
-    plt.xticks(plot_xticks)
-    # Get or set the current tick locations and labels of the y-axis
-    plt.yticks(plot_yticks)
-    # Turn off the axis
-    plt.axis(plot_axis)
-    # Display the figure
-    plt.show()
-
-
 # %%
 # Download and import the geometry file
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Set the model
-model = app.Model
-# Create a geometry import group for the model
-geometry_import_group = model.GeometryImportGroup
-# Add the geometry import to the group
-geometry_import = geometry_import_group.AddGeometryImport()
-# Set the geometry import format
-geometry_import_format = Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.Format.Automatic
-# Set the geometry import preferences
-geometry_import_preferences = Ansys.ACT.Mechanical.Utilities.GeometryImportPreferences()
-geometry_import_preferences.ProcessNamedSelections = True
-geometry_import_preferences.AnalysisType = (
-    Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.AnalysisType.Type2D
-)
 
 # Download the geometry file from the ansys/example-data repository
 geometry_path = download_file("Contact_Debonding_Example.agdb", "pymechanical", "embedding")
 
-# Import/reload the geometry from the CAD (.agdb) file using the provided preferences
-geometry_import.Import(geometry_path, geometry_import_format, geometry_import_preferences)
+app.helpers.import_geometry(geometry_path, analysis_type="2d")
+# Set the model
+model = app.Model
 
 # Visualize the model in 3D
 app.plot()
@@ -184,9 +96,8 @@ mat2_path = download_file("Contact_Debonding_Example_Mat2.xml", "pymechanical", 
 
 # Add materials to the model and import the material files
 model_materials = model.Materials
-model_materials.Import(mat1_path)
-model_materials.Import(mat2_path)
-
+app.helpers.import_materials(mat1_path)
+app.helpers.import_materials(mat2_path)
 # %%
 # Add connections to the model
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -252,9 +163,6 @@ part2_object.Material = get_child_object(
 # %%
 # Define the contact and contact regions
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# %%
-# Activate the contact region
 
 # Get the contact from the connection group
 contact = get_child_object(
@@ -351,9 +259,10 @@ mesh.Activate()
 mesh.GenerateMesh()
 
 # Display the mesh image
-set_camera_and_display_image(
-    camera, graphics, graphics_image_export_settings, output_path, "mesh.png"
-)
+camera.SetFit()
+image_path = Path(output_path) / "boundary_conditions.png"
+app.helpers.export_image(mesh, image_path)
+app.helpers.display_image(image_path)
 
 # %%
 # Add a contact debonding object
@@ -460,13 +369,10 @@ displacement2_vertex = add_displacement(
 
 static_structural_analysis.Activate()
 
-set_camera_and_display_image(
-    camera,
-    graphics,
-    graphics_image_export_settings,
-    output_path,
-    "boundary_conditions.png",
-)
+camera.SetFit()
+image_path = Path(output_path) / "boundary_conditions.png"
+app.helpers.export_image(static_structural_analysis, image_path)
+app.helpers.display_image(image_path)
 
 # %%
 # Add results to the solution
@@ -515,86 +421,47 @@ app.messages.show()
 # Directional deformation
 
 directional_deformation.Activate()
-set_camera_and_display_image(
-    camera,
-    graphics,
-    graphics_image_export_settings,
-    output_path,
-    "directional_deformation.png",
-)
+image_path = Path(output_path) / "directional_deformation.png"
+app.helpers.export_image(directional_deformation, image_path)
+app.helpers.display_image(image_path)
 
 # %%
 # Force reaction
 
 force_reaction.Activate()
-set_camera_and_display_image(
-    camera, graphics, graphics_image_export_settings, output_path, "force_reaction.png"
-)
+image_path = Path(output_path) / "force_reaction.png"
+app.helpers.export_image(force_reaction, image_path)
+app.helpers.display_image(image_path)
 
 # %%
 # Export the animation
 # ~~~~~~~~~~~~~~~~~~~~
 
-# %%
-# Create a function to update the animation frame
-
-
-def update_animation(frame: int) -> list[mpimg.AxesImage]:
-    """Update the animation frame for the GIF.
-
-    Parameters
-    ----------
-    frame : int
-        The frame number to update the animation.
-
-    Returns
-    -------
-    list[mpimg.AxesImage]
-        A list containing the updated image for the animation.
-    """
-    # Seeks to the given frame in this sequence file
-    gif.seek(frame)
-    # Set the image array to the current frame of the GIF
-    image.set_data(gif.convert("RGBA"))
-    # Return the updated image
-    return [image]
-
-
-# %%
-# Display the animation of the force reaction
-
-# Set the animation export format and settings
-animation_export_format = GraphicsAnimationExportFormat.GIF
-animation_export_settings = Ansys.Mechanical.Graphics.AnimationExportSettings()
-animation_export_settings.Width = 1280
-animation_export_settings.Height = 720
-
-# Set the path for the contact status GIF
 force_reaction_gif_path = output_path / "force_reaction.gif"
+app.helpers.export_animation(force_reaction, force_reaction_gif_path)
 
-# Export the force reaction animation to a GIF file
-force_reaction.ExportAnimation(
-    str(force_reaction_gif_path), animation_export_format, animation_export_settings
-)
+
+# %%
+# Display the contact status animation
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Open the GIF file and create an animation
 gif = Image.open(force_reaction_gif_path)
-# Set the subplots for the animation and turn off the axis
-figure, axes = plt.subplots(figsize=(16, 9))
-axes.axis("off")
-# Change the color of the image
-image = axes.imshow(gif.convert("RGBA"))
+fig, ax = plt.subplots(figsize=(8, 4))
+ax.axis("off")
+image = ax.imshow(gif.convert("RGBA"))
 
-# Create the animation using the figure, update_animation function, and the GIF frames
-# Set the interval between frames to 200 milliseconds and repeat the animation
-FuncAnimation(
-    figure,
-    update_animation,
-    frames=range(gif.n_frames),
-    interval=100,
-    repeat=True,
-    blit=True,
-)
+
+# Animation update function
+def update_frame(frame):
+    """Update the frame for the animation."""
+    gif.seek(frame)
+    image.set_array(gif.convert("RGBA"))
+    return (image,)
+
+
+# Create and display animation
+ani = FuncAnimation(fig, update_frame, frames=gif.n_frames, interval=200, blit=True, repeat=True)
 
 # Show the animation
 plt.show()

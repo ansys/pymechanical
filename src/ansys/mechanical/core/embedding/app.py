@@ -42,6 +42,7 @@ from ansys.mechanical.core.embedding.mechanical_warnings import (
 from ansys.mechanical.core.embedding.poster import Poster
 import ansys.mechanical.core.embedding.shell as shell
 from ansys.mechanical.core.embedding.ui import launch_ui
+from ansys.mechanical.core.embedding.utils import GetterWrapper
 from ansys.mechanical.core.feature_flags import get_command_line_arguments
 
 if typing.TYPE_CHECKING:
@@ -125,29 +126,6 @@ def _additional_args(readonly: bool, feature_flags: list, start_license: str, ve
 def is_initialized() -> bool:
     """Check if the app has been initialized."""
     return len(INSTANCES) != 0
-
-
-class GetterWrapper(object):
-    """Wrapper class around an attribute of an object."""
-
-    def __init__(self, obj, getter):
-        """Create a new instance of GetterWrapper."""
-        # immortal class which provides wrapped object
-        self.__dict__["_immortal_object"] = obj
-        # function to get the wrapped object from the immortal class
-        self.__dict__["_get_wrapped_object"] = getter
-
-    def __getattr__(self, attr):
-        """Wrap getters to the wrapped object."""
-        if attr in self.__dict__:
-            return getattr(self, attr)
-        return getattr(self._get_wrapped_object(self._immortal_object), attr)
-
-    def __setattr__(self, attr, value):
-        """Wrap setters to the wrapped object."""
-        if attr in self.__dict__:
-            setattr(self, attr, value)
-        setattr(self._get_wrapped_object(self._immortal_object), attr, value)
 
 
 class App:
@@ -320,6 +298,9 @@ class App:
         self._license_manager = None
         if self.version >= 252:
             self._license_manager = LicenseManager(self)
+
+        # Initialize helpers
+        self._helpers = None
 
     def __repr__(self):
         """Get the product info."""
@@ -624,6 +605,15 @@ class App:
             raise RuntimeError("LicenseManager is only available for version 252 and later.")
         return self._license_manager
 
+    @property
+    def helpers(self):
+        """Return the Helpers instance."""
+        if self._helpers is None:
+            from ansys.mechanical.core.embedding.helpers import Helpers
+
+            self._helpers = Helpers(self)
+        return self._helpers
+
     def _share(self, other) -> None:
         """Shares the state of self with other.
 
@@ -646,6 +636,20 @@ class App:
         other._version = self._version
         other._poster = self._poster
         other._updated_scopes = self._updated_scopes
+        other._helpers = self._helpers
+
+        # Share logging configuration
+        other._enable_logging = self._enable_logging
+        other._log = self._log
+        other._log_level = self._log_level
+
+        # Share interactive mode and shell state
+        other._interactive_mode = self._interactive_mode
+        other._started_interactive_shell = self._started_interactive_shell
+
+        # Share lazy-loaded instances
+        other._messages = self._messages
+        other._license_manager = self._license_manager
 
         # all events will be handled by the original App instance
         other._subscribed = False
@@ -793,7 +797,6 @@ class App:
         """
         if node is None:
             node = self.DataModel.Project
-
         self._print_tree(node, max_lines, lines_count, indentation)
 
     def log_debug(self, message):

@@ -1,0 +1,443 @@
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+"""Helper functions for Embedded App."""
+
+
+class Helpers:
+    """Helper utilities for Mechanical embedding application.
+
+    Parameters
+    ----------
+    app : App
+        The Mechanical embedding application instance.
+
+    Examples
+    --------
+    >>> from ansys.mechanical.core import App
+    >>> app = App()
+    >>> helpers = app.helpers
+    """
+
+    def __init__(self, app):
+        """Initialize the Helpers class with the app instance."""
+        self._app = app
+
+        # Import Ansys module for use across helper methods
+        from ansys.mechanical.core.embedding.global_importer import Ansys
+
+        self.Ansys = Ansys
+
+    def import_geometry(
+        self,
+        file_path: str,
+        process_named_selections: bool = False,
+        named_selection_key: str = "NS",
+        process_material_properties: bool = False,
+        process_coordinate_systems: bool = False,
+        analysis_type: str = "3d",
+    ):
+        r"""Import geometry file into the current Mechanical model.
+
+        Returns
+        -------
+        Ansys.ACT.Automation.Mechanical.GeometryImport
+            The geometry import object.
+
+        Parameters
+        ----------
+        file_path : str
+            The path to the geometry file to be imported.
+        process_named_selections : bool, optional
+            Whether to process named selections during import. Default is False.
+        named_selection_key : str, optional
+            Named selection key for filtering. Default is "NS".
+        process_material_properties : bool, optional
+            Whether to process material properties during import. Default is False.
+        process_coordinate_systems : bool, optional
+            Whether to process coordinate systems during import. Default is False.
+        analysis_type : str, optional
+            The type of analysis for the geometry import. Default is "3d".
+            Options are "2d" or "3d".
+
+        Examples
+        --------
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
+        >>> app.helpers.import_geometry("C:\\path\\to\\geometry.pmdb")
+
+        >>> # Import without processing named selections
+        >>> app.helpers.import_geometry(
+        ...     "C:\\path\\to\\geometry.step", process_named_selections=False
+        ... )
+
+        >>> # Import with all options specified
+        >>> app.helpers.import_geometry(
+        ...     "C:\\path\\to\\geometry.pmdb",
+        ...     process_named_selections=True,
+        ...     named_selection_key="",
+        ...     process_material_properties=True,
+        ...     process_coordinate_systems=True,
+        ... )
+        """
+        # Import Ansys and enums - same way as when App(globals=globals()) is used
+
+        # Create a geometry import group for the model
+        geometry_import_group = self._app.Model.GeometryImportGroup
+        # Add the geometry import to the group
+        geometry_import = geometry_import_group.AddGeometryImport()
+        # Set the geometry import format
+        geometry_import_format = (
+            self.Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.Format.Automatic
+        )
+        # Set the geometry import preferences
+        geometry_import_preferences = (
+            self.Ansys.ACT.Mechanical.Utilities.GeometryImportPreferences()
+        )
+        geometry_import_preferences.ProcessNamedSelections = process_named_selections
+        geometry_import_preferences.NamedSelectionKey = named_selection_key
+        geometry_import_preferences.ProcessMaterialProperties = process_material_properties
+        geometry_import_preferences.ProcessCoordinateSystems = process_coordinate_systems
+        if analysis_type.lower() == "2d":
+            geometry_import_preferences.AnalysisType = (
+                self.Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.AnalysisType.Type2D
+            )
+        else:
+            geometry_import_preferences.AnalysisType = (
+                self.Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.AnalysisType.Type3D
+            )
+        try:
+            geometry_import.Import(file_path, geometry_import_format, geometry_import_preferences)
+            self._app.log_info(
+                f"Imported geometry from {file_path} successfully."
+                f"Object State: {geometry_import.ObjectState}"
+            )
+            return geometry_import
+        except Exception as e:
+            raise RuntimeError(f"Geometry Import unsuccessful: {e}")
+
+    def import_materials(self, file_path: str):
+        r"""Import materials from a specified material database file.
+
+        Parameters
+        ----------
+        file_path : str
+            The path to the material database file to be imported.
+
+        Examples
+        --------
+        >>> from ansys.mechanical.core import App
+        >>> app.helpers.import_materials("C:\\path\\to\\materials.xml")
+        """
+        # Add materials to the model and import the material files
+        materials = self._app.Model.Materials
+
+        try:
+            materials.Import(file_path)
+            self._app.log_info(
+                f"Imported materials from {file_path} successfully."
+                f"Object State: {materials.ObjectState}"
+            )
+        except Exception as e:
+            raise RuntimeError(f"Material Import unsuccessful: {e}")
+
+    def export_image(
+        self,
+        obj=None,
+        file_path: "str | None" = None,
+        width: int = 1920,
+        height: int = 1080,
+        background: str = "white",
+        resolution: str = "enhanced",
+        current_graphics_display: bool = False,
+        image_format: str = "png",
+    ):
+        r"""Export an image of the specified object.
+
+        Parameters
+        ----------
+        obj : optional
+            The object to activate and export. If None, exports the current graphics display.
+            Can be any Mechanical object such as Geometry, Mesh, or Results.
+        file_path : str, optional
+            The path where the image will be saved. If None, defaults to "mechanical_export.png"
+            in the project directory.
+        width : int, optional
+            The width of the exported image in pixels. Default is 1920.
+        height : int, optional
+            The height of the exported image in pixels. Default is 1080.
+        background : str, optional
+            Background type for the exported image. Options are:
+            - "white": White background
+            - "appearance": Use graphics appearance setting
+            Default is "white".
+        resolution : str, optional
+            Resolution type for the exported image. Options are:
+            - "normal": Normal resolution (1:1)
+            - "enhanced": Enhanced resolution (2:1) - Default
+            - "high": High resolution (4:1)
+            Default is "enhanced".
+        current_graphics_display : bool, optional
+            Whether to use current graphics display. Default is False.
+        image_format : str, optional
+            Image format for export. Options are:
+            - "png": PNG image format - Default
+            - "jpg": JPG image format
+            - "bmp": BMP image format
+            - "tif": TIFF image format
+            - "eps": EPS image format
+            Default is "png".
+
+        Examples
+        --------
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
+        >>> # Export the geometry
+        >>> app.helpers.export_image(app.Model.Geometry, "C:\\path\\to\\geometry.png")
+
+        >>> # Export a specific result with custom settings
+        >>> result = app.Model.Analyses[0].Solution.Children[0]
+        >>> app.helpers.export_image(
+        ...     result,
+        ...     "C:\\path\\to\\result.jpg",
+        ...     background="appearance",
+        ...     resolution="high",
+        ...     image_format="jpg",
+        ... )
+        """
+        from pathlib import Path
+
+        from ansys.mechanical.core.embedding.enum_importer import (
+            GraphicsBackgroundType,
+            GraphicsImageExportFormat,
+            GraphicsResolutionType,
+        )
+
+        # Set default file path if not provided
+        if file_path is None:
+            raise ValueError("file_path must be provided for image export.")
+
+        resolved_path = Path(file_path)
+        # If only filename provided (no directory), save to current working directory
+        if not resolved_path.parent or resolved_path.parent == Path():
+            resolved_path = Path.cwd() / resolved_path.name
+
+        # Convert to string for API call
+        file_path = str(resolved_path)
+
+        # Activate the object if provided
+        if obj is not None:
+            self._app.Tree.Activate([obj])
+
+        # Create graphics image export settings
+        graphics_image_export_settings = (
+            self.Ansys.Mechanical.Graphics.GraphicsImageExportSettings()
+        )
+
+        # Set resolution type
+        resolution_lower = resolution.lower()
+        if resolution_lower == "enhanced":
+            graphics_image_export_settings.Resolution = GraphicsResolutionType.EnhancedResolution
+        elif resolution_lower == "high":
+            graphics_image_export_settings.Resolution = GraphicsResolutionType.HighResolution
+        elif resolution_lower == "normal":
+            graphics_image_export_settings.Resolution = GraphicsResolutionType.NormalResolution
+        else:
+            raise ValueError(
+                f"Invalid resolution type: {resolution}. "
+                "Valid options are 'Normal', 'Enhanced', or 'High'."
+            )
+
+        # Set background type
+        if background.lower() == "white":
+            graphics_image_export_settings.Background = GraphicsBackgroundType.White
+        elif background.lower() == "appearance":
+            graphics_image_export_settings.Background = (
+                GraphicsBackgroundType.GraphicsAppearanceSetting
+            )
+        else:
+            raise ValueError(
+                f"Invalid background type: {background}. Valid options are 'White' or 'Appearance'."
+            )
+
+        # Set image format
+        format_lower = image_format.lower()
+        if format_lower == "png":
+            export_format = GraphicsImageExportFormat.PNG
+        elif format_lower == "jpg" or format_lower == "jpeg":
+            export_format = GraphicsImageExportFormat.JPG
+        elif format_lower == "bmp":
+            export_format = GraphicsImageExportFormat.BMP
+        elif format_lower == "tif" or format_lower == "tiff":
+            export_format = GraphicsImageExportFormat.TIF
+        elif format_lower == "eps":
+            export_format = GraphicsImageExportFormat.EPS
+        else:
+            raise ValueError(
+                f"Invalid image format: {image_format}. "
+                "Valid options are 'PNG', 'JPG', 'BMP', 'TIF', or 'EPS'."
+            )
+
+        graphics_image_export_settings.CurrentGraphicsDisplay = current_graphics_display
+        graphics_image_export_settings.Width = width
+        graphics_image_export_settings.Height = height
+
+        try:
+            self._app.Graphics.ExportImage(file_path, export_format, graphics_image_export_settings)
+            self._app.log_info(f"Exported image to {file_path} successfully.")
+        except Exception as e:
+            raise RuntimeError(f"Image export unsuccessful: {e}")
+
+    def export_animation(
+        self,
+        obj=None,
+        file_path: "str | None" = None,
+        width: int = 1280,
+        height: int = 720,
+        animation_format: str = "gif",
+    ):
+        r"""Export an animation of the specified object.
+
+        Parameters
+        ----------
+        obj : optional
+            The object to activate and export animation. If None, exports animation of the
+            current graphics display. Can be any Mechanical object that supports animation
+            such as results with multiple time steps or modal analysis results.
+        file_path : str, optional
+            The path where the animation will be saved. If None, raises ValueError.
+            If only a filename is provided, saves to current working directory.
+        width : int, optional
+            The width of the exported animation in pixels. Default is 1280.
+        height : int, optional
+            The height of the exported animation in pixels. Default is 720.
+        animation_format : str, optional
+            Animation format for export. Options are:
+            - "gif": GIF animation format - Default
+            - "avi": AVI video format
+            - "mp4": MP4 video format
+            - "wmv": WMV video format
+            Default is "gif".
+
+        Examples
+        --------
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
+        >>> # Export animation of a result
+        >>> result = app.Model.Analyses[0].Solution.Children[0]
+        >>> app.helpers.export_animation(result, "result_animation.gif")
+
+        >>> # Export as MP4 with custom resolution
+        >>> app.helpers.export_animation(
+        ...     result, "result_animation.mp4", width=1920, height=1080, animation_format="mp4"
+        ... )
+        """
+        from pathlib import Path
+
+        from ansys.mechanical.core.embedding.enum_importer import (
+            GraphicsAnimationExportFormat,
+        )
+
+        # Set default file path if not provided
+        if file_path is None:
+            raise ValueError("file_path must be provided for animation export.")
+
+        resolved_path = Path(file_path)
+        # If only filename provided (no directory), save to current working directory
+        if not resolved_path.parent or resolved_path.parent == Path():
+            resolved_path = Path.cwd() / resolved_path.name
+
+        # Convert to string for API call
+        file_path = str(resolved_path)
+
+        # Activate the object if provided
+        if obj is None:
+            self._app.log_info(
+                "No object provided for animation export; using first active object."
+            )
+            obj = self._app.Tree.FirstActiveObject
+
+        # Create animation export settings
+        animation_export_settings = self.Ansys.Mechanical.Graphics.AnimationExportSettings(
+            width, height
+        )
+
+        # Set animation format
+        format_lower = animation_format.lower()
+        if format_lower == "gif":
+            export_format = GraphicsAnimationExportFormat.GIF
+        elif format_lower == "avi":
+            export_format = GraphicsAnimationExportFormat.AVI
+        elif format_lower == "mp4":
+            export_format = GraphicsAnimationExportFormat.MP4
+        elif format_lower == "wmv":
+            export_format = GraphicsAnimationExportFormat.WMV
+        else:
+            raise ValueError(
+                f"Invalid animation format: {animation_format}. "
+                "Valid options are 'GIF', 'AVI', 'MP4', or 'WMV'."
+            )
+
+        try:
+            self._app.Tree.Activate([obj])
+            obj.ExportAnimation(file_path, export_format, animation_export_settings)
+            self._app.log_info(f"Exported animation to {file_path} successfully.")
+        except Exception as e:
+            raise RuntimeError(f"Animation export unsuccessful: {e}")
+
+    def display_image(
+        self,
+        image_path: str,
+        figsize: tuple = (16, 9),
+        axis: str = "off",
+    ):
+        """Display an image using matplotlib.
+
+        Parameters
+        ----------
+        image_path : str
+            The path to the image file to display.
+        figsize : tuple, optional
+            The size of the figure in inches (width, height). Default is (16, 9).
+        axis : str, optional
+            The axis visibility setting ('on' or 'off'). Default is "off".
+
+        Examples
+        --------
+        >>> from ansys.mechanical.core import App
+        >>> app = App()
+        >>> app.helpers.export_image(app.Model.Geometry, "geometry.png")
+        >>> app.helpers.display_image("geometry.png")
+
+        >>> # Display with custom figure size
+        >>> app.helpers.display_image("result.png", figsize=(10, 6))
+        """
+        from matplotlib import image as mpimg, pyplot as plt
+
+        # Set the figure size
+        plt.figure(figsize=figsize)
+        # Read and display the image
+        plt.imshow(mpimg.imread(image_path))
+        # Turn axis on or off
+        plt.axis(axis)
+        # Display the figure
+        plt.show()
