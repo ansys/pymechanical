@@ -32,7 +32,7 @@ env:
   DOCKER_MECH_CONTAINER_NAME: mechanical
   PACKAGE_NAME: ansys-mechanical-core
   DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
-  MAIN_PYTHON_VERSION: '3.12'
+  MAIN_PYTHON_VERSION: '3.14' # if all test are passing we will revert to 3.13 as main
   STABLE_REVN: '261'
   # DEV_REVN & its Docker image are used in scheduled or registry package runs
   DEV_REVN: '271'
@@ -126,7 +126,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ['3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
         should-release:
           - ${{ github.event_name == 'push' && contains(github.ref, 'refs/tags') }}
         exclude:
@@ -434,7 +434,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
     permissions:
       contents: read
       packages: read         # Required to pull Docker images from GitHub Container Registry
@@ -596,7 +596,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
     permissions:
       contents: read
       packages: read         # Required to pull Docker images from GitHub Container Registry
