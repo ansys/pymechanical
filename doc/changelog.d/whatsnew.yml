@@ -27,7 +27,6 @@ fragments:
         helpers.import_materials("steel_aluminum.xml")
 
         # Configure and export visualization
-        helpers.setup_view(fit=True, view_type="iso")
         helpers.export_image("result.png", width=1920, height=1080)
 
     For complete details, see the `Helpers User Guide <https://mechanical.docs.pyansys.com/version/stable/user_guide/howto/helpers.html>`_.
