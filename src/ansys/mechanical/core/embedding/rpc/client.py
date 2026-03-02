@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -68,7 +68,7 @@ class Client:
         self._error_type = Exception
         self._has_exited = False
 
-    def _get_python_script_api_version(self) -> bool:
+    def _get_python_script_api_version(self) -> int:
         """Get the python api version."""
         return 1
 

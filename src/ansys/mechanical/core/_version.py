@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -30,14 +30,11 @@ version_info = 0, 58, 'dev0'
 
 """
 
-try:
-    import importlib.metadata as importlib_metadata
-except ModuleNotFoundError:  # pragma: no cover
-    import importlib_metadata
+import importlib.metadata
 
 # Read from the pyproject.toml
 # major, minor, patch
-__version__ = importlib_metadata.version("ansys-mechanical-core")
+__version__ = importlib.metadata.version("ansys-mechanical-core")
 
 SUPPORTED_MECHANICAL_VERSIONS = {
     252: "2025R2",

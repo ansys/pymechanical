@@ -24,11 +24,6 @@ version: '3.3'
 # NOTES
 # =====
 #
-# - If you need to run a license server, look at the 'docker-compose.license_server.yml'
-# file. In that case, the command to launch everything is:
-#
-#      docker-compose -f docker-compose.yml -f docker-compose.license-server.yml -f docker-compose.local.yml up
-#
 
 services:
   mechanical:

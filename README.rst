@@ -3,7 +3,7 @@
    :width: 580px
 
 
-|pyansys| |pypi| |python| |GH-CI| |codecov| |MIT| |black|
+|pyansys| |pypi| |python| |GH-CI| |codecov| |MIT| |ruff| |pre-commit| |deep-wiki|
 
 .. |pyansys| image:: https://img.shields.io/badge/Py-Ansys-ffc107.svg?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAABDklEQVQ4jWNgoDfg5mD8vE7q/3bpVyskbW0sMRUwofHD7Dh5OBkZGBgW7/3W2tZpa2tLQEOyOzeEsfumlK2tbVpaGj4N6jIs1lpsDAwMJ278sveMY2BgCA0NFRISwqkhyQ1q/Nyd3zg4OBgYGNjZ2ePi4rB5loGBhZnhxTLJ/9ulv26Q4uVk1NXV/f///////69du4Zdg78lx//t0v+3S88rFISInD59GqIH2esIJ8G9O2/XVwhjzpw5EAam1xkkBJn/bJX+v1365hxxuCAfH9+3b9/+////48cPuNehNsS7cDEzMTAwMMzb+Q2u4dOnT2vWrMHu9ZtzxP9vl/69RVpCkBlZ3N7enoDXBwEAAA+YYitOilMVAAAAAElFTkSuQmCC
    :target: https://docs.pyansys.com/
@@ -29,134 +29,116 @@
    :target: https://opensource.org/licenses/MIT
    :alt: MIT
 
-.. |black| image:: https://img.shields.io/badge/code%20style-black-000000.svg?style=flat
-   :target: https://github.com/psf/black
-   :alt: Black
+.. |ruff| image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json
+   :target: https://github.com/astral-sh/ruff
+   :alt: Ruff
 
 .. |pre-commit| image:: https://results.pre-commit.ci/badge/github/ansys/pymechanical/main.svg?style=flat
    :target: https://results.pre-commit.ci/latest/github/ansys/pymechanical/main
    :alt: pre-commit
 
+.. |deep-wiki| image:: https://deepwiki.com/badge.svg
+   :target: https://deepwiki.com/ansys/pymechanical
+   :alt: Ask DeepWiki
+
 Overview
 --------
 
-PyMechanical brings Ansys Mechanical to Python. It enables your Python programs to use
-Mechanical within Python's ecosystem. It includes the ability to:
-
-- Connect to a remote Mechanical session
-- Embed an instance of Mechanical directly as a Python object
+PyMechanical is a Python interface for Ansys Mechanical, enabling automation and integration
+of complex simulation analysis workflows. It supports both remote sessions and embedded instances.
 
 
-Install the package
--------------------
+Compatibility
+~~~~~~~~~~~~~
 
-Install PyMechanical using ``pip`` with::
+**Supported versions:**
+
+* **Python**: 3.10 - 3.13
+* **Mechanical**: 2024 R1 (v241) to 2025 R2 (v252)
+* **Platforms**: Windows, Linux
+
+Installation
+------------
+
+Install from PyPI::
 
    pip install ansys-mechanical-core
 
-For more information, see `Install the package <https://mechanical.docs.pyansys.com/version/stable/getting_started/index.html>`_
-in the PyMechanical documentation.
+For graphics support::
 
+   pip install ansys-mechanical-core[graphics]
 
-Dependencies
-------------
+For RPC functionality::
 
-You must have a licensed copy of `Ansys Mechanical <https://www.ansys.com/products/structures/ansys-mechanical>`_
-installed. When using an embedded instance, that installation must be runnable from the
-same computer as your Python program. When using a remote session, a connection to that
-session must be reachable from your Python program.
+   pip install ansys-mechanical-core[rpc]
 
-Getting started
----------------
+**Requirements:**
 
-.. _scripting_guide: https://ansyshelp.ansys.com/Views/Secured/corp/v251/en/act_script/act_script.html
+* Licensed copy of `Ansys Mechanical <https://www.ansys.com/products/structures/ansys-mechanical>`_ (2024 R1+ on Windows/Linux).
+* For embedded instances: Local Mechanical installation required.
+* For remote sessions: Network access to a running Mechanical instance.
+* Python 3.10 - 3.13
 
-PyMechanical uses the built-in scripting capabilities of Mechanical. For information on the
-scripting APIs available, see the `Scripting in Mechanical Guide <_scripting_guide>`_ in the
-Ansys Help.
+Quick start
+-----------
 
-Configuring the mechanical installation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-On a Windows system, the environment variable ``AWP_ROOT<ver>`` is configured when Mechanical is
-installed, where ``<ver>`` is the Mechanical release number, such as ``251`` for release 2025 R1.
-PyMechanical automatically uses this environment variable (or variables if there are multiple
-installations of different versions) to locate the latest Mechanical installation. On a Linux
-system, you must configure the ``AWP_ROOT<ver>`` environment variable to point to the
-absolute path of a Mechanical installation.
-
-Starting a remote session
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-To start a remote session of Mechanical on your computer from Python, use the ``launch_mechanical()``
-method. This methods returns an object representing the connection to the session:
+**Remote session:**
 
 .. code:: python
 
    import ansys.mechanical.core as pymechanical
 
+   # Launch a new Mechanical instance
    mechanical = pymechanical.launch_mechanical()
+   result = mechanical.run_python_script("2+3")
+   print(result)  # Output: 5
+   mechanical.exit()
 
-Running commands on the remote session
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Given a connection to a remote session, you can send an IronPython script. This uses the built-in
-scripting capabilities of Mechanical. Here is an example:
-
-.. code:: python
-
-    result = mechanical.run_python_script("2+3")
-    result = mechanical.run_python_script("ExtAPI.DataModel.Project.ProjectDirectory")
-
-
-Using an embedded instance of Mechanical as a Python object
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-PyMechanical also supports directly embedding an instance of Mechanical as a Python object.
-In this mode, there is no externally running instance of Mechanical. This feature is supported
-on Windows and Linux for version 2024 R1 and later. Here is an example:
+**Connect to existing instance:**
 
 .. code:: python
 
    import ansys.mechanical.core as pymechanical
 
+   # Connect to a running instance on port 10000
+   mechanical = pymechanical.connect_to_mechanical(port=10000)
+   result = mechanical.run_python_script("Model.Name")
+   print(result)
+
+**Embedded instance:**
+
+.. code:: python
+
+   import ansys.mechanical.core as pymechanical
+
+   # Create an embedded Mechanical app
    app = pymechanical.App()
    app.update_globals(globals())
-   project_dir = DataModel.Project.ProjectDirectory
 
-How to report issues
---------------------
+   # Access Mechanical objects directly
+   print(DataModel.Project.ProjectDirectory)
 
-If you encounter any issues or limitations with PyMechanical that hinder your work, please create
-an issue or discussion so our team can address them promptly:
+   # Add analysis and solve
+   model = Model
+   static = model.AddStaticStructuralAnalysis()
+   static.Solution.Solve(True)
 
-* `PyMechanical Issues <https://github.com/ansys/pymechanical/issues>`_: Report bugs and request new features.
-* `PyMechanical Discussions <https://github.com/ansys/pymechanical/discussions>`_: Post questions, share ideas, and get community feedback.
 
-For issues pertaining to `Mechanical scripting <https://mechanical.docs.pyansys.com/version/stable/user_guide_scripting/index.html>`_,
-please make a post on the `Developer Portal <https://forum.ansys.com/categories/structures>`_.
+Troubleshooting
+---------------
 
-If you have general questions about PyAnsys or are unsure which repository to place an issue in,
-email `pyansys.core@ansys.com <pyansys.core@ansys.com>`_.
+**Common issues:**
 
-Documentation resources
------------------------
+* **Connection refused**: Ensure Mechanical is running and the port is accessible.
+* **License error**: Verify your Ansys license is properly configured.
+* **Import error**: Check that ``ansys-pythonnet`` is installed (not ``pythonnet``).
+* **Linux embedding**: Use `mechanical-env` to run python scripts for embedded mode.
 
-Documentation for the latest stable release of PyMechanical is hosted at `PyMechanical documentation
-<https://mechanical.docs.pyansys.com/>`_.
+Documentation and support
+-------------------------
 
-In the upper right corner of the documentation's title bar, there is an option for switching from
-viewing the documentation for the latest stable release to viewing the documentation for the
-development version or previously released versions.
-
-You can also `view <https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.png>`_ or
-`download <https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.pdf>`_ the
-PyMechanical cheat sheet. This one-page reference provides syntax rules and commands
-for using PyMechanical.
-
-Testing and development
------------------------
-
-If you would like to test or contribute to the development of PyMechanical, see
-`Contribute <https://mechanical.docs.pyansys.com/version/stable/contributing.html>`_ in
-the PyMechanical documentation.
+* `Documentation <https://mechanical.docs.pyansys.com/>`_
+* `Cheat sheet <https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.pdf>`_
+* `Issues <https://github.com/ansys/pymechanical/issues>`_ - report bugs or request features
+* `Discussions <https://github.com/ansys/pymechanical/discussions>`_ - ask questions
+* `Contributing guide <https://mechanical.docs.pyansys.com/version/stable/contributing.html>`_

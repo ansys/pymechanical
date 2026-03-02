@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -157,7 +157,7 @@ camera.Rotate(180, CameraAxisType.ScreenY)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Download the geometry file from the ansys/example-data repository
-geometry_path = download_file("C_GEOMETRY.agdb", "pymechanical", "embedding")
+geometry_path = download_file("C_GEOMETRY.pmdb", "pymechanical", "embedding")
 # Download the material file from the ansys/example-data repository
 mat_path = download_file("Air-material.xml", "pymechanical", "embedding")
 
