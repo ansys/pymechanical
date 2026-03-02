@@ -23,7 +23,7 @@ Build your own Mechanical Docker image
 .. note::
    The provided Docker configuration is **experimental** and is intended to produce a
    minimal image for running PyMechanical tests. The
-   `.dockerignore <https://github.com/ansys/pymechanical/tree/main/docker/252/.dockerignore>`_
+   `.dockerignore <https://github.com/ansys/pymechanical/blob/main/docker/252/.dockerignore>`_
    file deliberately excludes a large number of Mechanical installation files to reduce
    image size. If you encounter issues with missing capabilities or components in your
    container, review and modify the ``.dockerignore`` file to include the additional
