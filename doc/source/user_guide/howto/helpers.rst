@@ -202,76 +202,6 @@ or mode shapes, such as transient analyses or modal analyses.
    Animation export requires that the result has been solved and has multiple steps or modes
    to animate. Attempting to export an animation of unsolved results raises a ``RuntimeError``.
 
-Setting up camera views
------------------------
-
-The ``setup_view()`` method configures the camera orientation and view settings for your graphics
-display. This is particularly useful before exporting images to ensure consistent viewpoints.
-
-**Basic view orientations**
-
-.. code:: python
-
-   from ansys.mechanical.core import App
-
-   app = App(globals=globals())
-   # Import geometry first
-   app.helpers.import_geometry("path/to/geometry.x_t")
-
-   # Set isometric view
-   app.helpers.setup_view(orientation="iso")
-
-   # Set front view
-   app.helpers.setup_view(orientation="front")
-
-**Available orientations**
-
-- ``"iso"`` - Isometric view (default)
-- ``"front"`` - Front view
-- ``"back"`` - Back view
-- ``"top"`` - Top view
-- ``"bottom"`` - Bottom view
-- ``"left"`` - Left side view
-- ``"right"`` - Right side view
-
-**View with rotation**
-
-Add rotation to any standard view:
-
-.. code:: python
-
-   # Isometric view rotated 45 degrees around X axis
-   app.helpers.setup_view(orientation="iso", rotation=45, axis="x")
-
-   # Front view rotated 90 degrees around Y axis
-   app.helpers.setup_view(orientation="front", rotation=90, axis="y")
-
-   # Top view rotated 180 degrees around Z axis
-   app.helpers.setup_view(orientation="top", rotation=180, axis="z")
-
-**Controlling camera fit**
-
-.. code:: python
-
-   # Set view and fit to model (default)
-   app.helpers.setup_view(orientation="iso", fit=True)
-
-   # Set view without auto-fit
-   app.helpers.setup_view(orientation="iso", fit=False)
-
-**Advanced: Scene height**
-
-Control the zoom level by setting the scene height:
-
-.. code:: python
-
-   # Requires Quantity type from Mechanical
-   app.update_globals(globals())
-
-   app.helpers.setup_view(
-       orientation="iso",
-       scene_height=Quantity(2.0, "in")
-   )
 
 Displaying images
 -----------------
@@ -320,10 +250,7 @@ Workflow examples
    # Step 2: Import materials
    app.helpers.import_materials("materials.xml")
 
-   # Step 3: Set up the view
-   app.helpers.setup_view(orientation="iso", fit=True)
-
-   # Step 4: Export image
+   # Step 3: Export image
    app.helpers.export_image(
        obj=app.Model.Geometry,
        file_path="bracket_iso.png",
@@ -332,27 +259,8 @@ Workflow examples
        resolution="enhanced"
    )
 
-   # Step 5: Display it
+   # Step 4: Display it
    app.helpers.display_image("bracket_iso.png")
-
-**Multiple view angles**
-
-Export images from different angles for documentation:
-
-.. code:: python
-
-   from ansys.mechanical.core import App
-
-   app = App(globals=globals())
-   app.helpers.import_geometry("part.step")
-
-   views = ["front", "top", "iso"]
-   for view in views:
-       app.helpers.setup_view(orientation=view)
-       app.helpers.export_image(
-           obj=app.Model.Geometry,
-           file_path=f"part_{view}.png"
-       )
 
 
 
@@ -385,31 +293,20 @@ All helper methods raise descriptive exceptions when operations fail:
    except ValueError as e:
        print(f"Invalid parameter: {e}")
 
-**Invalid options**
-
-.. code:: python
-
-   try:
-       app.helpers.setup_view(orientation="invalid")
-   except ValueError as e:
-       print(f"Invalid orientation: {e}")
-
 Best practices
 --------------
 
 1. **Always check paths**: Use absolute paths or ``pathlib.Path`` objects for file operations
    to avoid path-related errors.
 
-2. **Set up views before exporting**: Use ``setup_view()`` before ``export_image()`` to ensure
-   consistent viewpoints across multiple exports.
 
-3. **Use appropriate image formats**: PNG for technical documentation, JPG for presentations,
+2. **Use appropriate image formats**: PNG for technical documentation, JPG for presentations,
    EPS for publications.
 
-4. **Handle errors gracefully**: Wrap helper method calls in try-except blocks to handle
+3. **Handle errors gracefully**: Wrap helper method calls in try-except blocks to handle
    potential failures gracefully in production scripts.
 
-5. **Verify imports**: After importing geometry or materials, verify the object state:
+4. **Verify imports**: After importing geometry or materials, verify the object state:
 
    .. code:: python
 

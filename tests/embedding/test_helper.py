@@ -273,53 +273,6 @@ def test_export_animation_validation_errors(embedded_app, assets, tmp_path, prin
 
 
 @pytest.mark.embedding
-def test_setup_view(embedded_app, assets, printer):
-    """Test setup_view with various options."""
-    printer("Testing setup_view")
-    geometry_file = str(Path(assets) / "Eng157.x_t")
-    embedded_app.helpers.import_geometry(geometry_file)
-
-    # Test default parameters
-    printer("Testing default view setup")
-    embedded_app.helpers.setup_view()
-    printer("Default setup successful")
-
-    # Test all orientations
-    printer("Testing all orientations")
-    orientations = ["iso", "front", "back", "top", "bottom", "left", "right"]
-    for orientation in orientations:
-        embedded_app.helpers.setup_view(orientation=orientation)
-        printer(f"Set {orientation} view successfully")
-
-    # Test with rotation on different axes
-    printer("Testing rotation on different axes")
-    embedded_app.helpers.setup_view(orientation="iso", rotation=45, axis="x")
-    embedded_app.helpers.setup_view(orientation="front", rotation=90, axis="y")
-    embedded_app.helpers.setup_view(orientation="top", rotation=180, axis="z")
-    printer("All view setups successful")
-
-
-@pytest.mark.embedding
-def test_setup_view_validation_errors(embedded_app, assets, printer):
-    """Test setup_view validation errors."""
-    printer("Testing setup_view validation errors")
-    geometry_file = str(Path(assets) / "Eng157.x_t")
-    embedded_app.helpers.import_geometry(geometry_file)
-
-    # Test invalid orientation
-    printer("Testing invalid orientation error")
-    with pytest.raises(ValueError, match="Invalid orientation"):
-        embedded_app.helpers.setup_view(orientation="invalid")
-
-    # Test invalid axis
-    printer("Testing invalid axis error")
-    with pytest.raises(ValueError, match="Invalid axis"):
-        embedded_app.helpers.setup_view(rotation=45, axis="invalid")
-
-    printer("All validation errors handled correctly")
-
-
-@pytest.mark.embedding
 def test_display_image(embedded_app, assets, tmp_path, printer, monkeypatch):
     """Test display_image with default and custom settings."""
     printer("Testing display_image")

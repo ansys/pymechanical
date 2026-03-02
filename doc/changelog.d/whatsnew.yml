@@ -12,7 +12,6 @@ fragments:
     - **import_materials()**: Load material definitions from XML files
     - **export_image()**: Export high-quality images of the current view
     - **export_animation()**: Create animations in multiple formats (GIF, MP4, AVI, WMV)
-    - **setup_view()**: Configure camera and display settings
     - **display_image()**: Show exported images inline in notebooks
 
     Usage:
