@@ -156,7 +156,9 @@ def _cli_impl(
 
     # Check if the user revision number is less or greater than the min and max revisions
     # in the ansys-mechanical-stubs package location
-    if revision < min(revns):
+    if revision is None:
+        revision = max(revns)
+    elif revision < min(revns):
         raise Exception(f"PyMechanical Stubs are not available for {revision}")
     elif revision > max(revns):
         warnings.warn(
