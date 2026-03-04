@@ -27,11 +27,11 @@ Build your own Mechanical Docker image
    container, review and modify the ``.dockerignore`` file to include the additional
    files required for your use case.
 
-The Mechanical Docker image provided in the PyMechanical repository is for internal use. Users must build it from a local Mechanical installation.
-The instruction can be found in the PyMechanical repository
-under `Make container <https://github.com/ansys/pymechanical/blob/main/docker/make_container.rst>`_.
-which uses `Dockerfile <https://github.com/ansys/pymechanical/blob/main/docker/252/Dockerfile>`_ and
-`.dockerignore <https://github.com/ansys/pymechanical/blob/main/docker/252/dockerignore>`_.
+The Mechanical Docker image provided in the PyMechanical repository is for internal use. Users must
+build it from a local Mechanical installation. Instructions are provided in the PyMechanical
+repository under `Make container <https://github.com/ansys/pymechanical/blob/main/docker/make_container.rst>`_,
+which uses the `Dockerfile <https://github.com/ansys/pymechanical/blob/main/docker/252/Dockerfile>`_ and
+`.dockerignore <https://github.com/ansys/pymechanical/blob/main/docker/252/.dockerignore>`_.
 
 **Step 1: Download Mechanical**
 
@@ -41,7 +41,7 @@ Download the latest Mechanical installer from the
 **Step 2: Create Mechanical Docker image**
 
 Install Mechanical on a Linux-based machine that supports the Mechanical product.
-Follow `Make container <https://github.com/ansys/pymechanical/blob/main/docker/make_container.rst>`_.
+Follow `Make container <https://github.com/ansys/pymechanical/blob/main/docker/make_container.rst>`_
 to create the Docker image.
 
 **Step 3: Launch the container**
@@ -52,16 +52,15 @@ server in the ``LICENSE_SERVER`` environment variable:
 Note that port ``10000``, which is local to the container, is mapped to port ``10000``
 on the host. You can use different port mappings to run multiple instances simultaneously.
 
-
-By default, the Mechanical container starts with secure gRPC transport (mTLS on Linux) for
-Mechanical versions that have the required service pack installed (for example, 2025 R2 / 252
-with SP03 or later) and any version released after 261. For a full breakdown of which versions
-and service packs enable secure connections by default, see
+By default, the Mechanical container starts a secure gRPC server (mTLS on Linux) when the
+Mechanical version supports secure connections (for example, 2025 R2 / 252 with SP03 or later,
+and any version released after 261). For a full breakdown of which versions and service packs
+enable secure connections by default, see
 :ref:`Version and service pack requirements <grpc_security_version_requirements>`.
 
 The following demonstrates how to launch the container in **insecure mode** if you prefer to
-connect without encryption. But note that this is not recommended for production environments.
-To do so, override the entrypoint and pass
+connect without encryption. This is not recommended for production environments. To do so,
+override the entrypoint and pass
 ``--transport-mode insecure`` explicitly:
 
 .. code::
@@ -144,10 +143,11 @@ For additional command line arguments, see the `Scripting in Mechanical Guide`_ 
 Ansys Help.
 
 
-For PyMechanical embedding, you can directly enter the container using --entrypoint=/bin/bash and then install python packages as needed.
+For PyMechanical embedding, you can directly enter the container using ``--entrypoint=/bin/bash``
+and then install Python packages as needed.
 
 .. code:: bash
 
     docker run -it -e ANSYSLMD_LICENSE_FILE=$LICENSE_SERVER --entrypoint=/bin/bash mechanical:25.2
 
-    # Once inside the container, you can install Python  and packages as needed then create embedded app
+    # Once inside the container, you can install Python and packages as needed, then create an embedded app.
