@@ -28,7 +28,6 @@ from pathlib import Path
 import re
 import site
 import sys
-import typing
 import warnings
 
 import ansys.tools.common.path as atp
@@ -80,7 +79,7 @@ def get_stubs_versions(stubs_location: Path):
 
 def _vscode_impl(
     target: str = "user",
-    revision: typing.Optional[int] = None,
+    revision: int | None = None,
 ):
     """Get the IDE configuration for autocomplete in VS Code.
 
@@ -135,7 +134,7 @@ def _vscode_impl(
 def _cli_impl(
     ide: str = "vscode",
     target: str = "user",
-    revision: typing.Optional[int] = None,
+    revision: int | None = None,
 ):
     """Provide the user with the path to the settings.json file and IDE settings.
 

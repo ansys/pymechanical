@@ -37,7 +37,6 @@ import sys
 import threading
 import time
 import typing
-from typing import Optional
 import uuid
 import warnings
 import weakref
@@ -139,7 +138,7 @@ LOCALHOST = "127.0.0.1"
 MECHANICAL_DEFAULT_PORT = 10000
 """Default Mechanical port."""
 
-GALLERY_INSTANCE: list[typing.Optional[dict[str, typing.Any]]] = [None]
+GALLERY_INSTANCE: list[dict[str, typing.Any] | None] = [None]
 """List of gallery instances."""
 
 
@@ -2180,7 +2179,7 @@ def launch_rpyc(
     additional_switches=None,
     additional_envs=None,
     verbose=False,
-) -> typing.Tuple[int, subprocess.Popen]:
+) -> tuple[int, subprocess.Popen]:
     """Start Mechanical locally in RPyC mode."""
     _version = atp.version_from_path("mechanical", exec_file)
 
@@ -2219,7 +2218,7 @@ server.start()
 def launch_remote_mechanical(
     version=None,
     grpc_options=None,
-) -> tuple[grpc.Channel, Optional[typing.Any]]:  # pragma: no cover
+) -> tuple[grpc.Channel, typing.Any | None]:  # pragma: no cover
     """Start Mechanical remotely using the Product Instance Management (PIM) API.
 
     When calling this method, you must ensure that you are in an environment

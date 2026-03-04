@@ -75,6 +75,7 @@ repos:
     rev: 75992aaa40730136014f34227e0135f63fc951b4  # frozen: v3.21.2
     hooks:
     -   id: pyupgrade
+        args: ['--py310-plus']
 
 - repo: https://github.com/crate-ci/typos
   rev: 5745f2a8dd91cd7b684680e2e10a2b388ba6e5cf  # frozen: v1

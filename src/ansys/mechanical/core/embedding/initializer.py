@@ -27,7 +27,6 @@ import os
 from pathlib import Path
 import platform
 import sys
-import typing
 import warnings
 
 from ansys.mechanical.core.embedding.loader import load_clr
@@ -230,7 +229,7 @@ def __is_lib_loaded(libname: str):  # pragma: no cover
     return True
 
 
-def __check_loaded_libs(version: typing.Optional[int] = None):  # pragma: no cover
+def __check_loaded_libs(version: int | None = None):  # pragma: no cover
     """Ensure that incompatible libraries aren't loaded prior to PyMechanical load."""
     if platform.system() != "Linux":
         return
@@ -247,7 +246,7 @@ def __check_loaded_libs(version: typing.Optional[int] = None):  # pragma: no cov
         )
 
 
-def initialize(version: typing.Optional[int] = None):
+def initialize(version: int | None = None):
     """Initialize Mechanical embedding."""
     global INITIALIZED_VERSION
     if version is None:

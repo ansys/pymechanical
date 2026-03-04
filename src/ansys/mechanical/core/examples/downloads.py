@@ -24,7 +24,6 @@
 
 from pathlib import Path
 import shutil
-from typing import Optional
 
 from ansys.tools.common.example_download import download_manager
 
@@ -34,7 +33,7 @@ __all__ = ["download_file", "delete_downloads"]
 
 
 def download_file(
-    filename: str, *directory: str, destination: Optional[str] = None, force: bool = False
+    filename: str, *directory: str, destination: str | None = None, force: bool = False
 ):
     """Download a file from PyAnsys examples Github repo.
 
