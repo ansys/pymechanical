@@ -343,7 +343,7 @@ class Mechanical:
             IP address to connect to the server.  The default is ``None``
             in which case ``localhost`` is used.
         port : int, optional
-            Port to connect to the Mecahnical server. The default is ``None``,
+            Port to connect to the Mechanical server. The default is ``None``,
             in which case ``10000`` is used.
         timeout : float, optional
             Maximum allowable time for connecting to the Mechanical server.
@@ -377,7 +377,7 @@ class Mechanical:
             Corresponding remote instance when Mechanical is launched
             through PyPIM. The default is ``None``. If a remote instance
             is specified, this instance is deleted when the
-            :func:`mecahnical.exit <ansys.mechanical.core.Mechanical.exit>`
+            :func:`mechanical.exit <ansys.mechanical.core.Mechanical.exit>`
             function is called.
         keep_connection_alive : bool, optional
             Whether to keep the gRPC connection alive by running a background thread
@@ -463,9 +463,9 @@ class Mechanical:
         self._port = port
 
         # Store start parameters
-        self._start_parm = kwargs.copy()
-        self._start_parm["transport_mode"] = transport_mode
-        self._start_parm["certs_dir"] = certs_dir
+        self._start_param = kwargs.copy()
+        self._start_param["transport_mode"] = transport_mode
+        self._start_param["certs_dir"] = certs_dir
 
         self._cleanup_on_exit = cleanup_on_exit
         self._busy = False  # used to check if running a command on the server
@@ -945,14 +945,14 @@ class Mechanical:
         if self._cleanup_on_exit:
             self.exit()
 
-        exec_file = self._start_parm.get("exec_file", get_mechanical_path(allow_input=False))
-        batch = self._start_parm.get("batch", True)
-        additional_switches = self._start_parm.get("additional_switches", None)
-        additional_envs = self._start_parm.get("additional_envs", None)
+        exec_file = self._start_param.get("exec_file", get_mechanical_path(allow_input=False))
+        batch = self._start_param.get("batch", True)
+        additional_switches = self._start_param.get("additional_switches", None)
+        additional_envs = self._start_param.get("additional_envs", None)
         # Preserve transport-related settings from original launch
-        host = self._start_parm.get("host", "127.0.0.1")
-        transport_mode = self._start_parm.get("transport_mode", None)
-        certs_dir = self._start_parm.get("certs_dir", "certs")
+        host = self._start_param.get("host", "127.0.0.1")
+        transport_mode = self._start_param.get("transport_mode", None)
+        certs_dir = self._start_param.get("certs_dir", "certs")
 
         port = launch_grpc(
             exec_file=exec_file,
@@ -2572,7 +2572,7 @@ def launch_mechanical(
             additional_switches.extend(["-p", str(start_license)])
 
     # Store parameters that will be used by launch() to restart the instance
-    start_parm = {
+    start_param = {
         "exec_file": exec_file,
         "batch": batch,
         "additional_switches": additional_switches,
@@ -2599,10 +2599,10 @@ def launch_mechanical(
             # TODO : Version argument is ignored...
             version = atp.version_from_path("mechanical", exec_file)
 
-            start_parm["local"] = True
-            start_parm["transport_mode"] = transport_mode
-            start_parm["certs_dir"] = certs_dir
-            start_parm["grpc_options"] = grpc_options
+            start_param["local"] = True
+            start_param["transport_mode"] = transport_mode
+            start_param["certs_dir"] = certs_dir
+            start_param["grpc_options"] = grpc_options
 
             mechanical = Mechanical(
                 ip=ip,  # Use converted IP for client connection
@@ -2613,13 +2613,13 @@ def launch_mechanical(
                 timeout=start_timeout,
                 cleanup_on_exit=cleanup_on_exit,
                 keep_connection_alive=keep_connection_alive,
-                **start_parm,
+                **start_param,
             )
         except Exception as exception:  # pragma: no cover
             # pass
             raise exception
     elif backend == "python":
-        port, process = launch_rpyc(port=port, **start_parm)
+        port, process = launch_rpyc(port=port, **start_param)
         from ansys.mechanical.core.embedding.rpc.client import Client
 
         mechanical = Client(

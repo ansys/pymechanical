@@ -90,7 +90,7 @@ intersphinx_mapping = {
 
 
 suppress_warnings = ["label.*", "autoapi.python_import_resolution", "design.grid", "config.cache"]
-# supress_warnings = ["ref.option"]
+# suppress_warnings = ["ref.option"]
 
 
 # numpydoc configuration

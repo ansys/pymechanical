@@ -271,7 +271,7 @@ topology_optimization.Solution.EvaluateAllResults()
 # Activate the topology density result after smoothing and display the image
 topology_density.Children[0].Activate()
 set_camera_and_display_image(
-    camera, graphics, settings_720p, output_path, "topo_opitimized_smooth.png"
+    camera, graphics, settings_720p, output_path, "topo_optimized_smooth.png"
 )
 
 # %%
@@ -286,7 +286,7 @@ settings_720p.Width = 1280
 settings_720p.Height = 720
 
 # Export the animation of the topology density result
-topology_optimized_gif = output_path / "topology_opitimized.gif"
+topology_optimized_gif = output_path / "topology_optimized.gif"
 topology_density.ExportAnimation(
     str(topology_optimized_gif), animation_export_format, settings_720p
 )

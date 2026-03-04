@@ -63,11 +63,6 @@ def download_file(
     >>> filename
     'C:/Users/user/AppData/Local/ansys_mechanical_core/ansys_mechanical_core/examples/example_01_geometry.agdb'
 
-    Download using the download manager
-
-    >>> filename = examples.download_file("11_blades_mode_1_ND_0.csv", "pymapdl", "cfx_mapping")
-    >>> filename
-    'C:/Users/user/AppData/Local/ansys_mechanical_core/ansys_mechanical_core/examples/11_blades_mode_1_ND_0.csv'
     """
     # Convert directory tuple to path string
     directory_path = "/".join(directory) if directory else ""
@@ -89,7 +84,7 @@ def delete_downloads() -> bool:
     Returns
     -------
     bool
-        ``True`` if delete_downlaods succeeds, ``False`` otherwise.
+        ``True`` if delete_downloads succeeds, ``False`` otherwise.
 
     Examples
     --------
