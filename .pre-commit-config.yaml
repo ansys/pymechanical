@@ -8,13 +8,13 @@ exclude: '^tests/embedding/assets/.*$|^tests/parts/.*$'
 repos:
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.15.1
+  rev: v0.15.4
   hooks:
     - id: ruff
     - id: ruff-format
 
 - repo: https://github.com/pre-commit/mirrors-mypy
-  rev: v1.11.0
+  rev: v1.19.1
   hooks:
     - id: mypy
       additional_dependencies: [types-requests, types-tqdm]
@@ -52,7 +52,7 @@ repos:
   - id: check-added-large-files
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.36.2
+  rev: 0.37.0
   hooks:
     - id: check-github-workflows
 
@@ -64,7 +64,7 @@ repos:
 
 # Security checks with bandit
 - repo: https://github.com/PyCQA/bandit
-  rev: 1.9.3 # 1.9.2
+  rev: 1.9.4 # 1.9.2
   hooks:
     - id: bandit
       args: ['-c', 'pyproject.toml']
