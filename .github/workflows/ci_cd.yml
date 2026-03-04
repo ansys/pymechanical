@@ -816,22 +816,22 @@ jobs:
       - name: Create common coverage directory
         run: mkdir cov-dir
 
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: coverage-file-tests-embedding
           path: cov-dir/embedding
 
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: coverage-file-tests-embedding-scripts
           path: cov-dir/embedding-scripts
 
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: coverage-file-tests-remote-session-launch
           path: cov-dir/launch
 
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: coverage-file-tests
           path: cov-dir/normal
@@ -934,7 +934,7 @@ jobs:
       contents: write        # Needed to download release artifacts
     steps:
       - name: "Download the library artifacts from build-library step"
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           name: ${{ env.PACKAGE_NAME }}-artifacts
           path: ${{ env.PACKAGE_NAME }}-artifacts
@@ -1002,7 +1002,7 @@ jobs:
       contents: read
     steps:
       - name: Microsoft Teams Notification
-        uses: skitionek/notify-microsoft-teams@11e40c38c3a629ae65a985b582eca4897b01e79e # v1.0.9
+        uses: skitionek/notify-microsoft-teams@0953822ab410e9a50e2abd2d6d8f85230b1ae4d6 # v1.1.0
         with:
           webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
           # Message to send to Teams as a webhook notification in JSON Payload format
