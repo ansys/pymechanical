@@ -71,9 +71,9 @@ override the entrypoint and pass
     docker run -d \
       -e ANSYSLMD_LICENSE_FILE=$LICENSE_SERVER \
       -p 10000:10000 \
-      --entrypoint="" \
+      --entrypoint=tini \
       mechanical:25.2 \
-      tini -- xvfb-run /install/ansys_inc/v${VERSION}/aisol/.workbench \
+      -- xvfb-run /install/ansys_inc/v${VERSION}/aisol/.workbench \
       -dsapplet -b -grpc 10000 --grpc-host 0.0.0.0 --transport-mode insecure
 
 .. note::
@@ -133,11 +133,11 @@ to the Docker command. For example, this code shows how you pass feature flags:
     docker run -d \
       -e ANSYSLMD_LICENSE_FILE=$LICENSE_SERVER \
       -p 10000:10000 \
-      --entrypoint="" \
+      --entrypoint=tini \
       mechanical:25.2 \
-      tini -- xvfb-run /install/ansys_inc/v${VERSION}/aisol/.workbench \
+      -- xvfb-run /install/ansys_inc/v${VERSION}/aisol/.workbench \
       -dsapplet -b -grpc 10000 --grpc-host 0.0.0.0 --transport-mode insecure \
-      mechanical.material.import;
+      -featureflags mechanical.material.import
 
 For additional command line arguments, see the `Scripting in Mechanical Guide`_ in the
 Ansys Help.
