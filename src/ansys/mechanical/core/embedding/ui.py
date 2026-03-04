@@ -34,7 +34,6 @@ from pathlib import Path
 from subprocess import Popen  # nosec: B404
 import sys
 import tempfile
-import typing
 
 import ansys.tools.common.path as atp
 
@@ -95,7 +94,7 @@ class UILauncher:
         """
         app.open(mechdb_file)
 
-    def graphically_launch_temp(self, app: App, temp_file: str) -> typing.Union[Popen, str]:
+    def graphically_launch_temp(self, app: App, temp_file: str) -> Popen | str:
         """Launch the GUI for the mechdb file with a temporary name from save_temp_copy().
 
         Parameters

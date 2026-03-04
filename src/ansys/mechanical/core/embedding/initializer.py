@@ -158,7 +158,7 @@ def __windows_store_workaround(version: int) -> None:
     # Set the path to the tp directory within the AWP_ROOTXYZ directory
     awp_root_tp = awp_root / "tp"
     # Version-specific DLL path configurations for IntelMKL, HDF5, and Qt
-    _dll_path_configs = {
+    _dll_path_configs: dict[int, dict[str, str | None]] = {
         242: {"IntelMKL": "2023.1.0", "hdf5": "1.12.2", "qt": "5.15.16"},
         251: {"IntelMKL": "2023.1.0", "hdf5": "1.12.2", "qt": "5.15.17"},
         252: {"IntelMKL": "2024.2.3", "hdf5": None, "qt": "5.15.18"},
@@ -168,13 +168,21 @@ def __windows_store_workaround(version: int) -> None:
     if config is None:
         return
 
+    intel_mkl = config["IntelMKL"]
+    hdf5 = config["hdf5"]
+    qt = config["qt"]
+    if intel_mkl is None:
+        raise ValueError("IntelMKL version is not configured for this version.")
+    if qt is None:
+        raise ValueError("Qt version is not configured for this version.")
+
     paths.append(awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64")
-    paths.append(awp_root_tp / "IntelMKL" / config["IntelMKL"] / "winx64")
-    if config["hdf5"] is not None:
-        paths.append(awp_root_tp / "hdf5" / config["hdf5"] / "winx64")
+    paths.append(awp_root_tp / "IntelMKL" / intel_mkl / "winx64")
+    if hdf5 is not None:
+        paths.append(awp_root_tp / "hdf5" / hdf5 / "winx64")
     else:
         paths.append(awp_root_tp / "hdf5" / "winx64")
-    paths.append(awp_root_tp / "qt" / config["qt"] / "winx64" / "bin")
+    paths.append(awp_root_tp / "qt" / qt / "winx64" / "bin")
 
     # Add each path to the DLL search path
     for path in paths:

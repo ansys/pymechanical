@@ -311,7 +311,7 @@ client_to_server_loglevel = {
 }
 
 
-class Mechanical(object):
+class Mechanical:
     """Connects to a gRPC Mechanical server and allows commands to be passed."""
 
     # Required by `_name` method to be defined before __init__ be
@@ -670,7 +670,7 @@ class Mechanical(object):
             )
 
         if not connected:  # pragma: no cover
-            raise IOError(f"Unable to connect to Mechanical instance at {self._channel_str}.")
+            raise OSError(f"Unable to connect to Mechanical instance at {self._channel_str}.")
 
     @property
     def _channel_str(self):
@@ -1334,7 +1334,7 @@ class Mechanical(object):
             self._busy = False
 
         if not response.is_ok:  # pragma: no cover
-            raise IOError("File failed to upload.")
+            raise OSError("File failed to upload.")
         return str(file_name.name)
 
     def get_file_chunks(self, file_location, file_name, chunk_size, progress_bar):
@@ -2012,7 +2012,7 @@ for dirPath, _, fileNames in os.walk(rootDir):
                 with log_file_path.open("a", encoding="utf-8") as file:
                     file.write(script_code)
                     file.write("\n")
-            except IOError as e:  # pragma: no cover
+            except OSError as e:  # pragma: no cover
                 self.log_warning(f"I/O error({e.errno}): {e.strerror}")
             except Exception as e:  # pragma: no cover
                 self.log_warning("Unexpected error:" + str(e))
