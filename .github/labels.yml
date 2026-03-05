@@ -73,3 +73,31 @@
 - name: fixed-in-271
   description: Issues fixed in Ansys Mechanical version 271
   color: FFDD33
+
+- name: 24R2
+  description: Bug observed in PyMechanical with Mechanical version 24R2
+  color: 804000
+
+- name: 25R1
+  description: Bug observed in PyMechanical with Mechanical version 25R1
+  color: CC6600
+
+- name: 25R2
+  description: Bug observed in PyMechanical with Mechanical version 25R2
+  color: FF8000
+
+- name: 26R1
+  description: Bug observed in PyMechanical with Mechanical version 26R1
+  color: FF9933
+
+- name: 27R1
+  description: Bug observed in PyMechanical with Mechanical version 27R1
+  color: FFA64D
+
+- name: embedding
+  description: Issues related to PyMechanical embedding
+  color: 0095B3
+
+- name: remote-session
+  description: Issues related to remote sessions in PyMechanical
+  color: 00B3B3
