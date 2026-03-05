@@ -65,7 +65,7 @@ def _get_default_addin_configuration() -> AddinConfiguration:
     return configuration
 
 
-INSTANCES: list["App"] = []
+INSTANCES: list[App] = []
 """List of instances."""
 
 
@@ -84,7 +84,7 @@ def _cleanup_private_appdata(profile: UniqueUserProfile):
 
 def _start_application(
     configuration: AddinConfiguration, version, db_file, _additional_args
-) -> "App":
+) -> App:
     import clr
 
     clr.AddReference("Ansys.Mechanical.Embedding")
@@ -127,7 +127,7 @@ def is_initialized() -> bool:
     return len(INSTANCES) != 0
 
 
-class GetterWrapper(object):
+class GetterWrapper:
     """Wrapper class around an attribute of an object."""
 
     def __init__(self, obj, getter):
@@ -222,7 +222,7 @@ class App:
 
     def __init__(
         self,
-        db_file: typing.Optional[str] = None,
+        db_file: str | None = None,
         private_appdata: bool = False,
         **kwargs: typing.Any,
     ) -> None:
@@ -311,7 +311,7 @@ class App:
         if private_appdata:
             atexit.register(_cleanup_private_appdata, profile)
 
-        self._updated_scopes: typing.List[typing.Dict[str, typing.Any]] = []
+        self._updated_scopes: list[dict[str, typing.Any]] = []
         self._subscribe()
         if user_globals:
             self.update_globals(user_globals)
@@ -517,7 +517,7 @@ class App:
         data = file_path.read_text(encoding="utf-8")
         return self.execute_script(data)
 
-    def plotter(self, obj=None) -> typing.Optional[typing.Any]:
+    def plotter(self, obj=None) -> typing.Any | None:
         """Return ``ansys.tools.visualization_interface.Plotter`` object."""
         if not HAS_ANSYS_GRAPHICS:
             LOG.warning(
@@ -672,9 +672,7 @@ class App:
     def _on_workbench_ready(self, sender, args) -> None:
         self._update_all_globals()
 
-    def update_globals(
-        self, globals_dict: typing.Dict[str, typing.Any], enums: bool = True
-    ) -> None:
+    def update_globals(self, globals_dict: dict[str, typing.Any], enums: bool = True) -> None:
         """Update global variables.
 
         When scripting inside Mechanical, the Mechanical UI automatically

@@ -25,7 +25,6 @@
 import os
 from pathlib import Path
 import sys
-import typing
 
 import pytest
 
@@ -53,7 +52,7 @@ def _run_embedding_log_test(
     pytestconfig,
     testname: str,
     pass_expected: bool = True,
-) -> typing.Tuple[bytes, bytes]:
+) -> tuple[bytes, bytes]:
     """Run the process and returns it after it finishes."""
     version = pytestconfig.getoption("ansys_version")
     embedded_py = Path(rootdir) / "tests" / "scripts" / "embedding_log_test.py"

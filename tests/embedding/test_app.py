@@ -565,8 +565,8 @@ def test_app_execute_script_from_file(embedded_app, rootdir, printer):
     assert "name 'get_myname' is not defined" in str(exc_info.value)
 
     printer("Running run_python_success.py")
-    succes_script_path = Path(rootdir) / "tests" / "scripts" / "run_python_success.py"
-    result = embedded_app.execute_script_from_file(str(succes_script_path))
+    success_script_path = Path(rootdir) / "tests" / "scripts" / "run_python_success.py"
+    result = embedded_app.execute_script_from_file(str(success_script_path))
     assert result == "test"
 
 

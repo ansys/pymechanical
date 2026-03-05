@@ -34,7 +34,7 @@ if TYPE_CHECKING:
     from ansys.mechanical.core.embedding import App
 
 
-def bgr_to_rgb_tuple(bgr_int: int) -> typing.Tuple[int, int, int]:
+def bgr_to_rgb_tuple(bgr_int: int) -> tuple[int, int, int]:
     """Convert bgr integer to rgb tuple."""
     r = bgr_int & 255
     g = (bgr_int >> 8) & 255
