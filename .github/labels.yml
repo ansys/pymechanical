@@ -61,3 +61,15 @@
 - name: stale
   description: Stale issues will be closed after 60 days of inactivity
   color: f0dc82
+
+- name: ansys-mechanical-bug
+  description: Issues related to Ansys Mechanical, not PyMechanical
+  color: B3B300
+
+- name: fixed-in-261
+  description: Issues fixed in Ansys Mechanical version 261
+  color: FFD500
+
+- name: fixed-in-271
+  description: Issues fixed in Ansys Mechanical version 271
+  color: FFDD33
