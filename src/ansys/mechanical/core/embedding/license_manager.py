@@ -22,7 +22,7 @@
 
 """License Manager."""
 
-from typing import Any, List, Optional, Union
+from typing import Any
 
 from ansys.mechanical.core import LOG
 
@@ -101,7 +101,7 @@ class LicenseManager:
         """Disable active license for current session."""
         self._get_license_manager().DeActivateLicense()
 
-    def enable_session_license(self, license: Optional[Union[str, List[str]]] = None) -> None:
+    def enable_session_license(self, license: str | list[str] | None = None) -> None:
         """Enable license(s) for the current session.
 
         Parameters

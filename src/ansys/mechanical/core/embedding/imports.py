@@ -31,7 +31,7 @@ if TYPE_CHECKING:
     from ansys.mechanical.core.embedding import App
 
 
-def global_entry_points(app: App) -> typing.Dict:
+def global_entry_points(app: App) -> dict:
     """Return the global entry points of the application."""
     global_vars = {}
     global_vars["ExtAPI"] = app.ExtAPI
@@ -42,7 +42,7 @@ def global_entry_points(app: App) -> typing.Dict:
     return global_vars
 
 
-def global_variables(app: App, enums: bool = False) -> typing.Dict:
+def global_variables(app: App, enums: bool = False) -> dict:
     """Return the Mechanical scripting global variables as a dict.
 
     It can be used to add all of these as global variables in python
@@ -91,7 +91,7 @@ def global_variables(app: App, enums: bool = False) -> typing.Dict:
     return global_vars
 
 
-def get_all_enums() -> typing.Dict[str, typing.Any]:
+def get_all_enums() -> dict[str, typing.Any]:
     """Get all the enums as a dictionary."""
     import ansys.mechanical.core.embedding.enum_importer as enum_importer
 

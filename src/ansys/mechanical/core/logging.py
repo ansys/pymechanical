@@ -25,7 +25,7 @@
 This module supplies the general framework for logging in PyMechanical. This module is
 built upon the `logging <https://docs.python.org/3/library/logging.html>`_ package.
 The intent is not for this module to replace the ``logging`` package but rather to provide
-a way for the ``logging`` package and PyMechancial to interact.
+a way for the ``logging`` package and PyMechanical to interact.
 
 The loggers used in the module include the name of the instance, which
 is intended to be unique.  This name is printed in all the active
@@ -459,7 +459,7 @@ class Logger:
         Parameters
         ----------
         level : str, optional
-            Level of logging, such as ``DUBUG``. The default is ``LOG_LEVEL``.
+            Level of logging, such as ``DEBUG``. The default is ``LOG_LEVEL``.
         """
         add_stdout_handler(self, level=level)
 
@@ -469,7 +469,7 @@ class Logger:
         Parameters
         ----------
         level : str, optional
-            Level of logging, such as ``DUBUG``. The default is ``LOG_LEVEL``.
+            Level of logging, such as ``DEBUG``. The default is ``LOG_LEVEL``.
         """
         if isinstance(level, str):
             level = string_to_loglevel[level.upper()]
@@ -489,7 +489,7 @@ class Logger:
         suffix : str
             Name for the child logger.
         level : str, optional
-            Level of logging, such as ``DUBUG``. The default is ``LOG_LEVEL``.
+            Level of logging, such as ``DEBUG``. The default is ``LOG_LEVEL``.
         """
         logger = logging.getLogger(suffix)
         logger.std_out_handler = None

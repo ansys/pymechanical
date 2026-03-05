@@ -27,7 +27,6 @@ from asyncio.subprocess import PIPE
 import os
 from pathlib import Path
 import sys
-import typing
 
 import ansys.tools.common.path as atp
 import click
@@ -86,7 +85,7 @@ def _run(args, env, check=False, display=False):
     try:
         rc, process, *output = loop.run_until_complete(_read_and_display(args, env, display))
         if rc and check:
-            sys.exit("child failed with '{}' exit code".format(rc))
+            sys.exit(f"child failed with '{rc}' exit code")
     finally:
         if os.name == "nt":
             loop.close()
@@ -94,22 +93,22 @@ def _run(args, env, check=False, display=False):
 
 
 def _cli_impl(
-    project_file: typing.Optional[str] = None,
+    project_file: str | None = None,
     port: int = 0,
     debug: bool = False,
-    input_script: typing.Optional[str] = None,
-    script_args: typing.Optional[str] = None,
-    exe: typing.Optional[str] = None,
-    version: typing.Optional[int] = None,
+    input_script: str | None = None,
+    script_args: str | None = None,
+    exe: str | None = None,
+    version: int | None = None,
     graphical: bool = False,
     show_welcome_screen: bool = False,
     private_appdata: bool = False,
     exit: bool = False,
-    features: typing.Optional[str] = None,
-    enginetype: typing.Optional[str] = None,
-    transport_mode: typing.Optional[str] = None,
-    grpc_host: typing.Optional[str] = None,
-    certs_dir: typing.Optional[str] = None,
+    features: str | None = None,
+    enginetype: str | None = None,
+    transport_mode: str | None = None,
+    grpc_host: str | None = None,
+    certs_dir: str | None = None,
 ):
     if project_file and input_script:
         raise click.ClickException("Cannot open a project file *and* run a script.")
@@ -235,7 +234,7 @@ def _cli_impl(
     if not graphical:
         args.append("-b")
 
-    env: typing.Dict[str, str] = os.environ.copy()
+    env: dict[str, str] = os.environ.copy()
     if debug:
         env["WBDEBUG_STOP"] = "1"
 
