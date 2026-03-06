@@ -9,6 +9,110 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.12.3 <https://github.com/ansys/pymechanical/releases/tag/v0.12.3>`_ - March 06, 2026
+=======================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add more information in readme
+          - `#1501 <https://github.com/ansys/pymechanical/pull/1501>`_
+
+        * - Add mypy in pre-commit
+          - `#1502 <https://github.com/ansys/pymechanical/pull/1502>`_
+
+        * - Improve command-line handling
+          - `#1513 <https://github.com/ansys/pymechanical/pull/1513>`_
+
+        * - Add faq on batchmode
+          - `#1524 <https://github.com/ansys/pymechanical/pull/1524>`_
+
+        * - Add more pre-commit hooks
+          - `#1533 <https://github.com/ansys/pymechanical/pull/1533>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update docker doc
+          - `#1519 <https://github.com/ansys/pymechanical/pull/1519>`_
+
+        * - Remove docutils from link check ignore
+          - `#1523 <https://github.com/ansys/pymechanical/pull/1523>`_
+
+        * - Docker doc
+          - `#1536 <https://github.com/ansys/pymechanical/pull/1536>`_
+
+
+  .. tab-item:: Miscellaneous
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Refactor, fix, embedding code
+          - `#1514 <https://github.com/ansys/pymechanical/pull/1514>`_
+
+
+  .. tab-item:: Documentation
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update \`\`CONTRIBUTORS.md\`\` with the latest contributors
+          - `#1526 <https://github.com/ansys/pymechanical/pull/1526>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.12.2
+          - `#1503 <https://github.com/ansys/pymechanical/pull/1503>`_
+
+        * - Add upper bound and dev dep
+          - `#1505 <https://github.com/ansys/pymechanical/pull/1505>`_
+
+        * - Bump actions/setup-python from 6.1.0 to 6.2.0 in the actions group
+          - `#1506 <https://github.com/ansys/pymechanical/pull/1506>`_
+
+        * - Pre-commit automatic update
+          - `#1509 <https://github.com/ansys/pymechanical/pull/1509>`_, `#1518 <https://github.com/ansys/pymechanical/pull/1518>`_, `#1528 <https://github.com/ansys/pymechanical/pull/1528>`_
+
+        * - Bump ansys-sphinx-theme[autoapi,changelog] from 1.6.4 to 1.7.0 in the doc group
+          - `#1510 <https://github.com/ansys/pymechanical/pull/1510>`_
+
+        * - Bump psutil from 7.2.1 to 7.2.2
+          - `#1511 <https://github.com/ansys/pymechanical/pull/1511>`_
+
+        * - Add nightly to use latest candidate image
+          - `#1515 <https://github.com/ansys/pymechanical/pull/1515>`_
+
+        * - Bump the actions group across 1 directory with 3 updates
+          - `#1516 <https://github.com/ansys/pymechanical/pull/1516>`_
+
+        * - Bump skitionek/notify-microsoft-teams from 1.0.9 to 1.1.0 in the actions group
+          - `#1529 <https://github.com/ansys/pymechanical/pull/1529>`_
+
+        * - Bump actions/download-artifact from 7.0.0 to 8.0.0
+          - `#1530 <https://github.com/ansys/pymechanical/pull/1530>`_
+
+        * - Add new labels
+          - `#1537 <https://github.com/ansys/pymechanical/pull/1537>`_
+
+
 `0.12.2 <https://github.com/ansys/pymechanical/releases/tag/v0.12.2>`_ - January 30, 2026
 =========================================================================================
 
