@@ -47,6 +47,11 @@ LOG = Logger(level=logging.ERROR, to_file=False, to_stdout=True)
 
 from ansys.mechanical.core._version import __version__
 
+# Package metadata
+__author__ = "ANSYS, Inc."
+__email__ = "pyansys.core@ansys.com"
+__license__ = "MIT"
+
 # import few classes / functions
 from ansys.mechanical.core.mechanical import (
     Mechanical,
@@ -65,7 +70,7 @@ try:
 except ImportError:
     HAS_EMBEDDING = False
 
-LOCAL_PORTS = []
+LOCAL_PORTS: list[int] = []
 """Manage the package level ports."""
 
 from ansys.mechanical.core.pool import LocalMechanicalPool

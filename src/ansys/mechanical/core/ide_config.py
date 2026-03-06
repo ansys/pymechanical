@@ -79,7 +79,7 @@ def get_stubs_versions(stubs_location: Path):
 
 def _vscode_impl(
     target: str = "user",
-    revision: int = None,
+    revision: int | None = None,
 ):
     """Get the IDE configuration for autocomplete in VS Code.
 
@@ -93,22 +93,22 @@ def _vscode_impl(
         If unspecified, it finds the default Mechanical version from ansys-tools-path.
     """
     # Update the user or workspace settings
-    settings_json = "the settings.json file"
+    settings_json: str = "the settings.json file"
     if target == "user":
         # Get the path to the user's settings.json file depending on the platform
         if "win" in sys.platform:
-            settings_json = (
-                Path(os.environ.get("APPDATA")) / "Code" / "User" / "settings.json"
+            appdata = os.environ.get("APPDATA", "")
+            settings_json = str(
+                Path(appdata) / "Code" / "User" / "settings.json"
             )  # pragma: no cover
         elif "lin" in sys.platform:
-            settings_json = (
-                Path(os.environ.get("HOME")) / ".config" / "Code" / "User" / "settings.json"
-            )
+            home = os.environ.get("HOME", "")
+            settings_json = str(Path(home) / ".config" / "Code" / "User" / "settings.json")
     elif target == "workspace":
         # Get the current working directory
         current_dir = Path.cwd()
         # Get the path to the settings.json file based on the git root & .vscode folder
-        settings_json = current_dir / ".vscode" / "settings.json"
+        settings_json = str(current_dir / ".vscode" / "settings.json")
 
     # Location where the stubs are installed -> .venv/Lib/site-packages, for example
     stubs_location = get_stubs_location() / f"v{revision}"
@@ -134,7 +134,7 @@ def _vscode_impl(
 def _cli_impl(
     ide: str = "vscode",
     target: str = "user",
-    revision: int = None,
+    revision: int | None = None,
 ):
     """Provide the user with the path to the settings.json file and IDE settings.
 
@@ -156,7 +156,9 @@ def _cli_impl(
 
     # Check if the user revision number is less or greater than the min and max revisions
     # in the ansys-mechanical-stubs package location
-    if revision < min(revns):
+    if revision is None:
+        revision = max(revns)
+    elif revision < min(revns):
         raise Exception(f"PyMechanical Stubs are not available for {revision}")
     elif revision > max(revns):
         warnings.warn(

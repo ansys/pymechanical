@@ -31,18 +31,18 @@ if TYPE_CHECKING:
     from ansys.mechanical.core.embedding import App
 
 
-def global_entry_points(app: App) -> typing.Dict:
+def global_entry_points(app: App) -> dict:
     """Return the global entry points of the application."""
-    vars = {}
-    vars["ExtAPI"] = app.ExtAPI
-    vars["DataModel"] = app.DataModel
-    vars["Model"] = app.DataModel.Project.Model
-    vars["Tree"] = app.DataModel.Tree
-    vars["Graphics"] = app.ExtAPI.Graphics
-    return vars
+    global_vars = {}
+    global_vars["ExtAPI"] = app.ExtAPI
+    global_vars["DataModel"] = app.DataModel
+    global_vars["Model"] = app.DataModel.Project.Model
+    global_vars["Tree"] = app.DataModel.Tree
+    global_vars["Graphics"] = app.ExtAPI.Graphics
+    return global_vars
 
 
-def global_variables(app: App, enums: bool = False) -> typing.Dict:
+def global_variables(app: App, enums: bool = False) -> dict:
     """Return the Mechanical scripting global variables as a dict.
 
     It can be used to add all of these as global variables in python
@@ -52,12 +52,12 @@ def global_variables(app: App, enums: bool = False) -> typing.Dict:
 
     To also import all the enums, set the parameter enums to true.
     """
-    vars = global_entry_points(app)
+    global_vars = global_entry_points(app)
 
     from ansys.mechanical.core.embedding.app import is_initialized
     from ansys.mechanical.core.embedding.transaction import Transaction
 
-    vars["Transaction"] = Transaction
+    global_vars["Transaction"] = Transaction
 
     # Import modules if the app is initialized
     if is_initialized():
@@ -73,25 +73,25 @@ def global_variables(app: App, enums: bool = False) -> typing.Dict:
             Vector3D,
         )
 
-        vars["Quantity"] = Quantity
-        vars["System"] = System
-        vars["Ansys"] = Ansys
-        vars["MechanicalEnums"] = MechanicalEnums
+        global_vars["Quantity"] = Quantity
+        global_vars["System"] = System
+        global_vars["Ansys"] = Ansys
+        global_vars["MechanicalEnums"] = MechanicalEnums
         # Graphics
-        vars["Point"] = Point
-        vars["SectionPlane"] = SectionPlane
+        global_vars["Point"] = Point
+        global_vars["SectionPlane"] = SectionPlane
         # Math
-        vars["Point2D"] = Point2D
-        vars["Point3D"] = Point3D
-        vars["Vector3D"] = Vector3D
+        global_vars["Point2D"] = Point2D
+        global_vars["Point3D"] = Point3D
+        global_vars["Vector3D"] = Vector3D
 
     if enums:
-        vars.update(get_all_enums())
+        global_vars.update(get_all_enums())
 
-    return vars
+    return global_vars
 
 
-def get_all_enums() -> typing.Dict[str, typing.Any]:
+def get_all_enums() -> dict[str, typing.Any]:
     """Get all the enums as a dictionary."""
     import ansys.mechanical.core.embedding.enum_importer as enum_importer
 
