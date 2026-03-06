@@ -76,10 +76,6 @@ override the entrypoint and pass
       -- xvfb-run /install/ansys_inc/v${VERSION}/aisol/.workbench \
       -dsapplet -b -grpc 10000 --grpc-host 0.0.0.0 --transport-mode insecure
 
-.. note::
-   ``--entrypoint=""`` clears the default entrypoint so that the full command can be
-   supplied directly.
-
 As Mechanical starts, you can see status information:
 
 .. code:: console
@@ -151,3 +147,8 @@ and then install Python packages as needed.
     docker run -it -e ANSYSLMD_LICENSE_FILE=$LICENSE_SERVER --entrypoint=/bin/bash mechanical:25.2
 
     # Once inside the container, you can install Python and packages as needed, then create an embedded app.
+
+
+.. note::
+    Ansys employees can access the Mechanical Docker image provided in the PyMechanical repository by following
+    the `running container <https://github.com/ansys/pymechanical/blob/main/docker/run_container.rst>`_ instructions.
