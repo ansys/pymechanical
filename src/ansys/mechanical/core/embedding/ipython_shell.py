@@ -50,7 +50,7 @@ RESULT_QUEUE: queue.Queue[typing.Any] = queue.Queue()
 SHUTDOWN_EVENT = threading.Event()
 EXEC_THREAD = None
 ORIGINAL_RUN_CELL = None
-EXECUTION_THREAD_ID: typing.Optional[int] = None
+EXECUTION_THREAD_ID: int | None = None
 
 
 def _idle_sleep():
@@ -65,8 +65,8 @@ class ShellHooks:
 
     def __init__(self) -> None:
         self._idle_hook: typing.Callable = DEFAULT_IDLE_HOOK
-        self._start_hook: typing.Optional[typing.Callable] = None
-        self._end_hook: typing.Optional[typing.Callable] = None
+        self._start_hook: typing.Callable | None = None
+        self._end_hook: typing.Callable | None = None
 
     @property
     def idle_hook(self) -> typing.Callable:
@@ -78,7 +78,7 @@ class ShellHooks:
         self._idle_hook = value
 
     @property
-    def start_hook(self) -> typing.Optional[typing.Callable]:
+    def start_hook(self) -> typing.Callable | None:
         """Function to call at the start of the block thread."""
         return self._start_hook
 
@@ -87,7 +87,7 @@ class ShellHooks:
         self._start_hook = value
 
     @property
-    def end_hook(self) -> typing.Optional[typing.Callable]:
+    def end_hook(self) -> typing.Callable | None:
         """Function to call when the shell is exited."""
         return self._end_hook
 

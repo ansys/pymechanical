@@ -30,7 +30,7 @@ Write documentation
 ===================
 
 The documentation generator used in PyMechanical is `Sphinx`_. Most of the documents
-are written in `reStructuredText`_. Some parts of the documentation, like the
+are written in reStructuredText (RST) format. Some parts of the documentation, like the
 :ref:`Examples <ref_examples>`, use Python files. If
 you are interested in writing examples, see the :ref:`writing examples <write-examples>`
 section.
@@ -80,7 +80,7 @@ Write a new example
 
 The :ref:`Examples <ref_examples>` section of the documentation showcases different
 capabilities of PyMechanical. Each example is a standalone Python script. Despite
-being ``*.py`` files, they are written in a mix of `reStructuredText`_ and Python.
+being ``*.py`` files, they are written in a mix of reStructuredText (RST) format and Python.
 
 Documentarians writing new examples are encouraged to open a new Jupyter Lab
 session and write the example as a Jupyter Notebook. This way, the
