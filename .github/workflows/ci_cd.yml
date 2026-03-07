@@ -289,14 +289,44 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate mTLS certificates
+        run: |
+          mkdir -p $HOME/certs
+
+          # Generate CA
+          openssl genrsa -out $HOME/certs/ca.key 4096
+          openssl req -x509 -new -nodes -key $HOME/certs/ca.key -sha256 -days 200 \
+            -out $HOME/certs/ca.crt -subj "/CN=MyRootCA"
+
+          # Generate server certificate
+          openssl genrsa -out $HOME/certs/server.key 4096
+          openssl req -new -key $HOME/certs/server.key -out $HOME/certs/server.csr \
+            -subj "/CN=localhost"
+          openssl x509 -req -in $HOME/certs/server.csr \
+            -CA $HOME/certs/ca.crt -CAkey $HOME/certs/ca.key -CAcreateserial \
+            -out $HOME/certs/server.crt -days 200 -sha256
+
+          # Generate client certificate
+          openssl genrsa -out $HOME/certs/client.key 4096
+          openssl req -new -key $HOME/certs/client.key -out $HOME/certs/client.csr \
+            -subj "/CN=grpc-client"
+          openssl x509 -req -in $HOME/certs/client.csr \
+            -CA $HOME/certs/ca.crt -CAkey $HOME/certs/ca.key -CAcreateserial \
+            -out $HOME/certs/client.crt -days 200 -sha256
+
+          # Set permissions
+          chmod 644 $HOME/certs/*.crt
+          chmod 600 $HOME/certs/*.key
+
+          # Verify certs
+          openssl verify -CAfile $HOME/certs/ca.crt $HOME/certs/server.crt
+          openssl verify -CAfile $HOME/certs/ca.crt $HOME/certs/client.crt
 
       - name: Pull, launch, and validate Mechanical service
         env:
           MECHANICAL_IMAGE: ${{ env.DOCKER_PACKAGE }}:${{ matrix.mechanical-version }}
           MECHANICAL_VERSION: ${{ matrix.mechanical-version }}
-          # ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
-          # ANSYS_WORKBENCH_LOGGING_DIRECTORY: /log_file  # workbench.log file
-          ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH: 0  # turn off autoflush for faster performance
+          ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH: 0
           DOCKER_MECH_CONTAINER_NAME: ${{ env.DOCKER_MECH_CONTAINER_NAME }}
           LICENSE_SERVER: ${{ env.LICENSE_SERVER }}
           PYMECHANICAL_PORT: ${{ env.PYMECHANICAL_PORT }}
@@ -308,16 +338,19 @@ jobs:
 
           # Check if image name contains version 26.1 or 27.1 to determine entrypoint
           if [[ ${MECHANICAL_IMAGE} == *"26.1"* ]] || [[ ${MECHANICAL_IMAGE} == *"27.1"* ]]; then
-            echo "Detected version requiring custom entrypoint - using insecure transport"
+            echo "Detected version requiring custom entrypoint - using mTLS transport"
             docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} \
               -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} \
               -e ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH=${ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH} \
               -p ${PYMECHANICAL_PORT}:10000 \
               --entrypoint="" \
               --security-opt seccomp=unconfined \
+              -v $HOME/certs:/certs:ro \
               ${MECHANICAL_IMAGE} \
               tini -- xvfb-run /install/ansys_inc/v${VERSION_PATH}/aisol/.workbench \
-              -dsapplet -b -grpc 10000 --grpc-host 0.0.0.0 --transport-mode insecure
+              -dsapplet -b -grpc 10000 --grpc-host 0.0.0.0 \
+              --transport-mode="mtls" \
+              --certs-dir /certs
           else
             echo "Using default entrypoint for version ${MECHANICAL_VERSION}"
             docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} \
