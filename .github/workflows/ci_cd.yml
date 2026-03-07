@@ -322,6 +322,9 @@ jobs:
           openssl verify -CAfile $HOME/certs/ca.crt $HOME/certs/server.crt
           openssl verify -CAfile $HOME/certs/ca.crt $HOME/certs/client.crt
 
+          # Export certs directory for subsequent steps
+          echo "ANSYS_GRPC_CERTIFICATES=$HOME/certs" >> $GITHUB_ENV
+
       - name: Pull, launch, and validate Mechanical service
         env:
           MECHANICAL_IMAGE: ${{ env.DOCKER_PACKAGE }}:${{ matrix.mechanical-version }}

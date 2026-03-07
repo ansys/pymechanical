@@ -264,7 +264,18 @@ def launch_mechanical_instance(cleanup_on_exit=False):
     """Launch a new Mechanical instance."""
     print("launching mechanical instance")
     if os.name != "nt":
-        # on linux, and container start with insecure mode for testing
+        certs_dir = os.environ.get("ANSYS_GRPC_CERTIFICATES")
+        if certs_dir:
+            return pymechanical.launch_mechanical(
+                allow_input=False,
+                verbose_mechanical=True,
+                cleanup_on_exit=cleanup_on_exit,
+                log_mechanical="pymechanical_log.txt",
+                host="0.0.0.0",
+                transport_mode="mtls",
+                certs_dir=certs_dir,
+            )
+        # on linux, fall back to insecure mode for older versions
         return pymechanical.launch_mechanical(
             allow_input=False,
             verbose_mechanical=True,
@@ -297,13 +308,24 @@ def connect_to_mechanical_instance(port=None, clear_on_connect=False):
     # which are not routable for locally-launched Mechanical instances.
     # For remote/container scenarios, an explicit IP should be passed by the caller.
     if os.name != "nt":
-        # Linux/container uses insecure mode for testing
-        mechanical = pymechanical.connect_to_mechanical(
-            port=port,
-            clear_on_connect=clear_on_connect,
-            cleanup_on_exit=False,
-            transport_mode="insecure",
-        )
+        certs_dir = os.environ.get("ANSYS_GRPC_CERTIFICATES")
+        if certs_dir:
+            # Linux/container uses mTLS for newer Mechanical versions (261+)
+            mechanical = pymechanical.connect_to_mechanical(
+                port=port,
+                clear_on_connect=clear_on_connect,
+                cleanup_on_exit=False,
+                transport_mode="mtls",
+                certs_dir=certs_dir,
+            )
+        else:
+            # Linux/container falls back to insecure mode for older versions
+            mechanical = pymechanical.connect_to_mechanical(
+                port=port,
+                clear_on_connect=clear_on_connect,
+                cleanup_on_exit=False,
+                transport_mode="insecure",
+            )
     else:
         # Windows uses WNUA by default
         mechanical = pymechanical.connect_to_mechanical(
@@ -419,12 +441,14 @@ def mechanical_meshing():
     print("current working directory: ", Path.cwd())
     if os.name != "nt":
         # on linux, always cleanup to avoid orphaned processes
+        certs_dir = os.environ.get("ANSYS_GRPC_CERTIFICATES", "/certs")
         mechanical_meshing = pymechanical.launch_mechanical(
             additional_switches=["-AppModeMesh"],
             additional_envs=dict(ENV_VARIABLE="1"),
             verbose_mechanical=True,
             cleanup_on_exit=True,
-            transport_mode="insecure",
+            transport_mode="mtls",
+            certs_dir=certs_dir,
         )
     else:
         mechanical_meshing = pymechanical.launch_mechanical(
