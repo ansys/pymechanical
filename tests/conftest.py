@@ -157,7 +157,7 @@ def embedded_app(pytestconfig, request):
 
 
 @pytest.fixture(autouse=True)
-def mke_app_reset(request):
+def make_app_reset(request):
     """Fixture that resets the embedded Mechanical application before each test."""
     global EMBEDDED_APP
     if EMBEDDED_APP is None:

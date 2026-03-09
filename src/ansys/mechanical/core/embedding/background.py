@@ -41,11 +41,11 @@ def _exit(background_app: "BackgroundApp"):
 class BackgroundApp:
     """Background App."""
 
-    __app: typing.Optional[mech.App] = None
-    __app_thread: typing.Optional[threading.Thread] = None
+    __app: mech.App | None = None
+    __app_thread: threading.Thread | None = None
     __stopped: bool = False
     __stop_signaled: bool = False
-    __poster: typing.Optional[Poster] = None
+    __poster: Poster | None = None
 
     def __init__(self, **kwargs):
         """Construct an instance of BackgroundApp."""
