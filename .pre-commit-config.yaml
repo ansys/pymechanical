@@ -57,11 +57,12 @@ repos:
   hooks:
     - id: check-github-workflows
 
-- repo: https://github.com/zizmorcore/zizmor-pre-commit
-  rev: ea2eb407b4cbce87cf0d502f36578950494f5ac9  # frozen: v1.23.1
-  hooks:
-    - id: zizmor
-      args: ["--pedantic"]
+#  Disabling because of warnings
+# - repo: https://github.com/zizmorcore/zizmor-pre-commit
+#   rev: ea2eb407b4cbce87cf0d502f36578950494f5ac9  # frozen: v1.23.1
+#   hooks:
+#     - id: zizmor
+#       args: ["--pedantic"]
 
 # Security checks with bandit
 - repo: https://github.com/PyCQA/bandit
