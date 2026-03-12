@@ -40,7 +40,7 @@ For particular version use version tag.
 
 .. code::
 
-    docker pull ghcr.io/ansys/mechanical:25.2.0
+    docker pull ghcr.io/ansys/mechanical:26.1.0
 
 You can now launch Mechanical directly from Docker with a short script or directly from the command line.
 Refer to the `PyAnsys Mechanical Docker documentation
