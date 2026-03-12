@@ -5,11 +5,111 @@ Secure gRPC connections
 
 PyMechanical supports gRPC connections using mTLS, WNUA, or insecure modes.
 
-**Transport mode comparison:**
+.. _transport_modes:
 
-- **mTLS**: Provides both authentication and encryption. Recommended for production environments.
-- **WNUA** (Windows only): Provides authentication but not encryption.
-- **Insecure**: No authentication or encryption. Not recommended.
+Transport mode comparison
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. _mtls_mode:
+
+**mTLS (Mutual TLS)**
+
+Provides certificate-based mutual authentication and encryption. Both server and client must possess valid certificates signed by the same Certificate Authority (CA). This mode is platform-independent and recommended for production deployments requiring strong security.
+
+*Authentication mechanism:* Both parties validate each other's certificates against a trusted CA. The connection is rejected if either certificate is invalid or untrusted.
+
+*Encryption:* All data transmitted is encrypted using TLS protocol.
+
+*Cross-platform:* Works on Windows and Linux.
+
+*Network scope:* Can operate across any network including the internet, cloud deployments, and remote connections.
+
+.. _wnua_mode:
+
+**WNUA (Windows Named User Authentication)**
+
+Windows-only mode that authenticates using the current Windows user's credentials through SSPI/Negotiate protocol. Provides authentication based on Windows identity but does not encrypt the data channel.
+
+*Authentication mechanism:* The client authenticates as the currently logged-in Windows user. Only the same Windows user account can connect to the server, regardless of which machine they're connecting from within the domain/workgroup.
+
+*Encryption:* Authentication is secure, but the data channel is **not encrypted**.
+
+*Platform restriction:* Windows only. Both server and client must be Windows systems.
+
+*Network scope:* Limited to Windows domain/workgroup networks. Does not work across domain boundaries without proper trust relationships.
+
+*Access control:* Only the same Windows user who started the server can connect, even from different machines.
+
+.. _insecure_mode:
+
+**Insecure**
+
+Provides no authentication or encryption. Any client that can reach the network port can connect without credentials.
+
+*Authentication mechanism:* None. Any client can connect.
+
+*Encryption:* None. All data is transmitted in plaintext.
+
+*Security risk:* Suitable only for local development on trusted machines. Never use in production or on untrusted networks.
+
+.. _host_and_ip:
+
+Host binding
+^^^^^^^^^^^^
+
+The server's host address determines which network interfaces accept connections:
+
+- **127.0.0.1 (localhost)**: Listens only on loopback. Only same-machine clients can connect. Traffic never leaves the machine.
+
+- **0.0.0.0 (all interfaces)**: Listens on all network interfaces. Any client that can route to the machine can attempt connection, subject to transport mode authentication.
+
+- **Specific IP** (e.g., 192.168.1.100): Listens only on that interface. Only clients that can route to that specific IP can attempt connection.
+
+.. _ip_connectivity:
+
+Client connectivity by IP and transport mode
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**Server on 0.0.0.0 (all interfaces):**
+
+- **mTLS**: Any client from any network with valid certificates can connect. Access controlled by certificate validation.
+- **WNUA**: Only same Windows user can connect, from same or different machines within domain/workgroup. Different users blocked.
+- **Insecure**: Anyone who can reach the port can connect. No restrictions. High security risk.
+
+**Server on 127.0.0.1 (localhost only):**
+
+- **mTLS**: Only local clients with valid certificates can connect.
+- **WNUA**: Only same Windows user on same machine can connect.
+- **Insecure**: Only local clients can connect. Relatively safe for development.
+
+**Server on specific IP:**
+
+- **mTLS**: Clients that can route to that IP with valid certificates can connect.
+- **WNUA**: Same Windows user from machines that can route to that IP can connect.
+- **Insecure**: Anyone who can route to that IP can connect. Security risk on shared networks.
+
+**Summary table:**
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 30 25 25
+
+   * - Transport Mode
+     - Authentication
+     - Encryption
+     - Connectivity Scope
+   * - mTLS
+     - Certificate-based
+     - Yes (TLS)
+     - Any network with valid certs
+   * - WNUA
+     - Windows user identity
+     - No
+     - Same Windows user only
+   * - Insecure
+     - None
+     - No
+     - Unrestricted (dangerous)
 
 See the table below for version-specific support and service pack requirements.
 
