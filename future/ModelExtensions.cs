@@ -20,6 +20,17 @@ namespace Ansys.Mechanical.Future
         {
             if (format != Enums.TransferFileFormat.HDF5)
                 throw new System.Exception("Unknown format");
+            
+            // Use default settings if none provided
+            if (settings == null)
+            {
+                settings = new ModelHDF5ExportSettings
+                {
+                    GeometryType = Enums.GeometryType.Solid,
+                    UnitSystemType = WBUnitSystemType.StandardMKS
+                };
+            }
+            
             model.InternalObject.WriteHDF5TransferFile((DSGeometryType)settings.GeometryType, filename, (int)settings.UnitSystemType, 0);
         }
     }

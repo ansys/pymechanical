@@ -49,6 +49,19 @@ def __add_sys_path(version: int) -> str:
     platform_string = "winx64" if os.name == "nt" else "linx64"
     bin_path = install_path / "aisol" / "bin" / platform_string
     sys.path.append(str(bin_path.resolve()))
+    
+    # Add the version-specific future assembly path to sys.path
+    future_dll_path = (
+        Path(__file__).parent.parent.parent.parent.parent / 
+        "future" / "bin" / "x64" / "Release" / str(version)
+    )
+    if future_dll_path.exists() and str(future_dll_path) not in sys.path:
+        sys.path.append(str(future_dll_path.resolve()))
+        LOG.info(f"Added Future assembly path for version {version}: {future_dll_path}")
+    elif future_dll_path.exists():
+        LOG.debug(f"Future assembly path already in sys.path: {future_dll_path}")
+    else:
+        LOG.debug(f"Future assembly path not found for version {version}: {future_dll_path}")
 
 
 def __workaround_material_server(version: int) -> None:
