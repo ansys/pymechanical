@@ -151,7 +151,7 @@ This section provides answers to frequently asked questions.
             .. code-block:: shell
 
                 Ansys Mechanical [Ansys Mechanical Enterprise]
-                Product Version:252
+                Product Version:261
                 Software build date: 06/13/2025 15:54:58
 
 
@@ -160,7 +160,7 @@ This section provides answers to frequently asked questions.
             .. code-block:: shell
 
                 Ansys Mechanical []
-                Product Version:252
+                Product Version:261
                 Software build date: 06/13/2025 15:54:58
 
 
@@ -178,7 +178,7 @@ This section provides answers to frequently asked questions.
 
         $ mechanical-env python
         >>> import ansys.mechanical.core as mech
-        >>> app=mech.App(version=252)
+        >>> app=mech.App(version=261)
 
     or
 
