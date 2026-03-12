@@ -13,7 +13,6 @@ on:
         - '252'
         - '251'
         - '242'
-        - '241'
         description: 'The Mechanical revision number to run tests on.'
         default: '261' # Same as STABLE_REVN
   schedule:
@@ -243,7 +242,7 @@ jobs:
         run: |
           # if a tag(release) is pushed, test all versions
           if [[ "${GH_EVENT_NAME}" == "push" ]] && [[ "$GH_REF" =~ "refs/tags" ]]; then
-            echo "matrix={\"mechanical-version\":['24.1.0', '24.2.0', '25.1.0', '25.2.0', '26.1.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
+            echo "matrix={\"mechanical-version\":['24.2.0', '25.1.0', '25.2.0', '26.1.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           else
             echo "matrix={\"mechanical-version\":['${TEST_DOCKER_IMAGE_VERSION}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           fi

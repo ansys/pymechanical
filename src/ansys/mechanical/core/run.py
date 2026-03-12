@@ -438,7 +438,7 @@ The ``exit`` command is only supported in version 2024 R1 or later.",
     "--revision",
     default=None,
     type=int,
-    help='Ansys Revision number, e.g. "251" or "252". If none is specified\
+    help='Ansys Revision number, e.g. "252" or "261". If none is specified\
 , uses the default from ansys-tools-path',
 )
 @click.option(
@@ -471,9 +471,9 @@ def cli(
 
     The following example demonstrates the main use of this tool:
 
-        $ ansys-mechanical -r 252 -g
+        $ ansys-mechanical -r 261 -g
 
-        Starting Ansys Mechanical version 2025R2 in graphical mode...
+        Starting Ansys Mechanical version 2026R1 in graphical mode...
     """
     exe = atp.get_mechanical_path(allow_input=False, version=revision)
     version = atp.version_from_path("mechanical", exe)
