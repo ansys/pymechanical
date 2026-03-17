@@ -47,7 +47,7 @@ from ansys.mechanical.core import App
 # Create an instance of the app
 # Extract global API entry points from Mechanical
 # Merge them into your Python global variables
-app = App(version=252, globals=globals())
+app = App(version=261, globals=globals())
 print(app)
 ```
 Access entry points from Python:
@@ -80,7 +80,7 @@ from ansys.mechanical.core.embedding.logger
 import Configuration,Logger
 Configuration.configure(level=logging.WARNING,
 to_stdout=True)
-app = App(version=252, globals=globals())
+app = App(version=261, globals=globals())
 Logger.error("Test Error Message")
 ```
 ## Visualize geometry in 3D:
@@ -125,7 +125,7 @@ Launch a specific version of Mechanical:
 ```{python}
 #| eval: false
 from ansys.mechanical.core import find_mechanical
-wb_exe = find_mechanical(252)[0]
+wb_exe = find_mechanical(261)[0]
 # 'Ansys Inc\\....\\winx64\\AnsysWBU.exe'
 mechanical = launch_mechanical(
   exec_file=wb_exe, verbose_mechanical=True,
@@ -136,7 +136,7 @@ print(mechanical)
 ## Launch Mechanical using the CLI
 ```{python}
 #| eval: false
-ansys-mechanical -r 252 --port 10000 -g
+ansys-mechanical -r 261 --port 10000 -g
 ```
 ## Manually connect to the Mechanical session
 ```{python}

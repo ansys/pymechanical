@@ -36,7 +36,7 @@ import click
     "--version",
     default=None,
     type=int,
-    help='Ansys version number, such as "242" or "241".\
+    help='Ansys version number, such as "252" or "261".\
          If a version number is not specified, it uses the default from \
             ansys-tools-path.',
 )

@@ -21,7 +21,7 @@ Build your own Mechanical Docker image
 .. note::
    The provided Docker configuration is **experimental** and is intended to produce a
    minimal image for running PyMechanical tests. The
-   `.dockerignore <https://github.com/ansys/pymechanical/blob/main/docker/252/.dockerignore>`_
+   `.dockerignore <https://github.com/ansys/pymechanical/blob/main/docker/261/.dockerignore>`_
    file deliberately excludes a large number of Mechanical installation files to reduce
    image size. If you encounter issues with missing capabilities or components in your
    container, review and modify the ``.dockerignore`` file to include the additional
@@ -30,8 +30,8 @@ Build your own Mechanical Docker image
 The Mechanical Docker image provided in the PyMechanical repository is for internal use. Users must
 build it from a local Mechanical installation. Instructions are provided in the PyMechanical
 repository under `Make container <https://github.com/ansys/pymechanical/blob/main/docker/make_container.rst>`_,
-which uses the `Dockerfile <https://github.com/ansys/pymechanical/blob/main/docker/252/Dockerfile>`_ and
-`.dockerignore <https://github.com/ansys/pymechanical/blob/main/docker/252/.dockerignore>`_.
+which uses the `Dockerfile <https://github.com/ansys/pymechanical/blob/main/docker/261/Dockerfile>`_ and
+`.dockerignore <https://github.com/ansys/pymechanical/blob/main/docker/261/.dockerignore>`_.
 
 **Step 1: Download Mechanical**
 
@@ -66,7 +66,7 @@ override the entrypoint and pass
 .. code::
 
     LICENSE_SERVER=1055@XXX.XXX.XXX.XXX
-    VERSION=252
+    VERSION=261
 
     docker run -d \
       -e ANSYSLMD_LICENSE_FILE=$LICENSE_SERVER \
@@ -115,7 +115,7 @@ Verify your connection with this code:
 
     >>> mechanical
     Ansys Mechanical [Ansys Mechanical Enterprise]
-    Product Version:252
+    Product Version:261
     Software build date: 06/13/2025 15:54:58
 
 Additional considerations
@@ -144,7 +144,7 @@ and then install Python packages as needed.
 
 .. code:: bash
 
-    docker run -it -e ANSYSLMD_LICENSE_FILE=$LICENSE_SERVER --entrypoint=/bin/bash mechanical:25.2
+    docker run -it -e ANSYSLMD_LICENSE_FILE=$LICENSE_SERVER --entrypoint=/bin/bash mechanical:26.1
 
     # Once inside the container, you can install Python and packages as needed, then create an embedded app.
 
