@@ -247,7 +247,7 @@ html_theme_options = {
         "examples_dirs": [
             "../../examples/",
         ],
-     },
+    },
 }
 
 
