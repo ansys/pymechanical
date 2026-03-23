@@ -515,7 +515,10 @@ class App:
         if not file_path.is_file():
             raise FileNotFoundError(f"The file {file_path} does not exist.")
         data = file_path.read_text(encoding="utf-8")
-        return self.execute_script(data)
+        try:
+            return self.execute_script(data)
+        except RuntimeError as e:
+            raise RuntimeError(f"Error in '{file_path}': {e}") from e
 
     def plotter(self, obj=None) -> typing.Any | None:
         """Return ``ansys.tools.visualization_interface.Plotter`` object."""
