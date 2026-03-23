@@ -463,9 +463,23 @@ class App:
                 self.log_error(f"Failed to save project as {path}: {error_msg}")
             raise e
 
-    def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
-        """Launch the GUI."""
-        launch_ui(self, delete_tmp_on_close, dry_run)
+    def launch_gui(
+        self, delete_tmp_on_close: bool = True, dry_run: bool = False, readonly: bool = False
+    ):
+        """Launch the GUI.
+
+        Parameters
+        ----------
+        delete_tmp_on_close : bool, optional
+            Whether to delete the temporary project copy once the GUI exits.
+            Default is ``True``.
+        dry_run : bool, optional
+            Whether to print the launch command instead of launching the GUI.
+            Default is ``False``.
+        readonly : bool, optional
+            Whether to launch the GUI in read-only mode. Default is ``False``.
+        """
+        launch_ui(self, delete_tmp_on_close, dry_run, readonly)
 
     def new(self):
         """Clear to a new application."""
