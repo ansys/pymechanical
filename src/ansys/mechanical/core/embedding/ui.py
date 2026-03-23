@@ -43,9 +43,10 @@ from ansys.mechanical.core.embedding.logger import Logger
 class UILauncher:
     """Launch the GUI using a temporary mechdb file."""
 
-    def __init__(self, dry_run: bool = False):
+    def __init__(self, dry_run: bool = False, readonly: bool = False):
         """Initialize UILauncher class."""
         self._dry_run = dry_run
+        self._readonly = readonly
 
     def save_original(self, app: App) -> None:
         """Save the active mechdb file.
@@ -68,9 +69,8 @@ class UILauncher:
         # Identify the mechdb of the saved session from save_original()
         project_directory = Path(app.project_directory)
         project_directory_parent = project_directory.parent
-        mechdb_file = (
-            project_directory_parent / f"{project_directory.parts[-1].split('_')[0]}.mechdb"
-        )
+        project_name = project_directory.name.removesuffix("_Mech_Files")
+        mechdb_file = project_directory_parent / f"{project_name}.mechdb"
 
         # Get name of NamedTemporaryFile
         temp_file_name = tempfile.NamedTemporaryFile(
@@ -118,6 +118,8 @@ class UILauncher:
             "--revision",
             str(app.version),
         ]
+        if self._readonly:
+            args.append("--readonly")
         if not self._dry_run:
             try:
                 # The subprocess that uses ansys-mechanical to launch the GUI of the temporary
@@ -135,6 +137,8 @@ class UILauncher:
                     "--revision",
                     str(app.version),
                 ]
+                if self._readonly:
+                    args.append("--readonly")
                 process = Popen(args)  # nosec: B603 # pragma: no cover
             return process
         else:
@@ -226,6 +230,7 @@ def launch_ui(
     app: App,
     delete_tmp_on_close: bool = True,
     dry_run: bool = False,
+    readonly: bool = False,
 ) -> None:
     """Launch the Mechanical UI.
 
@@ -241,5 +246,7 @@ def launch_ui(
         By default, this is ``True``.
     dry_run: bool
         Whether or not to launch the GUI. By default, this is ``False``.
+    readonly: bool
+        Whether to launch the GUI in read-only mode. By default, this is ``False``.
     """
-    _launch_ui(app, delete_tmp_on_close, UILauncher(dry_run))
+    _launch_ui(app, delete_tmp_on_close, UILauncher(dry_run, readonly))
