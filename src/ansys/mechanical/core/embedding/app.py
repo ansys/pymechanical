@@ -149,6 +149,10 @@ class GetterWrapper:
             setattr(self, attr, value)
         setattr(self._get_wrapped_object(self._immortal_object), attr, value)
 
+    def __repr__(self):
+        """Return the repr of the wrapped object."""
+        return repr(self._get_wrapped_object(self._immortal_object))
+
 
 class App:
     """Mechanical embedding Application.
@@ -200,8 +204,7 @@ class App:
 
     >>> from ansys.mechanical.core.embedding import AddinConfiguration
     >>> from ansys.mechanical.core import App
-    >>> config = AddinConfiguration("Mechanical")
-    >>> config.no_act_addins = True
+    >>> config = AddinConfiguration("Mechanical", no_act_addins=True)
     >>> app = App(config=config)
 
     Set log level

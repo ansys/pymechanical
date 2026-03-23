@@ -17,6 +17,5 @@ without loading any ACT Addins:
     from ansys.mechanical.core import App
     from ansys.mechanical.core.embedding import AddinConfiguration
 
-    config = AddinConfiguration("Mechanical")
-    config.no_act_addins = True
+    config = AddinConfiguration("Mechanical", no_act_addins=True)
     app = App(config=config)
