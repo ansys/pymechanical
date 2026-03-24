@@ -581,6 +581,16 @@ class App:
         if self.interactive:
             raise RuntimeError("Plotting is not allowed in interactive mode")
 
+        import sys
+
+        if sys.platform != "win32" and not any(
+            os.environ.get(var) for var in ("DISPLAY", "WAYLAND_DISPLAY")
+        ):
+            raise RuntimeError(
+                "No display is available. Use 'xvfb-run' to run the application "
+                "on a system without a display."
+            )
+
         _plotter = self.plotter(obj)
 
         if _plotter is None:
