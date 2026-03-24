@@ -109,6 +109,7 @@ def _cli_impl(
     transport_mode: str | None = None,
     grpc_host: str | None = None,
     certs_dir: str | None = None,
+    readonly: bool = False,
 ):
     if project_file and input_script:
         raise click.ClickException("Cannot open a project file *and* run a script.")
@@ -257,6 +258,9 @@ def _cli_impl(
             if certs_dir:
                 args.append("--certs-dir")
                 args.append(certs_dir)
+
+    if readonly and graphical:
+        args.append("-readonly")
 
     if project_file:
         args.append("-file")
@@ -448,6 +452,12 @@ The ``exit`` command is only supported in version 2024 R1 or later.",
     default=False,
     help="Graphical mode",
 )
+@click.option(
+    "--readonly",
+    is_flag=True,
+    default=False,
+    help="Open Mechanical in read-only mode (graphical mode only).",
+)
 def cli(
     project_file: str,
     port: int,
@@ -464,6 +474,7 @@ def cli(
     transport_mode: str,
     grpc_host: str,
     certs_dir: str,
+    readonly: bool,
 ):
     """CLI tool to run mechanical.
 
@@ -500,4 +511,5 @@ def cli(
         transport_mode,
         grpc_host,
         certs_dir,
+        readonly,
     )
