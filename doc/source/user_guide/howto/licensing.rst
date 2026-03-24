@@ -97,7 +97,7 @@ results or exploring projects without consuming a license:
     from ansys.mechanical.core import App
 
     # Start in read-only mode
-    app = App(readonly=True, version=252)
+    app = App(readonly=True, version=261)
 
     # Verify read-only status
     print(f"Read-only mode: {app.readonly}")  # Output: True
@@ -115,16 +115,16 @@ You can specify which license to check out when starting the application using t
     from ansys.mechanical.core import App
 
     # Start with Mechanical Enterprise Solver license
-    app = App(start_license="meba", version=252)
+    app = App(start_license="meba", version=261)
 
     # Start with Mechanical Premium license
-    app = App(start_license="mech_2", version=252)
+    app = App(start_license="mech_2", version=261)
 
     # Start with Mechanical Pro license
-    app = App(start_license="mech_1", version=252)
+    app = App(start_license="mech_1", version=261)
 
     # Start with Mechanical Enterprise license
-    app = App(start_license="ansys", version=252)
+    app = App(start_license="ansys", version=261)
 
 .. tip::
    Refer to the :ref:`License Keywords and Products <ref_licensing>` section above for a complete list
@@ -144,7 +144,7 @@ first enabled license in the preference order:
     from ansys.mechanical.core import App
 
     # Start with default license behavior
-    app = App(version=252)
+    app = App(version=261)
 
     # Check which license was checked out
     print(app.license_manager.get_all_licenses())
@@ -159,7 +159,7 @@ the ``license_manager`` property of the ``App`` instance:
 
     from ansys.mechanical.core import App
 
-    app = App(version=252)
+    app = App(version=261)
     license_mgr = app.license_manager
 
 Viewing available licenses
@@ -260,7 +260,7 @@ Disable the currently checked-out license to put the application in read-only mo
 
     from ansys.mechanical.core import App
 
-    app = App(version=252)
+    app = App(version=261)
 
     # Initially not in read-only mode
     print(app.readonly)  # Output: False
@@ -319,10 +319,10 @@ you can use the read-only workaround:
     from ansys.mechanical.core import App
 
     # Method 1: Using start_license parameter (recommended)
-    app = App(start_license="meba", version=252)  # Forces Mechanical Premium
+    app = App(start_license="meba", version=261)  # Forces Mechanical Premium
 
     # Method 2: Using read-only workaround
-    app = App(readonly=True, version=252)  # Start without license
+    app = App(readonly=True, version=261)  # Start without license
 
     # Modify license order
     app.license_manager.move_to_index("Ansys Mechanical Premium", 0)
@@ -342,7 +342,7 @@ You can change which license is checked out during a session:
 
     from ansys.mechanical.core import App
 
-    app = App(version=252)
+    app = App(version=261)
 
     # Check current license status
     print("Currently using:")
@@ -373,7 +373,7 @@ release the license:
     from ansys.mechanical.core import App
     import time
 
-    app = App(version=252)
+    app = App(version=261)
 
     # Perform operations requiring a license
     # ... your modeling operations ...
@@ -400,7 +400,7 @@ Test if specific licenses are available before starting:
 
     from ansys.mechanical.core import App
 
-    app = App(readonly=True, version=252)  # Start without checking out a license
+    app = App(readonly=True, version=261)  # Start without checking out a license
 
     # Check which licenses are available
     licenses = app.license_manager.get_all_licenses()
@@ -497,7 +497,7 @@ Here's a complete example demonstrating various license management scenarios:
     from ansys.mechanical.core import App
 
     # Start in read-only mode to inspect license options
-    app = App(readonly=True, version=252)
+    app = App(readonly=True, version=261)
 
     print("=== Available Licenses ===")
     app.license_manager.show()

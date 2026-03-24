@@ -109,6 +109,7 @@ def _cli_impl(
     transport_mode: str | None = None,
     grpc_host: str | None = None,
     certs_dir: str | None = None,
+    readonly: bool = False,
 ):
     if project_file and input_script:
         raise click.ClickException("Cannot open a project file *and* run a script.")
@@ -257,6 +258,9 @@ def _cli_impl(
             if certs_dir:
                 args.append("--certs-dir")
                 args.append(certs_dir)
+
+    if readonly and graphical:
+        args.append("-readonly")
 
     if project_file:
         args.append("-file")
@@ -438,7 +442,7 @@ The ``exit`` command is only supported in version 2024 R1 or later.",
     "--revision",
     default=None,
     type=int,
-    help='Ansys Revision number, e.g. "251" or "252". If none is specified\
+    help='Ansys Revision number, e.g. "252" or "261". If none is specified\
 , uses the default from ansys-tools-path',
 )
 @click.option(
@@ -447,6 +451,12 @@ The ``exit`` command is only supported in version 2024 R1 or later.",
     is_flag=True,
     default=False,
     help="Graphical mode",
+)
+@click.option(
+    "--readonly",
+    is_flag=True,
+    default=False,
+    help="Open Mechanical in read-only mode (graphical mode only).",
 )
 def cli(
     project_file: str,
@@ -464,6 +474,7 @@ def cli(
     transport_mode: str,
     grpc_host: str,
     certs_dir: str,
+    readonly: bool,
 ):
     """CLI tool to run mechanical.
 
@@ -471,9 +482,9 @@ def cli(
 
     The following example demonstrates the main use of this tool:
 
-        $ ansys-mechanical -r 252 -g
+        $ ansys-mechanical -r 261 -g
 
-        Starting Ansys Mechanical version 2025R2 in graphical mode...
+        Starting Ansys Mechanical version 2026R1 in graphical mode...
     """
     exe = atp.get_mechanical_path(allow_input=False, version=revision)
     version = atp.version_from_path("mechanical", exe)
@@ -500,4 +511,5 @@ def cli(
         transport_mode,
         grpc_host,
         certs_dir,
+        readonly,
     )
