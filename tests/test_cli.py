@@ -73,6 +73,14 @@ def test_cli_graphical(disable_cli, pytestconfig):
 
 
 @pytest.mark.cli
+def test_cli_graphical_readonly(disable_cli, pytestconfig):
+    """Test for CLI readonly argument in graphical mode."""
+    version = int(pytestconfig.getoption("ansys_version"))
+    args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, graphical=True, readonly=True)
+    assert "-readonly" in args
+
+
+@pytest.mark.cli
 def test_cli_appdata(disable_cli, pytestconfig):
     """Test for CLI private appdata argument."""
     version = int(pytestconfig.getoption("ansys_version"))
@@ -133,6 +141,20 @@ def test_cli_project(disable_cli, pytestconfig):
     )
     assert "-file" in args
     assert "foo.mechdb" in args
+
+
+@pytest.mark.cli
+def test_cli_project_readonly(disable_cli, pytestconfig):
+    """Test for CLI readonly argument with project file."""
+    version = int(pytestconfig.getoption("ansys_version"))
+    args, _ = _cli_impl(
+        exe="AnsysWBU.exe",
+        version=version,
+        project_file="foo.mechdb",
+        graphical=True,
+        readonly=True,
+    )
+    assert "-readonly" in args
 
 
 @pytest.mark.cli

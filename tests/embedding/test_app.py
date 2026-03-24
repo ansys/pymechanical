@@ -446,6 +446,31 @@ def test_launch_gui(embedded_app, tmp_path: pytest.TempPathFactory, capfd):
 
 
 @pytest.mark.embedding
+def test_launch_gui_with_underscores_in_filename(
+    embedded_app, tmp_path: pytest.TempPathFactory, capfd
+):
+    """Test GUI launch works for mechdb filenames containing underscores."""
+    mechdb_path = tmp_path / "test_with_underscores.mechdb"
+    embedded_app.save(str(mechdb_path))
+    embedded_app.launch_gui(delete_tmp_on_close=False, dry_run=True)
+    embedded_app.close()
+    out, err = capfd.readouterr()
+    assert f"Opened a new mechanical session based on {mechdb_path}" in out
+
+
+@pytest.mark.embedding
+def test_launch_gui_readonly(embedded_app, tmp_path: pytest.TempPathFactory, capfd):
+    """Test the GUI can be launched in read-only mode for an embedded app."""
+    mechdb_path = tmp_path / "test_readonly.mechdb"
+    embedded_app.save(str(mechdb_path))
+    embedded_app.launch_gui(delete_tmp_on_close=False, dry_run=True, readonly=True)
+    embedded_app.close()
+    out, err = capfd.readouterr()
+    assert "--readonly" in out
+    assert f"Opened a new mechanical session based on {mechdb_path}" in out
+
+
+@pytest.mark.embedding
 def test_launch_gui_exception(embedded_app):
     """Test an exception is raised when the embedded_app has not been saved yet."""
     # Assert that an exception is raised
