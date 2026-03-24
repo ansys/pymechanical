@@ -54,7 +54,7 @@ Compatibility
 **Supported versions:**
 
 * **Python**: 3.10 - 3.13
-* **Mechanical**: 2024 R1 (v241) to 2025 R2 (v252)
+* **Mechanical**: 2024 R2 (v242) to 2026 R1 (v261)
 * **Platforms**: Windows, Linux
 
 Installation

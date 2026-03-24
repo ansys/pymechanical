@@ -26,7 +26,7 @@
 
 .. # Mechanical related
 
-.. _Mechanical API Documentation: https://scripting.mechanical.docs.pyansys.com/version/dev/api/index.html
+.. _Mechanical API Documentation: https://scripting.mechanical.docs.pyansys.com/version/api/ansys/mechanical/stubs/v252/index.html
 .. _Mechanical scripting interface APIs: https://developer.ansys.com/docs/mechanical-scripting-interface/api/index.md
 .. _ACT API Reference Guide: https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/%%VERSION%%/en/act_ref/act_ref.html
 

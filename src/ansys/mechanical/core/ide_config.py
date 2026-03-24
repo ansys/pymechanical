@@ -89,7 +89,7 @@ def _vscode_impl(
         The type of settings to update. Either "user" or "workspace" in VS Code.
         By default, it's ``user``.
     revision: int
-        The Mechanical revision number. For example, "252".
+        The Mechanical revision number. For example, "261".
         If unspecified, it finds the default Mechanical version from ansys-tools-path.
     """
     # Update the user or workspace settings
@@ -146,7 +146,7 @@ def _cli_impl(
         The type of settings to update. Either "user" or "workspace" in VS Code.
         By default, it's ``user``.
     revision: int
-        The Mechanical revision number. For example, "252".
+        The Mechanical revision number. For example, "261".
         If unspecified, it finds the default Mechanical version from ansys-tools-path.
     """
     # Get the ansys-mechanical-stubs install location
@@ -192,7 +192,7 @@ def _cli_impl(
     "--revision",
     default=None,
     type=int,
-    help='The Mechanical revision number, e.g. "252" or "251". If unspecified,\
+    help='The Mechanical revision number, e.g. "252" or "261". If unspecified,\
 it finds and uses the default version from ansys-tools-path.',
 )
 def cli(ide: str, target: str, revision: int) -> None:
@@ -206,14 +206,14 @@ def cli(ide: str, target: str, revision: int) -> None:
         The type of settings to update. Either "user" or "workspace" in VS Code.
         By default, it's ``user``.
     revision: int
-        The Mechanical revision number. For example, "252".
+        The Mechanical revision number. For example, "261".
         If unspecified, it finds the default Mechanical version from ansys-tools-path.
 
     Usage
     -----
     The following example demonstrates the main use of this tool:
 
-        $ ansys-mechanical-ideconfig --ide vscode --target user --revision 252
+        $ ansys-mechanical-ideconfig --ide vscode --target user --revision 261
 
     """
     if not revision:

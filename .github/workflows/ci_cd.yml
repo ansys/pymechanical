@@ -13,7 +13,6 @@ on:
         - '252'
         - '251'
         - '242'
-        - '241'
         description: 'The Mechanical revision number to run tests on.'
         default: '261' # Same as STABLE_REVN
   schedule:
@@ -201,7 +200,7 @@ jobs:
       packages: read         # Required to pull Docker images from GitHub Container Registry
     steps:
       - name: Login in Github Container registry
-        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
+        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -243,7 +242,7 @@ jobs:
         run: |
           # if a tag(release) is pushed, test all versions
           if [[ "${GH_EVENT_NAME}" == "push" ]] && [[ "$GH_REF" =~ "refs/tags" ]]; then
-            echo "matrix={\"mechanical-version\":['24.1.0', '24.2.0', '25.1.0', '25.2.0', '26.1.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
+            echo "matrix={\"mechanical-version\":['24.2.0', '25.1.0', '25.2.0', '26.1.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           else
             echo "matrix={\"mechanical-version\":['${TEST_DOCKER_IMAGE_VERSION}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
           fi
@@ -284,7 +283,7 @@ jobs:
       checks: write          # Needed to publish test results and status checks
     steps:
       - name: Login in Github Container registry
-        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
+        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -816,22 +815,22 @@ jobs:
       - name: Create common coverage directory
         run: mkdir cov-dir
 
-      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: coverage-file-tests-embedding
           path: cov-dir/embedding
 
-      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: coverage-file-tests-embedding-scripts
           path: cov-dir/embedding-scripts
 
-      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: coverage-file-tests-remote-session-launch
           path: cov-dir/launch
 
-      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: coverage-file-tests
           path: cov-dir/normal
@@ -934,7 +933,7 @@ jobs:
       contents: write        # Needed to download release artifacts
     steps:
       - name: "Download the library artifacts from build-library step"
-        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ${{ env.PACKAGE_NAME }}-artifacts
           path: ${{ env.PACKAGE_NAME }}-artifacts

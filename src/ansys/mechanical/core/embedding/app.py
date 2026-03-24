@@ -122,6 +122,15 @@ def _additional_args(readonly: bool, feature_flags: list, start_license: str, ve
     return additional_args
 
 
+def _normalize_file_path(path: str | Path) -> str:
+    """Return an absolute filesystem path as a string.
+
+    Mechanical save APIs can reject filename-only inputs on some platforms.
+    Normalizing to an absolute path ensures consistent behavior.
+    """
+    return str(Path(path).resolve())
+
+
 def is_initialized() -> bool:
     """Check if the app has been initialized."""
     return len(INSTANCES) != 0
@@ -407,7 +416,7 @@ class App:
     def save(self, path=None):
         """Save the project."""
         if path is not None:
-            self.DataModel.Project.Save(path)
+            self.DataModel.Project.Save(_normalize_file_path(path))
         else:
             self.DataModel.Project.Save()
 
@@ -431,8 +440,9 @@ class App:
         Exception
             If the file already exists at the specified path and `overwrite` is False.
         """
-        if not Path(path).exists():
-            self.DataModel.Project.SaveAs(path)
+        normalized_path = _normalize_file_path(path)
+        if not Path(normalized_path).exists():
+            self.DataModel.Project.SaveAs(normalized_path)
             return
 
         if not overwrite:
@@ -442,7 +452,7 @@ class App:
             )
 
         if remove_lock:
-            file_path = Path(path)
+            file_path = Path(normalized_path)
             associated_dir = file_path.parent / f"{file_path.stem}_Mech_Files"
             lock_file = associated_dir / ".mech_lock"
             # Remove the lock file if it exists before saving the project file
@@ -450,7 +460,7 @@ class App:
                 self.log_warning(f"Removing the lock file, {lock_file}... ")
                 lock_file.unlink()
         try:
-            self.DataModel.Project.SaveAs(path, overwrite)
+            self.DataModel.Project.SaveAs(normalized_path, overwrite)
         except Exception as e:
             error_msg = str(e)
             if "The project is locked by" in error_msg:
@@ -463,9 +473,23 @@ class App:
                 self.log_error(f"Failed to save project as {path}: {error_msg}")
             raise e
 
-    def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
-        """Launch the GUI."""
-        launch_ui(self, delete_tmp_on_close, dry_run)
+    def launch_gui(
+        self, delete_tmp_on_close: bool = True, dry_run: bool = False, readonly: bool = False
+    ):
+        """Launch the GUI.
+
+        Parameters
+        ----------
+        delete_tmp_on_close : bool, optional
+            Whether to delete the temporary project copy once the GUI exits.
+            Default is ``True``.
+        dry_run : bool, optional
+            Whether to print the launch command instead of launching the GUI.
+            Default is ``False``.
+        readonly : bool, optional
+            Whether to launch the GUI in read-only mode. Default is ``False``.
+        """
+        launch_ui(self, delete_tmp_on_close, dry_run, readonly)
 
     def new(self):
         """Clear to a new application."""

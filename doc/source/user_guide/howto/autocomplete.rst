@@ -19,7 +19,7 @@ Usage:
 
 .. code:: shell
 
-    ansys-mechanical-ideconfig --ide vscode --target user --revision 252
+    ansys-mechanical-ideconfig --ide vscode --target user --revision 261
 
 Terminal output for Windows user's settings.json file:
 
@@ -29,10 +29,10 @@ Terminal output for Windows user's settings.json file:
 
     {
         "python.autoComplete.extraPaths": [
-            "{project_directory}\\.venv\\Lib\\site-packages\\ansys\\mechanical\\stubs\\v252"
+            "{project_directory}\\.venv\\Lib\\site-packages\\ansys\\mechanical\\stubs\\v261"
         ],
         "python.analysis.extraPaths": [
-            "{project_directory}\\.venv\\Lib\\site-packages\\ansys\\mechanical\\stubs\\v252"
+            "{project_directory}\\.venv\\Lib\\site-packages\\ansys\\mechanical\\stubs\\v261"
         ]
     }
 
