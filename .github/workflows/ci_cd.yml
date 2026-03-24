@@ -783,8 +783,10 @@ jobs:
       contents: read
     steps:
       - name: Check doc-build result
+        env:
+          DOC_BUILD_RESULT: ${{ needs.doc-build.result }}
         run: |
-          if [[ "${{ needs.doc-build.result }}" == "success" || "${{ needs.doc-build.result }}" == "skipped" ]]; then
+          if [[ "${DOC_BUILD_RESULT}" == "success" || "${DOC_BUILD_RESULT}" == "skipped" ]]; then
             echo "doc-build passed or skipped — OK"
           else
             echo "doc-build failed"
