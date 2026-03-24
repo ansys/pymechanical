@@ -312,7 +312,8 @@ def test_building_gallery(pytestconfig, run_subprocess, rootdir):
     """Test for building gallery check.
 
     When building the gallery, each example file creates another instance of the app.
-    When the BUILDING_GALLERY flag is enabled, only one instance is kept.
+    When the BUILDING_GALLERY flag is enabled, only one instance is kept (unless a
+    constructor uses ``reuse_instance=True`` to opt out of sharing).
     This is to test the bug fixed in https://github.com/ansys/pymechanical/pull/784
     and will fail on PyMechanical version 0.11.0
     """
@@ -335,6 +336,16 @@ def test_building_gallery(pytestconfig, run_subprocess, rootdir):
 
     # Assert stdout after launching multiple instances
     assert "Multiple App launched with building gallery flag on" in stdout
+
+
+@pytest.mark.embedding_scripts
+def test_reuse_instance_bypasses_gallery_sharing(pytestconfig, run_subprocess, rootdir):
+    """When BUILDING_GALLERY is True, ``reuse_instance=True`` skips the sharing path."""
+    version = pytestconfig.getoption("ansys_version")
+    script = Path(rootdir) / "tests" / "scripts" / "reuse_instance_test.py"
+    _process, stdout, stderr = run_subprocess([sys.executable, str(script), version])
+    stdout = stdout.decode()
+    assert "reuse_instance bypassed gallery sharing as expected" in stdout
 
 
 @pytest.mark.embedding
