@@ -122,6 +122,15 @@ def _additional_args(readonly: bool, feature_flags: list, start_license: str, ve
     return additional_args
 
 
+def _normalize_file_path(path: str | Path) -> str:
+    """Return an absolute filesystem path as a string.
+
+    Mechanical save APIs can reject filename-only inputs on some platforms.
+    Normalizing to an absolute path ensures consistent behavior.
+    """
+    return str(Path(path).resolve())
+
+
 def is_initialized() -> bool:
     """Check if the app has been initialized."""
     return len(INSTANCES) != 0
@@ -407,7 +416,7 @@ class App:
     def save(self, path=None):
         """Save the project."""
         if path is not None:
-            self.DataModel.Project.Save(path)
+            self.DataModel.Project.Save(_normalize_file_path(path))
         else:
             self.DataModel.Project.Save()
 
@@ -431,8 +440,9 @@ class App:
         Exception
             If the file already exists at the specified path and `overwrite` is False.
         """
-        if not Path(path).exists():
-            self.DataModel.Project.SaveAs(path)
+        normalized_path = _normalize_file_path(path)
+        if not Path(normalized_path).exists():
+            self.DataModel.Project.SaveAs(normalized_path)
             return
 
         if not overwrite:
@@ -442,7 +452,7 @@ class App:
             )
 
         if remove_lock:
-            file_path = Path(path)
+            file_path = Path(normalized_path)
             associated_dir = file_path.parent / f"{file_path.stem}_Mech_Files"
             lock_file = associated_dir / ".mech_lock"
             # Remove the lock file if it exists before saving the project file
@@ -450,7 +460,7 @@ class App:
                 self.log_warning(f"Removing the lock file, {lock_file}... ")
                 lock_file.unlink()
         try:
-            self.DataModel.Project.SaveAs(path, overwrite)
+            self.DataModel.Project.SaveAs(normalized_path, overwrite)
         except Exception as e:
             error_msg = str(e)
             if "The project is locked by" in error_msg:
@@ -529,7 +539,10 @@ class App:
         if not file_path.is_file():
             raise FileNotFoundError(f"The file {file_path} does not exist.")
         data = file_path.read_text(encoding="utf-8")
-        return self.execute_script(data)
+        try:
+            return self.execute_script(data)
+        except RuntimeError as e:
+            raise RuntimeError(f"Error in '{file_path}': {e}") from e
 
     def plotter(self, obj=None) -> typing.Any | None:
         """Return ``ansys.tools.visualization_interface.Plotter`` object."""
