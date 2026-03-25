@@ -43,3 +43,22 @@ not for the ``globals`` argument of the ``App`` class:
 
    app = App()
    app.update_globals(globals(), False)
+
+Documentation gallery and ``BUILDING_GALLERY``
+-----------------------------------------------
+
+Building the HTML documentation sets the module flag ``BUILDING_GALLERY`` so that
+Sphinx-Gallery can run examples and so that multiple embedded ``App()``
+calls in those examples share one Mechanical instance. If you need one
+construction of ``App`` to behave as if ``BUILDING_GALLERY`` were ``False``
+(for example to avoid sharing while the flag remains ``True`` globally), pass
+``reuse_instance=True``:
+
+.. code:: python
+
+   import ansys.mechanical.core as pymechanical
+
+   app = pymechanical.App(globals=globals(), reuse_instance=True)
+
+See also :py:data:`~ansys.mechanical.core.BUILDING_GALLERY` and
+:class:`~ansys.mechanical.core.embedding.app.App`.
