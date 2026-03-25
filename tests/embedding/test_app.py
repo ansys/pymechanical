@@ -33,7 +33,7 @@ import time
 
 import pytest
 
-from ansys.mechanical.core.embedding.app import is_initialized
+from ansys.mechanical.core.embedding.app import _normalize_file_path, is_initialized
 from ansys.mechanical.core.embedding.cleanup_gui import cleanup_gui
 from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
 from ansys.mechanical.core.embedding.logger import Logger
@@ -91,6 +91,19 @@ def test_app_save_open(embedded_app, tmp_path: pytest.TempPathFactory):
     embedded_app.open(project_file_str)
     assert embedded_app.DataModel.Project.Name == "PROJECT 2"
     embedded_app.new()
+
+
+def test_normalize_file_path_returns_absolute_path(tmp_path):
+    """Test filename-only paths are normalized to absolute paths."""
+    original_cwd = Path.cwd()
+    try:
+        os.chdir(tmp_path)
+        normalized = _normalize_file_path("filename_only_test.mechdat")
+    finally:
+        os.chdir(original_cwd)
+
+    assert Path(normalized).is_absolute()
+    assert Path(normalized) == tmp_path / "filename_only_test.mechdat"
 
 
 @pytest.mark.embedding
