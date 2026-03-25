@@ -5,38 +5,27 @@ Launching PyMechanical
 
 The ``ansys-mechanical-core`` package requires either a local or
 remote instance of Mechanical to communicate with. This page describes
-how Mechanical is installed from the Ansys standard installer and
-describes how you launch and interface with Mechanical from Python.
+how to launch Mechanical in each mode.
 
-Install Mechanical
-------------------
+.. tip::
 
-Mechanical is installed by default from the Ansys standard installer.
-When you run the standard installer, look under the **Structural Mechanics**
-heading to verify that the **Mechanical Products** checkbox is selected.
-Although options in the standard installer might change, this image provides
-a reference:
+   Not sure which mode to use? See :ref:`ref_choose_your_mode` for a comparison.
 
-.. figure:: ../images/unified_install_2023R1.jpg
-    :width: 400pt
 
-Launch a remote Mechanical session
-----------------------------------
+.. _launch_remote_session:
 
-You can use PyMechanical to launch a Mechanical session on the local machine
-Python is running on. Alternatively, you can run Mechanical's command line
-directly on any machine to start Mechanical in server mode and then use its
-IP address to manually connect to it from Python.
+Remote session mode
+-------------------
 
-Launch Mechanical on the local machine using Python
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In remote session mode, Mechanical runs as a separate server process and
+communicates with Python via gRPC.
 
-When Mechanical is installed locally on your machine, you can use the
+Launch from Python
+~~~~~~~~~~~~~~~~~~
+
+Use the
 `launch_mechanical() <../api/ansys/mechanical/core/mechanical/index.html#mechanical.launch_mechanical>`_
-method to launch and automatically connect to Mechanical. While this method provides the
-easiest and fastest way to launch Mechanical, it only works with a local Mechanical installation.
-
-Launch Mechanical locally with this code:
+method to launch and connect automatically:
 
 .. code:: pycon
 
@@ -45,241 +34,91 @@ Launch Mechanical locally with this code:
     >>> mechanical
 
 
-    |ansys_product|
-    Product Version: |ansys_version|
-    Software build date: |ansys_build_date|
+    Ansys Mechanical [Ansys Mechanical Enterprise]
+    Product Version:261
+    Software build date: 02/03/2026 15:29:09
 
+To select a specific version:
 
-Launch Mechanical from the command line
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. code:: python
 
-The `ansys-mechanical` utility is installed automatically with PyMechanical,
-and can be used to run Mechanical from the command line. To obtain help on
-usage, type the following command:
+    exec_file_path = "C:/Program Files/ANSYS Inc/v261/aisol/bin/win64/AnsysWBU.exe"
+    mechanical = launch_mechanical(exec_file=exec_file_path)
+
+Launch from the command line
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Start Mechanical in server mode and connect manually:
 
 .. code:: console
 
-    $ ansys-mechanical --help
+    $ ansys-mechanical --port 10000
 
-    Usage: ansys-mechanical [OPTIONS]
+For all CLI options, run ``ansys-mechanical --help`` or see :doc:`../user_guide/cli/ansys-mechanical`.
 
-        CLI tool to run mechanical.
+Connect to a running instance
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        USAGE:
-
-        The following example demonstrates the main use of this tool:
-
-            $ ansys-mechanical -r 261 -g
-
-            Starting Ansys Mechanical version 2025R1 in graphical mode...
-
-    Options:
-        -h, --help                 Show this message and exit.
-        -p, --project-file TEXT    Opens Mechanical project file (.mechdb). Cannot
-                                    be mixed with -i
-        --private-appdata         Make the appdata folder private. This enables you
-                                    to run parallel instances of Mechanical.
-        --port INTEGER             Start mechanical in server mode with the given
-                                    port number
-        -i, --input-script TEXT    Name of the input Python script. Cannot be mixed
-                                    with -p
-        --features TEXT            Beta feature flags to set, as a semicolon
-                                    delimited list. Options: ['MultistageHarmonic',
-                                    'ThermalShells', 'CPython']
-        --exit                     Exit the application after running an input
-                                    script. You can only use this command with
-                                    --input-script argument (-i). The command
-                                    defaults to true you are not running the
-                                    application in graphical mode. The ``exit``
-                                    command is only supported in version 2024 R1 or
-                                    later.
-        -s, --show-welcome-screen  Show the welcome screen. You use this screen to
-                                    open a file. This argument only affects the
-                                    application when in graphical mode.
-        --debug                    Show a debug dialog window at the start of the
-                                    process.
-        -r, --revision INTEGER     Ansys Revision number, e.g. "242", "251", "252" or "261".
-                                    If none is specified, uses the default from ansys-
-                                    tools-path
-        -g, --graphical            Graphical mode
-
-    ...
-
-You can launch Mechanical in server mode from the command line and then
-manually connect to the server. Use the `port` argument to select the port.
-
-.. code::
-
-    ansys-mechanical --port 10000
-
-Connect to a Mechanical session
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-You can connect to a Mechanical session from the same host or from an external host.
-
-Assuming that Mechanical is running locally at the default IP address (``127.0.0.1``) on the
-default port (``10000``), you would use this code to connect to it with this code:
+Connect to a local or remote Mechanical server:
 
 .. code:: python
 
     from ansys.mechanical.core import Mechanical
 
+    # Local — default IP (127.0.0.1) and port (10000)
     mechanical = Mechanical()
 
-Alternatively, you can use the
-`connect_to_mechanical() <../api/ansys/mechanical/core/mechanical/index.html#mechanical.connect_to_mechanical>`_
-for same functionality.
+    # Remote — by IP address
+    mechanical = Mechanical("192.168.0.1", port=10000)
+
+    # Remote — by hostname
+    mechanical = Mechanical("myremotemachine", port=10000)
+
+Alternatively, use
+`connect_to_mechanical() <../api/ansys/mechanical/core/mechanical/index.html#mechanical.connect_to_mechanical>`_:
 
 .. code:: python
 
     from ansys.mechanical.core import connect_to_mechanical
-
-    mechanical = connect_to_mechanical()
-
-
-Now assume that a remote instance of Mechanical has been started in server mode. To connect to
-the computer on your local area network that is running Mechanical, you can use either
-an IP address and port or a hostname and port.
-
-**IP address and port**
-
-Assume that Mechanical is running remotely at IP address ``192.168.0.1`` on port ``10000``.
-
-You would connect to it with this code:
-
-.. code:: python
-
-    mechanical = Mechanical("192.168.0.1", port=10000)
-
-or
-
-.. code:: python
-
     mechanical = connect_to_mechanical("192.168.0.1", port=10000)
 
-**Hostname and port**
+For more on remote sessions, see the :ref:`Remote session user guide <ref_user_guide_session>`.
 
-Assume that Mechanical is running remotely at hostname ``myremotemachine`` on port ``10000``.
 
-You would connect to it with this code:
+.. _launch_embedding:
 
-.. code:: python
+Embedding mode
+--------------
 
-    mechanical = Mechanical("myremotemachine", port=10000)
+In embedding mode, Mechanical runs directly inside your Python process
+via `Python.NET <https://pythonnet.github.io/>`__. This gives you full object-model access with no network overhead.
 
-or
-
-.. code:: python
-
-    mechanical = connect_to_mechanical("myremotemachine", port=10000)
-
-Launching issues
-----------------
-
-For any number of reasons, launching Mechanical can fail. Some approaches
-follow for debugging launch failures.
-
-Manually set the location of the executable file
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-If you have a non-standard installation of Mechanical, PyMechanical might
-not be able to find your installation. In this case, you should manually
-set the location of your Mechanical executable file as the first parameter
-for the `launch_mechanical()`_ method.
-
-**On Windows**
-
-.. code:: python
-
-    from ansys.mechanical.core import launch_mechanical
-
-    exec_loc = "C:/Program Files/ANSYS Inc/v261/aisol/bin/winx64/AnsysWBU.exe"
-    mechanical = launch_mechanical(exec_file=exec_loc)
-
-**On Linux**
-
-.. code:: python
-
-    from ansys.mechanical.core import launch_mechanical
-
-    exec_loc = "/usr/ansys_inc/v261/aisol/.workbench"
-    mechanical = launch_mechanical(exec_file=exec_loc)
-
-If, when using the `launch_mechanical()`_
-method, Mechanical still fails to launch or hangs while launching, pass the
-``verbose_mechanical=True`` parameter. This prints the output of Mechanical in the Python console.
-You can then use this output to debug why Mechanical isn't launching.
-
-.. Note::
-
-    On Windows, output is limited because of the way Mechanical launches.
-
-Debug from the command line
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-You may need to run the ``launch`` command from the command line to debug why Mechanical is not launching.
-running the launch command from the command line.
-
-Open a terminal and run the following command:
-
-.. code:: console
-
-    ansys-mechanical -g --port 10000
-
-If the preceding command for your operating system doesn't launch Mechanical, you might have
-a variety of issues, including:
-
-- License server setup
-- Running behind a VPN
-- Missing dependencies
-
-Embed a Mechanical instance
----------------------------
-
-The instructions for embedding a Mechanical instance are different on
-Windows and Linux. While the Python code is the same in both cases,
-Linux requires some additional environment variables.
-
-Python code
-~~~~~~~~~~~
+Launch on Windows
+~~~~~~~~~~~~~~~~~
 
 .. code:: pycon
 
     >>> from ansys.mechanical.core import App
-    >>> mechanical = App()
-    >>> mechanical
+    >>> app = App()
+    >>> app
     Ansys Mechanical [Ansys Mechanical Enterprise]
     Product Version:261
-    Software build date: 06/13/2025 15:54:58
+    Software build date: 02/03/2026 15:29:09
 
-Additional information for Linux
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Launch on Linux
+~~~~~~~~~~~~~~~
 
-Starting with 2023 R2, it is possible to embed an instance of Mechanical on Linux.
-However, because of differences in how Mechanical works on Linux, you cannot simply
-run Python as usual. On Linux, certain environment variables must be set for the Python
-process before it starts. You can set up these environment variables using the ``mechanical-env``
-script which is part of PyMechanical
+On Linux, certain environment variables must be set before Python starts.
+Use the ``mechanical-env`` script shipped with PyMechanical:
 
 .. code:: shell
 
    $ mechanical-env python
 
-Licensing issues
-----------------
+Then use the same Python code as on Windows.
 
-`PADT <https://www.padtinc.com/>`_ has an `Ansys <https://www.padtinc.com/simulation/ansys-simulation-products/>`_
-product section. Posts about licensing are common.
+For more on embedding, see the :ref:`Embedding mode user guide <ref_embedding_user_guide>`.
 
-If you are responsible for maintaining an Ansys license or have a personal installation
-of Ansys, you likely can access the
-`Licensing <https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/prod_page.html?pn=Licensing&pid=Licensing&lang=en>`_
-section of the Ansys Help, where you can view or download the *Ansys, Inc. Licensing Guide* for
-comprehensive licensing information.
+.. seealso::
 
-VPN issues
-----------
-
-Sometimes, Mechanical has issues starting when VPN software is running. For more information,
-access the `Mechanical Users Guide`_
-in the Ansys Help.
+   :doc:`troubleshooting` — executable not found, licensing, VPN, and debug tips.

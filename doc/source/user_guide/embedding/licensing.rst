@@ -3,6 +3,8 @@
 License management
 ==================
 
+
+
 Overview
 --------
 
@@ -107,6 +109,9 @@ results or exploring projects without consuming a license:
 
 With a specific license
 ~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. note::
+   The ``start_license`` parameter is available starting from **Ansys Mechanical 2026 R1 (version 261)** and later.
 
 You can specify which license to check out when starting the application using the ``start_license`` parameter:
 

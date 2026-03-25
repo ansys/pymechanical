@@ -5,6 +5,22 @@ FAQs
 
 This section provides answers to frequently asked questions.
 
+.. dropdown:: Which mode should I use — embedding or remote session?
+    :animate: fade-in-slide-down
+
+    PyMechanical offers two modes:
+
+    - **Embedding mode** (``App`` class): Mechanical runs in your Python process.
+      Best for Jupyter notebooks, interactive scripting, and when you need full
+      object-model access (read, create, update, delete objects directly).
+
+    - **Remote session mode** (``launch_mechanical()``): Mechanical runs as a
+      separate server process. Best for CI/CD pipelines, Docker, distributed
+      automation, GUI access, and running multiple simultaneous instances.
+
+    For a detailed comparison table and decision guide, see
+    :ref:`ref_choose_your_mode`.
+
 .. dropdown:: My script works in the Mechanical GUI but fails with PyMechanical embedding. Is this a PyMechanical bug?
     :animate: fade-in-slide-down
 
@@ -152,7 +168,7 @@ This section provides answers to frequently asked questions.
 
                 Ansys Mechanical [Ansys Mechanical Enterprise]
                 Product Version:261
-                Software build date: 06/13/2025 15:54:58
+                Software build date: 02/03/2026 15:29:09
 
 
         .. tab-item:: Without License
@@ -161,7 +177,7 @@ This section provides answers to frequently asked questions.
 
                 Ansys Mechanical []
                 Product Version:261
-                Software build date: 06/13/2025 15:54:58
+                Software build date: 02/03/2026 15:29:09
 
 
     Alternatively, once the ``app`` is created ``readonly`` method can be used to see if license is active.

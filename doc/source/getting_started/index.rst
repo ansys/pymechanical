@@ -5,10 +5,9 @@ Getting started
 
 PyMechanical is part of the broader `PyAnsys <pyansys_>`_ initiative,
 enabling the use of Ansys technologies directly from Python.
-It allows users to integrate the Mechanical multiphysics solver
-into custom applications via ``ansys-mechanical-core``, which provides a Python-friendly
-interface to drive the software that facilitates the use of
-:ref:`Mechanical Scripting <ref_scripting>` commands.
+It provides two modes for working with Mechanical:
+**embedding mode** (in-process, full API access) and
+**remote session mode** (separate process, gRPC).
 
 
 .. grid:: 1 2 2 2
@@ -19,7 +18,15 @@ interface to drive the software that facilitates the use of
         :link-type: doc
         :text-align: left
 
-        Instructions to install and verify PyMechanical.
+        Install and verify PyMechanical.
+
+    .. grid-item-card:: Choose your mode
+        :padding: 2 2 2 2
+        :link: choose_your_mode
+        :link-type: doc
+        :text-align: left
+
+        Compare embedding and remote session modes. Pick the right one for your workflow.
 
     .. grid-item-card:: Launching PyMechanical
         :padding: 2 2 2 2
@@ -27,7 +34,7 @@ interface to drive the software that facilitates the use of
         :link-type: doc
         :text-align: left
 
-        Steps to run PyMechanical.
+        Launch, connect, and run your first script in either mode.
 
     .. grid-item-card:: Docker setup
         :padding: 2 2 2 2
@@ -35,7 +42,7 @@ interface to drive the software that facilitates the use of
         :link-type: doc
         :text-align: left
 
-        How to run Mechanical Docker containers.
+        Run Mechanical in Docker containers (remote session mode).
 
     .. grid-item-card:: Windows Subsystem for Linux (WSL)
         :padding: 2 2 2 2
@@ -43,22 +50,24 @@ interface to drive the software that facilitates the use of
         :link-type: doc
         :text-align: left
 
-        Installing PyMechanical on Linux via WSL.
+        Install and run PyMechanical on Linux via WSL.
 
+    .. grid-item-card:: Troubleshooting
+        :padding: 2 2 2 2
+        :link: troubleshooting
+        :link-type: doc
+        :text-align: left
 
-Background
-----------
-
-PyMechanical contains two interfaces: a remote session and an embedded instance.
-For information on the application architecture of Mechanical and why there are
-two Python interfaces, see :ref:`ref_architecture`.
+        Fix common launch, licensing, and VPN issues.
 
 .. toctree::
    :hidden:
    :maxdepth: 2
 
    installation
+   choose_your_mode
    running_mechanical
+   troubleshooting
    docker
    wsl
    ../architecture
