@@ -158,6 +158,10 @@ class GetterWrapper:
             setattr(self, attr, value)
         setattr(self._get_wrapped_object(self._immortal_object), attr, value)
 
+    def __repr__(self):
+        """Return the repr of the wrapped object."""
+        return repr(self._get_wrapped_object(self._immortal_object))
+
 
 class App:
     """Mechanical embedding Application.
@@ -209,8 +213,7 @@ class App:
 
     >>> from ansys.mechanical.core.embedding import AddinConfiguration
     >>> from ansys.mechanical.core import App
-    >>> config = AddinConfiguration("Mechanical")
-    >>> config.no_act_addins = True
+    >>> config = AddinConfiguration("Mechanical", no_act_addins=True)
     >>> app = App(config=config)
 
     Set log level
@@ -539,7 +542,10 @@ class App:
         if not file_path.is_file():
             raise FileNotFoundError(f"The file {file_path} does not exist.")
         data = file_path.read_text(encoding="utf-8")
-        return self.execute_script(data)
+        try:
+            return self.execute_script(data)
+        except RuntimeError as e:
+            raise RuntimeError(f"Error in '{file_path}': {e}") from e
 
     def plotter(self, obj=None) -> typing.Any | None:
         """Return ``ansys.tools.visualization_interface.Plotter`` object."""
@@ -574,6 +580,16 @@ class App:
         """
         if self.interactive:
             raise RuntimeError("Plotting is not allowed in interactive mode")
+
+        import sys
+
+        if sys.platform != "win32" and not any(
+            os.environ.get(var) for var in ("DISPLAY", "WAYLAND_DISPLAY")
+        ):
+            raise RuntimeError(
+                "No display is available. Use 'xvfb-run' to run the application "
+                "on a system without a display."
+            )
 
         _plotter = self.plotter(obj)
 
