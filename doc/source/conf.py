@@ -242,7 +242,12 @@ html_theme_options = {
         "changelog_file_name": "changelog.rst",
         "sidebar_pages": ["changelog", "index"],
     },
-    "ansys_sphinx_theme_autoapi": {"project": project},
+    "ansys_sphinx_theme_autoapi": {
+        "project": project,
+        "examples_dirs": [
+            "../../examples/",
+        ],
+    },
 }
 
 
