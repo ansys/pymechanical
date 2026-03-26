@@ -1,9 +1,23 @@
+.. _ref_embedding_user_guide:
+
 
 Overview
---------
+========
 
-The `App <../api/ansys/mechanical/core/embedding/app/App.html>`_ class provides
-a Mechanical instance:
+.. tip::
+
+   **When to use embedding mode:** You want full object-model access, need fast
+   in-process startup, are working in Jupyter notebooks or interactive scripting,
+   or need to read and traverse the Mechanical data model directly in Python.
+   For GUI support, process isolation, or CI/CD deployments, see
+   :ref:`Remote session mode <ref_user_guide_session>` instead.
+
+The :class:`App <ansys.mechanical.core.embedding.app.App>` class embeds an entire
+instance of Mechanical directly in your Python process. There is no separate server
+process or network communication — Mechanical's data model is directly accessible
+from Python.
+
+Here is how you create an embedded instance:
 
 .. code:: python
 
@@ -12,18 +26,38 @@ a Mechanical instance:
    app = App()
    ns = app.DataModel.Project.Model.AddNamedSelection()
 
-The `App`_ class has access to the global scripting entry points that are
-available from built-in Mechanical scripting:
+To access Mechanical's global scripting entry points directly (without ``app.`` prefix),
+pass ``globals()`` to the constructor:
 
-* ExtAPI: ``Application.ExtAPI``
-* DataModel: ``Application.DataModel``
-* Model: ``Application.DataModel.Project.Model``
-* Tree: ``Application.DataModel.Tree``
-* Graphics: ``Application.ExtAPI.Graphics``
+.. code:: python
+
+   from ansys.mechanical.core import App
+
+   app = App(globals=globals())
+   ns = DataModel.Project.Model.AddNamedSelection()
+   ns.Name = "Jarvis"
+
+The :class:`App <ansys.mechanical.core.embedding.app.App>` class has access to the
+global scripting entry points that are available from built-in Mechanical scripting:
+
+* ``ExtAPI``: ``Application.ExtAPI``
+* ``DataModel``: ``Application.DataModel``
+* ``Model``: ``Application.DataModel.Project.Model``
+* ``Tree``: ``Application.DataModel.Tree``
+* ``Graphics``: ``Application.ExtAPI.Graphics``
 
 Besides scripting entry points, many other types and objects are available from
 built-in Mechanical scripting. To learn how to import scripting entry points,
 namespaces, and types, see :ref:`ref_embedding_user_guide_globals`.
+
+The :class:`App <ansys.mechanical.core.embedding.app.App>` class supports much more
+than basic object access. It includes higher-level wrapping that provides for better
+scripting and interaction with Mechanical. For information on advanced methods, see
+:ref:`ref_examples`.
+
+.. seealso::
+
+   Looking for remote session mode instead? See :ref:`ref_user_guide_session`.
 
 
 Running PyMechanical embedding scripts inside Mechanical with IronPython
