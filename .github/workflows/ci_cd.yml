@@ -672,6 +672,7 @@ jobs:
 
   doc-build:
     name: Documentation
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-doc') }}
     runs-on: public-ubuntu-latest-16-cores
     timeout-minutes: 30
     container:
@@ -772,6 +773,25 @@ jobs:
           name: documentation-html
           path: doc/_build/html
           retention-days: 7
+
+  doc-build-check:
+    name: Documentation check
+    runs-on: ubuntu-latest
+    needs: [doc-build]
+    if: always()
+    permissions:
+      contents: read
+    steps:
+      - name: Check doc-build result
+        env:
+          DOC_BUILD_RESULT: ${{ needs.doc-build.result }}
+        run: |
+          if [[ "${DOC_BUILD_RESULT}" == "success" || "${DOC_BUILD_RESULT}" == "skipped" ]]; then
+            echo "doc-build passed or skipped — OK"
+          else
+            echo "doc-build failed"
+            exit 1
+          fi
 
   doc-deploy-pr:
     name: "Deploy PR documentation"
@@ -893,7 +913,7 @@ jobs:
 
   package:
     name: Package library
-    needs: [smoke-tests, remote-connect, embedding-tests, embedding-scripts-tests, doc-build]
+    needs: [smoke-tests, remote-connect, embedding-tests, embedding-scripts-tests, doc-build-check]
     runs-on: ubuntu-latest
     permissions:
       attestations: write    # Required to generate package attestations for security
