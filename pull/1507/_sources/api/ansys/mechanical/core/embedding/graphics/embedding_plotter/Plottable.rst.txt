@@ -1,0 +1,144 @@
+
+
+
+
+
+
+:class:`Plottable`
+==================
+
+
+.. py:class:: ansys.mechanical.core.embedding.graphics.embedding_plotter.Plottable
+
+   
+   Plottable object.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. py:currentmodule:: Plottable
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~polydata`
+            - 
+          * - :py:attr:`~color`
+            - 
+          * - :py:attr:`~transform`
+            - 
+          * - :py:attr:`~children`
+            - 
+          * - :py:attr:`~kwargs`
+            - 
+
+
+
+   .. tab-item:: Special methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~__post_init__`
+            - Initialize the plottable.
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.mechanical.core.embedding.graphics.embedding_plotter import Plottable
+
+
+Attribute detail
+----------------
+
+.. py:attribute:: polydata
+   :type:  Optional[pyvista.PolyData]
+   :value: None
+
+
+.. py:attribute:: color
+   :type:  Optional[pyvista.Color]
+   :value: None
+
+
+.. py:attribute:: transform
+   :type:  pyvista.transform.Transform
+
+.. py:attribute:: children
+   :type:  List[Plottable]
+   :value: []
+
+
+.. py:attribute:: kwargs
+   :type:  Optional[Dict]
+   :value: None
+
+
+
+
+Method detail
+-------------
+
+.. py:method:: __post_init__()
+
+   
+   Initialize the plottable.
+
+   The transform will be identity.
+   The children will be an empty list.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
