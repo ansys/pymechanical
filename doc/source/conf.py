@@ -13,6 +13,12 @@ import os
 from pathlib import Path
 import warnings
 
+# Sphinx-Gallery parallel workers are separate processes that never import this
+# file. PyVista reads PYVISTA_* from the environment at package import time, so
+# set these before importing pyvista; child processes inherit os.environ.
+os.environ.setdefault("PYVISTA_BUILDING_GALLERY", "true")
+os.environ.setdefault("PYVISTA_OFF_SCREEN", "true")
+
 from ansys_sphinx_theme import ansys_favicon, get_version_match
 import pyvista
 from pyvista.plotting.utilities.sphinx_gallery import DynamicScraper
