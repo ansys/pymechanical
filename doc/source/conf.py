@@ -13,6 +13,15 @@ import os
 from pathlib import Path
 import warnings
 
+# Sphinx-Gallery parallel workers are separate processes that never import this
+# file. PyVista reads PYVISTA_* from the environment at package import time, so
+# set these before importing pyvista; child processes inherit os.environ.
+os.environ.setdefault("PYVISTA_BUILDING_GALLERY", "true")
+os.environ.setdefault("PYVISTA_OFF_SCREEN", "true")
+# Parallel gallery workers may reuse a process; embedded App() then needs
+# BUILDING_GALLERY so a later example can attach via _share instead of erroring.
+os.environ.setdefault("PYMECHANICAL_BUILDING_GALLERY", "true")
+
 from ansys_sphinx_theme import ansys_favicon, get_version_match
 import pyvista
 from pyvista.plotting.utilities.sphinx_gallery import DynamicScraper
@@ -21,9 +30,6 @@ from sphinx_gallery.sorting import FileNameSortKey
 
 import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
-
-# necessary when building the sphinx gallery
-pymechanical.BUILDING_GALLERY = True
 
 # Ensure that offscreen rendering is used for docs generation
 pyvista.OFF_SCREEN = True
@@ -182,11 +188,21 @@ copybutton_prompt_text = r">>> ?|\.\.\. "
 copybutton_prompt_is_regexp = True
 
 # -- Sphinx Gallery Options ---------------------------------------------------
+# Parallel example execution (separate Python subprocess per running example).
+# Each subprocess can host one embedded Mechanical App, so N workers means up
+# to N concurrent Mechanical processes—only use N>1 when licenses and RAM allow.
+# https://sphinx-gallery.github.io/stable/configuration.html#parallel-gallery-builds
+try:
+    _gallery_parallel = max(1, int(os.environ.get("PYMECHANICAL_GALLERY_PARALLEL", "1")))
+except ValueError:
+    _gallery_parallel = 1
+
 sphinx_gallery_conf = {
     # convert rst to md for ipynb
     "pypandoc": True,
     # path to your examples scripts
     "examples_dirs": ["../../examples/"],
+    "abort_on_example_error": True,
     # path where to save gallery generated examples
     "gallery_dirs": ["examples/gallery_examples"],  # Pattern to search for example files
     "filename_pattern": r"\.py",
@@ -202,6 +218,7 @@ sphinx_gallery_conf = {
     # Files to ignore
     "ignore_pattern": "flycheck*",  # noqa: E501
     "thumbnail_size": (350, 350),
+    "parallel": _gallery_parallel,
 }
 
 # -- Options for HTML output -------------------------------------------------
