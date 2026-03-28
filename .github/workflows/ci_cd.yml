@@ -762,6 +762,7 @@ jobs:
             fi
           fi
       - name: Check links
+        if: github.event_name == 'schedule'
         run: |
           . /env/bin/activate
           make -C doc linkcheck
