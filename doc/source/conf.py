@@ -18,6 +18,9 @@ import warnings
 # set these before importing pyvista; child processes inherit os.environ.
 os.environ.setdefault("PYVISTA_BUILDING_GALLERY", "true")
 os.environ.setdefault("PYVISTA_OFF_SCREEN", "true")
+# Parallel gallery workers may reuse a process; embedded App() then needs
+# BUILDING_GALLERY so a later example can attach via _share instead of erroring.
+os.environ.setdefault("PYMECHANICAL_BUILDING_GALLERY", "true")
 
 from ansys_sphinx_theme import ansys_favicon, get_version_match
 import pyvista
@@ -27,9 +30,6 @@ from sphinx_gallery.sorting import FileNameSortKey
 
 import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
-
-# necessary when building the sphinx gallery
-pymechanical.BUILDING_GALLERY = True
 
 # Ensure that offscreen rendering is used for docs generation
 pyvista.OFF_SCREEN = True
