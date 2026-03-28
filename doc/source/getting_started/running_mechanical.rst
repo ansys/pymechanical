@@ -265,6 +265,51 @@ script which is part of PyMechanical
 
    $ mechanical-env python
 
+.. _debug-embedding-vscode-linux:
+
+Debug with Visual Studio Code on Linux
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+On Linux, the Python debugger must see the same environment that ``mechanical-env`` sets when
+you run ``mechanical-env python``. You can capture that environment once, store it in a file, and
+point Visual Studio Code at it.
+
+#. Install the `Python extension`_ for VS Code (provides the **debugpy** debugger).
+
+#. From your project root, write the prepared environment to ``.vscode/.env``. Use the same
+   ``-r`` or ``-p`` options you use for normal runs:
+
+   .. code:: shell
+
+      $ mechanical-env -r 261 env > .vscode/.env
+
+#. Create ``.vscode/launch.json`` with a launch configuration that loads that file:
+
+   .. code-block:: json
+
+      {
+          "version": "0.2.0",
+          "configurations": [
+              {
+                  "name": "Python Debugger: Current File",
+                  "type": "debugpy",
+                  "request": "launch",
+                  "program": "${file}",
+                  "console": "integratedTerminal",
+                  "envFile": "${workspaceFolder}/.vscode/.env"
+              }
+          ]
+      }
+
+#. Start **Run and Debug**, choose **Python Debugger: Current File**, and run your script.
+
+.. note::
+
+   Regenerate ``.vscode/.env`` if you change Ansys version, installation path, or ``mechanical-env``
+   options. Consider adding ``.env`` to ``.gitignore`` if the file should not be shared.
+
+.. _`Python extension`: https://marketplace.visualstudio.com/items?itemName=ms-python.python
+
 Licensing issues
 ----------------
 
