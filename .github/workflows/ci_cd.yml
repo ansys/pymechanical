@@ -740,6 +740,7 @@ jobs:
           NUM_CORES: 1
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 0
           BUILD_CHEATSHEET: true
+          PYMECHANICAL_GALLERY_PARALLEL: "4"
           CONTAINER_STABLE_EXIT: ${{ needs.container-stability-check.outputs.container_stable_exit }}
         run: |
           . /env/bin/activate
