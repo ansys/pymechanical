@@ -44,6 +44,7 @@ def test_global_variables(embedded_app):
         "Quantity",
         "System",
         "Ansys",
+        "GeometryImportPreference",
         "Transaction",
         "MechanicalEnums",
         "DataModelObjectCategory",
