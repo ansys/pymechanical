@@ -247,6 +247,14 @@ html_theme_options = {
         "examples_dirs": [
             "../../examples/",
         ],
+         "examples_json": [
+            {
+                "file": "_static/ansys_mechanical_core_examples.json",
+                "base_url": (
+                    "https://examples.mechanical.docs.pyansys.com/examples/"
+                ),
+                "fqn_prefixes": ["ansys.mechanical.core"],
+            },]
     },
 }
 
