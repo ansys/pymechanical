@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -29,7 +29,7 @@ Ansys Inc/v{NNN}/ACT/apis/Mechanical.py
 from ansys.mechanical.core.embedding.app import is_initialized
 
 if not is_initialized():
-    raise Exception("Enums cannot be imported until the embedded app is initialized.")
+    raise RuntimeError("Enums cannot be imported until the embedded app is initialized.")
 
 import clr
 

@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -165,7 +165,7 @@ settings_720p.CurrentGraphicsDisplay = False
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Download the geometry file from the ansys/example-data repository
-geometry_path = download_file("sloshing_geometry.agdb", "pymechanical", "embedding")
+geometry_path = download_file("sloshing_geometry.pmdb", "pymechanical", "embedding")
 # Download the water material file from the ansys/example-data repository
 mat_path = download_file("Water_material_explicit.xml", "pymechanical", "embedding")
 
@@ -695,7 +695,7 @@ app.print_tree()
 
 # Save the project file
 mechdat_file = output_path / "modal_acoustics.mechdat"
-app.save(str(mechdat_file))
+app.save_as(str(mechdat_file), overwrite=True)
 
 # Close the app
 app.close()

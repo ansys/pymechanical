@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -358,12 +358,12 @@ plt.show()
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Get the path to the solve output file
-solve_path = analysis.WorkingDir
+solve_path = Path(analysis.WorkingDir)
 # Get the solve output file path
-solve_out_path = solve_path + "solve.out"
+solve_out_path = solve_path / "solve.out"
 # If the solve output file exists, print its contents
 if solve_out_path:
-    with Path.open(solve_out_path, "rt") as file:
+    with solve_out_path.open("rt") as file:
         for line in file:
             print(line, end="")
 
@@ -379,7 +379,7 @@ app.print_tree()
 
 # Save the project
 mechdat_file = output_path / "valve.mechdat"
-app.save(str(mechdat_file))
+app.save_as(str(mechdat_file), overwrite=True)
 
 # Close the app
 app.close()

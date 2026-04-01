@@ -4,8 +4,8 @@
 Overview
 ========
 
-The `launch_mechanical() <../api/ansys/mechanical/core/mechanical/index.html#mechanical.launch_mechanical>`_ method
-creates an instance of the `Mechanical <../api/ansys/mechanical/core/mechanical/Mechanical.html>`_
+The :func:`launch_mechanical() <ansys.mechanical.core.Mechanical.launch_mechanical>` method
+creates an instance of the :class:`Mechanical() <ansys.mechanical.core.Mechanical()>`
 class in the background and sends commands to it as a service. Because errors and warnings
 are processed Pythonically, you can develop a script in real time without worrying about
 whether the script runs correctly when deployed in batch mode.
@@ -24,7 +24,7 @@ to select the version of the product to launch.
 
 .. code:: python
 
-    exec_file_path = "C:/Program Files/ANSYS Inc/v252/aisol/bin/win64/AnsysWBU.exe"
+    exec_file_path = "C:/Program Files/ANSYS Inc/v261/aisol/bin/win64/AnsysWBU.exe"
     mechanical = launch_mechanical(
         exec_file=exec_file_path, batch=False, cleanup_on_exit=False
     )

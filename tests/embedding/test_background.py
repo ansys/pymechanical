@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -25,7 +25,6 @@
 import os
 from pathlib import Path
 import sys
-import typing
 
 import pytest
 
@@ -34,7 +33,7 @@ from .test_logger import _assert_success
 
 def _run_background_app_test(
     run_subprocess, rootdir: str, pytestconfig, testname: str, pass_expected: bool = True
-) -> typing.Tuple[bytes, bytes]:
+) -> tuple[bytes, bytes]:
     """Run the process and return stdout and stderr after it finishes."""
     version = pytestconfig.getoption("ansys_version")
     script = str(Path(rootdir) / "tests" / "scripts" / "background_app_test.py")

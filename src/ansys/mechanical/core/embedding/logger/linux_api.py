@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -67,7 +67,7 @@ def _get_sink_id(standard_sink_type: int) -> ctypes.c_int32:
     }[standard_sink_type]
 
 
-def _str_to_utf8_ptr(value: str) -> ctypes.c_char_p:
+def _str_to_utf8_ptr(value: str):  # type: ignore[return-value]
     return ctypes.create_string_buffer(value.encode())
 
 

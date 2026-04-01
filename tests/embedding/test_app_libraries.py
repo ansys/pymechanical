@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -26,7 +26,7 @@ import os
 from pathlib import Path
 import sys
 
-from ansys.tools.path import get_mechanical_path
+from ansys.tools.common.path import get_mechanical_path
 import pytest
 
 from ansys.mechanical.core.embedding import add_mechanical_python_libraries

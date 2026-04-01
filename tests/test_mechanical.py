@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -22,10 +22,11 @@
 """Test for Mechanical Module."""
 
 import json
+import os
 from pathlib import Path
 import re
 
-import ansys.tools.path
+import ansys.tools.common.path
 import conftest
 import pytest
 
@@ -417,7 +418,11 @@ def test_close_all_local_instances(tmpdir):
     print(mechanical.name)
     list_ports.append(mechanical._port)
 
-    pymechanical.close_all_local_instances(list_ports, use_thread=False)
+    # Close instances using the same transport mode they were launched with
+    transport_mode = "insecure" if os.name != "nt" else None
+    pymechanical.close_all_local_instances(
+        list_ports, use_thread=False, transport_mode=transport_mode
+    )
     for value in list_ports:
         assert value not in pymechanical.LOCAL_PORTS
 
@@ -426,8 +431,8 @@ def test_close_all_local_instances(tmpdir):
 def test_find_mechanical_path():
     """Test for finding the Mechanical executable path."""
     if pymechanical.mechanical.get_start_instance():
-        path = ansys.tools.path.get_mechanical_path()
-        version = ansys.tools.path.version_from_path("mechanical", path)
+        path = ansys.tools.common.path.get_mechanical_path()
+        version = ansys.tools.common.path.version_from_path("mechanical", path)
 
         if misc.is_windows():
             assert "AnsysWBU.exe" in path
@@ -441,13 +446,13 @@ def test_find_mechanical_path():
 def test_change_default_mechanical_path():
     """Test for changing the default Mechanical executable path."""
     if pymechanical.mechanical.get_start_instance():
-        path = ansys.tools.path.get_mechanical_path()
-        version = ansys.tools.path.version_from_path("mechanical", path)
+        path = ansys.tools.common.path.get_mechanical_path()
+        version = ansys.tools.common.path.version_from_path("mechanical", path)
 
         pymechanical.change_default_mechanical_path(path)
 
-        path_new = ansys.tools.path.get_mechanical_path()
-        version_new = ansys.tools.path.version_from_path("mechanical", path)
+        path_new = ansys.tools.common.path.get_mechanical_path()
+        version_new = ansys.tools.common.path.version_from_path("mechanical", path)
 
         assert path_new == path
         assert version_new == version
@@ -457,17 +462,17 @@ def test_change_default_mechanical_path():
 def test_version_from_path():
     """Test for getting version from path."""
     windows_path = "C:\\Program Files\\ANSYS Inc\\v251\\aisol\\bin\\winx64\\AnsysWBU.exe"
-    version = ansys.tools.path.version_from_path("mechanical", windows_path)
+    version = ansys.tools.common.path.version_from_path("mechanical", windows_path)
     assert version == 251
 
     linux_path = "/usr/ansys_inc/v251/aisol/.workbench"
-    version = ansys.tools.path.version_from_path("mechanical", linux_path)
+    version = ansys.tools.common.path.version_from_path("mechanical", linux_path)
     assert version == 251
 
     with pytest.raises(RuntimeError):
         # doesn't contain version
         path = "C:\\Program Files\\ANSYS Inc\\aisol\\bin\\winx64\\AnsysWBU.exe"
-        ansys.tools.path.version_from_path("mechanical", path)
+        ansys.tools.common.path.version_from_path("mechanical", path)
 
 
 @pytest.mark.remote_session_launch

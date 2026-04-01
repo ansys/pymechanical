@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -24,7 +24,7 @@
 from ansys.mechanical.core.embedding.app import is_initialized
 
 if not is_initialized():
-    raise Exception("Globals cannot be imported until the embedded app is initialized.")
+    raise RuntimeError("Globals cannot be imported until the embedded app is initialized.")
 
 import clr
 
@@ -48,3 +48,24 @@ from ansys.mechanical.core.embedding.transaction import Transaction  # noqa isor
 
 import System  # noqa isort: skip
 import Ansys  # noqa isort: skip
+
+_APP_SPECIFIC = {
+    "ExtAPI": lambda app: app.ExtAPI,
+    "DataModel": lambda app: app.DataModel,
+    "Model": lambda app: app.DataModel.Project.Model,
+    "Tree": lambda app: app.DataModel.Tree,
+    "Graphics": lambda app: app.ExtAPI.Graphics,
+}
+
+
+def __getattr__(name: str):
+    """Support importing app-specific variables from this module."""
+    if name in _APP_SPECIFIC:
+        from ansys.mechanical.core.embedding.app import INSTANCES
+
+        if not INSTANCES:
+            raise RuntimeError(
+                f"'{name}' cannot be imported until the embedded app is initialized."
+            )
+        return _APP_SPECIFIC[name](INSTANCES[0])
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -34,15 +34,19 @@ from pathlib import Path
 from subprocess import Popen  # nosec: B404
 import sys
 import tempfile
-import typing
+
+import ansys.tools.common.path as atp
+
+from ansys.mechanical.core.embedding.logger import Logger
 
 
 class UILauncher:
     """Launch the GUI using a temporary mechdb file."""
 
-    def __init__(self, dry_run: bool = False):
+    def __init__(self, dry_run: bool = False, readonly: bool = False):
         """Initialize UILauncher class."""
         self._dry_run = dry_run
+        self._readonly = readonly
 
     def save_original(self, app: App) -> None:
         """Save the active mechdb file.
@@ -54,7 +58,7 @@ class UILauncher:
         """
         app.save()
 
-    def save_temp_copy(self, app: App) -> typing.Union[Path, Path]:
+    def save_temp_copy(self, app: App) -> tuple[Path, str]:
         """Save a new mechdb file with a temporary name.
 
         Parameters
@@ -65,9 +69,8 @@ class UILauncher:
         # Identify the mechdb of the saved session from save_original()
         project_directory = Path(app.project_directory)
         project_directory_parent = project_directory.parent
-        mechdb_file = (
-            project_directory_parent / f"{project_directory.parts[-1].split('_')[0]}.mechdb"
-        )
+        project_name = project_directory.name.removesuffix("_Mech_Files")
+        mechdb_file = project_directory_parent / f"{project_name}.mechdb"
 
         # Get name of NamedTemporaryFile
         temp_file_name = tempfile.NamedTemporaryFile(
@@ -91,14 +94,14 @@ class UILauncher:
         """
         app.open(mechdb_file)
 
-    def graphically_launch_temp(self, app: App, temp_file: Path) -> typing.Union[Popen, str]:
+    def graphically_launch_temp(self, app: App, temp_file: str) -> Popen | str:
         """Launch the GUI for the mechdb file with a temporary name from save_temp_copy().
 
         Parameters
         ----------
         app: ansys.mechanical.core.embedding.app.App
             A Mechanical embedding application.
-        temp_file: pathlib.Path
+        temp_file: str
             The full path to the temporary mechdb file.
 
         Returns
@@ -107,31 +110,49 @@ class UILauncher:
             The subprocess that launches the GUI for the temporary mechdb file.
         """
         # The ansys-mechanical command to launch the GUI in a subprocess
-        args = [
+        args: list[str] = [
             "ansys-mechanical",
             "--project-file",
-            temp_file,
+            str(temp_file),
             "--graphical",
             "--revision",
             str(app.version),
         ]
+        if self._readonly:
+            args.append("--readonly")
         if not self._dry_run:
-            # The subprocess that uses ansys-mechanical to launch the GUI of the temporary
-            # mechdb file
-            process = Popen(args)  # nosec: B603 # pragma: no cover
+            try:
+                # The subprocess that uses ansys-mechanical to launch the GUI of the temporary
+                # mechdb file
+                process = Popen(args)  # nosec: B603 # pragma: no cover
+            except Exception:
+                Logger.warning(f"Failed to launch Mechanical GUI with args: {args}")
+                Logger.info("Retrieving the path to the Mechanical executable directly...")
+                exe = atp.get_mechanical_path(allow_input=False, version=app.version)
+                args = [
+                    str(exe),
+                    "--project-file",
+                    str(temp_file),
+                    "--graphical",
+                    "--revision",
+                    str(app.version),
+                ]
+                if self._readonly:
+                    args.append("--readonly")
+                process = Popen(args)  # nosec: B603 # pragma: no cover
             return process
         else:
             # Return a string containing the args
             return " ".join(args)
 
-    def _cleanup_gui(self, process: Popen, temp_mechdb_path: Path) -> None:
+    def _cleanup_gui(self, process: Popen, temp_mechdb_path: str) -> None:
         """Remove the temporary mechdb file and folder when the GUI is closed.
 
         Parameters
         ----------
         process: subprocess.Popen
             The subprocess that launched the GUI of the temporary mechdb file.
-        temp_mechdb_path: pathlib.Path
+        temp_mechdb_path: str
             The full path to the temporary mechdb file.
         """
         # Get the path to the cleanup script
@@ -140,7 +161,7 @@ class UILauncher:
         if not self._dry_run:
             # Open a subprocess to remove the temporary mechdb file and folder when the process ends
             Popen(
-                [sys.executable, cleanup_script, str(process.pid), temp_mechdb_path]
+                [sys.executable, str(cleanup_script), str(process.pid), str(temp_mechdb_path)]
             )  # pragma: no cover # nosec: B603
 
 
@@ -161,7 +182,7 @@ def _is_saved(app: App) -> bool:
     try:
         app.save()
     except Exception as e:
-        raise Exception("The App must have already been saved before using launch_ui!") from e
+        raise RuntimeError("The App must have already been saved before using launch_ui!") from e
     return True
 
 
@@ -186,7 +207,7 @@ def _launch_ui(app: App, delete_tmp_on_close: bool, launcher: UILauncher) -> Non
         # Open the original mechdb file from save_original().
         launcher.open_original(app, str(mechdb_file))
         # Launch the GUI for the mechdb file with a temporary name from save_temp_copy().
-        process = launcher.graphically_launch_temp(app, temp_file)
+        process = launcher.graphically_launch_temp(app, str(temp_file))
 
         # If it's a dry run and graphically_launch_temp returned a string, print the string
         if isinstance(process, str):
@@ -209,6 +230,7 @@ def launch_ui(
     app: App,
     delete_tmp_on_close: bool = True,
     dry_run: bool = False,
+    readonly: bool = False,
 ) -> None:
     """Launch the Mechanical UI.
 
@@ -224,5 +246,7 @@ def launch_ui(
         By default, this is ``True``.
     dry_run: bool
         Whether or not to launch the GUI. By default, this is ``False``.
+    readonly: bool
+        Whether to launch the GUI in read-only mode. By default, this is ``False``.
     """
-    _launch_ui(app, delete_tmp_on_close, UILauncher(dry_run))
+    _launch_ui(app, delete_tmp_on_close, UILauncher(dry_run, readonly))

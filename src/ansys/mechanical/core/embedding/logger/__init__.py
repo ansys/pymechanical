@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -57,16 +57,14 @@ import typing
 from ansys.mechanical.core.embedding import initializer
 from ansys.mechanical.core.embedding.logger import environ, linux_api, sinks, windows_api
 
-LOGGING_SINKS: typing.Set[int] = set()
+LOGGING_SINKS: set[int] = set()
 """Constant for logging sinks."""
 
 LOGGING_CONTEXT: str = "PYMECHANICAL"
 """Constant for logging context."""
 
 
-def _get_backend() -> typing.Union[
-    windows_api.APIBackend, linux_api.APIBackend, environ.EnvironBackend
-]:
+def _get_backend() -> windows_api.APIBackend | linux_api.APIBackend | environ.EnvironBackend:
     """Get the appropriate logger backend.
 
     Before embedding is initialized, logging is configured via environment variables.

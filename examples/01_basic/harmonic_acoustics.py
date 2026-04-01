@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -157,7 +157,7 @@ camera.Rotate(180, CameraAxisType.ScreenY)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Download the geometry file from the ansys/example-data repository
-geometry_path = download_file("C_GEOMETRY.agdb", "pymechanical", "embedding")
+geometry_path = download_file("C_GEOMETRY.pmdb", "pymechanical", "embedding")
 # Download the material file from the ansys/example-data repository
 mat_path = download_file("Air-material.xml", "pymechanical", "embedding")
 
@@ -414,7 +414,7 @@ absorption_surface.AbsorptionCoefficient.Output.DiscreteValues = [Quantity("0.02
 harmonic_acoustics.Activate()
 # Set the camera to fit the mesh and export the image
 set_camera_and_display_image(
-    camera, graphics, settings_720p, output_path, "bounday_conditions.png", set_fit=True
+    camera, graphics, settings_720p, output_path, "boundary_conditions.png", set_fit=True
 )
 
 # %%
@@ -473,7 +473,7 @@ z_velocity_response.NormalOrientation = NormalOrientationType.ZAxis
 z_velocity_response.Location = pres_face
 
 # %%
-# Add the acoustic kinetic and potentional energy frequency responses
+# Add the acoustic kinetic and potential energy frequency responses
 
 # Add the acoustic kinetic energy frequency response and set its location
 # to the absorption face named selection
@@ -674,7 +674,7 @@ app.print_tree()
 
 # Save the project
 mechdat_file = output_path / "harmonic_acoustics.mechdat"
-app.save(str(mechdat_file))
+app.save_as(str(mechdat_file), overwrite=True)
 
 # Close the app
 app.close()

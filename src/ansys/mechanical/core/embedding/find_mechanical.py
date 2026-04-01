@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -25,7 +25,7 @@ import os
 from pathlib import Path
 import sys
 
-import ansys.tools.path as atp
+import ansys.tools.common.path as atp
 import click
 
 
@@ -36,7 +36,7 @@ import click
     "--version",
     default=None,
     type=int,
-    help='Ansys version number, such as "242" or "241".\
+    help='Ansys version number, such as "252" or "261".\
          If a version number is not specified, it uses the default from \
             ansys-tools-path.',
 )

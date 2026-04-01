@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -44,7 +44,7 @@ class Client:
             IP address to connect to the server.  The default is ``None``
             in which case ``localhost`` is used.
         port : int, optional
-            Port to connect to the Mecahnical server. The default is ``None``,
+            Port to connect to the Mechanical server. The default is ``None``,
             in which case ``20000`` is used.
         timeout : float, optional
             Maximum allowable time for connecting to the Mechanical server.
@@ -68,7 +68,7 @@ class Client:
         self._error_type = Exception
         self._has_exited = False
 
-    def _get_python_script_api_version(self) -> bool:
+    def _get_python_script_api_version(self) -> int:
         """Get the python api version."""
         return 1
 
