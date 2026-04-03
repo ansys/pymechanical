@@ -14,7 +14,7 @@
    :align: center
 
 
-Python API to interact with `Ansys Mechanical`_ (FEA software for structural engineering) in 2024 R2 and later.
+Python API to interact with `Ansys Mechanical`_ (FEA software for structural engineering) in **2024 R2 and later**.
 
 
 PyMechanical provides two distinct modes of interacting with Mechanical.
