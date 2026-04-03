@@ -5,14 +5,14 @@ FAQs
 
 This section provides answers to frequently asked questions.
 
-.. dropdown:: Which mode should I use — embedding or remote session?
+.. dropdown:: Which mode to use — embedding or remote session?
     :animate: fade-in-slide-down
 
     PyMechanical offers two modes:
 
     - **Embedding mode** (``App`` class): Mechanical runs in your Python process.
       Best for Jupyter notebooks, interactive scripting, and when you need full
-      object-model access (read, create, update, delete objects directly).
+      object-model access (read, create, update, and delete objects directly).
 
     - **Remote session mode** (``launch_mechanical()``): Mechanical runs as a
       separate server process. Best for CI/CD pipelines, Docker, distributed

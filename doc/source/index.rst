@@ -14,7 +14,7 @@
    :align: center
 
 
-Python API to interact with `Ansys Mechanical`_ (FEA software for structural engineering) from **2024R2** and later versions.
+Python API to interact with `Ansys Mechanical`_ (FEA software for structural engineering) in 2024 R2 and later.
 
 
 PyMechanical provides two distinct modes of interacting with Mechanical.
@@ -22,15 +22,15 @@ Choose the one that fits your workflow:
 
 .. grid:: 2
 
-    .. grid-item-card:: Embedding Mode :fa:`microchip`
+    .. grid-item-card:: Embedding mode :fa:`microchip`
         :padding: 2 2 2 2
         :link: user_guide/embedding/overview
         :link-type: doc
         :class-card: sd-border-warning
         :class-title: sd-font-weight-bold sd-text-warning sd-fs-5
 
-        Run Mechanical **directly in your Python process** via the ``App`` class.
-        Full object-model access, fast startup, ideal for Jupyter notebooks
+        Run Mechanical **directly in your Python process** with the ``App`` class.
+        Provides full object-model access, fast startup, and is ideal for Jupyter notebooks
         and interactive scripting.
 
         .. code-block:: python
@@ -43,15 +43,15 @@ Choose the one that fits your workflow:
 
         :bdg-warning:`In-process` :bdg-warning:`Direct API` :bdg-warning:`fast`
 
-    .. grid-item-card:: Remote Session Mode :fa:`server`
+    .. grid-item-card:: Remote session mode :fa:`server`
         :padding: 2 2 2 2
         :link: user_guide/remote_session/overview
         :link-type: doc
         :class-card: sd-border-warning
         :class-title: sd-font-weight-bold sd-text-warning sd-fs-5
 
-        Launch Mechanical as a **separate server process** and communicate via gRPC.
-        Process isolation, optional GUI, ideal for CI/CD, Docker, and automation.
+        Launch Mechanical as a **separate server process** and communicate with gRPC.
+        Provides process isolation, and optional GUI, and is ideal for CI/CD, Docker and automation.
 
         .. code-block:: python
 
@@ -63,7 +63,7 @@ Choose the one that fits your workflow:
 
         :bdg-warning:`gRPC` :bdg-warning:`GUI` :bdg-warning:`Remote`
 
-Not sure which mode to pick? See :doc:`getting_started/choose_your_mode`.
+If you are not sure which mode to pick, see :doc:`getting_started/choose_your_mode`.
 
 ----
 
@@ -84,7 +84,7 @@ Not sure which mode to pick? See :doc:`getting_started/choose_your_mode`.
         :link: user_guide/index
         :link-type: doc
 
-        In-depth guides for embedding mode, remote sessions, scripting, and CLI tools.
+        Learn how to use embedding mode, remote sessions, scripting, and CLI tools.
 
         :bdg-warning-line:`Embedding` :bdg-warning-line:`Remote` :bdg-warning-line:`Scripting`
 
@@ -93,7 +93,7 @@ Not sure which mode to pick? See :doc:`getting_started/choose_your_mode`.
         :link: examples/index
         :link-type: doc
 
-        Worked examples organized by mode and simulation type.
+        Explore examples, which are organized by mode and simulation type.
 
         :bdg-warning-line:`Embedding` :bdg-warning-line:`Remote` :bdg-warning-line:`Advanced`
 
@@ -121,7 +121,7 @@ Not sure which mode to pick? See :doc:`getting_started/choose_your_mode`.
         :link: kil/index
         :link-type: doc
 
-        Issues and limitations on both PyMechanical and Mechanical.
+        See issues and limitations for both PyMechanical and Mechanical.
 
         :bdg-warning-line:`24R2` :bdg-warning-line:`25R1` :bdg-warning-line:`25R2` :bdg-warning-line:`26R1`
 

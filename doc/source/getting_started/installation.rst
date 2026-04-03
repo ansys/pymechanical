@@ -7,7 +7,7 @@ To use PyMechanical, a licensed copy of Ansys Mechanical must be installed local
 The installed version determines the available interface and features.
 PyMechanical is compatible with Mechanical **2024 R1** and later on Windows
 and Linux. If you face any issues while setting up or using PyMechanical,
-please go though :ref:`FAQs <faq>` and :ref:`known issues and limitations <ref_known_issues_and_limitation>` sections.
+see :ref:`FAQs <faq>` and :ref:`Known issues and limitations <ref_known_issues_and_limitation>`.
 
 Install Mechanical
 ------------------
@@ -120,4 +120,4 @@ Once the installation is found, verify that your chosen mode works:
 
               $ mechanical-env python
 
-Not sure which mode to choose? See :ref:`ref_choose_your_mode`.
+If you are not sure which mode to choose, see :ref:`ref_choose_your_mode`.

@@ -4,13 +4,13 @@
 Examples
 ========
 
-Here is a series of examples using Mechanical with the ``ansys-mechanical-core`` library.
+Here is a series of examples using Mechanical with the PyMechanical.
 Examples are organized by the mode they use:
 
-- **Embedding mode** examples use the ``App`` class for direct object-model access.
-- **Remote session mode** examples use ``launch_mechanical()`` and ``run_python_script()``.
+- **Embedding mode** examples use the ``App`` class for direct object model access.
+- **Remote session mode** examples use the ``launch_mechanical()`` and ``run_python_script()`` methods.
 
-Not sure which mode to use? See :ref:`ref_choose_your_mode`.
+If you are not sure which mode to use, see :ref:`ref_choose_your_mode`.
 
 .. === EXAMPLES Gallery (Embedding Mode) ===
 
@@ -27,7 +27,7 @@ Not sure which mode to use? See :ref:`ref_choose_your_mode`.
     :hidden:
     :maxdepth: 3
 
-    Advanced Examples — Embedding Mode <https://embedding.examples.mechanical.docs.pyansys.com/examples/index.html>
+    Advanced examples: Embedding mode <https://embedding.examples.mechanical.docs.pyansys.com/examples/index.html>
 
 
 .. include:: advanced_examples/index.rst
@@ -40,7 +40,7 @@ Not sure which mode to use? See :ref:`ref_choose_your_mode`.
     :hidden:
     :maxdepth: 3
 
-    Examples — Remote Session Mode <https://examples.mechanical.docs.pyansys.com/index.html>
+    Examples: Remote session mode <https://examples.mechanical.docs.pyansys.com/index.html>
 
 
 .. include:: remote_examples/index.rst

@@ -37,7 +37,7 @@ At a glance
      - Windows and Linux
    * - Concurrency
      - One instance per Python process
-     - Multiple instances via ``LocalMechanicalPool``
+     - Multiple instances with ``LocalMechanicalPool``
    * - Best for
      - Jupyter notebooks, interactive scripting, deep integration
      - CI/CD pipelines, Docker, distributed automation
@@ -51,7 +51,7 @@ At a glance
 
 .. _choose_mode_decision:
 
-Which mode should I use?
+Which mode to use?
 -------------------------
 
 Use the following questions to guide your choice:
@@ -99,21 +99,21 @@ and code examples for each mode.
 How the modes work
 -------------------
 
-**Embedding mode** embeds the entire Mechanical application in-memory inside
+**Embedding mode** embeds the entire Mechanical application in memory inside
 your Python process using Python.NET (.NET CLR interop). There is no separate
-process or network communication. Mechanical's data model is directly available
+process or network communication. The Mechanical data model is directly available
 in Python, giving you full CRUD (Create, Read, Update, Delete) access to the
 object model.
 
 **Remote session mode** launches Mechanical as a separate server process and
-communicates via gRPC (Remote Procedure Call). Python sends commands as strings
-using ``run_python_script()`` and receives results as strings. This provides
+communicates with gRPC (Remote Procedure Call). Python sends commands as strings
+using the ``run_python_script()`` method and receives results as strings. This provides
 process isolation but does not expose the full object model directly.
 
 .. dropdown:: Why can't remote sessions expose the full object model?
    :animate: fade-in-slide-down
 
-   Mechanical's API is an object modelva, not a command-based API. Object models
+   The Mechanical API is an object model, not a command-based API. Object models
    are designed for in-process use where you can directly read and write properties.
    Exposing an object model remotely would require Remote Method Invocation (RMI),
    which does not scale well for distributed systems. For this reason, the remote

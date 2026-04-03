@@ -7,17 +7,20 @@ User guide
 This section contains in-depth guides organized by mode, plus shared scripting
 fundamentals and CLI tools.
 
-- **Embedding mode**—Using Mechanical directly in your Python process via the ``App`` class.
-- **Remote session mode**—Launching Mechanical as a server and communicating via gRPC.
-- **Scripting fundamentals**—Mechanical API concepts, recording, threading (applies to both modes).
-- **CLI tools**—Command-line utilities for launching, discovering, and configuring Mechanical.
+- 
 
-Not sure which mode to use? See :ref:`ref_choose_your_mode`.
+- **Embedding mode**: Use Mechanical directly in your Python process with the ``App`` class.
+- **Remote session mode**: Launch Mechanical as a server and communicate with gRPC.
+- **Scripting fundamentals**: Explore Mechanical API concepts, recording, and threading, which
+  are all topics applying to both modes.
+- **CLI tools**: Discover command-line utilities for launching, discovering, and configuring Mechanical.
+
+If you are not sure which mode to use, see :ref:`ref_choose_your_mode`.
 
 .. toctree::
    :maxdepth: 1
    :hidden:
-   :caption: Embedding Mode
+   :caption: Embedding mode
 
    embedding/overview
    embedding/configuration
@@ -31,7 +34,7 @@ Not sure which mode to use? See :ref:`ref_choose_your_mode`.
 .. toctree::
    :maxdepth: 2
    :hidden:
-   :caption: Remote Session Mode
+   :caption: Remote session mode
 
    remote_session/overview
    remote_session/server-launcher
@@ -41,7 +44,7 @@ Not sure which mode to use? See :ref:`ref_choose_your_mode`.
 .. toctree::
    :maxdepth: 1
    :hidden:
-   :caption: Scripting Fundamentals (Both Modes)
+   :caption: Scripting fundamentals (both modes)
 
    scripting/overview
    scripting/threading

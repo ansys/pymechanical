@@ -3,13 +3,13 @@
 Launching PyMechanical
 ======================
 
-The ``ansys-mechanical-core`` package requires either a local or
+PyMechanical requires either a local or
 remote instance of Mechanical to communicate with. This page describes
 how to launch Mechanical in each mode.
 
 .. tip::
 
-   Not sure which mode to use? See :ref:`ref_choose_your_mode` for a comparison.
+   If you are not sure which mode to use, see :ref:`ref_choose_your_mode`.
 
 
 .. _launch_remote_session:
@@ -18,7 +18,7 @@ Remote session mode
 -------------------
 
 In remote session mode, Mechanical runs as a separate server process and
-communicates with Python via gRPC.
+uses gRPC to communicate with Python.
 
 Launch from Python
 ~~~~~~~~~~~~~~~~~~

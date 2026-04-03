@@ -6,8 +6,9 @@ Getting started
 PyMechanical is part of the broader `PyAnsys <pyansys_>`_ initiative,
 enabling the use of Ansys technologies directly from Python.
 It provides two modes for working with Mechanical:
-**embedding mode** (in-process, full API access) and
-**remote session mode** (separate process, gRPC).
+
+- **Embedding mode**: In-process, full API access
+- **Remote session mode**: Separate process, gRPC access.
 
 
 .. grid:: 1 2 2 2
@@ -26,7 +27,7 @@ It provides two modes for working with Mechanical:
         :link-type: doc
         :text-align: left
 
-        Compare embedding and remote session modes. Pick the right one for your workflow.
+        Compare embedding and remote session modes. Pick the correct one for your workflow.
 
     .. grid-item-card:: Launching PyMechanical
         :padding: 2 2 2 2
@@ -50,7 +51,7 @@ It provides two modes for working with Mechanical:
         :link-type: doc
         :text-align: left
 
-        Install and run PyMechanical on Linux via WSL.
+        Install and run PyMechanical on Linux with WSL.
 
     .. grid-item-card:: Troubleshooting
         :padding: 2 2 2 2
