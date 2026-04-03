@@ -1,6 +1,6 @@
 .. _ref_remote_examples:
 
-Advanced examples—Embedding mode
+Advanced examples: Embedding mode
 ----------------------------------
 
 This section contains examples that demonstrate advanced capabilities of Mechanical

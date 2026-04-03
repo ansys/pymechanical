@@ -1,7 +1,7 @@
 .. _ref_remote_session_examples:
 
-Remote session examples
------------------------
+Basic examples: Remote session mode
+------------------------------------
 
 Remote session examples demonstrate the simulation capabilities of Mechanical using
 **remote session mode** (``launch_mechanical()`` and ``run_python_script()``).
