@@ -707,7 +707,7 @@ jobs:
         run: |
           apt update
           apt install make lsb-release xvfb poppler-utils -y
-          apt install zip pandoc libgl1-mesa-glx mesa-utils texlive-latex-extra latexmk nodejs npm graphviz -y
+          apt install zip pandoc libgl1-mesa-glx mesa-utils npm -y
 
       - name: Install gh cli
         run: |
@@ -762,6 +762,7 @@ jobs:
             fi
           fi
       - name: Check links
+        if: github.event_name == 'schedule'
         run: |
           . /env/bin/activate
           make -C doc linkcheck
