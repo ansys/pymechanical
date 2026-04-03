@@ -27,6 +27,7 @@ Choose the one that fits your workflow:
         :link: user_guide/embedding/overview
         :link-type: doc
         :class-card: sd-border-warning
+        :class-title: sd-font-weight-bold sd-text-warning sd-fs-5
 
         Run Mechanical **directly in your Python process** via the ``App`` class.
         Full object-model access, fast startup, ideal for Jupyter notebooks
@@ -47,6 +48,7 @@ Choose the one that fits your workflow:
         :link: user_guide/remote_session/overview
         :link-type: doc
         :class-card: sd-border-warning
+        :class-title: sd-font-weight-bold sd-text-warning sd-fs-5
 
         Launch Mechanical as a **separate server process** and communicate via gRPC.
         Process isolation, optional GUI, ideal for CI/CD, Docker, and automation.

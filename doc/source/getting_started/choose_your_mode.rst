@@ -15,35 +15,36 @@ At a glance
 .. list-table::
    :header-rows: 1
    :widths: 25 35 35
+   :class: mode-comparison-table
 
    * - Aspect
-     - Embedding (``App``)
-     - Remote Session (``launch_mechanical``)
-   * - **Process model**
+     - **Embedding** (``App``)
+     - **Remote Session** (``launch_mechanical``)
+   * - Process model
      - Mechanical runs inside your Python process
      - Mechanical runs as a separate server process
-   * - **Communication**
+   * - Communication
      - Direct .NET CLR interop (Python.NET)
      - gRPC over TCP/IP
-   * - **API style**
+   * - API style
      - Direct object access (full CRUD data model)
      - String-based via ``run_python_script()``
-   * - **GUI support**
+   * - GUI support
      - No—runs in batch mode only
      - Optional—set ``batch=False`` for GUI
-   * - **Platform**
+   * - Platform
      - Windows natively; Linux requires ``mechanical-env``
      - Windows and Linux
-   * - **Concurrency**
+   * - Concurrency
      - One instance per Python process
      - Multiple instances via ``LocalMechanicalPool``
-   * - **Best for**
+   * - Best for
      - Jupyter notebooks, interactive scripting, deep integration
      - CI/CD pipelines, Docker, distributed automation
-   * - **Startup speed**
+   * - Startup speed
      - Faster (in-process)
      - Slower (new process + gRPC handshake)
-   * - **Object model access**
+   * - Object model access
      - Full—read, create, update, delete objects directly
      - Limited—send scripts as strings, receive results as strings
 
@@ -58,10 +59,11 @@ Use the following questions to guide your choice:
 .. list-table::
    :header-rows: 1
    :widths: 60 20 20
+   :class: mode-comparison-table
 
    * - Question
-     - Embedding
-     - Remote
+     - **Embedding**
+     - **Remote**
    * - Do you need the Mechanical **GUI**?
      -
      - **Yes**
