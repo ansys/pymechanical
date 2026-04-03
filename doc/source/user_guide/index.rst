@@ -7,7 +7,7 @@ User guide
 This section contains in-depth guides organized by mode, plus shared scripting
 fundamentals and CLI tools.
 
-- 
+-
 
 - **Embedding mode**: Use Mechanical directly in your Python process with the ``App`` class.
 - **Remote session mode**: Launch Mechanical as a server and communicate with gRPC.
