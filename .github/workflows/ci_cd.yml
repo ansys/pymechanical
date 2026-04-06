@@ -704,7 +704,7 @@ jobs:
         run: |
           apt update
           apt install make lsb-release xvfb poppler-utils -y
-          apt install zip pandoc libgl1-mesa-glx mesa-utils texlive-latex-extra latexmk nodejs npm graphviz -y
+          apt install zip pandoc libgl1-mesa-glx mesa-utils npm -y
 
       - name: Install gh cli
         run: |
@@ -719,9 +719,9 @@ jobs:
       - name: Install quarto to build cheatsheet
         run: | # zizmor: ignore[template-injection]
           echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
-          gh release download v1.6.43 --repo github.com/quarto-dev/quarto-cli --pattern *linux-amd64.deb
+          gh release download v1.9.36 --repo github.com/quarto-dev/quarto-cli --pattern *linux-amd64.deb
           apt install ./quarto*linux-amd64.deb -y
-          quarto install tool tinytex --log-level warning
+          quarto install tinytex --log-level warning
 
       - name: Test quarto installation
         run: quarto --version
@@ -759,6 +759,7 @@ jobs:
             fi
           fi
       - name: Check links
+        if: github.event_name == 'schedule'
         run: |
           . /env/bin/activate
           make -C doc linkcheck
