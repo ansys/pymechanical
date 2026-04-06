@@ -270,7 +270,7 @@ def check_valid_mechanical():
 
     >>> from ansys.mechanical.core import mechanical
     >>> from ansys.tools.common.path import change_default_mechanical_path
-    >>> mechanical_path = "C:/Program Files/ANSYS Inc/v252/aisol/bin/win64/AnsysWBU.exe"
+    >>> mechanical_path = "C:/Program Files/ANSYS Inc/v261/aisol/bin/win64/AnsysWBU.exe"
     >>> change_default_mechanical_path(mechanical_pth)
     >>> mechanical.check_valid_mechanical()
     True
@@ -588,7 +588,7 @@ class Mechanical:
         Get the version of the connected Mechanical instance.
 
         >>> mechanical.version
-        '252'
+        '261'
         """
         if self._version is None:
             try:
@@ -2121,7 +2121,7 @@ def launch_grpc(
 
     Launch Mechanical using a specified executable file.
 
-    >>> exec_file_path = "C:/Program Files/ANSYS Inc/v252/aisol/bin/win64/AnsysWBU.exe"
+    >>> exec_file_path = "C:/Program Files/ANSYS Inc/v261/aisol/bin/win64/AnsysWBU.exe"
     >>> mechanical = launch_mechanical(exec_file=exec_file_path)
 
     """
@@ -2229,8 +2229,8 @@ def launch_remote_mechanical(
     Parameters
     ----------
     version : str, optional
-        Mechanical version to run in the three-digit format. For example, ``"252"`` to
-        run 2025 R2. The default is ``None``, in which case the server runs the latest
+        Mechanical version to run in the three-digit format. For example, ``"261"`` to
+        run 2026 R1. The default is ``None``, in which case the server runs the latest
         installed version.
     grpc_options : list of tuple, optional
         Additional gRPC channel options to pass when creating the channel.
@@ -2371,8 +2371,8 @@ def launch_mechanical(
         When ``False``, Mechanical is not exited when the garbage for this Mechanical
         instance is collected.
     version : str, optional
-        Mechanical version to run in the three-digit format. For example, ``"252"``
-        for 2025 R2. The default is ``None``, in which case the server runs the
+        Mechanical version to run in the three-digit format. For example, ``"261"``
+        for 2026 R1. The default is ``None``, in which case the server runs the
         latest installed version. If PyPIM is configured and ``exec_file=None``,
         PyPIM launches Mechanical using its ``version`` parameter.
     keep_connection_alive : bool, optional
@@ -2410,7 +2410,7 @@ def launch_mechanical(
 
     Launch Mechanical using a specified executable file.
 
-    >>> exec_file_path = "C:/Program Files/ANSYS Inc/v252/aisol/bin/win64/AnsysWBU.exe"
+    >>> exec_file_path = "C:/Program Files/ANSYS Inc/v261/aisol/bin/win64/AnsysWBU.exe"
     >>> mech = launch_mechanical(exec_file=exec_file_path)
 
     Connect to an existing Mechanical instance at IP address ``192.168.1.30`` on port

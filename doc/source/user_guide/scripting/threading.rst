@@ -3,6 +3,14 @@
 Threading
 =========
 
+.. note::
+
+   Threading considerations apply to **both** embedding mode and remote session mode,
+   though the details differ:
+
+   - **Embedding:** All API calls must run on the Python thread that created the ``App`` instance.
+   - **Remote session:** Python code sent to the server must not use threading to call Mechanical APIs.
+
 Concurrency and threads
 -----------------------
 

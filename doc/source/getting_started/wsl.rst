@@ -3,6 +3,12 @@
 Windows Subsystem for Linux (WSL)
 =================================
 
+.. note::
+
+   WSL is relevant for both modes. For **embedding mode** on WSL, you must use
+   the ``mechanical-env`` wrapper to set required environment variables.
+   For **remote session mode**, WSL works like any Linux environment.
+
 This page explains how you use a PyAnsys library, more specifically PyMechanical,
 in the Windows Subsystem for Linux (WSL). WSL is a compatibility layer for
 running Linux binary executables natively on Windows 10, Windows 11, and
@@ -70,7 +76,7 @@ To install Ansys products in WSL, perform these steps:
 
    .. code:: bash
 
-       tar xvzf STRUCTURES_2025R2_LINX64.tgz
+       tar xvzf STRUCTURES_2026R1_LINX64.tgz
 
 
 3. To install Mechanical, go into the folder where the files have been extracted
