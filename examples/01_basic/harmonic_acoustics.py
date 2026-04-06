@@ -170,7 +170,7 @@ model = app.Model
 
 # Add the geometry import group and set its preferences
 geometry_import = model.GeometryImportGroup.AddGeometryImport()
-geometry_import_format = Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.Format.Automatic
+geometry_import_format = GeometryImportPreference.Format.Automatic
 geometry_import_preferences = Ansys.ACT.Mechanical.Utilities.GeometryImportPreferences()
 geometry_import_preferences.ProcessNamedSelections = True
 
