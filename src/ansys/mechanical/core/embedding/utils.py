@@ -28,7 +28,7 @@ import os
 TEST_HELPER = None
 
 
-class GetterWrapper(object):
+class GetterWrapper:
     """Wrapper class around an attribute of an object."""
 
     def __init__(self, obj, getter):
@@ -49,6 +49,10 @@ class GetterWrapper(object):
         if attr in self.__dict__:
             setattr(self, attr, value)
         setattr(self._get_wrapped_object(self._immortal_object), attr, value)
+
+    def __repr__(self):
+        """Return the repr of the wrapped object."""
+        return repr(self._get_wrapped_object(self._immortal_object))
 
 
 def _get_test_helper():
