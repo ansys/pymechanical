@@ -114,3 +114,11 @@ Use the ``mechanical-env`` script shipped with PyMechanical:
 .. code:: shell
 
    $ mechanical-env python
+
+Then use the same Python code as on Windows.
+
+For more on embedding, see the :ref:`Embedding mode user guide <ref_embedding_user_guide>`.
+
+.. seealso::
+
+   :doc:`troubleshooting` — executable not found, licensing, VPN, and debug tips.
