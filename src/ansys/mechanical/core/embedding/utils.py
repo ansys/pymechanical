@@ -28,7 +28,7 @@ import os
 TEST_HELPER = None
 
 
-class GetterWrapper(object):
+class GetterWrapper:
     """Wrapper class around an attribute of an object."""
 
     def __init__(self, obj, getter):
