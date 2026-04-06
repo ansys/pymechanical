@@ -101,9 +101,7 @@ class Helpers:
         ...     process_coordinate_systems=True,
         ... )
         """
-        GeometryImportPreference = (
-            self.Ansys.Mechanical.DataModel.Enums.GeometryImportPreference
-        )
+        GeometryImportPreference = self.Ansys.Mechanical.DataModel.Enums.GeometryImportPreference  # noqa: N806
 
         if analysis_type is None:
             analysis_type = GeometryImportPreference.AnalysisType.Type3D
@@ -197,7 +195,9 @@ class Helpers:
         >>> app.helpers.export_image(app.Model.Geometry, "C:\\path\\to\\geometry.png")
 
         >>> from ansys.mechanical.core.embedding.enum_importer import (
-        ...     GraphicsBackgroundType, GraphicsImageExportFormat, GraphicsResolutionType,
+        ...     GraphicsBackgroundType,
+        ...     GraphicsImageExportFormat,
+        ...     GraphicsResolutionType,
         ... )
         >>> result = app.Model.Analyses[0].Solution.Children[0]
         >>> app.helpers.export_image(
@@ -244,9 +244,7 @@ class Helpers:
         graphics_image_export_settings.Height = height
 
         try:
-            self._app.Graphics.ExportImage(
-                file_path, image_format, graphics_image_export_settings
-            )
+            self._app.Graphics.ExportImage(file_path, image_format, graphics_image_export_settings)
             self._app.log_info(f"Exported image to {file_path} successfully.")
         except Exception as e:
             raise RuntimeError(f"Image export unsuccessful: {e}")

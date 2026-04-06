@@ -66,7 +66,7 @@ def test_import_geometry(embedded_app, assets, printer):
 
     # Test with all options enabled
     printer("Testing geometry import with all options")
-    GeometryImportPreference = (
+    GeometryImportPreference = (  # noqa: N806
         embedded_app.helpers.Ansys.Mechanical.DataModel.Enums.GeometryImportPreference
     )
     geometry_import = embedded_app.helpers.import_geometry(
