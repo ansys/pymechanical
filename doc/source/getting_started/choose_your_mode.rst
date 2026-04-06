@@ -10,7 +10,7 @@ This page helps you decide which mode is right for your workflow.
 .. _choose_mode_at_a_glance:
 
 At a glance
-------------
+-----------
 
 .. list-table::
    :header-rows: 1
@@ -30,8 +30,8 @@ At a glance
      - Direct object access (full CRUD data model)
      - String-based via ``run_python_script()``
    * - GUI support
-     - No—runs in batch mode only
-     - Optional—set ``batch=False`` for GUI
+     - No (batch mode only)
+     - Yes (set ``batch=False``)
    * - Platform
      - Windows natively; Linux requires ``mechanical-env``
      - Windows and Linux
@@ -52,7 +52,7 @@ At a glance
 .. _choose_mode_decision:
 
 Which mode to use?
--------------------------
+------------------
 
 Use the following questions to guide your choice:
 
@@ -65,28 +65,28 @@ Use the following questions to guide your choice:
      - **Embedding**
      - **Remote**
    * - Do you need the Mechanical **GUI**?
-     -
-     - **Yes**
+     - No (batch mode only)
+     - Yes (set ``batch=False``)
    * - Are you running inside a **Jupyter notebook**?
      - **Yes**
-     -
+     - No
    * - Do you need **full object model** access (read properties, traverse tree)?
      - **Yes**
-     -
+     - No
    * - Are you deploying in **CI/CD**, **Docker**, or containers?
-     -
+     - No
      - **Yes**
    * - Do you need **multiple simultaneous** Mechanical instances?
-     -
+     - No
      - **Yes** (pool)
    * - Do you want the **fastest startup** with no network overhead?
      - **Yes**
-     -
+     - No
    * - Do you need to connect to Mechanical running on a **different machine**?
-     -
+     - No
      - **Yes**
    * - Are you building a **distributed** or multi-user system?
-     -
+     - No
      - **Yes**
 
 
@@ -97,7 +97,7 @@ and code examples for each mode.
 .. _choose_mode_architecture:
 
 How the modes work
--------------------
+------------------
 
 **Embedding mode** embeds the entire Mechanical application in memory inside
 your Python process using Python.NET (.NET CLR interop). There is no separate
