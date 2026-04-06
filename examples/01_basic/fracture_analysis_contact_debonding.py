@@ -157,13 +157,11 @@ geometry_import_group = model.GeometryImportGroup
 # Add the geometry import to the group
 geometry_import = geometry_import_group.AddGeometryImport()
 # Set the geometry import format
-geometry_import_format = Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.Format.Automatic
+geometry_import_format = GeometryImportPreference.Format.Automatic
 # Set the geometry import preferences
 geometry_import_preferences = Ansys.ACT.Mechanical.Utilities.GeometryImportPreferences()
 geometry_import_preferences.ProcessNamedSelections = True
-geometry_import_preferences.AnalysisType = (
-    Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.AnalysisType.Type2D
-)
+geometry_import_preferences.AnalysisType = GeometryImportPreference.AnalysisType.Type2D
 
 # Download the geometry file from the ansys/example-data repository
 geometry_path = download_file("Contact_Debonding_Example.agdb", "pymechanical", "embedding")
