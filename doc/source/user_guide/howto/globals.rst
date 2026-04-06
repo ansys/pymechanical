@@ -60,5 +60,3 @@ construction of ``App`` to behave as if ``BUILDING_GALLERY`` were ``False``
 
    app = pymechanical.App(globals=globals(), reuse_instance=True)
 
-See also :py:data:`~ansys.mechanical.core.BUILDING_GALLERY` and
-:class:`~ansys.mechanical.core.embedding.app.App`.
