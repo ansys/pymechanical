@@ -378,7 +378,7 @@ z_velocity_response.NormalOrientation = NormalOrientationType.ZAxis
 z_velocity_response.Location = pres_face
 
 # %%
-# Add the acoustic kinetic and potentional energy frequency responses
+# Add the acoustic kinetic and potential energy frequency responses
 
 # Add the acoustic kinetic energy frequency response and set its location
 # to the absorption face named selection

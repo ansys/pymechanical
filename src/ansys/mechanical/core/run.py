@@ -27,7 +27,6 @@ from asyncio.subprocess import PIPE
 import os
 from pathlib import Path
 import sys
-import typing
 
 import ansys.tools.common.path as atp
 import click
@@ -86,7 +85,7 @@ def _run(args, env, check=False, display=False):
     try:
         rc, process, *output = loop.run_until_complete(_read_and_display(args, env, display))
         if rc and check:
-            sys.exit("child failed with '{}' exit code".format(rc))
+            sys.exit(f"child failed with '{rc}' exit code")
     finally:
         if os.name == "nt":
             loop.close()
@@ -94,22 +93,23 @@ def _run(args, env, check=False, display=False):
 
 
 def _cli_impl(
-    project_file: typing.Optional[str] = None,
+    project_file: str | None = None,
     port: int = 0,
     debug: bool = False,
-    input_script: typing.Optional[str] = None,
-    script_args: typing.Optional[str] = None,
-    exe: typing.Optional[str] = None,
-    version: typing.Optional[int] = None,
+    input_script: str | None = None,
+    script_args: str | None = None,
+    exe: str | None = None,
+    version: int | None = None,
     graphical: bool = False,
     show_welcome_screen: bool = False,
     private_appdata: bool = False,
     exit: bool = False,
-    features: typing.Optional[str] = None,
-    enginetype: typing.Optional[str] = None,
-    transport_mode: typing.Optional[str] = None,
-    grpc_host: typing.Optional[str] = None,
-    certs_dir: typing.Optional[str] = None,
+    features: str | None = None,
+    enginetype: str | None = None,
+    transport_mode: str | None = None,
+    grpc_host: str | None = None,
+    certs_dir: str | None = None,
+    readonly: bool = False,
 ):
     if project_file and input_script:
         raise click.ClickException("Cannot open a project file *and* run a script.")
@@ -235,7 +235,7 @@ def _cli_impl(
     if not graphical:
         args.append("-b")
 
-    env: typing.Dict[str, str] = os.environ.copy()
+    env: dict[str, str] = os.environ.copy()
     if debug:
         env["WBDEBUG_STOP"] = "1"
 
@@ -258,6 +258,9 @@ def _cli_impl(
             if certs_dir:
                 args.append("--certs-dir")
                 args.append(certs_dir)
+
+    if readonly and graphical:
+        args.append("-readonly")
 
     if project_file:
         args.append("-file")
@@ -439,7 +442,7 @@ The ``exit`` command is only supported in version 2024 R1 or later.",
     "--revision",
     default=None,
     type=int,
-    help='Ansys Revision number, e.g. "251" or "252". If none is specified\
+    help='Ansys Revision number, e.g. "252" or "261". If none is specified\
 , uses the default from ansys-tools-path',
 )
 @click.option(
@@ -448,6 +451,12 @@ The ``exit`` command is only supported in version 2024 R1 or later.",
     is_flag=True,
     default=False,
     help="Graphical mode",
+)
+@click.option(
+    "--readonly",
+    is_flag=True,
+    default=False,
+    help="Open Mechanical in read-only mode (graphical mode only).",
 )
 def cli(
     project_file: str,
@@ -465,6 +474,7 @@ def cli(
     transport_mode: str,
     grpc_host: str,
     certs_dir: str,
+    readonly: bool,
 ):
     """CLI tool to run mechanical.
 
@@ -472,9 +482,9 @@ def cli(
 
     The following example demonstrates the main use of this tool:
 
-        $ ansys-mechanical -r 252 -g
+        $ ansys-mechanical -r 261 -g
 
-        Starting Ansys Mechanical version 2025R2 in graphical mode...
+        Starting Ansys Mechanical version 2026R1 in graphical mode...
     """
     exe = atp.get_mechanical_path(allow_input=False, version=revision)
     version = atp.version_from_path("mechanical", exe)
@@ -501,4 +511,5 @@ def cli(
         transport_mode,
         grpc_host,
         certs_dir,
+        readonly,
     )

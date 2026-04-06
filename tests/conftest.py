@@ -73,7 +73,7 @@ for rver in valid_rver:
 # minimum version on linux.
 # Override this if running on CI/CD and PYMAPDL_PORT has been specified
 ON_CI = "PYMECHANICAL_START_INSTANCE" in os.environ and "PYMECHANICAL_PORT" in os.environ
-HAS_GRPC = int(rver) >= 241 or ON_CI
+HAS_GRPC = int(rver) >= 242 or ON_CI
 
 
 def pytest_collection_modifyitems(config, items):
@@ -157,7 +157,7 @@ def embedded_app(pytestconfig, request):
 
 
 @pytest.fixture(autouse=True)
-def mke_app_reset(request):
+def make_app_reset(request):
     """Fixture that resets the embedded Mechanical application before each test."""
     global EMBEDDED_APP
     if EMBEDDED_APP is None:

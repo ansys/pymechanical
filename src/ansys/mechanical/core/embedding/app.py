@@ -66,7 +66,7 @@ def _get_default_addin_configuration() -> AddinConfiguration:
     return configuration
 
 
-INSTANCES: list["App"] = []
+INSTANCES: list[App] = []
 """List of instances."""
 
 
@@ -85,7 +85,7 @@ def _cleanup_private_appdata(profile: UniqueUserProfile):
 
 def _start_application(
     configuration: AddinConfiguration, version, db_file, _additional_args
-) -> "App":
+) -> App:
     import clr
 
     clr.AddReference("Ansys.Mechanical.Embedding")
@@ -121,6 +121,15 @@ def _additional_args(readonly: bool, feature_flags: list, start_license: str, ve
             LOG.warning("The start_license argument is ignored when readonly is set to True.")
         additional_args += f" -p {start_license}"
     return additional_args
+
+
+def _normalize_file_path(path: str | Path) -> str:
+    """Return an absolute filesystem path as a string.
+
+    Mechanical save APIs can reject filename-only inputs on some platforms.
+    Normalizing to an absolute path ensures consistent behavior.
+    """
+    return str(Path(path).resolve())
 
 
 def is_initialized() -> bool:
@@ -178,8 +187,7 @@ class App:
 
     >>> from ansys.mechanical.core.embedding import AddinConfiguration
     >>> from ansys.mechanical.core import App
-    >>> config = AddinConfiguration("Mechanical")
-    >>> config.no_act_addins = True
+    >>> config = AddinConfiguration("Mechanical", no_act_addins=True)
     >>> app = App(config=config)
 
     Set log level
@@ -200,7 +208,7 @@ class App:
 
     def __init__(
         self,
-        db_file: typing.Optional[str] = None,
+        db_file: str | None = None,
         private_appdata: bool = False,
         **kwargs: typing.Any,
     ) -> None:
@@ -289,7 +297,7 @@ class App:
         if private_appdata:
             atexit.register(_cleanup_private_appdata, profile)
 
-        self._updated_scopes: typing.List[typing.Dict[str, typing.Any]] = []
+        self._updated_scopes: list[dict[str, typing.Any]] = []
         self._subscribe()
         if user_globals:
             self.update_globals(user_globals)
@@ -388,7 +396,7 @@ class App:
     def save(self, path=None):
         """Save the project."""
         if path is not None:
-            self.DataModel.Project.Save(path)
+            self.DataModel.Project.Save(_normalize_file_path(path))
         else:
             self.DataModel.Project.Save()
 
@@ -412,8 +420,9 @@ class App:
         Exception
             If the file already exists at the specified path and `overwrite` is False.
         """
-        if not Path(path).exists():
-            self.DataModel.Project.SaveAs(path)
+        normalized_path = _normalize_file_path(path)
+        if not Path(normalized_path).exists():
+            self.DataModel.Project.SaveAs(normalized_path)
             return
 
         if not overwrite:
@@ -423,7 +432,7 @@ class App:
             )
 
         if remove_lock:
-            file_path = Path(path)
+            file_path = Path(normalized_path)
             associated_dir = file_path.parent / f"{file_path.stem}_Mech_Files"
             lock_file = associated_dir / ".mech_lock"
             # Remove the lock file if it exists before saving the project file
@@ -431,7 +440,7 @@ class App:
                 self.log_warning(f"Removing the lock file, {lock_file}... ")
                 lock_file.unlink()
         try:
-            self.DataModel.Project.SaveAs(path, overwrite)
+            self.DataModel.Project.SaveAs(normalized_path, overwrite)
         except Exception as e:
             error_msg = str(e)
             if "The project is locked by" in error_msg:
@@ -444,9 +453,23 @@ class App:
                 self.log_error(f"Failed to save project as {path}: {error_msg}")
             raise e
 
-    def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
-        """Launch the GUI."""
-        launch_ui(self, delete_tmp_on_close, dry_run)
+    def launch_gui(
+        self, delete_tmp_on_close: bool = True, dry_run: bool = False, readonly: bool = False
+    ):
+        """Launch the GUI.
+
+        Parameters
+        ----------
+        delete_tmp_on_close : bool, optional
+            Whether to delete the temporary project copy once the GUI exits.
+            Default is ``True``.
+        dry_run : bool, optional
+            Whether to print the launch command instead of launching the GUI.
+            Default is ``False``.
+        readonly : bool, optional
+            Whether to launch the GUI in read-only mode. Default is ``False``.
+        """
+        launch_ui(self, delete_tmp_on_close, dry_run, readonly)
 
     def new(self):
         """Clear to a new application."""
@@ -496,9 +519,12 @@ class App:
         if not file_path.is_file():
             raise FileNotFoundError(f"The file {file_path} does not exist.")
         data = file_path.read_text(encoding="utf-8")
-        return self.execute_script(data)
+        try:
+            return self.execute_script(data)
+        except RuntimeError as e:
+            raise RuntimeError(f"Error in '{file_path}': {e}") from e
 
-    def plotter(self, obj=None) -> typing.Optional[typing.Any]:
+    def plotter(self, obj=None) -> typing.Any | None:
         """Return ``ansys.tools.visualization_interface.Plotter`` object."""
         if not HAS_ANSYS_GRAPHICS:
             LOG.warning(
@@ -531,6 +557,16 @@ class App:
         """
         if self.interactive:
             raise RuntimeError("Plotting is not allowed in interactive mode")
+
+        import sys
+
+        if sys.platform != "win32" and not any(
+            os.environ.get(var) for var in ("DISPLAY", "WAYLAND_DISPLAY")
+        ):
+            raise RuntimeError(
+                "No display is available. Use 'xvfb-run' to run the application "
+                "on a system without a display."
+            )
 
         _plotter = self.plotter(obj)
 
@@ -676,9 +712,7 @@ class App:
     def _on_workbench_ready(self, sender, args) -> None:
         self._update_all_globals()
 
-    def update_globals(
-        self, globals_dict: typing.Dict[str, typing.Any], enums: bool = True
-    ) -> None:
+    def update_globals(self, globals_dict: dict[str, typing.Any], enums: bool = True) -> None:
         """Update global variables.
 
         When scripting inside Mechanical, the Mechanical UI automatically

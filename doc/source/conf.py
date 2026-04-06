@@ -90,7 +90,6 @@ intersphinx_mapping = {
 
 
 suppress_warnings = ["label.*", "autoapi.python_import_resolution", "design.grid", "config.cache"]
-# supress_warnings = ["ref.option"]
 
 
 # numpydoc configuration
@@ -373,7 +372,6 @@ linkcheck_ignore = [
     "https://github.com/ansys/pymechanical/pkgs/container/.*",
     "https://ansyshelp.ansys.com/*",
     "https://answers.microsoft.com/en-us/windows/forum/all/*",
-    "https://docutils.sourceforge.io/*",
     "https://download.ansys.com/*",
     "https://support.ansys.com/*",
     "https://discuss.ansys.com/*",

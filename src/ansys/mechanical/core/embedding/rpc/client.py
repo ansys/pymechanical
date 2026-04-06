@@ -44,7 +44,7 @@ class Client:
             IP address to connect to the server.  The default is ``None``
             in which case ``localhost`` is used.
         port : int, optional
-            Port to connect to the Mecahnical server. The default is ``None``,
+            Port to connect to the Mechanical server. The default is ``None``,
             in which case ``20000`` is used.
         timeout : float, optional
             Maximum allowable time for connecting to the Mechanical server.
