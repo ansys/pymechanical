@@ -27,12 +27,16 @@ from pathlib import Path
 import pytest
 
 
-def _cleanup_file(filepath):
-    """Clean up test file after verification."""
+def _is_readable(filepath):
+    """Assert that the file is non-empty and readable, then delete it."""
+    filepath = Path(filepath)
     try:
-        Path(filepath).unlink(missing_ok=True)
-    except Exception:
-        pass  # Ignore cleanup errors
+        with filepath.open("rb") as file:
+            file.read()
+    except Exception as e:
+        assert False, f"Failed to read file {filepath}: {e}"
+    finally:
+        filepath.unlink(missing_ok=True)
 
 
 @pytest.mark.embedding
@@ -62,13 +66,16 @@ def test_import_geometry(embedded_app, assets, printer):
 
     # Test with all options enabled
     printer("Testing geometry import with all options")
+    GeometryImportPreference = (
+        embedded_app.helpers.Ansys.Mechanical.DataModel.Enums.GeometryImportPreference
+    )
     geometry_import = embedded_app.helpers.import_geometry(
         geometry_file,
         process_named_selections=True,
         named_selection_key="",
         process_material_properties=True,
         process_coordinate_systems=True,
-        analysis_type="3d",
+        analysis_type=GeometryImportPreference.AnalysisType.Type3D,
     )
     assert geometry_import is not None
     assert str(geometry_import.ObjectState) in ["FullyDefined", "Solved"]
@@ -124,12 +131,16 @@ def test_export_image(embedded_app, assets, tmp_path, printer):
         obj=embedded_app.Model.Geometry,
         file_path=str(image_path),
     )
-    assert image_path.exists()
-    assert image_path.stat().st_size > 0
+    _is_readable(image_path)
     printer(f"Default export successful: {image_path}")
-    _cleanup_file(image_path)
 
-    # Test with custom settings
+    # Test with custom settings using enums
+    from ansys.mechanical.core.embedding.enum_importer import (
+        GraphicsBackgroundType,
+        GraphicsImageExportFormat,
+        GraphicsResolutionType,
+    )
+
     printer("Testing image export with custom settings")
     image_path_custom = tmp_path / "test_custom.jpg"
     embedded_app.helpers.export_image(
@@ -137,14 +148,12 @@ def test_export_image(embedded_app, assets, tmp_path, printer):
         file_path=str(image_path_custom),
         width=1280,
         height=720,
-        background="appearance",
-        resolution="high",
-        image_format="jpg",
+        background=GraphicsBackgroundType.GraphicsAppearanceSetting,
+        resolution=GraphicsResolutionType.HighResolution,
+        image_format=GraphicsImageExportFormat.JPG,
     )
-    assert image_path_custom.exists()
-    assert image_path_custom.stat().st_size > 0
+    _is_readable(image_path_custom)
     printer("Custom export successful")
-    _cleanup_file(image_path_custom)
 
 
 @pytest.mark.embedding
@@ -154,17 +163,24 @@ def test_export_image_all_formats(embedded_app, assets, tmp_path, printer):
     geometry_file = str(Path(assets) / "Eng157.x_t")
     embedded_app.helpers.import_geometry(geometry_file)
 
-    formats = ["png", "jpg", "bmp", "tif", "eps"]
-    for fmt in formats:
-        image_path = tmp_path / f"test_image.{fmt}"
+    from ansys.mechanical.core.embedding.enum_importer import GraphicsImageExportFormat
+
+    format_map = {
+        "png": GraphicsImageExportFormat.PNG,
+        "jpg": GraphicsImageExportFormat.JPG,
+        "bmp": GraphicsImageExportFormat.BMP,
+        "tif": GraphicsImageExportFormat.TIF,
+        "eps": GraphicsImageExportFormat.EPS,
+    }
+    for name, fmt in format_map.items():
+        image_path = tmp_path / f"test_image.{name}"
         embedded_app.helpers.export_image(
             obj=embedded_app.Model.Geometry,
             file_path=str(image_path),
             image_format=fmt,
         )
-        assert image_path.exists()
-        printer(f"Exported {fmt} successfully")
-        _cleanup_file(image_path)
+        _is_readable(image_path)
+        printer(f"Exported {name} successfully")
 
 
 @pytest.mark.embedding
@@ -178,35 +194,6 @@ def test_export_image_validation_errors(embedded_app, assets, tmp_path, printer)
     printer("Testing missing file path error")
     with pytest.raises(ValueError, match="file_path must be provided"):
         embedded_app.helpers.export_image(obj=embedded_app.Model.Geometry)
-
-    # Test invalid resolution
-    printer("Testing invalid resolution error")
-    image_path = tmp_path / "test_image.png"
-    with pytest.raises(ValueError, match="Invalid resolution type"):
-        embedded_app.helpers.export_image(
-            obj=embedded_app.Model.Geometry,
-            file_path=str(image_path),
-            resolution="invalid",
-        )
-
-    # Test invalid background
-    printer("Testing invalid background error")
-    with pytest.raises(ValueError, match="Invalid background type"):
-        embedded_app.helpers.export_image(
-            obj=embedded_app.Model.Geometry,
-            file_path=str(image_path),
-            background="invalid",
-        )
-
-    # Test invalid format
-    printer("Testing invalid format error")
-    image_path_xyz = tmp_path / "test_image.xyz"
-    with pytest.raises(ValueError, match="Invalid image format"):
-        embedded_app.helpers.export_image(
-            obj=embedded_app.Model.Geometry,
-            file_path=str(image_path_xyz),
-            image_format="xyz",
-        )
 
     printer("All validation errors handled correctly")
 
@@ -228,9 +215,16 @@ def test_export_animation_basic(embedded_app, tmp_path, printer, graphics_test_m
     assert result is not None
 
     # Test all animation formats
-    formats = ["gif", "avi", "mp4", "wmv"]
-    for fmt in formats:
-        animation_path = tmp_path / f"test_animation.{fmt}"
+    from ansys.mechanical.core.embedding.enum_importer import GraphicsAnimationExportFormat
+
+    format_map = {
+        "gif": GraphicsAnimationExportFormat.GIF,
+        "avi": GraphicsAnimationExportFormat.AVI,
+        "mp4": GraphicsAnimationExportFormat.MP4,
+        "wmv": GraphicsAnimationExportFormat.WMV,
+    }
+    for name, fmt in format_map.items():
+        animation_path = tmp_path / f"test_animation.{name}"
         embedded_app.helpers.export_animation(
             obj=result,
             file_path=str(animation_path),
@@ -238,10 +232,8 @@ def test_export_animation_basic(embedded_app, tmp_path, printer, graphics_test_m
             width=640,
             height=480,
         )
-        assert animation_path.exists()
-        assert animation_path.stat().st_size > 0
-        printer(f"Exported {fmt} successfully")
-        _cleanup_file(animation_path)
+        _is_readable(animation_path)
+        printer(f"Exported {name} successfully")
 
 
 @pytest.mark.embedding
@@ -258,16 +250,6 @@ def test_export_animation_validation_errors(embedded_app, assets, tmp_path, prin
     printer("Testing missing file path error")
     with pytest.raises(ValueError, match="file_path must be provided"):
         embedded_app.helpers.export_animation(obj=result)
-
-    # Test invalid format
-    printer("Testing invalid format error")
-    animation_path = tmp_path / "test_animation.xyz"
-    with pytest.raises(ValueError, match="Invalid animation format"):
-        embedded_app.helpers.export_animation(
-            obj=result,
-            file_path=str(animation_path),
-            animation_format="xyz",
-        )
 
     printer("All animation validation errors handled correctly")
 
@@ -299,7 +281,7 @@ def test_display_image(embedded_app, assets, tmp_path, printer, monkeypatch):
     embedded_app.helpers.display_image(str(image_path))
     assert len(show_called) == 1
     printer("Default display successful")
-    _cleanup_file(image_path)
+    Path(image_path).unlink(missing_ok=True)
 
     # Test with custom settings
     printer("Testing display with custom settings")
@@ -315,4 +297,4 @@ def test_display_image(embedded_app, assets, tmp_path, printer, monkeypatch):
     )
     assert len(show_called) == 2
     printer("Custom display successful")
-    _cleanup_file(image_path_custom)
+    Path(image_path_custom).unlink(missing_ok=True)

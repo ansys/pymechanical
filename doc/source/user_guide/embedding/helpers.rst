@@ -62,18 +62,17 @@ Import geometry with material properties and coordinate systems:
        named_selection_key="",
        process_material_properties=True,
        process_coordinate_systems=True,
-       analysis_type="3d"
    )
 
 **2D analysis**
 
-For 2D analyses, specify the analysis type:
+For 2D analyses, specify the analysis type using the ``GeometryImportPreference`` enum:
 
 .. code:: python
 
    geometry_import = app.helpers.import_geometry(
        "path/to/geometry.agdb",
-       analysis_type="2d"
+       analysis_type=GeometryImportPreference.AnalysisType.Type2D
    )
 
 .. note::
@@ -119,7 +118,7 @@ It provides extensive control over image resolution, format, and appearance.
 
 **Custom image settings**
 
-Control image dimensions, resolution, background, and format:
+Control image dimensions, resolution, background, and format using Mechanical enums:
 
 .. code:: python
 
@@ -128,9 +127,9 @@ Control image dimensions, resolution, background, and format:
        file_path="custom_image.jpg",
        width=1920,
        height=1080,
-       background="appearance",  # or "white"
-       resolution="high",  # "normal", "enhanced", or "high"
-       image_format="jpg"  # "png", "jpg", "bmp", "tif", or "eps"
+       background=GraphicsBackgroundType.GraphicsAppearanceSetting,
+       resolution=GraphicsResolutionType.HighResolution,
+       image_format=GraphicsImageExportFormat.JPG,
    )
 
 **Export current graphics display**
@@ -144,19 +143,19 @@ Export whatever is currently displayed without specifying an object:
        current_graphics_display=True
    )
 
-**Supported formats**
+**Supported image formats (``GraphicsImageExportFormat``)**
 
-- **PNG** - Recommended for technical documentation (lossless)
-- **JPG** - Good for photographs and presentations (compressed format)
-- **BMP** - Uncompressed bitmap
-- **TIF** - Tagged image format (lossless)
-- **EPS** - Vector format for publications
+- ``GraphicsImageExportFormat.PNG`` - Recommended for technical documentation (lossless, default)
+- ``GraphicsImageExportFormat.JPG`` - Good for photographs and presentations
+- ``GraphicsImageExportFormat.BMP`` - Uncompressed bitmap
+- ``GraphicsImageExportFormat.TIF`` - Tagged image format (lossless)
+- ``GraphicsImageExportFormat.EPS`` - Vector format for publications
 
-**Resolution options**
+**Resolution options (``GraphicsResolutionType``)**
 
-- **normal** - 1:1 pixel ratio (fastest)
-- **enhanced** - 2:1 pixel ratio (default, good quality)
-- **high** - 4:1 pixel ratio (best quality, slower)
+- ``GraphicsResolutionType.NormalResolution`` - 1:1 pixel ratio (fastest)
+- ``GraphicsResolutionType.EnhancedResolution`` - 2:1 pixel ratio (default, good quality)
+- ``GraphicsResolutionType.HighResolution`` - 4:1 pixel ratio (best quality, slower)
 
 Exporting animations
 --------------------
@@ -188,15 +187,15 @@ or mode shapes, such as transient analyses or modal analyses.
        file_path="deformation.mp4",
        width=1920,
        height=1080,
-       animation_format="mp4"  # "gif", "avi", "mp4", or "wmv"
+       animation_format=GraphicsAnimationExportFormat.MP4,
    )
 
-**Supported animation formats**
+**Supported animation formats (``GraphicsAnimationExportFormat``)**
 
-- **GIF** - Widely supported, good for web
-- **AVI** - Uncompressed video
-- **MP4** - Compressed video, good for presentations
-- **WMV** - Windows Media Video format
+- ``GraphicsAnimationExportFormat.GIF`` - Widely supported, good for web (default)
+- ``GraphicsAnimationExportFormat.AVI`` - Uncompressed video
+- ``GraphicsAnimationExportFormat.MP4`` - Compressed video, good for presentations
+- ``GraphicsAnimationExportFormat.WMV`` - Windows Media Video format
 
 .. note::
    Animation export requires that the result has been solved and has multiple steps or modes
@@ -256,7 +255,7 @@ Workflow examples
        file_path="bracket_iso.png",
        width=1920,
        height=1080,
-       resolution="enhanced"
+       resolution=GraphicsResolutionType.EnhancedResolution,
    )
 
    # Step 4: Display it

@@ -79,7 +79,9 @@ output_path = Path.cwd() / "out"
 # Download the geometry file from the ansys/example-data repository
 geometry_path = download_file("Contact_Debonding_Example.agdb", "pymechanical", "embedding")
 
-app.helpers.import_geometry(geometry_path, analysis_type="2d")
+app.helpers.import_geometry(
+    geometry_path, analysis_type=GeometryImportPreference.AnalysisType.Type2D
+)
 # Set the model
 model = app.Model
 
