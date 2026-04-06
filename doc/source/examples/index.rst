@@ -40,7 +40,7 @@ If you are not sure which mode to use, see :ref:`ref_choose_your_mode`.
     :hidden:
     :maxdepth: 3
 
-    Examples: Remote session mode <https://examples.mechanical.docs.pyansys.com/index.html>
+    Basic examples: Remote session mode <https://examples.mechanical.docs.pyansys.com/index.html>
 
 
 .. include:: remote_examples/index.rst
