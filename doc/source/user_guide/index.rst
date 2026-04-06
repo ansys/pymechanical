@@ -4,36 +4,48 @@
 User guide
 ==========
 
-This section provides a general overview of PyMechanical and how you use it. It also contains
-detailed how-to guides on specific topics. The user guide is divided into the following sections:
+This section contains in-depth guides organized by mode, plus shared scripting
+fundamentals and CLI tools.
 
-- **Mechanical Scripting** - Covers how to record scripts inside Mechanical, and threading.
-- **How to** - Provides step-by-step instructions for configuring PyMechanical, using globals, logging, and more.
-- **Command Line Interface (CLI)** - Details the CLI commands available for PyMechanical.
-- **Remote session** - Explains how to use PyMechanical in a remote session.
+- **Embedding mode**: Use Mechanical directly in your Python process with the ``App`` class.
+- **Remote session mode**: Launch Mechanical as a server and communicate with gRPC.
+- **Scripting fundamentals**: Explore Mechanical API concepts, recording, and threading, which
+  are all topics applying to both modes.
+- **CLI tools**: Discover command-line utilities for launching, discovering, and configuring Mechanical.
+
+If you are not sure which mode to use, see :ref:`ref_choose_your_mode`.
 
 .. toctree::
    :maxdepth: 1
    :hidden:
-   :caption: Mechanical Scripting
+   :caption: Embedding mode
+
+   embedding/overview
+   embedding/configuration
+   embedding/globals
+   embedding/licensing
+   embedding/libraries
+   embedding/logging
+   embedding/pep8
+   embedding/autocomplete
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: Remote session mode
+
+   remote_session/overview
+   remote_session/server-launcher
+   remote_session/grpc_security
+   remote_session/pool
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+   :caption: Scripting fundamentals (both modes)
 
    scripting/overview
    scripting/threading
-
-
-.. toctree::
-   :maxdepth: 1
-   :hidden:
-   :caption: How to
-
-   howto/overview
-   howto/configuration
-   howto/globals
-   howto/licensing
-   howto/libraries
-   howto/logging
-   howto/pep8
-   howto/autocomplete
 
 .. toctree::
    :maxdepth: 1
@@ -44,13 +56,3 @@ detailed how-to guides on specific topics. The user guide is divided into the fo
    cli/ansys-mechanical-ideconfig
    cli/find-mechanical
    cli/mechanical-env
-
-.. toctree::
-   :maxdepth: 2
-   :hidden:
-   :caption: Remote session
-
-   remote_session/overview
-   remote_session/server-launcher
-   remote_session/grpc_security
-   remote_session/pool
