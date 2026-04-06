@@ -7,7 +7,7 @@ This page covers common issues when launching or connecting to Mechanical.
 
 
 Manually set the executable location
---------------------------------------
+-------------------------------------
 
 If PyMechanical cannot find your installation, set the path manually:
 
@@ -64,5 +64,5 @@ VPN issues
 -----------
 
 Sometimes, Mechanical has issues starting when VPN software is running. For more information,
-access the `Mechanical Users Guide`_
+see the `Mechanical Users Guide`_
 in the Ansys Help.

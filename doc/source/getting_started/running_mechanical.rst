@@ -74,8 +74,8 @@ Connect to a local or remote Mechanical server:
     # Remote — by hostname
     mechanical = Mechanical("myremotemachine", port=10000)
 
-Alternatively, use
-`connect_to_mechanical() <../api/ansys/mechanical/core/mechanical/index.html#mechanical.connect_to_mechanical>`_:
+Alternatively, use the
+`connect_to_mechanical() <../api/ansys/mechanical/core/mechanical/index.html#mechanical.connect_to_mechanical>`_ method:
 
 .. code:: python
 
@@ -90,8 +90,8 @@ For more on remote sessions, see the :ref:`Remote session user guide <ref_user_g
 Embedding mode
 --------------
 
-In embedding mode, Mechanical runs directly inside your Python process
-via `Python.NET <https://pythonnet.github.io/>`__. This gives you full object-model access with no network overhead.
+In embedding mode, Mechanical uses `Python.NET <https://pythonnet.github.io/>`__.
+to run directly inside your Python process. This gives you full object-model access with no network overhead.
 
 Launch on Windows
 ~~~~~~~~~~~~~~~~~

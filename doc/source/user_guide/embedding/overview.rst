@@ -14,7 +14,7 @@ Overview
 
 The :class:`App <ansys.mechanical.core.embedding.app.App>` class embeds an entire
 instance of Mechanical directly in your Python process. There is no separate server
-process or network communication — Mechanical's data model is directly accessible
+process or network communication. The Mechanical data model is directly accessible
 from Python.
 
 Here is how you create an embedded instance:
