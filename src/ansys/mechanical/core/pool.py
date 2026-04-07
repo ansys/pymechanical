@@ -536,7 +536,7 @@ class LocalMechanicalPool:
         >>> mechanical
         Ansys Mechanical [Ansys Mechanical Enterprise]
         Product Version:261
-        Software build date: 06/13/2025 15:54:58
+        Software build date: 02/03/2026 15:29:09
         """
         # loop until the next instance is available
         while True:
