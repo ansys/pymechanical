@@ -21,6 +21,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
@@ -279,6 +280,7 @@ python =
     3.11: style,py311-coverage,doc
     3.12: style,py312-coverage,doc
     3.13: style,py313-coverage,doc
+    3.14: style,py313-coverage,doc
 
 [testenv]
 description = Checks for project unit tests and coverage (if desired)
@@ -287,6 +289,7 @@ basepython =
     py311: python3.11
     py312: python3.12
     py313: python3.13
+    py314: python3.14
     py: python3
     {style,reformat,doc,build}: python3
 passenv = *
