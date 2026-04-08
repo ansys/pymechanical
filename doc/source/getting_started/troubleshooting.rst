@@ -52,10 +52,11 @@ Debug with Visual Studio Code on Linux
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 On Linux, the Python debugger must see the same environment that ``mechanical-env`` sets when
+On Linux, the Python debugger must see the same environment that the ``mechanical-env`` variable sets when
 you run ``mechanical-env python``. You can capture that environment once, store it in a file, and
 point Visual Studio Code at it.
 
-#. Install the `Python extension`_ for VS Code (provides the **debugpy** debugger).
+#. Install the `Python extension`_ for Visual Studio Code (provides the Debuggy debugger).
 
 #. From your project root, write the prepared environment to ``.vscode/.env``. Use the same
    ``-r`` or ``-p`` options you use for normal runs:
@@ -86,7 +87,7 @@ point Visual Studio Code at it.
 
 .. note::
 
-   Regenerate ``.vscode/.env`` if you change Ansys version, installation path, or ``mechanical-env``
+   Regenerate ``.vscode/.env`` if you change the Ansys version, installation path, or ``mechanical-env``
    options. Consider adding ``.env`` to ``.gitignore`` if the file should not be shared.
 
 .. _`Python extension`: https://marketplace.visualstudio.com/items?itemName=ms-python.python
