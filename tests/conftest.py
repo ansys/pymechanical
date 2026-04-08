@@ -86,7 +86,7 @@ def pytest_report_header(config):
         version_str = f"{cli_version}"
 
     text = []
-    text.append(" Mechanical test session ".center(width, "-"))
+    text.append(" PyMechanical test session ".center(width, "-"))
     text.append(f"Ansys Mechanical version : {version_str}")
     text.append(f"Session flags            : ON_CI ({ON_CI})")
     text.append(f"Platform                 : {sys.platform}")
