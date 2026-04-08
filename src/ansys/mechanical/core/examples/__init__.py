@@ -22,4 +22,9 @@
 
 """Initialize the package level imports."""
 
-from .downloads import delete_downloads, download_file  # noqa: F401
+from .downloads import delete_downloads, download_file
+
+__all__ = [
+    "delete_downloads",
+    "download_file",
+]
