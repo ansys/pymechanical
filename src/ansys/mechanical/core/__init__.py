@@ -75,5 +75,10 @@ LOCAL_PORTS: list[int] = []
 
 from ansys.mechanical.core.pool import LocalMechanicalPool
 
-BUILDING_GALLERY = False
-"""Whether or not to build gallery examples."""
+_gallery_env = os.environ.get("PYMECHANICAL_BUILDING_GALLERY", "").strip().lower()
+BUILDING_GALLERY = _gallery_env in ("1", "true", "yes")
+"""Gallery mode for embedded ``App`` (shared instance when a process runs multiple examples).
+
+Parallel Sphinx-Gallery workers inherit ``PYMECHANICAL_BUILDING_GALLERY=true`` from the
+environment; they do not execute ``doc/source/conf.py``.
+"""

@@ -27,6 +27,28 @@ necessary. A resolve handler is shipped with Ansys Mechanical on Windows
 starting in version 23.1 and on Linux starting in version 23.2
 """
 
+from pathlib import Path
+import sys
+
+
+def _sys_path_has_shadow_ansys_dir(path_entry: str) -> bool:
+    """Check whether *path_entry* contains a subdirectory named exactly ``Ansys``.
+
+    Such a folder is imported as a namespace package and shadows the CLR
+    ``Ansys`` module from ``clr.AddReference``, causing
+    ``module 'Ansys' has no attribute 'Mechanical'``.
+
+    Only the exact spelling ``Ansys`` is treated as a shadow so
+    ``site-packages/ansys`` is not removed from ``sys.path``.
+    """
+    base = Path(path_entry) if path_entry else Path.cwd()
+    try:
+        if not base.is_dir():
+            return False
+        return any(p.is_dir() and p.name == "Ansys" for p in base.iterdir())
+    except OSError:
+        return False
+
 
 def resolve(version):
     """Resolve function for all versions of Ansys Mechanical."""
@@ -34,15 +56,23 @@ def resolve(version):
     import System  # isort: skip
 
     clr.AddReference("Ansys.Mechanical.Embedding")
-    import Ansys  # isort: skip
+
+    _original_sys_path = sys.path[:]
+    try:
+        sys.path[:] = [p for p in sys.path if not _sys_path_has_shadow_ansys_dir(p)]
+        import Ansys  # isort: skip
+    finally:
+        sys.path[:] = _original_sys_path
 
     try:
         assembly_resolver = Ansys.Mechanical.Embedding.AssemblyResolver
         resolve_handler = assembly_resolver.MechanicalResolveEventHandler
         System.AppDomain.CurrentDomain.AssemblyResolve += resolve_handler
-    except AttributeError:
-        error_msg = """Unable to resolve Mechanical assemblies. Please ensure the following:
-    1. Mechanical is installed.
-    2. A folder with the name "Ansys" does not exist in the same directory as the script being run.
-    """
-        raise AttributeError(error_msg)
+    except AttributeError as err:
+        error_msg = (
+            "Unable to resolve Mechanical assemblies. Please ensure the following:\n"
+            "    1. Mechanical is installed.\n"
+            '    2. A subdirectory named exactly "Ansys" does not exist on sys.path '
+            "(e.g. next to an example script), which shadows the CLR Ansys module.\n"
+        )
+        raise AttributeError(error_msg) from err
