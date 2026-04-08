@@ -76,6 +76,43 @@ ON_CI = "PYMECHANICAL_START_INSTANCE" in os.environ and "PYMECHANICAL_PORT" in o
 HAS_GRPC = int(rver) >= 242 or ON_CI
 
 
+def pytest_report_header(config):
+    """Add Ansys Mechanical session info to the pytest report header."""
+    width = shutil.get_terminal_size((80, 20))[0]
+
+    # --- Determine version ---
+    cli_version = config.getoption("--ansys-version", default=None)
+    if cli_version:
+        version_str = f"{cli_version}"
+
+    text = []
+    text.append(" PyMechanical test session ".center(width, "-"))
+    text.append(f"Ansys Mechanical version : {version_str}")
+    text.append(f"Session flags            : ON_CI ({ON_CI})")
+    text.append(f"Platform                 : {sys.platform}")
+
+    # --- Relevant environment variables (only shown when set) ---
+    watched_env_vars = [
+        # gRPC / remote session
+        "PYMECHANICAL_START_INSTANCE",
+        "PYMECHANICAL_PORT",
+        "PYMECHANICAL_IP",
+        "ANSYS_GRPC_CERTIFICATES",
+        # Embedding
+        "PYMECHANICAL_EMBEDDING",
+        "PYMECHANICAL_EXPLICIT_INTERFACE",
+        "ANSYS_MECHANICAL_EMBEDDING_SUPPORT_OLD_VERSIONS",
+        # Solve / misc
+        "NUM_CORES",
+    ]
+    env_lines = [f"{k}='{os.environ[k]}'" for k in watched_env_vars if k in os.environ]
+    if env_lines:
+        text.append(" Environment variables ".center(width, "-"))
+        text.append(", ".join(env_lines))
+    text.append("-" * width)
+    return "\n".join(text)
+
+
 def pytest_collection_modifyitems(config, items):
     """Modify the collected test items."""
     keywordexpr = config.option.keyword
