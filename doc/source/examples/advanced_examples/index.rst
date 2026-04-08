@@ -1,8 +1,8 @@
 .. _ref_remote_examples:
 
-Advanced examples
------------------
+Advanced examples: Embedding mode
+----------------------------------
 
-This section contains examples that demonstrates advanced capabilities of Mechanical
-using Pymechanical.
-For more information, see `Advanced examples <pymechanical_embedding_ex_basic_>`_.
+This section contains examples that demonstrate advanced capabilities of Mechanical
+using PyMechanical in **embedding mode** (``App`` class).
+For more information, see `Advanced examples: Embedding mode <pymechanical_embedding_ex_basic_>`_.

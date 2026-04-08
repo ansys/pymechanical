@@ -56,7 +56,7 @@ print(app)
 # Import the enums and global variables instead of using app.update_globals(globals())
 # or App(globals=globals())
 from ansys.mechanical.core.embedding.enum_importer import *  # noqa: F403
-from ansys.mechanical.core.embedding.global_importer import Quantity
+from ansys.mechanical.core.embedding.global_importer import GeometryImportPreference, Quantity
 from ansys.mechanical.core.embedding.transaction import Transaction
 
 # %%
@@ -90,7 +90,7 @@ geometry_import_group = model.GeometryImportGroup
 # Add the geometry import to the group
 geometry_import = geometry_import_group.AddGeometryImport()
 # Set the geometry import format
-geometry_import_format = Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.Format.Automatic
+geometry_import_format = GeometryImportPreference.Format.Automatic
 # Set the geometry import preferences
 geometry_import_preferences = Ansys.ACT.Mechanical.Utilities.GeometryImportPreferences()
 geometry_import_preferences.ProcessNamedSelections = True

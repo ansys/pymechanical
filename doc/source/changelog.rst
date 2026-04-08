@@ -9,6 +9,108 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.12.4 <https://github.com/ansys/pymechanical/releases/tag/v0.12.4>`_ - April 06, 2026
+=======================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update docker files
+          - `#1547 <https://github.com/ansys/pymechanical/pull/1547>`_
+
+        * - Update files for 261
+          - `#1550 <https://github.com/ansys/pymechanical/pull/1550>`_
+
+        * - Add option \`readonly\` in \`launch_gui()\`
+          - `#1555 <https://github.com/ansys/pymechanical/pull/1555>`_
+
+        * - Add test for save_as method in App
+          - `#1567 <https://github.com/ansys/pymechanical/pull/1567>`_
+
+        * - Add separate user guide for embedding and remote
+          - `#1568 <https://github.com/ansys/pymechanical/pull/1568>`_
+
+        * - Run link check only for scheduled
+          - `#1571 <https://github.com/ansys/pymechanical/pull/1571>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Docker doc
+          - `#1539 <https://github.com/ansys/pymechanical/pull/1539>`_
+
+        * - Logging bug
+          - `#1554 <https://github.com/ansys/pymechanical/pull/1554>`_
+
+        * - Update plot condition if no display
+          - `#1557 <https://github.com/ansys/pymechanical/pull/1557>`_
+
+        * - Update user/workspace setting.json for stubs
+          - `#1559 <https://github.com/ansys/pymechanical/pull/1559>`_
+
+        * - Repr and global import
+          - `#1560 <https://github.com/ansys/pymechanical/pull/1560>`_
+
+        * - Throw error if script fails
+          - `#1561 <https://github.com/ansys/pymechanical/pull/1561>`_
+
+        * - Update \`save\` if relative path provided
+          - `#1565 <https://github.com/ansys/pymechanical/pull/1565>`_
+
+        * - Quarto failure
+          - `#1578 <https://github.com/ansys/pymechanical/pull/1578>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update protobuf version
+          - `#1525 <https://github.com/ansys/pymechanical/pull/1525>`_
+
+        * - Update CHANGELOG for v0.12.3
+          - `#1538 <https://github.com/ansys/pymechanical/pull/1538>`_
+
+        * - Update usd-core requirement from <26,>=25.11 to >=25.11,<27
+          - `#1542 <https://github.com/ansys/pymechanical/pull/1542>`_
+
+        * - Bump actions/upload-artifact from 6.0.0 to 7.0.0
+          - `#1544 <https://github.com/ansys/pymechanical/pull/1544>`_
+
+        * - Pre-commit automatic update
+          - `#1545 <https://github.com/ansys/pymechanical/pull/1545>`_, `#1552 <https://github.com/ansys/pymechanical/pull/1552>`_, `#1558 <https://github.com/ansys/pymechanical/pull/1558>`_, `#1575 <https://github.com/ansys/pymechanical/pull/1575>`_
+
+        * - Bump mikepenz/action-junit-report from 6.2.0 to 6.3.1 in the actions group across 1 directory
+          - `#1546 <https://github.com/ansys/pymechanical/pull/1546>`_
+
+        * - Update docker doc
+          - `#1548 <https://github.com/ansys/pymechanical/pull/1548>`_
+
+        * - Bump docker/login-action from 3.7.0 to 4.0.0
+          - `#1551 <https://github.com/ansys/pymechanical/pull/1551>`_
+
+        * - Bump actions/download-artifact from 8.0.0 to 8.0.1 in the actions group
+          - `#1556 <https://github.com/ansys/pymechanical/pull/1556>`_
+
+        * - Bump ansys-mechanical-stubs from 0.1.9 to 0.1.10 in the core group
+          - `#1576 <https://github.com/ansys/pymechanical/pull/1576>`_
+
+        * - Update missing or outdated files
+          - `#1577 <https://github.com/ansys/pymechanical/pull/1577>`_
+
+
 `0.12.3 <https://github.com/ansys/pymechanical/releases/tag/v0.12.3>`_ - March 06, 2026
 =======================================================================================
 
