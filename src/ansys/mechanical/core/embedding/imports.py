@@ -63,6 +63,7 @@ def global_variables(app: App, enums: bool = False) -> dict:
     if is_initialized():
         from ansys.mechanical.core.embedding.global_importer import (
             Ansys,
+            GeometryImportPreference,
             MechanicalEnums,
             Point,
             Point2D,
@@ -76,6 +77,7 @@ def global_variables(app: App, enums: bool = False) -> dict:
         global_vars["Quantity"] = Quantity
         global_vars["System"] = System
         global_vars["Ansys"] = Ansys
+        global_vars["GeometryImportPreference"] = GeometryImportPreference
         global_vars["MechanicalEnums"] = MechanicalEnums
         # Graphics
         global_vars["Point"] = Point
