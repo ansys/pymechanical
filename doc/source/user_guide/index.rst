@@ -9,9 +9,9 @@ fundamentals and CLI tools.
 
 - **Embedding mode**: Use Mechanical directly in your Python process with the ``App`` class.
 - **Remote session mode**: Launch Mechanical as a server and communicate with gRPC.
-- **Scripting fundamentals**: Explore Mechanical API concepts, recording, and threading, which
+- **Scripting fundamentals (both modes)**: Explore Mechanical API concepts, recording, and threading, which
   are all topics applying to both modes.
-- **CLI tools**: Discover command-line utilities for launching, discovering, and configuring Mechanical.
+- **Command Line Interface (CLI)**: Discover command-line utilities for launching, discovering, and configuring Mechanical.
 
 If you are not sure which mode to use, see :ref:`ref_choose_your_mode`.
 
