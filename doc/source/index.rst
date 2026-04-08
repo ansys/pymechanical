@@ -79,7 +79,7 @@ If you are not sure which mode to pick, see :doc:`getting_started/choose_your_mo
 
         :bdg-info:`Install` :bdg-info:`Choose mode` :bdg-info:`Quick start`
 
-    .. grid-item-card:: User Guide :fa:`window-maximize`
+    .. grid-item-card:: User guide :fa:`window-maximize`
         :padding: 2 2 2 2
         :link: user_guide/index
         :link-type: doc
