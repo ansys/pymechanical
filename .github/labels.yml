@@ -101,3 +101,11 @@
 - name: remote-session
   description: Issues related to remote sessions in PyMechanical
   color: 00B3B3
+
+- name: skip-doc
+  description: Skips the documentation build job in CI
+  color: e4e669
+
+- name: skip-test
+  description: Skips the test job in CI
+  color: e4e669

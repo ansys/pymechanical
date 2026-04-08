@@ -77,3 +77,22 @@ from ansys.mechanical.core.pool import LocalMechanicalPool
 
 BUILDING_GALLERY = False
 """Whether or not to build gallery examples."""
+
+__all__ = [
+    "__version__",
+    "App",
+    "BUILDING_GALLERY",
+    "EXAMPLES_PATH",
+    "HAS_EMBEDDING",
+    "LOCAL_PORTS",
+    "LOG",
+    "LocalMechanicalPool",
+    "Mechanical",
+    "USER_DATA_PATH",
+    "change_default_mechanical_path",
+    "close_all_local_instances",
+    "connect_to_mechanical",
+    "get_mechanical_path",
+    "global_variables",
+    "launch_mechanical",
+]
