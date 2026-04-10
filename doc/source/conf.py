@@ -22,7 +22,8 @@ from sphinx_gallery.sorting import FileNameSortKey
 import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
 
-# necessary when building the sphinx gallery
+# Documentation gallery: enables Sphinx-Gallery and embedded ``App`` instance
+# reuse across gallery scripts. Per-constructor opt-out: ``App(..., reuse_instance=True)``.
 pymechanical.BUILDING_GALLERY = True
 
 # Ensure that offscreen rendering is used for docs generation
