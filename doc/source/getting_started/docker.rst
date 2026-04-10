@@ -116,7 +116,7 @@ Verify your connection with this code:
     >>> mechanical
     Ansys Mechanical [Ansys Mechanical Enterprise]
     Product Version:261
-    Software build date: 06/13/2025 15:54:58
+    Software build date: 02/03/2026 15:29:09
 
 Additional considerations
 -------------------------
@@ -141,6 +141,8 @@ Ansys Help.
 
 For PyMechanical embedding, you can directly enter the container using ``--entrypoint=/bin/bash``
 and then install Python packages as needed.
+
+.. _embedding-in-docker:
 
 .. code:: bash
 

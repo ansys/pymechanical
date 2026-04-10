@@ -89,3 +89,22 @@ To opt out of embedded instance sharing for a single ``App`` while leaving this
 flag unchanged (for example when ``BUILDING_GALLERY`` is set globally), pass
 ``reuse_instance=True`` to the constructor.
 """
+
+__all__ = [
+    "__version__",
+    "App",
+    "BUILDING_GALLERY",
+    "EXAMPLES_PATH",
+    "HAS_EMBEDDING",
+    "LOCAL_PORTS",
+    "LOG",
+    "LocalMechanicalPool",
+    "Mechanical",
+    "USER_DATA_PATH",
+    "change_default_mechanical_path",
+    "close_all_local_instances",
+    "connect_to_mechanical",
+    "get_mechanical_path",
+    "global_variables",
+    "launch_mechanical",
+]
