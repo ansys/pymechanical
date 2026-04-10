@@ -74,6 +74,10 @@
   description: Issues fixed in Ansys Mechanical version 271
   color: FFDD33
 
+- name: fixed-in-next-release
+  description: Issues fixed in the upcoming Ansys Mechanical release
+  color: FFEE66
+
 - name: 24R2
   description: Bug observed in PyMechanical with Mechanical version 24R2
   color: 804000
@@ -101,3 +105,11 @@
 - name: remote-session
   description: Issues related to remote sessions in PyMechanical
   color: 00B3B3
+
+- name: skip-doc
+  description: Skips the documentation build job in CI
+  color: e4e669
+
+- name: skip-test
+  description: Skips the test job in CI
+  color: e4e669
