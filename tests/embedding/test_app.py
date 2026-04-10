@@ -33,7 +33,7 @@ import time
 
 import pytest
 
-from ansys.mechanical.core.embedding.app import is_initialized
+from ansys.mechanical.core.embedding.app import _normalize_file_path, is_initialized
 from ansys.mechanical.core.embedding.cleanup_gui import cleanup_gui
 from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
 from ansys.mechanical.core.embedding.logger import Logger
@@ -91,6 +91,19 @@ def test_app_save_open(embedded_app, tmp_path: pytest.TempPathFactory):
     embedded_app.open(project_file_str)
     assert embedded_app.DataModel.Project.Name == "PROJECT 2"
     embedded_app.new()
+
+
+def test_normalize_file_path_returns_absolute_path(tmp_path):
+    """Test filename-only paths are normalized to absolute paths."""
+    original_cwd = Path.cwd()
+    try:
+        os.chdir(tmp_path)
+        normalized = _normalize_file_path("filename_only_test.mechdat")
+    finally:
+        os.chdir(original_cwd)
+
+    assert Path(normalized).is_absolute()
+    assert Path(normalized) == tmp_path / "filename_only_test.mechdat"
 
 
 @pytest.mark.embedding
@@ -446,6 +459,31 @@ def test_launch_gui(embedded_app, tmp_path: pytest.TempPathFactory, capfd):
 
 
 @pytest.mark.embedding
+def test_launch_gui_with_underscores_in_filename(
+    embedded_app, tmp_path: pytest.TempPathFactory, capfd
+):
+    """Test GUI launch works for mechdb filenames containing underscores."""
+    mechdb_path = tmp_path / "test_with_underscores.mechdb"
+    embedded_app.save(str(mechdb_path))
+    embedded_app.launch_gui(delete_tmp_on_close=False, dry_run=True)
+    embedded_app.close()
+    out, err = capfd.readouterr()
+    assert f"Opened a new mechanical session based on {mechdb_path}" in out
+
+
+@pytest.mark.embedding
+def test_launch_gui_readonly(embedded_app, tmp_path: pytest.TempPathFactory, capfd):
+    """Test the GUI can be launched in read-only mode for an embedded app."""
+    mechdb_path = tmp_path / "test_readonly.mechdb"
+    embedded_app.save(str(mechdb_path))
+    embedded_app.launch_gui(delete_tmp_on_close=False, dry_run=True, readonly=True)
+    embedded_app.close()
+    out, err = capfd.readouterr()
+    assert "--readonly" in out
+    assert f"Opened a new mechanical session based on {mechdb_path}" in out
+
+
+@pytest.mark.embedding
 def test_launch_gui_exception(embedded_app):
     """Test an exception is raised when the embedded_app has not been saved yet."""
     # Assert that an exception is raised
@@ -565,8 +603,8 @@ def test_app_execute_script_from_file(embedded_app, rootdir, printer):
     assert "name 'get_myname' is not defined" in str(exc_info.value)
 
     printer("Running run_python_success.py")
-    succes_script_path = Path(rootdir) / "tests" / "scripts" / "run_python_success.py"
-    result = embedded_app.execute_script_from_file(str(succes_script_path))
+    success_script_path = Path(rootdir) / "tests" / "scripts" / "run_python_success.py"
+    result = embedded_app.execute_script_from_file(str(success_script_path))
     assert result == "test"
 
 

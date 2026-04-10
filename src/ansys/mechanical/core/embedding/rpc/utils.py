@@ -62,9 +62,7 @@ class MethodType(IntEnum):
     PROP = 1
 
 
-def try_get_remote_method(
-    methodname: str, obj: typing.Any
-) -> typing.Optional[typing.Tuple[str, typing.Callable]]:
+def try_get_remote_method(methodname: str, obj: typing.Any) -> tuple[str, typing.Callable] | None:
     """Try to get a remote method."""
     method = getattr(obj, methodname)
     if not callable(method):
@@ -74,9 +72,9 @@ def try_get_remote_method(
     return None
 
 
-def try_get_remote_property(attrname: str, obj: typing.Any) -> typing.Tuple[str, property]:
+def try_get_remote_property(attrname: str, obj: typing.Any) -> tuple[str, property]:
     """Try to get a remote property."""
-    objclass: typing.Type = obj.__class__
+    objclass: type = obj.__class__
     class_attribute = getattr(objclass, attrname)
     getmethod = None
     setmethod = None
@@ -95,9 +93,7 @@ def try_get_remote_property(attrname: str, obj: typing.Any) -> typing.Tuple[str,
 
 def get_remote_methods(
     obj,
-) -> typing.Generator[
-    typing.Tuple[str, typing.Union[typing.Callable, property], "MethodType"], None, None
-]:
+) -> typing.Generator[tuple[str, typing.Callable | property, "MethodType"], None, None]:
     """Yield names and methods of an object's remote methods.
 
     A remote method is identified by the presence of an attribute `_is_remote` set to `True`.
@@ -129,7 +125,7 @@ def get_remote_methods(
             yield attrname, method, MethodType.METHOD
 
 
-def get_free_port(port: typing.Optional[int] = None) -> int:
+def get_free_port(port: int | None = None) -> int:
     """Get free port.
 
     If port is not given, it will find a free port starting from PYMECHANICAL_DEFAULT_RPC_PORT.

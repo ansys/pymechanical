@@ -42,9 +42,31 @@ from Ansys.ACT.Core.Math import Point2D, Point3D  # noqa isort: skip
 from Ansys.ACT.Math import Vector3D  # noqa isort: skip
 from Ansys.Core.Units import Quantity  # noqa isort: skip
 from Ansys.Mechanical.DataModel import MechanicalEnums  # noqa isort: skip
+from Ansys.Mechanical.DataModel.Enums import GeometryImportPreference  # noqa isort: skip
 from Ansys.Mechanical.Graphics import Point, SectionPlane  # noqa isort: skip
 
 from ansys.mechanical.core.embedding.transaction import Transaction  # noqa isort: skip
 
 import System  # noqa isort: skip
 import Ansys  # noqa isort: skip
+
+_APP_SPECIFIC = {
+    "ExtAPI": lambda app: app.ExtAPI,
+    "DataModel": lambda app: app.DataModel,
+    "Model": lambda app: app.DataModel.Project.Model,
+    "Tree": lambda app: app.DataModel.Tree,
+    "Graphics": lambda app: app.ExtAPI.Graphics,
+}
+
+
+def __getattr__(name: str):
+    """Support importing app-specific variables from this module."""
+    if name in _APP_SPECIFIC:
+        from ansys.mechanical.core.embedding.app import INSTANCES
+
+        if not INSTANCES:
+            raise RuntimeError(
+                f"'{name}' cannot be imported until the embedded app is initialized."
+            )
+        return _APP_SPECIFIC[name](INSTANCES[0])
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

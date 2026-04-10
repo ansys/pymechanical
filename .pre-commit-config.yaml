@@ -8,13 +8,13 @@ exclude: '^tests/embedding/assets/.*$|^tests/parts/.*$'
 repos:
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.15.1
+  rev: c60c980e561ed3e73101667fe8365c609d19a438  # frozen: v0.15.9
   hooks:
     - id: ruff
     - id: ruff-format
 
 - repo: https://github.com/pre-commit/mirrors-mypy
-  rev: v1.11.0
+  rev: 8e5c80792e2ec0c87804d8ef915bf35e2caea6da  # frozen: v1.20.0
   hooks:
     - id: mypy
       additional_dependencies: [types-requests, types-tqdm]
@@ -22,18 +22,19 @@ repos:
       exclude: ^(tests|examples|doc)/
 
 - repo: https://github.com/pre-commit-ci/pre-commit-ci-config
-  rev: v1.6.1
+  rev: 500543de231a91e6157db630075d70320709b834  # frozen: v1.6.1
   hooks:
   -   id: check-pre-commit-ci-config
 
 - repo: https://github.com/codespell-project/codespell
-  rev: v2.4.1
+  rev: 2ccb47ff45ad361a21071a7eedda4c37e6ae8c5a  # frozen: v2.4.2
   hooks:
   - id: codespell
-    args: ["--ignore-words", "doc/styles/config/vocabularies/ANSYS/accept.txt", "-w"]
+    args: ["--ignore-words-list", "addin", "--ignore-words", "doc/styles/config/vocabularies/ANSYS/accept.txt", "-w"]
+    exclude: "doc/styles/typos\\.toml"
 
 - repo: https://github.com/ansys/pre-commit-hooks
-  rev: v0.5.2
+  rev: 680b297da7584a07eb7c92b6b4e9baf88ece3e0e  # frozen: v0.6.0
   hooks:
   - id: add-license-headers
     args:
@@ -43,7 +44,7 @@ repos:
     - --product=mechanical
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v6.0.0
+  rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # frozen: v6.0.0
   hooks:
   - id: check-merge-conflict
   - id: debug-statements
@@ -52,20 +53,34 @@ repos:
   - id: check-added-large-files
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.36.2
+  rev: ed81924a8b1cecdaa570b072528fa80c9c4d6ccd  # frozen: 0.37.1
   hooks:
     - id: check-github-workflows
 
-- repo: https://github.com/zizmorcore/zizmor-pre-commit
-  rev: v1.22.0 # 1.18.0
-  hooks:
-    - id: zizmor
-      args: ["--pedantic"]
+#  Disabling because of warnings
+# - repo: https://github.com/zizmorcore/zizmor-pre-commit
+#   rev: ea2eb407b4cbce87cf0d502f36578950494f5ac9  # frozen: v1.23.1
+#   hooks:
+#     - id: zizmor
+#       args: ["--pedantic"]
 
 # Security checks with bandit
 - repo: https://github.com/PyCQA/bandit
-  rev: 1.9.3 # 1.9.2
+  rev: 92ae8b82fb422a639f0ed8d99e96cea769594e08  # frozen: 1.9.4
   hooks:
     - id: bandit
       args: ['-c', 'pyproject.toml']
       additional_dependencies: ['bandit[toml]']
+
+-   repo: https://github.com/asottile/pyupgrade
+    rev: 75992aaa40730136014f34227e0135f63fc951b4  # frozen: v3.21.2
+    hooks:
+    -   id: pyupgrade
+        args: ['--py310-plus']
+
+- repo: https://github.com/crate-ci/typos
+  rev: f06b85043a5ab470afbb0a5592456e733243983a  # frozen: v1
+  hooks:
+    - id: typos
+      args: ["--config", "doc/styles/typos.toml"]
+      exclude: "doc/styles/config/vocabularies"

@@ -27,7 +27,6 @@ import os
 from pathlib import Path
 import platform
 import sys
-import typing
 import warnings
 
 from ansys.mechanical.core.embedding.loader import load_clr
@@ -38,10 +37,10 @@ INITIALIZED_VERSION = None
 """The currently initialized Mechanical version, or None."""
 
 SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS = {
+    261: "2026R1",
     252: "2025R2",
     251: "2025R1",
     242: "2024R2",
-    241: "2024R1",
 }
 """Supported Mechanical embedding versions on Windows."""
 
@@ -158,7 +157,7 @@ def __windows_store_workaround(version: int) -> None:
     # Set the path to the tp directory within the AWP_ROOTXYZ directory
     awp_root_tp = awp_root / "tp"
     # Version-specific DLL path configurations for IntelMKL, HDF5, and Qt
-    _dll_path_configs = {
+    _dll_path_configs: dict[int, dict[str, str | None]] = {
         242: {"IntelMKL": "2023.1.0", "hdf5": "1.12.2", "qt": "5.15.16"},
         251: {"IntelMKL": "2023.1.0", "hdf5": "1.12.2", "qt": "5.15.17"},
         252: {"IntelMKL": "2024.2.3", "hdf5": None, "qt": "5.15.18"},
@@ -168,13 +167,21 @@ def __windows_store_workaround(version: int) -> None:
     if config is None:
         return
 
+    intel_mkl = config["IntelMKL"]
+    hdf5 = config["hdf5"]
+    qt = config["qt"]
+    if intel_mkl is None:
+        raise ValueError("IntelMKL version is not configured for this version.")
+    if qt is None:
+        raise ValueError("Qt version is not configured for this version.")
+
     paths.append(awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64")
-    paths.append(awp_root_tp / "IntelMKL" / config["IntelMKL"] / "winx64")
-    if config["hdf5"] is not None:
-        paths.append(awp_root_tp / "hdf5" / config["hdf5"] / "winx64")
+    paths.append(awp_root_tp / "IntelMKL" / intel_mkl / "winx64")
+    if hdf5 is not None:
+        paths.append(awp_root_tp / "hdf5" / hdf5 / "winx64")
     else:
         paths.append(awp_root_tp / "hdf5" / "winx64")
-    paths.append(awp_root_tp / "qt" / config["qt"] / "winx64" / "bin")
+    paths.append(awp_root_tp / "qt" / qt / "winx64" / "bin")
 
     # Add each path to the DLL search path
     for path in paths:
@@ -222,7 +229,7 @@ def __is_lib_loaded(libname: str):  # pragma: no cover
     return True
 
 
-def __check_loaded_libs(version: typing.Optional[int] = None):  # pragma: no cover
+def __check_loaded_libs(version: int | None = None):  # pragma: no cover
     """Ensure that incompatible libraries aren't loaded prior to PyMechanical load."""
     if platform.system() != "Linux":
         return
@@ -239,7 +246,7 @@ def __check_loaded_libs(version: typing.Optional[int] = None):  # pragma: no cov
         )
 
 
-def initialize(version: typing.Optional[int] = None):
+def initialize(version: int | None = None):
     """Initialize Mechanical embedding."""
     global INITIALIZED_VERSION
     if version is None:

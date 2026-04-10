@@ -44,17 +44,23 @@
 Overview
 --------
 
-PyMechanical is a Python interface for Ansys Mechanical, enabling automation and integration
-of complex simulation analysis workflows. It supports both remote sessions and embedded instances.
+PyMechanical is a Python interface for `Ansys Mechanical <https://www.ansys.com/products/structures/ansys-mechanical>`_
+(FEA software for structural engineering), enabling automation and integration
+of simulation workflows from **2024 R2** and later.
+
+PyMechanical provides two distinct modes of interaction:
+
+* **Embedding mode** — Run Mechanical directly in your Python process via the ``App`` class.
+  Full object-model access, fast startup, ideal for Jupyter notebooks and interactive scripting.
+* **Remote session mode** — Launch Mechanical as a separate server process and communicate via gRPC.
+  Process isolation, optional GUI, ideal for CI/CD, Docker, and automation.
 
 
 Compatibility
 ~~~~~~~~~~~~~
 
-**Supported versions:**
-
-* **Python**: 3.10 - 3.13
-* **Mechanical**: 2024 R1 (v241) to 2025 R2 (v252)
+* **Python**: 3.10 – 3.13
+* **Mechanical**: 2024 R2 (v242) and later
 * **Platforms**: Windows, Linux
 
 Installation
@@ -74,22 +80,32 @@ For RPC functionality::
 
 **Requirements:**
 
-* Licensed copy of `Ansys Mechanical <https://www.ansys.com/products/structures/ansys-mechanical>`_ (2024 R1+ on Windows/Linux).
-* For embedded instances: Local Mechanical installation required.
-* For remote sessions: Network access to a running Mechanical instance.
-* Python 3.10 - 3.13
+* Licensed copy of Ansys Mechanical (2024 R2 or later).
+* For embedded mode: Local Mechanical installation required.
+* For remote session mode: Network access to a running Mechanical instance.
 
 Quick start
 -----------
 
-**Remote session:**
+**Embedding mode:**
 
 .. code:: python
 
-   import ansys.mechanical.core as pymechanical
+   from ansys.mechanical.core import App
 
-   # Launch a new Mechanical instance
-   mechanical = pymechanical.launch_mechanical()
+   app = App(globals=globals())
+   print(app)
+
+   # Access Mechanical objects directly
+   Model.AddStaticStructuralAnalysis()
+
+**Remote session mode:**
+
+.. code:: python
+
+   from ansys.mechanical.core import launch_mechanical
+
+   mechanical = launch_mechanical()
    result = mechanical.run_python_script("2+3")
    print(result)  # Output: 5
    mechanical.exit()
@@ -98,47 +114,26 @@ Quick start
 
 .. code:: python
 
-   import ansys.mechanical.core as pymechanical
+   from ansys.mechanical.core import connect_to_mechanical
 
-   # Connect to a running instance on port 10000
-   mechanical = pymechanical.connect_to_mechanical(port=10000)
+   mechanical = connect_to_mechanical(port=10000)
    result = mechanical.run_python_script("Model.Name")
    print(result)
-
-**Embedded instance:**
-
-.. code:: python
-
-   import ansys.mechanical.core as pymechanical
-
-   # Create an embedded Mechanical app
-   app = pymechanical.App()
-   app.update_globals(globals())
-
-   # Access Mechanical objects directly
-   print(DataModel.Project.ProjectDirectory)
-
-   # Add analysis and solve
-   model = Model
-   static = model.AddStaticStructuralAnalysis()
-   static.Solution.Solve(True)
 
 
 Troubleshooting
 ---------------
 
-**Common issues:**
-
 * **Connection refused**: Ensure Mechanical is running and the port is accessible.
 * **License error**: Verify your Ansys license is properly configured.
 * **Import error**: Check that ``ansys-pythonnet`` is installed (not ``pythonnet``).
-* **Linux embedding**: Use `mechanical-env` to run python scripts for embedded mode.
+* **Linux embedding**: Use ``mechanical-env`` to run Python scripts for embedded mode.
 
 Documentation and support
 -------------------------
 
 * `Documentation <https://mechanical.docs.pyansys.com/>`_
 * `Cheat sheet <https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.pdf>`_
-* `Issues <https://github.com/ansys/pymechanical/issues>`_ - report bugs or request features
-* `Discussions <https://github.com/ansys/pymechanical/discussions>`_ - ask questions
+* `Issues <https://github.com/ansys/pymechanical/issues>`_ — report bugs or request features
+* `Discussions <https://github.com/ansys/pymechanical/discussions>`_ — ask questions
 * `Contributing guide <https://mechanical.docs.pyansys.com/version/stable/contributing.html>`_

@@ -113,6 +113,8 @@ Client connectivity by IP and transport mode
 
 See the table below for version-specific support and service pack requirements.
 
+.. _grpc_security_version_requirements:
+
 Version and service pack requirements
 -------------------------------------
 
@@ -124,10 +126,6 @@ Version and service pack requirements
      - Required SP for Secure
      - Windows (default: **wnua**)
      - Linux (default: **mtls**)
-   * - 2024 R1 (241)
-     - Not supported
-     - insecure only
-     - insecure only
    * - 2024 R2 (242)
      - **SP05+**
      - insecure, **wnua**, mtls

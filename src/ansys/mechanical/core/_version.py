@@ -37,9 +37,9 @@ import importlib.metadata
 __version__ = importlib.metadata.version("ansys-mechanical-core")
 
 SUPPORTED_MECHANICAL_VERSIONS = {
+    261: "2026R1",
     252: "2025R2",
     251: "2025R1",
     242: "2024R2",
-    241: "2024R1",
 }
 """Supported mechanical versions in descending order."""

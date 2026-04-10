@@ -170,7 +170,7 @@ model = app.Model
 
 # Add the geometry import group and set its preferences
 geometry_import = model.GeometryImportGroup.AddGeometryImport()
-geometry_import_format = Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.Format.Automatic
+geometry_import_format = GeometryImportPreference.Format.Automatic
 geometry_import_preferences = Ansys.ACT.Mechanical.Utilities.GeometryImportPreferences()
 geometry_import_preferences.ProcessNamedSelections = True
 
@@ -414,7 +414,7 @@ absorption_surface.AbsorptionCoefficient.Output.DiscreteValues = [Quantity("0.02
 harmonic_acoustics.Activate()
 # Set the camera to fit the mesh and export the image
 set_camera_and_display_image(
-    camera, graphics, settings_720p, output_path, "bounday_conditions.png", set_fit=True
+    camera, graphics, settings_720p, output_path, "boundary_conditions.png", set_fit=True
 )
 
 # %%
@@ -473,7 +473,7 @@ z_velocity_response.NormalOrientation = NormalOrientationType.ZAxis
 z_velocity_response.Location = pres_face
 
 # %%
-# Add the acoustic kinetic and potentional energy frequency responses
+# Add the acoustic kinetic and potential energy frequency responses
 
 # Add the acoustic kinetic energy frequency response and set its location
 # to the absorption face named selection
