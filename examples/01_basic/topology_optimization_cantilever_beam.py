@@ -198,7 +198,7 @@ topology_optimization.Solution.EvaluateAllResults()
 
 # Activate the topology density result after smoothing and display the image
 topology_density.Children[0].Activate()
-image_path = output_path / "topo_opitimized_smooth.png"
+image_path = output_path / "topo_optimized_smooth.png"
 camera.SetFit()
 app.helpers.export_image(topology_density.Children[0], image_path)
 app.helpers.display_image(image_path)
@@ -206,7 +206,7 @@ app.helpers.display_image(image_path)
 # %%
 # Export the animation
 
-topology_optimized_gif = output_path / "topology_opitimized.gif"
+topology_optimized_gif = output_path / "topology_optimized.gif"
 app.helpers.export_animation(topology_density, topology_optimized_gif)
 
 # %%

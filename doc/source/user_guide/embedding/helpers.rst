@@ -66,11 +66,11 @@ Import geometry with material properties and coordinate systems:
 
 **2D analysis**
 
-For 2D analyses, specify the analysis type using the ``GeometryImportPreference`` enum:
+For 2D analyses, specify the analysis type using the ``GeometryImportPreference`` enum.
+``GeometryImportPreference`` is automatically available as a global variable when
+``App(globals=globals())`` is used:
 
 .. code:: python
-
-   from ansys.mechanical.core.embedding.enum_importer import GeometryImportPreference
 
    geometry_import = app.helpers.import_geometry(
        "path/to/geometry.agdb",
