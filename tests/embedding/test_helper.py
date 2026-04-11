@@ -157,30 +157,24 @@ def test_export_image(embedded_app, assets, tmp_path, printer):
 
 
 @pytest.mark.embedding
-def test_export_image_all_formats(embedded_app, assets, tmp_path, printer):
+@pytest.mark.parametrize("image_format", ["PNG", "JPG", "BMP", "TIF", "EPS"])
+def test_export_image_all_formats(embedded_app, assets, tmp_path, printer, image_format):
     """Test image export with different formats."""
-    printer("Testing image export with all formats")
+    printer(f"Testing image export with format: {image_format}")
     geometry_file = str(Path(assets) / "Eng157.x_t")
     embedded_app.helpers.import_geometry(geometry_file)
 
     from ansys.mechanical.core.embedding.enum_importer import GraphicsImageExportFormat
 
-    format_map = {
-        "png": GraphicsImageExportFormat.PNG,
-        "jpg": GraphicsImageExportFormat.JPG,
-        "bmp": GraphicsImageExportFormat.BMP,
-        "tif": GraphicsImageExportFormat.TIF,
-        "eps": GraphicsImageExportFormat.EPS,
-    }
-    for name, fmt in format_map.items():
-        image_path = tmp_path / f"test_image.{name}"
-        embedded_app.helpers.export_image(
-            obj=embedded_app.Model.Geometry,
-            file_path=str(image_path),
-            image_format=fmt,
-        )
-        _is_readable(image_path)
-        printer(f"Exported {name} successfully")
+    fmt = getattr(GraphicsImageExportFormat, image_format)
+    image_path = tmp_path / f"test_image.{image_format.lower()}"
+    embedded_app.helpers.export_image(
+        obj=embedded_app.Model.Geometry,
+        file_path=str(image_path),
+        image_format=fmt,
+    )
+    _is_readable(image_path)
+    printer(f"Exported {image_format} successfully")
 
 
 @pytest.mark.embedding
@@ -199,41 +193,35 @@ def test_export_image_validation_errors(embedded_app, assets, tmp_path, printer)
 
 
 @pytest.mark.embedding
-def test_export_animation_basic(embedded_app, tmp_path, printer, graphics_test_mechdb_file):
-    """Test basic animation export with graphics fixture."""
-    printer("Testing basic animation export")
+@pytest.mark.parametrize("animation_format", ["GIF", "AVI", "MP4", "WMV"])
+def test_export_animation_basic(
+    embedded_app, tmp_path, printer, graphics_test_mechdb_file, animation_format
+):
+    """Test animation export with graphics fixture."""
+    printer(f"Testing animation export with format: {animation_format}")
 
-    # Open the mechdb file with solved results
+    from ansys.mechanical.core.embedding.enum_importer import (
+        DataModelObjectCategory,
+        GraphicsAnimationExportFormat,
+    )
+
+    # Open the mechdb file with pre-solved results
     embedded_app.open(str(graphics_test_mechdb_file))
-    embedded_app.Model.Analyses[0].Solution.ClearGeneratedData()
-    printer("Solving the model")
-    embedded_app.Model.Analyses[0].Solution.Solve()
-    printer("Model solved")
-    # Get the deformation result
-    result = embedded_app.Model.Analyses[0].Solution.Children[1]
-    printer(result.Name)
+    result = embedded_app.DataModel.GetObjectsByType(DataModelObjectCategory.DeformationResult)[0]
     assert result is not None
+    printer(f"Using result: {result.Name}")
 
-    # Test all animation formats
-    from ansys.mechanical.core.embedding.enum_importer import GraphicsAnimationExportFormat
-
-    format_map = {
-        "gif": GraphicsAnimationExportFormat.GIF,
-        "avi": GraphicsAnimationExportFormat.AVI,
-        "mp4": GraphicsAnimationExportFormat.MP4,
-        "wmv": GraphicsAnimationExportFormat.WMV,
-    }
-    for name, fmt in format_map.items():
-        animation_path = tmp_path / f"test_animation.{name}"
-        embedded_app.helpers.export_animation(
-            obj=result,
-            file_path=str(animation_path),
-            animation_format=fmt,
-            width=640,
-            height=480,
-        )
-        _is_readable(animation_path)
-        printer(f"Exported {name} successfully")
+    fmt = getattr(GraphicsAnimationExportFormat, animation_format)
+    animation_path = tmp_path / f"test_animation.{animation_format.lower()}"
+    embedded_app.helpers.export_animation(
+        obj=result,
+        file_path=str(animation_path),
+        animation_format=fmt,
+        width=640,
+        height=480,
+    )
+    _is_readable(animation_path)
+    printer(f"Exported {animation_format} successfully")
 
 
 @pytest.mark.embedding
