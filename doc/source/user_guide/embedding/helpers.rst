@@ -1,7 +1,7 @@
 .. _ref_embedding_user_guide_helpers:
 
-Helpers
-=======
+Helpers methods
+===============
 
 The `Helpers <../api/ansys/mechanical/core/embedding/helpers/Helpers.html#ansys.mechanical.core.embedding.helpers.Helpers>`_ class provides
 convenient utility methods for common Mechanical operations. These helpers simplify tasks such as
@@ -70,6 +70,8 @@ For 2D analyses, specify the analysis type using the ``GeometryImportPreference`
 
 .. code:: python
 
+   from ansys.mechanical.core.embedding.enum_importer import GeometryImportPreference
+
    geometry_import = app.helpers.import_geometry(
        "path/to/geometry.agdb",
        analysis_type=GeometryImportPreference.AnalysisType.Type2D
@@ -121,6 +123,12 @@ It provides extensive control over image resolution, format, and appearance.
 Control image dimensions, resolution, background, and format using Mechanical enums:
 
 .. code:: python
+
+   from ansys.mechanical.core.embedding.enum_importer import (
+       GraphicsBackgroundType,
+       GraphicsImageExportFormat,
+       GraphicsResolutionType,
+   )
 
    app.helpers.export_image(
        obj=app.Model.Geometry,
@@ -182,6 +190,8 @@ or mode shapes, such as transient analyses or modal analyses.
 
 .. code:: python
 
+   from ansys.mechanical.core.embedding.enum_importer import GraphicsAnimationExportFormat
+
    app.helpers.export_animation(
        obj=result,
        file_path="deformation.mp4",
@@ -199,7 +209,8 @@ or mode shapes, such as transient analyses or modal analyses.
 
 .. note::
    Animation export requires that the result has been solved and has multiple steps or modes
-   to animate. Attempting to export an animation of unsolved results raises a ``RuntimeError``.
+   to animate. If no ``obj`` is provided, the method falls back to the first active object in
+   the tree. Attempting to export an animation of unsolved results raises a ``RuntimeError``.
 
 
 Displaying images
@@ -250,6 +261,8 @@ Workflow examples
    app.helpers.import_materials("materials.xml")
 
    # Step 3: Export image
+   from ansys.mechanical.core.embedding.enum_importer import GraphicsResolutionType
+
    app.helpers.export_image(
        obj=app.Model.Geometry,
        file_path="bracket_iso.png",

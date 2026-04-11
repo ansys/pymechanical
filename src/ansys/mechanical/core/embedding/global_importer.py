@@ -42,6 +42,7 @@ from Ansys.ACT.Core.Math import Point2D, Point3D  # noqa isort: skip
 from Ansys.ACT.Math import Vector3D  # noqa isort: skip
 from Ansys.Core.Units import Quantity  # noqa isort: skip
 from Ansys.Mechanical.DataModel import MechanicalEnums  # noqa isort: skip
+from Ansys.Mechanical.DataModel.Enums import GeometryImportPreference  # noqa isort: skip
 from Ansys.Mechanical.Graphics import Point, SectionPlane  # noqa isort: skip
 
 from ansys.mechanical.core.embedding.transaction import Transaction  # noqa isort: skip
