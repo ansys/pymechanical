@@ -88,12 +88,13 @@ def _get_latest_default_version() -> int:
     """
     awp_roots = [value for key, value in os.environ.items() if key.startswith("AWP_ROOT")]
     if not awp_roots:
-        raise RuntimeError("No AWP_ROOT### env. variables found.\n"
-                        "Is Mechanical installed?\n"    
-                        "If so, please set manually the environment variable.\n"
-                        "Example: AWP_ROOT271=/path/to/ansys_inc/v271.\n"
-                        "Otherwise, please install Mechanical first.")
-        
+        raise RuntimeError(
+            "No AWP_ROOT### env. variables found.\n"
+            "Is Mechanical installed?\n"
+            "If so, please set manually the environment variable.\n"
+            "Example: AWP_ROOT271=/path/to/ansys_inc/v271.\n"
+            "Otherwise, please install Mechanical first."
+        )
 
     versions_found = []
     for path in awp_roots:
