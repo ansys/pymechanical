@@ -1,6 +1,6 @@
 fragments:
 - title: Helper functions for common workflows
-  version: 0.12.3
+  version: 0.12.6
   content: |
     New helper functions simplify common Mechanical workflows through the
     `Helpers` class.
@@ -27,9 +27,9 @@ fragments:
         helpers.import_materials("steel_aluminum.xml")
 
         # Configure and export visualization
-        helpers.export_image("result.png", width=1920, height=1080)
+        helpers.export_image(obj=app.Model.Geometry, file_path="geometry_image.png")
 
-    For complete details, see the `Helpers User Guide <https://mechanical.docs.pyansys.com/version/stable/user_guide/howto/helpers.html>`_.
+    For complete details, see the `Helpers User Guide <https://mechanical.docs.pyansys.com/version/stable/user_guide/embedding/helpers.html>`_.
 
 - title: gRPC Security with mTLS, WNUA, and Insecure Transport Modes
   version: 0.12.0
