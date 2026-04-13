@@ -458,7 +458,7 @@ jobs:
         run: |
           . /env/bin/activate
           uv pip install --upgrade pip
-          uv pip install -e .[tests]
+          uv pip install -e .[tests,graphics]
 
       - name: Unit Testing and coverage
         env:
