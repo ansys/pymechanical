@@ -76,4 +76,35 @@ LOCAL_PORTS: list[int] = []
 from ansys.mechanical.core.pool import LocalMechanicalPool
 
 BUILDING_GALLERY = False
-"""Whether or not to build gallery examples."""
+"""Control documentation gallery behavior and embedded-app instance sharing.
+
+When ``True``:
+
+- Sphinx enables the example gallery during documentation builds (see ``doc/source/conf.py``).
+- For the embedded :class:`~ansys.mechanical.core.embedding.app.App`, multiple
+  ``App()`` constructions reuse one underlying Mechanical instance so examples can
+  run without exhausting resources.
+
+To opt out of embedded instance sharing for a single ``App`` while leaving this
+flag unchanged (for example when ``BUILDING_GALLERY`` is set globally), pass
+``reuse_instance=True`` to the constructor.
+"""
+
+__all__ = [
+    "__version__",
+    "App",
+    "BUILDING_GALLERY",
+    "EXAMPLES_PATH",
+    "HAS_EMBEDDING",
+    "LOCAL_PORTS",
+    "LOG",
+    "LocalMechanicalPool",
+    "Mechanical",
+    "USER_DATA_PATH",
+    "change_default_mechanical_path",
+    "close_all_local_instances",
+    "connect_to_mechanical",
+    "get_mechanical_path",
+    "global_variables",
+    "launch_mechanical",
+]

@@ -193,6 +193,13 @@ class App:
     feature_flags : list, optional
         List of feature flag names to enable. Default is [].
         Available flags include: 'ThermalShells', 'MultistageHarmonic', 'CPython'.
+    reuse_instance : bool, optional
+        When ``True``, gallery instance sharing is skipped for this constructor,
+        so initialization follows the same path as when the module-level
+        ``BUILDING_GALLERY`` flag is ``False``. Use this to opt out of gallery
+        sharing without assigning ``pymechanical.BUILDING_GALLERY = False`` (for
+        example when the flag is set globally for documentation builds).
+        Default is ``False``.
 
     Examples
     --------
@@ -236,11 +243,15 @@ class App:
         self,
         db_file: str | None = None,
         private_appdata: bool = False,
+        *,
+        reuse_instance: bool = False,
         **kwargs: typing.Any,
     ) -> None:
         """Construct an instance of the mechanical Application."""
         global INSTANCES
         from ansys.mechanical.core import BUILDING_GALLERY
+
+        use_gallery_sharing = BUILDING_GALLERY and not reuse_instance
 
         self._enable_logging = kwargs.get("enable_logging", True)
         if self._enable_logging:
@@ -270,7 +281,7 @@ class App:
 
         # If the building gallery flag is set, we need to share the instance
         # This can apply to running the `make -C doc html` command
-        if BUILDING_GALLERY:
+        if use_gallery_sharing:
             if len(INSTANCES) != 0:
                 # Get the first instance of the app
                 instance: App = INSTANCES[0]
@@ -668,7 +679,8 @@ class App:
         """Shares the state of self with other.
 
         Other is another instance of App.
-        This is used when the BUILDING_GALLERY flag is on.
+        This is used when the BUILDING_GALLERY flag is on and the constructor
+        was not called with ``reuse_instance=True``.
         In that mode, multiple instance of App are used, but
         they all point to the same underlying application
         object. Because of that, special care needs to be
