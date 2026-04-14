@@ -8,13 +8,13 @@ exclude: '^tests/embedding/assets/.*$|^tests/parts/.*$'
 repos:
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: c60c980e561ed3e73101667fe8365c609d19a438  # frozen: v0.15.9
+  rev: b831c3dc5d27d9da294ae4e915773b99aa24a7c5  # frozen: v0.15.10
   hooks:
     - id: ruff
     - id: ruff-format
 
 - repo: https://github.com/pre-commit/mirrors-mypy
-  rev: 8e5c80792e2ec0c87804d8ef915bf35e2caea6da  # frozen: v1.20.0
+  rev: 0f369d245750787ce34997d464ed9605391a5283  # frozen: v1.20.1
   hooks:
     - id: mypy
       additional_dependencies: [types-requests, types-tqdm]
@@ -79,7 +79,7 @@ repos:
         args: ['--py310-plus']
 
 - repo: https://github.com/crate-ci/typos
-  rev: f06b85043a5ab470afbb0a5592456e733243983a  # frozen: v1
+  rev: 141bf8d1d11823cd5dc44d6b3c17d83b19015bcb  # frozen: v1
   hooks:
     - id: typos
       args: ["--config", "doc/styles/typos.toml"]
