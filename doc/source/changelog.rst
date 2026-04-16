@@ -9,6 +9,99 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.12.6 <https://github.com/ansys/pymechanical/releases/tag/v0.12.6>`_ - April 13, 2026
+=======================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add helper methods
+          - `#1507 <https://github.com/ansys/pymechanical/pull/1507>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Version and link in whatsnew
+          - `#1593 <https://github.com/ansys/pymechanical/pull/1593>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.12.5
+          - `#1590 <https://github.com/ansys/pymechanical/pull/1590>`_
+
+
+`0.12.5 <https://github.com/ansys/pymechanical/releases/tag/v0.12.5>`_ - April 10, 2026
+=======================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add reuse flag to override gallery flag
+          - `#1564 <https://github.com/ansys/pymechanical/pull/1564>`_
+
+        * - Add pytest header
+          - `#1581 <https://github.com/ansys/pymechanical/pull/1581>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add geometry import preference to globals
+          - `#1573 <https://github.com/ansys/pymechanical/pull/1573>`_
+
+        * - Add \`__all__\` definitions
+          - `#1579 <https://github.com/ansys/pymechanical/pull/1579>`_
+
+        * - Update button in landing page
+          - `#1587 <https://github.com/ansys/pymechanical/pull/1587>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.12.4
+          - `#1580 <https://github.com/ansys/pymechanical/pull/1580>`_
+
+        * - Bump the actions group with 3 updates
+          - `#1583 <https://github.com/ansys/pymechanical/pull/1583>`_
+
+        * - Bump dependabot/fetch-metadata from 2.5.0 to 3.0.0
+          - `#1584 <https://github.com/ansys/pymechanical/pull/1584>`_
+
+        * - Bump codecov/codecov-action from 5.5.2 to 6.0.0
+          - `#1585 <https://github.com/ansys/pymechanical/pull/1585>`_
+
+        * - Pre-commit automatic update
+          - `#1586 <https://github.com/ansys/pymechanical/pull/1586>`_
+
+
 `0.12.4 <https://github.com/ansys/pymechanical/releases/tag/v0.12.4>`_ - April 06, 2026
 =======================================================================================
 

@@ -200,7 +200,7 @@ jobs:
       packages: read         # Required to pull Docker images from GitHub Container Registry
     steps:
       - name: Login in Github Container registry
-        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -283,7 +283,7 @@ jobs:
       checks: write          # Needed to publish test results and status checks
     steps:
       - name: Login in Github Container registry
-        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -458,7 +458,7 @@ jobs:
         run: |
           . /env/bin/activate
           uv pip install --upgrade pip
-          uv pip install -e .[tests]
+          uv pip install -e .[tests,graphics]
 
       - name: Unit Testing and coverage
         env:
