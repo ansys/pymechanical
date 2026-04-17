@@ -1,8 +1,8 @@
+# Manual cleanup of untagged GHCR package versions. The same step runs on schedule
+# from `.github/workflows/nightly.yml` after the nightly Mechanical test jobs.
 name: Package cleanup
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '00 22 * * *'
 
 concurrency:
   group: ${{ github.workflow }}
