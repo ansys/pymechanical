@@ -68,6 +68,10 @@ WORKDIR /install/
 
 COPY . .
 
+RUN useradd -m -u 1000 mechanical \
+    && chown -R mechanical:mechanical /install
+USER mechanical
+
 # License server
 # (Optional)
 # ENV LICENSE_SERVER=111.222.333.444

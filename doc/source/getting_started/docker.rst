@@ -121,6 +121,33 @@ Verify your connection with this code:
 Additional considerations
 -------------------------
 
+.. _docker_container_user:
+
+Container user
+~~~~~~~~~~~~~~~
+
+The Mechanical Docker image runs as a non-root user named ``mechanical`` (UID ``1000``)
+by default. That matches common container security guidance: the main process does not
+run as ``root``.
+
+Implications:
+
+- **Interactive shell:** ``docker run -it --entrypoint=/bin/bash ...`` starts ``bash`` as
+  ``mechanical``, not as ``root``.
+- **System packages (``apt``):** Installing packages with ``apt-get`` requires root. Use a
+  root shell for that session, for example:
+
+  .. code:: bash
+
+      docker run -it --user root --entrypoint=/bin/bash mechanical:26.1
+      # apt-get update && apt-get install -y <package>
+
+  If a container is already running, you can run ``docker exec -it -u root <container> bash``.
+
+- **User-level tools:** Installations under your home directory (for example ``pip install --user``,
+  a Python virtual environment, or the `uv <https://github.com/astral-sh/uv>`_ installer targeting
+  ``$HOME``) typically work as ``mechanical`` without ``root``.
+
 You can provide additional command line parameters to Mechanical by appending them
 to the Docker command. For example, this code shows how you pass feature flags:
 
@@ -139,8 +166,10 @@ For additional command line arguments, see the `Scripting in Mechanical Guide`_ 
 Ansys Help.
 
 
-For PyMechanical embedding, you can directly enter the container using ``--entrypoint=/bin/bash``
-and then install Python packages as needed.
+For PyMechanical embedding, you can enter the container with ``--entrypoint=/bin/bash`` and
+install Python packages (for example into a virtual environment or user site) as the default
+``mechanical`` user. If you need ``apt-get`` to add system packages, start the container with
+``--user root`` or use ``docker exec -u root`` as described in :ref:`docker_container_user`.
 
 .. _embedding-in-docker:
 
@@ -148,7 +177,7 @@ and then install Python packages as needed.
 
     docker run -it -e ANSYSLMD_LICENSE_FILE=$LICENSE_SERVER --entrypoint=/bin/bash mechanical:26.1
 
-    # Once inside the container, you can install Python and packages as needed, then create an embedded app.
+    # Inside the container: install Python tooling (venv, pip, uv, etc.), then create an embedded app.
 
 
 .. note::
