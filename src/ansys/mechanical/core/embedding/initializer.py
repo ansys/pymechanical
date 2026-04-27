@@ -116,7 +116,7 @@ def _get_latest_default_version() -> int:
 
 
 def __check_python_interpreter_architecture() -> None:
-    """Embedding support only 64 bit architecture."""
+    """Embedding supports only 64-bit architecture."""
     if platform.architecture()[0] != "64bit":
         raise RuntimeError("Mechanical Embedding requires a 64-bit Python environment.")
 
