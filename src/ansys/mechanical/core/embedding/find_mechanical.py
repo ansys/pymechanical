@@ -105,7 +105,8 @@ def cli(version: int, path: str | None = None) -> tuple[int, str]:
         print(
             "No AWP_ROOT### env. variables found. "
             "Falling back to default locations: "
-            "/usr/ansys_inc, /ansys_inc, /install/ansys_inc."
+            "/usr/ansys_inc, /ansys_inc, /install/ansys_inc.",
+            file=sys.stderr,
         )
 
     _exe = atp.get_mechanical_path(allow_input=False, version=version)
