@@ -104,15 +104,16 @@ def cli(version: int, path: str | None = None) -> tuple[int, str]:
     else:
         print("No AWP_ROOT### env. variables found. Falling back to default locations.")
 
-    # Use ansys-tools-path
     _exe = atp.get_mechanical_path(allow_input=False, version=version)
     if _exe:
         _version = atp.version_from_path("mechanical", _exe)
     else:
         raise click.ClickException(
-            "Mechanical installation not found in default locations."
-            "You can point to the Ansys installation path with: mechanical-env -p /path/to/ansys_inc/v251 python"
-            "You can also use: save-ansys-path --name mechanical /path/to/.workbench"
+            "Mechanical installation not found in default locations. "
+            "Specify the Ansys installation path with: "
+            "mechanical-env -p /path/to/ansys_inc/v251 python. "
+            "Alternatively, use: save-ansys-path --name mechanical "
+            "/path/to/.workbench"
         )
 
     _path = str(Path(_exe).parent)
