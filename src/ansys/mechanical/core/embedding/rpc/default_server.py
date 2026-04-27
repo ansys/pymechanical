@@ -118,7 +118,7 @@ class DefaultServiceMethods:
             list_files = files
         else:
             raise ValueError(
-                f"The `file` parameter type ({type(files)}) is not supported."
+                f"The `files` parameter type ({type(files)}) is not supported. "
                 "Only strings, tuple of strings, or list of strings are allowed."
             )
 
