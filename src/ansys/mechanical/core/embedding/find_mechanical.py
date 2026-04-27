@@ -102,7 +102,7 @@ def cli(version: int, path: str | None = None) -> tuple[int, str]:
             print(latest_version, str(Path(os.environ[f"AWP_ROOT{latest_version}"]) / "aisol"))
             sys.exit(0)
     else:
-        print("No AWP_ROOT### env. variables found. Falling back to default locations.")        
+        print("No AWP_ROOT### env. variables found. Falling back to default locations.")
 
     # Use ansys-tools-path
     _exe = atp.get_mechanical_path(allow_input=False, version=version)
