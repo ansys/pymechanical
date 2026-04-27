@@ -174,8 +174,8 @@ class MechanicalService(rpyc.Service):
             exposed_set_name = f"exposed_propset_{propname}"
 
             def exposed_propset(arg):
-                """Convert to exposed getter."""
-                f = self._curry_property(prop.fset, propname, True)
+                """Convert to exposed setter."""
+                f = self._curry_property(prop.fset, propname, False)
                 result = f(arg)
                 return result
 
@@ -186,7 +186,7 @@ class MechanicalService(rpyc.Service):
         self._install_method_with_name(method, methodname, methodname)
 
     def _install_method_with_name(self, method, methodname, innername):
-        """Install methods of impl with inner and exposed pairs."""
+        """Install a method with inner and exposed pairs."""
         exposed_name = f"exposed_{methodname}"
 
         def exposed_method(*args, **kwargs):
