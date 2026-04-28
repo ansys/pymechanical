@@ -50,3 +50,10 @@ Run a Python script using a specific version:
 .. code-block:: bash
 
    mechanical-env -r 261 python my_script.py
+
+Debugging with Visual Studio Code
+---------------------------------
+
+To debug embedded PyMechanical scripts in VS Code on Linux, export the environment that
+``mechanical-env`` would set and attach the debugger to it. See
+:ref:`debug-embedding-vscode-linux` in :doc:`/getting_started/running_mechanical`.
