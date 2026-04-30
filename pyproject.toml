@@ -8,7 +8,8 @@ version = "0.12.6"
 description = "A python wrapper for Ansys Mechanical"
 readme = "README.rst"
 requires-python = ">=3.10,<4.0"
-license = { file = "LICENSE" }
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [{ name = "ANSYS, Inc.", email = "pyansys.core@ansys.com" }]
 maintainers = [{ name = "ANSYS, Inc.", email = "pyansys.core@ansys.com" }]
 keywords = ["pymechanical", "mechanical", "ansys", "pyansys"]
@@ -21,8 +22,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+    "Operating System :: OS Independent"
 ]
 
 dependencies = [
@@ -37,7 +37,7 @@ dependencies = [
     "protobuf>=5",
     "psutil>=6",
     "tqdm>=4.45.0",
-    "requests>=2,<3",
+    "requests>=2,<3"
 ]
 
 [project.urls]
@@ -52,7 +52,7 @@ tests = [
     "pytest>=9.0.2,<10",
     "pytest-cov>=7.0.0,<8",
     "pytest-print>=1.2.0,<2",
-    "psutil>=7.2.2,<8",
+    "psutil>=7.2.2,<8"
 ]
 
 doc = [
@@ -73,28 +73,28 @@ doc = [
     "sphinx-notfound-page>=1.1.0,<2",
     "sphinxcontrib-websupport>=2.0.0,<3",
     "sphinx-click>=6.2.0,<7",
-    "ansys-tools-visualization-interface>=0.2.6",
+    "ansys-tools-visualization-interface>=0.2.6"
 ]
 
 graphics = [
     "ansys-tools-visualization-interface>=0.2.6",
-    "usd-core>=25.11,<27",
+    "usd-core>=25.11,<27"
 ]
 
 rpc = [
     "rpyc>=6.0.2,<7",
-    "toolz>=1.1.0,<2",
+    "toolz>=1.1.0,<2"
 ]
 
 pim = [
-    "ansys-platform-instancemanagement>=1.0.1",
+    "ansys-platform-instancemanagement>=1.0.1"
 ]
 
 dev = [
     "pre-commit>=3.0.0",
     "ruff>=0.14.14",
     "mypy>=1.19.1,<2",
-    "uv>=0.9.28",
+    "uv>=0.9.28"
 ]
 
 [project.scripts]
@@ -186,7 +186,7 @@ addopts = """-ra -s --durations=0 --cov=ansys.mechanical --cov-report html:.cov/
  --cov-report xml:.cov/xml --cov-report term --cov-append -vv --print --print-relative-time"""
 
 testpaths = [
-    "tests",
+    "tests"
 ]
 markers = [
     "embedding: tests that embed Mechanical in the python process",
@@ -200,7 +200,7 @@ markers = [
     "linux_only: tests that run if the testing platform is on Linux",
     "cli: tests for the Command Line Interface",
     "embedding_backgroundapp: tests for the BackgroundApp",
-    "embedding_logging: tests for the logging with Embedded App",
+    "embedding_logging: tests for the logging with Embedded App"
 ]
 xfail_strict = true
 
