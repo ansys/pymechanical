@@ -109,3 +109,7 @@
 - name: skip-doc
   description: Skips the documentation build job in CI
   color: e4e669
+
+- name: skip-test
+  description: Skips the test job in CI
+  color: e4e669
