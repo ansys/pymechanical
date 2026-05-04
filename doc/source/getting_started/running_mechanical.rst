@@ -20,8 +20,12 @@ Remote session mode
 In remote session mode, Mechanical runs as a separate server process and
 uses gRPC to communicate with Python.
 
+.. vale Google.Headings = NO
+
 Launch from Python
 ~~~~~~~~~~~~~~~~~~
+
+.. vale Google.Headings = YES
 
 Use the
 `launch_mechanical() <../api/ansys/mechanical/core/mechanical/index.html#mechanical.launch_mechanical>`_

@@ -34,7 +34,7 @@ For more information, see Python's
 Install the latest package from `PyPi
 <https://pypi.org/project/ansys-mechanical-core/>`_ with this command:
 
-.. code::
+.. code-block:: console
 
    pip install ansys-mechanical-core
 

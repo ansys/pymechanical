@@ -22,13 +22,13 @@ Mechanical executable file.
 
 **On Linux**
 
-.. code::
+.. code-block:: console
 
     Enter location of Mechanical executable: /usr/ansys_inc/v261/aisol/.workbench
 
 **On Windows**
 
-.. code::
+.. code-block:: console
 
     Enter location of Mechanical executable: C:/Program Files/ANSYS Inc/v261/aisol/bin/winx64/AnsysWBU.exe
 

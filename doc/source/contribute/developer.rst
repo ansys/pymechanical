@@ -223,7 +223,7 @@ variables.
 
 **On Linux**
 
-.. code::
+.. code-block:: console
 
     export PYMECHANICAL_START_INSTANCE=False
     export PYMECHANICAL_PORT=<MECHANICAL Port> (default 10000)
@@ -231,7 +231,7 @@ variables.
 
 **On Windows**
 
-.. code::
+.. code-block:: doscon
 
     SET PYMECHANICAL_START_INSTANCE=False
     SET PYMECHANICAL_PORT=<MECHANICAL Port> (default 10000)

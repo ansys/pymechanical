@@ -43,7 +43,7 @@ that the program needs, it can shuttle data to and from that memory extremely qu
 When there are multiple programs or threads running on a CPU, things can get tricker.
 Consider a (contrived) example with a simple program that increments an integer:
 
-.. code::
+.. code-block:: c
 
     i++
 

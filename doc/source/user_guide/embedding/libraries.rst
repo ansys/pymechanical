@@ -12,7 +12,7 @@ of Python modules that are distributed with the installation of Mechanical that 
 from within the Mechanical Scripting Pane. These modules are not available for use from an
 embedded instance of Mechanical in Python because Python does not know where to find them.
 
-But, in order to use these modules, you need to use the experimental function
+But, to use these modules, you need to use the experimental function
 ``add_mechanical_python_libraries`` to help Python locate them and make it possible to import
 them. In addition, it is necessary to first initialize the embedded instance of Mechanical
 because these libraries may expect the .NET Common Language Runtime to be initialized as well

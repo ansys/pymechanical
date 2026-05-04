@@ -104,7 +104,7 @@ versions can be specified using ``-r`` flag. Use ``-h`` for more information.
 
    **On Windows**
 
-   .. code::
+   .. code-block:: console
 
       "C:/Program Files/ANSYS Inc/v261/aisol/bin/winx64/AnsysWBU.exe -DSApplet -AppModeMech -script file.py"
 
@@ -113,7 +113,7 @@ versions can be specified using ``-r`` flag. Use ``-h`` for more information.
 
    **On Linux**
 
-   .. code::
+   .. code-block:: console
 
       /usr/ansys_inc/v261/aisol/.workbench -DSApplet -AppModeMech -script file.py
 
