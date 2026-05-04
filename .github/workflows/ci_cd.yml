@@ -271,6 +271,7 @@ jobs:
 
   remote-connect:
     name: Remote connect testing and coverage - Mechanical ${{ matrix.mechanical-version }}
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-tests') }}
     runs-on: public-ubuntu-latest-16-cores
     needs: [style, revn-variations, config-matrix]
     continue-on-error: ${{ matrix.experimental }}
@@ -424,6 +425,7 @@ jobs:
 
   embedding-tests:
     name: Embedding testing and coverage
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-tests') }}
     runs-on: public-ubuntu-latest-16-cores
     timeout-minutes: 30
     needs: [revn-variations, test-container-info, container-stability-check, smoke-tests]
@@ -507,6 +509,7 @@ jobs:
 
   embedding-scripts-tests:
     name: Embedding scripts testing and coverage
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-tests') }}
     runs-on: public-ubuntu-latest-16-cores
     timeout-minutes: 30
     needs: [smoke-tests, revn-variations, test-container-info]
@@ -586,6 +589,7 @@ jobs:
 
   launch-tests:
     name: Launch testing and coverage
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-tests') }}
     runs-on: public-ubuntu-latest-16-cores
     timeout-minutes: 30
     container:
@@ -795,6 +799,30 @@ jobs:
             exit 1
           fi
 
+  test-check:
+    name: Tests check
+    runs-on: ubuntu-latest
+    needs: [remote-connect, embedding-tests, embedding-scripts-tests, launch-tests]
+    if: always()
+    permissions:
+      contents: read
+    steps:
+      - name: Check test results
+        env:
+          REMOTE_CONNECT_RESULT: ${{ needs.remote-connect.result }}
+          EMBEDDING_TESTS_RESULT: ${{ needs.embedding-tests.result }}
+          EMBEDDING_SCRIPTS_RESULT: ${{ needs.embedding-scripts-tests.result }}
+          LAUNCH_TESTS_RESULT: ${{ needs.launch-tests.result }}
+        run: |
+          results=("${REMOTE_CONNECT_RESULT}" "${EMBEDDING_TESTS_RESULT}" "${EMBEDDING_SCRIPTS_RESULT}" "${LAUNCH_TESTS_RESULT}")
+          for result in "${results[@]}"; do
+            if [[ "${result}" != "success" && "${result}" != "skipped" ]]; then
+              echo "One or more test jobs failed: ${result}"
+              exit 1
+            fi
+          done
+          echo "All test jobs passed or skipped — OK"
+
   doc-deploy-pr:
     name: "Deploy PR documentation"
     runs-on: ubuntu-latest
@@ -815,6 +843,7 @@ jobs:
   coverage:
     name: Merging coverage
     needs: [remote-connect, embedding-tests, embedding-scripts-tests, launch-tests]
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-tests') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -913,9 +942,28 @@ jobs:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: '.coverage-combined/xml'
 
+  coverage-check:
+    name: Coverage check
+    runs-on: ubuntu-latest
+    needs: [coverage]
+    if: always()
+    permissions:
+      contents: read
+    steps:
+      - name: Check coverage result
+        env:
+          COVERAGE_RESULT: ${{ needs.coverage.result }}
+        run: |
+          if [[ "${COVERAGE_RESULT}" == "success" || "${COVERAGE_RESULT}" == "skipped" ]]; then
+            echo "coverage passed or skipped — OK"
+          else
+            echo "coverage failed"
+            exit 1
+          fi
+
   package:
     name: Package library
-    needs: [smoke-tests, remote-connect, embedding-tests, embedding-scripts-tests, doc-build-check]
+    needs: [smoke-tests, test-check, doc-build-check]
     runs-on: ubuntu-latest
     permissions:
       attestations: write    # Required to generate package attestations for security
