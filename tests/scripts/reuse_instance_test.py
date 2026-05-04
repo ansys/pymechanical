@@ -20,16 +20,24 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Imports for the embedding sub-package."""
+"""Exercise App(reuse_instance=...) when BUILDING_GALLERY is True."""
 
-from .addins import AddinConfiguration
-from .app import App
-from .app_libraries import add_mechanical_python_libraries
-from .imports import global_variables
+import sys
 
-__all__ = [
-    "AddinConfiguration",
-    "App",
-    "add_mechanical_python_libraries",
-    "global_variables",
-]
+import ansys.mechanical.core as pymechanical
+
+
+if __name__ == "__main__":
+    version = int(sys.argv[1])
+    pymechanical.BUILDING_GALLERY = True
+
+    _ = pymechanical.App(version=version)
+    try:
+        pymechanical.App(version=version, reuse_instance=True)
+    except RuntimeError as exc:
+        if "Cannot have more than one embedded mechanical instance" in str(exc):
+            print("reuse_instance bypassed gallery sharing as expected")
+        else:
+            raise
+    else:
+        raise AssertionError("Expected RuntimeError for second App with reuse_instance=True")

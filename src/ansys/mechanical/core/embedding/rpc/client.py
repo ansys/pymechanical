@@ -48,7 +48,7 @@ class Client:
             in which case ``20000`` is used.
         timeout : float, optional
             Maximum allowable time for connecting to the Mechanical server.
-            The default is ``60.0``.
+            The default is ``120.0``.
         process: subprocess.Popen, optional
             The process object that was connected to
 
@@ -80,7 +80,7 @@ class Client:
         if hasattr(self.root, propget_name):
             exposed_fget = getattr(self.root, propget_name)
             return exposed_fget()
-        return self.__dict__.items[attr]
+        return self.__dict__[attr]
 
     # TODO : Implement setattr
     # def __setattr__(self, attr, value):

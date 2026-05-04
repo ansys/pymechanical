@@ -200,7 +200,9 @@ class ScenegraphNodeVisitor:
         plottable.transform = xform2
         return plottable
 
-    def _visit_point_cloud_node(self, node: Ansys.Mechanical.Scenegraph.PointCloudNod) -> Plottable:
+    def _visit_point_cloud_node(
+        self, node: Ansys.Mechanical.Scenegraph.PointCloudNode
+    ) -> Plottable:
         point_coords = np.array(node.Coordinates, dtype=np.double)
         point_indices = np.array(node.Indices, dtype=np.int32)
         points = np.zeros(shape=(len(point_indices), 3))
