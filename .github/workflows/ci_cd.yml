@@ -708,6 +708,7 @@ jobs:
           apt update
           apt install make lsb-release xvfb poppler-utils -y
           apt install zip pandoc libgl1-mesa-glx mesa-utils npm -y
+          apt install -y texlive-latex-extra texlive-fonts-extra
 
       - name: Install gh cli
         run: |
