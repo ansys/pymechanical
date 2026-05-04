@@ -63,7 +63,7 @@ connect without encryption. This is not recommended for production environments.
 override the entrypoint and pass
 ``--transport-mode insecure`` explicitly:
 
-.. code-block:: console
+.. code::
 
     LICENSE_SERVER=1055@XXX.XXX.XXX.XXX
     VERSION=261
@@ -124,7 +124,7 @@ Additional considerations
 You can provide additional command line parameters to Mechanical by appending them
 to the Docker command. For example, this code shows how you pass feature flags:
 
-.. code-block:: console
+.. code::
 
     docker run -d \
       -e ANSYSLMD_LICENSE_FILE=$LICENSE_SERVER \
