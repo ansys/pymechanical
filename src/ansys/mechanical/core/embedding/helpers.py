@@ -121,7 +121,7 @@ class Helpers:
         try:
             geometry_import.Import(file_path, geometry_import_format, geometry_import_preferences)
             self._app.log_info(
-                f"Imported geometry from {file_path} successfully."
+                f"Imported geometry from {file_path} successfully. "
                 f"Object State: {geometry_import.ObjectState}"
             )
             return geometry_import
@@ -147,7 +147,7 @@ class Helpers:
         try:
             materials.Import(file_path)
             self._app.log_info(
-                f"Imported materials from {file_path} successfully."
+                f"Imported materials from {file_path} successfully. "
                 f"Object State: {materials.ObjectState}"
             )
         except Exception as e:

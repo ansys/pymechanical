@@ -9,6 +9,54 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.12.7 <https://github.com/ansys/pymechanical/releases/tag/v0.12.7>`_ - April 30, 2026
+=======================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Docstrings
+          - `#1602 <https://github.com/ansys/pymechanical/pull/1602>`_
+
+
+  .. tab-item:: Documentation
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Fix user guide
+          - `#1606 <https://github.com/ansys/pymechanical/pull/1606>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.12.6
+          - `#1594 <https://github.com/ansys/pymechanical/pull/1594>`_
+
+        * - Pre-commit automatic update
+          - `#1595 <https://github.com/ansys/pymechanical/pull/1595>`_, `#1599 <https://github.com/ansys/pymechanical/pull/1599>`_, `#1603 <https://github.com/ansys/pymechanical/pull/1603>`_
+
+        * - Bump docker/login-action from 4.0.0 to 4.1.0 in the actions group
+          - `#1596 <https://github.com/ansys/pymechanical/pull/1596>`_
+
+        * - Update license metadata in pyproject.toml
+          - `#1598 <https://github.com/ansys/pymechanical/pull/1598>`_
+
+        * - Bump the actions group with 2 updates
+          - `#1600 <https://github.com/ansys/pymechanical/pull/1600>`_, `#1604 <https://github.com/ansys/pymechanical/pull/1604>`_
+
+
 `0.12.6 <https://github.com/ansys/pymechanical/releases/tag/v0.12.6>`_ - April 13, 2026
 =======================================================================================
 
