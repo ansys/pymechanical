@@ -1,6 +1,6 @@
 ---
 name: doc
-description: 'Write, review, or edit PyMechanical documentation. Use when: writing RST files, Python docstrings, Sphinx configuration, example scripts, README files, or any doc content for PyMechanical library. Covers NumPy docstrings, RST formatting, Google developer style guide rules, Sphinx extensions, Vale linting, and content structure.'
+description: 'Write, review, or edit PyMechanical documentation. Use when writing reStructuredText (RST) files, Python docstrings, Sphinx configurations, example scripts, README files, or any doc content for the PyMechanical library. This covers NumPy docstrings, RST file formatting, Google developer style guide rules, Sphinx extensions, Vale linting, and content structure.'
 ---
 `
 # PyMechanical Documentation Standards
