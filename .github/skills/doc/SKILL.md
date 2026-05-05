@@ -19,7 +19,7 @@ All prose in RST files, docstrings, and README files must follow the
 - **Sentence case** for all headings and titles (capitalize first word and proper nouns only)
 - **Active voice** and **present tense** wherever possible
 - **Second person** — use "you"/"your"; avoid "we"
-- **Short sentences** — one idea per sentence
+- **Short sentences** — one idea per sentence. Avoid semicolons. Break into two sentences instead.
 - **American English** spelling and punctuation
 - Omit "please" from instructions
 - Replace "In order to" with "To"
