@@ -99,7 +99,8 @@ Use `.. code-block:: console` for shell commands, `.. code-block:: python` for P
 - Use Sphinx `:ref:` labels for internal cross-references: `` :ref:`my_label` ``
 - Use `:func:`, `:class:`, `:meth:`, `:attr:` for API cross-references
 - Use `.. _label_name:` above headings to define reference targets
-- External URLs: `` `Link text <https://url>`_ ``
+- Use the `` `Link text <https://url>`_`` format for external URLs. The link text should match exact name of the article or section that the link takes you to, including capitalization. If the referenced content is within a larger document, append that for clarity. For example: For more information on creating NumPy arrays, see
+`Array creation <https://numpy.org/doc/stable/user/basics.creation.html>`_ in the NumPy documentation.
 
 ### Images
 
