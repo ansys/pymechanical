@@ -82,13 +82,19 @@ def __check_for_supported_version(version: int) -> int:
 def _get_latest_default_version() -> int:
     """Try to get the latest Mechanical version from the environment.
 
-    Checks if multiple versions of Mechanical found in system.
-    For Linux it will be only one since ``mechanical-env`` takes care of that.
-    If multiple versions are detected, select the latest one, as no specific version is provided.
+    Check if multiple versions of Mechanical are found in the system.
+    For Linux, only one is expected since ``mechanical-env`` takes care of that.
+    If multiple versions are detected, the latest one is selected.
     """
     awp_roots = [value for key, value in os.environ.items() if key.startswith("AWP_ROOT")]
     if not awp_roots:
-        raise RuntimeError("No Mechanical installations found.")
+        raise RuntimeError(
+            "No AWP_ROOT### environment variables found.\n"
+            "Ensure Mechanical is installed.\n"
+            "To set the environment variable manually, use:\n"
+            "  AWP_ROOT<version>=/path/to/ansys_inc/v<version>\n"
+            "  Example: AWP_ROOT261=/path/to/ansys_inc/v261"
+        )
 
     versions_found = []
     for path in awp_roots:
@@ -110,7 +116,7 @@ def _get_latest_default_version() -> int:
 
 
 def __check_python_interpreter_architecture() -> None:
-    """Embedding support only 64 bit architecture."""
+    """Embedding supports only 64-bit architecture."""
     if platform.architecture()[0] != "64bit":
         raise RuntimeError("Mechanical Embedding requires a 64-bit Python environment.")
 

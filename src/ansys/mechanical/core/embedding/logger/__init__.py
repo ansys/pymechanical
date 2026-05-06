@@ -104,7 +104,7 @@ class Configuration:
         Parameters
         ----------
         level : int, optional
-            Level of logging that is defined in the ``logging`` package. The default is 'DEBUG'.
+            Level of logging that is defined in the ``logging`` package. The default is 'WARNING'.
             Options are ``"DEBUG"``, ``"INFO"``, ``"WARNING"``, and ``"ERROR"``.
         directory : str, optional
             Directory to write log file to. The default is ``None``, but by default the log
