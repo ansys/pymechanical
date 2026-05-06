@@ -91,7 +91,7 @@ Use `.. code-block:: console` for shell commands, `.. code-block:: python` for P
 
 .. important::
 
-   Use for critical information that the user must not miss.
+   Use for critical information that must not be missed.
 ```
 
 ### Cross-References and Links
