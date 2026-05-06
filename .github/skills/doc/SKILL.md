@@ -64,7 +64,7 @@ Sub-sub-subsection
 | Need | RST syntax | Notes |
 |------|-----------|-------|
 | Code entities | `` ``double backticks`` `` | Functions, classes, variables — **never** single backtick (renders italic) |
-| Bold | `**text**` | Use sparingly |
+| Bold | `**text**` | Use for UI elements; otherwise, use sparingly |
 | Italic | `*text*` | Use for introducing terms |
 
 ### Code Blocks
