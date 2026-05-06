@@ -13,7 +13,7 @@ If PyMechanical cannot find your installation, set the path manually:
 
 **On Windows**
 
-.. code:: python
+.. code-block:: python
 
     from ansys.mechanical.core import launch_mechanical
 
@@ -22,7 +22,7 @@ If PyMechanical cannot find your installation, set the path manually:
 
 **On Linux**
 
-.. code:: python
+.. code-block:: python
 
     from ansys.mechanical.core import launch_mechanical
 
@@ -36,7 +36,7 @@ debug output to the Python console.
 Debug from the command line
 ----------------------------
 
-.. code:: console
+.. code-block:: console
 
     ansys-mechanical -g --port 10000
 
@@ -51,17 +51,16 @@ If this command doesn't launch Mechanical, common causes include:
 Debug with Visual Studio Code on Linux
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-On Linux, the Python debugger must see the same environment that ``mechanical-env`` sets when
-On Linux, the Python debugger must see the same environment that the ``mechanical-env`` variable sets when
-you run ``mechanical-env python``. You can capture that environment once, store it in a file, and
-point Visual Studio Code at it.
+On Linux, the Python debugger must see the same environment that the ``mechanical-env`` scripts
+set when you run ``mechanical-env python``. You can capture that environment once, store it in a
+file, and point Visual Studio Code at it.
 
-#. Install the `Python extension`_ for Visual Studio Code (provides the Debuggy debugger).
+#. Install the `Python extension`_ for Visual Studio Code (provides the Python Debugger).
 
 #. From your project root, write the prepared environment to ``.vscode/.env``. Use the same
    ``-r`` or ``-p`` options you use for normal runs:
 
-   .. code:: shell
+   .. code-block:: console
 
       $ mechanical-env -r 261 env > .vscode/.env
 
@@ -88,7 +87,7 @@ point Visual Studio Code at it.
 .. note::
 
    Regenerate ``.vscode/.env`` if you change the Ansys version, installation path, or ``mechanical-env``
-   options. Consider adding ``.env`` to ``.gitignore`` if the file should not be shared.
+   options. Add ``.env`` to ``.gitignore`` to avoid committing local environment settings to version control.
 
 .. _`Python extension`: https://marketplace.visualstudio.com/items?itemName=ms-python.python
 
@@ -96,8 +95,8 @@ point Visual Studio Code at it.
 Licensing issues
 -----------------
 
-`PADT <https://www.padtinc.com/>`_ has an `Ansys <https://www.padtinc.com/simulation/ansys-simulation-products/>`_
-product section. Posts about licensing are common.
+`PADT <https://www.padtinc.com/>`_ maintains an `Ansys <https://www.padtinc.com/simulation/ansys-simulation-products/>`_
+product section that includes posts about licensing.
 
 If you are responsible for maintaining an Ansys license or have a personal installation
 of Ansys, you likely can access the

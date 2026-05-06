@@ -55,5 +55,5 @@ Debugging with Visual Studio Code
 ---------------------------------
 
 To debug embedded PyMechanical scripts in Visual Studio Code on Linux, export the environment that
-``mechanical-env`` would set and attach the debugger to it. See
+the ``mechanical-env`` script would set and attach the debugger to it. See
 :ref:`debug-embedding-vscode-linux` in :doc:`/getting_started/running_mechanical`.
