@@ -125,17 +125,48 @@ def pytest_collection_modifyitems(config, items):
         reason="""embedding not selected for pytest run
         (`pytest -m embedding` or `pytest -m embedding_scripts`).  Skip by default"""
     )
-    [
-        item.add_marker(skip_embedding)
-        for item in items
-        if ("embedding" or "embedding_scripts") in item.keywords
-    ]
+    for item in items:
+        if "embedding" in item.keywords or "embedding_scripts" in item.keywords:
+            item.add_marker(skip_embedding)
 
-    # TODO : skip python_env tests unless the mark is specified. (The below doesn't work!)
-    # skip_python_env = pytest.mark.skip(
-    #     reason="python_env not selected for pytest run (`pytest -m python_env`).  Skip by default"
-    # )
-    # [item.add_marker(skip_python_env) for item in items if "python_env" in item.keywords]
+        # Skip tests that are less than the minimum version
+        if "minimum_version" in item.keywords:
+            revn = [mark.args[0] for mark in item.iter_markers(name="minimum_version")]
+            if int(config.getoption("--ansys-version")) < revn[0]:
+                skip_versions = pytest.mark.skip(
+                    reason=f"Requires ansys-version greater than or equal to {revn[0]}."
+                )
+                item.add_marker(skip_versions)
+
+        # Skip tests that are outside of the provided version range. For example,
+        # @pytest.mark.version_range(241,251)
+        if "version_range" in item.keywords:
+            revns = [mark.args for mark in item.iter_markers(name="version_range")][0]
+            ansys_version = int(config.getoption("--ansys-version"))
+
+            if (ansys_version < revns[0]) or (ansys_version > revns[1]):
+                skip_versions = pytest.mark.skip(
+                    reason=f"Requires ansys-version in the range {revns[0]} to {revns[1]}."
+                )
+                item.add_marker(skip_versions)
+
+        # Skip on platforms other than Windows
+        if "windows_only" in item.keywords and sys.platform != "win32":
+            skip_except_windows = pytest.mark.skip(reason="Test requires Windows platform.")
+            item.add_marker(skip_except_windows)
+
+        # Skip on platforms other than Linux
+        if "linux_only" in item.keywords and "lin" not in sys.platform:
+            skip_except_linux = pytest.mark.skip(reason="Test requires Linux platform.")
+            item.add_marker(skip_except_linux)
+
+        # Skip python_env tests unless the mark is specified
+        if "python_env" in item.keywords:
+            skip_python_env = pytest.mark.skip(
+                reason="python_env not selected for pytest run"
+                " (`pytest -m python_env`). Skip by default"
+            )
+            item.add_marker(skip_python_env)
 
 
 @pytest.fixture()
@@ -552,38 +583,3 @@ def pytest_addoption(parser):
         help="Specify RPC protocol",
         choices=["grpc", "rpyc"],
     )
-
-
-def pytest_collection_modifyitems(config, items):
-    """Skips tests marked minimum_version if ansys-version is less than mark argument."""
-    for item in items:
-        # Skip tests that are less than the minimum version
-        if "minimum_version" in item.keywords:
-            revn = [mark.args[0] for mark in item.iter_markers(name="minimum_version")]
-            if int(config.getoption("--ansys-version")) < revn[0]:
-                skip_versions = pytest.mark.skip(
-                    reason=f"Requires ansys-version greater than or equal to {revn[0]}."
-                )
-                item.add_marker(skip_versions)
-
-        # Skip tests that are outside of the provided version range. For example,
-        # @pytest.mark.version_range(241,251)
-        if "version_range" in item.keywords:
-            revns = [mark.args for mark in item.iter_markers(name="version_range")][0]
-            ansys_version = int(config.getoption("--ansys-version"))
-
-            if (ansys_version < revns[0]) or (ansys_version > revns[1]):
-                skip_versions = pytest.mark.skip(
-                    reason=f"Requires ansys-version in the range {revns[0]} to {revns[1]}."
-                )
-                item.add_marker(skip_versions)
-
-        # Skip on platforms other than Windows
-        if "windows_only" in item.keywords and sys.platform != "win32":
-            skip_except_windows = pytest.mark.skip(reason="Test requires Windows platform.")
-            item.add_marker(skip_except_windows)
-
-        # Skip on platforms other than Linux
-        if "linux_only" in item.keywords and "lin" not in sys.platform:
-            skip_except_linux = pytest.mark.skip(reason="Test requires Linux platform.")
-            item.add_marker(skip_except_linux)
