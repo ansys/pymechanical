@@ -1,0 +1,34 @@
+name: Smoke Tests
+
+on:
+  workflow_call:
+    inputs:
+      package-name:
+        type: string
+        required: true
+
+permissions: {}
+
+jobs:
+  smoke-tests:
+    name: Build and Smoke tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.10', '3.11', '3.12', '3.13']
+        should-release:
+          - ${{ github.event_name == 'push' && contains(github.ref, 'refs/tags') }}
+        exclude:
+          - should-release: false
+            os: macos-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Build wheelhouse and perform smoke test
+        uses: ansys/actions/build-wheelhouse@7d55ff0b9f67c77dae50a286d711ee1ae27b0a25 # v10.2.12
+        with:
+          library-name: ${{ inputs.package-name }}
+          operating-system: ${{ matrix.os }}
+          python-version: ${{ matrix.python-version }}

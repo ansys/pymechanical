@@ -1,0 +1,430 @@
+name: Tests
+
+on:
+  workflow_call:
+    inputs:
+      main-python-version:
+        type: string
+        required: true
+      docker-package:
+        type: string
+        required: true
+      test-container:
+        type: string
+        required: true
+      test-revn:
+        type: string
+        required: true
+      test-docker-image-version:
+        type: string
+        required: true
+      container-stable-exit:
+        type: string
+        required: true
+      matrix-json:
+        type: string
+        required: true
+
+env:
+  PYMECHANICAL_PORT: '10000'
+  PYMECHANICAL_START_INSTANCE: 'false'
+  DOCKER_MECH_CONTAINER_NAME: mechanical
+
+permissions: {}
+
+jobs:
+  remote-connect:
+    name: Remote connect testing and coverage - Mechanical ${{ matrix.mechanical-version }}
+    runs-on: public-ubuntu-latest-16-cores
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(inputs.matrix-json) }}
+    permissions:
+      contents: read
+      packages: read
+      checks: write
+    steps:
+      - name: Login in Github Container registry
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull, launch, and validate Mechanical service
+        env:
+          MECHANICAL_IMAGE: ${{ inputs.docker-package }}:${{ matrix.mechanical-version }}
+          MECHANICAL_VERSION: ${{ matrix.mechanical-version }}
+          ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH: 0
+          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
+        run: |
+          docker pull ${MECHANICAL_IMAGE}
+
+          # Extract version without dots for path (e.g., 27.1.0 -> 271, 27.1_candidate -> 271)
+          VERSION_PATH=$(echo ${MECHANICAL_VERSION} | grep -oP '^\d+\.\d+' | tr -d '.')
+
+          # Check if image name contains version 26.1 or 27.1 to determine entrypoint
+          if [[ ${MECHANICAL_IMAGE} == *"26.1"* ]] || [[ ${MECHANICAL_IMAGE} == *"27.1"* ]]; then
+            echo "Detected version requiring custom entrypoint - using insecure transport"
+            docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} \
+              -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} \
+              -e ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH=${ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH} \
+              -p ${PYMECHANICAL_PORT}:10000 \
+              --entrypoint="" \
+              --security-opt seccomp=unconfined \
+              ${MECHANICAL_IMAGE} \
+              tini -- xvfb-run /install/ansys_inc/v${VERSION_PATH}/aisol/.workbench \
+              -dsapplet -b -grpc 10000 --grpc-host 0.0.0.0 --transport-mode insecure
+          else
+            echo "Using default entrypoint for version ${MECHANICAL_VERSION}"
+            docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} \
+              -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} \
+              -e ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH=${ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH} \
+              -p ${PYMECHANICAL_PORT}:10000 \
+              ${MECHANICAL_IMAGE}
+          fi
+
+          # Wait for Mechanical to initialize with intelligent polling
+          max_wait=300  # Maximum wait time in seconds
+          check_interval=10  # Check every 10 seconds
+          elapsed=0
+
+          echo "Waiting for Mechanical to initialize..."
+          while [ $elapsed -lt $max_wait ]; do
+            docker logs ${DOCKER_MECH_CONTAINER_NAME} > log.txt
+            if grep -q 'WB Initialize Done' log.txt 2>/dev/null; then
+              echo "Mechanical initialized successfully after ${elapsed} seconds"
+              break
+            fi
+            echo "Waiting for initialization... (${elapsed}/${max_wait}s)"
+            sleep $check_interval
+            elapsed=$((elapsed + check_interval))
+          done
+
+          # Final check
+          docker logs ${DOCKER_MECH_CONTAINER_NAME} > log.txt
+          if ! grep -q 'WB Initialize Done' log.txt 2>/dev/null; then
+            echo "ERROR: Mechanical failed to initialize within ${max_wait} seconds"
+            echo "=== Last 50 lines of log.txt ==="
+            tail -n 50 log.txt || echo "No log file found"
+            exit 1
+          fi
+
+      - name: Display info
+        if: github.event_name == 'schedule'
+        id: capture_info
+        env:
+          DOCKER_PACKAGE: ${{ inputs.docker-package }}
+          MECH_VERSION: ${{ matrix.mechanical-version }}
+          TEST_REVN: ${{ inputs.test-revn }}
+        run: |
+          IMAGE_NAME=${DOCKER_PACKAGE}:${MECH_VERSION}
+          BUILD_DATE=$(docker run --rm --entrypoint head $IMAGE_NAME -n 1 /install/ansys_inc/v${TEST_REVN}/aisol/CommonFiles/builddate.txt)
+          PUSHED_AT=$(docker inspect --format='{{.Created}}' $IMAGE_NAME)
+          echo "docker_info=$IMAGE_NAME was pushed at: $PUSHED_AT" >> $GITHUB_OUTPUT
+          echo "::group::Docker Info"
+          echo "docker_info=$PUSHED_AT" >> $GITHUB_OUTPUT
+          echo "build_info=$BUILD_DATE" >> $GITHUB_OUTPUT
+          echo "$IMAGE_NAME pushed at $PUSHED_AT"
+          echo "Build date : $BUILD_DATE"
+          echo "::endgroup::"
+
+      - name: Testing
+        uses: ansys/actions/tests-pytest@7d55ff0b9f67c77dae50a286d711ee1ae27b0a25 # v10.2.12
+        with:
+          python-version: ${{ inputs.main-python-version }}
+          pytest-markers: '-m remote_session_connect'
+          pytest-extra-args: '-s --junitxml remote_results${{ inputs.main-python-version }}.xml'
+
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@bccf2e31636835cf0874589931c4116687171386 # v6.4.0
+        if: always()
+        with:
+          report_paths: '**/remote_results*.xml'
+          check_name: Remote Connect Test Report ${{ matrix.mechanical-version }}
+          detailed_summary: true
+          include_passed: true
+          fail_on_failure: true
+
+      - name: Upload coverage results
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: matrix.mechanical-version == inputs.test-docker-image-version
+        with:
+          include-hidden-files: true
+          name: coverage-tests
+          path: .cov
+          retention-days: 7
+
+      - name: Upload coverage results (as .coverage)
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: matrix.mechanical-version == inputs.test-docker-image-version
+        with:
+          include-hidden-files: true
+          name: coverage-file-tests
+          path: .coverage
+          retention-days: 7
+
+      - name: Get Mechanical container logs
+        if: always()
+        env:
+          MECH_VERSION: ${{ matrix.mechanical-version }}
+        run: |
+          docker logs ${DOCKER_MECH_CONTAINER_NAME} > mechanical_tests_log-${MECH_VERSION}.txt 2>&1
+          echo CONTAINER LOGS OUTPUT
+          cat mechanical_tests_log-${MECH_VERSION}.txt
+          echo CPU info
+          lscpu
+
+      - name: Upload container logs
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: mechanical_tests_log-${{ matrix.mechanical-version }}
+          path: mechanical_tests_log-${{ matrix.mechanical-version }}.txt
+          retention-days: 7
+
+  embedding-tests:
+    name: Embedding testing and coverage
+    runs-on: public-ubuntu-latest-16-cores
+    timeout-minutes: 30
+    container:
+      image: ${{ inputs.test-container }} # zizmor: ignore[unpinned-images]
+      options: --entrypoint /bin/bash
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.11', '3.12', '3.13']
+    permissions:
+      contents: read
+      packages: read
+      checks: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        shell: bash
+        env:
+          MAIN_PYTHON_VERSION: ${{ inputs.main-python-version }}
+        run: |
+          apt update
+          apt install lsb-release xvfb git curl make -y
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          export PATH="$HOME/.local/bin:$PATH"
+          uv python install python${MAIN_PYTHON_VERSION}
+          uv venv /env
+      - name: "Install packages for testing"
+        run: |
+          . /env/bin/activate
+          uv pip install --upgrade pip
+          uv pip install -e .[tests,graphics]
+
+      - name: Unit Testing and coverage
+        env:
+          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
+          ANSYS_WORKBENCH_LOGGING: 0
+          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
+          CONTAINER_STABLE_EXIT: ${{ inputs.container-stable-exit }}
+          MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
+          NUM_CORES: 1
+          PYTHONUNBUFFERED: 1
+        run: |
+          . /env/bin/activate
+          if [ "${CONTAINER_STABLE_EXIT}" = "true" ]; then
+            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${MATRIX_PYTHON_VERSION}.xml
+          else
+            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${MATRIX_PYTHON_VERSION}.xml || true
+          fi
+
+      - name: Upload coverage results
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: inputs.main-python-version == matrix.python-version
+        with:
+          include-hidden-files: true
+          name: coverage-tests-embedding
+          path: .cov
+          retention-days: 7
+
+      - name: Upload coverage results (as .coverage)
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: inputs.main-python-version == matrix.python-version
+        with:
+          include-hidden-files: true
+          name: coverage-file-tests-embedding
+          path: .coverage
+          retention-days: 7
+
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@bccf2e31636835cf0874589931c4116687171386 # v6.4.0
+        if: always()
+        with:
+          report_paths: '**/test_results*.xml'
+          check_name: Test Report ${{ matrix.python-version }}
+          detailed_summary: true
+          include_passed: true
+          fail_on_failure: true
+
+  embedding-scripts-tests:
+    name: Embedding scripts testing and coverage
+    runs-on: public-ubuntu-latest-16-cores
+    timeout-minutes: 30
+    container:
+      image: ${{ inputs.test-container }} # zizmor: ignore[unpinned-images]
+      options: --entrypoint /bin/bash
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.11', '3.12', '3.13']
+    permissions:
+      contents: read
+      packages: read
+      checks: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        shell: bash
+        env:
+          MAIN_PYTHON_VERSION: ${{ inputs.main-python-version }}
+        run: |
+          apt update
+          apt install lsb-release xvfb git curl make -y
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          export PATH="$HOME/.local/bin:$PATH"
+          uv python install python${MAIN_PYTHON_VERSION}
+          uv venv /env
+      - name: "Install packages for testing"
+        run: |
+          . /env/bin/activate
+          uv pip install --upgrade pip
+          uv pip install -e .[tests]
+
+      - name: Embedding scripts unit testing and coverage
+        env:
+          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
+          ANSYS_WORKBENCH_LOGGING: 0
+          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
+          MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
+          MAIN_PYTHON_VERSION: ${{ inputs.main-python-version }}
+          NUM_CORES: 1
+          PYTHONUNBUFFERED: 1
+        run: |
+          . /env/bin/activate
+          mechanical-env pytest -m embedding_scripts -s --junitxml test_results_embedding_scripts${MAIN_PYTHON_VERSION}.xml
+          pytest -m cli -s --junitxml test_results_cli_scripts${MAIN_PYTHON_VERSION}.xml
+
+      - name: Upload coverage results
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: inputs.main-python-version == matrix.python-version
+        with:
+          include-hidden-files: true
+          name: coverage-tests-embedding-scripts
+          path: .cov
+          retention-days: 7
+
+      - name: Upload coverage results (as .coverage)
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: inputs.main-python-version == matrix.python-version
+        with:
+          include-hidden-files: true
+          name: coverage-file-tests-embedding-scripts
+          path: .coverage
+          retention-days: 7
+
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@bccf2e31636835cf0874589931c4116687171386 # v6.4.0
+        if: always()
+        with:
+          report_paths: '**/test_results*.xml'
+          check_name: Test Report ${{ matrix.python-version }}
+          detailed_summary: true
+          include_passed: true
+          fail_on_failure: true
+
+  launch-tests:
+    name: Launch testing and coverage
+    runs-on: public-ubuntu-latest-16-cores
+    timeout-minutes: 30
+    container:
+      image: ${{ inputs.test-container }} # zizmor: ignore[unpinned-images]
+      options: --entrypoint /bin/bash
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.11', '3.12', '3.13']
+    permissions:
+      contents: read
+      packages: read
+      checks: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        shell: bash
+        env:
+          MAIN_PYTHON_VERSION: ${{ inputs.main-python-version }}
+        run: |
+          apt update
+          apt install lsb-release xvfb git curl make -y
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          export PATH="$HOME/.local/bin:$PATH"
+          uv python install python${MAIN_PYTHON_VERSION}
+          uv venv /env
+      - name: "Install packages for testing"
+        run: |
+          . /env/bin/activate
+          uv pip install --upgrade pip
+          uv pip install -e .[tests]
+
+      - name: Set environment variable
+        env:
+          TEST_REVN: ${{ inputs.test-revn }}
+        run: echo "ANSYSCL${TEST_REVN}_DIR=/install/ansys_inc/v${TEST_REVN}/licensingclient" >> $GITHUB_ENV
+
+      - name: Unit Testing and coverage
+        env:
+          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
+          CONTAINER_STABLE_EXIT: ${{ inputs.container-stable-exit }}
+          MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
+        run: |
+          unset PYMECHANICAL_PORT
+          unset PYMECHANICAL_START_INSTANCE
+          . /env/bin/activate
+          if [ "${CONTAINER_STABLE_EXIT}" = "true" ]; then
+            pytest -m remote_session_launch -s --junitxml launch_test_results${MATRIX_PYTHON_VERSION}.xml
+          else
+            pytest -m remote_session_launch -s --junitxml launch_test_results${MATRIX_PYTHON_VERSION}.xml || true
+          fi
+
+      - name: Publish Launch Test Report
+        uses: mikepenz/action-junit-report@bccf2e31636835cf0874589931c4116687171386 # v6.4.0
+        if: always()
+        with:
+          report_paths: '**/launch_test_results*.xml'
+          check_name: Launch Test Report ${{ matrix.python-version }}
+          detailed_summary: true
+          include_passed: true
+          fail_on_failure: true
+
+      - name: Upload coverage results
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: inputs.main-python-version == matrix.python-version
+        with:
+          include-hidden-files: true
+          name: coverage-tests-remote-session-launch
+          path: .cov
+          retention-days: 7
+
+      - name: Upload coverage results (as .coverage)
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: inputs.main-python-version == matrix.python-version
+        with:
+          include-hidden-files: true
+          name: coverage-file-tests-remote-session-launch
+          path: .coverage
+          retention-days: 7

@@ -1,0 +1,72 @@
+name: Style & Security Checks
+
+on:
+  workflow_call:
+    inputs:
+      main-python-version:
+        type: string
+        required: true
+      package-name:
+        type: string
+        required: true
+
+permissions: {}
+
+jobs:
+  style:
+    name: Code style
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: PyAnsys code style checks
+        uses: ansys/actions/code-style@7d55ff0b9f67c77dae50a286d711ee1ae27b0a25 # v10.2.12
+        with:
+          python-version: ${{ inputs.main-python-version }}
+
+  doc-style:
+    name: Documentation Style Check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: PyAnsys documentation style checks
+        uses: ansys/actions/doc-style@7d55ff0b9f67c77dae50a286d711ee1ae27b0a25 # v10.2.12
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  check-vulnerabilities:
+    name: Check Vulnerabilities
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: PyAnsys Vulnerability check (on main)
+        if: github.ref == 'refs/heads/main'
+        uses: ansys/actions/check-vulnerabilities@7d55ff0b9f67c77dae50a286d711ee1ae27b0a25 # v10.2.12
+        with:
+          python-version: ${{ inputs.main-python-version }}
+          python-package-name: ${{ inputs.package-name }}
+          token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+
+      - name: PyAnsys Vulnerability check (on dev mode)
+        if: github.ref != 'refs/heads/main'
+        uses: ansys/actions/check-vulnerabilities@7d55ff0b9f67c77dae50a286d711ee1ae27b0a25 # v10.2.12
+        with:
+          python-version: ${{ inputs.main-python-version }}
+          python-package-name: ${{ inputs.package-name }}
+          token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+          dev-mode: true
+
+  check-actions-security:
+    name: "Check Actions Security"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: ansys/actions/check-actions-security@7d55ff0b9f67c77dae50a286d711ee1ae27b0a25 # v10.2.12
+        with:
+          generate-summary: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          auditing-level: 'high'
+          trust-ansys-actions: true
