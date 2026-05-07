@@ -117,17 +117,17 @@ def pytest_collection_modifyitems(config, items):
     """Modify the collected test items."""
     keywordexpr = config.option.keyword
     markexpr = config.option.markexpr
-    if keywordexpr or markexpr:
-        return  # command line has a -k or -m, let pytest handle it
+    apply_default_skips = not (keywordexpr or markexpr)
 
-    # skip embedding tests unless the mark is specified
-    skip_embedding = pytest.mark.skip(
-        reason="""embedding not selected for pytest run
-        (`pytest -m embedding` or `pytest -m embedding_scripts`).  Skip by default"""
-    )
     for item in items:
-        if "embedding" in item.keywords or "embedding_scripts" in item.keywords:
-            item.add_marker(skip_embedding)
+        # skip embedding tests unless the mark is specified via -k or -m
+        if apply_default_skips:
+            if "embedding" in item.keywords or "embedding_scripts" in item.keywords:
+                skip_embedding = pytest.mark.skip(
+                    reason="""embedding not selected for pytest run
+        (`pytest -m embedding` or `pytest -m embedding_scripts`).  Skip by default"""
+                )
+                item.add_marker(skip_embedding)
 
         # Skip tests that are less than the minimum version
         if "minimum_version" in item.keywords:
@@ -160,8 +160,8 @@ def pytest_collection_modifyitems(config, items):
             skip_except_linux = pytest.mark.skip(reason="Test requires Linux platform.")
             item.add_marker(skip_except_linux)
 
-        # Skip python_env tests unless the mark is specified
-        if "python_env" in item.keywords:
+        # Skip python_env tests unless the mark is specified via -k or -m
+        if apply_default_skips and "python_env" in item.keywords:
             skip_python_env = pytest.mark.skip(
                 reason="python_env not selected for pytest run"
                 " (`pytest -m python_env`). Skip by default"
