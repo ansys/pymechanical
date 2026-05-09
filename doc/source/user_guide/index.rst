@@ -23,6 +23,7 @@ If you are not sure which mode to use, see :ref:`ref_choose_your_mode`.
    embedding/overview
    embedding/configuration
    embedding/globals
+   embedding/helpers
    embedding/licensing
    embedding/libraries
    embedding/logging
