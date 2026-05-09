@@ -146,5 +146,6 @@ If you are not sure which mode to pick, see :doc:`getting_started/choose_your_mo
    API reference <api/ansys/mechanical/core/index>
    contribute
    faq
+   contribute
    kil/index
    changelog
