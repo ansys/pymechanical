@@ -109,7 +109,9 @@ Use `.. code-block:: console` for shell commands, `.. code-block:: python` for P
    :alt: Descriptive alt text
    :width: 500px
 
-   Caption in sentence case.
+   For the caption, use full sentences or noun phrases. For example:
+   alt="Architecture of an app that's built with Apps Script."
+   alt="A card message."
 ```
 
 ---
