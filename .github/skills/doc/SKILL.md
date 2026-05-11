@@ -319,5 +319,4 @@ All code in examples and docstrings must follow PEP 8:
 ## README Files
 
 - Prefer `.rst` over `.md` — RST content can be reused in Sphinx docs via `.. include::`
-- MD content cannot be included in RST files
 - Partial reuse: use `:start-after:` / `:end-before:` with explicit RST targets for selective inclusion
