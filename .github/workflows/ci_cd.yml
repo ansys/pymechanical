@@ -64,6 +64,9 @@ jobs:
   # ── Style & security checks ───────────────────────────────────────────
   style:
     uses: ./.github/workflows/style.yml
+    permissions:
+      contents: read
+      security-events: write
     secrets: inherit
     with:
       main-python-version: '3.12'
@@ -72,6 +75,9 @@ jobs:
   # ── Revision & container configuration ─────────────────────────────────
   revn-config:
     uses: ./.github/workflows/revn-config.yml
+    permissions:
+      contents: read
+      packages: read
     secrets: inherit
     with:
       docker-package: ghcr.io/ansys/mechanical
@@ -83,6 +89,8 @@ jobs:
   smoke-tests:
     needs: [style]
     uses: ./.github/workflows/smoke-tests.yml
+    permissions:
+      contents: read
     secrets: inherit
     with:
       package-name: ansys-mechanical-core
@@ -92,6 +100,10 @@ jobs:
     if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-test') }}
     needs: [style, revn-config, smoke-tests]
     uses: ./.github/workflows/tests.yml
+    permissions:
+      contents: read
+      packages: read
+      checks: write
     secrets: inherit
     with:
       main-python-version: '3.12'
@@ -126,6 +138,9 @@ jobs:
     if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-doc') }}
     needs: [style, revn-config]
     uses: ./.github/workflows/docs.yml
+    permissions:
+      contents: read
+      packages: read
     secrets: inherit
     with:
       main-python-version: '3.12'
@@ -173,6 +188,8 @@ jobs:
     if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-test') }}
     needs: [tests]
     uses: ./.github/workflows/coverage.yml
+    permissions:
+      contents: read
     secrets: inherit
     with:
       main-python-version: '3.12'
