@@ -34,7 +34,7 @@ to select the version of the product to launch.
 
 .. code:: python
 
-    exec_file_path = "C:/Program Files/ANSYS Inc/v261/aisol/bin/win64/AnsysWBU.exe"
+    exec_file_path = "C:/Program Files/ANSYS Inc/v261/aisol/bin/winx64/AnsysWBU.exe"
     mechanical = launch_mechanical(
         exec_file=exec_file_path, batch=False, cleanup_on_exit=False
     )
