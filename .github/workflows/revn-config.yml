@@ -1,4 +1,4 @@
-name: Revision Configuration
+name: Revision Configuration # zizmor: ignore[concurrency-limits]
 
 on:
   workflow_call:
@@ -91,7 +91,7 @@ jobs:
       matrix:
         test_container: ['${{ needs.revn-variations.outputs.test_container }}']
     permissions:
-      packages: read
+      packages: read  # Required to pull Docker images from GitHub Container Registry
     steps:
       - name: Login in Github Container registry
         uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0

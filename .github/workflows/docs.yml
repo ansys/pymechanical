@@ -1,4 +1,4 @@
-name: Documentation Build
+name: Documentation Build # zizmor: ignore[concurrency-limits]
 
 on:
   workflow_call:
@@ -25,7 +25,7 @@ jobs:
       options: --entrypoint /bin/bash
     permissions:
       contents: read
-      packages: read
+      packages: read  # Required to pull Docker images from GitHub Container Registry
     steps:
 
       - name: Install Git and checkout project

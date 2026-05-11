@@ -1,4 +1,4 @@
-name: Coverage
+name: Coverage # zizmor: ignore[concurrency-limits]
 
 on:
   workflow_call:

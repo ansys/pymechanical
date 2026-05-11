@@ -1,4 +1,4 @@
-name: Smoke Tests
+name: Smoke Tests # zizmor: ignore[concurrency-limits]
 
 on:
   workflow_call:
