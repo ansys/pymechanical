@@ -13,6 +13,9 @@ on:
         type: string
         required: true
 
+env:
+  ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
+
 permissions: {}
 
 jobs:
