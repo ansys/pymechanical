@@ -139,7 +139,6 @@ ignore = [
     "TD003", # Missing issue link in TODOs comment
 ]
 
-
 [tool.ruff.lint.per-file-ignores]
 # Ignore `F401` (import violations) in all `__init__.py` files.
 "__init__.py" = ["F401"]
@@ -157,7 +156,6 @@ convention = "numpy"
 combine-as-imports = true
 force-sort-within-sections = true
 known-first-party = ["ansys.mechanical.core"]
-
 
 [tool.bandit]
 exclude_dirs = ["examples", "tests"]
@@ -218,13 +216,13 @@ title_format = "`{version} <https://github.com/ansys/pymechanical/releases/tag/v
 issue_format = "`#{issue} <https://github.com/ansys/pymechanical/pull/{issue}>`_"
 
 [[tool.towncrier.type]]
-directory = "added"
-name = "Added"
+directory = "breaking"
+name = "Breaking"
 showcontent = true
 
 [[tool.towncrier.type]]
-directory = "changed"
-name = "Changed"
+directory = "added"
+name = "Added"
 showcontent = true
 
 [[tool.towncrier.type]]
@@ -233,23 +231,23 @@ name = "Fixed"
 showcontent = true
 
 [[tool.towncrier.type]]
-directory = "dependencies"
-name = "Dependencies"
-showcontent = true
-
-[[tool.towncrier.type]]
-directory = "miscellaneous"
-name = "Miscellaneous"
-showcontent = true
-
-[[tool.towncrier.type]]
 directory = "documentation"
 name = "Documentation"
 showcontent = true
 
 [[tool.towncrier.type]]
+directory = "dependencies"
+name = "Dependencies"
+showcontent = true
+
+[[tool.towncrier.type]]
 directory = "maintenance"
 name = "Maintenance"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "miscellaneous"
+name = "Miscellaneous"
 showcontent = true
 
 [[tool.towncrier.type]]
@@ -260,6 +258,11 @@ showcontent = true
 # ========================================================
 # Tox Configuration
 # ========================================================
+
+[[tool.towncrier.type]]
+directory = "changed"
+name = "Changed"
+showcontent = true
 
 [tool.tox]
 legacy_tox_ini = """
