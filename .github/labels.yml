@@ -70,8 +70,8 @@
   description: Issues fixed in Ansys Mechanical version 261
   color: FFD500
 
-- name: fixed-in-271
-  description: Issues fixed in Ansys Mechanical version 271
+- name: fixed-in-awaiting-release
+  description: Issues fixed in Ansys Mechanical future version
   color: FFDD33
 
 - name: fixed-in-next-release
@@ -94,8 +94,8 @@
   description: Bug observed in PyMechanical with Mechanical version 26R1
   color: FF9933
 
-- name: 27R1
-  description: Bug observed in PyMechanical with Mechanical version 27R1
+- name: resolved-awaiting-release
+  description: Bug resolved and awaiting release of Ansys Mechanical
   color: FFA64D
 
 - name: embedding
