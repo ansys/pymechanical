@@ -69,8 +69,8 @@ jobs:
       security-events: write # Required to upload SARIF results from security scanning
     secrets: inherit # zizmor: ignore[secrets-inherit]
     with:
-      main-python-version: '3.12'
-      package-name: ansys-mechanical-core
+      main-python-version: ${{ env.MAIN_PYTHON_VERSION }}
+      package-name: ${{ env.PACKAGE_NAME }}
 
   # ── Revision & container configuration ─────────────────────────────────
   revn-config:
@@ -80,9 +80,9 @@ jobs:
       packages: read     # Required to pull Docker images from GitHub Container Registry
     secrets: inherit # zizmor: ignore[secrets-inherit]
     with:
-      docker-package: ghcr.io/ansys/mechanical
-      stable-revn: '261'
-      dev-revn: '271'
+      docker-package: ${{ env.DOCKER_PACKAGE }}
+      stable-revn: ${{ env.STABLE_REVN }}
+      dev-revn: ${{ env.DEV_REVN }}
       revn-input: ${{ github.event.inputs.revn || '' }}
 
   # ── Build & smoke tests ───────────────────────────────────────────────
@@ -93,7 +93,7 @@ jobs:
       contents: read
     secrets: inherit # zizmor: ignore[secrets-inherit]
     with:
-      package-name: ansys-mechanical-core
+      package-name: ${{ env.PACKAGE_NAME }}
 
   # ── Test suites ────────────────────────────────────────────────────────
   tests:
@@ -106,8 +106,8 @@ jobs:
       checks: write   # Needed to publish test results and status checks
     secrets: inherit # zizmor: ignore[secrets-inherit]
     with:
-      main-python-version: '3.12'
-      docker-package: ghcr.io/ansys/mechanical
+      main-python-version: ${{ env.MAIN_PYTHON_VERSION }}
+      docker-package: ${{ env.DOCKER_PACKAGE }}
       test-container: ${{ needs.revn-config.outputs.test_container }}
       test-revn: ${{ needs.revn-config.outputs.test_revn }}
       test-docker-image-version: ${{ needs.revn-config.outputs.test_docker_image_version }}
@@ -143,7 +143,7 @@ jobs:
       packages: read  # Required to pull Docker images from GitHub Container Registry
     secrets: inherit # zizmor: ignore[secrets-inherit]
     with:
-      main-python-version: '3.12'
+      main-python-version: ${{ env.MAIN_PYTHON_VERSION }}
       test-container: ${{ needs.revn-config.outputs.test_container }}
       container-stable-exit: ${{ needs.revn-config.outputs.container_stable_exit }}
 
@@ -192,8 +192,8 @@ jobs:
       contents: read
     secrets: inherit # zizmor: ignore[secrets-inherit]
     with:
-      main-python-version: '3.12'
-      package-name: ansys-mechanical-core
+      main-python-version: ${{ env.MAIN_PYTHON_VERSION }}
+      package-name: ${{ env.PACKAGE_NAME }}
 
   coverage-check:
     name: Coverage check
