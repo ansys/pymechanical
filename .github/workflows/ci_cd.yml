@@ -25,18 +25,15 @@ on:
       - release/*
 
 env:
-  PYMECHANICAL_PORT: 10000  # default won't work on GitHub runners
-  PYMECHANICAL_START_INSTANCE: false
-  DOCKER_PACKAGE: ghcr.io/ansys/mechanical
-  DOCKER_MECH_CONTAINER_NAME: mechanical
-  PACKAGE_NAME: ansys-mechanical-core
   DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
-  MAIN_PYTHON_VERSION: '3.12'
-  STABLE_REVN: '261'
-  # DEV_REVN & its Docker image are used in scheduled or registry package runs
-  DEV_REVN: '271'
   LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
   ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
+  # The following variables are defined as GitHub repository variables
+  # MAIN_PYTHON_VERSION,
+  # PACKAGE_NAME
+  # DOCKER_PACKAGE,
+  # STABLE_REVN
+  # DEV_REVN
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -68,9 +65,6 @@ jobs:
       contents: read
       security-events: write # Required to upload SARIF results from security scanning
     secrets: inherit # zizmor: ignore[secrets-inherit]
-    with:
-      main-python-version: ${{ vars.MAIN_PYTHON_VERSION }}
-      package-name: ${{ vars.PACKAGE_NAME }}
 
   # ── Revision & container configuration ─────────────────────────────────
   revn-config:
@@ -80,9 +74,6 @@ jobs:
       packages: read     # Required to pull Docker images from GitHub Container Registry
     secrets: inherit # zizmor: ignore[secrets-inherit]
     with:
-      docker-package: ${{ vars.DOCKER_PACKAGE }}
-      stable-revn: ${{ vars.STABLE_REVN }}
-      dev-revn: ${{ vars.DEV_REVN }}
       revn-input: ${{ github.event.inputs.revn || '' }}
 
   # ── Build & smoke tests ───────────────────────────────────────────────
@@ -92,8 +83,6 @@ jobs:
     permissions:
       contents: read
     secrets: inherit # zizmor: ignore[secrets-inherit]
-    with:
-      package-name: ${{ vars.PACKAGE_NAME }}
 
   # ── Test suites ────────────────────────────────────────────────────────
   tests:
@@ -106,8 +95,6 @@ jobs:
       checks: write   # Needed to publish test results and status checks
     secrets: inherit # zizmor: ignore[secrets-inherit]
     with:
-      main-python-version: ${{ vars.MAIN_PYTHON_VERSION }}
-      docker-package: ${{ vars.DOCKER_PACKAGE }}
       test-container: ${{ needs.revn-config.outputs.test_container }}
       test-revn: ${{ needs.revn-config.outputs.test_revn }}
       test-docker-image-version: ${{ needs.revn-config.outputs.test_docker_image_version }}
@@ -143,7 +130,6 @@ jobs:
       packages: read  # Required to pull Docker images from GitHub Container Registry
     secrets: inherit # zizmor: ignore[secrets-inherit]
     with:
-      main-python-version: ${{ vars.MAIN_PYTHON_VERSION }}
       test-container: ${{ needs.revn-config.outputs.test_container }}
       container-stable-exit: ${{ needs.revn-config.outputs.container_stable_exit }}
 
@@ -191,9 +177,6 @@ jobs:
     permissions:
       contents: read
     secrets: inherit # zizmor: ignore[secrets-inherit]
-    with:
-      main-python-version: ${{ vars.MAIN_PYTHON_VERSION }}
-      package-name: ${{ vars.PACKAGE_NAME }}
 
   coverage-check:
     name: Coverage check
@@ -227,8 +210,8 @@ jobs:
       - name: Build library source and wheel artifacts
         uses: ansys/actions/build-library@73fa84c704bb6691f254cfe4d4b928c338b0d4da # v10.3.0
         with:
-          library-name: ${{ env.PACKAGE_NAME }}
-          python-version: ${{ env.MAIN_PYTHON_VERSION }}
+          library-name: ${{ vars.PACKAGE_NAME }}
+          python-version: ${{ vars.MAIN_PYTHON_VERSION }}
           attest-provenance: true
 
   # ── Release ────────────────────────────────────────────────────────────
@@ -245,7 +228,7 @@ jobs:
         uses: ansys/actions/release-github@73fa84c704bb6691f254cfe4d4b928c338b0d4da # v10.3.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          library-name: ${{ env.PACKAGE_NAME }}
+          library-name: ${{ vars.PACKAGE_NAME }}
           only-code: true
 
   release-pypi:
@@ -260,15 +243,15 @@ jobs:
       - name: "Download the library artifacts from build-library step"
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: ${{ env.PACKAGE_NAME }}-artifacts
-          path: ${{ env.PACKAGE_NAME }}-artifacts
+          name: ${{ vars.PACKAGE_NAME }}-artifacts
+          path: ${{ vars.PACKAGE_NAME }}-artifacts
 
       - name: "Upload artifacts to PyPI using trusted publisher"
         uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # v1.14.0
         with:
           repository-url: "https://upload.pypi.org/legacy/"
           print-hash: true
-          packages-dir: ${{ env.PACKAGE_NAME }}-artifacts
+          packages-dir: ${{ vars.PACKAGE_NAME }}-artifacts
           skip-existing: false
 
   # ── Documentation deployment ───────────────────────────────────────────

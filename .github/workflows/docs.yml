@@ -3,9 +3,6 @@ name: Documentation Build # zizmor: ignore[concurrency-limits]
 on:
   workflow_call:
     inputs:
-      main-python-version:
-        type: string
-        required: true
       test-container:
         type: string
         required: true
@@ -39,7 +36,7 @@ jobs:
       - name: Set up Python
         shell: bash
         env:
-          MAIN_PYTHON_VERSION: ${{ inputs.main-python-version }}
+          MAIN_PYTHON_VERSION: ${{ vars.MAIN_PYTHON_VERSION }}
         run: |
           apt update
           apt install lsb-release xvfb git curl make -y

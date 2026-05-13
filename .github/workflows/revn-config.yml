@@ -3,15 +3,6 @@ name: Revision Configuration # zizmor: ignore[concurrency-limits]
 on:
   workflow_call:
     inputs:
-      docker-package:
-        type: string
-        required: true
-      stable-revn:
-        type: string
-        required: true
-      dev-revn:
-        type: string
-        required: true
       revn-input:
         type: string
         required: false
@@ -50,9 +41,9 @@ jobs:
         env:
           GH_EVENT_NAME: ${{ github.event_name }}
           REVN_INPUT: ${{ inputs.revn-input }}
-          DEV_REVN: ${{ inputs.dev-revn }}
-          DOCKER_PACKAGE: ${{ inputs.docker-package }}
-          STABLE_REVN: ${{ inputs.stable-revn }}
+          DEV_REVN: ${{ vars.DEV_REVN }}
+          DOCKER_PACKAGE: ${{ vars.DOCKER_PACKAGE }}
+          STABLE_REVN: ${{ vars.STABLE_REVN }}
         run: |
           # --- Help ----
           # schedule nightly uses DEV_REVN candidate

@@ -2,13 +2,6 @@ name: Style & Security Checks # zizmor: ignore[concurrency-limits]
 
 on:
   workflow_call:
-    inputs:
-      main-python-version:
-        type: string
-        required: true
-      package-name:
-        type: string
-        required: true
 
 permissions: {}
 
@@ -22,7 +15,7 @@ jobs:
       - name: PyAnsys code style checks
         uses: ansys/actions/code-style@7d55ff0b9f67c77dae50a286d711ee1ae27b0a25 # v10.2.12
         with:
-          python-version: ${{ inputs.main-python-version }}
+          python-version: ${{ vars.MAIN_PYTHON_VERSION }}
 
   doc-style:
     name: Documentation Style Check
@@ -45,16 +38,16 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: ansys/actions/check-vulnerabilities@7d55ff0b9f67c77dae50a286d711ee1ae27b0a25 # v10.2.12
         with:
-          python-version: ${{ inputs.main-python-version }}
-          python-package-name: ${{ inputs.package-name }}
+          python-version: ${{ vars.MAIN_PYTHON_VERSION }}
+          python-package-name: ${{ vars.PACKAGE_NAME }}
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
 
       - name: PyAnsys Vulnerability check (on dev mode)
         if: github.ref != 'refs/heads/main'
         uses: ansys/actions/check-vulnerabilities@7d55ff0b9f67c77dae50a286d711ee1ae27b0a25 # v10.2.12
         with:
-          python-version: ${{ inputs.main-python-version }}
-          python-package-name: ${{ inputs.package-name }}
+          python-version: ${{ vars.MAIN_PYTHON_VERSION }}
+          python-package-name: ${{ vars.PACKAGE_NAME }}
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
           dev-mode: true
 

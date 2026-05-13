@@ -2,13 +2,6 @@ name: Coverage # zizmor: ignore[concurrency-limits]
 
 on:
   workflow_call:
-    inputs:
-      main-python-version:
-        type: string
-        required: true
-      package-name:
-        type: string
-        required: true
 
 permissions: {}
 
@@ -25,7 +18,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
-          python-version: ${{ inputs.main-python-version }}
+          python-version: ${{ vars.MAIN_PYTHON_VERSION }}
 
       - name: Install coverage
         run: |

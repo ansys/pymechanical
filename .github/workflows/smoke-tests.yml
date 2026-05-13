@@ -2,10 +2,6 @@ name: Smoke Tests # zizmor: ignore[concurrency-limits]
 
 on:
   workflow_call:
-    inputs:
-      package-name:
-        type: string
-        required: true
 
 permissions: {}
 
@@ -29,6 +25,6 @@ jobs:
       - name: Build wheelhouse and perform smoke test
         uses: ansys/actions/build-wheelhouse@7d55ff0b9f67c77dae50a286d711ee1ae27b0a25 # v10.2.12
         with:
-          library-name: ${{ inputs.package-name }}
+          library-name: ${{ vars.PACKAGE_NAME }}
           operating-system: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
