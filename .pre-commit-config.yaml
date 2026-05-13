@@ -14,7 +14,7 @@ repos:
     - id: ruff-format
 
 - repo: https://github.com/pre-commit/mirrors-mypy
-  rev: fc0f09a29bb495f4a91f00266155d6282d52485d  # frozen: v1.20.2
+  rev: a9d9ff50af0432cbb950856daf08082fa51cbfa2  # frozen: v2.0.0
   hooks:
     - id: mypy
       additional_dependencies: [types-requests, types-tqdm]
@@ -79,7 +79,7 @@ repos:
         args: ['--py310-plus']
 
 - repo: https://github.com/crate-ci/typos
-  rev: a90d2a917d59472bef788897931c1a5a5d12870a  # frozen: v1
+  rev: 359573a3ff38f71c93e160f2ace96d118f6ff42e  # frozen: v1
   hooks:
     - id: typos
       args: ["--config", "doc/styles/typos.toml"]
