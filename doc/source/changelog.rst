@@ -9,6 +9,79 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.12.8 <https://github.com/ansys/pymechanical/releases/tag/v0.12.8>`_ - May 14, 2026
+=====================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add wbtrace option for logger - embedding
+          - `#1569 <https://github.com/ansys/pymechanical/pull/1569>`_
+
+        * - Add doc skill and fix documentation
+          - `#1609 <https://github.com/ansys/pymechanical/pull/1609>`_
+
+        * - Add πthon support
+          - `#1620 <https://github.com/ansys/pymechanical/pull/1620>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Awp root error
+          - `#1601 <https://github.com/ansys/pymechanical/pull/1601>`_
+
+        * - Enhance test skipping logic based on version and platform requirements
+          - `#1610 <https://github.com/ansys/pymechanical/pull/1610>`_
+
+        * - Typo in environment variable
+          - `#1615 <https://github.com/ansys/pymechanical/pull/1615>`_
+
+        * - Update labels
+          - `#1619 <https://github.com/ansys/pymechanical/pull/1619>`_
+
+
+  .. tab-item:: Documentation
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add documentation on how to debug embedded app in linux using vscode
+          - `#1574 <https://github.com/ansys/pymechanical/pull/1574>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Skip-doc label to skipping doc build
+          - `#1566 <https://github.com/ansys/pymechanical/pull/1566>`_
+
+        * - Update CHANGELOG for v0.12.7
+          - `#1607 <https://github.com/ansys/pymechanical/pull/1607>`_
+
+        * - Pre-commit automatic update
+          - `#1608 <https://github.com/ansys/pymechanical/pull/1608>`_, `#1616 <https://github.com/ansys/pymechanical/pull/1616>`_
+
+        * - Refactor cicd
+          - `#1611 <https://github.com/ansys/pymechanical/pull/1611>`_
+
+        * - Bump the actions group with 3 updates
+          - `#1617 <https://github.com/ansys/pymechanical/pull/1617>`_
+
+
 `0.12.7 <https://github.com/ansys/pymechanical/releases/tag/v0.12.7>`_ - April 30, 2026
 =======================================================================================
 
