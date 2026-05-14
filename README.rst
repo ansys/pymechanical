@@ -59,7 +59,7 @@ PyMechanical provides two distinct modes of interaction:
 Compatibility
 ~~~~~~~~~~~~~
 
-* **Python**: 3.10 – 3.13
+* **Python**: 3.10 – 3.14
 * **Mechanical**: 2024 R2 (v242) and later
 * **Platforms**: Windows, Linux
 
