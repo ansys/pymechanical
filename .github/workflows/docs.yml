@@ -1,0 +1,121 @@
+name: Documentation Build # zizmor: ignore[concurrency-limits]
+
+on:
+  workflow_call:
+    inputs:
+      test-container:
+        type: string
+        required: true
+      container-stable-exit:
+        type: string
+        required: true
+
+env:
+  ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
+
+permissions: {}
+
+jobs:
+  doc-build:
+    name: Documentation
+    runs-on: public-ubuntu-latest-16-cores
+    timeout-minutes: 30
+    container:
+      image: ${{ inputs.test-container }} # zizmor: ignore[unpinned-images]
+      options: --entrypoint /bin/bash
+    permissions:
+      contents: read
+      packages: read  # Required to pull Docker images from GitHub Container Registry
+    steps:
+
+      - name: Install Git and checkout project
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        shell: bash
+        env:
+          MAIN_PYTHON_VERSION: ${{ vars.MAIN_PYTHON_VERSION }}
+        run: |
+          apt update
+          apt install lsb-release xvfb git curl make -y
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          export PATH="$HOME/.local/bin:$PATH"
+          uv python install python${MAIN_PYTHON_VERSION}
+          uv venv /env
+
+      - name: Install system dependencies
+        env:
+          DEBIAN_FRONTEND: 'noninteractive'
+          TZ: 'Etc/UTC'
+        run: |
+          apt update
+          apt install make lsb-release xvfb poppler-utils -y
+          apt install zip pandoc libgl1-mesa-glx mesa-utils npm -y
+          apt install -y texlive-latex-extra texlive-fonts-extra
+
+      - name: Install gh cli
+        run: |
+          (type -p wget >/dev/null || (apt update && apt-get install wget -y)) \
+          && mkdir -p -m 755 /etc/apt/keyrings \
+          && wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+          && chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+          && apt update \
+          && apt install gh -y
+
+      - name: Install quarto to build cheatsheet
+        run: | # zizmor: ignore[template-injection]
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+          gh release download v1.9.36 --repo github.com/quarto-dev/quarto-cli --pattern *linux-amd64.deb
+          apt install ./quarto*linux-amd64.deb -y
+          quarto install tinytex --log-level warning
+
+      - name: Test quarto installation
+        run: quarto --version
+
+      - name: Install Python requirements
+        run: |
+          . /env/bin/activate
+          uv pip install --upgrade pip
+          uv pip install -e .[doc]
+
+      - name: Build docs
+        env:
+          NUM_CORES: 1
+          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 0
+          BUILD_CHEATSHEET: true
+          CONTAINER_STABLE_EXIT: ${{ inputs.container-stable-exit }}
+        run: |
+          . /env/bin/activate
+
+          apt update
+          apt install -y libjbig-dev
+          # Add the /usr/lib/x86_64-linux-gnu/ path to the LD_LIBRARY_PATH (where libjbig-dev .so files are)
+          export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/
+
+          if [ "${CONTAINER_STABLE_EXIT}" = "true" ]; then
+            xvfb-run mechanical-env make -C doc html
+          else
+            xvfb-run mechanical-env make -C doc html > output.txt 2>&1 || true
+            cat output.txt
+            if grep -q "build succeeded" output.txt; then
+              echo "Documentation building succeeded"
+            else
+              echo "Documentation building failed"
+              exit 1
+            fi
+          fi
+      - name: Check links
+        if: github.event_name == 'schedule'
+        run: |
+          . /env/bin/activate
+          make -C doc linkcheck
+
+      - name: Upload HTML Documentation
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: documentation-html
+          path: doc/_build/html
+          retention-days: 7

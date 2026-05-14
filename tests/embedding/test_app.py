@@ -182,7 +182,7 @@ def test_app_print_tree(embedded_app, capsys, assets):
 
 
 # @pytest.mark.embedding
-@pytest.mark.skip(reason="This test hangs on Linux with Python 3.10-3.13")
+@pytest.mark.skip(reason="This test hangs on Linux with Python 3.10-3.14")
 def test_app_poster(embedded_app, printer):
     """The getters of app should be usable after a new().
 

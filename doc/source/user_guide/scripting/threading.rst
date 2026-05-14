@@ -40,10 +40,10 @@ CPUs operate at the speed of electrons and can often do trillions of operations 
 second. If there is only one program running on a CPU and a private section of memory
 that the program needs, it can shuttle data to and from that memory extremely quickly.
 
-When there are multiple programs or threads running on a CPU, things can get tricker.
+When there are multiple programs or threads running on a CPU, things can get trickier.
 Consider a (contrived) example with a simple program that increments an integer:
 
-.. code::
+.. code-block:: c
 
     i++
 

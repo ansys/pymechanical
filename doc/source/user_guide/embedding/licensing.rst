@@ -439,7 +439,7 @@ If you try to enable a license that is not available:
 
     app.license_manager.enable_session_license("Ansys Mechanical Premium")
 
-    # If license is not available, app will remain in read-only mode
+    # If license is not available, app remains in read-only mode
     if app.readonly:
         print("Warning: Requested license not available. Application is in read-only mode.")
         # Try alternative license
