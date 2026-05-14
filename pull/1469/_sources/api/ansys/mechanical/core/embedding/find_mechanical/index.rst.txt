@@ -1,0 +1,112 @@
+
+
+
+
+
+
+The ``find_mechanical.py`` module
+=================================
+
+.. py:module:: ansys.mechanical.core.embedding.find_mechanical
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: find_mechanical
+.. tab-set::
+
+
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~cli`
+            - Use the CLI tool to find the Mechanical version and location.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Cli for finding mechanical installation.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:function:: cli(version: int, path: str | None = None) -> tuple[int, str]
+
+   
+   Use the CLI tool to find the Mechanical version and location.
+
+
+   :Parameters:
+
+       **version: int**
+           Ansys version number.
+
+       **path: str, optional**
+           Optional path to the Ansys installation directory.
+           eg: "usr/ansys_inc/v251/"
+
+
+
+
+
+
+
+
+
+
+
+
+
+   .. rubric:: Examples
+
+   Get the version and location of the installation directory.
+
+   >>> find-mechanical -r 251
+   >>> find-mechanical -p "usr/ansys_inc/v251/"
+
+   ..
+       !! processed by numpydoc !!
+
+
+
