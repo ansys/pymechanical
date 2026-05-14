@@ -158,7 +158,7 @@ This section provides answers to frequently asked questions.
                 print(app)
 
     The output from the above code will indicate the license being used inside the brackets, next to *Ansys Mechanical*.
-    If PyMechanical is unable to retrieve any license, the field will be left blank.
+    If PyMechanical is unable to retrieve any license, the field is left blank.
 
     .. tab-set::
 

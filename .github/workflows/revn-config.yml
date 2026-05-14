@@ -1,0 +1,155 @@
+name: Revision Configuration # zizmor: ignore[concurrency-limits]
+
+on:
+  workflow_call:
+    inputs:
+      revn-input:
+        type: string
+        required: false
+        default: ''
+    outputs:
+      stable_container:
+        value: ${{ jobs.revn-variations.outputs.stable_container }}
+      test_revn:
+        value: ${{ jobs.revn-variations.outputs.test_revn }}
+      test_container:
+        value: ${{ jobs.revn-variations.outputs.test_container }}
+      test_docker_image_version:
+        value: ${{ jobs.revn-variations.outputs.test_docker_image_version }}
+      container_sha:
+        value: ${{ jobs.test-container-info.outputs.sha }}
+      matrix:
+        value: ${{ jobs.config-matrix.outputs.matrix }}
+      container_stable_exit:
+        value: ${{ jobs.container-stability-check.outputs.container_stable_exit }}
+
+permissions: {}
+
+jobs:
+  revn-variations:
+    name: Save variations of revn
+    runs-on: ubuntu-latest
+    outputs:
+      stable_container: ${{ steps.save-versions.outputs.stable_container }}
+      test_revn: '${{ steps.save-versions.outputs.test_revn }}'
+      test_container: ${{ steps.save-versions.outputs.test_container }}
+      test_docker_image_version: '${{ steps.save-versions.outputs.test_docker_image_version }}'
+    permissions:
+      contents: read
+    steps:
+      - id: save-versions
+        env:
+          GH_EVENT_NAME: ${{ github.event_name }}
+          REVN_INPUT: ${{ inputs.revn-input }}
+          DEV_REVN: ${{ vars.DEV_REVN }}
+          DOCKER_PACKAGE: ${{ vars.DOCKER_PACKAGE }}
+          STABLE_REVN: ${{ vars.STABLE_REVN }}
+        run: |
+          # --- Help ----
+          # schedule nightly uses DEV_REVN candidate
+          # PRs and merges use STABLE_REVN
+          # Workflow dispatch can use any revision number
+
+          if [[ "${GH_EVENT_NAME}" == "schedule" ]] || [[ "${REVN_INPUT}" == "candidate" ]]; then
+            echo "test_revn=${DEV_REVN}" >> $GITHUB_OUTPUT
+            test_mech_revn=${DEV_REVN}
+            test_mech_image_version=${test_mech_revn:0:2}.${test_mech_revn:2}_candidate
+            echo "test_container=${DOCKER_PACKAGE}:$test_mech_image_version" >> $GITHUB_OUTPUT
+            echo "test_docker_image_version=$test_mech_image_version" >> $GITHUB_OUTPUT
+          else
+            if [[ -z "${REVN_INPUT}" ]]; then
+              mech_revn=${STABLE_REVN}
+            else
+              mech_revn=${REVN_INPUT}
+            fi
+            export mech_image_version=${mech_revn:0:2}.${mech_revn:2}.0
+            echo "test_revn=$mech_revn" >> $GITHUB_OUTPUT
+            echo "test_container=${DOCKER_PACKAGE}:$mech_image_version" >> $GITHUB_OUTPUT
+            echo "test_docker_image_version=$mech_image_version" >> $GITHUB_OUTPUT
+          fi
+
+          stable_mech_revn=${STABLE_REVN}
+          stable_mech_image_version=${mech_revn:0:2}.${mech_revn:2}.0
+          echo "stable_container=${DOCKER_PACKAGE}:$stable_mech_image_version" >> $GITHUB_OUTPUT
+
+  test-container-info:
+    name: Get SHA of test container
+    runs-on: public-ubuntu-latest-8-cores
+    needs: [revn-variations]
+    outputs:
+      sha: ${{ steps.get_sha.outputs.sha }}
+    strategy:
+      matrix:
+        test_container: ['${{ needs.revn-variations.outputs.test_container }}']
+    permissions:
+      packages: read  # Required to pull Docker images from GitHub Container Registry
+    steps:
+      - name: Login in Github Container registry
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull, launch, and validate Mechanical service
+        id: get_sha
+        env:
+          MECHANICAL_IMAGE: ${{ matrix.test_container }}
+        run: |
+          # Install jq for parsing JSON
+          pip install jq
+
+          # Get docker info
+          image_info=$(docker manifest inspect -v ${MECHANICAL_IMAGE}) # --format ".Descriptor.digest"
+
+          # Get digest SHA
+          digest=$(echo "$image_info" | jq -r '.Descriptor.digest')
+
+          # Remove the "sha256:" prefix to get only the SHA
+          sha="${digest#*:}"
+          echo "SHA of image ${MECHANICAL_IMAGE} is $sha"
+          echo "sha=$sha" >> $GITHUB_OUTPUT
+
+  config-matrix:
+    name: Configure matrix
+    runs-on: ubuntu-latest
+    needs: [revn-variations]
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    permissions:
+      contents: read
+    steps:
+      - id: set-matrix
+        env:
+          GH_EVENT_NAME: ${{ github.event_name }}
+          TEST_DOCKER_IMAGE_VERSION: ${{ needs.revn-variations.outputs.test_docker_image_version }}
+          GH_REF: ${{ github.ref }}
+        run: |
+          # if a tag(release) is pushed, test all versions
+          if [[ "${GH_EVENT_NAME}" == "push" ]] && [[ "$GH_REF" =~ "refs/tags" ]]; then
+            echo "matrix={\"mechanical-version\":['24.2.0', '25.1.0', '25.2.0', '26.1.0'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
+          else
+            echo "matrix={\"mechanical-version\":['${TEST_DOCKER_IMAGE_VERSION}'],\"experimental\":[false]}" >> $GITHUB_OUTPUT
+          fi
+
+  container-stability-check:
+    name: Container stability check
+    runs-on: ubuntu-latest
+    needs: [revn-variations]
+    outputs:
+      container_stable_exit: ${{ steps.check_stability.outputs.container_stable_exit }}
+    permissions:
+      contents: read
+    steps:
+      - id: check_stability
+        env:
+          TEST_DOCKER_IMAGE_VERSION: ${{ needs.revn-variations.outputs.test_docker_image_version }}
+        run: |
+          sudo apt update
+          sudo apt install bc -y
+          container_version=$(echo "${TEST_DOCKER_IMAGE_VERSION}" | grep -o -E '[0-9]+(\.[0-9]+)?' | head -n 1)
+          if (( $(echo "$container_version > 24.2" | bc -l) )); then
+            echo "container_stable_exit=true" >> $GITHUB_OUTPUT
+          else
+            echo "container_stable_exit=false" >> $GITHUB_OUTPUT
+          fi

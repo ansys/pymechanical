@@ -13,7 +13,7 @@ If PyMechanical cannot find your installation, set the path manually:
 
 **On Windows**
 
-.. code:: python
+.. code-block:: python
 
     from ansys.mechanical.core import launch_mechanical
 
@@ -22,7 +22,7 @@ If PyMechanical cannot find your installation, set the path manually:
 
 **On Linux**
 
-.. code:: python
+.. code-block:: python
 
     from ansys.mechanical.core import launch_mechanical
 
@@ -36,7 +36,7 @@ debug output to the Python console.
 Debug from the command line
 ----------------------------
 
-.. code:: console
+.. code-block:: console
 
     ansys-mechanical -g --port 10000
 
@@ -46,12 +46,57 @@ If this command doesn't launch Mechanical, common causes include:
 - Running behind a VPN
 - Missing dependencies
 
+.. _debug-embedding-vscode-linux:
+
+Debug with Visual Studio Code on Linux
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+On Linux, the Python debugger must see the same environment that the ``mechanical-env`` scripts
+set when you run ``mechanical-env python``. You can capture that environment once, store it in a
+file, and point Visual Studio Code at it.
+
+#. Install the `Python extension`_ for Visual Studio Code (provides the Python Debugger).
+
+#. From your project root, write the prepared environment to ``.vscode/.env``. Use the same
+   ``-r`` or ``-p`` options you use for normal runs:
+
+   .. code-block:: console
+
+      $ mechanical-env -r 261 env > .vscode/.env
+
+#. Create ``.vscode/launch.json`` with a launch configuration that loads that file:
+
+   .. code-block:: json
+
+      {
+          "version": "0.2.0",
+          "configurations": [
+              {
+                  "name": "Python Debugger: Current File",
+                  "type": "debugpy",
+                  "request": "launch",
+                  "program": "${file}",
+                  "console": "integratedTerminal",
+                  "envFile": "${workspaceFolder}/.vscode/.env"
+              }
+          ]
+      }
+
+#. Start **Run and Debug**, choose **Python Debugger: Current File**, and run your script.
+
+.. note::
+
+   Regenerate ``.vscode/.env`` if you change the Ansys version, installation path, or ``mechanical-env``
+   options. Add ``.env`` to ``.gitignore`` to avoid committing local environment settings to version control.
+
+.. _`Python extension`: https://marketplace.visualstudio.com/items?itemName=ms-python.python
+
 
 Licensing issues
 -----------------
 
-`PADT <https://www.padtinc.com/>`_ has an `Ansys <https://www.padtinc.com/simulation/ansys-simulation-products/>`_
-product section. Posts about licensing are common.
+`PADT <https://www.padtinc.com/>`_ maintains an `Ansys <https://www.padtinc.com/simulation/ansys-simulation-products/>`_
+product section that includes posts about licensing.
 
 If you are responsible for maintaining an Ansys license or have a personal installation
 of Ansys, you likely can access the
