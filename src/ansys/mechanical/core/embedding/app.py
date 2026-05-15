@@ -69,6 +69,8 @@ def _get_default_addin_configuration() -> AddinConfiguration:
 INSTANCES: list[App] = []
 """List of instances."""
 
+INITIALIZED: bool = False
+
 
 def _atexit_embedded_app(instances):  # pragma: nocover
     if len(instances) > 0:
@@ -134,7 +136,7 @@ def _normalize_file_path(path: str | Path) -> str:
 
 def is_initialized() -> bool:
     """Check if the app has been initialized."""
-    return len(INSTANCES) != 0
+    return INITIALIZED
 
 
 class App:
@@ -222,7 +224,7 @@ class App:
         **kwargs: typing.Any,
     ) -> None:
         """Construct an instance of the mechanical Application."""
-        global INSTANCES
+        global INSTANCES, INITIALIZED
         from ansys.mechanical.core import BUILDING_GALLERY
 
         use_gallery_sharing = BUILDING_GALLERY and not reuse_instance
@@ -256,7 +258,7 @@ class App:
         # If the building gallery flag is set, we need to share the instance
         # This can apply to running the `make -C doc html` command
         if use_gallery_sharing:
-            if len(INSTANCES) != 0:
+            if INITIALIZED:
                 # Get the first instance of the app
                 instance: App = INSTANCES[0]
                 # Point to the same underlying application object
@@ -269,7 +271,7 @@ class App:
                 if db_file is not None:
                     self.open(db_file)
                 return
-        if len(INSTANCES) > 0:
+        if INITIALIZED:
             raise RuntimeError("Cannot have more than one embedded mechanical instance!")
 
         self._version = initializer.initialize(version)
@@ -298,6 +300,7 @@ class App:
         self._disposed = False
         atexit.register(_atexit_embedded_app, INSTANCES)
         INSTANCES.append(self)
+        INITIALIZED = True
 
         self._handle_interactive_shell()
 
