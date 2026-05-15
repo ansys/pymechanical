@@ -249,6 +249,7 @@ jobs:
         uses: ./.github/actions/setup-python-env
         with:
           python-version: ${{ vars.MAIN_PYTHON_VERSION }}
+          install-extras: "tests"
 
       - name: Embedding scripts unit testing and coverage
         env:
@@ -304,6 +305,7 @@ jobs:
         uses: ./.github/actions/setup-python-env
         with:
           python-version: ${{ vars.MAIN_PYTHON_VERSION }}
+          install-extras: "tests"
 
       - name: Set environment variable
         env:

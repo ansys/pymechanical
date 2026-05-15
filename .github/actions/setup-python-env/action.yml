@@ -8,6 +8,10 @@ inputs:
     description: "pip extras to install (e.g. 'tests' or 'tests,graphics')"
     required: false
     default: "tests"
+  extra-apt-packages:
+    description: "Additional apt packages to install (space-separated)"
+    required: false
+    default: ""
 runs:
   using: "composite"
   steps:
@@ -15,9 +19,10 @@ runs:
       shell: bash
       env:
         PYTHON_VERSION: ${{ inputs.python-version }}
+        EXTRA_APT_PACKAGES: ${{ inputs.extra-apt-packages }}
       run: |
         apt update
-        apt install lsb-release xvfb git curl make -y
+        apt install -y lsb-release xvfb git curl make ${EXTRA_APT_PACKAGES}
         curl -LsSf https://astral.sh/uv/install.sh | sh
         export PATH="$HOME/.local/bin:$PATH"
         uv python install python${PYTHON_VERSION}
