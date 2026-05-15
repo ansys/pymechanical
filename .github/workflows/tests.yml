@@ -198,22 +198,11 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Set up Python
-        shell: bash
-        env:
-          MAIN_PYTHON_VERSION: ${{ vars.MAIN_PYTHON_VERSION }}
-        run: |
-          apt update
-          apt install lsb-release xvfb git curl make -y
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          export PATH="$HOME/.local/bin:$PATH"
-          uv python install python${MAIN_PYTHON_VERSION}
-          uv venv /env
-      - name: "Install packages for testing"
-        run: |
-          . /env/bin/activate
-          uv pip install --upgrade pip
-          uv pip install -e .[tests,graphics]
+      - name: Setup Python environment
+        uses: ./.github/actions/setup-python-env
+        with:
+          python-version: ${{ vars.MAIN_PYTHON_VERSION }}
+          install-extras: "tests,graphics"
 
       - name: Unit Testing and coverage
         env:
@@ -280,22 +269,10 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Set up Python
-        shell: bash
-        env:
-          MAIN_PYTHON_VERSION: ${{ vars.MAIN_PYTHON_VERSION }}
-        run: |
-          apt update
-          apt install lsb-release xvfb git curl make -y
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          export PATH="$HOME/.local/bin:$PATH"
-          uv python install python${MAIN_PYTHON_VERSION}
-          uv venv /env
-      - name: "Install packages for testing"
-        run: |
-          . /env/bin/activate
-          uv pip install --upgrade pip
-          uv pip install -e .[tests]
+      - name: Setup Python environment
+        uses: ./.github/actions/setup-python-env
+        with:
+          python-version: ${{ vars.MAIN_PYTHON_VERSION }}
 
       - name: Embedding scripts unit testing and coverage
         env:
@@ -359,22 +336,10 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Set up Python
-        shell: bash
-        env:
-          MAIN_PYTHON_VERSION: ${{ vars.MAIN_PYTHON_VERSION }}
-        run: |
-          apt update
-          apt install lsb-release xvfb git curl make -y
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          export PATH="$HOME/.local/bin:$PATH"
-          uv python install python${MAIN_PYTHON_VERSION}
-          uv venv /env
-      - name: "Install packages for testing"
-        run: |
-          . /env/bin/activate
-          uv pip install --upgrade pip
-          uv pip install -e .[tests]
+      - name: Setup Python environment
+        uses: ./.github/actions/setup-python-env
+        with:
+          python-version: ${{ vars.MAIN_PYTHON_VERSION }}
 
       - name: Set environment variable
         env:

@@ -1,0 +1,33 @@
+name: "Setup Python Environment"
+description: "Install system packages, uv, Python, create venv, and install project dependencies"
+inputs:
+  python-version:
+    description: "Python version to install"
+    required: true
+  install-extras:
+    description: "pip extras to install (e.g. 'tests' or 'tests,graphics')"
+    required: false
+    default: "tests"
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      shell: bash
+      env:
+        PYTHON_VERSION: ${{ inputs.python-version }}
+      run: |
+        apt update
+        apt install lsb-release xvfb git curl make -y
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        export PATH="$HOME/.local/bin:$PATH"
+        uv python install python${PYTHON_VERSION}
+        uv venv /env
+
+    - name: Install packages for testing
+      shell: bash
+      env:
+        INSTALL_EXTRAS: ${{ inputs.install-extras }}
+      run: |
+        . /env/bin/activate
+        uv pip install --upgrade pip
+        uv pip install -e .[$INSTALL_EXTRAS]
