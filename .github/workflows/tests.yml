@@ -24,6 +24,9 @@ env:
   PYMECHANICAL_START_INSTANCE: 'false'
   DOCKER_MECH_CONTAINER_NAME: mechanical
   ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
+  ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
+  ANSYS_WORKBENCH_LOGGING: 0
+  ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
 
 permissions: {}
 
@@ -194,9 +197,6 @@ jobs:
 
       - name: Unit Testing and coverage
         env:
-          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
-          ANSYS_WORKBENCH_LOGGING: 0
-          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
           CONTAINER_STABLE_EXIT: ${{ inputs.container-stable-exit }}
           MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
           NUM_CORES: 1
@@ -253,9 +253,6 @@ jobs:
 
       - name: Embedding scripts unit testing and coverage
         env:
-          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
-          ANSYS_WORKBENCH_LOGGING: 0
-          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
           MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
           MAIN_PYTHON_VERSION: ${{ vars.MAIN_PYTHON_VERSION }}
           NUM_CORES: 1
@@ -314,7 +311,6 @@ jobs:
 
       - name: Unit Testing and coverage
         env:
-          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
           CONTAINER_STABLE_EXIT: ${{ inputs.container-stable-exit }}
           MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
         run: |
