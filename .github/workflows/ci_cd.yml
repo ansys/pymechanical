@@ -25,15 +25,15 @@ on:
       - release/*
 
 env:
-  DOCUMENTATION_CNAME: mechanical.docs.pyansys.com
   LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
   ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
   # The following variables are defined as GitHub repository variables
-  # MAIN_PYTHON_VERSION,
+  # MAIN_PYTHON_VERSION
   # PACKAGE_NAME
-  # DOCKER_PACKAGE,
+  # DOCKER_PACKAGE
   # STABLE_REVN
   # DEV_REVN
+  # DOCUMENTATION_CNAME
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -159,7 +159,7 @@ jobs:
     steps:
       - uses: ansys/actions/doc-deploy-pr@12ca08fd7f0caa52076cca15c5621482646f8560 # v10.3.1
         with:
-          cname: ${{ env.DOCUMENTATION_CNAME }}
+          cname: ${{ vars.DOCUMENTATION_CNAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
           bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
           bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}
@@ -260,7 +260,7 @@ jobs:
       - name: Deploy the latest documentation
         uses: ansys/actions/doc-deploy-dev@12ca08fd7f0caa52076cca15c5621482646f8560 # v10.3.1
         with:
-          cname: ${{ env.DOCUMENTATION_CNAME }}
+          cname: ${{ vars.DOCUMENTATION_CNAME }}
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
           bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
           bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}
@@ -276,7 +276,7 @@ jobs:
       - name: Deploy the stable documentation
         uses: ansys/actions/doc-deploy-stable@12ca08fd7f0caa52076cca15c5621482646f8560 # v10.3.1
         with:
-          cname: ${{ env.DOCUMENTATION_CNAME }}
+          cname: ${{ vars.DOCUMENTATION_CNAME }}
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
           bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
           bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}
