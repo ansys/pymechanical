@@ -24,6 +24,9 @@ env:
   PYMECHANICAL_START_INSTANCE: 'false'
   DOCKER_MECH_CONTAINER_NAME: mechanical
   ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
+  ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
+  ANSYS_WORKBENCH_LOGGING: 0
+  ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
 
 permissions: {}
 
@@ -126,7 +129,7 @@ jobs:
           echo "::endgroup::"
 
       - name: Testing
-        uses: ansys/actions/tests-pytest@7d55ff0b9f67c77dae50a286d711ee1ae27b0a25 # v10.2.12
+        uses: ansys/actions/tests-pytest@12ca08fd7f0caa52076cca15c5621482646f8560 # v10.3.1
         with:
           python-version: ${{ vars.MAIN_PYTHON_VERSION }}
           pytest-markers: '-m remote_session_connect'
@@ -142,23 +145,11 @@ jobs:
           include_passed: true
           fail_on_failure: true
 
-      - name: Upload coverage results
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - name: Upload coverage artifacts
+        uses: ./.github/actions/upload-coverage
         if: matrix.mechanical-version == inputs.test-docker-image-version
         with:
-          include-hidden-files: true
-          name: coverage-tests
-          path: .cov
-          retention-days: 7
-
-      - name: Upload coverage results (as .coverage)
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        if: matrix.mechanical-version == inputs.test-docker-image-version
-        with:
-          include-hidden-files: true
-          name: coverage-file-tests
-          path: .coverage
-          retention-days: 7
+          artifact-name: tests
 
       - name: Get Mechanical container logs
         if: always()
@@ -198,28 +189,14 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Set up Python
-        shell: bash
-        env:
-          MAIN_PYTHON_VERSION: ${{ vars.MAIN_PYTHON_VERSION }}
-        run: |
-          apt update
-          apt install lsb-release xvfb git curl make -y
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          export PATH="$HOME/.local/bin:$PATH"
-          uv python install python${MAIN_PYTHON_VERSION}
-          uv venv /env
-      - name: "Install packages for testing"
-        run: |
-          . /env/bin/activate
-          uv pip install --upgrade pip
-          uv pip install -e .[tests,graphics]
+      - name: Setup Python environment
+        uses: ./.github/actions/setup-python-env
+        with:
+          python-version: ${{ vars.MAIN_PYTHON_VERSION }}
+          install-extras: "tests,graphics"
 
       - name: Unit Testing and coverage
         env:
-          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
-          ANSYS_WORKBENCH_LOGGING: 0
-          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
           CONTAINER_STABLE_EXIT: ${{ inputs.container-stable-exit }}
           MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
           NUM_CORES: 1
@@ -232,23 +209,11 @@ jobs:
             xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${MATRIX_PYTHON_VERSION}.xml || true
           fi
 
-      - name: Upload coverage results
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - name: Upload coverage artifacts
+        uses: ./.github/actions/upload-coverage
         if: vars.MAIN_PYTHON_VERSION == matrix.python-version
         with:
-          include-hidden-files: true
-          name: coverage-tests-embedding
-          path: .cov
-          retention-days: 7
-
-      - name: Upload coverage results (as .coverage)
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        if: vars.MAIN_PYTHON_VERSION == matrix.python-version
-        with:
-          include-hidden-files: true
-          name: coverage-file-tests-embedding
-          path: .coverage
-          retention-days: 7
+          artifact-name: tests-embedding
 
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@bccf2e31636835cf0874589931c4116687171386 # v6.4.0
@@ -280,28 +245,14 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Set up Python
-        shell: bash
-        env:
-          MAIN_PYTHON_VERSION: ${{ vars.MAIN_PYTHON_VERSION }}
-        run: |
-          apt update
-          apt install lsb-release xvfb git curl make -y
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          export PATH="$HOME/.local/bin:$PATH"
-          uv python install python${MAIN_PYTHON_VERSION}
-          uv venv /env
-      - name: "Install packages for testing"
-        run: |
-          . /env/bin/activate
-          uv pip install --upgrade pip
-          uv pip install -e .[tests]
+      - name: Setup Python environment
+        uses: ./.github/actions/setup-python-env
+        with:
+          python-version: ${{ vars.MAIN_PYTHON_VERSION }}
+          install-extras: "tests"
 
       - name: Embedding scripts unit testing and coverage
         env:
-          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
-          ANSYS_WORKBENCH_LOGGING: 0
-          ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
           MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
           MAIN_PYTHON_VERSION: ${{ vars.MAIN_PYTHON_VERSION }}
           NUM_CORES: 1
@@ -311,23 +262,11 @@ jobs:
           mechanical-env pytest -m embedding_scripts -s --junitxml test_results_embedding_scripts${MAIN_PYTHON_VERSION}.xml
           pytest -m cli -s --junitxml test_results_cli_scripts${MAIN_PYTHON_VERSION}.xml
 
-      - name: Upload coverage results
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - name: Upload coverage artifacts
+        uses: ./.github/actions/upload-coverage
         if: vars.MAIN_PYTHON_VERSION == matrix.python-version
         with:
-          include-hidden-files: true
-          name: coverage-tests-embedding-scripts
-          path: .cov
-          retention-days: 7
-
-      - name: Upload coverage results (as .coverage)
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        if: vars.MAIN_PYTHON_VERSION == matrix.python-version
-        with:
-          include-hidden-files: true
-          name: coverage-file-tests-embedding-scripts
-          path: .coverage
-          retention-days: 7
+          artifact-name: tests-embedding-scripts
 
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@bccf2e31636835cf0874589931c4116687171386 # v6.4.0
@@ -359,22 +298,11 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Set up Python
-        shell: bash
-        env:
-          MAIN_PYTHON_VERSION: ${{ vars.MAIN_PYTHON_VERSION }}
-        run: |
-          apt update
-          apt install lsb-release xvfb git curl make -y
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          export PATH="$HOME/.local/bin:$PATH"
-          uv python install python${MAIN_PYTHON_VERSION}
-          uv venv /env
-      - name: "Install packages for testing"
-        run: |
-          . /env/bin/activate
-          uv pip install --upgrade pip
-          uv pip install -e .[tests]
+      - name: Setup Python environment
+        uses: ./.github/actions/setup-python-env
+        with:
+          python-version: ${{ vars.MAIN_PYTHON_VERSION }}
+          install-extras: "tests"
 
       - name: Set environment variable
         env:
@@ -383,7 +311,6 @@ jobs:
 
       - name: Unit Testing and coverage
         env:
-          ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
           CONTAINER_STABLE_EXIT: ${{ inputs.container-stable-exit }}
           MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
         run: |
@@ -406,20 +333,8 @@ jobs:
           include_passed: true
           fail_on_failure: true
 
-      - name: Upload coverage results
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - name: Upload coverage artifacts
+        uses: ./.github/actions/upload-coverage
         if: vars.MAIN_PYTHON_VERSION == matrix.python-version
         with:
-          include-hidden-files: true
-          name: coverage-tests-remote-session-launch
-          path: .cov
-          retention-days: 7
-
-      - name: Upload coverage results (as .coverage)
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        if: vars.MAIN_PYTHON_VERSION == matrix.python-version
-        with:
-          include-hidden-files: true
-          name: coverage-file-tests-remote-session-launch
-          path: .coverage
-          retention-days: 7
+          artifact-name: tests-remote-session-launch

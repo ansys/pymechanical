@@ -33,27 +33,12 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Set up Python
-        shell: bash
-        env:
-          MAIN_PYTHON_VERSION: ${{ vars.MAIN_PYTHON_VERSION }}
-        run: |
-          apt update
-          apt install lsb-release xvfb git curl make -y
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          export PATH="$HOME/.local/bin:$PATH"
-          uv python install python${MAIN_PYTHON_VERSION}
-          uv venv /env
-
-      - name: Install system dependencies
-        env:
-          DEBIAN_FRONTEND: 'noninteractive'
-          TZ: 'Etc/UTC'
-        run: |
-          apt update
-          apt install make lsb-release xvfb poppler-utils -y
-          apt install zip pandoc libgl1-mesa-glx mesa-utils npm -y
-          apt install -y texlive-latex-extra texlive-fonts-extra
+      - name: Setup Python environment
+        uses: ./.github/actions/setup-python-env
+        with:
+          python-version: ${{ vars.MAIN_PYTHON_VERSION }}
+          install-extras: "doc"
+          extra-apt-packages: "make poppler-utils zip pandoc libgl1-mesa-glx mesa-utils npm texlive-latex-extra texlive-fonts-extra libjbig-dev"
 
       - name: Install gh cli
         run: |
@@ -75,12 +60,6 @@ jobs:
       - name: Test quarto installation
         run: quarto --version
 
-      - name: Install Python requirements
-        run: |
-          . /env/bin/activate
-          uv pip install --upgrade pip
-          uv pip install -e .[doc]
-
       - name: Build docs
         env:
           NUM_CORES: 1
@@ -90,8 +69,6 @@ jobs:
         run: |
           . /env/bin/activate
 
-          apt update
-          apt install -y libjbig-dev
           # Add the /usr/lib/x86_64-linux-gnu/ path to the LD_LIBRARY_PATH (where libjbig-dev .so files are)
           export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/
 
