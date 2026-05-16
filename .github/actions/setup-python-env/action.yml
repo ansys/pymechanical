@@ -20,9 +20,11 @@ runs:
       env:
         PYTHON_VERSION: ${{ inputs.python-version }}
         EXTRA_APT_PACKAGES: ${{ inputs.extra-apt-packages }}
+        DEBIAN_FRONTEND: 'noninteractive'
+        TZ: 'Etc/UTC'
       run: |
         apt update
-        apt install -y lsb-release xvfb git curl make ${EXTRA_APT_PACKAGES}
+        apt install -y git curl ${EXTRA_APT_PACKAGES}
         curl -LsSf https://astral.sh/uv/install.sh | sh
         export PATH="$HOME/.local/bin:$PATH"
         uv python install python${PYTHON_VERSION}

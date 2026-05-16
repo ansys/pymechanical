@@ -38,7 +38,7 @@ jobs:
         with:
           python-version: ${{ vars.MAIN_PYTHON_VERSION }}
           install-extras: "doc"
-          extra-apt-packages: "poppler-utils zip pandoc libgl1-mesa-glx mesa-utils npm texlive-latex-extra texlive-fonts-extra libjbig-dev"
+          extra-apt-packages: "make poppler-utils zip pandoc libgl1-mesa-glx mesa-utils npm texlive-latex-extra texlive-fonts-extra libjbig-dev"
 
       - name: Install gh cli
         run: |
