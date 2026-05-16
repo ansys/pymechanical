@@ -6,7 +6,7 @@
 
 Computation times
 =================
-**05:53.404** total execution time for 8 files **from all galleries**:
+**06:15.723** total execution time for 8 files **from all galleries**:
 
 .. container::
 
@@ -33,26 +33,26 @@ Computation times
      - Time
      - Mem (MB)
    * - :ref:`sphx_glr_examples_gallery_examples_01_basic_bolt_pretension.py` (``../../examples/01_basic/bolt_pretension.py``)
-     - 01:48.669
+     - 02:05.825
      - 0.0
    * - :ref:`sphx_glr_examples_gallery_examples_01_basic_modal_acoustics_analysis.py` (``../../examples/01_basic/modal_acoustics_analysis.py``)
-     - 00:48.656
+     - 00:49.761
      - 0.0
    * - :ref:`sphx_glr_examples_gallery_examples_01_basic_fracture_analysis_contact_debonding.py` (``../../examples/01_basic/fracture_analysis_contact_debonding.py``)
-     - 00:43.849
+     - 00:46.911
      - 0.0
    * - :ref:`sphx_glr_examples_gallery_examples_01_basic_topology_optimization_cantilever_beam.py` (``../../examples/01_basic/topology_optimization_cantilever_beam.py``)
-     - 00:42.330
+     - 00:43.316
      - 0.0
    * - :ref:`sphx_glr_examples_gallery_examples_01_basic_cooling_holes_thermal_analysis.py` (``../../examples/01_basic/cooling_holes_thermal_analysis.py``)
-     - 00:31.344
+     - 00:32.197
      - 0.0
    * - :ref:`sphx_glr_examples_gallery_examples_01_basic_harmonic_acoustics.py` (``../../examples/01_basic/harmonic_acoustics.py``)
-     - 00:28.723
+     - 00:27.398
      - 0.0
    * - :ref:`sphx_glr_examples_gallery_examples_01_basic_valve.py` (``../../examples/01_basic/valve.py``)
-     - 00:27.597
+     - 00:27.118
      - 0.0
    * - :ref:`sphx_glr_examples_gallery_examples_01_basic_steady_state_thermal_analysis.py` (``../../examples/01_basic/steady_state_thermal_analysis.py``)
-     - 00:22.235
+     - 00:23.196
      - 0.0
