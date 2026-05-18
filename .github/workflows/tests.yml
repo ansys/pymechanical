@@ -250,6 +250,7 @@ jobs:
         with:
           python-version: ${{ vars.MAIN_PYTHON_VERSION }}
           install-extras: "tests"
+          extra-apt-packages: "lsb-release"
 
       - name: Embedding scripts unit testing and coverage
         env:
