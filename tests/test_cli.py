@@ -33,6 +33,7 @@ import pytest
 
 from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
 from ansys.mechanical.core.ide_config import (
+    _normalize_paths,
     cli as ideconfig_cli,
     get_stubs_location,
     get_stubs_versions,
@@ -543,6 +544,30 @@ def test_ideconfig_no_revision():
     assert result.exit_code == 0
     assert f"Updated {settings_json} with the following information" in stdout
     assert str(stubs_location) in stdout
+
+
+@pytest.mark.cli
+def test_normalize_paths_deduplicates_same_stubs_version():
+    """Test that _normalize_paths replaces existing stubs paths for the same version."""
+    existing = [
+        "D:\\old_env\\.venv\\Lib\\site-packages\\ansys\\mechanical\\stubs\\v252",
+        "C:\\unrelated\\path",
+    ]
+    new_path = "D:\\new_env\\.venv\\Lib\\site-packages\\ansys\\mechanical\\stubs\\v252"
+    result = _normalize_paths(existing, new_path)
+    # Old stubs path for v252 should be removed, new one added, unrelated path kept
+    assert result == ["C:\\unrelated\\path", new_path]
+
+
+@pytest.mark.cli
+def test_normalize_paths_keeps_different_stubs_versions():
+    """Test that _normalize_paths keeps stubs paths for different versions."""
+    existing = [
+        "D:\\env\\.venv\\Lib\\site-packages\\ansys\\mechanical\\stubs\\v241",
+    ]
+    new_path = "D:\\env\\.venv\\Lib\\site-packages\\ansys\\mechanical\\stubs\\v252"
+    result = _normalize_paths(existing, new_path)
+    assert result == [existing[0], new_path]
 
 
 @pytest.mark.cli

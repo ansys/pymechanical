@@ -96,9 +96,24 @@ def _normalize_paths(existing_value, new_path: str) -> list[str]:
     else:
         paths = []
 
+    # Extract the stubs suffix (e.g., ansys/mechanical/stubs/v252) to detect
+    # existing entries pointing to the same stubs version in different environments.
+    stubs_suffix = _get_stubs_suffix(new_path)
+
+    # Remove any existing paths that resolve to the same stubs version
+    if stubs_suffix:
+        paths = [p for p in paths if not _get_stubs_suffix(p) == stubs_suffix]
+
     if new_path not in paths:
         paths.append(new_path)
     return paths
+
+
+def _get_stubs_suffix(path: str) -> str | None:
+    """Extract the normalized stubs suffix from a path, if present."""
+    normalized = path.replace("\\", "/").lower()
+    match = re.search(r"ansys/mechanical/stubs/v\d+", normalized)
+    return match.group(0) if match else None
 
 
 def _clean_jsonc(text: str) -> str:
