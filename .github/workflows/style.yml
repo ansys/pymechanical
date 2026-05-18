@@ -13,7 +13,7 @@ jobs:
       contents: read
     steps:
       - name: PyAnsys code style checks
-        uses: ansys/actions/code-style@7d55ff0b9f67c77dae50a286d711ee1ae27b0a25 # v10.2.12
+        uses: ansys/actions/code-style@12ca08fd7f0caa52076cca15c5621482646f8560 # v10.3.1
         with:
           python-version: ${{ vars.MAIN_PYTHON_VERSION }}
 
@@ -24,7 +24,7 @@ jobs:
       contents: read
     steps:
       - name: PyAnsys documentation style checks
-        uses: ansys/actions/doc-style@7d55ff0b9f67c77dae50a286d711ee1ae27b0a25 # v10.2.12
+        uses: ansys/actions/doc-style@12ca08fd7f0caa52076cca15c5621482646f8560 # v10.3.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -36,7 +36,7 @@ jobs:
     steps:
       - name: PyAnsys Vulnerability check (on main)
         if: github.ref == 'refs/heads/main'
-        uses: ansys/actions/check-vulnerabilities@7d55ff0b9f67c77dae50a286d711ee1ae27b0a25 # v10.2.12
+        uses: ansys/actions/check-vulnerabilities@12ca08fd7f0caa52076cca15c5621482646f8560 # v10.3.1
         with:
           python-version: ${{ vars.MAIN_PYTHON_VERSION }}
           python-package-name: ${{ vars.PACKAGE_NAME }}
@@ -44,7 +44,7 @@ jobs:
 
       - name: PyAnsys Vulnerability check (on dev mode)
         if: github.ref != 'refs/heads/main'
-        uses: ansys/actions/check-vulnerabilities@7d55ff0b9f67c77dae50a286d711ee1ae27b0a25 # v10.2.12
+        uses: ansys/actions/check-vulnerabilities@12ca08fd7f0caa52076cca15c5621482646f8560 # v10.3.1
         with:
           python-version: ${{ vars.MAIN_PYTHON_VERSION }}
           python-package-name: ${{ vars.PACKAGE_NAME }}
@@ -57,7 +57,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: ansys/actions/check-actions-security@7d55ff0b9f67c77dae50a286d711ee1ae27b0a25 # v10.2.12
+      - uses: ansys/actions/check-actions-security@12ca08fd7f0caa52076cca15c5621482646f8560 # v10.3.1
         with:
           generate-summary: true
           token: ${{ secrets.GITHUB_TOKEN }}
