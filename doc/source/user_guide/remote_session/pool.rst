@@ -21,7 +21,7 @@ For example, to restart failed instances, you can set ``restart_failed=True``:
 .. code:: pycon
 
     >>> import os
-    >>> my_path = os.getcmd()
+    >>> my_path = os.getcwd()
     >>> pool = LocalMechanicalPool(10, version="261", restart_failed=True)
     Creating Pool: 100%|########| 10/10 [00:01<00:00,  1.43it/s]
 
@@ -46,11 +46,11 @@ For example, you can run the first set of 20 verification files with this code:
 
 .. code:: pycon
 
-     >>>>>> from ansys.mechanical.core import examples
-     >>> files = [f"test{index}.py" for index in range(1, 21)]
-     >>> outputs = pool.run_batch(files)
-     >>> len(outputs)
-     20
+    >>> from ansys.mechanical.core import examples
+    >>> files = [f"test{index}.py" for index in range(1, 21)]
+    >>> outputs = pool.run_batch(files)
+    >>> len(outputs)
+    20
 
 Run a user-defined function
 ---------------------------
