@@ -12,14 +12,14 @@ Overview
    For full object-model access without a network layer, see
    :ref:`Embedding mode <ref_embedding_user_guide>` instead.
 
-The :func:`launch_mechanical() <ansys.mechanical.core.Mechanical.launch_mechanical>` method
-creates an instance of the :class:`Mechanical() <ansys.mechanical.core.Mechanical()>`
+The :func:`~mechanical.launch_mechanical` function
+creates an instance of the :class:`~ansys.mechanical.core.mechanical.Mechanical`
 class in the background and sends commands to it as a service. Because errors and warnings
 are processed Pythonically, you can develop a script in real time without worrying about
 whether the script runs correctly when deployed in batch mode.
 
 Here is how you use the
-:func:`launch_mechanical() <ansys.mechanical.core.Mechanical.launch_mechanical>` method
+:func:`~mechanical.launch_mechanical` function
 to launch Mechanical from Python in gRPC mode:
 
 .. code:: python
@@ -70,7 +70,7 @@ Python, run them interactively, and then run them in batch without worrying if t
 scripts run correctly. This would not be the case if you had instead outputted the
 scripts that you wrote to script files.
 
-The :class:`Mechanical <ansys.mechanical.core.Mechanical>` class supports
+The :class:`Mechanical <ansys.mechanical.core.mechanical.Mechanical>` class supports
 much more than sending text to Mechanical. It includes higher-level wrapping
 that provides for better scripting and interaction with Mechanical. For information
 on advanced methods for interacting with Mechanical, see :ref:`ref_examples`.
