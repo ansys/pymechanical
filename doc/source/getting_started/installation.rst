@@ -5,7 +5,7 @@ Installation guide
 
 To use PyMechanical, a licensed copy of Ansys Mechanical must be installed locally.
 The installed version determines the available interface and features.
-PyMechanical is compatible with Mechanical **2024 R1** and later on Windows
+PyMechanical is compatible with Mechanical **2024 R2** and later on Windows
 and Linux. If you face any issues while setting up or using PyMechanical,
 see :ref:`FAQs <faq>` and :ref:`Known issues and limitations <ref_known_issues_and_limitation>`.
 
@@ -34,7 +34,7 @@ For more information, see Python's
 Install the latest package from `PyPi
 <https://pypi.org/project/ansys-mechanical-core/>`_ with this command:
 
-.. code::
+.. code-block:: bash
 
    pip install ansys-mechanical-core
 
@@ -54,7 +54,7 @@ virtual environment.
 For example, on Linux with Python 3.10, unzip the wheelhouse archive and install it with
 this code:
 
-.. code::
+.. code-block:: bash
 
    unzip ansys-mechanical-core-v0.12.dev0-wheelhouse-Linux-3.10 wheelhouse
    pip install ansys-mechanical-core -f wheelhouse --no-index --upgrade --ignore-installed

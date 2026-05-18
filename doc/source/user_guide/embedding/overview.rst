@@ -93,7 +93,7 @@ has been installed. Activate the virtual environment and then use CLI to run the
 If multiple Mechanical versions are installed in the same system,
 versions can be specified using ``-r`` flag. Use ``-h`` for more information.
 
-.. code::
+.. code-block:: bash
 
     ansys-mechanical -i file.py
 

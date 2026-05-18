@@ -3,13 +3,13 @@
 Helpers methods
 ===============
 
-The `Helpers <../api/ansys/mechanical/core/embedding/helpers/Helpers.html#ansys.mechanical.core.embedding.helpers.Helpers>`_ class provides
+The :class:`~ansys.mechanical.core.embedding.helpers.Helpers` class provides
 convenient utility methods for common Mechanical operations. These helpers simplify tasks such as
 importing geometry and materials, exporting images and animations, configuring views, and
 visualizing the project tree structure.
 
 The Helpers class is accessible through the ``helpers`` attribute of the
-`App <../api/ansys/mechanical/core/embedding/app/App.html#ansys.mechanical.core.embedding.app.App>`_ instance:
+:class:`~ansys.mechanical.core.embedding.app.App` instance:
 
 .. code:: python
 
