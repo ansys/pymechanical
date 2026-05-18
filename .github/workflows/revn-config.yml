@@ -97,7 +97,7 @@ jobs:
           MECHANICAL_IMAGE: ${{ matrix.test_container }}
         run: |
           # Install jq for parsing JSON
-          pip install jq
+          sudo apt-get install -y jq
 
           # Get docker info
           image_info=$(docker manifest inspect -v ${MECHANICAL_IMAGE}) # --format ".Descriptor.digest"
