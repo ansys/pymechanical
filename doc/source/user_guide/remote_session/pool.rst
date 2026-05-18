@@ -40,7 +40,7 @@ Run a set of input files
 ------------------------
 
 You can use the pool to run a set of pre-generated input files using the
-:meth:`~ansys.mechanical.core.pool.LocalMechanicalPool.run_batch` method.
+:meth:`~LocalMechanicalPool.run_batch` method.
 
 For example, you can run the first set of 20 verification files with this code:
 
@@ -56,9 +56,9 @@ Run a user-defined function
 ---------------------------
 
 While the previous example uses the
-:meth:`~ansys.mechanical.core.pool.LocalMechanicalPool.run_batch`
+:meth:`~LocalMechanicalPool.run_batch`
 method to run a set of input files, you can also use the
-:meth:`~ansys.mechanical.core.pool.LocalMechanicalPool.map` method to run a custom user-defined function on
+:meth:`~LocalMechanicalPool.map` method to run a custom user-defined function on
 each instance of Mechanical over a set of input files.
 
 .. code:: pycon
