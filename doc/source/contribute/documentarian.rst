@@ -137,13 +137,6 @@ For building documentation, you can run the usual rules provided in the
             doc\make html
             start .\doc\_build\html\index.html
 
-However, the recommended way of checking documentation integrity is to use
-``tox``:
-
-.. code:: bash
-
-    tox -e doc && your_browser_name .tox/doc_out/index.html
-
 Documentation building process involves building cheatsheets, which are generated using
 quarto. If have quarto installed locally and want to build cheatsheets, then set the
 environment variable ``BUILD_CHEATSHEET`` to ``true``.
