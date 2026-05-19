@@ -126,10 +126,10 @@ This section provides answers to frequently asked questions.
     Mechanical is a remote session or embedded.
 
     - If Mechanical is a remote session, use either the
-      `Mechanical.clear() <../api/ansys/mechanical/core/mechanical/Mechanical.html#Mechanical.clear>`_
+      :meth:`~Mechanical.clear`
       method or exit and restart Mechanical.
     - If Mechanical is embedded, use the
-      `app.new() <../api/ansys/mechanical/core/embedding/app/App.html#App.new>`_
+      :meth:`~ansys.mechanical.core.embedding.app.App.new`
       method.
 
 .. dropdown:: How do you check if a license is active with PyMechanical?
@@ -167,8 +167,8 @@ This section provides answers to frequently asked questions.
             .. code-block:: shell
 
                 Ansys Mechanical [Ansys Mechanical Enterprise]
-                Product Version:261
-                Software build date: 02/03/2026 15:29:09
+                Product Version:{mechanical_version}
+                Software build date: {build_date}
 
 
         .. tab-item:: Without License
@@ -176,8 +176,8 @@ This section provides answers to frequently asked questions.
             .. code-block:: shell
 
                 Ansys Mechanical []
-                Product Version:261
-                Software build date: 02/03/2026 15:29:09
+                Product Version:{mechanical_version}
+                Software build date: {build_date}
 
 
     Alternatively, once the ``app`` is created ``readonly`` method can be used to see if license is active.
@@ -194,7 +194,7 @@ This section provides answers to frequently asked questions.
 
         $ mechanical-env python
         >>> import ansys.mechanical.core as mech
-        >>> app=mech.App(version=261)
+        >>> app=mech.App(version={mechanical_version})
 
     or
 

@@ -6,7 +6,7 @@ Most of the time, PyMechanical can determine this location automatically. Howeve
 if you have a non-standard installation, you must provide this location.
 
 To test and set up your installation of PyMechanical, run the
-`launch_mechanical() <../api/ansys/mechanical/core/mechanical/index.html#mechanical.launch_mechanical>`_
+:func:`~mechanical.launch_mechanical`
 method:
 
 .. code:: python
@@ -24,13 +24,13 @@ Mechanical executable file.
 
 .. code-block:: console
 
-    Enter location of Mechanical executable: /usr/ansys_inc/v261/aisol/.workbench
+    Enter location of Mechanical executable: /usr/ansys_inc/v{mechanical_version}/aisol/.workbench
 
 **On Windows**
 
 .. code-block:: console
 
-    Enter location of Mechanical executable: C:/Program Files/ANSYS Inc/v261/aisol/bin/winx64/AnsysWBU.exe
+    Enter location of Mechanical executable: C:/Program Files/ANSYS Inc/v{mechanical_version}/aisol/bin/winx64/AnsysWBU.exe
 
 The settings file for Mechanical is stored locally. You do not need to enter
 the path again. If you must change the path, perhaps to change the default
@@ -40,11 +40,11 @@ version of Mechanical, run the following:
 
     from ansys.mechanical import core as pymechanical
 
-    new_path = "C:/Program Files/ANSYS Inc/v261/aisol/bin/winx64/AnsysWBU.exe"
+    new_path = "C:/Program Files/ANSYS Inc/v{mechanical_version}/aisol/bin/winx64/AnsysWBU.exe"
     pymechanical.change_default_mechanical_path(new_path)
 
-For more information, see the `change_default_mechanical_path() <../api/_autosummary/ansys.tools.common.path.change_default_mechanical_path.html#ansys.tools.common.path.change_default_mechanical_path>`_
-and `find_mechanical() <../api/_autosummary/ansys.tools.common.path.find_mechanical.html#ansys.tools.common.path.find_mechanical>`_ methods.
+For more information, see the ``change_default_mechanical_path()``
+and ``find_mechanical()`` functions from ``ansys.tools.common.path``.
 
 Additionally, you can use the ``exec_file`` keyword argument to specify the location of the
 Mechanical executable file.
@@ -55,7 +55,7 @@ Mechanical executable file.
 
     from ansys.mechanical.core import launch_mechanical
 
-    mechanical = launch_mechanical(exec_file="/usr/ansys_inc/v261/aisol/.workbench")
+    mechanical = launch_mechanical(exec_file="/usr/ansys_inc/v{mechanical_version}/aisol/.workbench")
 
 **On Windows**
 
@@ -64,7 +64,7 @@ Mechanical executable file.
     from ansys.mechanical.core import launch_mechanical
 
     mechanical = launch_mechanical(
-        exec_file="C:\\Program File\\ANSYS Inc\\v261\\aisol\\bin\\winx64\\AnsysWBU.exe"
+        exec_file="C:\\Program File\\ANSYS Inc\\v{mechanical_version}\\aisol\\bin\\winx64\\AnsysWBU.exe"
     )
 
 You can use the ``additional_switches`` keyword argument to specify additional arguments.
@@ -73,7 +73,7 @@ You can use the ``additional_switches`` keyword argument to specify additional a
 
     from ansys.mechanical.core import launch_mechanical
 
-    custom_exec = "/usr/ansys_inc/v261/aisol/.workbench"
+    custom_exec = "/usr/ansys_inc/v{mechanical_version}/aisol/.workbench"
     add_switch = f"-featureflags mechanical.material.import;"
     mechanical = launch_mechanical(exec_file=custom_exec, additional_switches=add_switch)
 
