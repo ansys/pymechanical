@@ -49,7 +49,7 @@ Run a Python script using a specific version:
 
 .. code-block:: bash
 
-   mechanical-env -r 261 python my_script.py
+   mechanical-env -r {mechanical_version} python my_script.py
 
 Debugging with Visual Studio Code
 ---------------------------------
