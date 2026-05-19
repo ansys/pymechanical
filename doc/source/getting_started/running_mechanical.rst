@@ -28,7 +28,7 @@ Launch from Python
 .. vale Google.Headings = YES
 
 Use the
-`launch_mechanical() <../api/ansys/mechanical/core/mechanical/index.html#mechanical.launch_mechanical>`_
+:func:`~mechanical.launch_mechanical`
 method to launch and connect automatically:
 
 .. code:: pycon
@@ -79,7 +79,7 @@ Connect to a local or remote Mechanical server:
     mechanical = Mechanical("myremotemachine", port=10000)
 
 Alternatively, use the
-`connect_to_mechanical() <../api/ansys/mechanical/core/mechanical/index.html#mechanical.connect_to_mechanical>`_ method:
+:func:`~mechanical.connect_to_mechanical` method:
 
 .. code:: python
 

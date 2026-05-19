@@ -24,7 +24,7 @@ Contributing as a developer
 
         Install the project in editable mode.
 
-    .. grid-item-card:: :fab:`docker` Adhere to coding style
+    .. grid-item-card:: :fa:`paintbrush` Adhere to coding style
         :padding: 2 2 2 2
         :link: coding-style
         :link-type: ref
@@ -47,7 +47,7 @@ Fork the repository
 
 Forking the repository is the first step to contributing to the project. This
 allows you to have your own copy of the project so you can make changes without
-affection the main project. Once you have made your changes, you can submit a
+affecting the main project. Once you have made your changes, you can submit a
 pull-request to the main project to have your changes reviewed and merged.
 
 .. button-link:: https://github.com/ansys/pymechanical/fork
@@ -201,7 +201,7 @@ variables.
 
 **On Linux**
 
-.. code::
+.. code-block:: bash
 
     export PYMECHANICAL_START_INSTANCE=False
     export PYMECHANICAL_PORT=<MECHANICAL Port> (default 10000)
@@ -209,7 +209,7 @@ variables.
 
 **On Windows**
 
-.. code::
+.. code-block:: bat
 
     SET PYMECHANICAL_START_INSTANCE=False
     SET PYMECHANICAL_PORT=<MECHANICAL Port> (default 10000)
@@ -217,7 +217,7 @@ variables.
 
 The environment variables for your operating system tell PyMechanical
 to attempt to connect to the existing Mechanical service by default
-when you use the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>`
+when you use the :func:`launch_mechanical() <mechanical.launch_mechanical>`
 method.
 
 

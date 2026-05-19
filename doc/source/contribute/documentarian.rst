@@ -108,7 +108,7 @@ Finally, here are some tips for writing examples:
 Build the documentation
 =======================
 
-To build the documentation,  you need several dependencies installed.
+To build the documentation, you need several dependencies installed.
 These dependencies are listed in the ``pyproject.toml`` file under the
 ``[project.optional-dependencies]`` section. To install them, run:
 
@@ -138,6 +138,6 @@ For building documentation, you can run the usual rules provided in the
             start .\doc\_build\html\index.html
 
 Documentation building process involves building cheatsheets, which are generated using
-quarto. If have quarto installed locally and want to build cheatsheets, then set the
+quarto. If you have quarto installed locally and want to build cheatsheets, then set the
 environment variable ``BUILD_CHEATSHEET`` to ``true``.
 
