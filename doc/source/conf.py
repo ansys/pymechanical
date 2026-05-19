@@ -394,3 +394,20 @@ if switcher_version != "dev":
     linkcheck_ignore.append(
         f"https://github.com/ansys/pymechanical/releases/tag/v{pymechanical.__version__}"
     )
+
+
+# -- Source-read substitution for version placeholders in code blocks ---------
+# Standard RST substitutions (|name|) don't work inside code blocks.
+# This hook replaces {mechanical_version} in the raw source before parsing,
+# so it works everywhere including literal blocks and code-block directives.
+
+
+def source_read_handler(app, docname, source):
+    """Replace version placeholders in RST source before parsing."""
+    source[0] = source[0].replace("{mechanical_version}", str(current_mechanical_version))
+    source[0] = source[0].replace("{build_date}", "06/03/2026 09:51:20")
+
+
+def setup(app):
+    """Connect Sphinx events."""
+    app.connect("source-read", source_read_handler)

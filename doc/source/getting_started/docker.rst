@@ -66,13 +66,13 @@ override the entrypoint and pass
 .. code-block:: bash
 
     LICENSE_SERVER=1055@XXX.XXX.XXX.XXX
-    VERSION=261
+    VERSION={mechanical_version}
 
     docker run -d \
       -e ANSYSLMD_LICENSE_FILE=$LICENSE_SERVER \
       -p 10000:10000 \
       --entrypoint=tini \
-      mechanical:25.2 \
+      mechanical:{mechanical_version} \
       -- xvfb-run /install/ansys_inc/v${VERSION}/aisol/.workbench \
       -dsapplet -b -grpc 10000 --grpc-host 0.0.0.0 --transport-mode insecure
 
@@ -115,8 +115,8 @@ Verify your connection with this code:
 
     >>> mechanical
     Ansys Mechanical [Ansys Mechanical Enterprise]
-    Product Version:261
-    Software build date: 02/03/2026 15:29:09
+    Product Version:{mechanical_version}
+    Software build date: {build_date}
 
 Additional considerations
 -------------------------
@@ -130,7 +130,7 @@ to the Docker command. For example, this code shows how you pass feature flags:
       -e ANSYSLMD_LICENSE_FILE=$LICENSE_SERVER \
       -p 10000:10000 \
       --entrypoint=tini \
-      mechanical:25.2 \
+      mechanical:{mechanical_version} \
       -- xvfb-run /install/ansys_inc/v${VERSION}/aisol/.workbench \
       -dsapplet -b -grpc 10000 --grpc-host 0.0.0.0 --transport-mode insecure \
       -featureflags mechanical.material.import
@@ -146,7 +146,7 @@ and then install Python packages as needed.
 
 .. code:: bash
 
-    docker run -it -e ANSYSLMD_LICENSE_FILE=$LICENSE_SERVER --entrypoint=/bin/bash mechanical:26.1
+    docker run -it -e ANSYSLMD_LICENSE_FILE=$LICENSE_SERVER --entrypoint=/bin/bash mechanical:{mechanical_version}
 
     # Once inside the container, you can install Python and packages as needed, then create an embedded app.
 

@@ -72,19 +72,19 @@ Verify that PyMechanical can find your Mechanical installation:
 
    >>> from ansys.tools.common.path import find_mechanical
    >>> find_mechanical()
-   ('C:/Program Files/ANSYS Inc/v261/aisol/bin/winx64/AnsysWBU.exe', 26.1)  # Windows
-   ('/usr/ansys_inc/v261/aisol/.workbench', 26.1) # Linux
+   ('C:/Program Files/ANSYS Inc/v{mechanical_version}/aisol/bin/winx64/AnsysWBU.exe', 26.1)  # Windows
+   ('/usr/ansys_inc/v{mechanical_version}/aisol/.workbench', 26.1) # Linux
 
-   >>> find_mechanical(version=261)  # for a specific version
+   >>> find_mechanical(version={mechanical_version})  # for a specific version
 
 If Ansys is installed in a non-default location, save the path manually:
 
 .. code:: pycon
 
    >>> from ansys.tools.common.path import save_mechanical_path, get_mechanical_path
-   >>> save_mechanical_path("/home/username/ansys_inc/v261/aisol/.workbench")
+   >>> save_mechanical_path("/home/username/ansys_inc/v{mechanical_version}/aisol/.workbench")
    >>> print(get_mechanical_path())
-   /home/username/ansys_inc/v261/aisol/.workbench
+   /home/username/ansys_inc/v{mechanical_version}/aisol/.workbench
 
 Once the installation is found, verify that your chosen mode works:
 
@@ -98,8 +98,8 @@ Once the installation is found, verify that your chosen mode works:
             >>> mechanical = launch_mechanical()
             >>> mechanical
             Ansys Mechanical [Ansys Mechanical Enterprise]
-            Product Version:261
-            Software build date: 02/03/2026 15:29:09
+            Product Version:{mechanical_version}
+            Software build date: {build_date}
 
     .. tab-item:: Embedding
 
@@ -109,8 +109,8 @@ Once the installation is found, verify that your chosen mode works:
             >>> app = App()
             >>> print(app)
             Ansys Mechanical [Ansys Mechanical Enterprise]
-            Product Version:261
-            Software build date: 02/03/2026 15:29:09
+            Product Version:{mechanical_version}
+            Software build date: {build_date}
 
         .. note::
 
