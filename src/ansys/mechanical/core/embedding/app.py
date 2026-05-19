@@ -66,10 +66,10 @@ def _get_default_addin_configuration() -> AddinConfiguration:
     return configuration
 
 
-__INSTANCES: list[App] = []
+_INSTANCES: list[App] = []
 """List of instances."""
 
-__INITIALIZED: bool = False
+_INITIALIZED: bool = False
 
 
 def _atexit_embedded_app(instances):  # pragma: nocover
@@ -136,7 +136,7 @@ def _normalize_file_path(path: str | Path) -> str:
 
 def is_initialized() -> bool:
     """Check if the app has been initialized."""
-    return __INITIALIZED
+    return _INITIALIZED
 
 
 class App:
@@ -224,7 +224,7 @@ class App:
         **kwargs: typing.Any,
     ) -> None:
         """Construct an instance of the mechanical Application."""
-        global __INSTANCES, __INITIALIZED
+        global _INSTANCES, _INITIALIZED
         from ansys.mechanical.core import BUILDING_GALLERY
 
         use_gallery_sharing = BUILDING_GALLERY and not reuse_instance
@@ -258,9 +258,9 @@ class App:
         # If the building gallery flag is set, we need to share the instance
         # This can apply to running the `make -C doc html` command
         if use_gallery_sharing:
-            if __INITIALIZED:
+            if _INITIALIZED:
                 # Get the first instance of the app
-                instance: App = __INSTANCES[0]
+                instance: App = _INSTANCES[0]
                 # Point to the same underlying application object
                 instance._share(self)
                 # Update the globals if provided in kwargs
@@ -271,7 +271,7 @@ class App:
                 if db_file is not None:
                     self.open(db_file)
                 return
-        if __INITIALIZED:
+        if _INITIALIZED:
             raise RuntimeError("Cannot have more than one embedded mechanical instance!")
 
         self._version = initializer.initialize(version)
@@ -298,9 +298,9 @@ class App:
         self._app = _start_application(configuration, self._version, db_file, additional_args)
 
         self._disposed = False
-        atexit.register(_atexit_embedded_app, __INSTANCES)
-        __INSTANCES.append(self)
-        __INITIALIZED = True
+        atexit.register(_atexit_embedded_app, _INSTANCES)
+        _INSTANCES.append(self)
+        _INITIALIZED = True
 
         self._handle_interactive_shell()
 
