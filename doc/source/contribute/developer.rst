@@ -157,7 +157,7 @@ Verify the installation by checking the version of the library:
 Run the tests
 =============
 
-PyMechanical uses `PyTest`_ and `tox`_ for unit testing. Prior to running the tests,
+PyMechanical uses `PyTest`_ for unit testing. Prior to running the tests,
 ensure Mechanical is installed on your system with a valid license and the test
 dependencies are installed. Run this command to install the test dependencies::
 
@@ -190,28 +190,6 @@ specific tests, run these commands::
 See the ``pyproject.toml`` file for a full list of markers (-m) and their descriptions.
 
 To run specific tests based on a keyword, use the ``-k`` argument::
-
-    # Run all tests containing the word ``appdata``
-    # This would run ``test_private_appdata`` and ``test_normal_appdata`` only
-    pytest -k appdata
-
-
-Using ``tox``
--------------
-
-This project takes advantage of `tox`_. This tool automates common development
-tasks (similar to ``Makefile``), but it is oriented towards Python development.
-
-While ``Makefile`` has rules, ``tox`` has environments. In fact, ``tox``
-creates its own virtual environment so that anything being tested is isolated
-from the project to guarantee the project's integrity.
-
-The following environment commands are provided:
-
-- ``tox -e style``: Checks for coding style quality.
-- ``tox -e py``: Checks for unit tests.
-- ``tox -e py-coverage``: Checks for unit testing and code coverage.
-- ``tox -e doc``: Checks for documentation-building process.
 
 
 Remote testing
