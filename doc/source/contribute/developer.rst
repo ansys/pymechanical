@@ -239,7 +239,7 @@ variables.
 
 The environment variables for your operating system tell PyMechanical
 to attempt to connect to the existing Mechanical service by default
-when you use the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>`
+when you use the :func:`launch_mechanical() <mechanical.launch_mechanical>`
 method.
 
 
