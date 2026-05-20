@@ -47,13 +47,9 @@ def test_analytics(rootdir, run_subprocess, pytestconfig, tmp_path: pytest.TempP
     args = [sys.executable, str(embedded_py), "--version", version]
     run_subprocess(args, analytics_env)
 
-    temp_files = [f.name for f in tmp_path.iterdir()]
-    json_files = [file for file in temp_files if file.endswith(".json")]
+    json_files = list(tmp_path.rglob("*.json"))
     assert len(json_files) == 1
-    json_file = tmp_path / json_files[0]
-    assert json_file.is_file()
-    with json_file.open("r", encoding="utf-8") as f:
-        analytics_data = json.load(f)
+    analytics_data = json.loads(json_files[0].read_text(encoding="utf-8"))
 
     assert analytics_data["Application.Mode"] == "StandaloneMechanical"
     assert "SessionID" in analytics_data
