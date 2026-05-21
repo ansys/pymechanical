@@ -70,6 +70,7 @@ _INSTANCES: list[App] = []
 """List of instances."""
 
 _INITIALIZED: bool = False
+"""Whether the embedded application has been initialized."""
 
 
 def _atexit_embedded_app(instances):  # pragma: nocover
@@ -298,9 +299,10 @@ class App:
         self._app = _start_application(configuration, self._version, db_file, additional_args)
 
         self._disposed = False
-        atexit.register(_atexit_embedded_app, _INSTANCES)
         _INSTANCES.append(self)
-        _INITIALIZED = True
+        if not _INITIALIZED:
+            atexit.register(_atexit_embedded_app, _INSTANCES)
+            _INITIALIZED = True
 
         self._handle_interactive_shell()
 
