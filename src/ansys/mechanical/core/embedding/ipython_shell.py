@@ -155,7 +155,9 @@ def _execution_thread_main():
         _exec_from_queue(shell)
 
 
-def _run_cell_in_thread(self, raw_cell, store_history=False, silent=False, shell_futures=True):
+def _run_cell_in_thread(
+    self, raw_cell, store_history=False, silent=False, shell_futures=True, **kwargs
+):
     CODE_QUEUE.put(raw_cell)
     while not SHUTDOWN_EVENT.is_set():
         try:
