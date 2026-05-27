@@ -30,7 +30,7 @@ from grpc._channel import _InactiveRpcError, _MultiThreadedRendezvous
 
 from ansys.mechanical.core import LOG
 
-SIGINT_TRACKER = []
+SIGINT_TRACKER: list[bool] = []
 """List of SIGINT keyboard interrupts."""
 
 

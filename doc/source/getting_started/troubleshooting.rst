@@ -17,7 +17,7 @@ If PyMechanical cannot find your installation, set the path manually:
 
     from ansys.mechanical.core import launch_mechanical
 
-    exec_loc = "C:/Program Files/ANSYS Inc/v261/aisol/bin/winx64/AnsysWBU.exe"
+    exec_loc = "C:/Program Files/ANSYS Inc/v{mechanical_version}/aisol/bin/winx64/AnsysWBU.exe"
     mechanical = launch_mechanical(exec_file=exec_loc)
 
 **On Linux**
@@ -26,7 +26,7 @@ If PyMechanical cannot find your installation, set the path manually:
 
     from ansys.mechanical.core import launch_mechanical
 
-    exec_loc = "/usr/ansys_inc/v261/aisol/.workbench"
+    exec_loc = "/usr/ansys_inc/v{mechanical_version}/aisol/.workbench"
     mechanical = launch_mechanical(exec_file=exec_loc)
 
 If Mechanical still fails to launch, pass ``verbose_mechanical=True`` to print
@@ -62,7 +62,7 @@ file, and point Visual Studio Code at it.
 
    .. code-block:: console
 
-      $ mechanical-env -r 261 env > .vscode/.env
+      $ mechanical-env -r {mechanical_version} env > .vscode/.env
 
 #. Create ``.vscode/launch.json`` with a launch configuration that loads that file:
 

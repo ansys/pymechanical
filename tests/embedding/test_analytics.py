@@ -31,29 +31,23 @@ import pytest
 
 
 @pytest.mark.embedding_scripts
+@pytest.mark.minimum_version(252)  # Analytics are only captured for 252+
 def test_analytics(rootdir, run_subprocess, pytestconfig, tmp_path: pytest.TempPathFactory):
     """Test that no output is written when an info is logged when configured at the error level."""
     version = pytestconfig.getoption("ansys_version")
-    # Analytics are only captured for 252+
-    if int(version) < 252:
-        return
-
     embedded_py = Path(rootdir) / "tests" / "scripts" / "run_analytics.py"
 
     analytics_env = os.environ.copy()
-    analytics_env["ANS_ENABLE_DATA_ANALYTICS"] = "1"
+    if version == 252:
+        analytics_env["ANS_ENABLE_DATA_ANALYTICS"] = "1"
     analytics_env["ANS_DATA_ANALYTICS_DUMP_FOLDER"] = str(tmp_path)
 
     args = [sys.executable, str(embedded_py), "--version", version]
     run_subprocess(args, analytics_env)
 
-    temp_files = [f.name for f in tmp_path.iterdir()]
-    json_files = [file for file in temp_files if file.endswith(".json")]
+    json_files = list(tmp_path.rglob("*.json"))
     assert len(json_files) == 1
-    json_file = tmp_path / json_files[0]
-    assert json_file.is_file()
-    with json_file.open("r", encoding="utf-8") as f:
-        analytics_data = json.load(f)
+    analytics_data = json.loads(json_files[0].read_text(encoding="utf-8"))
 
     assert analytics_data["Application.Mode"] == "StandaloneMechanical"
     assert "SessionID" in analytics_data

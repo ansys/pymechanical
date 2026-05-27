@@ -85,8 +85,10 @@ intersphinx_mapping = {
     "scipy": ("https://docs.scipy.org/doc/scipy/", None),
     "numpy": ("https://numpy.org/devdocs", None),
     "matplotlib": ("https://matplotlib.org/stable", None),
+    "pandas": ("https://pandas.pydata.org/docs/", None),
     "grpc": ("https://grpc.github.io/grpc/python/", None),
     "pypim": ("https://pypim.docs.pyansys.com/version/dev/", None),
+    "pyvista": ("https://docs.pyvista.org/version/stable/", None),
 }
 
 
@@ -306,67 +308,6 @@ html_sidebars = {
 
 html_show_sourcelink = False
 
-# -- Options for LaTeX output ------------------------------------------------
-latex_elements = {}
-
-# Grouping the document tree into LaTeX files. List of tuples
-# (source start file, target name, title,
-#  author, documentclass [howto, manual, or own class]).
-latex_documents = [
-    (
-        master_doc,
-        f"pymechanical-Documentation-{version}.tex",
-        "ansys.mechanical.core Documentation",
-        author,
-        "manual",
-    ),
-]
-
-
-# -- Options for manual page output ------------------------------------------
-
-# One entry per manual page. List of tuples
-# (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, "ansys.mechanical.core", "ansys.mechanical.core Documentation", [author], 1)
-]
-
-
-# -- Options for Texinfo output ----------------------------------------------
-
-# Grouping the document tree into Texinfo files. List of tuples
-# (source start file, target name, title, author,
-#  dir menu entry, description, category)
-texinfo_documents = [
-    (
-        master_doc,
-        "ansys.mechanical.core",
-        "ansys.mechanical.core Documentation",
-        author,
-        "ansys.mechanical.core",
-        "Pythonic interface to Mechanical using gRPC",
-        "Engineering Software",
-    ),
-]
-
-
-# -- Options for Epub output -------------------------------------------------
-
-# Bibliographic Dublin Core info.
-epub_title = project
-
-# The unique identifier of the text. This can be a ISBN number
-# or the project homepage.
-#
-# epub_identifier = ''
-
-# A unique identification for the text.
-#
-# epub_uid = ''
-
-# A list of files that should not be packed into the epub file.
-epub_exclude_files = ["search.html"]
-
 # -- Linkcheck config --------------------------------------------------------
 
 linkcheck_ignore = [
@@ -394,3 +335,20 @@ if switcher_version != "dev":
     linkcheck_ignore.append(
         f"https://github.com/ansys/pymechanical/releases/tag/v{pymechanical.__version__}"
     )
+
+
+# -- Source-read substitution for version placeholders in code blocks ---------
+# Standard RST substitutions (|name|) don't work inside code blocks.
+# This hook replaces {mechanical_version} in the raw source before parsing,
+# so it works everywhere including literal blocks and code-block directives.
+
+
+def source_read_handler(app, docname, source):
+    """Replace version placeholders in RST source before parsing."""
+    source[0] = source[0].replace("{mechanical_version}", str(current_mechanical_version))
+    source[0] = source[0].replace("{build_date}", "06/03/2026 09:51:20")
+
+
+def setup(app):
+    """Connect Sphinx events."""
+    app.connect("source-read", source_read_handler)

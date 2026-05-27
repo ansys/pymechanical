@@ -1,0 +1,24 @@
+name: "Status Check"
+description: "Verify a job result is success or skipped, fail otherwise"
+inputs:
+  job-name:
+    description: "Name of the job being checked (for log messages)"
+    required: true
+  result:
+    description: "The result to check (e.g. needs.<job>.result)"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Check result
+      shell: bash
+      env:
+        JOB_NAME: ${{ inputs.job-name }}
+        RESULT: ${{ inputs.result }}
+      run: |
+        if [[ "${RESULT}" == "success" || "${RESULT}" == "skipped" ]]; then
+          echo "${JOB_NAME} passed or skipped — OK"
+        else
+          echo "${JOB_NAME} failed: ${RESULT}"
+          exit 1
+        fi
