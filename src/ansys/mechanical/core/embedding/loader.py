@@ -24,21 +24,19 @@
 
 import os
 from pathlib import Path
-import warnings
 
 
 def __get_mono(assembly_dir, config_dir):
     import clr_loader
 
+    # Explicitly pass libmono to use Ansys's bundled mono rather than any system-installed mono.
     libmono = str(Path(assembly_dir) / "libmonosgen-2.0.so")
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
-        mono = clr_loader.get_mono(
-            set_signal_chaining=True,
-            libmono=libmono,  # TODO: find_mono is broken on clr-loader v0.2.6
-            assembly_dir=str(assembly_dir),
-            config_dir=str(config_dir),
-        )
+    mono = clr_loader.get_mono(
+        set_signal_chaining=True,
+        libmono=libmono,
+        assembly_dir=str(assembly_dir),
+        config_dir=str(config_dir),
+    )
     return mono
 
 
