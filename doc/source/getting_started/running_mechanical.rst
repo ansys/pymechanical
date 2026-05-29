@@ -28,7 +28,7 @@ Launch from Python
 .. vale Google.Headings = YES
 
 Use the
-`launch_mechanical() <../api/ansys/mechanical/core/mechanical/index.html#mechanical.launch_mechanical>`_
+:func:`~mechanical.launch_mechanical`
 method to launch and connect automatically:
 
 .. code:: pycon
@@ -39,14 +39,14 @@ method to launch and connect automatically:
 
 
     Ansys Mechanical [Ansys Mechanical Enterprise]
-    Product Version:261
-    Software build date: 02/03/2026 15:29:09
+    Product Version:{mechanical_version}
+    Software build date: {build_date}
 
 To select a specific version:
 
 .. code:: python
 
-    exec_file_path = "C:/Program Files/ANSYS Inc/v261/aisol/bin/win64/AnsysWBU.exe"
+    exec_file_path = "C:/Program Files/ANSYS Inc/v{mechanical_version}/aisol/bin/win64/AnsysWBU.exe"
     mechanical = launch_mechanical(exec_file=exec_file_path)
 
 Launch from the command line
@@ -79,7 +79,7 @@ Connect to a local or remote Mechanical server:
     mechanical = Mechanical("myremotemachine", port=10000)
 
 Alternatively, use the
-`connect_to_mechanical() <../api/ansys/mechanical/core/mechanical/index.html#mechanical.connect_to_mechanical>`_ method:
+:func:`~mechanical.connect_to_mechanical` method:
 
 .. code:: python
 
@@ -106,8 +106,8 @@ Launch on Windows
     >>> app = App()
     >>> app
     Ansys Mechanical [Ansys Mechanical Enterprise]
-    Product Version:261
-    Software build date: 02/03/2026 15:29:09
+    Product Version:{mechanical_version}
+    Software build date: {build_date}
 
 Launch on Linux
 ~~~~~~~~~~~~~~~
