@@ -16,12 +16,14 @@ import warnings
 from ansys_sphinx_theme import ansys_favicon, get_version_match
 import pyvista
 from pyvista.plotting.utilities.sphinx_gallery import DynamicScraper
+import requests
 from sphinx_gallery.sorting import FileNameSortKey
 
 import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
 
-# necessary when building the sphinx gallery
+# Documentation gallery: enables Sphinx-Gallery and embedded ``App`` instance
+# reuse across gallery scripts. Per-constructor opt-out: ``App(..., reuse_instance=True)``.
 pymechanical.BUILDING_GALLERY = True
 
 # Ensure that offscreen rendering is used for docs generation
@@ -42,6 +44,7 @@ warnings.filterwarnings(
     "so cannot show the figure.",
 )
 
+
 # -- Project information -----------------------------------------------------
 
 project = "ansys.mechanical.core"
@@ -49,11 +52,9 @@ copyright = f"(c) {datetime.now().year} ANSYS, Inc. All rights reserved"
 author = "ANSYS Inc."
 release = version = pymechanical.__version__
 cname = os.getenv("DOCUMENTATION_CNAME", default="mechanical.docs.pyansys.com")
+switcher_version = get_version_match(version)
 
 
-# Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-# ones.
 # -- General configuration ---------------------------------------------------
 # Sphinx extensions
 extensions = [
@@ -84,12 +85,14 @@ intersphinx_mapping = {
     "scipy": ("https://docs.scipy.org/doc/scipy/", None),
     "numpy": ("https://numpy.org/devdocs", None),
     "matplotlib": ("https://matplotlib.org/stable", None),
+    "pandas": ("https://pandas.pydata.org/docs/", None),
     "grpc": ("https://grpc.github.io/grpc/python/", None),
     "pypim": ("https://pypim.docs.pyansys.com/version/dev/", None),
+    "pyvista": ("https://docs.pyvista.org/version/stable/", None),
 }
 
+
 suppress_warnings = ["label.*", "autoapi.python_import_resolution", "design.grid", "config.cache"]
-# supress_warnings = ["ref.option"]
 
 
 # numpydoc configuration
@@ -200,8 +203,9 @@ sphinx_gallery_conf = {
     "doc_module": "ansys-mechanical-core",
     "image_scrapers": (DynamicScraper(), "matplotlib"),
     # Files to ignore
-    "ignore_pattern": "flycheck*|fracture_analysis_contact_debonding.py|harmonic_acoustics.py|modal_acoustics_analysis.py",  # noqa: E501
+    "ignore_pattern": "flycheck*",  # noqa: E501
     "thumbnail_size": (350, 350),
+    "matplotlib_animations": True,
 }
 
 # -- Options for HTML output -------------------------------------------------
@@ -281,6 +285,47 @@ html_theme_options = {
     "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
 }
 
+
+def intersphinx_pymechanical(switcher_version: str):
+    """Auxiliary method to build the intersphinx mapping for PyMechanical.
+
+    Parameters
+    ----------
+    switcher_version : str
+        Version of the PyMechanical package.
+
+    Returns
+    -------
+    str
+        The intersphinx mapping for PyMechanical.
+
+    Notes
+    -----
+    If the objects.inv file is not found whenever it is a release, the method
+    will default to the "dev" version. If the objects.inv file is not found
+    for the "dev" version, the method will return an empty string.
+    """
+    prefix = "https://mechanical.docs.pyansys.com/version"
+
+    # Check if the object.inv file exists
+    response = requests.get(f"{prefix}/{switcher_version}/objects.inv", timeout=5)
+
+    if response.status_code == 404:
+        if switcher_version == "dev":
+            return ""
+        else:
+            return intersphinx_pymechanical("dev")
+    else:
+        return f"{prefix}/{switcher_version}"
+
+
+if intersphinx_pymechanical(switcher_version):
+    intersphinx_mapping["ansys.mechanical.core"] = (
+        intersphinx_pymechanical(switcher_version),
+        None,
+    )
+
+
 if BUILD_CHEATSHEET:
     html_theme_options["cheatsheet"] = {
         "file": "cheatsheet/cheat_sheet.qmd",
@@ -299,86 +344,25 @@ html_sidebars = {
 
 html_show_sourcelink = False
 
-# -- Options for LaTeX output ------------------------------------------------
-latex_elements = {}
-
-# Grouping the document tree into LaTeX files. List of tuples
-# (source start file, target name, title,
-#  author, documentclass [howto, manual, or own class]).
-latex_documents = [
-    (
-        master_doc,
-        f"pymechanical-Documentation-{version}.tex",
-        "ansys.mechanical.core Documentation",
-        author,
-        "manual",
-    ),
-]
-
-
-# -- Options for manual page output ------------------------------------------
-
-# One entry per manual page. List of tuples
-# (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, "ansys.mechanical.core", "ansys.mechanical.core Documentation", [author], 1)
-]
-
-
-# -- Options for Texinfo output ----------------------------------------------
-
-# Grouping the document tree into Texinfo files. List of tuples
-# (source start file, target name, title, author,
-#  dir menu entry, description, category)
-texinfo_documents = [
-    (
-        master_doc,
-        "ansys.mechanical.core",
-        "ansys.mechanical.core Documentation",
-        author,
-        "ansys.mechanical.core",
-        "Pythonic interface to Mechanical using gRPC",
-        "Engineering Software",
-    ),
-]
-
-
-# -- Options for Epub output -------------------------------------------------
-
-# Bibliographic Dublin Core info.
-epub_title = project
-
-# The unique identifier of the text. This can be a ISBN number
-# or the project homepage.
-#
-# epub_identifier = ''
-
-# A unique identification for the text.
-#
-# epub_uid = ''
-
-# A list of files that should not be packed into the epub file.
-epub_exclude_files = ["search.html"]
-
 # -- Linkcheck config --------------------------------------------------------
 
 linkcheck_ignore = [
     "https://github.com/ansys/pymechanical/pkgs/container/.*",
     "https://ansyshelp.ansys.com/*",
-    "https://ansysaccount.b2clogin.com/*",
     "https://answers.microsoft.com/en-us/windows/forum/all/*",
     "https://download.ansys.com/*",
     "https://support.ansys.com/*",
     "https://discuss.ansys.com/*",
     "https://www.ansys.com/*",
-    "../api/*",  # Remove this after release 0.10.12
-    "api/*",
-    "path.html",
-    "user_guide_embedding/*",
-    "changelog.html",
+    "https://developer.ansys.com/*",
+    "../api/*",
 ]
 
 linkcheck_anchors = False
+
+linkcheck_exclude_documents = [
+    "changelog",
+]
 
 # If we are on a release, we have to ignore the "release" URLs, since it is not
 # available until the release is published.
@@ -387,3 +371,20 @@ if switcher_version != "dev":
     linkcheck_ignore.append(
         f"https://github.com/ansys/pymechanical/releases/tag/v{pymechanical.__version__}"
     )
+
+
+# -- Source-read substitution for version placeholders in code blocks ---------
+# Standard RST substitutions (|name|) don't work inside code blocks.
+# This hook replaces {mechanical_version} in the raw source before parsing,
+# so it works everywhere including literal blocks and code-block directives.
+
+
+def source_read_handler(app, docname, source):
+    """Replace version placeholders in RST source before parsing."""
+    source[0] = source[0].replace("{mechanical_version}", str(current_mechanical_version))
+    source[0] = source[0].replace("{build_date}", "06/03/2026 09:51:20")
+
+
+def setup(app):
+    """Connect Sphinx events."""
+    app.connect("source-read", source_read_handler)

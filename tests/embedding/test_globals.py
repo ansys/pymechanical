@@ -44,6 +44,7 @@ def test_global_variables(embedded_app):
         "Quantity",
         "System",
         "Ansys",
+        "GeometryImportPreference",
         "Transaction",
         "MechanicalEnums",
         "DataModelObjectCategory",
@@ -110,6 +111,7 @@ def test_globals_kwarg_building_gallery(run_subprocess, pytestconfig, rootdir):
 
     Test ViewOrientationType exists and messages are printed when
     BUILDING_GALLERY is True and globals are updated during the app initialization.
+    (Gallery instance sharing can be skipped per ``App`` via ``reuse_instance=True``.)
     """
     version = pytestconfig.getoption("ansys_version")
     embedded_py = Path(rootdir) / "tests" / "scripts" / "run_embedded_app.py"

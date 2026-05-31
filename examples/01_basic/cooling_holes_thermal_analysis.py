@@ -60,8 +60,6 @@ and fluid lines using matplotlib.
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from matplotlib import image as mpimg, pyplot as plt
-
 from ansys.mechanical.core import App
 from ansys.mechanical.core.examples import delete_downloads, download_file
 
@@ -75,79 +73,10 @@ if TYPE_CHECKING:
 app = App(globals=globals())
 print(app)
 
-# %%
-# Create functions to set camera and display images
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 # Set the path for the output files (images, gifs, mechdat)
 output_path = Path.cwd() / "out"
-
-
-def set_camera_and_display_image(
-    camera,
-    graphics,
-    graphics_image_export_settings,
-    image_output_path: Path,
-    image_name: str,
-) -> None:
-    """Set the camera to fit the model and display the image.
-
-    Parameters
-    ----------
-    camera : Ansys.ACT.Common.Graphics.MechanicalCameraWrapper
-        The camera object to set the view.
-    graphics : Ansys.ACT.Common.Graphics.MechanicalGraphicsWrapper
-        The graphics object to export the image.
-    graphics_image_export_settings : Ansys.Mechanical.Graphics.GraphicsImageExportSettings
-        The settings for exporting the image.
-    image_output_path : Path
-        The path to save the exported image.
-    image_name : str
-        The name of the exported image file.
-    """
-    # Set the camera to fit the mesh
-    camera.SetFit()
-    # Export the image with the specified settings
-    image_path = image_output_path / image_name
-    graphics.ExportImage(str(image_path), image_export_format, graphics_image_export_settings)
-    # Display the exported image
-    display_image(image_path)
-
-
-def display_image(
-    image_path: str,
-    pyplot_figsize_coordinates: tuple = (16, 9),
-    plot_xticks: list = [],
-    plot_yticks: list = [],
-    plot_axis: str = "off",
-) -> None:
-    """Display the image with the specified parameters.
-
-    Parameters
-    ----------
-    image_path : str
-        The path to the image file to display.
-    pyplot_figsize_coordinates : tuple
-        The size of the figure in inches (width, height).
-    plot_xticks : list
-        The x-ticks to display on the plot.
-    plot_yticks : list
-        The y-ticks to display on the plot.
-    plot_axis : str
-        The axis visibility setting ('on' or 'off').
-    """
-    # Set the figure size based on the coordinates specified
-    plt.figure(figsize=pyplot_figsize_coordinates)
-    # Read the image from the file into an array
-    plt.imshow(mpimg.imread(image_path))
-    # Get or set the current tick locations and labels of the x-axis
-    plt.xticks(plot_xticks)
-    # Get or set the current tick locations and labels of the y-axis
-    plt.yticks(plot_yticks)
-    # Turn off the axis
-    plt.axis(plot_axis)
-    # Display the figure
-    plt.show()
+graphics = app.Graphics
+camera = graphics.Camera
 
 
 # %%
@@ -160,38 +89,12 @@ geometry_path = download_file("cooling_holes_geometry.pmdb", "pymechanical", "em
 # Download the material file
 mat_path = download_file("cooling_holes_material_file.xml", "pymechanical", "embedding")
 
-
-# %%
-# Configure graphics for image export
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# Define the graphics and camera objects
-graphics = app.Graphics
-camera = graphics.Camera
-
-# Set the camera orientation to the isometric view and set the camera to fit the model
-camera.SetSpecificViewOrientation(ViewOrientationType.Iso)
-camera.SetFit()
-
-# Set the image export format and settings
-image_export_format = GraphicsImageExportFormat.PNG
-settings_720p = Ansys.Mechanical.Graphics.GraphicsImageExportSettings()
-settings_720p.Resolution = (
-    Ansys.Mechanical.DataModel.Enums.GraphicsResolutionType.EnhancedResolution
-)
-settings_720p.Background = Ansys.Mechanical.DataModel.Enums.GraphicsBackgroundType.White
-settings_720p.Width = 1280
-settings_720p.Height = 720
-settings_720p.CurrentGraphicsDisplay = False
-
-# Define the model
-model = app.Model
-
 # %%
 # Define Python variables
 # ~~~~~~~~~~~~~~~~~~~~~~~
 # Store all main tree nodes as variables
 
+model = app.Model
 geometry = model.Geometry
 mesh = model.Mesh
 materials = model.Materials
@@ -202,21 +105,14 @@ named_selections = model.NamedSelections
 # Import the geometry
 # ~~~~~~~~~~~~~~~~~~~
 
-# Add the geometry import to the geometry import group
-geometry_import_group = model.GeometryImportGroup
-geometry_import = geometry_import_group.AddGeometryImport()
-
-# Set the geometry import format and settings
-geometry_import_format = Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.Format.Automatic
-geometry_import_preferences = Ansys.ACT.Mechanical.Utilities.GeometryImportPreferences()
-geometry_import_preferences.ProcessNamedSelections = True
-geometry_import_preferences.NamedSelectionKey = ""
-geometry_import_preferences.ProcessMaterialProperties = True
-geometry_import_preferences.ProcessCoordinateSystems = True
-
 # Import the geometry with the specified settings
-geometry_import.Import(geometry_path, geometry_import_format, geometry_import_preferences)
-
+geometry_import = app.helpers.import_geometry(
+    geometry_path,
+    process_named_selections=True,
+    process_coordinate_systems=True,
+    named_selection_key="",
+    process_material_properties=True,
+)
 # sphinx_gallery_start_ignore
 assert str(geometry_import.ObjectState) == "Solved", "Geometry Import unsuccessful"
 # sphinx_gallery_end_ignore
@@ -339,7 +235,10 @@ mesh.GenerateMesh()
 app.Tree.Activate([mesh])
 
 # Set the camera to fit the model and export the image
-set_camera_and_display_image(camera, graphics, settings_720p, output_path, "mesh.png")
+camera.SetFit()
+image_path = output_path / "mesh.png"
+app.helpers.export_image(mesh, image_path)
+app.helpers.display_image(image_path)
 
 # %%
 # Define analysis
@@ -527,14 +426,14 @@ camera.SceneHeight = Quantity(2.0, "in")
 # Activate the temperature results for both plates
 app.Tree.Activate([temp_plot_both_plates])
 # Set the extra model display to no wireframe
-graphics.ViewOptions.ResultPreference.ExtraModelDisplay = (
+app.Graphics.ViewOptions.ResultPreference.ExtraModelDisplay = (
     Ansys.Mechanical.DataModel.MechanicalEnums.Graphics.ExtraModelDisplay.NoWireframe
 )
 # Set the camera to fit the model and export the image
 image_path = output_path / "temp_plot_both_plates.png"
-graphics.ExportImage(str(image_path), image_export_format, settings_720p)
+app.helpers.export_image(temp_plot_both_plates, image_path)
 # Display the exported image
-display_image(image_path)
+app.helpers.display_image(image_path)
 
 # %%
 # Display the temperature plots for fluid lines
@@ -542,11 +441,12 @@ display_image(image_path)
 # Activate the temperature results for fluid lines
 app.Tree.Activate([temp_plot_fluidlines])
 # Set the camera to fit the model and export the image
-# Set the camera to fit the model and export the image
 image_path = output_path / "temp_plot_fluidlines.png"
-graphics.ExportImage(str(image_path), image_export_format, settings_720p)
+app.helpers.export_image(temp_plot_fluidlines, image_path)
 # Display the exported image
-display_image(image_path)
+app.helpers.display_image(image_path)
+
+
 # %%
 # Clean up the project
 # ~~~~~~~~~~~~~~~~~~~~

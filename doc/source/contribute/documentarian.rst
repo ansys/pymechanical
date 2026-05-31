@@ -30,7 +30,7 @@ Write documentation
 ===================
 
 The documentation generator used in PyMechanical is `Sphinx`_. Most of the documents
-are written in `reStructuredText`_. Some parts of the documentation, like the
+are written in reStructuredText (RST) format. Some parts of the documentation, like the
 :ref:`Examples <ref_examples>`, use Python files. If
 you are interested in writing examples, see the :ref:`writing examples <write-examples>`
 section.
@@ -80,7 +80,7 @@ Write a new example
 
 The :ref:`Examples <ref_examples>` section of the documentation showcases different
 capabilities of PyMechanical. Each example is a standalone Python script. Despite
-being ``*.py`` files, they are written in a mix of `reStructuredText`_ and Python.
+being ``*.py`` files, they are written in a mix of reStructuredText (RST) format and Python.
 
 Documentarians writing new examples are encouraged to open a new Jupyter Lab
 session and write the example as a Jupyter Notebook. This way, the
@@ -108,7 +108,7 @@ Finally, here are some tips for writing examples:
 Build the documentation
 =======================
 
-To build the documentation,  you need several dependencies installed.
+To build the documentation, you need several dependencies installed.
 These dependencies are listed in the ``pyproject.toml`` file under the
 ``[project.optional-dependencies]`` section. To install them, run:
 
@@ -137,14 +137,7 @@ For building documentation, you can run the usual rules provided in the
             doc\make html
             start .\doc\_build\html\index.html
 
-However, the recommended way of checking documentation integrity is to use
-``tox``:
-
-.. code:: bash
-
-    tox -e doc && your_browser_name .tox/doc_out/index.html
-
 Documentation building process involves building cheatsheets, which are generated using
-quarto. If have quarto installed locally and want to build cheatsheets, then set the
+quarto. If you have quarto installed locally and want to build cheatsheets, then set the
 environment variable ``BUILD_CHEATSHEET`` to ``true``.
 

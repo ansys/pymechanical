@@ -174,8 +174,8 @@ class MechanicalService(rpyc.Service):
             exposed_set_name = f"exposed_propset_{propname}"
 
             def exposed_propset(arg):
-                """Convert to exposed getter."""
-                f = self._curry_property(prop.fset, propname, True)
+                """Convert to exposed setter."""
+                f = self._curry_property(prop.fset, propname, False)
                 result = f(arg)
                 return result
 
@@ -186,7 +186,7 @@ class MechanicalService(rpyc.Service):
         self._install_method_with_name(method, methodname, methodname)
 
     def _install_method_with_name(self, method, methodname, innername):
-        """Install methods of impl with inner and exposed pairs."""
+        """Install a method with inner and exposed pairs."""
         exposed_name = f"exposed_{methodname}"
 
         def exposed_method(*args, **kwargs):
@@ -262,14 +262,15 @@ class MechanicalEmbeddedServer:
 
     def __init__(
         self,
-        port: int = None,
-        version: int = None,
-        methods: typing.List[typing.Callable] = [],
-        impl: typing.List = [],
+        port: int | None = None,
+        version: int | None = None,
+        methods: list[typing.Callable] = [],
+        impl: list = [],
     ):
         """Initialize the server."""
         self._exited = False
         use_background_app = False
+        self._backend: BackgroundAppBackend | ForegroundAppBackend
         if use_background_app:
             self._app_instance = BackgroundApp(version=version)
             self._backend = BackgroundAppBackend(self._app_instance)
@@ -300,7 +301,7 @@ class MechanicalEmbeddedServer:
 
     def _start_background_app(self) -> None:
         """Start server on specified port."""
-        self._exit_thread: threading.Thread = None
+        self._exit_thread: threading.Thread | None = None
         self._server.start()
         print("Server exited!")
         self._wait_exit()
@@ -377,15 +378,13 @@ class MechanicalEmbeddedServer:
         else:
             self._stop_foreground_app()
 
-    def _install_classes(self, impl: typing.Union[typing.Any, typing.List]) -> None:
+    def _install_classes(self, impl: typing.Any | list) -> None:
         app = self._backend.get_app()
         if impl and not isinstance(impl, list):
             impl = [impl]
         self._impl = [i(app) for i in impl] if impl else []
 
-    def _install_methods(
-        self, methods: typing.Union[typing.Callable, typing.List[typing.Callable]]
-    ) -> None:
+    def _install_methods(self, methods: typing.Callable | list[typing.Callable]) -> None:
         if methods and not isinstance(methods, list):
             methods = [methods]
         self._methods = methods if methods is not None else []

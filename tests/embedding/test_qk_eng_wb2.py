@@ -36,12 +36,12 @@ def test_qk_eng_wb2_005(printer, embedded_app, assets):
     embedded_app.update_globals(globals())
 
     printer("Setting up test - adding linked static structural + buckling analysis system")
-    STAT_STRUC = Model.AddStaticStructuralAnalysis()
-    STAT_STRUC_SOLN = STAT_STRUC.Solution
+    STAT_STRUCT = Model.AddStaticStructuralAnalysis()
+    STAT_STRUCT_SOLN = STAT_STRUCT.Solution
     BUCK = Model.AddEigenvalueBucklingAnalysis()
     BUCK_ANA_SETTING = BUCK.AnalysisSettings
     PRE_STRS_ENV = BUCK.Children[0]
-    PRE_STRS_ENV.PreStressICEnvironment = STAT_STRUC
+    PRE_STRS_ENV.PreStressICEnvironment = STAT_STRUCT
 
     geometry_file = Path(assets) / "Eng157.x_t"
     printer(f"Setting up test - attaching geometry {geometry_file}")
@@ -88,17 +88,17 @@ def test_qk_eng_wb2_005(printer, embedded_app, assets):
         MODEL = Model
         MODEL.Geometry.ElementControl = ElementControl.Manual
 
-        FIX_SUP = STAT_STRUC.AddFixedSupport()
+        FIX_SUP = STAT_STRUCT.AddFixedSupport()
         FIX_SUP.Location = FACE1
 
-        FRC = STAT_STRUC.AddForce()
+        FRC = STAT_STRUCT.AddForce()
         FRC.Location = FACE2
         FRC.DefineBy = LoadDefineBy.Components
         FRC.ZComponent.Output.SetDiscreteValue(0, Quantity("-1 [lbf]"))
 
         printer("Insert Static Structural results and Solve")
-        STAT_STRUC.Solution.AddDirectionalDeformation()
-        STAT_STRUC_SOLN.Solve(True)
+        STAT_STRUCT.Solution.AddDirectionalDeformation()
+        STAT_STRUCT_SOLN.Solve(True)
 
         printer("Setup Linear Buckling analysis")
         BUCK_ANA_SETTING.MaximumModesToFind = 6
@@ -225,46 +225,46 @@ def test_qk_eng_wb2_007(printer, embedded_app, assets):
         MSH.Resolution = 4
 
         printer("Apply loads")
-        STAT_STRUC1 = MODEL.Analyses[0]
-        FIX_SUP = STAT_STRUC1.AddFixedSupport()
+        STAT_STRUCT1 = MODEL.Analyses[0]
+        FIX_SUP = STAT_STRUCT1.AddFixedSupport()
         FIX_SUP.Location = NS1
 
         ExtAPI.SelectionManager.ClearSelection()
-        FRC = STAT_STRUC1.AddForce()
+        FRC = STAT_STRUCT1.AddForce()
         FRC.DefineBy = LoadDefineBy.Components
         FRC.YComponent.Output.DiscreteValues = [Quantity("0 [N]"), Quantity("1000000000 [N]")]
         FRC.Location = NS2
 
         printer("Add Results and Solve")
-        SOLN_STAT_STRUC1 = STAT_STRUC1.Solution
-        SHEAR_STRS1_STAT_STRUC1 = SOLN_STAT_STRUC1.AddShearStress()
-        SHEAR_STRS1_STAT_STRUC1.ShearOrientation = ShearOrientationType.YZPlane
-        SHEAR_STRS2_STAT_STRUC1 = SOLN_STAT_STRUC1.AddShearStress()
-        SHEAR_STRS2_STAT_STRUC1.ShearOrientation = ShearOrientationType.XZPlane
-        SOLN_STAT_STRUC1.Solve(True)
+        SOLN_STAT_STRUCT1 = STAT_STRUCT1.Solution
+        SHEAR_STRS1_STAT_STRUCT1 = SOLN_STAT_STRUCT1.AddShearStress()
+        SHEAR_STRS1_STAT_STRUCT1.ShearOrientation = ShearOrientationType.YZPlane
+        SHEAR_STRS2_STAT_STRUCT1 = SOLN_STAT_STRUCT1.AddShearStress()
+        SHEAR_STRS2_STAT_STRUCT1.ShearOrientation = ShearOrientationType.XZPlane
+        SOLN_STAT_STRUCT1.Solve(True)
 
         printer("Apply loads for Static 2 ")
-        STAT_STRUC2 = MODEL.Analyses[1]
+        STAT_STRUCT2 = MODEL.Analyses[1]
 
         ExtAPI.SelectionManager.ClearSelection()
-        FIX_SUP2 = STAT_STRUC2.AddFixedSupport()
+        FIX_SUP2 = STAT_STRUCT2.AddFixedSupport()
         FIX_SUP2.Location = NS1
 
         ExtAPI.SelectionManager.ClearSelection()
-        FRC2 = STAT_STRUC2.AddForce()
+        FRC2 = STAT_STRUCT2.AddForce()
         FRC2.DefineBy = LoadDefineBy.Components
         FRC2.XComponent.Output.DiscreteValues = [Quantity("0 [N]"), Quantity("1000000000 [N]")]
         FRC2.Location = NS2
 
         printer("Add Results and Solve")
-        SOLN_STAT_STRUC2 = STAT_STRUC2.Solution
+        SOLN_STAT_STRUCT2 = STAT_STRUCT2.Solution
 
-        SHEAR_STRS1_STAT_STRUC2 = SOLN_STAT_STRUC2.AddShearStress()  # YZ stress
-        SHEAR_STRS1_STAT_STRUC2.ShearOrientation = ShearOrientationType.YZPlane
-        SOLN_STAT_STRUC2.AddShearStress()  # XZ stress
-        SHEAR_STRS2_STAT_STRUC1.ShearOrientation = ShearOrientationType.XZPlane
+        SHEAR_STRS1_STAT_STRUCT2 = SOLN_STAT_STRUCT2.AddShearStress()  # YZ stress
+        SHEAR_STRS1_STAT_STRUCT2.ShearOrientation = ShearOrientationType.YZPlane
+        SOLN_STAT_STRUCT2.AddShearStress()  # XZ stress
+        SHEAR_STRS2_STAT_STRUCT1.ShearOrientation = ShearOrientationType.XZPlane
 
-        SOLN_STAT_STRUC2.Solve(True)
+        SOLN_STAT_STRUCT2.Solve(True)
 
         ExtAPI.SelectionManager.ClearSelection()
         printer("Insert Solution Combination 1")
@@ -276,11 +276,11 @@ def test_qk_eng_wb2_007(printer, embedded_app, assets):
         printer("Insert Solution Combination 3")
         SOLN_COMB.Definition.SetCoefficient(0, 0, 1)
         printer("Insert Solution Combination4")
-        SOLN_COMB.Definition.SetBaseCaseAnalysis(0, STAT_STRUC1)
+        SOLN_COMB.Definition.SetBaseCaseAnalysis(0, STAT_STRUCT1)
         printer("Insert Solution Combination5")
         SOLN_COMB.Definition.SetCoefficient(0, 1, 1)
         printer("Insert Solution Combination6")
-        SOLN_COMB.Definition.SetBaseCaseAnalysis(1, STAT_STRUC2)
+        SOLN_COMB.Definition.SetBaseCaseAnalysis(1, STAT_STRUCT2)
 
         printer("Add and Setup Fatigue Tool 1")
         FAT_TOOL1 = SOLN_COMB.AddFatigueTool()

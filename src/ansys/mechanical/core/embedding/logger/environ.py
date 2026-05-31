@@ -48,7 +48,7 @@ class EnvironBackend:
             os.environ["ANSYS_WORKBENCH_LOGGING_FATAL_MESSAGE_BOX"] = "1"
 
     def disable(self, sink: int = sinks.StandardSinks.CONSOLE):
-        """Disable the log level for this sink."""
+        """Disable logging for this sink."""
         if sink == sinks.StandardSinks.CONSOLE:
             os.environ["ANSYS_WORKBENCH_LOGGING_CONSOLE"] = "0"
         elif sink == sinks.StandardSinks.WINDOWS_DEBUGGER:
@@ -100,10 +100,10 @@ class EnvironBackend:
 
     def can_log_message(self, level: int) -> bool:
         """Return whether a message with the given severity is outputted to the log."""
-        if os.environ.get("ANSYS_WORKBENCH_LOGGING", 0) == 0:
+        if os.environ.get("ANSYS_WORKBENCH_LOGGING", "0") == "0":
             return False
 
-        wb_int_level = int(os.environ.get("ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL", 2))
+        wb_int_level = int(os.environ.get("ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL", "2"))
         if wb_int_level == 0:
             return True
         if wb_int_level == 1:
@@ -117,6 +117,7 @@ class EnvironBackend:
             return level >= logging.ERROR
         if wb_int_level == 5:
             return level >= logging.CRITICAL
+        return False
 
     def log_message(self, level: int, context: str, message: str) -> None:
         """Log the message to the configured logging mechanism."""

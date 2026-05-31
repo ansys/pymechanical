@@ -23,6 +23,7 @@
 """Test cases for embedding logging."""
 
 import logging
+import os
 import sys
 
 import ansys.mechanical.core as mech
@@ -92,6 +93,15 @@ def log_check_all_log_level(version):
     Logger.fatal("fatal")
 
 
+def log_with_wbtracing(version):
+    """Enable WBTRACING via Configuration and verify logging works."""
+    Configuration.configure(level=logging.ERROR, to_stdout=True)
+    Configuration.set_wbtracing(True)
+    assert os.environ.get("WBTRACING") == "1"
+    _ = mech.App(version=version)
+    Logger.error("wbtracing_enabled")
+
+
 if __name__ == "__main__":
     version = sys.argv[1]
     test_name = sys.argv[2]
@@ -103,6 +113,7 @@ if __name__ == "__main__":
         "log_configuration_Mechanical": log_configuration_mechanical,
         "log_configuration_WorkBench": log_configuration_workbench,
         "log_check_all_log_level": log_check_all_log_level,
+        "log_with_wbtracing": log_with_wbtracing,
     }
     tests[test_name](int(version))
     print("@@success@@")

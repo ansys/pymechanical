@@ -26,3 +26,10 @@ from .addins import AddinConfiguration
 from .app import App
 from .app_libraries import add_mechanical_python_libraries
 from .imports import global_variables
+
+__all__ = [
+    "AddinConfiguration",
+    "App",
+    "add_mechanical_python_libraries",
+    "global_variables",
+]
