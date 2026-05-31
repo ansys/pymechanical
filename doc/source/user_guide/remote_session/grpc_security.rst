@@ -9,6 +9,8 @@ PyMechanical supports secure gRPC connections using mTLS, WNUA, or insecure mode
    Secure connections (mTLS, WNUA) require specific service packs for each version.
    Versions without the required service pack only support insecure mode.
 
+.. _grpc_security_version_requirements:
+
 Version and service pack requirements
 -------------------------------------
 
@@ -20,10 +22,6 @@ Version and service pack requirements
      - Required SP for Secure
      - Windows (default: **wnua**)
      - Linux (default: **mtls**)
-   * - 2024 R1 (241)
-     - Not supported
-     - insecure only
-     - insecure only
    * - 2024 R2 (242)
      - **SP05+**
      - insecure, **wnua**, mtls
@@ -54,9 +52,9 @@ Version and service pack requirements
    When using ``launch_mechanical()`` without explicitly specifying ``transport_mode``:
 
    - If you have a **newer version of PyMechanical** with an **older version of Mechanical**
-     that doesn't support secure connections, the connection will fail.
+     that doesn't support secure connections, the connection fails.
    - If you have an **older version of PyMechanical** with a **newer version of Mechanical**
-     that requires secure connections by default, the connection will fail.
+     that requires secure connections by default, the connection fails.
 
    **Solution**: Always explicitly specify ``transport_mode`` to avoid compatibility issues:
 
@@ -98,8 +96,8 @@ See `PyAnsys mTLS guide <https://tools.docs.pyansys.com/version/stable/user_guid
    - **Windows**: Set as a user-level environment variable only. System-level variables are ignored.
    - **Linux**: Can be set at any level (user or system).
 
-   When this variable is set and ``certs_dir`` is not explicitly specified, PyMechanical will
-   use the path from this environment variable.
+   When this variable is set and ``certs_dir`` is not explicitly specified, PyMechanical uses
+   the path from this environment variable.
 
    Example (Windows PowerShell):
 

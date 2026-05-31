@@ -1,4 +1,63 @@
 fragments:
+- title: Helper functions for common workflows
+  version: 0.12.6
+  content: |
+    New helper functions simplify common Mechanical workflows through the
+    `Helpers` class.
+    These methods streamline geometry import, material management, visualization, and export operations.
+
+    Available helper functions:
+
+    - **import_geometry()**: Import CAD geometry with flexible options
+    - **import_materials()**: Load material definitions from XML files
+    - **export_image()**: Export high-quality images of the current view
+    - **export_animation()**: Create animations in multiple formats (GIF, MP4, AVI, WMV)
+    - **display_image()**: Show exported images inline in notebooks
+
+    Usage:
+    .. code:: python
+
+        from ansys.mechanical.core import App
+
+        app = App()
+        helpers = app.helpers
+
+        # Import geometry and materials
+        helpers.import_geometry("bracket.x_t")
+        helpers.import_materials("steel_aluminum.xml")
+
+        # Configure and export visualization
+        helpers.export_image(obj=app.Model.Geometry, file_path="geometry_image.png")
+
+    For complete details, see the `Helpers User Guide <https://mechanical.docs.pyansys.com/version/stable/user_guide/embedding/helpers.html>`_.
+
+- title: gRPC Security with mTLS, WNUA, and Insecure Transport Modes
+  version: 0.12.0
+  content: |
+    PyMechanical now supports comprehensive gRPC security with three transport modes: ``mtls`` (mutual TLS,
+    Linux default), ``wnua`` (Windows Named User Authentication, Windows default), and ``insecure`` mode.
+    Platform-aware defaults are automatically selected based on the operating system.
+
+    The implementation includes automatic service pack detection and validation, custom gRPC channel options
+    support, and new CLI flags (``--transport-mode``, ``--certs-dir``, ``--grpc-host``).
+    All launch and connection APIs (``launch_mechanical()``, ``connect_to_mechanical()``, etc.) now support
+    ``transport_mode``, ``certs_dir``, ``grpc_options``, and ``host`` parameters for configuring gRPC security.
+
+
+    Usage:
+    .. code:: python
+
+       from ansys.mechanical.core import launch_mechanical
+
+       # Platform defaults (mTLS on Linux, WNUA on Windows)
+       mechanical = launch_mechanical()
+
+       # For older versions without required service packs
+       mechanical = launch_mechanical(transport_mode="insecure")
+
+
+    For complete details, see the `gRPC Security User Guide <https://mechanical.docs.pyansys.com/version/stable/user_guide/remote_session/grpc_security.html>`_.
+
 - title: PEP 8 aliases for Mechanical APIs
   version: 0.11.30
   content: |

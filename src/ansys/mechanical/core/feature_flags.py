@@ -22,7 +22,6 @@
 
 """Mechanical beta feature flags."""
 
-import typing
 import warnings
 
 
@@ -34,7 +33,7 @@ class FeatureFlags:
     CPython = "Mechanical.CPython.Capability"
 
 
-def get_feature_flag_names() -> typing.List[str]:
+def get_feature_flag_names() -> list[str]:
     """Get the available feature flags."""
     return [x for x in dir(FeatureFlags) if "_" not in x]
 
@@ -47,6 +46,6 @@ def _get_flag_arg(flagname: str) -> str:
     return flagname
 
 
-def get_command_line_arguments(flags: typing.List[str]):
+def get_command_line_arguments(flags: list[str]):
     """Get the command line arguments as an array for the given flags."""
     return ["-featureflags", ";".join([_get_flag_arg(flag) for flag in flags])]

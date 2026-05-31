@@ -4,7 +4,7 @@ Mechanical standalone
 =====================
 
 In addition to Standalone Mechanical known issues and limitations given below,
-please refer
+refer to:
 
 - `Mechanical API known issues and limitations`_.
 - `ACT known issues and limitations`_.
@@ -12,8 +12,12 @@ please refer
 Known issues and limitations
 ----------------------------
 
+.. vale Google.Headings = NO
+
 24R2
 ^^^^
+
+.. vale Google.Headings = YES
 
 - In Read Only mode, the application does not display error messages when the geometry is imported in batch mode.
 - Section planes can not be added through batch mode.
@@ -22,12 +26,3 @@ Known issues and limitations
 - On Linux based platforms, Ansys Motion and LSDYNA analysis support are limited.
 - A fatal error currently exists when you are shutting down Mechanical on the
   Linux platform using Embedding (`#85 <https://github.com/ansys/pymechanical/issues/85>`_).
-
-24R1
-^^^^
-
-- :ref:`Python libraries <ref_embedding_user_guide_libraries>` that are distributed with the installation of Mechanical does not work when there are syntax differences
-  between IronPython and CPython (`#515 <https://github.com/ansys/pymechanical/issues/515>`_).
-- Trace Import fails with PyMechanical Embedding when using ``python 3.10`` only.
-
-

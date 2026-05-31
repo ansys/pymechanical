@@ -21,6 +21,7 @@
 # SOFTWARE.
 """Utilities necessary for remote calls."""
 
+from enum import IntEnum
 import typing
 
 from ansys.mechanical.core.mechanical import port_in_use
@@ -54,25 +55,26 @@ class remote_method:  # noqa: N801
         return func
 
 
-class MethodType:
+class MethodType(IntEnum):
     """Enum for method or property types."""
 
     METHOD = 0
     PROP = 1
 
 
-def try_get_remote_method(methodname: str, obj: typing.Any) -> typing.Tuple[str, typing.Callable]:
+def try_get_remote_method(methodname: str, obj: typing.Any) -> tuple[str, typing.Callable] | None:
     """Try to get a remote method."""
     method = getattr(obj, methodname)
     if not callable(method):
         return None
     if hasattr(method, "_is_remote") and method._is_remote is True:
         return (methodname, method)
+    return None
 
 
-def try_get_remote_property(attrname: str, obj: typing.Any) -> typing.Tuple[str, property]:
+def try_get_remote_property(attrname: str, obj: typing.Any) -> tuple[str, property]:
     """Try to get a remote property."""
-    objclass: typing.Type = obj.__class__
+    objclass: type = obj.__class__
     class_attribute = getattr(objclass, attrname)
     getmethod = None
     setmethod = None
@@ -80,18 +82,18 @@ def try_get_remote_property(attrname: str, obj: typing.Any) -> typing.Tuple[str,
     if class_attribute.fget:
         if isinstance(class_attribute.fget, remote_method):
             getmethod = class_attribute.fget
-            getmethod._owner = obj
+            getmethod._owner = obj  # type: ignore[attr-defined]
     if class_attribute.fset:
         if isinstance(class_attribute.fset, remote_method):
             setmethod = class_attribute.fset
-            setmethod._owner = obj
+            setmethod._owner = obj  # type: ignore[attr-defined]
 
     return (attrname, property(getmethod, setmethod))
 
 
 def get_remote_methods(
     obj,
-) -> typing.Generator[typing.Tuple[str, typing.Callable, MethodType], None, None]:
+) -> typing.Generator[tuple[str, typing.Callable | property, "MethodType"], None, None]:
     """Yield names and methods of an object's remote methods.
 
     A remote method is identified by the presence of an attribute `_is_remote` set to `True`.
@@ -123,7 +125,7 @@ def get_remote_methods(
             yield attrname, method, MethodType.METHOD
 
 
-def get_free_port(port: int = None):
+def get_free_port(port: int | None = None) -> int:
     """Get free port.
 
     If port is not given, it will find a free port starting from PYMECHANICAL_DEFAULT_RPC_PORT.

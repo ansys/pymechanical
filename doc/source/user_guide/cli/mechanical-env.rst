@@ -21,7 +21,7 @@ Arguments
 ----------
 
 ``-r, --version <version>``
-   Specify the version of Ansys Mechanical to use. Example: ``251`` or ``252``.
+   Specify the version of Ansys Mechanical to use. Example: ``252`` or ``261``.
 
 ``-p, --path <path>``
    Specify the installation path of Ansys Mechanical if not using the default path.
@@ -49,4 +49,11 @@ Run a Python script using a specific version:
 
 .. code-block:: bash
 
-   mechanical-env -r 252 python my_script.py
+   mechanical-env -r {mechanical_version} python my_script.py
+
+Debugging with Visual Studio Code
+---------------------------------
+
+To debug embedded PyMechanical scripts in Visual Studio Code on Linux, export the environment that
+the ``mechanical-env`` script would set and attach the debugger to it. See
+:ref:`debug-embedding-vscode-linux` in :doc:`/getting_started/running_mechanical`.

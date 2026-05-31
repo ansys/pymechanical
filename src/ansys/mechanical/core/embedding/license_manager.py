@@ -22,7 +22,7 @@
 
 """License Manager."""
 
-from typing import List, Optional, Union
+from typing import Any
 
 from ansys.mechanical.core import LOG
 
@@ -36,7 +36,7 @@ class LicenseManager:
     """
 
     def __init__(self, app):
-        """Initialize the message manager."""
+        """Initialize the license manager."""
         self._app = app
         self._license_preference = None
         import Ansys
@@ -54,7 +54,7 @@ class LicenseManager:
 
     def get_license_status(
         self, license_name: str
-    ) -> "Ansys.Mechanical.DataModel.Enums.LicenseStatus":  # noqa: F821
+    ) -> Any:  # Returns Ansys.Mechanical.DataModel.Enums.LicenseStatus
         """Return status of the specific license.
 
         Parameters
@@ -101,7 +101,7 @@ class LicenseManager:
         """Disable active license for current session."""
         self._get_license_manager().DeActivateLicense()
 
-    def enable_session_license(self, license: Optional[Union[str, List[str]]] = None) -> None:
+    def enable_session_license(self, license: str | list[str] | None = None) -> None:
         """Enable license(s) for the current session.
 
         Parameters

@@ -21,6 +21,7 @@
 # SOFTWARE.
 """Test for Command Line Interface (CLI) functionality."""
 
+import json
 import os
 from pathlib import Path
 import subprocess
@@ -70,6 +71,14 @@ def test_cli_graphical(disable_cli, pytestconfig):
     version = int(pytestconfig.getoption("ansys_version"))
     args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, graphical=True)
     assert "-b" not in args
+
+
+@pytest.mark.cli
+def test_cli_graphical_readonly(disable_cli, pytestconfig):
+    """Test for CLI readonly argument in graphical mode."""
+    version = int(pytestconfig.getoption("ansys_version"))
+    args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, graphical=True, readonly=True)
+    assert "-readonly" in args
 
 
 @pytest.mark.cli
@@ -133,6 +142,20 @@ def test_cli_project(disable_cli, pytestconfig):
     )
     assert "-file" in args
     assert "foo.mechdb" in args
+
+
+@pytest.mark.cli
+def test_cli_project_readonly(disable_cli, pytestconfig):
+    """Test for CLI readonly argument with project file."""
+    version = int(pytestconfig.getoption("ansys_version"))
+    args, _ = _cli_impl(
+        exe="AnsysWBU.exe",
+        version=version,
+        project_file="foo.mechdb",
+        graphical=True,
+        readonly=True,
+    )
+    assert "-readonly" in args
 
 
 @pytest.mark.cli
@@ -321,46 +344,64 @@ def test_ideconfig_cli_ide_exception(pytestconfig):
 
 @pytest.mark.cli
 @pytest.mark.version_range(MIN_STUBS_REVN, MAX_STUBS_REVN)
-def test_ideconfig_cli_user_settings(capfd, pytestconfig):
-    """Test the IDE configuration prints correct information for user settings."""
+def test_ideconfig_cli_user_settings(pytestconfig, tmp_path, monkeypatch):
+    """Test the IDE configuration updates user settings.json."""
     # Get the revision number
     revision = int(pytestconfig.getoption("ansys_version"))
     stubs_location = get_stubs_location()
-    # Get the path to the settings.json file based on operating system env vars
+    # Point user settings to a temporary directory
+    if "win" in sys.platform:
+        monkeypatch.setenv("APPDATA", str(tmp_path))
+    elif "lin" in sys.platform:
+        monkeypatch.setenv("HOME", str(tmp_path))
     settings_json = get_settings_location()
+    settings_json.parent.mkdir(parents=True, exist_ok=True)
+    settings_json.write_text('{"editor.tabSize": 4}', encoding="utf-8")
 
     runner = CliRunner()
     result = runner.invoke(
         ideconfig_cli, ["--ide", "vscode", "--target", "user", "--revision", str(revision)]
     )
     stdout = result.output.replace("\\\\", "\\")
+    settings_data = json.loads(settings_json.read_text(encoding="utf-8"))
 
     assert result.exit_code == 0
-    assert f"Update {settings_json} with the following information" in stdout
+    assert f"Updated {settings_json} with the following information" in stdout
     assert str(stubs_location) in stdout
+    assert settings_data["editor.tabSize"] == 4
+    assert str(stubs_location / f"v{revision}") in settings_data["python.autoComplete.extraPaths"]
+    assert str(stubs_location / f"v{revision}") in settings_data["python.analysis.extraPaths"]
 
 
 @pytest.mark.cli
 @pytest.mark.version_range(MIN_STUBS_REVN, MAX_STUBS_REVN)
-def test_ideconfig_cli_workspace_settings(pytestconfig):
-    """Test the IDE configuration prints correct information for workplace settings."""
+def test_ideconfig_cli_workspace_settings(pytestconfig, tmp_path, monkeypatch):
+    """Test the IDE configuration updates workspace settings.json."""
     # Set the revision number
     revision = int(pytestconfig.getoption("ansys_version"))
     stubs_location = get_stubs_location()
-    # Get the path to the settings.json file based on the current directory & .vscode folder
-    settings_json = Path.cwd() / ".vscode" / "settings.json"
+    # Set a temporary workspace with a .vscode/settings.json file
+    workspace = tmp_path / "workspace"
+    settings_json = workspace / ".vscode" / "settings.json"
+    settings_json.parent.mkdir(parents=True, exist_ok=True)
+    settings_json.write_text('{"files.trimTrailingWhitespace": true}', encoding="utf-8")
+    monkeypatch.chdir(workspace)
 
     runner = CliRunner()
     result = runner.invoke(
         ideconfig_cli, ["--ide", "vscode", "--target", "workspace", "--revision", str(revision)]
     )
     stdout = result.output.replace("\\\\", "\\")
+    settings_data = json.loads(settings_json.read_text(encoding="utf-8"))
 
     # Assert the correct settings.json file and stubs location is in the output
     assert result.exit_code == 0
-    assert f"Update {settings_json} with the following information" in stdout
+    assert f"Updated {settings_json} with the following information" in stdout
     assert str(stubs_location) in stdout
     assert "Please ensure the .vscode folder is in the root of your project or repository" in stdout
+    assert settings_data["files.trimTrailingWhitespace"] is True
+    assert str(stubs_location / f"v{revision}") in settings_data["python.autoComplete.extraPaths"]
+    assert str(stubs_location / f"v{revision}") in settings_data["python.analysis.extraPaths"]
 
 
 @pytest.mark.cli
@@ -474,7 +515,7 @@ def test_ideconfig_revision_max_min():
         stdout = result.output.replace("\\\\", "\\")
 
         assert result.exit_code == 0
-        assert f"Update {settings_json} with the following information" in stdout
+        assert f"Updated {settings_json} with the following information" in stdout
         assert str(stubs_location) in stdout
         assert str(MAX_STUBS_REVN) in stdout
 
@@ -500,7 +541,7 @@ def test_ideconfig_no_revision():
     stdout = result.output.replace("\\\\", "\\")
 
     assert result.exit_code == 0
-    assert f"Update {settings_json} with the following information" in stdout
+    assert f"Updated {settings_json} with the following information" in stdout
     assert str(stubs_location) in stdout
 
 

@@ -44,11 +44,11 @@ class Client:
             IP address to connect to the server.  The default is ``None``
             in which case ``localhost`` is used.
         port : int, optional
-            Port to connect to the Mecahnical server. The default is ``None``,
+            Port to connect to the Mechanical server. The default is ``None``,
             in which case ``20000`` is used.
         timeout : float, optional
             Maximum allowable time for connecting to the Mechanical server.
-            The default is ``60.0``.
+            The default is ``120.0``.
         process: subprocess.Popen, optional
             The process object that was connected to
 
@@ -68,7 +68,7 @@ class Client:
         self._error_type = Exception
         self._has_exited = False
 
-    def _get_python_script_api_version(self) -> bool:
+    def _get_python_script_api_version(self) -> int:
         """Get the python api version."""
         return 1
 
@@ -80,7 +80,7 @@ class Client:
         if hasattr(self.root, propget_name):
             exposed_fget = getattr(self.root, propget_name)
             return exposed_fget()
-        return self.__dict__.items[attr]
+        return self.__dict__[attr]
 
     # TODO : Implement setattr
     # def __setattr__(self, attr, value):
