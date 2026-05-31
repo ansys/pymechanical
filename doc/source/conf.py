@@ -214,37 +214,39 @@ html_context = {
     "doc_path": "doc/source",
     "pyansys_tags": ["Structures"],
     "latest_news": {
-        "title": "Latest News & related articles",
+        "title": "<strong>News & Resources</strong>",
         "show_date": True,
-        "max_items": 5,
+        "max_items": 6,
         "items": [
             {
-                "title": "[Video] PyMechanical Tutorial",
+                "title": "<strong>[News]</strong> Mechanical 26R1 is Released",
                 "date": "2024-12-15",
-                "url": "https://www.youtube.com/watch?v=9OZckJ36DFM",
-                "excerpt": "Watch this video tutorial to learn PyMechanical basics and workflows.",
-            },
-            {
-                "title": "[News] Mechanical 26R1 is Released",
-                "date": "2024-12-15",
-                "url": "https://github.com/ansys/pymechanical/releases/tag/v0.11.0",
+                "url": "https://www.ansys.com/products/structures/ansys-mechanical",
                 "excerpt": "Download new Ansys Mechanical 26R1",
             },
             {
-                "title": "[Blog] Getting Started with PyMechanical",
-                "date": "2024-11-20",
-                "url": "https://blog.ozeninc.com/resources/getting-started-with-pyansys-a-pymechanical-workflow-for-beginners",
-                "excerpt": "Learn the basics of PyMechanical with this beginner-friendly workflow guide.",
+                "title": "<strong>[Video]</strong> PyMechanical in One Video by Amrit",
+                "url": "https://www.youtube.com/watch?v=30iFGvFH07I&t=1s",
+                "excerpt": "A comprehensive single-video walkthrough of PyMechanical, covering Python scripting, launching Mechanical, and automation workflows.",  # noqa: E501
             },
             {
-                "title": "[Blog] First Steps with PyAnsys Using an End-to-End Example",
-                "date": "2024-11-15",
-                "url": "https://blog.cadfem.net/en/first-steps-with-pyansys-using-an-end-to-end-example",
-                "excerpt": "Explore PyAnsys through a comprehensive end-to-end example.",
+                "title": "<strong>[Video]</strong> Ansys Automation Overview - PyMechanical/PyAnsys by Dennis Chen",  # noqa: E501
+                "url": "https://www.youtube.com/watch?v=9OZckJ36DFM&t=2s",
+                "excerpt": "Watch this video tutorial to learn PyMechanical basics and workflows.",
+            },
+            {
+                "title": "<strong>[Blog]</strong> Exploring PyMechanical Access Methods: A Brief Overview",  # noqa: E501
+                "url": "https://developer.ansys.com/blog/exploring-pymechanical-access-methods-brief-overview",
+                "excerpt": "A brief overview of the different methods to access PyMechanical, including embedded, remote, and gRPC-based approaches.",  # noqa: E501
+            },
+            {
+                "title": "<strong>[Blog]</strong> PyAnsys: The Key to Workflow Automation by CADFEM",  # noqa: E501
+                "url": "https://blog.cadfem.net/en/pyansys-the-key-to-workflow-automation",
+                "excerpt": "Discover how PyAnsys enables workflow automation for Ansys simulation tools through Python scripting and tool integration.",  # noqa: E501
             },
         ],
-        "more_url": "https://github.com/ansys/pymechanical/releases",
-        "more_text": "View all releases",
+        "more_url": "https://www.ansys.com/products/structures/ansys-mechanical",
+        "more_text": "Get Ansys Mechanical",
     },
 }
 html_theme_options = {
