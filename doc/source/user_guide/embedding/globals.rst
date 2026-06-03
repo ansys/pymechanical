@@ -43,3 +43,4 @@ not for the ``globals`` argument of the ``App`` class:
 
    app = App()
    app.update_globals(globals(), False)
+

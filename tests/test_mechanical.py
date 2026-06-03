@@ -530,7 +530,7 @@ def test_launch_grpc_not_supported_version():
     cwd = Path.cwd()
 
     if misc.is_windows():
-        exec_file = cwd / "ANSYS Inc" / "v230" / "aisol" / "bin" / "win64" / "AnsysWBU.exe"
+        exec_file = cwd / "ANSYS Inc" / "v230" / "aisol" / "bin" / "winx64" / "AnsysWBU.exe"
     else:
         exec_file = cwd / "ansys_inc" / "v230" / "aisol" / ".workbench"
 

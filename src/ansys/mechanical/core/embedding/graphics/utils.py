@@ -61,8 +61,8 @@ def get_line_nodes_and_coords(
 ):
     """Extract the nodes and coordinates from the LineTessellationNode.
 
-    The TriTessellationNode contains "Coordinates" and "Indices"
-    that are flat arrays. This function converts them to numpy arrays
+    The LineTessellationNode contains "Coordinates" and "Indices"
+    that are flat arrays. This function converts them to numpy arrays.
     """
     np_coordinates = _reshape_ncols(
         np.array(line_tessellation.Coordinates, dtype=np.double), 3, "coordinates"
@@ -90,7 +90,7 @@ def get_tri_nodes_and_coords(
 def get_tri_result_disp_and_results(
     tri_tessellation: typing.Any,  # Ansys.Mechanical.Scenegraph.TriTessellationResultNode
 ):
-    """Extract the defomation and results from the TriTessellationResultNode.
+    """Extract the deformation and results from the TriTessellationResultNode.
 
     The TriTessellationResultNode contains "Displacements" and "Results"
     that are flat arrays. This function converts them to numpy arrays of the appropriate shape.

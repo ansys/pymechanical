@@ -39,8 +39,8 @@ equivalent stresses, contact, and bolt.
 from pathlib import Path
 import typing
 
-from matplotlib import image as mpimg, pyplot as plt
-from matplotlib.animation import FuncAnimation
+from matplotlib import pyplot as plt
+import matplotlib.animation as animation
 from PIL import Image
 
 from ansys.mechanical.core import App
@@ -60,8 +60,8 @@ from ansys.mechanical.core.embedding.global_importer import Quantity
 from ansys.mechanical.core.embedding.transaction import Transaction
 
 # %%
-# Configure graphics for image export
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Configure view and path for image export
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Set camera orientation
 graphics = app.Graphics
@@ -70,30 +70,9 @@ camera.SetSpecificViewOrientation(ViewOrientationType.Iso)
 camera.SetFit()
 camera.Rotate(180, CameraAxisType.ScreenY)
 
-# Set camera settings for 720p resolution
-graphics_image_export_settings = Ansys.Mechanical.Graphics.GraphicsImageExportSettings()
-graphics_image_export_settings.Resolution = GraphicsResolutionType.EnhancedResolution
-graphics_image_export_settings.Background = GraphicsBackgroundType.White
-graphics_image_export_settings.CurrentGraphicsDisplay = False
-graphics_image_export_settings.Width = 1280
-graphics_image_export_settings.Height = 720
+# Set the path for the output files (images, gifs, mechdat)
+output_path = Path.cwd() / "out"
 
-# %%
-# Set the geometry import group for the model
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# Set the model
-model = app.Model
-
-# Create a geometry import group for the model
-geometry_import_group = model.GeometryImportGroup
-# Add the geometry import to the group
-geometry_import = geometry_import_group.AddGeometryImport()
-# Set the geometry import format
-geometry_import_format = Ansys.Mechanical.DataModel.Enums.GeometryImportPreference.Format.Automatic
-# Set the geometry import preferences
-geometry_import_preferences = Ansys.ACT.Mechanical.Utilities.GeometryImportPreferences()
-geometry_import_preferences.ProcessNamedSelections = True
 
 # %%
 # Download and import the geometry
@@ -103,8 +82,7 @@ geometry_import_preferences.ProcessNamedSelections = True
 geometry_path = download_file("example_06_bolt_pret_geom.pmdb", "pymechanical", "00_basic")
 
 # Import/reload the geometry from the CAD (pmdb) file using the provided preferences
-geometry_import.Import(geometry_path, geometry_import_format, geometry_import_preferences)
-
+geometry_import = app.helpers.import_geometry(geometry_path)
 # sphinx_gallery_start_ignore
 # Assert the geometry import was successful
 assert geometry_import.ObjectState == ObjectState.Solved, "Geometry Import unsuccessful"
@@ -124,14 +102,8 @@ steel_material_file_path = download_file("example_06_Mat_Steel.xml", "pymechanic
 
 # %%
 # Add materials to the model and import the material files
-model_materials = model.Materials
-model_materials.Import(copper_material_file_path)
-model_materials.Import(steel_material_file_path)
-
-# sphinx_gallery_start_ignore
-# Assert the materials are defined
-assert model_materials.ObjectState == ObjectState.FullyDefined, "Materials are not defined"
-# sphinx_gallery_end_ignore
+app.helpers.import_materials(copper_material_file_path)
+app.helpers.import_materials(steel_material_file_path)
 
 # %%
 # Define analysis and unit system
@@ -139,6 +111,7 @@ assert model_materials.ObjectState == ObjectState.FullyDefined, "Materials are n
 
 # %%
 # Add static structural analysis to the model
+model = app.Model
 model.AddStaticStructuralAnalysis()
 static_structural = model.Analyses[0]
 static_structural_solution = static_structural.Solution
@@ -505,45 +478,14 @@ set_mesh_method_location(method=sweep_method, object_name="shank_face2", locatio
 mesh.Activate()
 mesh.GenerateMesh()
 
-# Fit the view to the entire model
-camera.SetFit()
-# Set the path for the output files (images, gifs, mechdat)
-output_path = Path.cwd() / "out"
+# Set the image export format, path and export the image
 mesh_image_path = str(output_path / "mesh.png")
-# Set the image export format and export the image
-image_export_format = GraphicsImageExportFormat.PNG
-graphics.ExportImage(mesh_image_path, image_export_format, graphics_image_export_settings)
-
-
-# %%
-# Create a function to display the image using matplotlib
-def display_image(
-    image_path: str,
-    pyplot_figsize_coordinates: tuple = (16, 9),
-    plot_xticks: list = [],
-    plot_yticks: list = [],
-    plot_axis: str = "off",
-):
-    """Display the image with the specified parameters."""
-    # Set the figure size based on the coordinates specified
-    plt.figure(figsize=pyplot_figsize_coordinates)
-
-    # Read the image from the file into an array
-    plt.imshow(mpimg.imread(image_path))
-
-    # Get or set the current tick locations and labels of the x-axis
-    plt.xticks(plot_xticks)
-    # Get or set the current tick locations and labels of the y-axis
-    plt.yticks(plot_yticks)
-    # Turn off the axis
-    plt.axis(plot_axis)
-    # Display the figure
-    plt.show()
-
+camera.SetFit()
+app.helpers.export_image(mesh, mesh_image_path)
 
 # %%
 # Display the mesh image
-display_image(mesh_image_path)
+app.helpers.display_image(mesh_image_path)
 
 # %%
 # Analysis settings
@@ -635,14 +577,11 @@ app.Tree.Activate([bolt_presentation])
 # Set the image path for the loads and boundary conditions
 loads_boundary_conditions_image_path = str(output_path / "loads_boundary_conditions.png")
 # Export the image of the loads and boundary conditions
-graphics.ExportImage(
-    loads_boundary_conditions_image_path,
-    image_export_format,
-    graphics_image_export_settings,
-)
 
+camera.SetFit()
+app.helpers.export_image(bolt_presentation, loads_boundary_conditions_image_path)
 # Display the image of the loads and boundary conditions
-display_image(loads_boundary_conditions_image_path)
+app.helpers.display_image(loads_boundary_conditions_image_path)
 
 # %%
 # Insert results
@@ -702,126 +641,75 @@ app.messages.show()
 # %%
 # Total deformation
 
-# Activate the object
-app.Tree.Activate([total_deformation])
-# Set the camera to fit the model
-camera.SetFit()
 # Set the image name and path for the object
 image_path = str(output_path / "total_deformation.png")
 # Export the image of the object
-app.Graphics.ExportImage(image_path, image_export_format, graphics_image_export_settings)
+camera.SetFit()
+app.helpers.export_image(total_deformation, file_path=image_path)
 # Display the image of the object
-display_image(image_path)
+app.helpers.display_image(image_path)
 
 # %%
 # Equivalent stress on all bodies
 
-# Activate the object
-app.Tree.Activate([equivalent_stress_1])
-# Set the camera to fit the model
-camera.SetFit()
 # Set the image name and path for the object
 image_path = str(output_path / "equivalent_stress_all_bodies.png")
 # Export the image of the object
-app.Graphics.ExportImage(image_path, image_export_format, graphics_image_export_settings)
+camera.SetFit()
+app.helpers.export_image(equivalent_stress_1, file_path=image_path)
 # Display the image of the object
-display_image(image_path)
+app.helpers.display_image(image_path)
 
 # %%
 # Equivalent stress on the shank
 
-# Activate the object
-app.Tree.Activate([equivalent_stress_2])
-# Set the camera to fit the model
-camera.SetFit()
 # Set the image name and path for the object
 image_path = str(output_path / "equivalent_stress_shank.png")
 # Export the image of the object
-app.Graphics.ExportImage(image_path, image_export_format, graphics_image_export_settings)
+camera.SetFit()
+app.helpers.export_image(equivalent_stress_2, file_path=image_path)
 # Display the image of the object
-display_image(image_path)
+app.helpers.display_image(image_path)
 
 # %%
-# Export and display the contact status animation
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-# %%
-# Create a function to update the animation frames
-def update_animation(frame: int) -> list[mpimg.AxesImage]:
-    """Update the animation frame for the GIF.
-
-    Parameters
-    ----------
-    frame : int
-        The frame number to update the animation.
-
-    Returns
-    -------
-    list[mpimg.AxesImage]
-        A list containing the updated image for the animation.
-    """
-    # Seeks to the given frame in this sequence file
-    gif.seek(frame)
-    # Set the image array to the current frame of the GIF
-    image.set_data(gif.convert("RGBA"))
-    # Return the updated image
-    return [image]
-
-
-# %%
-# Export and display the contact status animation
+# Export the contact status animation
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Get the post contact tool status
 post_contact_tool_status = post_contact_tool.Children[0]
 
-# Activate the post contact tool status in the tree
-app.Tree.Activate([post_contact_tool_status])
-
-# Set the camera to fit the model
-camera.SetFit()
-
-# Set the animation export format and settings
-animation_export_format = GraphicsAnimationExportFormat.GIF
-animation_export_settings = Ansys.Mechanical.Graphics.AnimationExportSettings()
-animation_export_settings.Width = 1280
-animation_export_settings.Height = 720
-
 # Set the path for the contact status GIF
 contact_status_gif_path = str(output_path / "contact_status.gif")
+camera.SetFit()
+app.helpers.export_animation(post_contact_tool_status, contact_status_gif_path)
 
-# Export the contact status animation to a GIF file
-post_contact_tool_status.ExportAnimation(
-    contact_status_gif_path, animation_export_format, animation_export_settings
-)
+# %%
+# Display the contact status animation
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Open the GIF file and create an animation
 gif = Image.open(contact_status_gif_path)
-# Set the subplots for the animation and turn off the axis
-figure, axes = plt.subplots(figsize=(8, 4))
-axes.axis("off")
-# Change the color of the image
-image = axes.imshow(gif.convert("RGBA"))
+fig, ax = plt.subplots(figsize=(8, 4))
+ax.axis("off")
+image = ax.imshow(gif.convert("RGBA"))
 
-# Create the animation using the figure, update_animation function, and the GIF frames
-# Set the interval between frames to 200 milliseconds and repeat the animation
-FuncAnimation(
-    figure,
-    update_animation,
-    frames=range(gif.n_frames),
-    interval=200,
-    repeat=True,
-    blit=True,
+
+# Animation update function
+def update_frame(frame):
+    """Update the frame for the animation."""
+    gif.seek(frame)
+    image.set_array(gif.convert("RGBA"))
+    return (image,)
+
+
+# Create and display animation
+ani = animation.FuncAnimation(
+    fig, update_frame, frames=gif.n_frames, interval=200, blit=True, repeat=True
 )
 
 # Show the animation
 plt.show()
 
-# %%
-# Print the project tree
-# ~~~~~~~~~~~~~~~~~~~~~~
-
-app.print_tree()
 
 # %%
 # Clean up the project

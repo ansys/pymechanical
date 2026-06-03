@@ -33,7 +33,7 @@ import time
 
 import pytest
 
-from ansys.mechanical.core.embedding.app import is_initialized
+from ansys.mechanical.core.embedding.app import _normalize_file_path, is_initialized
 from ansys.mechanical.core.embedding.cleanup_gui import cleanup_gui
 from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
 from ansys.mechanical.core.embedding.logger import Logger
@@ -91,6 +91,19 @@ def test_app_save_open(embedded_app, tmp_path: pytest.TempPathFactory):
     embedded_app.open(project_file_str)
     assert embedded_app.DataModel.Project.Name == "PROJECT 2"
     embedded_app.new()
+
+
+def test_normalize_file_path_returns_absolute_path(tmp_path):
+    """Test filename-only paths are normalized to absolute paths."""
+    original_cwd = Path.cwd()
+    try:
+        os.chdir(tmp_path)
+        normalized = _normalize_file_path("filename_only_test.mechdat")
+    finally:
+        os.chdir(original_cwd)
+
+    assert Path(normalized).is_absolute()
+    assert Path(normalized) == tmp_path / "filename_only_test.mechdat"
 
 
 @pytest.mark.embedding
@@ -169,7 +182,7 @@ def test_app_print_tree(embedded_app, capsys, assets):
 
 
 # @pytest.mark.embedding
-@pytest.mark.skip(reason="This test hangs on Linux with Python 3.10-3.13")
+@pytest.mark.skip(reason="This test hangs on Linux with Python 3.10-3.14")
 def test_app_poster(embedded_app, printer):
     """The getters of app should be usable after a new().
 
@@ -312,7 +325,8 @@ def test_building_gallery(pytestconfig, run_subprocess, rootdir):
     """Test for building gallery check.
 
     When building the gallery, each example file creates another instance of the app.
-    When the BUILDING_GALLERY flag is enabled, only one instance is kept.
+    When the BUILDING_GALLERY flag is enabled, only one instance is kept (unless a
+    constructor uses ``reuse_instance=True`` to opt out of sharing).
     This is to test the bug fixed in https://github.com/ansys/pymechanical/pull/784
     and will fail on PyMechanical version 0.11.0
     """
@@ -335,6 +349,16 @@ def test_building_gallery(pytestconfig, run_subprocess, rootdir):
 
     # Assert stdout after launching multiple instances
     assert "Multiple App launched with building gallery flag on" in stdout
+
+
+@pytest.mark.embedding_scripts
+def test_reuse_instance_bypasses_gallery_sharing(pytestconfig, run_subprocess, rootdir):
+    """When BUILDING_GALLERY is True, ``reuse_instance=True`` skips the sharing path."""
+    version = pytestconfig.getoption("ansys_version")
+    script = Path(rootdir) / "tests" / "scripts" / "reuse_instance_test.py"
+    _process, stdout, stderr = run_subprocess([sys.executable, str(script), version])
+    stdout = stdout.decode()
+    assert "reuse_instance bypassed gallery sharing as expected" in stdout
 
 
 @pytest.mark.embedding

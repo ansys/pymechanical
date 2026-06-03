@@ -5,6 +5,22 @@ FAQs
 
 This section provides answers to frequently asked questions.
 
+.. dropdown:: Which mode to use — embedding or remote session?
+    :animate: fade-in-slide-down
+
+    PyMechanical offers two modes:
+
+    - **Embedding mode** (``App`` class): Mechanical runs in your Python process.
+      Best for Jupyter notebooks, interactive scripting, and when you need full
+      object-model access (read, create, update, and delete objects directly).
+
+    - **Remote session mode** (``launch_mechanical()``): Mechanical runs as a
+      separate server process. Best for CI/CD pipelines, Docker, distributed
+      automation, GUI access, and running multiple simultaneous instances.
+
+    For a detailed comparison table and decision guide, see
+    :ref:`ref_choose_your_mode`.
+
 .. dropdown:: My script works in the Mechanical GUI but fails with PyMechanical embedding. Is this a PyMechanical bug?
     :animate: fade-in-slide-down
 
@@ -110,10 +126,10 @@ This section provides answers to frequently asked questions.
     Mechanical is a remote session or embedded.
 
     - If Mechanical is a remote session, use either the
-      `Mechanical.clear() <../api/ansys/mechanical/core/mechanical/Mechanical.html#Mechanical.clear>`_
+      :meth:`~Mechanical.clear`
       method or exit and restart Mechanical.
     - If Mechanical is embedded, use the
-      `app.new() <../api/ansys/mechanical/core/embedding/app/App.html#App.new>`_
+      :meth:`~ansys.mechanical.core.embedding.app.App.new`
       method.
 
 .. dropdown:: How do you check if a license is active with PyMechanical?
@@ -142,7 +158,7 @@ This section provides answers to frequently asked questions.
                 print(app)
 
     The output from the above code will indicate the license being used inside the brackets, next to *Ansys Mechanical*.
-    If PyMechanical is unable to retrieve any license, the field will be left blank.
+    If PyMechanical is unable to retrieve any license, the field is left blank.
 
     .. tab-set::
 
@@ -151,8 +167,8 @@ This section provides answers to frequently asked questions.
             .. code-block:: shell
 
                 Ansys Mechanical [Ansys Mechanical Enterprise]
-                Product Version:261
-                Software build date: 06/13/2025 15:54:58
+                Product Version:{mechanical_version}
+                Software build date: {build_date}
 
 
         .. tab-item:: Without License
@@ -160,8 +176,8 @@ This section provides answers to frequently asked questions.
             .. code-block:: shell
 
                 Ansys Mechanical []
-                Product Version:261
-                Software build date: 06/13/2025 15:54:58
+                Product Version:{mechanical_version}
+                Software build date: {build_date}
 
 
     Alternatively, once the ``app`` is created ``readonly`` method can be used to see if license is active.
@@ -178,7 +194,7 @@ This section provides answers to frequently asked questions.
 
         $ mechanical-env python
         >>> import ansys.mechanical.core as mech
-        >>> app=mech.App(version=261)
+        >>> app=mech.App(version={mechanical_version})
 
     or
 

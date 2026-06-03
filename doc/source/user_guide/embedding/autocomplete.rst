@@ -9,8 +9,9 @@ This package is automatically installed when you install PyMechanical.
 Setting up autocomplete in VS Code
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``ansys-mechanical-ideconfig`` command prints the settings that are necessary for
-autocomplete to work with the ``ansys-mechanical-stubs`` dependency. This command takes in
+The ``ansys-mechanical-ideconfig`` command updates your VS Code ``settings.json`` with the
+settings that are necessary for autocomplete to work with the ``ansys-mechanical-stubs``
+dependency. This command takes in
 three arguments: ``--ide vscode``, ``--target user`` or ``--target workspace``,
 and ``--revision <version>``. If the revision is not provided, ``ansys-tools-common``
 retrieves the Mechanical version from your system.
@@ -25,18 +26,25 @@ Terminal output for Windows user's settings.json file:
 
 .. code:: shell
 
-    Update C:\Users\{username}\AppData\Roaming\Code\User\settings.json with the following information:
+    Updated C:\Users\{username}\AppData\Roaming\Code\User\settings.json with the following information:
 
     {
         "python.autoComplete.extraPaths": [
-            "{project_directory}\\.venv\\Lib\\site-packages\\ansys\\mechanical\\stubs\\v261"
+            "{project_directory}\\.venv\\Lib\\site-packages\\ansys\\mechanical\\stubs\\v{mechanical_version}"
         ],
         "python.analysis.extraPaths": [
-            "{project_directory}\\.venv\\Lib\\site-packages\\ansys\\mechanical\\stubs\\v261"
+            "{project_directory}\\.venv\\Lib\\site-packages\\ansys\\mechanical\\stubs\\v{mechanical_version}"
         ]
     }
 
-Paste the output from the command into your VS Code ``settings.json`` file to activate autocomplete.
+The command preserves existing settings and appends the Mechanical stubs path if it is not
+already present.
+
+.. note::
+
+    After running ``ansys-mechanical-ideconfig``, you may need to reload the VS Code window
+    for the autocomplete hints to take effect. Open the command palette
+    (``Ctrl+Shift+P``) and run **Developer: Reload Window**.
 
 Limitations
 ^^^^^^^^^^^

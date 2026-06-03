@@ -42,6 +42,7 @@ from ansys.mechanical.core.embedding.mechanical_warnings import (
 from ansys.mechanical.core.embedding.poster import Poster
 import ansys.mechanical.core.embedding.shell as shell
 from ansys.mechanical.core.embedding.ui import launch_ui
+from ansys.mechanical.core.embedding.utils import GetterWrapper
 from ansys.mechanical.core.feature_flags import get_command_line_arguments
 
 if typing.TYPE_CHECKING:
@@ -122,32 +123,18 @@ def _additional_args(readonly: bool, feature_flags: list, start_license: str, ve
     return additional_args
 
 
+def _normalize_file_path(path: str | Path) -> str:
+    """Return an absolute filesystem path as a string.
+
+    Mechanical save APIs can reject filename-only inputs on some platforms.
+    Normalizing to an absolute path ensures consistent behavior.
+    """
+    return str(Path(path).resolve())
+
+
 def is_initialized() -> bool:
     """Check if the app has been initialized."""
     return len(INSTANCES) != 0
-
-
-class GetterWrapper:
-    """Wrapper class around an attribute of an object."""
-
-    def __init__(self, obj, getter):
-        """Create a new instance of GetterWrapper."""
-        # immortal class which provides wrapped object
-        self.__dict__["_immortal_object"] = obj
-        # function to get the wrapped object from the immortal class
-        self.__dict__["_get_wrapped_object"] = getter
-
-    def __getattr__(self, attr):
-        """Wrap getters to the wrapped object."""
-        if attr in self.__dict__:
-            return getattr(self, attr)
-        return getattr(self._get_wrapped_object(self._immortal_object), attr)
-
-    def __setattr__(self, attr, value):
-        """Wrap setters to the wrapped object."""
-        if attr in self.__dict__:
-            setattr(self, attr, value)
-        setattr(self._get_wrapped_object(self._immortal_object), attr, value)
 
 
 class App:
@@ -180,13 +167,20 @@ class App:
     feature_flags : list, optional
         List of feature flag names to enable. Default is [].
         Available flags include: 'ThermalShells', 'MultistageHarmonic', 'CPython'.
+    reuse_instance : bool, optional
+        When ``True``, gallery instance sharing is skipped for this constructor,
+        so initialization follows the same path as when the module-level
+        ``BUILDING_GALLERY`` flag is ``False``. Use this to opt out of gallery
+        sharing without assigning ``pymechanical.BUILDING_GALLERY = False`` (for
+        example when the flag is set globally for documentation builds).
+        Default is ``False``.
 
     Examples
     --------
     Create App with Mechanical project file and version:
 
     >>> from ansys.mechanical.core import App
-    >>> app = App(db_file="path/to/file.mechdat", version=252)
+    >>> app = App(db_file="path/to/file.mechdat", version=261)
 
     Disable copying the user profile when private appdata is enabled
 
@@ -200,8 +194,7 @@ class App:
 
     >>> from ansys.mechanical.core.embedding import AddinConfiguration
     >>> from ansys.mechanical.core import App
-    >>> config = AddinConfiguration("Mechanical")
-    >>> config.no_act_addins = True
+    >>> config = AddinConfiguration("Mechanical", no_act_addins=True)
     >>> app = App(config=config)
 
     Set log level
@@ -224,11 +217,15 @@ class App:
         self,
         db_file: str | None = None,
         private_appdata: bool = False,
+        *,
+        reuse_instance: bool = False,
         **kwargs: typing.Any,
     ) -> None:
         """Construct an instance of the mechanical Application."""
         global INSTANCES
         from ansys.mechanical.core import BUILDING_GALLERY
+
+        use_gallery_sharing = BUILDING_GALLERY and not reuse_instance
 
         self._enable_logging = kwargs.get("enable_logging", True)
         if self._enable_logging:
@@ -258,7 +255,7 @@ class App:
 
         # If the building gallery flag is set, we need to share the instance
         # This can apply to running the `make -C doc html` command
-        if BUILDING_GALLERY:
+        if use_gallery_sharing:
             if len(INSTANCES) != 0:
                 # Get the first instance of the app
                 instance: App = INSTANCES[0]
@@ -320,6 +317,9 @@ class App:
         self._license_manager = None
         if self.version >= 252:
             self._license_manager = LicenseManager(self)
+
+        # Initialize helpers
+        self._helpers = None
 
     def __repr__(self):
         """Get the product info."""
@@ -407,7 +407,7 @@ class App:
     def save(self, path=None):
         """Save the project."""
         if path is not None:
-            self.DataModel.Project.Save(path)
+            self.DataModel.Project.Save(_normalize_file_path(path))
         else:
             self.DataModel.Project.Save()
 
@@ -431,8 +431,9 @@ class App:
         Exception
             If the file already exists at the specified path and `overwrite` is False.
         """
-        if not Path(path).exists():
-            self.DataModel.Project.SaveAs(path)
+        normalized_path = _normalize_file_path(path)
+        if not Path(normalized_path).exists():
+            self.DataModel.Project.SaveAs(normalized_path)
             return
 
         if not overwrite:
@@ -442,7 +443,7 @@ class App:
             )
 
         if remove_lock:
-            file_path = Path(path)
+            file_path = Path(normalized_path)
             associated_dir = file_path.parent / f"{file_path.stem}_Mech_Files"
             lock_file = associated_dir / ".mech_lock"
             # Remove the lock file if it exists before saving the project file
@@ -450,7 +451,7 @@ class App:
                 self.log_warning(f"Removing the lock file, {lock_file}... ")
                 lock_file.unlink()
         try:
-            self.DataModel.Project.SaveAs(path, overwrite)
+            self.DataModel.Project.SaveAs(normalized_path, overwrite)
         except Exception as e:
             error_msg = str(e)
             if "The project is locked by" in error_msg:
@@ -529,7 +530,10 @@ class App:
         if not file_path.is_file():
             raise FileNotFoundError(f"The file {file_path} does not exist.")
         data = file_path.read_text(encoding="utf-8")
-        return self.execute_script(data)
+        try:
+            return self.execute_script(data)
+        except RuntimeError as e:
+            raise RuntimeError(f"Error in '{file_path}': {e}") from e
 
     def plotter(self, obj=None) -> typing.Any | None:
         """Return ``ansys.tools.visualization_interface.Plotter`` object."""
@@ -564,6 +568,16 @@ class App:
         """
         if self.interactive:
             raise RuntimeError("Plotting is not allowed in interactive mode")
+
+        import sys
+
+        if sys.platform != "win32" and not any(
+            os.environ.get(var) for var in ("DISPLAY", "WAYLAND_DISPLAY")
+        ):
+            raise RuntimeError(
+                "No display is available. Use 'xvfb-run' to run the application "
+                "on a system without a display."
+            )
 
         _plotter = self.plotter(obj)
 
@@ -638,11 +652,21 @@ class App:
             raise RuntimeError("LicenseManager is only available for version 252 and later.")
         return self._license_manager
 
+    @property
+    def helpers(self):
+        """Return the Helpers instance."""
+        if self._helpers is None:
+            from ansys.mechanical.core.embedding.helpers import Helpers
+
+            self._helpers = Helpers(self)
+        return self._helpers
+
     def _share(self, other) -> None:
         """Shares the state of self with other.
 
         Other is another instance of App.
-        This is used when the BUILDING_GALLERY flag is on.
+        This is used when the BUILDING_GALLERY flag is on and the constructor
+        was not called with ``reuse_instance=True``.
         In that mode, multiple instance of App are used, but
         they all point to the same underlying application
         object. Because of that, special care needs to be
@@ -660,6 +684,20 @@ class App:
         other._version = self._version
         other._poster = self._poster
         other._updated_scopes = self._updated_scopes
+        other._helpers = self._helpers
+
+        # Share logging configuration
+        other._enable_logging = self._enable_logging
+        other._log = self._log
+        other._log_level = self._log_level
+
+        # Share interactive mode and shell state
+        other._interactive_mode = self._interactive_mode
+        other._started_interactive_shell = self._started_interactive_shell
+
+        # Share lazy-loaded instances
+        other._messages = self._messages
+        other._license_manager = self._license_manager
 
         # all events will be handled by the original App instance
         other._subscribed = False
@@ -805,7 +843,6 @@ class App:
         """
         if node is None:
             node = self.DataModel.Project
-
         self._print_tree(node, max_lines, lines_count, indentation)
 
     def log_debug(self, message):

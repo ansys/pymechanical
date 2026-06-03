@@ -70,28 +70,28 @@
   description: Issues fixed in Ansys Mechanical version 261
   color: FFD500
 
-- name: fixed-in-271
-  description: Issues fixed in Ansys Mechanical version 271
-  color: FFDD33
+- name: fixed-in-next-release
+  description: Issues fixed in the upcoming Ansys Mechanical release
+  color: FFEE66
 
-- name: 24R2
+- name: 24R2-bug
   description: Bug observed in PyMechanical with Mechanical version 24R2
   color: 804000
 
-- name: 25R1
+- name: 25R1-bug
   description: Bug observed in PyMechanical with Mechanical version 25R1
   color: CC6600
 
-- name: 25R2
+- name: 25R2-bug
   description: Bug observed in PyMechanical with Mechanical version 25R2
   color: FF8000
 
-- name: 26R1
+- name: 26R1-bug
   description: Bug observed in PyMechanical with Mechanical version 26R1
   color: FF9933
 
-- name: 27R1
-  description: Bug observed in PyMechanical with Mechanical version 27R1
+- name: next-release-bug
+  description: Bug observed in awaiting release of Ansys Mechanical
   color: FFA64D
 
 - name: embedding
@@ -101,3 +101,11 @@
 - name: remote-session
   description: Issues related to remote sessions in PyMechanical
   color: 00B3B3
+
+- name: skip-doc
+  description: Skips the documentation build job in CI
+  color: e4e669
+
+- name: skip-test
+  description: Skips the test job in CI
+  color: e4e669

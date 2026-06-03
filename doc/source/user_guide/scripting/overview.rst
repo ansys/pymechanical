@@ -1,7 +1,12 @@
 .. _ref_scripting:
 
-Overview
-=========
+Scripting fundamentals
+=======================
+
+.. note::
+
+   The concepts on this page apply to **both** embedding mode and remote session mode.
+   Regardless of which mode you use, the underlying Mechanical API is the same.
 
 You could already perform scripting of Mechanical with Python from inside
 Mechanical. PyMechanical leverages the same APIs but allows you to run your
