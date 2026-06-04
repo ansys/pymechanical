@@ -52,7 +52,7 @@ jobs:
       contents: write        # Needed to create changelog entries in repository
       pull-requests: write   # Required to create pull requests for changelog updates
     steps:
-      - uses: ansys/actions/doc-deploy-changelog@12ca08fd7f0caa52076cca15c5621482646f8560 # v10.3.1
+      - uses: ansys/actions/doc-deploy-changelog@d946b24b9a765f4169bcc94afdb27bd1a0533741 # v10.3.2
         with:
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
           bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
@@ -157,7 +157,7 @@ jobs:
       contents: write        # Required to push documentation to gh-pages branch
       pull-requests: write   # Needed to comment on PR with documentation link
     steps:
-      - uses: ansys/actions/doc-deploy-pr@12ca08fd7f0caa52076cca15c5621482646f8560 # v10.3.1
+      - uses: ansys/actions/doc-deploy-pr@d946b24b9a765f4169bcc94afdb27bd1a0533741 # v10.3.2
         with:
           cname: ${{ vars.DOCUMENTATION_CNAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -202,7 +202,7 @@ jobs:
       id-token: write      # Needed for OIDC authentication when generating attestations
     steps:
       - name: Build library source and wheel artifacts
-        uses: ansys/actions/build-library@12ca08fd7f0caa52076cca15c5621482646f8560 # v10.3.1
+        uses: ansys/actions/build-library@d946b24b9a765f4169bcc94afdb27bd1a0533741 # v10.3.2
         with:
           library-name: ${{ vars.PACKAGE_NAME }}
           python-version: ${{ vars.MAIN_PYTHON_VERSION }}
@@ -219,7 +219,7 @@ jobs:
       contents: write  # Needed to create GitHub releases and upload assets
     steps:
       - name: Release to GitHub
-        uses: ansys/actions/release-github@12ca08fd7f0caa52076cca15c5621482646f8560 # v10.3.1
+        uses: ansys/actions/release-github@d946b24b9a765f4169bcc94afdb27bd1a0533741 # v10.3.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           library-name: ${{ vars.PACKAGE_NAME }}
@@ -258,7 +258,7 @@ jobs:
       contents: write  # Required to push documentation to gh-pages branch
     steps:
       - name: Deploy the latest documentation
-        uses: ansys/actions/doc-deploy-dev@12ca08fd7f0caa52076cca15c5621482646f8560 # v10.3.1
+        uses: ansys/actions/doc-deploy-dev@d946b24b9a765f4169bcc94afdb27bd1a0533741 # v10.3.2
         with:
           cname: ${{ vars.DOCUMENTATION_CNAME }}
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
@@ -274,7 +274,7 @@ jobs:
       contents: write  # Required to push stable documentation to gh-pages branch
     steps:
       - name: Deploy the stable documentation
-        uses: ansys/actions/doc-deploy-stable@12ca08fd7f0caa52076cca15c5621482646f8560 # v10.3.1
+        uses: ansys/actions/doc-deploy-stable@d946b24b9a765f4169bcc94afdb27bd1a0533741 # v10.3.2
         with:
           cname: ${{ vars.DOCUMENTATION_CNAME }}
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
