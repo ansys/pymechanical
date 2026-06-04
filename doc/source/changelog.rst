@@ -9,6 +9,66 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.12.9 <https://github.com/ansys/pymechanical/releases/tag/v0.12.9>`_ - May 29, 2026
+=====================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Dynamic version update in docs
+          - `#1628 <https://github.com/ansys/pymechanical/pull/1628>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Multiple doc issues
+          - `#1626 <https://github.com/ansys/pymechanical/pull/1626>`_
+
+        * - Analytics test
+          - `#1634 <https://github.com/ansys/pymechanical/pull/1634>`_
+
+        * - Add **kwargs to _run_cell_in_thread signature
+          - `#1635 <https://github.com/ansys/pymechanical/pull/1635>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.12.8
+          - `#1621 <https://github.com/ansys/pymechanical/pull/1621>`_
+
+        * - Update action versions across workflows
+          - `#1623 <https://github.com/ansys/pymechanical/pull/1623>`_
+
+        * - Remove tox dependency
+          - `#1625 <https://github.com/ansys/pymechanical/pull/1625>`_
+
+        * - Pre-commit automatic update
+          - `#1627 <https://github.com/ansys/pymechanical/pull/1627>`_, `#1636 <https://github.com/ansys/pymechanical/pull/1636>`_
+
+        * - Update mypy requirement from <2,>=1.19.1 to >=1.19.1,<3
+          - `#1629 <https://github.com/ansys/pymechanical/pull/1629>`_
+
+        * - Bump github/codeql-action from 4.35.3 to 4.35.4 in the actions group
+          - `#1630 <https://github.com/ansys/pymechanical/pull/1630>`_
+
+        * - Bump the actions group with 3 updates
+          - `#1637 <https://github.com/ansys/pymechanical/pull/1637>`_
+
+
 `0.12.8 <https://github.com/ansys/pymechanical/releases/tag/v0.12.8>`_ - May 14, 2026
 =====================================================================================
 
