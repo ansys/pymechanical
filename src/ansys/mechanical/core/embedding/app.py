@@ -299,15 +299,7 @@ class App:
         runtime.initialize(self._version, pep8_aliases=pep8_alias)
 
         if remove_lock and db_file is not None:
-            file_path = Path(db_file)
-            associated_dir = file_path.parent / f"{file_path.stem}_Mech_Files"
-            lock_file = associated_dir / ".mech_lock"
-            if lock_file.exists():
-                self.log_warning(
-                    f"Removing the lock file, {lock_file}, before opening the project. "
-                    "This may corrupt the project file."
-                )
-                lock_file.unlink()
+            self._remove_lock_file(db_file)
 
         self._app = _start_application(configuration, self._version, db_file, additional_args)
 
@@ -379,6 +371,17 @@ class App:
         shell.start_interactive_shell(self)
         self._started_interactive_shell = True
 
+    def _remove_lock_file(self, db_file):
+        """Remove the lock file for the given project file if it exists."""
+        file_path = Path(db_file)
+        lock_file = file_path.parent / f"{file_path.stem}_Mech_Files" / ".mech_lock"
+        if lock_file.exists():
+            self.log_warning(
+                f"Removing the lock file, {lock_file}, before opening the project. "
+                "This may corrupt the project file."
+            )
+            lock_file.unlink()
+
     def wait_with_dialog(self):
         """Block python while an interactive pop-up is displayed.
 
@@ -407,19 +410,9 @@ class App:
         remove_lock : bool, optional
             Whether or not to remove the lock file if it exists before opening the project file.
         """
-        self.log_info(message=f"Opening {db_file} ...")
+        self.log_info(f"Opening {db_file} ...")
         if remove_lock:
-            file_path = Path(db_file)
-            associated_dir = file_path.parent / f"{file_path.stem}_Mech_Files"
-            lock_file = associated_dir / ".mech_lock"
-            # Remove the lock file if it exists before opening the project file
-            if lock_file.exists():
-                self.log_warning(
-                    f"Removing the lock file, {lock_file}, before opening the project. "
-                    "This may corrupt the project file."
-                )
-                lock_file.unlink()
-
+            self._remove_lock_file(db_file)
         self.DataModel.Project.Open(db_file)
 
     def save(self, path=None):
