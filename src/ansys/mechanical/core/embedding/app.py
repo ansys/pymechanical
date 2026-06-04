@@ -167,6 +167,9 @@ class App:
     feature_flags : list, optional
         List of feature flag names to enable. Default is [].
         Available flags include: 'ThermalShells', 'MultistageHarmonic', 'CPython'.
+    remove_lock : bool, optional
+        Whether to remove the lock file if it exists before opening the project file
+        specified by ``db_file``. Default is False.
     reuse_instance : bool, optional
         When ``True``, gallery instance sharing is skipped for this constructor,
         so initialization follows the same path as when the module-level
@@ -227,6 +230,8 @@ class App:
 
         use_gallery_sharing = BUILDING_GALLERY and not reuse_instance
 
+        remove_lock = kwargs.get("remove_lock", False)
+
         self._enable_logging = kwargs.get("enable_logging", True)
         if self._enable_logging:
             self._log = LOG
@@ -267,7 +272,7 @@ class App:
                     instance.update_globals(user_globals)  # pragma: nocover
                 # Open the mechdb file if provided
                 if db_file is not None:
-                    self.open(db_file)
+                    self.open(db_file, remove_lock=remove_lock)
                 return
         if len(INSTANCES) > 0:
             raise RuntimeError("Cannot have more than one embedded mechanical instance!")
@@ -292,6 +297,17 @@ class App:
         additional_args = _additional_args(readonly, feature_flags, start_license, self._version)
         self._prepare_interactive_mode()
         runtime.initialize(self._version, pep8_aliases=pep8_alias)
+
+        if remove_lock and db_file is not None:
+            file_path = Path(db_file)
+            associated_dir = file_path.parent / f"{file_path.stem}_Mech_Files"
+            lock_file = associated_dir / ".mech_lock"
+            if lock_file.exists():
+                self.log_warning(
+                    f"Removing the lock file, {lock_file}, before opening the project. "
+                    "This may corrupt the project file."
+                )
+                lock_file.unlink()
 
         self._app = _start_application(configuration, self._version, db_file, additional_args)
 
@@ -391,9 +407,11 @@ class App:
         remove_lock : bool, optional
             Whether or not to remove the lock file if it exists before opening the project file.
         """
-        self.log_info(f"Opening {db_file} ...")
+        self.log_info(message=f"Opening {db_file} ...")
         if remove_lock:
-            lock_file = Path(self.DataModel.Project.ProjectDirectory) / ".mech_lock"
+            file_path = Path(db_file)
+            associated_dir = file_path.parent / f"{file_path.stem}_Mech_Files"
+            lock_file = associated_dir / ".mech_lock"
             # Remove the lock file if it exists before opening the project file
             if lock_file.exists():
                 self.log_warning(
