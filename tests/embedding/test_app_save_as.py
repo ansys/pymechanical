@@ -43,6 +43,7 @@ def mock_app():
     m.DataModel.Project.Open = MagicMock()
     m.log_warning = MagicMock()
     m.log_error = MagicMock()
+    m._remove_lock_file.side_effect = lambda db_file: App._remove_lock_file(m, db_file)
     return m
 
 
