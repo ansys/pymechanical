@@ -1,16 +1,23 @@
-## Description
-**Please provide a brief description of the changes made in this pull request.**
+## Summary
+<!-- What does this PR do? One or two sentences. -->
 
-## Issue linked
-**Please mention the issue number or describe the problem this pull request addresses.**
+
+Fixes #<!-- issue number -->
+
+
+## Changes
+<!-- Bullet list of key changes. -->
+
+-
+
+
+## Type of change
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Documentation
+- [ ] Maintenance / refactor
 
 ## Checklist
-- [ ] I have tested my changes locally.
-- [ ] I have added necessary documentation or updated existing documentation.
-- [ ] I have followed the coding style guidelines of this project.
-- [ ] I have added appropriate unit tests.
-- [ ] I have reviewed my changes before submitting this pull request.
-- [ ] I have linked the issue or issues that are solved to the PR if any.
-- [ ] I have assigned this PR to myself.
-- [ ] I have added the minimum version decorator to any new backend method implemented.
-- [ ] I have made sure that the title of my PR follows [Conventional commits style](https://www.conventionalcommits.org/en/v1.0.0/#summary) (e.g. ``feat: extrude circle to cylinder``)
+- [ ] Title follows [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) (e.g. `feat: add modal analysis support`)
+- [ ] Tests added or updated
+- [ ] Documentation updated
