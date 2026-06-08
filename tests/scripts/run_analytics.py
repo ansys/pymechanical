@@ -33,3 +33,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     app = pymechanical.App(version=int(args.version))
     app.Model.AddNamedSelection()
+    # this is to catch a bug where analytics were failing to generate json when
+    # app is closed.
+    if app.version > 261:
+        app.close()
