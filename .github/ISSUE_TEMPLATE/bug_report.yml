@@ -21,8 +21,8 @@ body:
           (paste your script into the Mechanical scripting window or run it in
           batch mode via `ansys-mechanical -i test.py`). If it reproduces there,
           the issue is likely in Mechanical rather than PyMechanical.
-          
-          If it is an issue in Mechanical, please check with the Ansys support 
+
+          If it is an issue in Mechanical, please check with the Ansys support
           coordinator (ASC) at your company to determine who provides
           support for your company or visit the Contacts and Locations page.
         required: true
