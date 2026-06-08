@@ -78,6 +78,19 @@ body:
     validations:
       required: true
 
+  - type: dropdown
+    id: mechanical-version
+    attributes:
+      label: Which Ansys Mechanical version are you using?
+      multiple: false
+      options:
+       - '2024 R2 (242)'
+       - '2025 R1 (251)'
+       - '2025 R2 (252)'
+       - '2026 R1 (261)'
+    validations:
+      required: true
+
   - type: textarea
     id: installed-packages
     attributes:
