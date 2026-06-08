@@ -93,7 +93,7 @@ has been installed. Activate the virtual environment and then use CLI to run the
 If multiple Mechanical versions are installed in the same system,
 versions can be specified using ``-r`` flag. Use ``-h`` for more information.
 
-.. code::
+.. code-block:: bash
 
     ansys-mechanical -i file.py
 
@@ -104,17 +104,17 @@ versions can be specified using ``-r`` flag. Use ``-h`` for more information.
 
    **On Windows**
 
-   .. code::
+   .. code-block:: console
 
-      "C:/Program Files/ANSYS Inc/v261/aisol/bin/winx64/AnsysWBU.exe -DSApplet -AppModeMech -script file.py"
+      "C:/Program Files/ANSYS Inc/v{mechanical_version}/aisol/bin/winx64/AnsysWBU.exe -DSApplet -AppModeMech -script file.py"
 
    PowerShell users can run the preceding command without including the opening and
    closing quotation marks.
 
    **On Linux**
 
-   .. code::
+   .. code-block:: console
 
-      /usr/ansys_inc/v261/aisol/.workbench -DSApplet -AppModeMech -script file.py
+      /usr/ansys_inc/v{mechanical_version}/aisol/.workbench -DSApplet -AppModeMech -script file.py
 
    On either Windows or Linux, add the command line argument ``-b`` to run the script in batch mode.

@@ -43,6 +43,7 @@ def _get_env_without_logging_variables():
     _unset_var(env, "ANSYS_WORKBENCH_LOGGING_CONSOLE")
     _unset_var(env, "ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH")
     _unset_var(env, "ANSYS_WORKBENCH_LOGGING_DIRECTORY")
+    _unset_var(env, "WBTRACING")
     return env
 
 
@@ -52,8 +53,8 @@ def _run_embedding_log_test(
     pytestconfig,
     testname: str,
     pass_expected: bool = True,
-) -> tuple[bytes, bytes]:
-    """Run the process and returns it after it finishes."""
+) -> tuple[str, str]:
+    """Run the process and returns (stdout, stderr) after it finishes."""
     version = pytestconfig.getoption("ansys_version")
     embedded_py = Path(rootdir) / "tests" / "scripts" / "embedding_log_test.py"
 
@@ -68,11 +69,11 @@ def _run_embedding_log_test(
         subprocess_pass_expected,
     )
 
+    stdout = stdout.decode()
     if not subprocess_pass_expected:
-        stdout = stdout.decode()
         _assert_success(stdout, pass_expected)
     stderr = stderr.decode()
-    return stderr
+    return stdout, stderr
 
 
 def _assert_success(stdout: str, pass_expected: bool) -> int:
@@ -93,7 +94,7 @@ def _assert_success(stdout: str, pass_expected: bool) -> int:
 @pytest.mark.embedding_logging
 def test_logging_write_log_before_init(rootdir, run_subprocess, pytestconfig):
     """Test that an error is thrown when trying to log before initializing."""
-    stderr = _run_embedding_log_test(
+    _, stderr = _run_embedding_log_test(
         run_subprocess, rootdir, pytestconfig, "log_before_initialize", False
     )
     assert "Can't log to the embedding logger until Mechanical is initialized" in stderr
@@ -105,7 +106,7 @@ def test_logging_write_info_after_initialize_with_error_level(
     rootdir, run_subprocess, pytestconfig
 ):
     """Test that no output is written when an info is logged when configured at the error level."""
-    stderr = _run_embedding_log_test(
+    _, stderr = _run_embedding_log_test(
         run_subprocess,
         rootdir,
         pytestconfig,
@@ -119,7 +120,7 @@ def test_logging_write_info_after_initialize_with_error_level(
 @pytest.mark.embedding_logging
 def test_addin_configuration(rootdir, run_subprocess, pytestconfig, addin_configuration):
     """Test that mechanical can start with both the Mechanical and WorkBench configuration."""
-    stderr = _run_embedding_log_test(
+    _, stderr = _run_embedding_log_test(
         run_subprocess,
         rootdir,
         pytestconfig,
@@ -134,7 +135,7 @@ def test_logging_write_error_after_initialize_with_info_level(
     rootdir, run_subprocess, pytestconfig
 ):
     """Test that output is written when an error is logged when configured at the info level."""
-    stderr = _run_embedding_log_test(
+    _, stderr = _run_embedding_log_test(
         run_subprocess, rootdir, pytestconfig, "log_error_after_initialize_with_info_level"
     )
     assert "Will no one rid me of this turbulent priest?" in stderr
@@ -151,7 +152,48 @@ def test_logging_level_before_and_after_initialization(rootdir, run_subprocess, 
 @pytest.mark.embedding_logging
 def test_logging_all_level(rootdir, run_subprocess, pytestconfig):
     """Test all logging level after initialization."""
-    stderr = _run_embedding_log_test(
+    _, stderr = _run_embedding_log_test(
         run_subprocess, rootdir, pytestconfig, "log_check_all_log_level"
     )
     assert all(keyword in stderr for keyword in ["debug", "warning", "info", "error", "fatal"])
+
+
+@pytest.mark.embedding_logging
+def test_wbtracing_configuration(monkeypatch, pytestconfig):
+    """Test WBTRACING environment variable configuration and post-init warning."""
+    from ansys.mechanical.core.embedding import initializer
+    from ansys.mechanical.core.embedding.logger import Configuration
+
+    version = pytestconfig.getoption("ansys_version")
+    monkeypatch.delenv("WBTRACING", raising=False)
+
+    # set_wbtracing directly
+    Configuration.set_wbtracing(True)
+    assert os.environ.get("WBTRACING") == "1"
+    Configuration.set_wbtracing(False)
+    assert "WBTRACING" not in os.environ
+
+    # via configure()
+    Configuration.configure(wbtracing=None, to_stdout=True)
+    assert "WBTRACING" not in os.environ
+    Configuration.configure(wbtracing=True, to_stdout=True)
+    assert os.environ.get("WBTRACING") == "1"
+    Configuration.configure(wbtracing=False, to_stdout=True)
+    assert "WBTRACING" not in os.environ
+
+    # warns when called after init, but still sets the env var
+    monkeypatch.setattr(initializer, "INITIALIZED_VERSION", version)
+    with pytest.warns(UserWarning, match="no effect on the current instance"):
+        Configuration.set_wbtracing(True)
+    assert os.environ.get("WBTRACING") == "1"
+
+
+@pytest.mark.embedding_scripts
+@pytest.mark.embedding_logging
+def test_logging_with_wbtracing(rootdir, run_subprocess, pytestconfig):
+    """Test that WBTRACING can be enabled through the logger configuration."""
+    stdout, stderr = _run_embedding_log_test(
+        run_subprocess, rootdir, pytestconfig, "log_with_wbtracing"
+    )
+    assert "wbtracing_enabled" in stderr
+    assert "Looking for GUID" in stdout

@@ -4,7 +4,7 @@ Mechanical standalone
 =====================
 
 In addition to Standalone Mechanical known issues and limitations given below,
-please refer
+refer to:
 
 - `Mechanical API known issues and limitations`_.
 - `ACT known issues and limitations`_.
@@ -22,6 +22,8 @@ Known issues and limitations
   (`#1047 <https://github.com/ansys/pymechanical/issues/1047>`_).
 24R2
 ^^^^
+
+.. vale Google.Headings = YES
 
 - In Read Only mode, the application does not display error messages when the geometry is imported in batch mode.
 - Section planes cannot be added through batch mode.
