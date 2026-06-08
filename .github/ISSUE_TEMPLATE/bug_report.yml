@@ -24,7 +24,8 @@ body:
 
           If it is an issue in Mechanical, please check with the Ansys support
           coordinator (ASC) at your company to determine who provides
-          support for your company or visit the Contacts and Locations page.
+          support for your company, or submit a request via the
+          [Ansys Customer Support portal](https://www.ansys.com/support).
         required: true
       - label: I have searched among the existing issues
         required: true
