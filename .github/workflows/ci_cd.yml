@@ -155,7 +155,6 @@ jobs:
     if: |
       always() &&
       needs.docs.result == 'success' &&
-      github.event_name == 'pull_request' &&
       contains(github.event.pull_request.labels.*.name, 'deploy-pr-doc')
     permissions:
       contents: write        # Required to push documentation to gh-pages branch
