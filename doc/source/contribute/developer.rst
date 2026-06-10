@@ -65,15 +65,13 @@ pull-request to the main project to have your changes reviewed and merged.
 Clone the repository
 ====================
 
-Make sure you `configure SSH`_ with your GitHub
-account. This allows you to clone the repository without having to use tokens
-or passwords. Also, make sure you have `git`_ installed in your machine.
+Make sure you have `git`_ installed in your machine.
 
-To clone the repository using SSH, run:
+To clone the repository, run:
 
 .. code-block:: bash
 
-    git clone git@github.com:ansys/pymechanical
+    git clone https://github.com/ansys/pymechanical
 
 .. note::
 
