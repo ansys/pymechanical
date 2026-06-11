@@ -217,6 +217,41 @@ html_context = {
     "github_version": "main",
     "doc_path": "doc/source",
     "pyansys_tags": ["Structures"],
+    "latest_news": {
+        "title": "<strong>News & Resources</strong>",
+        "show_date": True,
+        "max_items": 6,
+        "items": [
+            {
+                "title": "<strong>[News]</strong> Mechanical 26R1 is Released",
+                "date": "2024-12-15",
+                "url": "https://www.ansys.com/products/structures/ansys-mechanical",
+                "excerpt": "Download new Ansys Mechanical 26R1",
+            },
+            {
+                "title": "<strong>[Video]</strong> PyMechanical in One Video by Amrit",
+                "url": "https://www.youtube.com/watch?v=30iFGvFH07I&t=1s",
+                "excerpt": "A comprehensive single-video walkthrough of PyMechanical, covering Python scripting, launching Mechanical, and automation workflows.",  # noqa: E501
+            },
+            {
+                "title": "<strong>[Video]</strong> Ansys Automation Overview - PyMechanical/PyAnsys by Dennis Chen",  # noqa: E501
+                "url": "https://www.youtube.com/watch?v=9OZckJ36DFM&t=2s",
+                "excerpt": "Watch this video tutorial to learn PyMechanical basics and workflows.",
+            },
+            {
+                "title": "<strong>[Blog]</strong> Exploring PyMechanical Access Methods: A Brief Overview",  # noqa: E501
+                "url": "https://developer.ansys.com/blog/exploring-pymechanical-access-methods-brief-overview",
+                "excerpt": "A brief overview of the different methods to access PyMechanical, including embedded, remote, and gRPC-based approaches.",  # noqa: E501
+            },
+            {
+                "title": "<strong>[Blog]</strong> PyAnsys: The Key to Workflow Automation by CADFEM",  # noqa: E501
+                "url": "https://blog.cadfem.net/en/pyansys-the-key-to-workflow-automation",
+                "excerpt": "Discover how PyAnsys enables workflow automation for Ansys simulation tools through Python scripting and tool integration.",  # noqa: E501
+            },
+        ],
+        "more_url": "https://www.ansys.com/products/structures/ansys-mechanical",
+        "more_text": "Get Ansys Mechanical",
+    },
 }
 html_theme_options = {
     "logo": "pyansys",
@@ -246,7 +281,10 @@ html_theme_options = {
         "changelog_file_name": "changelog.rst",
         "sidebar_pages": ["changelog", "index"],
     },
-    "ansys_sphinx_theme_autoapi": {"project": project},
+    "secondary_sidebar_items": {
+        "index": ["latest_news_sidebar"],
+    },
+    "ansys_sphinx_theme_autoapi": {"project": project, "templates": "_templates/autoapi"},
 }
 
 
