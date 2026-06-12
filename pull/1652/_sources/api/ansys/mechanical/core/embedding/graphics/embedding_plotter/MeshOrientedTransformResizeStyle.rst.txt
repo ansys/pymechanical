@@ -1,0 +1,93 @@
+
+
+
+
+
+
+:class:`MeshOrientedTransformResizeStyle`
+=========================================
+
+
+.. py:class:: ansys.mechanical.core.embedding.graphics.embedding_plotter.MeshOrientedTransformResizeStyle(*args, **kwds)
+
+   Bases: :py:obj:`enum.Enum`
+
+
+   
+   Dynamic resize style flag for mesh oriented transform nodes.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: MeshOrientedTransformResizeStyle
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~NONE`
+            - 
+          * - :py:attr:`~SCALING`
+            - 
+          * - :py:attr:`~STRETCHING`
+            - 
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.mechanical.core.embedding.graphics.embedding_plotter import MeshOrientedTransformResizeStyle
+
+
+Attribute detail
+----------------
+
+.. py:attribute:: NONE
+   :value: 0
+
+
+.. py:attribute:: SCALING
+   :value: 1
+
+
+.. py:attribute:: STRETCHING
+   :value: 2
+
+
+
+
+
+

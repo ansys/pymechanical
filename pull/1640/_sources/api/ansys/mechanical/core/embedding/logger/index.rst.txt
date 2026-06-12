@@ -1,0 +1,119 @@
+ansys.mechanical.core.embedding.logger
+======================================
+
+.. py:module:: ansys.mechanical.core.embedding.logger
+
+.. autoapi-nested-parse::
+
+   
+   Embedding logger.
+
+   Module to interact with the built-in logging system of Mechanical.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /api/ansys/mechanical/core/embedding/logger/environ/index
+   /api/ansys/mechanical/core/embedding/logger/linux_api/index
+   /api/ansys/mechanical/core/embedding/logger/sinks/index
+   /api/ansys/mechanical/core/embedding/logger/windows_api/index
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.logger.LOGGING_SINKS
+   ansys.mechanical.core.embedding.logger.LOGGING_CONTEXT
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /api/ansys/mechanical/core/embedding/logger/Configuration
+   /api/ansys/mechanical/core/embedding/logger/Logger
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.logger.Configuration
+   ansys.mechanical.core.embedding.logger.Logger
+
+
+Package Contents
+----------------
+
+.. py:data:: LOGGING_SINKS
+   :type:  set[int]
+
+   
+   Constant for logging sinks.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: LOGGING_CONTEXT
+   :type:  str
+   :value: 'PYMECHANICAL'
+
+
+   
+   Constant for logging context.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

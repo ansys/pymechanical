@@ -1,0 +1,50 @@
+ansys.mechanical.core.embedding.logger.sinks.StandardSinks
+==========================================================
+
+.. py:class:: ansys.mechanical.core.embedding.logger.sinks.StandardSinks
+
+   
+   Provides built-in sinks.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: STANDARD_LOG_FILE
+      :value: 0
+
+
+
+   .. py:attribute:: CONSOLE
+      :value: 1
+
+
+
+   .. py:attribute:: WINDOWS_DEBUGGER
+      :value: 2
+
+
+
+   .. py:attribute:: WINDOWS_ERROR_MESSAGE_BOX
+      :value: 3
+
+
+
+   .. py:attribute:: WINDOWS_FATAL_MESSAGE_BOX
+      :value: 4
+
+

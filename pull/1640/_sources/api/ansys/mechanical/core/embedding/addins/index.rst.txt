@@ -1,0 +1,26 @@
+ansys.mechanical.core.embedding.addins
+======================================
+
+.. py:module:: ansys.mechanical.core.embedding.addins
+
+.. autoapi-nested-parse::
+
+   Configuration system for embedded mechanical.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /api/ansys/mechanical/core/embedding/addins/AddinConfiguration
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.addins.AddinConfiguration
+
+

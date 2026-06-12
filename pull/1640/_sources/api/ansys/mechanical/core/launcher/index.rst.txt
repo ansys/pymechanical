@@ -1,0 +1,26 @@
+ansys.mechanical.core.launcher
+==============================
+
+.. py:module:: ansys.mechanical.core.launcher
+
+.. autoapi-nested-parse::
+
+   Launch Mechanical in batch or UI mode.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /api/ansys/mechanical/core/launcher/MechanicalLauncher
+
+.. autoapisummary::
+
+   ansys.mechanical.core.launcher.MechanicalLauncher
+
+

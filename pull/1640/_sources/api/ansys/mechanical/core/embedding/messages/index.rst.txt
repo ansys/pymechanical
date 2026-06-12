@@ -1,0 +1,62 @@
+ansys.mechanical.core.embedding.messages
+========================================
+
+.. py:module:: ansys.mechanical.core.embedding.messages
+
+.. autoapi-nested-parse::
+
+   Message Manager for App.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.messages.HAS_PANDAS
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /api/ansys/mechanical/core/embedding/messages/MessageManager
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.messages.MessageManager
+
+
+Module Contents
+---------------
+
+.. py:data:: HAS_PANDAS
+   :value: True
+
+
+   
+   Whether or not pandas exists.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

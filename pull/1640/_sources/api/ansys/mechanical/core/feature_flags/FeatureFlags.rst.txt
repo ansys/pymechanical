@@ -1,0 +1,40 @@
+ansys.mechanical.core.feature_flags.FeatureFlags
+================================================
+
+.. py:class:: ansys.mechanical.core.feature_flags.FeatureFlags
+
+   
+   Supported feature flag names.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: ThermalShells
+      :value: 'Mechanical.ThermalShells'
+
+
+
+   .. py:attribute:: MultistageHarmonic
+      :value: 'Mechanical.MultistageHarmonic'
+
+
+
+   .. py:attribute:: CPython
+      :value: 'Mechanical.CPython.Capability'
+
+

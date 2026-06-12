@@ -1,0 +1,175 @@
+ansys.mechanical.core.embedding.ipython_shell.ShellHooks
+========================================================
+
+.. py:class:: ansys.mechanical.core.embedding.ipython_shell.ShellHooks
+
+   
+   IPython shell lifetime hooks.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:property:: idle_hook
+      :type: Callable
+
+
+      
+      Function to call between IPython block executions.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:property:: start_hook
+      :type: Callable | None
+
+
+      
+      Function to call at the start of the block thread.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:property:: end_hook
+      :type: Callable | None
+
+
+      
+      Function to call when the shell is exited.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: start()
+
+      
+      Signal handler when the shell starts.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: idle()
+
+      
+      Signal handler when the shell is idle.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: end()
+
+      
+      Signal handler when the shell ends.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+

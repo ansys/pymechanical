@@ -1,0 +1,38 @@
+ansys.mechanical.core.embedding.rpc.utils.MethodType
+====================================================
+
+.. py:class:: ansys.mechanical.core.embedding.rpc.utils.MethodType
+
+   Bases: :py:obj:`enum.IntEnum`
+
+
+   
+   Enum for method or property types.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: METHOD
+      :value: 0
+
+
+
+   .. py:attribute:: PROP
+      :value: 1
+
+

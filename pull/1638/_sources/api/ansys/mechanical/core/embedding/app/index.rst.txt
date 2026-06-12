@@ -1,0 +1,184 @@
+
+
+
+
+
+
+The ``app.py`` module
+=====================
+
+.. py:module:: ansys.mechanical.core.embedding.app
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: app
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.mechanical.core.embedding.app.App`
+            - Mechanical embedding Application.
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~is_initialized`
+            - Check if the app has been initialized.
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~HAS_ANSYS_GRAPHICS`
+            - Whether or not ansys-tools-visualization-interface is available.
+
+
+          * - :py:obj:`~INSTANCES`
+            - List of instances.
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> App</api/ansys/mechanical/core/embedding/app/App>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Main application class for embedded Mechanical.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:function:: is_initialized() -> bool
+
+   
+   Check if the app has been initialized.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: HAS_ANSYS_GRAPHICS
+   :value: True
+
+
+   
+   Whether or not ansys-tools-visualization-interface is available.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: INSTANCES
+   :type:  list[App]
+   :value: []
+
+
+   
+   List of instances.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+

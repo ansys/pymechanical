@@ -1,0 +1,26 @@
+ansys.mechanical.core.embedding.rpc.client
+==========================================
+
+.. py:module:: ansys.mechanical.core.embedding.rpc.client
+
+.. autoapi-nested-parse::
+
+   Client for Mechanical services.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /api/ansys/mechanical/core/embedding/rpc/client/Client
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.rpc.client.Client
+
+

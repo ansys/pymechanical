@@ -1,0 +1,26 @@
+ansys.mechanical.core.embedding.logger.sinks
+============================================
+
+.. py:module:: ansys.mechanical.core.embedding.logger.sinks
+
+.. autoapi-nested-parse::
+
+   Mechanical application logging sinks.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /api/ansys/mechanical/core/embedding/logger/sinks/StandardSinks
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.logger.sinks.StandardSinks
+
+

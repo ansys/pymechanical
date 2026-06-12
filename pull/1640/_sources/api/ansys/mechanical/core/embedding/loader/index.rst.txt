@@ -1,0 +1,47 @@
+ansys.mechanical.core.embedding.loader
+======================================
+
+.. py:module:: ansys.mechanical.core.embedding.loader
+
+.. autoapi-nested-parse::
+
+   clr_loader for pymechanical embedding. This loads the CLR on both windows and linux.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.loader.load_clr
+
+
+Module Contents
+---------------
+
+.. py:function:: load_clr(install_loc: str) -> None
+
+   
+   Load the clr, the outcome of this function is that `clr` is usable.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

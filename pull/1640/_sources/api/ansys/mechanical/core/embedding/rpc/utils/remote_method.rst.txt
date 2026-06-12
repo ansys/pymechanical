@@ -1,0 +1,97 @@
+ansys.mechanical.core.embedding.rpc.utils.remote_method
+=======================================================
+
+.. py:class:: ansys.mechanical.core.embedding.rpc.utils.remote_method(func)
+
+   
+   Decorator for passing remote methods.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:method:: __call__(*args, **kwargs)
+
+      
+      Call the stored function with provided arguments.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: __call_method__(instance, *args, **kwargs)
+
+      
+      Call the stored function with the instance and provided arguments.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: __get__(obj, objtype)
+
+      
+      Return a partially applied method.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+

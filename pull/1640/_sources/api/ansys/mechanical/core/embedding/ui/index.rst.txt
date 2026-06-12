@@ -1,0 +1,76 @@
+ansys.mechanical.core.embedding.ui
+==================================
+
+.. py:module:: ansys.mechanical.core.embedding.ui
+
+.. autoapi-nested-parse::
+
+   Run Mechanical UI from Python.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /api/ansys/mechanical/core/embedding/ui/UILauncher
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.ui.UILauncher
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.ui.launch_ui
+
+
+Module Contents
+---------------
+
+.. py:function:: launch_ui(app: ansys.mechanical.core.embedding.App, delete_tmp_on_close: bool = True, dry_run: bool = False, readonly: bool = False) -> None
+
+   
+   Launch the Mechanical UI.
+
+   Precondition: Mechanical has to have already been saved
+   Side effect: If Mechanical has ever been saved, it overwrites that save.
+
+   :Parameters:
+
+       **app: ansys.mechanical.core.embedding.app.App**
+           A Mechanical embedding application.
+
+       **delete_tmp_on_close: bool**
+           Whether to delete the temporary mechdb file when the GUI is closed.
+           By default, this is ``True``.
+
+       **dry_run: bool**
+           Whether or not to launch the GUI. By default, this is ``False``.
+
+       **readonly: bool**
+           Whether to launch the GUI in read-only mode. By default, this is ``False``.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

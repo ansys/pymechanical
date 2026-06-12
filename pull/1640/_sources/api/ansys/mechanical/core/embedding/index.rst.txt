@@ -1,0 +1,65 @@
+ansys.mechanical.core.embedding
+===============================
+
+.. py:module:: ansys.mechanical.core.embedding
+
+.. autoapi-nested-parse::
+
+   
+   Imports for the embedding sub-package.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /api/ansys/mechanical/core/embedding/addins/index
+   /api/ansys/mechanical/core/embedding/app/index
+   /api/ansys/mechanical/core/embedding/app_libraries/index
+   /api/ansys/mechanical/core/embedding/appdata/index
+   /api/ansys/mechanical/core/embedding/background/index
+   /api/ansys/mechanical/core/embedding/cleanup_gui/index
+   /api/ansys/mechanical/core/embedding/enum_importer/index
+   /api/ansys/mechanical/core/embedding/find_mechanical/index
+   /api/ansys/mechanical/core/embedding/global_importer/index
+   /api/ansys/mechanical/core/embedding/graphics/index
+   /api/ansys/mechanical/core/embedding/helpers/index
+   /api/ansys/mechanical/core/embedding/imports/index
+   /api/ansys/mechanical/core/embedding/initializer/index
+   /api/ansys/mechanical/core/embedding/ipython_shell/index
+   /api/ansys/mechanical/core/embedding/license_manager/index
+   /api/ansys/mechanical/core/embedding/loader/index
+   /api/ansys/mechanical/core/embedding/logger/index
+   /api/ansys/mechanical/core/embedding/mechanical_warnings/index
+   /api/ansys/mechanical/core/embedding/messages/index
+   /api/ansys/mechanical/core/embedding/poster/index
+   /api/ansys/mechanical/core/embedding/resolver/index
+   /api/ansys/mechanical/core/embedding/rpc/index
+   /api/ansys/mechanical/core/embedding/runtime/index
+   /api/ansys/mechanical/core/embedding/shell/index
+   /api/ansys/mechanical/core/embedding/shims/index
+   /api/ansys/mechanical/core/embedding/transaction/index
+   /api/ansys/mechanical/core/embedding/ui/index
+   /api/ansys/mechanical/core/embedding/utils/index
+
+

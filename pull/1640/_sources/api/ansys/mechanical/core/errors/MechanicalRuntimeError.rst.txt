@@ -1,0 +1,28 @@
+ansys.mechanical.core.errors.MechanicalRuntimeError
+===================================================
+
+.. py:exception:: ansys.mechanical.core.errors.MechanicalRuntimeError
+
+   Bases: :py:obj:`RuntimeError`
+
+
+   
+   Raises an error when Mechanical passes a runtime error.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!

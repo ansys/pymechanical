@@ -1,0 +1,39 @@
+ansys.mechanical.core.embedding.poster
+======================================
+
+.. py:module:: ansys.mechanical.core.embedding.poster
+
+.. autoapi-nested-parse::
+
+   Use the Poster class to post functions to Mechanical's main thread.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Exceptions
+----------
+
+.. toctree::
+   :hidden:
+
+   /api/ansys/mechanical/core/embedding/poster/PosterError
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.poster.PosterError
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /api/ansys/mechanical/core/embedding/poster/Poster
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.poster.Poster
+
+

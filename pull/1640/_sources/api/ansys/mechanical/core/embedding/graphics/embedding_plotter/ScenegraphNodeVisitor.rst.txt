@@ -1,0 +1,50 @@
+ansys.mechanical.core.embedding.graphics.embedding_plotter.ScenegraphNodeVisitor
+================================================================================
+
+.. py:class:: ansys.mechanical.core.embedding.graphics.embedding_plotter.ScenegraphNodeVisitor(app, plot_settings: PlotSettings)
+
+   
+   Class to visit the Mechanical scenegraph nodes.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:method:: visit_node(node: Ansys.Mechanical.Scenegraph.Node) -> Plottable | None
+
+      
+      Visit an arbitrary node.
+
+      Return a plottable object of that node.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+

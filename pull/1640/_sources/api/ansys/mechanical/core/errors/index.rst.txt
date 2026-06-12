@@ -1,0 +1,126 @@
+ansys.mechanical.core.errors
+============================
+
+.. py:module:: ansys.mechanical.core.errors
+
+.. autoapi-nested-parse::
+
+   PyMechanical-specific errors.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.errors.SIGINT_TRACKER
+
+
+Exceptions
+----------
+
+.. toctree::
+   :hidden:
+
+   /api/ansys/mechanical/core/errors/VersionError
+   /api/ansys/mechanical/core/errors/MechanicalRuntimeError
+   /api/ansys/mechanical/core/errors/MechanicalExitedError
+
+.. autoapisummary::
+
+   ansys.mechanical.core.errors.VersionError
+   ansys.mechanical.core.errors.MechanicalRuntimeError
+   ansys.mechanical.core.errors.MechanicalExitedError
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.errors.handler
+   ansys.mechanical.core.errors.protect_grpc
+
+
+Module Contents
+---------------
+
+.. py:data:: SIGINT_TRACKER
+   :type:  list[bool]
+   :value: []
+
+
+   
+   List of SIGINT keyboard interrupts.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: handler(sig, frame)
+
+   
+   Pass signal to custom interrupt handler.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: protect_grpc(func)
+
+   
+   Capture gRPC exceptions and return a more succinct error message.
+
+   Capture KeyboardInterrupt to avoid segfaulting Mechanical.
+
+   This works some of the time, but not all the time. For some
+   reason gRPC still captures SIGINT.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

@@ -1,0 +1,107 @@
+ansys.mechanical.core.embedding.shell
+=====================================
+
+.. py:module:: ansys.mechanical.core.embedding.shell
+
+.. autoapi-nested-parse::
+
+   Shell interaction for PyMechanical embedding.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.shell.HAS_WIN32
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.shell.start_interactive_shell
+   ansys.mechanical.core.embedding.shell.end_interactive_shell
+   ansys.mechanical.core.embedding.shell.initialize_ipython_shell
+
+
+Module Contents
+---------------
+
+.. py:data:: HAS_WIN32
+   :value: True
+
+
+.. py:function:: start_interactive_shell(app)
+
+   
+   Start the interactive IPython shell.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: end_interactive_shell()
+
+   
+   End the interactive IPython shell.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: initialize_ipython_shell()
+
+   
+   Initialize the interactive IPython shell.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

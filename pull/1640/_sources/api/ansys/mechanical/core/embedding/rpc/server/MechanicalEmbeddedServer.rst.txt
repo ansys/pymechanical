@@ -1,0 +1,73 @@
+ansys.mechanical.core.embedding.rpc.server.MechanicalEmbeddedServer
+===================================================================
+
+.. py:class:: ansys.mechanical.core.embedding.rpc.server.MechanicalEmbeddedServer(port: int | None = None, version: int | None = None, methods: list[Callable] = [], impl: list = [])
+
+   
+   Start rpc server.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:method:: start() -> None
+
+      
+      Start server on specified port.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: stop() -> None
+
+      
+      Stop the server.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+

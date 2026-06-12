@@ -1,0 +1,84 @@
+ansys.mechanical.core.feature_flags
+===================================
+
+.. py:module:: ansys.mechanical.core.feature_flags
+
+.. autoapi-nested-parse::
+
+   Mechanical beta feature flags.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /api/ansys/mechanical/core/feature_flags/FeatureFlags
+
+.. autoapisummary::
+
+   ansys.mechanical.core.feature_flags.FeatureFlags
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.feature_flags.get_feature_flag_names
+   ansys.mechanical.core.feature_flags.get_command_line_arguments
+
+
+Module Contents
+---------------
+
+.. py:function:: get_feature_flag_names() -> list[str]
+
+   
+   Get the available feature flags.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: get_command_line_arguments(flags: list[str])
+
+   
+   Get the command line arguments as an array for the given flags.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
