@@ -111,3 +111,14 @@ VPN issues
 Sometimes, Mechanical has issues starting when VPN software is running. For more information,
 see the `Mechanical Users Guide`_
 in the Ansys Help.
+
+Ansys developer ecosystem resources
+-----------------------------------
+
+Ansys has an extensive developer ecosystem where you can find assistance for a variety of issues.
+
+- `Developer Portal <https://developer.ansys.com/>`_: Blog posts, documentation, and guide
+  - `Developer Forum <https://discuss.ansys.com/>`_: Scripting and usage support for PyAnsys and other Ansys developer tools
+- `Ansys Innovation Space <https://innovationspace.ansys.com/>`_: Product support forum and training materials
+- `GitHub <https://github.com/ansys/pymechanical>`_: Development support, bug reporting, feature requests, and more.
+- `Ansys Learning Hub <https://learninghub.ansys.com/>`_: Training, courses and learning plans
