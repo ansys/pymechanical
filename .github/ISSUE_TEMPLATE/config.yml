@@ -1,8 +1,5 @@
 blank_issues_enabled: true
 contact_links:
-  - name: Report a security vulnerability
-    url: https://github.com/ansys/pymechanical/security/advisories/new
-    about: Please report security vulnerabilities using GitHub's private vulnerability reporting.
   - name: Questions and Discussions
     url: https://github.com/ansys/pymechanical/discussions
     about: For general questions and discussions, please use GitHub Discussions.
