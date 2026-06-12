@@ -22,10 +22,6 @@
 
 """Message Manager for App."""
 
-# TODO: add functionality to filter only errors, warnings, info
-# TODO: add max number of messages to display
-# TODO: implement pep8 formatting
-
 try:  # noqa: F401
     import pandas as pd
 
@@ -142,8 +138,16 @@ class MessageManager:
         _msg = self._messages[index]
         self._messages.Remove(_msg)
 
-    def _show_string(self, filter: str = "Severity;DisplayString") -> str:
-        if self._messages.Count == 0:
+    def _get_filtered_messages(self, max_messages=None):
+        """Return messages capped by max_messages."""
+        messages = list(self._messages)
+        if max_messages is not None:
+            messages = messages[:max_messages]
+        return messages
+
+    def _show_string(self, filter: str = "Severity;DisplayString", max_messages=None) -> str:
+        messages = self._get_filtered_messages(max_messages=max_messages)
+        if not messages:
             return "No messages to display."
 
         if filter == "*":
@@ -160,34 +164,34 @@ class MessageManager:
             selected_columns = [col.strip() for col in filter.split(";")]
 
         lines = []
-        for msg in self._messages:
+        for msg in messages:
             for key in selected_columns:
                 line = f"{key}: {getattr(msg, key, 'Specified attribute not found.')}"
                 lines.append(line)
         return "\n".join(lines)
 
-    def show(self, filter="Severity;DisplayString") -> None:
+    def show(self, filter="Severity;DisplayString", max_messages=None) -> None:
         """Print all messages with full details.
 
         Parameters
         ----------
         filter : str, optional
             Semicolon separated list of message attributes to display.
-            Default is "severity;message".
-            if filter is "*", all available attributes will be displayed.
+            Default is ``"Severity;DisplayString"``.
+            If filter is ``"*"``, all available attributes will be displayed.
+        max_messages : int, optional
+            Maximum number of messages to display. The default is ``None``,
+            in which case all messages are shown.
 
         Examples
         --------
         >>> app.messages.show()
-        ... severity: info
-        ... message: Sample message.
+        ... Severity: INFO
+        ... DisplayString: Sample message.
 
-        >>> app.messages.show(filter="time_stamp;severity;message")
-        ... time_stamp: 1/30/2025 12:10:35 PM
-        ... severity: info
-        ... message: Sample message.
+        >>> app.messages.show(max_messages=5)
         """
-        show_string = self._show_string(filter)
+        show_string = self._show_string(filter, max_messages=max_messages)
         print(show_string)
 
     def clear(self):
