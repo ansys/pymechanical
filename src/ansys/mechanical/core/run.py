@@ -478,8 +478,8 @@ def cli(
 ):
     """CLI tool to run mechanical.
 
-    USAGE:
-
+    Examples
+    --------
     The following example demonstrates the main use of this tool:
 
         $ ansys-mechanical -r 261 -g

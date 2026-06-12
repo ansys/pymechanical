@@ -26,8 +26,8 @@ class Transaction:  # When ansys-pythonnet issue #14 is fixed, this class will b
     """
     A class to speed up bulk user interactions using Ansys ACT Mechanical Transaction.
 
-    Example
-    -------
+    Examples
+    --------
     >>> with Transaction() as transaction:
     ...     pass  # Perform bulk user interactions here
     """
