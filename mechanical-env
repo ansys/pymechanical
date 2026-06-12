@@ -133,6 +133,12 @@ export MWUSER_DIRECTORY
 MWDONT_XCLOSEDISPLAY=1
 export MWDONT_XCLOSEDISPLAY
 
+# Mainwin MWSUB_SPACE to support parallel sessions
+if [ -f /proc/sys/kernel/random/uuid ] && [ -z "${MWSUB_SPACE_OFF}" ]; then
+    MWSUB_SPACE=$(tr -d '-' < /proc/sys/kernel/random/uuid)
+    export MWSUB_SPACE
+fi
+
 # Set dynamic library preload
 SysLibStdCpp="$(find /usr/lib64 /usr/lib -maxdepth 2 -type f -name libstdc++.so.6.\* 2>/dev/null | head -1)"
 SysLibVersion="$(echo $SysLibStdCpp | sed -e 's/^.*so.6/6/')"

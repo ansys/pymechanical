@@ -12,7 +12,7 @@ of Python modules that are distributed with the installation of Mechanical that 
 from within the Mechanical Scripting Pane. These modules are not available for use from an
 embedded instance of Mechanical in Python because Python does not know where to find them.
 
-But, in order to use these modules, you need to use the experimental function
+But, to use these modules, you need to use the experimental function
 ``add_mechanical_python_libraries`` to help Python locate them and make it possible to import
 them. In addition, it is necessary to first initialize the embedded instance of Mechanical
 because these libraries may expect the .NET Common Language Runtime to be initialized as well
@@ -26,10 +26,10 @@ To use the above function, run the following:
    from ansys.mechanical.core import App
    from ansys.mechanical.core.embedding import add_mechanical_python_libraries
 
-   app = App(version=261)
+   app = App(version={mechanical_version})
 
    add_mechanical_python_libraries(app)
-   import materials  # This is materials.py that's shipped with Mechanical v261
+   import materials  # This is materials.py that's shipped with Mechanical v{mechanical_version}
 
 .. warning::
 

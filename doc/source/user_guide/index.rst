@@ -28,6 +28,7 @@ If you are not sure which mode to use, see :ref:`ref_choose_your_mode`.
    embedding/logging
    embedding/pep8
    embedding/autocomplete
+   embedding/helpers
 
 .. toctree::
    :maxdepth: 2
@@ -46,6 +47,7 @@ If you are not sure which mode to use, see :ref:`ref_choose_your_mode`.
 
    scripting/overview
    scripting/threading
+
 
 .. toctree::
    :maxdepth: 1

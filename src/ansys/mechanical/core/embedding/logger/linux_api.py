@@ -117,6 +117,7 @@ class APIBackend:
         """Set the log level for Mechanical based on the Python log level."""
         if level == logging.NOTSET:
             self.disable(sink)
+            return
 
         sinkid = _get_sink_id(sink)
         wb_level = _to_wb_logger_severity(level)

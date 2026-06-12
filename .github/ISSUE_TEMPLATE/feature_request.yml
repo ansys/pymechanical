@@ -1,0 +1,52 @@
+name: 🚀 Feature request
+description: Fill a feature request here
+title: "Feature: ..."
+labels: ["enhancement"]
+assignees: [""]
+
+body:
+
+  - type: markdown
+    attributes:
+      value: '# 🚀 **Feature request**'
+
+  - type: checkboxes
+    id: new-feature
+    attributes:
+      label: Before submitting the issue
+      description: Please, make sure the following conditions are met
+      options:
+      - label: I have searched among the existing issues
+        required: true
+
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Description of the feature
+      placeholder: Describe the feature you would like to see added
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      placeholder: Why is this feature needed? What problem does it solve?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed solution
+      placeholder: Describe your preferred solution or API design
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      placeholder: List any alternative solutions or features you have considered
+    validations:
+      required: false

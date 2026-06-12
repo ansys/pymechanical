@@ -42,6 +42,7 @@ from ansys.mechanical.core.embedding.mechanical_warnings import (
 from ansys.mechanical.core.embedding.poster import Poster
 import ansys.mechanical.core.embedding.shell as shell
 from ansys.mechanical.core.embedding.ui import launch_ui
+from ansys.mechanical.core.embedding.utils import GetterWrapper
 from ansys.mechanical.core.feature_flags import get_command_line_arguments
 
 if typing.TYPE_CHECKING:
@@ -65,8 +66,11 @@ def _get_default_addin_configuration() -> AddinConfiguration:
     return configuration
 
 
-INSTANCES: list[App] = []
+_INSTANCES: list[App] = []
 """List of instances."""
+
+_INITIALIZED: bool = False
+"""Whether the embedded application has been initialized."""
 
 
 def _atexit_embedded_app(instances):  # pragma: nocover
@@ -133,34 +137,7 @@ def _normalize_file_path(path: str | Path) -> str:
 
 def is_initialized() -> bool:
     """Check if the app has been initialized."""
-    return len(INSTANCES) != 0
-
-
-class GetterWrapper:
-    """Wrapper class around an attribute of an object."""
-
-    def __init__(self, obj, getter):
-        """Create a new instance of GetterWrapper."""
-        # immortal class which provides wrapped object
-        self.__dict__["_immortal_object"] = obj
-        # function to get the wrapped object from the immortal class
-        self.__dict__["_get_wrapped_object"] = getter
-
-    def __getattr__(self, attr):
-        """Wrap getters to the wrapped object."""
-        if attr in self.__dict__:
-            return getattr(self, attr)
-        return getattr(self._get_wrapped_object(self._immortal_object), attr)
-
-    def __setattr__(self, attr, value):
-        """Wrap setters to the wrapped object."""
-        if attr in self.__dict__:
-            setattr(self, attr, value)
-        setattr(self._get_wrapped_object(self._immortal_object), attr, value)
-
-    def __repr__(self):
-        """Return the repr of the wrapped object."""
-        return repr(self._get_wrapped_object(self._immortal_object))
+    return _INITIALIZED
 
 
 class App:
@@ -193,6 +170,9 @@ class App:
     feature_flags : list, optional
         List of feature flag names to enable. Default is [].
         Available flags include: 'ThermalShells', 'MultistageHarmonic', 'CPython'.
+    remove_lock : bool, optional
+        Whether to remove the lock file if it exists before opening the project file
+        specified by ``db_file``. Default is False.
     reuse_instance : bool, optional
         When ``True``, gallery instance sharing is skipped for this constructor,
         so initialization follows the same path as when the module-level
@@ -206,7 +186,7 @@ class App:
     Create App with Mechanical project file and version:
 
     >>> from ansys.mechanical.core import App
-    >>> app = App(db_file="path/to/file.mechdat", version=252)
+    >>> app = App(db_file="path/to/file.mechdat", version=261)
 
     Disable copying the user profile when private appdata is enabled
 
@@ -248,10 +228,12 @@ class App:
         **kwargs: typing.Any,
     ) -> None:
         """Construct an instance of the mechanical Application."""
-        global INSTANCES
+        global _INSTANCES, _INITIALIZED
         from ansys.mechanical.core import BUILDING_GALLERY
 
         use_gallery_sharing = BUILDING_GALLERY and not reuse_instance
+
+        remove_lock = kwargs.get("remove_lock", False)
 
         self._enable_logging = kwargs.get("enable_logging", True)
         if self._enable_logging:
@@ -282,9 +264,9 @@ class App:
         # If the building gallery flag is set, we need to share the instance
         # This can apply to running the `make -C doc html` command
         if use_gallery_sharing:
-            if len(INSTANCES) != 0:
+            if _INITIALIZED:
                 # Get the first instance of the app
-                instance: App = INSTANCES[0]
+                instance: App = _INSTANCES[0]
                 # Point to the same underlying application object
                 instance._share(self)
                 # Update the globals if provided in kwargs
@@ -293,9 +275,9 @@ class App:
                     instance.update_globals(user_globals)  # pragma: nocover
                 # Open the mechdb file if provided
                 if db_file is not None:
-                    self.open(db_file)
+                    self.open(db_file, remove_lock=remove_lock)
                 return
-        if len(INSTANCES) > 0:
+        if _INITIALIZED:
             raise RuntimeError("Cannot have more than one embedded mechanical instance!")
 
         self._version = initializer.initialize(version)
@@ -319,11 +301,16 @@ class App:
         self._prepare_interactive_mode()
         runtime.initialize(self._version, pep8_aliases=pep8_alias)
 
+        if remove_lock and db_file is not None:
+            self._remove_lock_file(db_file)
+
         self._app = _start_application(configuration, self._version, db_file, additional_args)
 
         self._disposed = False
-        atexit.register(_atexit_embedded_app, INSTANCES)
-        INSTANCES.append(self)
+        _INSTANCES.append(self)
+        if not _INITIALIZED:
+            atexit.register(_atexit_embedded_app, _INSTANCES)
+            _INITIALIZED = True
 
         self._handle_interactive_shell()
 
@@ -343,6 +330,9 @@ class App:
         self._license_manager = None
         if self.version >= 252:
             self._license_manager = LicenseManager(self)
+
+        # Initialize helpers
+        self._helpers = None
 
     def __repr__(self):
         """Get the product info."""
@@ -386,6 +376,17 @@ class App:
         shell.start_interactive_shell(self)
         self._started_interactive_shell = True
 
+    def _remove_lock_file(self, db_file):
+        """Remove the lock file for the given project file if it exists."""
+        file_path = Path(db_file)
+        lock_file = file_path.parent / f"{file_path.stem}_Mech_Files" / ".mech_lock"
+        if lock_file.exists():
+            self.log_warning(
+                f"Removing the lock file, {lock_file}, before opening the project. "
+                "This may corrupt the project file."
+            )
+            lock_file.unlink()
+
     def wait_with_dialog(self):
         """Block python while an interactive pop-up is displayed.
 
@@ -416,15 +417,7 @@ class App:
         """
         self.log_info(f"Opening {db_file} ...")
         if remove_lock:
-            lock_file = Path(self.DataModel.Project.ProjectDirectory) / ".mech_lock"
-            # Remove the lock file if it exists before opening the project file
-            if lock_file.exists():
-                self.log_warning(
-                    f"Removing the lock file, {lock_file}, before opening the project. "
-                    "This may corrupt the project file."
-                )
-                lock_file.unlink()
-
+            self._remove_lock_file(db_file)
         self.DataModel.Project.Open(db_file)
 
     def save(self, path=None):
@@ -675,6 +668,15 @@ class App:
             raise RuntimeError("LicenseManager is only available for version 252 and later.")
         return self._license_manager
 
+    @property
+    def helpers(self):
+        """Return the Helpers instance."""
+        if self._helpers is None:
+            from ansys.mechanical.core.embedding.helpers import Helpers
+
+            self._helpers = Helpers(self)
+        return self._helpers
+
     def _share(self, other) -> None:
         """Shares the state of self with other.
 
@@ -698,6 +700,20 @@ class App:
         other._version = self._version
         other._poster = self._poster
         other._updated_scopes = self._updated_scopes
+        other._helpers = self._helpers
+
+        # Share logging configuration
+        other._enable_logging = self._enable_logging
+        other._log = self._log
+        other._log_level = self._log_level
+
+        # Share interactive mode and shell state
+        other._interactive_mode = self._interactive_mode
+        other._started_interactive_shell = self._started_interactive_shell
+
+        # Share lazy-loaded instances
+        other._messages = self._messages
+        other._license_manager = self._license_manager
 
         # all events will be handled by the original App instance
         other._subscribed = False
@@ -843,7 +859,6 @@ class App:
         """
         if node is None:
             node = self.DataModel.Project
-
         self._print_tree(node, max_lines, lines_count, indentation)
 
     def log_debug(self, message):

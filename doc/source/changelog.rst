@@ -9,6 +9,258 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.12.10 <https://github.com/ansys/pymechanical/releases/tag/v0.12.10>`_ - June 08, 2026
+========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update test-analytics test
+          - `#1644 <https://github.com/ansys/pymechanical/pull/1644>`_
+
+        * - Remove lock file
+          - `#1646 <https://github.com/ansys/pymechanical/pull/1646>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.12.9
+          - `#1639 <https://github.com/ansys/pymechanical/pull/1639>`_
+
+        * - Pre-commit automatic update
+          - `#1641 <https://github.com/ansys/pymechanical/pull/1641>`_
+
+        * - Bump the actions group with 3 updates
+          - `#1643 <https://github.com/ansys/pymechanical/pull/1643>`_
+
+
+`0.12.9 <https://github.com/ansys/pymechanical/releases/tag/v0.12.9>`_ - May 29, 2026
+=====================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Dynamic version update in docs
+          - `#1628 <https://github.com/ansys/pymechanical/pull/1628>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Multiple doc issues
+          - `#1626 <https://github.com/ansys/pymechanical/pull/1626>`_
+
+        * - Analytics test
+          - `#1634 <https://github.com/ansys/pymechanical/pull/1634>`_
+
+        * - Add **kwargs to _run_cell_in_thread signature
+          - `#1635 <https://github.com/ansys/pymechanical/pull/1635>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.12.8
+          - `#1621 <https://github.com/ansys/pymechanical/pull/1621>`_
+
+        * - Update action versions across workflows
+          - `#1623 <https://github.com/ansys/pymechanical/pull/1623>`_
+
+        * - Remove tox dependency
+          - `#1625 <https://github.com/ansys/pymechanical/pull/1625>`_
+
+        * - Pre-commit automatic update
+          - `#1627 <https://github.com/ansys/pymechanical/pull/1627>`_, `#1636 <https://github.com/ansys/pymechanical/pull/1636>`_
+
+        * - Update mypy requirement from <2,>=1.19.1 to >=1.19.1,<3
+          - `#1629 <https://github.com/ansys/pymechanical/pull/1629>`_
+
+        * - Bump github/codeql-action from 4.35.3 to 4.35.4 in the actions group
+          - `#1630 <https://github.com/ansys/pymechanical/pull/1630>`_
+
+        * - Bump the actions group with 3 updates
+          - `#1637 <https://github.com/ansys/pymechanical/pull/1637>`_
+
+
+`0.12.8 <https://github.com/ansys/pymechanical/releases/tag/v0.12.8>`_ - May 14, 2026
+=====================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add wbtrace option for logger - embedding
+          - `#1569 <https://github.com/ansys/pymechanical/pull/1569>`_
+
+        * - Add doc skill and fix documentation
+          - `#1609 <https://github.com/ansys/pymechanical/pull/1609>`_
+
+        * - Add πthon support
+          - `#1620 <https://github.com/ansys/pymechanical/pull/1620>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Awp root error
+          - `#1601 <https://github.com/ansys/pymechanical/pull/1601>`_
+
+        * - Enhance test skipping logic based on version and platform requirements
+          - `#1610 <https://github.com/ansys/pymechanical/pull/1610>`_
+
+        * - Typo in environment variable
+          - `#1615 <https://github.com/ansys/pymechanical/pull/1615>`_
+
+        * - Update labels
+          - `#1619 <https://github.com/ansys/pymechanical/pull/1619>`_
+
+
+  .. tab-item:: Documentation
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add documentation on how to debug embedded app in linux using vscode
+          - `#1574 <https://github.com/ansys/pymechanical/pull/1574>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Skip-doc label to skipping doc build
+          - `#1566 <https://github.com/ansys/pymechanical/pull/1566>`_
+
+        * - Update CHANGELOG for v0.12.7
+          - `#1607 <https://github.com/ansys/pymechanical/pull/1607>`_
+
+        * - Pre-commit automatic update
+          - `#1608 <https://github.com/ansys/pymechanical/pull/1608>`_, `#1616 <https://github.com/ansys/pymechanical/pull/1616>`_
+
+        * - Refactor cicd
+          - `#1611 <https://github.com/ansys/pymechanical/pull/1611>`_
+
+        * - Bump the actions group with 3 updates
+          - `#1617 <https://github.com/ansys/pymechanical/pull/1617>`_
+
+
+`0.12.7 <https://github.com/ansys/pymechanical/releases/tag/v0.12.7>`_ - April 30, 2026
+=======================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Docstrings
+          - `#1602 <https://github.com/ansys/pymechanical/pull/1602>`_
+
+
+  .. tab-item:: Documentation
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Fix user guide
+          - `#1606 <https://github.com/ansys/pymechanical/pull/1606>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.12.6
+          - `#1594 <https://github.com/ansys/pymechanical/pull/1594>`_
+
+        * - Pre-commit automatic update
+          - `#1595 <https://github.com/ansys/pymechanical/pull/1595>`_, `#1599 <https://github.com/ansys/pymechanical/pull/1599>`_, `#1603 <https://github.com/ansys/pymechanical/pull/1603>`_
+
+        * - Bump docker/login-action from 4.0.0 to 4.1.0 in the actions group
+          - `#1596 <https://github.com/ansys/pymechanical/pull/1596>`_
+
+        * - Update license metadata in pyproject.toml
+          - `#1598 <https://github.com/ansys/pymechanical/pull/1598>`_
+
+        * - Bump the actions group with 2 updates
+          - `#1600 <https://github.com/ansys/pymechanical/pull/1600>`_, `#1604 <https://github.com/ansys/pymechanical/pull/1604>`_
+
+
+`0.12.6 <https://github.com/ansys/pymechanical/releases/tag/v0.12.6>`_ - April 13, 2026
+=======================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add helper methods
+          - `#1507 <https://github.com/ansys/pymechanical/pull/1507>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Version and link in whatsnew
+          - `#1593 <https://github.com/ansys/pymechanical/pull/1593>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.12.5
+          - `#1590 <https://github.com/ansys/pymechanical/pull/1590>`_
+
+
 `0.12.5 <https://github.com/ansys/pymechanical/releases/tag/v0.12.5>`_ - April 10, 2026
 =======================================================================================
 

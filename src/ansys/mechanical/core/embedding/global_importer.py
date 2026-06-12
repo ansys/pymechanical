@@ -62,11 +62,11 @@ _APP_SPECIFIC = {
 def __getattr__(name: str):
     """Support importing app-specific variables from this module."""
     if name in _APP_SPECIFIC:
-        from ansys.mechanical.core.embedding.app import INSTANCES
+        from ansys.mechanical.core.embedding.app import _INSTANCES
 
-        if not INSTANCES:
+        if not _INSTANCES:
             raise RuntimeError(
                 f"'{name}' cannot be imported until the embedded app is initialized."
             )
-        return _APP_SPECIFIC[name](INSTANCES[0])
+        return _APP_SPECIFIC[name](_INSTANCES[0])
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

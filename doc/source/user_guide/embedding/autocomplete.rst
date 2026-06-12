@@ -30,10 +30,10 @@ Terminal output for Windows user's settings.json file:
 
     {
         "python.autoComplete.extraPaths": [
-            "{project_directory}\\.venv\\Lib\\site-packages\\ansys\\mechanical\\stubs\\v261"
+            "{project_directory}\\.venv\\Lib\\site-packages\\ansys\\mechanical\\stubs\\v{mechanical_version}"
         ],
         "python.analysis.extraPaths": [
-            "{project_directory}\\.venv\\Lib\\site-packages\\ansys\\mechanical\\stubs\\v261"
+            "{project_directory}\\.venv\\Lib\\site-packages\\ansys\\mechanical\\stubs\\v{mechanical_version}"
         ]
     }
 
