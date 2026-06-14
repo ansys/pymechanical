@@ -14,6 +14,7 @@
 * [Eric Clevenger](https://github.com/eric-clevenger)
 * [German](https://github.com/germa89)
 * [Gillanius](https://github.com/Acartuerk)
+* [James Derrick](https://github.com/jgd10)
 * [Jorge Martínez](https://github.com/jorgepiloto)
 * [Kathy Pippert](https://github.com/PipKat)
 * [Kerry McAdams](https://github.com/klmcadams)
@@ -25,3 +26,4 @@
 * [Roberto Pastor Muela](https://github.com/RobPasMue)
 * [Sean Bradrick](https://github.com/sbradrick)
 * [Vikas Namdeo](https://github.com/vnamdeo)
+* [Wyatt Sharp](https://github.com/wsharp-ansys)
