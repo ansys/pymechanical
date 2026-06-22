@@ -4,7 +4,7 @@ Mechanical standalone
 =====================
 
 In addition to Standalone Mechanical known issues and limitations given below,
-please refer
+refer to:
 
 - `Mechanical API known issues and limitations`_.
 - `ACT known issues and limitations`_.
@@ -12,8 +12,12 @@ please refer
 Known issues and limitations
 ----------------------------
 
+.. vale Google.Headings = NO
+
 24R2
 ^^^^
+
+.. vale Google.Headings = YES
 
 - In Read Only mode, the application does not display error messages when the geometry is imported in batch mode.
 - Section planes can not be added through batch mode.

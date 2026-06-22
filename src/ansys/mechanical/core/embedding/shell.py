@@ -74,7 +74,7 @@ def _using_interactive_ipython(warn: bool):
             warnings.warn("""Interactive PyMechanical requires pywin32""")
         return False
 
-    if os.environ.get("PYMECHANICAL_NO_INTERCTIVE_IPYTHON") == "1":
+    if os.environ.get("PYMECHANICAL_NO_INTERACTIVE_IPYTHON") == "1":
         return False
     return True
 

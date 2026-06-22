@@ -5,7 +5,7 @@ Installation guide
 
 To use PyMechanical, a licensed copy of Ansys Mechanical must be installed locally.
 The installed version determines the available interface and features.
-PyMechanical is compatible with Mechanical **2024 R1** and later on Windows
+PyMechanical is compatible with Mechanical **2024 R2** and later on Windows
 and Linux. If you face any issues while setting up or using PyMechanical,
 see :ref:`FAQs <faq>` and :ref:`Known issues and limitations <ref_known_issues_and_limitation>`.
 
@@ -24,8 +24,15 @@ a reference:
 Install the package
 -------------------
 
+.. note::
+
+   These instructions assume you are familiar
+   with ``pip`` and the command line. If you are new to them, you should read
+   the `Python Packaging User Guide Tutorial on pip <https://packaging.python.org/en/latest/tutorials/installing-packages/>_`
+   before proceeding.
+
 The latest ``ansys.mechanical.core`` package supports Python 3.10 through
-Python 3.13 on Windows, Linux, and Mac.
+Python 3.14 on Windows, Linux, and Mac.
 
 You should consider installing PyMechanical in a virtual environment.
 For more information, see Python's
@@ -34,7 +41,7 @@ For more information, see Python's
 Install the latest package from `PyPi
 <https://pypi.org/project/ansys-mechanical-core/>`_ with this command:
 
-.. code::
+.. code-block:: bash
 
    pip install ansys-mechanical-core
 
@@ -47,14 +54,14 @@ machine architecture from the `Releases page <https://github.com/ansys/pymechani
 of the PyMechanical repository.
 
 Each wheelhouse archive contains all the Python wheels necessary to install
-PyMechanical from scratch on Windows and Linux for Python 3.10 through Python 3.13. You can install
+PyMechanical from scratch on Windows and Linux for Python 3.10 through Python 3.14. You can install
 a wheelhouse archive on an isolated system with a fresh Python installation or on a
 virtual environment.
 
 For example, on Linux with Python 3.10, unzip the wheelhouse archive and install it with
 this code:
 
-.. code::
+.. code-block:: bash
 
    unzip ansys-mechanical-core-v0.12.dev0-wheelhouse-Linux-3.10 wheelhouse
    pip install ansys-mechanical-core -f wheelhouse --no-index --upgrade --ignore-installed
@@ -72,19 +79,19 @@ Verify that PyMechanical can find your Mechanical installation:
 
    >>> from ansys.tools.common.path import find_mechanical
    >>> find_mechanical()
-   ('C:/Program Files/ANSYS Inc/v261/aisol/bin/winx64/AnsysWBU.exe', 26.1)  # Windows
-   ('/usr/ansys_inc/v261/aisol/.workbench', 26.1) # Linux
+   ('C:/Program Files/ANSYS Inc/v{mechanical_version}/aisol/bin/winx64/AnsysWBU.exe', 26.1)  # Windows
+   ('/usr/ansys_inc/v{mechanical_version}/aisol/.workbench', 26.1) # Linux
 
-   >>> find_mechanical(version=261)  # for a specific version
+   >>> find_mechanical(version={mechanical_version})  # for a specific version
 
 If Ansys is installed in a non-default location, save the path manually:
 
 .. code:: pycon
 
    >>> from ansys.tools.common.path import save_mechanical_path, get_mechanical_path
-   >>> save_mechanical_path("/home/username/ansys_inc/v261/aisol/.workbench")
+   >>> save_mechanical_path("/home/username/ansys_inc/v{mechanical_version}/aisol/.workbench")
    >>> print(get_mechanical_path())
-   /home/username/ansys_inc/v261/aisol/.workbench
+   /home/username/ansys_inc/v{mechanical_version}/aisol/.workbench
 
 Once the installation is found, verify that your chosen mode works:
 
@@ -98,8 +105,8 @@ Once the installation is found, verify that your chosen mode works:
             >>> mechanical = launch_mechanical()
             >>> mechanical
             Ansys Mechanical [Ansys Mechanical Enterprise]
-            Product Version:261
-            Software build date: 02/03/2026 15:29:09
+            Product Version:{mechanical_version}
+            Software build date: {build_date}
 
     .. tab-item:: Embedding
 
@@ -109,8 +116,8 @@ Once the installation is found, verify that your chosen mode works:
             >>> app = App()
             >>> print(app)
             Ansys Mechanical [Ansys Mechanical Enterprise]
-            Product Version:261
-            Software build date: 02/03/2026 15:29:09
+            Product Version:{mechanical_version}
+            Software build date: {build_date}
 
         .. note::
 
