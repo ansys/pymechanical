@@ -8,13 +8,13 @@ exclude: '^tests/embedding/assets/.*$|^tests/parts/.*$'
 repos:
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: 3b3f7c3f57fe9925356faf5fe6230835138be230  # frozen: v0.15.17
+  rev: v0.15.18
   hooks:
     - id: ruff
     - id: ruff-format
 
 - repo: https://github.com/pre-commit/mirrors-mypy
-  rev: d2823d321df3af8f878f7ee3414dc94d037145b9  # frozen: v2.1.0
+  rev: v2.1.0
   hooks:
     - id: mypy
       additional_dependencies: [types-requests, types-tqdm]
@@ -22,19 +22,19 @@ repos:
       exclude: ^(tests|examples|doc)/
 
 - repo: https://github.com/pre-commit-ci/pre-commit-ci-config
-  rev: 500543de231a91e6157db630075d70320709b834  # frozen: v1.6.1
+  rev: v1.6.1
   hooks:
   -   id: check-pre-commit-ci-config
 
 - repo: https://github.com/codespell-project/codespell
-  rev: 2ccb47ff45ad361a21071a7eedda4c37e6ae8c5a  # frozen: v2.4.2
+  rev: v2.4.2
   hooks:
   - id: codespell
     args: ["--ignore-words-list", "addin", "--ignore-words", "doc/styles/config/vocabularies/ANSYS/accept.txt", "-w"]
     exclude: "doc/styles/typos\\.toml"
 
 - repo: https://github.com/ansys/pre-commit-hooks
-  rev: ad4e7598809ad98cde5aaf52d80040c7ac56e7cf  # frozen: v0.7.2
+  rev: v0.8.0
   hooks:
   - id: add-license-headers
     args:
@@ -44,7 +44,7 @@ repos:
     - --product=mechanical
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # frozen: v6.0.0
+  rev: v6.0.0
   hooks:
   - id: check-merge-conflict
   - id: debug-statements
@@ -53,7 +53,7 @@ repos:
   - id: check-added-large-files
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 8ef330cbb7204d388aa7a620f9549bcea8009663  # frozen: 0.37.3
+  rev: 0.37.3
   hooks:
     - id: check-github-workflows
 
@@ -66,20 +66,20 @@ repos:
 
 # Security checks with bandit
 - repo: https://github.com/PyCQA/bandit
-  rev: 92ae8b82fb422a639f0ed8d99e96cea769594e08  # frozen: 1.9.4
+  rev: 1.9.4
   hooks:
     - id: bandit
       args: ['-c', 'pyproject.toml']
       additional_dependencies: ['bandit[toml]']
 
 -   repo: https://github.com/asottile/pyupgrade
-    rev: 75992aaa40730136014f34227e0135f63fc951b4  # frozen: v3.21.2
+    rev: v3.21.2
     hooks:
     -   id: pyupgrade
         args: ['--py310-plus']
 
 - repo: https://github.com/crate-ci/typos
-  rev: d80b8e26878e372a041833cd67163dbdb6a4336e  # frozen: v1
+  rev: typos-dict-v0.13.30
   hooks:
     - id: typos
       args: ["--config", "doc/styles/typos.toml"]
