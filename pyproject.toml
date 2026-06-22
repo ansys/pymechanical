@@ -260,7 +260,6 @@ directory = "changed"
 name = "Changed"
 showcontent = true
 
-
 [tool.tox]
 legacy_tox_ini = """
 [tox]
