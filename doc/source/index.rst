@@ -135,6 +135,14 @@ If you are not sure which mode to pick, see :doc:`getting_started/choose_your_mo
 
         :bdg-info:`Test` :bdg-info:`Documentation` :bdg-info:`Issues`
 
+    .. grid-item-card:: Mechanical scripting API :fa:`code`
+        :padding: 2 2 2 2
+        :link: https://scripting.mechanical.docs.pyansys.com/
+
+        Do you need Mechanical API scripting support? Have a look
+        at its API.
+
+        :bdg-info:`Mechanical API`
 
 .. toctree::
    :hidden:
