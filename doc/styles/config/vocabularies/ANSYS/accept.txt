@@ -32,6 +32,7 @@ globaly
 (?i)hostname
 idempotency
 interop
+IPython
 isort
 (?i)linux
 Martin
