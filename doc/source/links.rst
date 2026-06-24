@@ -35,7 +35,6 @@
 .. _Ansys Mechanical: https://www.ansys.com/products/structures/ansys-mechanical
 
 .. _Contributor Covenant Code of Conduct: https://www.contributor-covenant.org/version/2/1/code_of_conduct/
-.. _configure SSH: https://docs.github.com/en/authentication/connecting-to-github-with-ssh
 .. _git: https://git-scm.com/
 
 
