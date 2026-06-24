@@ -1,0 +1,187 @@
+{#
+  Latest News Sidebar
+  Displays a box with latest news items in the sidebar if configured.
+  Supports both internal links and external URLs.
+  Optimized to work without external CSS files.
+#}
+{% if latest_news %}
+  {% set latest_news_config = latest_news %}
+  {% set latest_news_title = latest_news_config.get('title', 'Latest News') %}
+  {% set latest_news_items = latest_news_config.get('items', []) %}
+  {% set latest_news_show_date = latest_news_config.get('show_date', true) %}
+  {% set latest_news_max_items = latest_news_config.get('max_items', 5) %}
+
+  <div class="sidebar-latest-news" aria-label="Latest News">
+    <style>
+      .sidebar-latest-news {
+        margin: 1rem 0;
+        font-family: inherit;
+      }
+      .sidebar-latest-news .news-box {
+        border: 1px solid var(--pst-color-border, #ddd);
+        border-radius: 6px;
+        background: var(--pst-color-surface, #fff);
+        overflow: hidden;
+      }
+      .sidebar-latest-news .news-header {
+        background: var(--pst-color-primary, #0078d4);
+        color: white;
+        margin: 0;
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .sidebar-latest-news .news-icon {
+        font-style: normal;
+        opacity: 0.9;
+      }
+      .sidebar-latest-news .news-content {
+        padding: 0;
+      }
+      .sidebar-latest-news .news-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .sidebar-latest-news .news-item {
+        border-bottom: 1px solid var(--pst-color-border, #eee);
+        padding: 0.75rem 1rem;
+      }
+      .sidebar-latest-news .news-item:last-child {
+        border-bottom: none;
+      }
+      .sidebar-latest-news .news-item-content {
+        position: relative;
+      }
+      .sidebar-latest-news .news-title {
+        margin: 0 0 0.25rem 0;
+        font-size: 0.8rem;
+        font-weight: 500;
+        line-height: 1.3;
+      }
+      .sidebar-latest-news .news-link {
+        text-decoration: none;
+        color: var(--pst-color-text-base, #333);
+      }
+      .sidebar-latest-news .news-link:hover .news-title {
+        color: var(--pst-color-primary, #0078d4);
+      }
+      .sidebar-latest-news .news-date {
+        font-size: 0.7rem;
+        color: var(--pst-color-text-muted, #666);
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        margin-bottom: 0.25rem;
+      }
+      .sidebar-latest-news .date-icon {
+        font-style: normal;
+        opacity: 0.8;
+      }
+      .sidebar-latest-news .news-excerpt {
+        font-size: 0.75rem;
+        color: var(--pst-color-text-muted, #666);
+        margin: 0;
+        line-height: 1.4;
+      }
+      .sidebar-latest-news .external-link-indicator {
+        position: absolute;
+        top: 0;
+        right: 0;
+        font-size: 0.7rem;
+        opacity: 0.6;
+        font-style: normal;
+      }
+      .sidebar-latest-news .news-more {
+        padding: 0.75rem 1rem;
+        border-top: 1px solid var(--pst-color-border, #eee);
+        background: var(--pst-color-surface-variant, #f8f9fa);
+      }
+      .sidebar-latest-news .news-more-link {
+        font-size: 0.75rem;
+        color: var(--pst-color-primary, #0078d4);
+        text-decoration: none;
+        font-weight: 500;
+      }
+      .sidebar-latest-news .news-more-link:hover {
+        text-decoration: underline;
+      }
+      .sidebar-latest-news .news-empty {
+        padding: 1rem;
+        margin: 0;
+        font-size: 0.8rem;
+        color: var(--pst-color-text-muted, #666);
+        text-align: center;
+        font-style: italic;
+      }
+    </style>
+    <div class="news-box">
+      <h4 class="news-header">
+        <i class="news-icon">📰</i>
+        {{ latest_news_title }}
+      </h4>
+
+      <div class="news-content">
+        {% if latest_news_items %}
+          <ul class="news-list">
+            {% for item in latest_news_items[:latest_news_max_items] %}
+              {% set item_title = item.get('title', 'News Item') %}
+              {% set item_url = item.get('url') %}
+              {% set item_date = item.get('date') %}
+              {% set item_excerpt = item.get('excerpt') %}
+              {% set is_external = item_url and (item_url.startswith('http://') or item_url.startswith('https://')) %}
+
+              <li class="news-item">
+                <div class="news-item-content">
+                  {% if item_url %}
+                    <a href="{{ item_url }}"
+                       class="news-link"
+                       {% if is_external %}target="_blank" rel="noopener noreferrer"{% endif %}>
+                      <h5 class="news-title">{{ item_title }}</h5>
+                    </a>
+                  {% else %}
+                    <h5 class="news-title">{{ item_title }}</h5>
+                  {% endif %}
+
+                  {% if item_date and latest_news_show_date %}
+                    <div class="news-date">
+                      <i class="date-icon">📅</i>
+                      {{ item_date }}
+                    </div>
+                  {% endif %}
+
+                  {% if item_excerpt %}
+                    <p class="news-excerpt">{{ item_excerpt }}</p>
+                  {% endif %}
+
+                  {% if is_external %}
+                    <span class="external-link-indicator" title="External Link">🔗</span>
+                  {% endif %}
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+
+          {% if latest_news_config.get('more_url') %}
+            {% set more_url = latest_news_config.get('more_url') %}
+            {% set more_text = latest_news_config.get('more_text', 'View all news') %}
+            {% set more_is_external = more_url.startswith('http://') or more_url.startswith('https://') %}
+
+            <div class="news-more">
+              <a href="{{ more_url }}"
+                 class="news-more-link"
+                 {% if more_is_external %}target="_blank" rel="noopener noreferrer"{% endif %}>
+                {{ more_text }} →
+              </a>
+            </div>
+          {% endif %}
+        {% else %}
+          <p class="news-empty">No news items available.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endif %}
