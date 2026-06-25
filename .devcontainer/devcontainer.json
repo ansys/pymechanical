@@ -14,6 +14,17 @@
   // Keep the container alive (CMD sleep infinity from Dockerfile).
   "overrideCommand": true,
 
+  // The Mechanical image is ~25 GB compressed; extraction requires ~55 GB of
+  // scratch space. The default 2/4-core Codespaces machine only ships with
+  // 32 GB of storage, which causes "no space left on device" during docker
+  // layer extraction. The 16-core machine (64 GB RAM, 128 GB storage) is the
+  // smallest available size that fits the image.
+  "hostRequirements": {
+    "cpus": 16,
+    "memory": "64gb",
+    "storage": "128gb"
+  },
+
   // The Mechanical image only has root; Codespaces requires an explicit declaration.
   "remoteUser": "root",
 
