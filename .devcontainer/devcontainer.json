@@ -1,0 +1,72 @@
+{
+  "name": "PyMechanical (Ansys Mechanical 26.1)",
+
+  // Build from the local Dockerfile which layers uv + Python onto the
+  // Mechanical image and clears the Workbench gRPC entrypoint.
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "MECHANICAL_IMAGE": "ghcr.io/ansys/mechanical:26.1.0",
+      "PYTHON_VERSION": "3.12"
+    }
+  },
+
+  // Keep the container alive (CMD sleep infinity from Dockerfile).
+  "overrideCommand": true,
+
+  // The Mechanical image only has root; Codespaces requires an explicit declaration.
+  "remoteUser": "root",
+
+  // Match the docker-compose.yml shm and CI --security-opt flags required
+  // for Mechanical's OpenMPI / gRPC launch to succeed.
+  "runArgs": [
+    "--shm-size=8gb",
+    "--security-opt", "seccomp=unconfined"
+  ],
+
+  // --- License ---
+  // In GitHub Codespaces: create a Codespaces secret named ANSYSLMD_LICENSE_FILE
+  // (Settings -> Secrets and variables -> Codespaces) with value e.g. 1055@my.license.server
+  // In local Dev Containers: set the env var before opening VS Code.
+  "remoteEnv": {
+    "ANSYSLMD_LICENSE_FILE": "${localEnv:ANSYSLMD_LICENSE_FILE}",
+    // Suppress Workbench console logging noise during dev work.
+    "ANSYS_WORKBENCH_LOGGING_CONSOLE": "0",
+    "ANSYS_WORKBENCH_LOGGING": "0",
+    "ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL": "2"
+  },
+  "secrets": {
+    "ANSYSLMD_LICENSE_FILE": {
+      "description": "Ansys license string, e.g. 1055@my.license.server"
+    }
+  },
+
+  // --- Post-create: create venv and editable install with all extras ---
+  // Mirrors setup-python-env composite action used in embedding-tests CI job.
+  "postCreateCommand": "uv venv /env && . /env/bin/activate && uv pip install --upgrade pip && uv pip install -e '.[tests,graphics,doc,rpc,pim]' && uv pip install pre-commit && pre-commit install",
+
+  // --- VS Code customizations ---
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "charliermarsh.ruff",
+        "ms-python.mypy-type-checker"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/env/bin/python",
+        "python.terminal.activateEnvironment": true,
+        "python.terminal.activateEnvInCurrentTerminal": true,
+        "[python]": {
+          "editor.defaultFormatter": "charliermarsh.ruff",
+          "editor.formatOnSave": true,
+          "editor.codeActionsOnSave": {
+            "source.fixAll.ruff": "explicit",
+            "source.organizeImports.ruff": "explicit"
+          }
+        },
+        "ruff.path": ["/env/bin/ruff"]
+      }
+    }
+  }
+}
