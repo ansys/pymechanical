@@ -563,7 +563,9 @@ class App:
             LOG.warning("Plotting is only supported with version 2024R2 and later!")
             return None
 
-        # TODO : Check if anything loaded inside app or else show warning and return
+        if self.Model.Geometry.Children.Count == 0:
+            LOG.warning("No geometry is loaded. Open a model before plotting.")
+            return None
 
         from ansys.mechanical.core.embedding.graphics.embedding_plotter import to_plotter
 
