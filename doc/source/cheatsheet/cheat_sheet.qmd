@@ -36,78 +36,168 @@ jupyter:
 ---
 
 
-# Load a Mechanical embedded instance
+# Embedded App
 
 
-## Start an instance of App with global API entry points
+## Start an instance with global API entry points
 ```{python}
 #| eval: false
 from ansys.mechanical.core import App
 
-# Create an instance of the app
-# Extract global API entry points from Mechanical
-# Merge them into your Python global variables
 app = App(version=261, globals=globals())
 print(app)
 ```
 Access entry points from Python:
 ```{python}
 #| eval: false
-
-ExtAPI # Application.ExtAPI
+ExtAPI    # Application.ExtAPI
 DataModel # Application.DataModel
-Model # Application.DataModel.Project.Model
-Tree # Application.DataModel.Tree
-Graphics # Application.ExtAPI.Graphics
+Model     # Application.DataModel.Project.Model
+Tree      # Application.DataModel.Tree
+Graphics  # Application.ExtAPI.Graphics
 ```
-Import a file and print the count of bodies
+## Open, save, and close a project
 ```{python}
 #| eval: false
-
-file = r"D:\\Workdir\\bracket.mechdb"
-app.open(file)
-allbodies = Model.GetChildren(
-  DataModelObjectCategory.Body, True)
-print(allbodies.Count)
+app.open(r"D:\Workdir\bracket.mechdb")
+# Remove lockfile if the project is locked
+app.open(r"D:\Workdir\bracket.mechdb",
+         remove_lock=True)
+app.save()
+app.save_as(r"D:\Workdir\bracket_v2.mechdb",
+            overwrite=True)
+app.close()   # closes active project
+app.new()     # resets to a new blank project
 ```
-## Turn on warning logging:
-```{python}
-#| eval: false
-
-import logging
-from ansys.mechanical.core import App
-from ansys.mechanical.core.embedding.logger
-import Configuration,Logger
-Configuration.configure(level=logging.WARNING,
-to_stdout=True)
-app = App(version=261, globals=globals())
-Logger.error("Test Error Message")
-```
-## Visualize geometry in 3D:
-```{python}
-#| eval: false
-# requires Mechanical version >= 24R2
-app.plot()
-```
-## Print project structure as tree:
+## Print project structure as tree
 ```{python}
 #| eval: false
 app.print_tree()
-# print only 20 lines
-app.print_tree(max_lines=20)
+app.print_tree(max_lines=20)  # limit output
 ```
-
+## Visualize in 3D (24R2+)
 ```{python}
 #| eval: false
+app.plot()           # plot geometry
+app.plot(Model.Mesh) # plot mesh
 ```
-
-# Connect to Mechanical Remote session
-
-## Launch and connect to session
+## Enable feature flags
 ```{python}
 #| eval: false
-# Launch an instance
+# Available flags: 'CPython', 'ThermalShells',
+# 'MultistageHarmonic'
+app = App(feature_flags=["CPython",
+                         "ThermalShells"])
+```
+## Turn on logging
+```{python}
+#| eval: false
+import logging
+from ansys.mechanical.core import App
+from ansys.mechanical.core.embedding.logger import (
+    Configuration, Logger,
+)
+
+Configuration.configure(
+    level=logging.WARNING, to_stdout=True
+)
+app = App(version=261, globals=globals())
+Logger.error("Test Error Message")
+```
+Log from app methods:
+```{python}
+#| eval: false
+app.log_info("Info message")
+app.log_warning("Warning message")
+app.log_error("Error message")
+app.log_debug("Debug message")
+```
+
+
+## App Helpers
+
+## Import materials
+```{python}
+#| eval: false
+app.helpers.import_materials(
+    r"C:\path\to\materials.xml"
+)
+```
+## Import geometry
+```{python}
+#| eval: false
+app.helpers.import_geometry(
+    r"C:\path\to\geometry.pmdb"
+)
+# With options
+app.helpers.import_geometry(
+    r"C:\path\to\geometry.agdb",
+    process_named_selections=True,
+    named_selection_key="NS",
+    process_material_properties=True,
+    process_coordinate_systems=True,
+)
+```
+## Export an image
+```{python}
+#| eval: false
+# Export image of the geometry at 1920x1080
+app.helpers.export_image(
+    Model.Geometry,
+    r"C:\path\to\geometry.png",
+    width=1920,
+    height=1080,
+)
+```
+
+## Execute IronPython script (embedded)
+```{python}
+#| eval: false
+result = app.execute_script("2 + 3")
+app.execute_script_from_file(
+    r"C:\scripts\setup.py"
+)
+```
+## Access Mechanical messages
+```{python}
+#| eval: false
+# Print all messages
+print(app.messages)
+# Access a specific message
+msg = app.messages[0]
+print(msg.Severity, msg.DisplayString)
+```
+## Get project directory and version
+```{python}
+#| eval: false
+print(app.project_directory)
+print(app.version)
+```
+
+
+## License Manager (v252+)
+```{python}
+#| eval: false
+lm = app.license_manager
+# List all licenses and their status
+lm.show()
+# Enable or disable a license
+lm.set_license_status("mech_1", True)
+lm.set_license_status("mech_1", False)
+# Check a specific license
+status = lm.get_license_status("ansys")
+print(status)
+```
+
+
+# Remote Session using gRPC
+
+
+## Launch and connect to a session
+```{python}
+#| eval: false
 from ansys.mechanical.core import launch_mechanical
+
 mechanical = launch_mechanical()
 ```
 ## Launch Mechanical UI
@@ -115,96 +205,78 @@ mechanical = launch_mechanical()
 #| eval: false
 mechanical = launch_mechanical(batch=False)
 ```
-## Launch by version
-Verify the license and version of Mechanical that is used:
-```{python}
-#| eval: false
-print(mechanical)
-```
-Launch a specific version of Mechanical:
-```{python}
-#| eval: false
-from ansys.mechanical.core import find_mechanical
-wb_exe = find_mechanical(261)[0]
-# 'Ansys Inc\\....\\winx64\\AnsysWBU.exe'
-mechanical = launch_mechanical(
-  exec_file=wb_exe, verbose_mechanical=True,
-  batch=True
-  )
-print(mechanical)
-```
-## Launch Mechanical using the CLI
+## Launch using the CLI
 ```{python}
 #| eval: false
 ansys-mechanical -r 261 --port 10000 -g
 ```
-## Manually connect to the Mechanical session
+## Launch a specific version
 ```{python}
 #| eval: false
-from ansys.mechanical.core import connect_to_mechanical
-# Connect locally
-mechanical = connect_to_mechanical(port=10000)
-          # Or
-# Connect remotely, to the IP address or hostname
-mechanical = connect_to_mechanical(
-  "192.168.0.1", port=10000
-  )
-```
-## Send commands to Mechanical
-Run a single command:
-```{python}
-#| eval: false
-result1 = mechanical.run_python_script("2+3")
-result2 = mechanical.run_python_script(
-    "DataModel.Project.ProjectDirectory"
+from ansys.mechanical.core import find_mechanical
+
+wb_exe = find_mechanical(261)[0]
+mechanical = launch_mechanical(
+    exec_file=wb_exe,
+    verbose_mechanical=True,
+    batch=True,
 )
+print(mechanical)
+```
+## Connect to an existing session
+```{python}
+#| eval: false
+from ansys.mechanical.core import (
+    connect_to_mechanical,
+)
+
+mechanical = connect_to_mechanical(port=10000)
+# Or connect remotely
+mechanical = connect_to_mechanical(
+    "192.168.0.1", port=10000
+)
+```
+## Run scripts on the remote session
+```{python}
+#| eval: false
+result = mechanical.run_python_script("2+3")
 mechanical.run_python_script(
     "Model.AddStaticStructuralAnalysis()"
 )
-```
-Evaluate a block of commands:
-```{python}
-#| eval: false
-# Import a material
+# Run a block of commands
 commands = """
-cu_mat_file_path = (
-    r'D:\Workdir\copper.xml'.replace("\\", "\\\\")
-)
 materials = Model.Materials
-materials.Import(cu_mat__file_path)
+materials.Import(r'D:\\Workdir\\copper.xml')
 """
 mechanical.run_python_script(commands)
-```
-## Execute a Python script:
-```{python}
-#| eval: false
+# Run from file
 mechanical.run_python_script_from_file(file_path)
 ```
-## Import a Mechanical file and print the count of bodies:
+## Import a project and query bodies
 ```{python}
 #| eval: false
 file = r"D:\\Workdir\\bracket.mechdb"
-command = f'DataModel.Project.Open("{file}")'
-mechanical.run_python_script(command)
-mechanical.run_python_script("""
-allbodies = Model.GetChildren(
-    DataModelObjectCategory.Body, True)
-""")
-mechanical.run_python_script("allbodies.Count")
+mechanical.run_python_script(
+    f'DataModel.Project.Open("{file}")'
+)
+count = mechanical.run_python_script(
+    "Model.GetChildren("
+    "DataModelObjectCategory.Body, True).Count"
+)
+print(count)
 ```
-## Perform project-specific operations:
+## Project-specific operations
 ```{python}
 #| eval: false
-
-# Get the project directory
-mechanical.project_directory
-# List the files in the working directory.
+# Project directory and file listing
+print(mechanical.project_directory)
 mechanical.list_files()
-# Save
+# Save project
 mechanical.run_python_script(
-"ExtAPI.DataModel.Project.Save(r'D:\\Workdir')")
-# Log in two ways:
-mechanical._log.info("This is a useful message.")
+    r'ExtAPI.DataModel.Project.Save("D:\\Workdir")'
+)
+# Logging
+mechanical._log.info("Useful message.")
 mechanical.log_message("INFO", "info message")
 # Exit
 mechanical.exit(force=True)
