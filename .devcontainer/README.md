@@ -21,7 +21,16 @@ writing examples for PyMechanical.**
 
 ## How to start a Codespace
 
-Six configurations are available — one per Mechanical version:
+There is **no default configuration** — this is intentional. The Mechanical image is ~25 GB
+and should only be pulled when you actually need it. Always use **New with options** to
+consciously choose what you want:
+
+| When you want to... | Pick |
+|---|---|
+| Work on PyMechanical source, tests, or docs (no Mechanical) | Any standard GitHub Codespace without a dev container config |
+| Run embedding tests against a specific Mechanical version | Select the matching config below |
+
+Six Mechanical configurations are available:
 
 | Config | Image |
 |--------|-------|
@@ -36,6 +45,9 @@ Six configurations are available — one per Mechanical version:
 2. Click **Code → Codespaces → New with options**
 3. Under **Dev container configuration**, select the Mechanical version you need
 4. Click **Create codespace** and wait for the build and `postCreateCommand` to finish
+
+> **Note:** The **+** (quick-create) button has no default config and will show the
+> picker automatically. Always use **New with options** for clarity.
 
 ## Running Mechanical
 
