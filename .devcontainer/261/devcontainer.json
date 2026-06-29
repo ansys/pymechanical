@@ -4,7 +4,7 @@
   // Shared Dockerfile; only the image tag differs across configs.
   "build": {
     "context": "..",
-    "dockerfile": "shared/Dockerfile",
+    "dockerfile": "../shared/Dockerfile",
     "args": {
       "MECHANICAL_IMAGE": "ghcr.io/ansys/mechanical:26.1.0",
       "PYTHON_VERSION": "3.12"

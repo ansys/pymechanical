@@ -3,7 +3,7 @@
 
   "build": {
     "context": "..",
-    "dockerfile": "shared/Dockerfile",
+    "dockerfile": "../shared/Dockerfile",
     "args": {
       "MECHANICAL_IMAGE": "ghcr.io/ansys/mechanical:25.1.0",
       "PYTHON_VERSION": "3.12"
