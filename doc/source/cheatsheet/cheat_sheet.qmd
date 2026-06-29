@@ -60,11 +60,14 @@ Graphics  # Application.ExtAPI.Graphics
 ```{python}
 #| eval: false
 app.open(r"D:\Workdir\bracket.mechdb")
+# Remove lockfile if the project is locked
+app.open(r"D:\Workdir\bracket.mechdb",
+         remove_lock=True)
 app.save()
 app.save_as(r"D:\Workdir\bracket_v2.mechdb",
             overwrite=True)
 app.close()   # closes active project
-app.new()     # resets to a blank project
+app.new()     # resets to a new blank project
 ```
 ## Print project structure as tree
 ```{python}
@@ -72,13 +75,11 @@ app.new()     # resets to a blank project
 app.print_tree()
 app.print_tree(max_lines=20)  # limit output
 ```
-## Visualize in 3D
+## Visualize in 3D (24R2+)
 ```{python}
 #| eval: false
-# requires Mechanical version >= 24R2
-app.plot()
-# plot mesh
-app.plot(Model.Mesh)
+app.plot()           # plot geometry
+app.plot(Model.Mesh) # plot mesh
 ```
 ## Enable feature flags
 ```{python}
@@ -174,10 +175,7 @@ print(app.version)
 ```
 
 
-## License Manager
-
-
-## Inspect and manage licenses (v252+)
+## License Manager (v252+)
 ```{python}
 #| eval: false
 lm = app.license_manager
@@ -207,6 +205,11 @@ mechanical = launch_mechanical()
 #| eval: false
 mechanical = launch_mechanical(batch=False)
 ```
+## Launch using the CLI
+```{python}
+#| eval: false
+ansys-mechanical -r 261 --port 10000 -g
+```
 ## Launch a specific version
 ```{python}
 #| eval: false
@@ -219,11 +222,6 @@ mechanical = launch_mechanical(
     batch=True,
 )
 print(mechanical)
-```
-## Launch using the CLI
-```{python}
-#| eval: false
-ansys-mechanical -r 261 --port 10000 -g
 ```
 ## Connect to an existing session
 ```{python}
@@ -275,8 +273,7 @@ print(mechanical.project_directory)
 mechanical.list_files()
 # Save project
 mechanical.run_python_script(
-    "ExtAPI.DataModel.Project"
-    ".Save(r'D:\\Workdir')"
+    r'ExtAPI.DataModel.Project.Save("D:\\Workdir")'
 )
 # Logging
 mechanical._log.info("Useful message.")
