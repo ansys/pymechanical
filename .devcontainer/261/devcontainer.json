@@ -1,10 +1,10 @@
 {
-  "name": "PyMechanical (Ansys Mechanical 26.1)",
+  "name": "PyMechanical — Mechanical 26.1 (2026 R1)",
 
-  // Build from the local Dockerfile which layers uv + Python onto the
-  // Mechanical image and clears the Workbench gRPC entrypoint.
+  // Shared Dockerfile; only the image tag differs across configs.
   "build": {
-    "dockerfile": "Dockerfile",
+    "context": "..",
+    "dockerfile": "shared/Dockerfile",
     "args": {
       "MECHANICAL_IMAGE": "ghcr.io/ansys/mechanical:26.1.0",
       "PYTHON_VERSION": "3.12"
@@ -16,9 +16,9 @@
 
   // The Mechanical image is ~25 GB compressed; extraction requires ~55 GB of
   // scratch space. The default 2/4-core Codespaces machine only ships with
-  // 32 GB of storage, which causes "no space left on device" during docker
-  // layer extraction. The 16-core machine (64 GB RAM, 128 GB storage) is the
-  // smallest available size that fits the image.
+  // 32 GB of storage, which causes "no space left on device" during layer
+  // extraction. The 16-core machine (64 GB RAM, 128 GB storage) is the
+  // smallest size that fits.
   "hostRequirements": {
     "cpus": 16,
     "memory": "64gb",
@@ -35,20 +35,13 @@
     "--security-opt", "seccomp=unconfined"
   ],
 
-  // --- License ---
-  // Mirrors the CI pattern in ci_cd.yml / tests.yml which stores only the
-  // hostname in the LICENSE_SERVER secret and constructs the full
-  // ANSYSLMD_LICENSE_FILE value as 1055@<host> at runtime.
-  //
-  // In GitHub Codespaces: create a Codespaces secret named LICENSE_SERVER
-  // (Settings -> Secrets and variables -> Codespaces) with value e.g. my.license.server
+  // Mirrors the CI pattern: stores only the hostname in LICENSE_SERVER and
+  // constructs 1055@<host> at runtime.
+  // Codespaces: add a secret named LICENSE_SERVER under Settings → Secrets → Codespaces.
+  // Local Dev Containers: export LICENSE_SERVER=my.license.server before opening VS Code.
   // GitHub will NOT inject this secret for users without write access to the repo.
-  //
-  // In local Dev Containers: export LICENSE_SERVER=my.license.server before
-  // opening VS Code.
   "remoteEnv": {
     "ANSYSLMD_LICENSE_FILE": "1055@${localEnv:LICENSE_SERVER}",
-    // Suppress Workbench console logging noise during dev work.
     "ANSYS_WORKBENCH_LOGGING_CONSOLE": "0",
     "ANSYS_WORKBENCH_LOGGING": "0",
     "ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL": "2"
@@ -59,11 +52,9 @@
     }
   },
 
-  // --- Post-create: create venv and editable install with all extras ---
-  // Mirrors setup-python-env composite action used in embedding-tests CI job.
+  // Mirrors the setup-python-env composite action used in the embedding-tests CI job.
   "postCreateCommand": "uv venv .venv && . .venv/bin/activate && uv pip install --upgrade pip && uv pip install -e '.[tests,graphics,doc,rpc,pim]' && uv pip install pre-commit && pre-commit install",
 
-  // --- VS Code customizations ---
   "customizations": {
     "vscode": {
       "extensions": [

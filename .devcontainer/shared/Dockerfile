@@ -1,7 +1,7 @@
 ARG MECHANICAL_IMAGE=ghcr.io/ansys/mechanical:26.1.0
 FROM ${MECHANICAL_IMAGE}
 
-# xvfb and tini are already present in the base image.
+# xvfb, tini, and ca-certificates are already present in the base image.
 # Install git and curl for repo operations and uv bootstrap.
 ENV DEBIAN_FRONTEND=noninteractive \
     TZ=Etc/UTC
@@ -9,7 +9,6 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         git \
         curl \
-        ca-certificates \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

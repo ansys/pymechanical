@@ -2,12 +2,16 @@
 
 ## Disclaimer
 
+> **For Ansys internal use only.**
+> This Codespace requires write access to the repository. External contributors
+> cannot pull the private Mechanical image and the environment will not be functional.
+
 **Use this Codespace only for developing, contributing, documenting, and
 writing examples for PyMechanical.**
 
 ## What is pre-installed
 
-- **Ansys Mechanical 26.1** at `/install/ansys_inc/v261/`
+- **Ansys Mechanical** at `/install/ansys_inc/v<version>/` (depends on the config you selected)
 - **Python 3.12** with a virtual environment at `.venv`
 - **PyMechanical** (editable install with all extras: `tests`, `graphics`,
   `doc`, `rpc`, `pim`)
@@ -17,9 +21,21 @@ writing examples for PyMechanical.**
 
 ## How to start a Codespace
 
+Six configurations are available — one per Mechanical version:
+
+| Config | Image |
+|--------|-------|
+| `242` | `ghcr.io/ansys/mechanical:24.2.0` |
+| `251` | `ghcr.io/ansys/mechanical:25.1.0` |
+| `252` | `ghcr.io/ansys/mechanical:25.2.0` |
+| `261` | `ghcr.io/ansys/mechanical:26.1.0` |
+| `271` | `ghcr.io/ansys/mechanical:27.1.0` |
+| `271-candidate` | `ghcr.io/ansys/mechanical:27.1_Candidate` |
+
 1. Go to the [pymechanical](https://github.com/ansys/pymechanical) repository
-2. Click **Code → Codespaces → Create codespace on main** (or your branch)
-3. Wait for the build and `postCreateCommand` to finish
+2. Click **Code → Codespaces → New with options**
+3. Under **Dev container configuration**, select the Mechanical version you need
+4. Click **Create codespace** and wait for the build and `postCreateCommand` to finish
 
 ## Running Mechanical
 
