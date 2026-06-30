@@ -12,13 +12,17 @@ on:
 
 permissions: {}
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   skip-labels:
     name: "Apply skip labels for irrelevant action updates"
     runs-on: ubuntu-latest
     if: startsWith(github.head_ref, 'dependabot/github_actions/')
     permissions:
-      pull-requests: write
+      pull-requests: write   # Required to add labels to the Dependabot PR
 
     steps:
       - name: Apply skip labels based on changed files
