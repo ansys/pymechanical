@@ -31,11 +31,6 @@
     "ANSYS_WORKBENCH_LOGGING": "0",
     "ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL": "2"
   },
-  "secrets": {
-    "LICENSE_SERVER": {
-      "description": "Ansys license server hostname, e.g. my.license.server (the 1055@ prefix is added automatically)"
-    }
-  },
 
   "postCreateCommand": "uv venv .venv && . .venv/bin/activate && uv pip install --upgrade pip && uv pip install -e '.[tests,graphics,doc,rpc,pim]' && uv pip install pre-commit && pre-commit install",
 
