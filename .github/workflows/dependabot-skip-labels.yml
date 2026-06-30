@@ -1,4 +1,4 @@
-name: Dependabot skip labels
+name: Dependabot skip labels (on GH action updates)
 
 # Automatically adds 'skip-test' and/or 'skip-doc' labels to Dependabot
 # github-actions PRs when the PR does not touch tests.yml or docs.yml.
