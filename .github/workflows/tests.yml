@@ -136,7 +136,7 @@ jobs:
           pytest-extra-args: '-s --junitxml remote_results${{ vars.MAIN_PYTHON_VERSION }}.xml'
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@3a81627bfac62268172037048872e8ebd4207e6d # v6.4.1
+        uses: mikepenz/action-junit-report@d9f48fc87bc235f7e214acf696ca5abc0a986f16 # v6.4.2
         if: always()
         with:
           report_paths: '**/remote_results*.xml'
@@ -185,7 +185,7 @@ jobs:
       packages: read  # Required to pull Docker images from GitHub Container Registry
       checks: write   # Needed to publish test results and status checks
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
 
@@ -216,7 +216,7 @@ jobs:
           artifact-name: tests-embedding
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@3a81627bfac62268172037048872e8ebd4207e6d # v6.4.1
+        uses: mikepenz/action-junit-report@d9f48fc87bc235f7e214acf696ca5abc0a986f16 # v6.4.2
         if: always()
         with:
           report_paths: '**/test_results*.xml'
@@ -241,7 +241,7 @@ jobs:
       packages: read  # Required to pull Docker images from GitHub Container Registry
       checks: write   # Needed to publish test results and status checks
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
 
@@ -270,7 +270,7 @@ jobs:
           artifact-name: tests-embedding-scripts
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@3a81627bfac62268172037048872e8ebd4207e6d # v6.4.1
+        uses: mikepenz/action-junit-report@d9f48fc87bc235f7e214acf696ca5abc0a986f16 # v6.4.2
         if: always()
         with:
           report_paths: '**/test_results*.xml'
@@ -295,7 +295,7 @@ jobs:
       packages: read  # Required to pull Docker images from GitHub Container Registry
       checks: write   # Needed to publish test results and status checks
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
 
@@ -325,7 +325,7 @@ jobs:
           fi
 
       - name: Publish Launch Test Report
-        uses: mikepenz/action-junit-report@3a81627bfac62268172037048872e8ebd4207e6d # v6.4.1
+        uses: mikepenz/action-junit-report@d9f48fc87bc235f7e214acf696ca5abc0a986f16 # v6.4.2
         if: always()
         with:
           report_paths: '**/launch_test_results*.xml'
