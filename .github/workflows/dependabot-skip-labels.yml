@@ -1,0 +1,42 @@
+name: Dependabot skip labels
+
+# Automatically adds 'skip-test' and/or 'skip-doc' labels to Dependabot
+# github-actions PRs when the PR does not touch tests.yml or docs.yml.
+# Dependabot edits a workflow file in-place when it bumps an action used
+# there, so checking the changed files is sufficient — no action allowlist
+# to maintain.
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions: {}
+
+jobs:
+  skip-labels:
+    name: "Apply skip labels for irrelevant action updates"
+    runs-on: ubuntu-latest
+    if: startsWith(github.head_ref, 'dependabot/github_actions/')
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Apply skip labels based on changed files
+        env:
+          GH_TOKEN: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          REPO: ${{ github.repository }}
+        run: |
+          changed=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json files --jq '[.files[].path] | join(" ")')
+          echo "Changed files: $changed"
+
+          if ! echo "$changed" | grep -q "tests.yml"; then
+            echo "tests.yml not modified — adding skip-test"
+            gh pr edit "$PR_URL" --add-label "skip-test"
+          fi
+
+          if ! echo "$changed" | grep -q "docs.yml"; then
+            echo "docs.yml not modified — adding skip-doc"
+            gh pr edit "$PR_URL" --add-label "skip-doc"
+          fi
