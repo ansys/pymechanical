@@ -1,0 +1,68 @@
+ansys.mechanical.core.pool
+==========================
+
+.. py:module:: ansys.mechanical.core.pool
+
+.. autoapi-nested-parse::
+
+   Module for threaded implementations of the Mechanical interface.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /api/ansys/mechanical/core/pool/LocalMechanicalPool
+
+.. autoapisummary::
+
+   ansys.mechanical.core.pool.LocalMechanicalPool
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.pool.available_ports
+
+
+Module Contents
+---------------
+
+.. py:function:: available_ports(n_ports, starting_port=MECHANICAL_DEFAULT_PORT)
+
+   
+   Get a list of a given number of available ports starting from a specified port number.
+
+
+   :Parameters:
+
+       **n_ports** : :class:`python:int`
+           Number of available ports to return.
+
+       **starting_port: int, option**
+           Number of the port to start the search from. The default is
+           ``MECHANICAL_DEFAULT_PORT``.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

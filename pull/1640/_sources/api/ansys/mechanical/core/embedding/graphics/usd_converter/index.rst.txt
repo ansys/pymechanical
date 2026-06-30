@@ -1,0 +1,95 @@
+ansys.mechanical.core.embedding.graphics.usd_converter
+======================================================
+
+.. py:module:: ansys.mechanical.core.embedding.graphics.usd_converter
+
+.. autoapi-nested-parse::
+
+   Converter to OpenUSD.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.graphics.usd_converter.load_into_usd_stage
+   ansys.mechanical.core.embedding.graphics.usd_converter.to_usd_stage
+   ansys.mechanical.core.embedding.graphics.usd_converter.to_usd_file
+
+
+Module Contents
+---------------
+
+.. py:function:: load_into_usd_stage(scene: Ansys.Mechanical.Scenegraph.GroupNode, stage: pxr.Usd.Stage) -> None
+
+   
+   Load mechanical scene into usd stage `stage`.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: to_usd_stage(app: ansys.mechanical.core.embedding.App, name: str) -> pxr.Usd.Stage
+
+   
+   Convert mechanical scene to new usd stage and return it.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: to_usd_file(app, path: str) -> None
+
+   
+   Export mechanical scene to usd file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

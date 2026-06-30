@@ -1,0 +1,52 @@
+ansys.mechanical.core.logging.InstanceFilter
+============================================
+
+.. py:class:: ansys.mechanical.core.logging.InstanceFilter(name='')
+
+   Bases: :py:obj:`logging.Filter`
+
+
+   
+   Ensures that the instance name record always exists.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:method:: filter(record)
+
+      
+      Check the log record and return ``True`` to log it or ``False`` to discard it.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+

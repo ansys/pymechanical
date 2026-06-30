@@ -1,0 +1,28 @@
+ansys.mechanical.core.embedding.rpc.default_server
+==================================================
+
+.. py:module:: ansys.mechanical.core.embedding.rpc.default_server
+
+.. autoapi-nested-parse::
+
+   Remote Procedure Call (RPC) server.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /api/ansys/mechanical/core/embedding/rpc/default_server/DefaultServiceMethods
+   /api/ansys/mechanical/core/embedding/rpc/default_server/MechanicalDefaultServer
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.rpc.default_server.DefaultServiceMethods
+   ansys.mechanical.core.embedding.rpc.default_server.MechanicalDefaultServer
+
+

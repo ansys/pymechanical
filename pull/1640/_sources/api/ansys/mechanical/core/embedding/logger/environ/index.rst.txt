@@ -1,0 +1,26 @@
+ansys.mechanical.core.embedding.logger.environ
+==============================================
+
+.. py:module:: ansys.mechanical.core.embedding.logger.environ
+
+.. autoapi-nested-parse::
+
+   Environment variables for mechanical logging.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /api/ansys/mechanical/core/embedding/logger/environ/EnvironBackend
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.logger.environ.EnvironBackend
+
+

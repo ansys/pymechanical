@@ -1,0 +1,40 @@
+ansys.mechanical.core.embedding.graphics
+========================================
+
+.. py:module:: ansys.mechanical.core.embedding.graphics
+
+.. autoapi-nested-parse::
+
+   
+   Namespace module for embedding visualization.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /api/ansys/mechanical/core/embedding/graphics/embedding_plotter/index
+   /api/ansys/mechanical/core/embedding/graphics/usd_converter/index
+   /api/ansys/mechanical/core/embedding/graphics/utils/index
+
+

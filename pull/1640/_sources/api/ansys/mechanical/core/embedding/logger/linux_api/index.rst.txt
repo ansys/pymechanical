@@ -1,0 +1,30 @@
+ansys.mechanical.core.embedding.logger.linux_api
+================================================
+
+.. py:module:: ansys.mechanical.core.embedding.logger.linux_api
+
+.. autoapi-nested-parse::
+
+   Internal Mechanical logging Linux API.
+
+   .. note::
+      The Linux API is needed for version 2023 R2, where the .NET backend is Windows-only.
+      This API does not support some options, namely the base directory and log filename.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /api/ansys/mechanical/core/embedding/logger/linux_api/APIBackend
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.logger.linux_api.APIBackend
+
+

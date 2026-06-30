@@ -1,0 +1,122 @@
+ansys.mechanical.core.embedding.utils
+=====================================
+
+.. py:module:: ansys.mechanical.core.embedding.utils
+
+.. autoapi-nested-parse::
+
+   Miscellaneous utilities.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.utils.TEST_HELPER
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /api/ansys/mechanical/core/embedding/utils/GetterWrapper
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.utils.GetterWrapper
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.utils.sleep
+   ansys.mechanical.core.embedding.utils.drain
+   ansys.mechanical.core.embedding.utils.load_library_windows
+
+
+Module Contents
+---------------
+
+.. py:data:: TEST_HELPER
+   :value: None
+
+
+.. py:function:: sleep(ms: int) -> None
+
+   
+   Non-blocking sleep for `ms` milliseconds.
+
+   Mechanical should still work during the sleep.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: drain() -> None
+
+   
+   Execute all pending work on the main thread.
+
+   Blocks until all the UI messages and other scheduled work complete.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: load_library_windows(library: str) -> int
+
+   
+   Load a library into the python process on windows.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

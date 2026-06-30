@@ -1,0 +1,79 @@
+ansys.mechanical.core.embedding.graphics.embedding_plotter.Plottable
+====================================================================
+
+.. py:class:: ansys.mechanical.core.embedding.graphics.embedding_plotter.Plottable
+
+   
+   Plottable object.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: polydata
+      :type:  pyvista.PolyData | None
+      :value: None
+
+
+
+   .. py:attribute:: color
+      :type:  pyvista.Color | None
+      :value: None
+
+
+
+   .. py:attribute:: transform
+      :type:  pyvista.transform.Transform
+
+
+   .. py:attribute:: children
+      :type:  list[Plottable]
+      :value: []
+
+
+
+   .. py:attribute:: kwargs
+      :type:  dict | None
+      :value: None
+
+
+
+   .. py:method:: __post_init__()
+
+      
+      Initialize the plottable.
+
+      The transform will be identity.
+      The children will be an empty list.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+

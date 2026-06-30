@@ -1,0 +1,73 @@
+ansys.mechanical.core.embedding.rpc.server.BackgroundAppBackend
+===============================================================
+
+.. py:class:: ansys.mechanical.core.embedding.rpc.server.BackgroundAppBackend(backgroundapp: ansys.mechanical.core.embedding.background.BackgroundApp)
+
+   
+   Backend for the python server where mechanical uses the background thread.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:method:: try_post(callable: Callable) -> Any
+
+      
+      Try to post to mechanical's main thread.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: get_app() -> ansys.mechanical.core.embedding.app.App
+
+      
+      Get the app object.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+

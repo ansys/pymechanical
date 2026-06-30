@@ -1,0 +1,201 @@
+ansys.mechanical.core.embedding.appdata.UniqueUserProfile
+=========================================================
+
+.. py:class:: ansys.mechanical.core.embedding.appdata.UniqueUserProfile(profile_name: str, copy_profile: bool = True, dry_run: bool = False)
+
+   
+   Create Unique User Profile (for AppData).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: copy_profile
+      :value: True
+
+
+
+   .. py:method:: initialize() -> None
+
+      
+      Initialize the new profile location.
+
+      If ``copy_profile`` is False, the copy_profile step will be skipped.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: cleanup() -> None
+
+      
+      Cleanup unique user profile.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:property:: location
+      :type: pathlib.Path
+
+
+      
+      Return the profile location path.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: update_environment(env) -> None
+
+      
+      Set environment variables for new user profile.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: exists() -> bool
+
+      
+      Check if unique profile name already exists.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: mkdirs() -> None
+
+      
+      Create a unique user profile & set up the directory tree.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: copy_profiles() -> None
+
+      
+      Copy current user directories into a new user profile.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+

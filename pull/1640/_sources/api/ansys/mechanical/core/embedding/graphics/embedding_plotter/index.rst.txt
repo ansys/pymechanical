@@ -1,0 +1,68 @@
+ansys.mechanical.core.embedding.graphics.embedding_plotter
+==========================================================
+
+.. py:module:: ansys.mechanical.core.embedding.graphics.embedding_plotter
+
+.. autoapi-nested-parse::
+
+   PyVista plotter.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /api/ansys/mechanical/core/embedding/graphics/embedding_plotter/Plottable
+   /api/ansys/mechanical/core/embedding/graphics/embedding_plotter/MeshOrientedTransformResizeStyle
+   /api/ansys/mechanical/core/embedding/graphics/embedding_plotter/PlotSettings
+   /api/ansys/mechanical/core/embedding/graphics/embedding_plotter/ScenegraphNodeVisitor
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.graphics.embedding_plotter.Plottable
+   ansys.mechanical.core.embedding.graphics.embedding_plotter.MeshOrientedTransformResizeStyle
+   ansys.mechanical.core.embedding.graphics.embedding_plotter.PlotSettings
+   ansys.mechanical.core.embedding.graphics.embedding_plotter.ScenegraphNodeVisitor
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.graphics.embedding_plotter.to_plotter
+
+
+Module Contents
+---------------
+
+.. py:function:: to_plotter(app: ansys.mechanical.core.embedding.App, obj=None, plot_settings: PlotSettings | None = None) -> ansys.tools.visualization_interface.Plotter | None
+
+   
+   Convert the scene for `obj` to an ``ansys.tools.visualization_interface.Plotter`` instance.
+
+   If the `obj` is None, default to the Geometry object.
+   Geometry, Mesh, and some Results are currently supported.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

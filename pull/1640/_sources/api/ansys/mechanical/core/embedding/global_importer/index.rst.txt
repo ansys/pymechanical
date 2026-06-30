@@ -1,0 +1,47 @@
+ansys.mechanical.core.embedding.global_importer
+===============================================
+
+.. py:module:: ansys.mechanical.core.embedding.global_importer
+
+.. autoapi-nested-parse::
+
+   Import Mechanical globals.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.global_importer.__getattr__
+
+
+Module Contents
+---------------
+
+.. py:function:: __getattr__(name: str)
+
+   
+   Support importing app-specific variables from this module.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

@@ -1,0 +1,26 @@
+ansys.mechanical.core.embedding.background
+==========================================
+
+.. py:module:: ansys.mechanical.core.embedding.background
+
+.. autoapi-nested-parse::
+
+   Class for running Mechanical on a background thread.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /api/ansys/mechanical/core/embedding/background/BackgroundApp
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.background.BackgroundApp
+
+

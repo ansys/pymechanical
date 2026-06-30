@@ -1,0 +1,54 @@
+ansys.mechanical.core.embedding.poster.PosterError
+==================================================
+
+.. py:exception:: ansys.mechanical.core.embedding.poster.PosterError(error: Exception)
+
+   Bases: :py:obj:`Exception`
+
+
+   
+   Class which holds errors from the background thread posting system.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:property:: error
+      :type: Exception
+
+
+      
+      Get the underlying exception.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+

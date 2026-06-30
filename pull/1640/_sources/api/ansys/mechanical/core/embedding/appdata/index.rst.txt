@@ -1,0 +1,26 @@
+ansys.mechanical.core.embedding.appdata
+=======================================
+
+.. py:module:: ansys.mechanical.core.embedding.appdata
+
+.. autoapi-nested-parse::
+
+   Temporary Appdata for Ansys Mechanical.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /api/ansys/mechanical/core/embedding/appdata/UniqueUserProfile
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.appdata.UniqueUserProfile
+
+

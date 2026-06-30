@@ -1,0 +1,219 @@
+ansys.mechanical.core
+=====================
+
+.. py:module:: ansys.mechanical.core
+
+.. autoapi-nested-parse::
+
+   
+   Initialize the package level imports.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /api/ansys/mechanical/core/embedding/index
+   /api/ansys/mechanical/core/errors/index
+   /api/ansys/mechanical/core/examples/index
+   /api/ansys/mechanical/core/feature_flags/index
+   /api/ansys/mechanical/core/ide_config/index
+   /api/ansys/mechanical/core/launcher/index
+   /api/ansys/mechanical/core/logging/index
+   /api/ansys/mechanical/core/mechanical/index
+   /api/ansys/mechanical/core/misc/index
+   /api/ansys/mechanical/core/pool/index
+   /api/ansys/mechanical/core/run/index
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.USER_DATA_PATH
+   ansys.mechanical.core.EXAMPLES_PATH
+   ansys.mechanical.core.LOG
+   ansys.mechanical.core.HAS_EMBEDDING
+   ansys.mechanical.core.LOCAL_PORTS
+   ansys.mechanical.core.BUILDING_GALLERY
+
+
+Package Contents
+----------------
+
+.. py:data:: USER_DATA_PATH
+
+   
+   User data directory.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: EXAMPLES_PATH
+
+   
+   Examples path.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: LOG
+
+   
+   Create logger for package level use.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: HAS_EMBEDDING
+   :value: True
+
+
+   
+   Whether or not Mechanical embedding is being used.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: LOCAL_PORTS
+   :type:  list[int]
+   :value: []
+
+
+   
+   Manage the package level ports.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: BUILDING_GALLERY
+   :value: False
+
+
+   
+   Control documentation gallery behavior and embedded-app instance sharing.
+
+   When ``True``:
+
+   - Sphinx enables the example gallery during documentation builds (see ``doc/source/conf.py``).
+   - For the embedded :class:`~ansys.mechanical.core.embedding.app.App`, multiple
+     ``App()`` constructions reuse one underlying Mechanical instance so examples can
+     run without exhausting resources.
+
+   To opt out of embedded instance sharing for a single ``App`` while leaving this
+   flag unchanged (for example when ``BUILDING_GALLERY`` is set globally), pass
+   ``reuse_instance=True`` to the constructor.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

@@ -1,0 +1,41 @@
+ansys.mechanical.core.embedding.rpc
+===================================
+
+.. py:module:: ansys.mechanical.core.embedding.rpc
+
+.. autoapi-nested-parse::
+
+   
+   RPC and Mechanical service implementation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /api/ansys/mechanical/core/embedding/rpc/client/index
+   /api/ansys/mechanical/core/embedding/rpc/default_server/index
+   /api/ansys/mechanical/core/embedding/rpc/server/index
+   /api/ansys/mechanical/core/embedding/rpc/utils/index
+
+

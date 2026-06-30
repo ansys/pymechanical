@@ -1,0 +1,36 @@
+ansys.mechanical.core.embedding.graphics.embedding_plotter.PlotSettings
+=======================================================================
+
+.. py:class:: ansys.mechanical.core.embedding.graphics.embedding_plotter.PlotSettings
+
+   
+   Settings for a plot.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: displacement_scale_factor
+      :type:  float
+      :value: 1.0
+
+
+
+   .. py:attribute:: point_size
+      :value: 5
+
+

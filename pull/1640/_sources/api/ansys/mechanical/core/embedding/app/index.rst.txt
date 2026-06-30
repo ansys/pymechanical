@@ -1,0 +1,120 @@
+ansys.mechanical.core.embedding.app
+===================================
+
+.. py:module:: ansys.mechanical.core.embedding.app
+
+.. autoapi-nested-parse::
+
+   Main application class for embedded Mechanical.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.app.HAS_ANSYS_GRAPHICS
+   ansys.mechanical.core.embedding.app.INSTANCES
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /api/ansys/mechanical/core/embedding/app/App
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.app.App
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.app.is_initialized
+
+
+Module Contents
+---------------
+
+.. py:data:: HAS_ANSYS_GRAPHICS
+   :value: True
+
+
+   
+   Whether or not ansys-tools-visualization-interface is available.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: INSTANCES
+   :type:  list[App]
+   :value: []
+
+
+   
+   List of instances.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: is_initialized() -> bool
+
+   
+   Check if the app has been initialized.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

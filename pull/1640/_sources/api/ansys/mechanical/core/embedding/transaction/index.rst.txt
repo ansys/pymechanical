@@ -1,0 +1,26 @@
+ansys.mechanical.core.embedding.transaction
+===========================================
+
+.. py:module:: ansys.mechanical.core.embedding.transaction
+
+.. autoapi-nested-parse::
+
+   A class to speed up bulk user interactions using Ansys ACT Mechanical Transaction.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /api/ansys/mechanical/core/embedding/transaction/Transaction
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.transaction.Transaction
+
+

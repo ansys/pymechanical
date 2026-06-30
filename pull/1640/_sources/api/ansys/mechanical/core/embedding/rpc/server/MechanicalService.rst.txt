@@ -1,0 +1,148 @@
+ansys.mechanical.core.embedding.rpc.server.MechanicalService
+============================================================
+
+.. py:class:: ansys.mechanical.core.embedding.rpc.server.MechanicalService(backend, functions=[], impl=[])
+
+   Bases: :py:obj:`rpyc.Service`
+
+
+   
+   Starts Mechanical app services.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:method:: on_connect(conn)
+
+      
+      Handle client connection.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: on_disconnect(conn)
+
+      
+      Handle client disconnection.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: exposed_service_upload(remote_path, file_data)
+
+      
+      Handle file upload request from client.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: exposed_service_download(remote_path)
+
+      
+      Handle file download request from client.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: exposed_service_exit()
+
+      
+      Exit the server.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+

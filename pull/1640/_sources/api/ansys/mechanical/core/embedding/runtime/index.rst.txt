@@ -1,0 +1,52 @@
+ansys.mechanical.core.embedding.runtime
+=======================================
+
+.. py:module:: ansys.mechanical.core.embedding.runtime
+
+.. autoapi-nested-parse::
+
+   Runtime initialize for pythonnet in embedding.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.runtime.initialize
+
+
+Module Contents
+---------------
+
+.. py:function:: initialize(version: int, pep8_aliases: bool = False) -> None
+
+   
+   Initialize the runtime.
+
+   Pythonnet is already initialized but we need to
+   do some special codec handling to make sure the
+   interop works well for Mechanical. These are
+   need to handle (among other things) list and other
+   container conversions between C# and python
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

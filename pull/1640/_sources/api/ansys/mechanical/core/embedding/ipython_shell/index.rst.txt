@@ -1,0 +1,182 @@
+ansys.mechanical.core.embedding.ipython_shell
+=============================================
+
+.. py:module:: ansys.mechanical.core.embedding.ipython_shell
+
+.. autoapi-nested-parse::
+
+   Module for scheduling background work in IPython shells.
+
+   Interactive Python, or IPython, offers an enhanced Python shell. This module
+   schedules all the work of the IPython shell on a background thread, allowing
+   the Main thread to be used exclusively for the shell frontend. As a result,
+   user-defined functions can be executed during idle time between blocks.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.ipython_shell.FROM_IPYTHON
+   ansys.mechanical.core.embedding.ipython_shell.CODE_QUEUE
+   ansys.mechanical.core.embedding.ipython_shell.RESULT_QUEUE
+   ansys.mechanical.core.embedding.ipython_shell.SHUTDOWN_EVENT
+   ansys.mechanical.core.embedding.ipython_shell.EXEC_THREAD
+   ansys.mechanical.core.embedding.ipython_shell.ORIGINAL_RUN_CELL
+   ansys.mechanical.core.embedding.ipython_shell.EXECUTION_THREAD_ID
+   ansys.mechanical.core.embedding.ipython_shell.DEFAULT_IDLE_HOOK
+   ansys.mechanical.core.embedding.ipython_shell.SHELL_HOOKS
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /api/ansys/mechanical/core/embedding/ipython_shell/ShellHooks
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.ipython_shell.ShellHooks
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.ipython_shell.cleanup
+   ansys.mechanical.core.embedding.ipython_shell.in_ipython
+   ansys.mechanical.core.embedding.ipython_shell.post_ipython_blocks
+   ansys.mechanical.core.embedding.ipython_shell.get_shell_hooks
+
+
+Module Contents
+---------------
+
+.. py:data:: FROM_IPYTHON
+
+.. py:data:: CODE_QUEUE
+   :type:  queue.Queue[Any]
+
+.. py:data:: RESULT_QUEUE
+   :type:  queue.Queue[Any]
+
+.. py:data:: SHUTDOWN_EVENT
+
+.. py:data:: EXEC_THREAD
+   :value: None
+
+
+.. py:data:: ORIGINAL_RUN_CELL
+   :value: None
+
+
+.. py:data:: EXECUTION_THREAD_ID
+   :type:  int | None
+   :value: None
+
+
+.. py:data:: DEFAULT_IDLE_HOOK
+
+.. py:data:: SHELL_HOOKS
+
+.. py:function:: cleanup()
+
+   
+   Cleanup the ipython shell.
+
+   Must be called before the application exits.
+   May be called from an atexit handler.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: in_ipython()
+
+   
+   Return whether Python is running from IPython.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: post_ipython_blocks()
+
+   
+   Initiate the IPython worker thread for block execution.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: get_shell_hooks()
+
+   
+   Get the shell hooks object.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

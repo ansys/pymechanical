@@ -1,0 +1,71 @@
+ansys.mechanical.core.embedding.mechanical_warnings
+===================================================
+
+.. py:module:: ansys.mechanical.core.embedding.mechanical_warnings
+
+.. autoapi-nested-parse::
+
+   Hook to register obsolete warnings.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.mechanical_warnings.connect_warnings
+   ansys.mechanical.core.embedding.mechanical_warnings.disconnect_warnings
+
+
+Module Contents
+---------------
+
+.. py:function:: connect_warnings(app: ansys.mechanical.core.embedding.App)
+
+   
+   Connect Mechanical warnings to the `warnings` Python module.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: disconnect_warnings(app: ansys.mechanical.core.embedding.App)
+
+   
+   Disconnect Mechanical warnings from the `warnings` Python module.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

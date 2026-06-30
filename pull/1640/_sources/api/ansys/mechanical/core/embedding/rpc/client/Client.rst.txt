@@ -1,0 +1,264 @@
+ansys.mechanical.core.embedding.rpc.client.Client
+=================================================
+
+.. py:class:: ansys.mechanical.core.embedding.rpc.client.Client(host: str, port: int, timeout: float = 120.0, cleanup_on_exit=True, process=None)
+
+   
+   Client for connecting to Mechanical services.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: host
+
+
+   .. py:attribute:: port
+
+
+   .. py:attribute:: timeout
+      :value: 120.0
+
+
+
+   .. py:attribute:: connection
+      :value: None
+
+
+
+   .. py:attribute:: root
+      :value: None
+
+
+
+   .. py:method:: __getattr__(attr)
+
+      
+      Get attribute from the root object.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: close()
+
+      
+      Close the connection.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: upload(file_name, file_location_destination=None, chunk_size=DEFAULT_CHUNK_SIZE, progress_bar=False)
+
+      
+      Upload a file to the server.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: download(files, target_dir=None, chunk_size=DEFAULT_CHUNK_SIZE, progress_bar=None, recursive=False)
+
+      
+      Download a file from the server.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: download_project(extensions=None, target_dir=None, progress_bar=False)
+
+      
+      Download all project files in the working directory of the Mechanical instance.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:property:: backend
+      :type: str
+
+
+      
+      Get the backend type.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:property:: is_alive
+
+      
+      Check if the Mechanical instance is alive.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: exit()
+
+      
+      Shuts down the Mechanical instance.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: __del__()
+
+      
+      Clean up on exit.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+

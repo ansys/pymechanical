@@ -1,0 +1,104 @@
+ansys.mechanical.core.embedding.initializer
+===========================================
+
+.. py:module:: ansys.mechanical.core.embedding.initializer
+
+.. autoapi-nested-parse::
+
+   Initializer for Mechanical embedding. Sets up paths and resolvers.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.initializer.INITIALIZED_VERSION
+   ansys.mechanical.core.embedding.initializer.SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.initializer.initialize
+
+
+Module Contents
+---------------
+
+.. py:data:: INITIALIZED_VERSION
+   :value: None
+
+
+   
+   The currently initialized Mechanical version, or None.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
+
+   
+   Supported Mechanical embedding versions on Windows.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: initialize(version: int | None = None)
+
+   
+   Initialize Mechanical embedding.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

@@ -1,0 +1,28 @@
+ansys.mechanical.core.errors.MechanicalExitedError
+==================================================
+
+.. py:exception:: ansys.mechanical.core.errors.MechanicalExitedError(msg='Mechanical has exited.')
+
+   Bases: :py:obj:`RuntimeError`
+
+
+   
+   Raises an error when Mechanical has exited.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!

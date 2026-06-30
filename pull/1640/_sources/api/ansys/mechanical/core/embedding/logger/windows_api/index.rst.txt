@@ -1,0 +1,30 @@
+ansys.mechanical.core.embedding.logger.windows_api
+==================================================
+
+.. py:module:: ansys.mechanical.core.embedding.logger.windows_api
+
+.. autoapi-nested-parse::
+
+   Windows API for internal Mechanical logging.
+
+   .. note::
+      This API does not support some options, namely the base directory
+      and log filename.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /api/ansys/mechanical/core/embedding/logger/windows_api/APIBackend
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.logger.windows_api.APIBackend
+
+

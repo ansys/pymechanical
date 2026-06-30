@@ -1,0 +1,73 @@
+ansys.mechanical.core.embedding.transaction.Transaction
+=======================================================
+
+.. py:class:: ansys.mechanical.core.embedding.transaction.Transaction
+
+   
+   A class to speed up bulk user interactions using Ansys ACT Mechanical Transaction.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:method:: __enter__()
+
+      
+      Enter the context of the transaction.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: __exit__(exc_type, exc_val, exc_tb)
+
+      
+      Exit the context of the transaction and disposes of resources.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+

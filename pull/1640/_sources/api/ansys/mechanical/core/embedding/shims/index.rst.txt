@@ -1,0 +1,50 @@
+ansys.mechanical.core.embedding.shims
+=====================================
+
+.. py:module:: ansys.mechanical.core.embedding.shims
+
+.. autoapi-nested-parse::
+
+   Shims for embedded Mechanical.
+
+   These shims are used when APIs are released in newer versions of Mechanical,
+   but workarounds exist in an older release
+
+   ..
+       !! processed by numpydoc !!
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   ansys.mechanical.core.embedding.shims.import_materials
+
+
+Module Contents
+---------------
+
+.. py:function:: import_materials(app: ansys.mechanical.core.embedding.App, material_file: str) -> None
+
+   
+   Import material from matml file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
