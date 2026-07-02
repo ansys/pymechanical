@@ -58,8 +58,6 @@ try:
 except ImportError:
     HAS_ANSYS_GRAPHICS = False
 
-shell.initialize_ipython_shell()
-
 
 def _get_default_addin_configuration() -> AddinConfiguration:
     configuration = AddinConfiguration()
@@ -300,6 +298,8 @@ class App:
         feature_flags = kwargs.get("feature_flags", [])
         additional_args = _additional_args(readonly, feature_flags, start_license, self._version)
         self._prepare_interactive_mode()
+        if self.interactive:
+            shell.initialize_ipython_shell()
         runtime.initialize(self._version, pep8_aliases=pep8_alias)
 
         if remove_lock and db_file is not None:
