@@ -1,0 +1,76 @@
+{
+  "name": "PyMechanical — Mechanical 24.2 (2024 R2)",
+
+  // Shared Dockerfile; only the image tag differs across configs.
+  "build": {
+    "context": "..",
+    "dockerfile": "../shared/Dockerfile",
+    "args": {
+      "MECHANICAL_IMAGE": "ghcr.io/ansys/mechanical:24.2.0",
+      "PYTHON_VERSION": "3.14"
+    }
+  },
+
+  // Keep the container alive (CMD sleep infinity from Dockerfile).
+  "overrideCommand": true,
+
+  // The Mechanical image is ~25 GB compressed; extraction requires ~55 GB of
+  // scratch space. The default 2/4-core Codespaces machine only ships with
+  // 32 GB of storage, which causes "no space left on device" during layer
+  // extraction. The 16-core machine (64 GB RAM, 128 GB storage) is the
+  // smallest size that fits.
+  "hostRequirements": {
+    "cpus": 16,
+    "memory": "64gb",
+    "storage": "128gb"
+  },
+
+  // The Mechanical image only has root; Codespaces requires an explicit declaration.
+  "remoteUser": "root",
+
+  // Match the docker-compose.yml shm and CI --security-opt flags required
+  // for Mechanical's OpenMPI / gRPC launch to succeed.
+  "runArgs": [
+    "--shm-size=8gb",
+    "--security-opt", "seccomp=unconfined"
+  ],
+
+  // Mirrors the CI pattern: stores only the hostname in LICENSE_SERVER and
+  // constructs 1055@<host> at runtime.
+  // Codespaces: add a secret named LICENSE_SERVER under Settings → Secrets → Codespaces.
+  // Local Dev Containers: export LICENSE_SERVER=my.license.server before opening VS Code.
+  // GitHub will NOT inject this secret for users without write access to the repo.
+  "remoteEnv": {
+    "ANSYSLMD_LICENSE_FILE": "1055@${localEnv:LICENSE_SERVER}",
+    "ANSYS_WORKBENCH_LOGGING_CONSOLE": "0",
+    "ANSYS_WORKBENCH_LOGGING": "0",
+    "ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL": "2"
+  },
+
+  // Mirrors the setup-python-env composite action used in the embedding-tests CI job.
+  "postCreateCommand": "uv venv .venv && . .venv/bin/activate && uv pip install --upgrade pip && uv pip install -e '.[tests,graphics,doc,rpc,pim]' && uv pip install pre-commit && pre-commit install",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "charliermarsh.ruff",
+        "ms-python.mypy-type-checker"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": ".venv/bin/python",
+        "python.terminal.activateEnvironment": true,
+        "python.terminal.activateEnvInCurrentTerminal": true,
+        "[python]": {
+          "editor.defaultFormatter": "charliermarsh.ruff",
+          "editor.formatOnSave": true,
+          "editor.codeActionsOnSave": {
+            "source.fixAll.ruff": "explicit",
+            "source.organizeImports.ruff": "explicit"
+          }
+        },
+        "ruff.path": [".venv/bin/ruff"]
+      }
+    }
+  }
+}
