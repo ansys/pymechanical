@@ -19,7 +19,7 @@ This is the place to find the latest news, updates, and resources related to PyM
 .. news-item::
     :type: Video
     :title: PyMechanical in One Video
-    :author: Amrit
+    :author: Vector Amrit
     :link: https://www.youtube.com/watch?v=30iFGvFH07I&t=1s
 
     A comprehensive single-video walkthrough of PyMechanical, covering Python scripting, launching Mechanical, and automation workflows.
