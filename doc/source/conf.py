@@ -247,6 +247,11 @@ html_theme_options = {
         "sidebar_pages": ["changelog", "index"],
     },
     "ansys_sphinx_theme_autoapi": {"project": project},
+    "news_resources": {
+        "pages": ["index"],
+        "link": "news-and-resources",
+        "title": "News and resources",
+    },
 }
 
 
