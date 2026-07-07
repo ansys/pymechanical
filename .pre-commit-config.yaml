@@ -53,7 +53,7 @@ repos:
   - id: check-added-large-files
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 8ef330cbb7204d388aa7a620f9549bcea8009663  # frozen: 0.37.3
+  rev: 1a4bb160cab6417b3045e1b37b6b72449243e658  # frozen: 0.37.4
   hooks:
     - id: check-github-workflows
 
@@ -79,7 +79,7 @@ repos:
         args: ['--py310-plus']
 
 - repo: https://github.com/crate-ci/typos
-  rev: d80b8e26878e372a041833cd67163dbdb6a4336e  # frozen: v1
+  rev: 96d9af6217dc2855210655af7e1ff19d23d4e593  # frozen: v1
   hooks:
     - id: typos
       args: ["--config", "doc/styles/typos.toml"]
