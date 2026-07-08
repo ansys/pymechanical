@@ -47,5 +47,3 @@ This is the place to find the latest news, updates, and resources related to PyM
     :link: https://blog.cadfem.net/en/pyansys-the-key-to-workflow-automation
 
     Discover how PyAnsys enables workflow automation for Ansys simulation tools through Python scripting and tool integration.
-
-.. news-resources-table::
