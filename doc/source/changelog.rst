@@ -9,6 +9,112 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.12.11 <https://github.com/ansys/pymechanical/releases/tag/v0.12.11>`_ - July 10, 2026
+========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add initialization flag to manage app state
+          - `#1622 <https://github.com/ansys/pymechanical/pull/1622>`_
+
+        * - Add issue/PR templates
+          - `#1649 <https://github.com/ansys/pymechanical/pull/1649>`_
+
+        * - Add doc-deploy-pr label so that it only runs if label is enabled
+          - `#1651 <https://github.com/ansys/pymechanical/pull/1651>`_
+
+        * - Update labelling PR
+          - `#1657 <https://github.com/ansys/pymechanical/pull/1657>`_
+
+        * - Add devcontainer
+          - `#1667 <https://github.com/ansys/pymechanical/pull/1667>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Dependencies for candidate product
+          - `#1652 <https://github.com/ansys/pymechanical/pull/1652>`_
+
+        * - Issue with parallel pyMechanical instance on linux
+          - `#1654 <https://github.com/ansys/pymechanical/pull/1654>`_
+
+        * - Cheat sheet and warning when app starts
+          - `#1665 <https://github.com/ansys/pymechanical/pull/1665>`_
+
+        * - Update IntelCompiler lib path
+          - `#1678 <https://github.com/ansys/pymechanical/pull/1678>`_
+
+
+  .. tab-item:: Documentation
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Getting Started & ecosystem links
+          - `#1655 <https://github.com/ansys/pymechanical/pull/1655>`_
+
+        * - Update \`\`CONTRIBUTORS.md\`\` with the latest contributors
+          - `#1656 <https://github.com/ansys/pymechanical/pull/1656>`_
+
+        * - Adding ref to Mech API in card
+          - `#1664 <https://github.com/ansys/pymechanical/pull/1664>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.12.10
+          - `#1648 <https://github.com/ansys/pymechanical/pull/1648>`_
+
+        * - Pre-commit automatic update
+          - `#1650 <https://github.com/ansys/pymechanical/pull/1650>`_, `#1660 <https://github.com/ansys/pymechanical/pull/1660>`_, `#1671 <https://github.com/ansys/pymechanical/pull/1671>`_, `#1676 <https://github.com/ansys/pymechanical/pull/1676>`_
+
+        * - Bump the actions group with 2 updates
+          - `#1658 <https://github.com/ansys/pymechanical/pull/1658>`_
+
+        * - Bump codecov/codecov-action from 6.0.1 to 7.0.0
+          - `#1659 <https://github.com/ansys/pymechanical/pull/1659>`_
+
+        * - Update missing or outdated files
+          - `#1662 <https://github.com/ansys/pymechanical/pull/1662>`_
+
+        * - Update pre-commit hook revisions and fix copyright headers
+          - `#1663 <https://github.com/ansys/pymechanical/pull/1663>`_
+
+        * - Bump ansys-mechanical-stubs from 0.1.10 to 0.1.11 in the core group
+          - `#1668 <https://github.com/ansys/pymechanical/pull/1668>`_
+
+        * - Bump mikepenz/action-junit-report from 6.4.1 to 6.4.2 in the actions group
+          - `#1669 <https://github.com/ansys/pymechanical/pull/1669>`_
+
+        * - Bump actions/checkout from 6.0.3 to 7.0.0
+          - `#1670 <https://github.com/ansys/pymechanical/pull/1670>`_
+
+        * - Add workflow to auto-apply skip labels to Dependabot PRs
+          - `#1672 <https://github.com/ansys/pymechanical/pull/1672>`_
+
+        * - Bump ansys-mechanical-stubs from 0.1.11 to 0.1.12 in the core group
+          - `#1674 <https://github.com/ansys/pymechanical/pull/1674>`_
+
+        * - Bump the actions group with 15 updates
+          - `#1675 <https://github.com/ansys/pymechanical/pull/1675>`_
+
+
 `0.12.10 <https://github.com/ansys/pymechanical/releases/tag/v0.12.10>`_ - June 08, 2026
 ========================================================================================
 
