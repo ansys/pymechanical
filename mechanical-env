@@ -169,7 +169,7 @@ if [ "$version" -ge "271" ]; then
     LD_LIBRARY_PATH=${LD_LIBRARY_PATH}\
 :${!awp_root}/tp/IntelMKL/2024.2.0/linx64/lib/intel64\
 :${!awp_root}/tp/nss/3.89/lib\
-:${!awp_root}/tp/IntelCompiler/2025.3.2/linx64/lib\
+:${!awp_root}/tp/IntelCompiler/2025.3.2/linx64/lib/intel64\
 :${!awp_root}/tp/qt/5.15.19/linx64/lib\
 :${!awp_root}/tp/openssl/3.5/linx64/lib
 elif [ "$version" = "261" ]; then
@@ -216,9 +216,6 @@ PATH=${MWHOME}/bin-amd64_linux_optimized\
 :${DS_INSTALL_DIR}/CADIntegration/linx64\
 :${!awp_root}/Tools/mono/Linux64/bin\
 :${PATH}
-if [ "$version" -ge "271" ]; then
-    PATH=${!awp_root}/commonfiles/CPython/3_13/linx64/Release/python/bin:${PATH}
-fi
 export PATH
 
 # Adding dummy variable to check if mechanical-env is used
