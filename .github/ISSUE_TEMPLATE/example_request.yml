@@ -1,0 +1,42 @@
+name: 🎓 Adding an example
+description: Fill an example request here
+title: "Example located in ..."
+labels: ["examples"]
+assignees: [""]
+
+body:
+
+  - type: textarea
+    id: example-description
+    attributes:
+      label: "📝 Description of the example"
+      placeholder: Describe the example you'd like to see added or improved
+    validations:
+      required: true
+
+  - type: textarea
+    id: files-needed
+    attributes:
+      label: "📁 Files needed for running the example"
+      placeholder: List any geometry files, material XMLs, or other assets required
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os-name
+    attributes:
+      label: "💻 Which operating system are you using?"
+      multiple: false
+      options:
+        - 'Windows'
+        - 'Linux'
+    validations:
+      required: true
+
+  - type: textarea
+    id: ansys-version
+    attributes:
+      label: "📀 Which ANSYS version are you using?"
+      placeholder: "e.g. 2025 R1 (252)"
+    validations:
+      required: false

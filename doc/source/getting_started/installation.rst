@@ -24,6 +24,13 @@ a reference:
 Install the package
 -------------------
 
+.. note::
+
+   These instructions assume you are familiar
+   with ``pip`` and the command line. If you are new to them, you should read
+   the `Python Packaging User Guide Tutorial on pip <https://packaging.python.org/en/latest/tutorials/installing-packages/>_`
+   before proceeding.
+
 The latest ``ansys.mechanical.core`` package supports Python 3.10 through
 Python 3.14 on Windows, Linux, and Mac.
 

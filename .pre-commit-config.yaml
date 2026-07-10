@@ -8,7 +8,7 @@ exclude: '^tests/embedding/assets/.*$|^tests/parts/.*$'
 repos:
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: 0671d8ab202c4ac093b78433ae5baf74f3fc7246  # frozen: v0.15.15
+  rev: c59bba8fb259db0fec2bbb77ad8ba51ea7341b56  # frozen: v0.15.20
   hooks:
     - id: ruff
     - id: ruff-format
@@ -34,7 +34,7 @@ repos:
     exclude: "doc/styles/typos\\.toml"
 
 - repo: https://github.com/ansys/pre-commit-hooks
-  rev: ad4e7598809ad98cde5aaf52d80040c7ac56e7cf  # frozen: v0.7.2
+  rev: 55c5b6a5439abd847613579c6924da750e8b78b2  # frozen: v0.8.0
   hooks:
   - id: add-license-headers
     args:
@@ -53,7 +53,7 @@ repos:
   - id: check-added-large-files
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 943377262562a12b57292fc98fabd7dbf81451fe  # frozen: 0.37.2
+  rev: 1a4bb160cab6417b3045e1b37b6b72449243e658  # frozen: 0.37.4
   hooks:
     - id: check-github-workflows
 
@@ -79,7 +79,7 @@ repos:
         args: ['--py310-plus']
 
 - repo: https://github.com/crate-ci/typos
-  rev: 0758ccd3261dc7b0594e9b698113eb08d3ba25b5  # frozen: v1
+  rev: 96d9af6217dc2855210655af7e1ff19d23d4e593  # frozen: v1
   hooks:
     - id: typos
       args: ["--config", "doc/styles/typos.toml"]

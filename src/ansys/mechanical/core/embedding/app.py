@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -66,8 +66,11 @@ def _get_default_addin_configuration() -> AddinConfiguration:
     return configuration
 
 
-INSTANCES: list[App] = []
+_INSTANCES: list[App] = []
 """List of instances."""
+
+_INITIALIZED: bool = False
+"""Whether the embedded application has been initialized."""
 
 
 def _atexit_embedded_app(instances):  # pragma: nocover
@@ -106,10 +109,11 @@ def _additional_args(readonly: bool, feature_flags: list, start_license: str, ve
     """Generate additional command line arguments for the application."""
     additional_args = ""
     if version < 261:
-        LOG.warning(
-            "The readonly, feature_flags and start_license arguments are only supported "
-            "with version 2026R1 and later."
-        )
+        if readonly or feature_flags or start_license:
+            LOG.warning(
+                "The readonly, feature_flags and start_license arguments are only supported "
+                "with version 2026R1 and later."
+            )
         return additional_args
     if readonly:
         additional_args += " -readonly"
@@ -134,7 +138,7 @@ def _normalize_file_path(path: str | Path) -> str:
 
 def is_initialized() -> bool:
     """Check if the app has been initialized."""
-    return len(INSTANCES) != 0
+    return _INITIALIZED
 
 
 class App:
@@ -225,7 +229,7 @@ class App:
         **kwargs: typing.Any,
     ) -> None:
         """Construct an instance of the mechanical Application."""
-        global INSTANCES
+        global _INSTANCES, _INITIALIZED
         from ansys.mechanical.core import BUILDING_GALLERY
 
         use_gallery_sharing = BUILDING_GALLERY and not reuse_instance
@@ -261,9 +265,9 @@ class App:
         # If the building gallery flag is set, we need to share the instance
         # This can apply to running the `make -C doc html` command
         if use_gallery_sharing:
-            if len(INSTANCES) != 0:
+            if _INITIALIZED:
                 # Get the first instance of the app
-                instance: App = INSTANCES[0]
+                instance: App = _INSTANCES[0]
                 # Point to the same underlying application object
                 instance._share(self)
                 # Update the globals if provided in kwargs
@@ -274,7 +278,7 @@ class App:
                 if db_file is not None:
                     self.open(db_file, remove_lock=remove_lock)
                 return
-        if len(INSTANCES) > 0:
+        if _INITIALIZED:
             raise RuntimeError("Cannot have more than one embedded mechanical instance!")
 
         self._version = initializer.initialize(version)
@@ -304,8 +308,10 @@ class App:
         self._app = _start_application(configuration, self._version, db_file, additional_args)
 
         self._disposed = False
-        atexit.register(_atexit_embedded_app, INSTANCES)
-        INSTANCES.append(self)
+        _INSTANCES.append(self)
+        if not _INITIALIZED:
+            atexit.register(_atexit_embedded_app, _INSTANCES)
+            _INITIALIZED = True
 
         self._handle_interactive_shell()
 
