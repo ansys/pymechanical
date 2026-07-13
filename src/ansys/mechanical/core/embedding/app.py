@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -109,10 +109,11 @@ def _additional_args(readonly: bool, feature_flags: list, start_license: str, ve
     """Generate additional command line arguments for the application."""
     additional_args = ""
     if version < 261:
-        LOG.warning(
-            "The readonly, feature_flags and start_license arguments are only supported "
-            "with version 2026R1 and later."
-        )
+        if readonly or feature_flags or start_license:
+            LOG.warning(
+                "The readonly, feature_flags and start_license arguments are only supported "
+                "with version 2026R1 and later."
+            )
         return additional_args
     if readonly:
         additional_args += " -readonly"

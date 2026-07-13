@@ -67,3 +67,5 @@ mtls
 SPs
 start_license
 PrepPost
+Synopsys
+synopsys
