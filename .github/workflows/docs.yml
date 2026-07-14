@@ -75,17 +75,23 @@ jobs:
           ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 0
           BUILD_CHEATSHEET: true
           CONTAINER_STABLE_EXIT: ${{ inputs.container-stable-exit }}
+          # Force Mesa software renderer so Mechanical's graphics context
+          # initialization doesn't stall probing for absent hardware GPU.
+          LIBGL_ALWAYS_SOFTWARE: "1"
+          GALLIUM_DRIVER: llvmpipe
         run: |
           . /env/bin/activate
 
           # Add the /usr/lib/x86_64-linux-gnu/ path to the LD_LIBRARY_PATH (where libjbig-dev .so files are)
           export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/
 
+          # Run with a 1920x1080x24 virtual display so Mechanical's graphics
+          # engine can create a viewport. The default 640x480 is too small.
           # Always capture output: a known CLR host destructor crash (double free in
           # AnsCLRHostManagedLite) can cause make to exit 134 (SIGABRT) after the
           # Sphinx build has already completed successfully. Checking the output
           # for "build succeeded" is more reliable than trusting the exit code.
-          xvfb-run mechanical-env make -C doc html > output.txt 2>&1 || true
+          xvfb-run -s "-screen 0 1920x1080x24" mechanical-env make -C doc html > output.txt 2>&1 || true
           cat output.txt
           if grep -q "build succeeded" output.txt; then
             echo "Documentation building succeeded"
