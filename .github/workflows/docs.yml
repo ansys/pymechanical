@@ -60,6 +60,15 @@ jobs:
       - name: Test quarto installation
         run: quarto --version
 
+      - name: Diagnose graphics environment
+        run: |
+          . /env/bin/activate
+          echo "=== DISPLAY ===" && echo $DISPLAY
+          echo "=== GL libraries ===" && ldconfig -p | grep -iE 'libGL|libEGL|libGLX' || true
+          echo "=== glxinfo (software) ===" && xvfb-run glxinfo -B 2>&1 || true
+          echo "=== DRI devices ===" && ls /dev/dri/ 2>/dev/null || echo "No DRI devices"
+          echo "=== Mesa drivers ===" && dpkg -l | grep -E 'mesa|libgl|libegl' | awk '{print $2, $3}' || true
+
       - name: Build docs
         env:
           NUM_CORES: 1

@@ -247,7 +247,13 @@ class Helpers:
             self._app.Graphics.ExportImage(file_path, image_format, graphics_image_export_settings)
             self._app.log_info(f"Exported image to {file_path} successfully.")
         except Exception as e:
-            raise RuntimeError(f"Image export unsuccessful: {e}")
+            if "offscreen graphics context could not be created" in str(e):
+                self._app.log_warning(
+                    "Image export skipped: no offscreen graphics context available. "
+                    "Run with a virtual display (e.g. xvfb-run) to enable image export."
+                )
+            else:
+                raise RuntimeError(f"Image export unsuccessful: {e}")
 
     def export_animation(
         self,
@@ -323,7 +329,13 @@ class Helpers:
             obj.ExportAnimation(file_path, animation_format, animation_export_settings)
             self._app.log_info(f"Exported animation to {file_path} successfully.")
         except Exception as e:
-            raise RuntimeError(f"Animation export unsuccessful: {e}")
+            if "offscreen graphics context could not be created" in str(e):
+                self._app.log_warning(
+                    "Animation export skipped: no offscreen graphics context available. "
+                    "Run with a virtual display (e.g. xvfb-run) to enable animation export."
+                )
+            else:
+                raise RuntimeError(f"Animation export unsuccessful: {e}")
 
     def display_image(
         self,
