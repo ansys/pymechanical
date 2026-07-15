@@ -13,12 +13,12 @@ Install Mechanical
 ------------------
 
 Mechanical is installed by default from the Ansys standard installer.
-When you run the standard installer, look under the **Structural Mechanics**
+When you run the standard installer, look under the **Structures**
 heading to verify that the **Mechanical Products** checkbox is selected.
 Although options in the standard installer might change, this image provides
 a reference:
 
-.. figure:: ../images/unified_install_2023R1.jpg
+.. figure:: ../images/unified_install_2026R1.jpg
     :width: 400pt
 
 Install the package
