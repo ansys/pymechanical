@@ -58,7 +58,8 @@ try:
 except ImportError:
     HAS_ANSYS_GRAPHICS = False
 
-shell.initialize_ipython_shell()
+# TODO: Re-enable when pywin bug is fixed
+# shell.initialize_ipython_shell()
 
 
 def _get_default_addin_configuration() -> AddinConfiguration:
