@@ -286,3 +286,89 @@ def test_display_image(embedded_app, assets, tmp_path, printer, monkeypatch):
     assert len(show_called) == 2
     printer("Custom display successful")
     Path(image_path_custom).unlink(missing_ok=True)
+
+
+@pytest.mark.embedding
+def test_export_image_offscreen_warning(embedded_app, tmp_path, monkeypatch, printer):
+    """Test that export_image logs a warning when offscreen graphics context is unavailable."""
+    from unittest.mock import MagicMock
+
+    printer("Testing export_image offscreen warning branch")
+
+    mock_graphics = MagicMock()
+    mock_graphics.ExportImage.side_effect = Exception(
+        "offscreen graphics context could not be created"
+    )
+    monkeypatch.setattr(embedded_app, "Graphics", mock_graphics)
+
+    warnings_logged = []
+    monkeypatch.setattr(embedded_app, "log_warning", lambda msg: warnings_logged.append(msg))
+
+    # Should not raise; instead logs a warning
+    embedded_app.helpers.export_image(file_path=str(tmp_path / "image.png"))
+
+    assert any("offscreen" in w.lower() for w in warnings_logged)
+    printer("Offscreen warning logged correctly")
+
+
+@pytest.mark.embedding
+def test_export_image_other_exception_raises(embedded_app, tmp_path, monkeypatch, printer):
+    """Test that export_image raises RuntimeError for unexpected exceptions."""
+    from unittest.mock import MagicMock
+
+    printer("Testing export_image RuntimeError branch")
+
+    mock_graphics = MagicMock()
+    mock_graphics.ExportImage.side_effect = Exception("unexpected export failure")
+    monkeypatch.setattr(embedded_app, "Graphics", mock_graphics)
+
+    with pytest.raises(RuntimeError, match="Image export unsuccessful"):
+        embedded_app.helpers.export_image(file_path=str(tmp_path / "image.png"))
+
+    printer("RuntimeError raised correctly for unexpected exception")
+
+
+@pytest.mark.embedding
+def test_export_animation_offscreen_warning(embedded_app, tmp_path, monkeypatch, printer):
+    """Test that export_animation logs a warning when offscreen graphics context is unavailable."""
+    from unittest.mock import MagicMock
+
+    printer("Testing export_animation offscreen warning branch")
+
+    mock_obj = MagicMock()
+    mock_obj.ExportAnimation.side_effect = Exception(
+        "offscreen graphics context could not be created"
+    )
+
+    mock_tree = MagicMock()
+    monkeypatch.setattr(embedded_app, "Tree", mock_tree)
+
+    warnings_logged = []
+    monkeypatch.setattr(embedded_app, "log_warning", lambda msg: warnings_logged.append(msg))
+
+    # Should not raise; instead logs a warning
+    embedded_app.helpers.export_animation(obj=mock_obj, file_path=str(tmp_path / "animation.gif"))
+
+    assert any("offscreen" in w.lower() for w in warnings_logged)
+    printer("Offscreen warning logged correctly for animation")
+
+
+@pytest.mark.embedding
+def test_export_animation_other_exception_raises(embedded_app, tmp_path, monkeypatch, printer):
+    """Test that export_animation raises RuntimeError for unexpected exceptions."""
+    from unittest.mock import MagicMock
+
+    printer("Testing export_animation RuntimeError branch")
+
+    mock_obj = MagicMock()
+    mock_obj.ExportAnimation.side_effect = Exception("unexpected animation failure")
+
+    mock_tree = MagicMock()
+    monkeypatch.setattr(embedded_app, "Tree", mock_tree)
+
+    with pytest.raises(RuntimeError, match="Animation export unsuccessful"):
+        embedded_app.helpers.export_animation(
+            obj=mock_obj, file_path=str(tmp_path / "animation.gif")
+        )
+
+    printer("RuntimeError raised correctly for unexpected animation exception")
