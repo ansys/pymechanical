@@ -343,7 +343,7 @@ def test_export_animation_offscreen_warning(embedded_app, tmp_path, monkeypatch,
     )
 
     warnings_logged = []
-    monkeypatch.setattr(embedded_app, "log_warning", lambda msg: warnings_logged.append(msg))
+    monkeypatch.setattr(embedded_app, "log_warning", warnings_logged.append)
 
     with patch.object(type(embedded_app), "Tree", new_callable=PropertyMock) as mock_tree_prop:
         mock_tree_prop.return_value = MagicMock()
