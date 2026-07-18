@@ -129,6 +129,8 @@ notfound_urls_prefix = "/../"
 
 # static path
 html_static_path = ["_static"]
+html_css_files = ["css/mega-menu.css"]
+html_js_files = ["js/mega-menu.js"]
 templates_path = ["_templates"]
 # The suffix(es) of source filenames.
 source_suffix = ".rst"
@@ -228,7 +230,9 @@ html_theme_options = {
     "github_url": "https://github.com/ansys/pymechanical",
     "show_prev_next": False,
     "show_breadcrumbs": True,
-    "collapse_navigation": True,
+    "collapse_navigation": False,
+    "show_nav_level": 2,
+    "navigation_depth": 4,
     "use_edit_page_button": True,
     "header_links_before_dropdown": 5,  # number of links before the dropdown menu
     "additional_breadcrumbs": [
@@ -271,8 +275,21 @@ def intersphinx_pymechanical(switcher_version: str):
     """
     prefix = "https://mechanical.docs.pyansys.com/version"
 
-    # Check if the object.inv file exists
-    response = requests.get(f"{prefix}/{switcher_version}/objects.inv", timeout=5)
+    # Check if the objects inventory is reachable. If network access is
+    # unavailable (for example local/offline builds), continue without adding
+    # this mapping so docs builds do not fail at import time.
+    try:
+        response = requests.get(f"{prefix}/{switcher_version}/objects.inv", timeout=5)
+    except requests.RequestException as exc:
+        warnings.warn(
+            (
+                "Could not reach PyMechanical intersphinx inventory at "
+                f"{prefix}/{switcher_version}/objects.inv: {exc}. "
+                "Proceeding without this intersphinx mapping."
+            ),
+            UserWarning,
+        )
+        return ""
 
     if response.status_code == 404:
         if switcher_version == "dev":
@@ -283,9 +300,11 @@ def intersphinx_pymechanical(switcher_version: str):
         return f"{prefix}/{switcher_version}"
 
 
-if intersphinx_pymechanical(switcher_version):
+pymechanical_intersphinx_url = intersphinx_pymechanical(switcher_version)
+
+if pymechanical_intersphinx_url:
     intersphinx_mapping["ansys.mechanical.core"] = (
-        intersphinx_pymechanical(switcher_version),
+        pymechanical_intersphinx_url,
         None,
     )
 

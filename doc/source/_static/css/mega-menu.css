@@ -1,0 +1,100 @@
+/*
+ * Proof-of-concept mega menu for top navbar items.
+ * Designed for pointer+hover devices and disabled on narrow/mobile layouts.
+ */
+
+@media (hover: hover) and (pointer: fine) and (min-width: 992px) {
+  .bd-header,
+  .bd-header .bd-header__inner,
+  .bd-header .navbar,
+  .bd-header .navbar .container-fluid,
+  .bd-header .navbar .container-xl {
+    overflow: visible;
+  }
+
+  .bd-header .navbar-nav .nav-item.pm-has-mega {
+    position: relative;
+  }
+
+  .bd-header .navbar-nav .nav-item.pm-has-mega > .nav-link::after {
+    content: "";
+    display: inline-block;
+    margin-left: 0.35rem;
+    width: 0.4rem;
+    height: 0.4rem;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg) translateY(-0.1rem);
+    opacity: 0.7;
+  }
+
+  .bd-header .navbar-nav .pm-mega-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: -1rem;
+    min-width: 21rem;
+    max-width: 24rem;
+    background: var(--pst-color-background, #ffffff);
+    border: 1px solid var(--pst-color-border, #d4dae3);
+    border-radius: 0.8rem;
+    box-shadow:
+      0 12px 36px rgba(17, 24, 39, 0.12),
+      0 3px 12px rgba(17, 24, 39, 0.08);
+    padding: 0.65rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(0.35rem);
+    transition:
+      opacity 140ms ease,
+      transform 160ms ease,
+      visibility 160ms ease;
+    z-index: 1200;
+  }
+
+  .bd-header .navbar-nav .nav-item.pm-has-mega.pm-open > .pm-mega-menu,
+  .bd-header .navbar-nav .nav-item.pm-has-mega:focus-within > .pm-mega-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .bd-header .navbar-nav .pm-mega-title {
+    margin: 0.25rem 0.5rem 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 650;
+    color: var(--pst-color-text-muted, #5e6977);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .bd-header .navbar-nav .pm-mega-link {
+    display: block;
+    border-radius: 0.6rem;
+    color: var(--pst-color-text-base, #1f2937);
+    padding: 0.55rem 0.6rem;
+    text-decoration: none;
+    line-height: 1.35;
+  }
+
+  .bd-header .navbar-nav .pm-mega-link + .pm-mega-link {
+    margin-top: 0.2rem;
+  }
+
+  .bd-header .navbar-nav .pm-mega-link:hover,
+  .bd-header .navbar-nav .pm-mega-link:focus-visible {
+    background: color-mix(in srgb, var(--pst-color-primary, #0065bd) 12%, transparent);
+    outline: none;
+  }
+
+  .bd-header .navbar-nav .pm-mega-link strong {
+    display: block;
+    font-size: 0.95rem;
+    margin-bottom: 0.1rem;
+  }
+
+  .bd-header .navbar-nav .pm-mega-link span {
+    display: block;
+    font-size: 0.82rem;
+    opacity: 0.85;
+  }
+}
