@@ -1,0 +1,55 @@
+- file: index
+  title: "Home"
+
+- file: getting_started/index
+  title: "Getting started"
+  sections:
+    - file: getting_started/installation
+      title: "Installation"
+    - file: getting_started/choose_your_mode
+      title: "Choose your mode"
+    - file: getting_started/running_mechanical
+      title: "Launching PyMechanical"
+    - file: getting_started/docker
+      title: "Docker setup"
+    - file: getting_started/wsl
+      title: "WSL"
+    - file: getting_started/troubleshooting
+      title: "Troubleshooting"
+
+- file: user_guide/index
+  title: "User guide"
+  sections:
+    - file: user_guide/embedding/overview
+      title: "Embedding mode"
+    - file: user_guide/remote_session/overview
+      title: "Remote session mode"
+    - file: user_guide/scripting/overview
+      title: "Scripting fundamentals"
+    - file: user_guide/cli/ansys-mechanical
+      title: "CLI"
+
+- file: examples/index
+  title: "Examples"
+  sections:
+    - file: examples/gallery_examples/index
+      title: "Basic examples: Embedding mode"
+    - file: examples/advanced_examples/index
+      title: "Advanced examples: Embedding mode"
+    - file: examples/remote_examples/index
+      title: "Basic examples: Remote session mode"
+
+- file: api/ansys/mechanical/core/index
+  title: "API reference"
+
+- link: "#"
+  title: "More"
+  sections:
+    - file: contribute
+      title: "Contribute"
+    - file: faq
+      title: "FAQ"
+    - file: kil/index
+      title: "Known issues and limitations"
+    - file: changelog
+      title: "Changelog"
