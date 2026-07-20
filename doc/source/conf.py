@@ -255,6 +255,7 @@ html_theme_options = {
         "PyMechanical Examples: Remote session": "https://examples.mechanical.docs.pyansys.com/",
         "PyMechanical Advanced Examples: Embedding": "https://embedding.examples.mechanical.docs.pyansys.com/",
     },
+    "secondary_sidebar_items": [],
 }
 
 
