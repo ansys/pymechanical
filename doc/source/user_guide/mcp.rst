@@ -13,6 +13,11 @@ Install
 
 Install PyMechanical with the ``mcp`` optional extra:
 
+.. note::
+
+   ``ansys-mechanical-mcp`` requires Python 3.11 or later. On Python 3.10, the
+   package is skipped silently during installation and the MCP server is unavailable.
+
 .. code-block:: bash
 
    pip install ansys-mechanical-core[mcp]
@@ -37,6 +42,12 @@ To auto-connect to a running Mechanical instance on startup:
 .. code-block:: bash
 
    ansys-mechanical-mcp --connect-on-startup --ip 127.0.0.1 --port 10000
+
+.. warning::
+
+   When using ``--connect-on-startup``, the server locks the connection and disables the
+   ``launch_mechanical``, ``connect_to_mechanical``, and ``disconnect_from_mechanical`` tools
+   for the duration of the session.
 
 See the `PyMechanical-MCP documentation <https://mechanical-mcp.docs.pyansys.com/>`_ for full
 setup, IDE configuration, and available tools.
