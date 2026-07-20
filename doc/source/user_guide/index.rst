@@ -12,7 +12,7 @@ fundamentals and CLI tools.
 - **Scripting fundamentals (both modes)**: Explore Mechanical API concepts, recording, and threading, which
   are all topics applying to both modes.
 - **Command Line Interface (CLI)**: Discover command-line utilities for launching, discovering, and configuring Mechanical.
-- **AI assistant integration (MCP)**: Use PyMechanical-MCP to drive Mechanical from AI assistants such as GitHub Copilot, Claude, and others via the Model Context Protocol.
+- **MCP integration**: Use PyMechanical-MCP to drive Mechanical from AI assistants such as GitHub Copilot, Claude, and others via the Model Context Protocol.
 
 If you are not sure which mode to use, see :ref:`ref_choose_your_mode`.
 

@@ -1,7 +1,7 @@
 .. _ref_mcp_integration:
 
-AI assistant integration (MCP)
-===============================
+MCP integration
+===============
 
 `PyMechanical-MCP <https://mechanical-mcp.docs.pyansys.com/>`_ is a companion package that
 exposes PyMechanical as a `Model Context Protocol (MCP) <https://modelcontextprotocol.io/>`_
@@ -26,7 +26,7 @@ Start the MCP server (STDIO transport, default for VS Code and Claude Code):
 
    ansys-mechanical-mcp
 
-For remote or server-style deployments use Streamable HTTP transport:
+For remote or server-style deployments use streamable HTTP transport:
 
 .. code-block:: bash
 
