@@ -250,6 +250,11 @@ html_theme_options = {
         "sidebar_pages": ["changelog"],
     },
     "ansys_sphinx_theme_autoapi": {"project": project},
+    "search_extra_sources": {
+        "PyMechanical MCP": "https://mechanical-mcp.docs.pyansys.com/",
+        "PyMechanical Examples: Remote session": "https://examples.mechanical.docs.pyansys.com/",
+        "PyMechanical Advanced Examples: Embedding": "https://embedding.examples.mechanical.docs.pyansys.com/",
+    },
 }
 
 
