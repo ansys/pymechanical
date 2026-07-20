@@ -28,6 +28,8 @@
       title: "Scripting fundamentals"
     - file: user_guide/cli/ansys-mechanical
       title: "CLI"
+    - file: user_guide/mcp
+      title: "MCP integration"
 
 - file: examples/index
   title: "Examples"
