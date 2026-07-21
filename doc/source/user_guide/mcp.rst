@@ -13,11 +13,6 @@ Install
 
 Install PyMechanical with the ``mcp`` optional extra:
 
-.. note::
-
-   ``ansys-mechanical-mcp`` requires Python 3.11 or later. On Python 3.10, the
-   package is skipped silently during installation and the MCP server is unavailable.
-
 .. code-block:: bash
 
    pip install ansys-mechanical-core[mcp]
