@@ -28,7 +28,7 @@
       title: "Scripting fundamentals"
     - file: user_guide/cli/ansys-mechanical
       title: "CLI"
-    - file: user_guide/mcp
+    - link: "https://mechanical-mcp.docs.pyansys.com/"
       title: "MCP integration"
 
 - file: examples/index
