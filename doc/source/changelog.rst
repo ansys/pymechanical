@@ -9,6 +9,60 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.13.0 <https://github.com/ansys/pymechanical/releases/tag/v0.13.0>`_ - July 23, 2026
+======================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add MCP optional extra and documentation
+          - `#1689 <https://github.com/ansys/pymechanical/pull/1689>`_
+
+
+  .. tab-item:: Documentation
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update installation guide image and instructions
+          - `#1685 <https://github.com/ansys/pymechanical/pull/1685>`_
+
+        * - Add navbar dropdown layout and update theme options
+          - `#1688 <https://github.com/ansys/pymechanical/pull/1688>`_
+
+        * - Add search extra sources to theme options
+          - `#1690 <https://github.com/ansys/pymechanical/pull/1690>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.12.12
+          - `#1684 <https://github.com/ansys/pymechanical/pull/1684>`_
+
+        * - Bump the actions group with 17 updates
+          - `#1691 <https://github.com/ansys/pymechanical/pull/1691>`_
+
+        * - Pre-commit automatic update
+          - `#1692 <https://github.com/ansys/pymechanical/pull/1692>`_
+
+        * - Drop Python 3.10 support
+          - `#1693 <https://github.com/ansys/pymechanical/pull/1693>`_
+
+        * - Drop Python 3.11 support
+          - `#1695 <https://github.com/ansys/pymechanical/pull/1695>`_
+
+
 `0.12.12 <https://github.com/ansys/pymechanical/releases/tag/v0.12.12>`_ - July 15, 2026
 ========================================================================================
 
