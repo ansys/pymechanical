@@ -78,6 +78,10 @@ For RPC functionality::
 
    pip install ansys-mechanical-core[rpc]
 
+For AI assistant integration via the `Model Context Protocol (MCP) <https://mechanical-mcp.docs.pyansys.com/>`_::
+
+   pip install ansys-mechanical-core[mcp]
+
 **Requirements:**
 
 * Licensed copy of Ansys Mechanical (2024 R2 or later).
@@ -134,6 +138,7 @@ Documentation and support
 
 * `Documentation <https://mechanical.docs.pyansys.com/>`_
 * `Cheat sheet <https://cheatsheets.docs.pyansys.com/pymechanical_cheat_sheet.pdf>`_
+* `PyMechanical-MCP <https://mechanical-mcp.docs.pyansys.com/>`_ — AI assistant integration via MCP
 * `Issues <https://github.com/ansys/pymechanical/issues>`_ — report bugs or request features
 * `Discussions <https://github.com/ansys/pymechanical/discussions>`_ — ask questions
 * `Contributing guide <https://mechanical.docs.pyansys.com/version/stable/contributing.html>`_

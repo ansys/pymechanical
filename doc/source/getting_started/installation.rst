@@ -45,6 +45,28 @@ Install the latest package from `PyPi
 
    pip install ansys-mechanical-core
 
+Optional extras
+~~~~~~~~~~~~~~~
+
+PyMechanical provides optional extras for additional functionality:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 50 30
+
+   * - Extra
+     - Description
+     - Install command
+   * - ``graphics``
+     - 3D visualization support
+     - ``pip install ansys-mechanical-core[graphics]``
+   * - ``rpc``
+     - Remote procedure call (rpyc) support
+     - ``pip install ansys-mechanical-core[rpc]``
+   * - ``mcp``
+     - AI assistant integration via `PyMechanical-MCP <https://mechanical-mcp.docs.pyansys.com/>`_
+     - ``pip install ansys-mechanical-core[mcp]``
+
 Install offline
 ---------------
 
