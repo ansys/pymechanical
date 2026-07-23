@@ -88,6 +88,10 @@ pim = [
     "ansys-platform-instancemanagement>=1.0.1"
 ]
 
+mcp = [
+    "ansys-mechanical-mcp>=0.1.1"
+]
+
 dev = [
     "pre-commit>=3.0.0",
     "ruff>=0.14.14",
