@@ -310,6 +310,9 @@ class App:
 
         self._disposed = False
         _INSTANCES.append(self)
+        # Must register before _atexit_embedded_app so cleanup runs after Dispose (atexit is LIFO).
+        if private_appdata:
+            atexit.register(_cleanup_private_appdata, profile)
         if not _INITIALIZED:
             atexit.register(_atexit_embedded_app, _INSTANCES)
             _INITIALIZED = True
@@ -318,10 +321,6 @@ class App:
 
         connect_warnings(self)
         self._poster = None
-
-        # Clean up the private appdata directory on exit if private_appdata is True
-        if private_appdata:
-            atexit.register(_cleanup_private_appdata, profile)
 
         self._updated_scopes: list[dict[str, typing.Any]] = []
         self._subscribe()
