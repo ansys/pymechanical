@@ -90,6 +90,12 @@ pim = [
     "ansys-platform-instancemanagement>=1.0.1"
 ]
 
+marimo = [
+    "marimo>=0.13.0",
+    "matplotlib>=3.10.8,<4",
+    "Pillow>=11.0.0",
+]
+
 dev = [
     "pre-commit>=3.0.0",
     "ruff>=0.14.14",
@@ -100,6 +106,7 @@ dev = [
 [project.scripts]
 ansys-mechanical = "ansys.mechanical.core.run:cli"
 ansys-mechanical-ideconfig = "ansys.mechanical.core.ide_config:cli"
+ansys-mechanical-notebook = "ansys.mechanical.core.notebook:cli"
 find-mechanical = "ansys.mechanical.core.embedding.find_mechanical:cli"
 
 [tool.pdm.build]
@@ -145,6 +152,7 @@ ignore = [
 "src/ansys/mechanical/core/__init__.py" = ["E402"]
 "tests/conftest.py" = ["F811"] # TODO : Fix pytest_collection issues.
 "examples/**.py" = ["D400", "F821", "F405", "E402", "D205"]
+"src/ansys/mechanical/core/examples/marimo/**.py" = ["D400", "F821", "F401", "E402", "D205", "N802", "N803", "N806"]
 "tests/embedding/test_dyna.py" = ["F821"] # Global like "Model" are directly called.
 "tests/embedding/test_graphics_export.py" = ["F821"] # Global like "Model" are directly called.
 "tests/embedding/test_qk_eng_wb2.py" = ["F821", "N806"] # Global like "Model" are directly called.

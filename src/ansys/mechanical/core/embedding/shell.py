@@ -22,6 +22,7 @@
 
 """Shell interaction for PyMechanical embedding."""
 
+import importlib.util
 import os
 import sys
 import warnings
@@ -29,12 +30,7 @@ import warnings
 import ansys.mechanical.core.embedding.ipython_shell as ipython_shell
 import ansys.mechanical.core.embedding.utils as embedding_utils
 
-try:
-    import pythoncom
-
-    HAS_WIN32 = True
-except ImportError:
-    HAS_WIN32 = False
+HAS_WIN32 = importlib.util.find_spec("pythoncom") is not None
 
 
 def _install_drain_tracer() -> None:
@@ -69,6 +65,13 @@ def _using_interactive_ipython(warn: bool):
     if not ipython_shell.in_ipython():
         return False
 
+    # The worker-thread/idle-hook mechanism is designed for the IPython terminal
+    # REPL, not for Jupyter notebook kernels (ZMQInteractiveShell). In a kernel
+    # the execution model is managed by ipykernel; spawning a worker thread
+    # causes cross-thread deadlocks on Mechanical API calls. (#1666)
+    if ipython_shell.in_jupyter_kernel():
+        return False
+
     if not HAS_WIN32:
         if warn:
             warnings.warn("""Interactive PyMechanical requires pywin32""")
@@ -100,6 +103,12 @@ def start_interactive_shell(app):
                           the mechanical UI will not be responsive""")
 
 
+def initialize_ipython_shell():
+    """Initialize the interactive IPython shell."""
+    if _using_interactive_ipython(False):
+        ipython_shell.post_ipython_blocks()
+
+
 def end_interactive_shell():
     """End the interactive IPython shell."""
     if _using_interactive_ipython(False):
@@ -108,15 +117,3 @@ def end_interactive_shell():
     else:
         if _use_drain_tracer():
             _uninstall_drain_tracer()
-
-
-def initialize_ipython_shell():
-    """Initialize the interactive IPython shell."""
-    if not _using_interactive_ipython(False):
-        return
-
-    def _start_hook():
-        pythoncom.CoInitialize()
-
-    ipython_shell.get_shell_hooks().start_hook = _start_hook
-    ipython_shell.post_ipython_blocks()

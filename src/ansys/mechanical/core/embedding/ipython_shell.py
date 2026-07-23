@@ -161,7 +161,7 @@ def _run_cell_in_thread(
     CODE_QUEUE.put(raw_cell)
     while not SHUTDOWN_EVENT.is_set():
         try:
-            return RESULT_QUEUE.get(timeout=0.1)
+            return RESULT_QUEUE.get(timeout=0.05)
         except queue.Empty:
             continue
     raise RuntimeError("Execution thread shut down before result was returned.")
@@ -187,6 +187,20 @@ def _can_post_ipython_blocks():
 def in_ipython():
     """Return whether Python is running from IPython."""
     return FROM_IPYTHON
+
+
+def in_jupyter_kernel():
+    """Return whether Python is running inside a Jupyter / ipykernel kernel.
+
+    Jupyter notebook, JupyterLab, and VS Code notebook kernels all run inside
+    a ``ZMQInteractiveShell``.  A plain ``ipython`` terminal REPL uses
+    ``TerminalInteractiveShell``.  The worker-thread / idle-hook mechanism is
+    designed for the terminal REPL only; in a kernel the execution model is
+    managed by ipykernel and the worker thread causes cross-thread deadlocks.
+    """
+    if not FROM_IPYTHON:
+        return False
+    return type(get_ipython()).__name__ == "ZMQInteractiveShell"
 
 
 # Capture the original run_cell before patching
