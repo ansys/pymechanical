@@ -116,9 +116,9 @@ def _get_latest_default_version() -> int:
 
 
 def __check_python_interpreter_architecture() -> None:
-    """Embedding supports only 64-bit architecture."""
+    """Embedding support only 64 bit architecture."""
     if platform.architecture()[0] != "64bit":
-        raise RuntimeError("Mechanical Embedding requires a 64-bit Python environment.")
+        raise Exception("Mechanical Embedding requires a 64-bit Python environment.")
 
 
 def __windows_store_workaround(version: int) -> None:
@@ -126,15 +126,16 @@ def __windows_store_workaround(version: int) -> None:
 
     See https://github.com/ansys/pymechanical/issues/1136
 
-    Windows store Python uses the Win32 API SetDefaultDllDirectories
+    Windows store Python and other restricted Python distributions (e.g.
+    ``pythoncore`` from winget) use the Win32 API ``SetDefaultDllDirectories``
     so that the PATH environment variable isn't scanned for any DLL
     dependency.
 
     PyMechanical loads the embedding library which automatically sets
     these Paths, but this uses the PATH environment variable which doesn't
-    work for Windows store Python.
+    work for these restricted Python distributions.
 
-    We provide a workaround for versions 2024R2 and 2025R1 that sets
+    We provide a workaround for versions 2024R2 and later that sets
     these paths using `os.add_dll_directory`.
 
     Note:   This workaround does not include DLL paths used in FSI
@@ -149,8 +150,13 @@ def __windows_store_workaround(version: int) -> None:
     if sys.platform != "win32":
         return
 
-    # Nothing to do if it isn't a Windows store application
-    if r"WindowsApps\PythonSoftwareFoundation" not in sys.base_prefix:
+    # Nothing to do if it isn't a restricted Python distribution
+    # (Windows Store or pythoncore from winget use SetDefaultDllDirectories)
+    _restricted_prefixes = (
+        r"WindowsApps\PythonSoftwareFoundation",
+        r"pythoncore",
+    )
+    if not any(p in sys.base_prefix for p in _restricted_prefixes):
         return
 
     # Get the AWP_ROOT environment variable for the specified version
@@ -162,32 +168,45 @@ def __windows_store_workaround(version: int) -> None:
     ]
     # Set the path to the tp directory within the AWP_ROOTXYZ directory
     awp_root_tp = awp_root / "tp"
-    # Version-specific DLL path configurations for IntelMKL, HDF5, and Qt
-    _dll_path_configs: dict[int, dict[str, str | None]] = {
-        242: {"IntelMKL": "2023.1.0", "hdf5": "1.12.2", "qt": "5.15.16"},
-        251: {"IntelMKL": "2023.1.0", "hdf5": "1.12.2", "qt": "5.15.17"},
-        252: {"IntelMKL": "2024.2.3", "hdf5": None, "qt": "5.15.18"},
-    }
-
-    config = _dll_path_configs.get(version)
-    if config is None:
-        return
-
-    intel_mkl = config["IntelMKL"]
-    hdf5 = config["hdf5"]
-    qt = config["qt"]
-    if intel_mkl is None:
-        raise ValueError("IntelMKL version is not configured for this version.")
-    if qt is None:
-        raise ValueError("Qt version is not configured for this version.")
-
-    paths.append(awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64")
-    paths.append(awp_root_tp / "IntelMKL" / intel_mkl / "winx64")
-    if hdf5 is not None:
-        paths.append(awp_root_tp / "hdf5" / hdf5 / "winx64")
+    # Add paths to the IntelCompiler, IntelMKL, HDF5, and Qt DLLs for 2024R2 and 2025R1
+    if version == 242:
+        paths.extend(
+            [
+                awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
+                awp_root_tp / "IntelMKL" / "2023.1.0" / "winx64",
+                awp_root_tp / "hdf5" / "1.12.2" / "winx64",
+                awp_root_tp / "qt" / "5.15.16" / "winx64" / "bin",
+            ]
+        )
+    elif version == 251:
+        paths.extend(
+            [
+                awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
+                awp_root_tp / "IntelMKL" / "2023.1.0" / "winx64",
+                awp_root_tp / "hdf5" / "1.12.2" / "winx64",
+                awp_root_tp / "qt" / "5.15.17" / "winx64" / "bin",
+            ]
+        )
+    elif version == 252:
+        paths.extend(
+            [
+                awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
+                awp_root_tp / "IntelMKL" / "2024.2.3" / "winx64",
+                awp_root_tp / "hdf5" / "winx64",
+                awp_root_tp / "qt" / "5.15.18" / "winx64" / "bin",
+            ]
+        )
+    elif version == 261:
+        paths.extend(
+            [
+                awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
+                awp_root_tp / "IntelMKL" / "2024.2.0" / "winx64",
+                awp_root_tp / "nss" / "3.89" / "winx64",
+                awp_root_tp / "qt" / "5.15.19" / "winx64" / "bin",
+            ]
+        )
     else:
-        paths.append(awp_root_tp / "hdf5" / "winx64")
-    paths.append(awp_root_tp / "qt" / qt / "winx64" / "bin")
+        return
 
     # Add each path to the DLL search path
     for path in paths:
@@ -214,10 +233,10 @@ def __set_environment(version: int) -> None:
 def __check_for_mechanical_env():
     """Embedding in linux platform must use mechanical-env."""
     if platform.system() == "Linux" and os.environ.get("PYMECHANICAL_EMBEDDING") != "TRUE":
-        raise RuntimeError(
-            "On linux, embedding an instance of the Mechanical process using "
-            "the App class requires running python inside of a Mechanical environment. "
-            "Use the `mechanical-env` script to do this. For more information, refer to: "
+        raise Exception(
+            "On linux, embedding an instance of the Mechanical process using"
+            "the App class requires running python inside of a Mechanical environment."
+            "Use the `mechanical-env` script to do this. For more information, refer to:"
             "https://mechanical.docs.pyansys.com/version/stable/"
             "getting_started/running_mechanical.html#embed-a-mechanical-instance"
         )
