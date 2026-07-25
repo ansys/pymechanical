@@ -297,33 +297,6 @@ Subpackages → Submodules → Exceptions → Classes → Functions → Methods
 
 ---
 
-## Sphinx-Gallery Examples
-
-Standalone examples live in the `examples/` root directory (PEP 8 compliant, `.py` files).
-Sphinx-Gallery compiles them into an Examples gallery.
-
-```python
-# conf.py
-extensions = [..., "sphinx_gallery.gen_gallery"]
-sphinx_gallery_conf = {
-    "examples_dirs": "../examples",
-    "gallery_dirs": "examples",
-}
-```
-
-Each example file must start with a module-level docstring (the gallery title and description):
-
-```python
-"""
-Example title
-=============
-
-Brief description of what this example demonstrates.
-"""
-```
-
----
-
 ## Documentation Tooling
 
 | Tool | Purpose | Key usage |
