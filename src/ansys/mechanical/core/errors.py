@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -30,7 +30,7 @@ from grpc._channel import _InactiveRpcError, _MultiThreadedRendezvous
 
 from ansys.mechanical.core import LOG
 
-SIGINT_TRACKER = []
+SIGINT_TRACKER: list[bool] = []
 """List of SIGINT keyboard interrupts."""
 
 

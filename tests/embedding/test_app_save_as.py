@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -17,10 +17,13 @@
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
-"""Mock tests for ``App.save_as`` lock-file removal (no ``embedded_app`` fixture)."""
+"""Mock tests for ``App.save_as`` and ``App.open`` lock-file removal.
+
+No ``embedded_app`` fixture is required.
+"""
 
 from pathlib import Path
 from unittest.mock import MagicMock
@@ -32,25 +35,38 @@ from ansys.mechanical.core.embedding.app import App
 pytestmark = pytest.mark.embedding
 
 
+def _make_project_dir(tmp_path, filename, with_lock=False):
+    """Create a minimal project directory structure for testing.
+
+    Returns a ``(project_file, lock_file)`` tuple. ``lock_file`` only exists
+    on disk when ``with_lock=True``.
+    """
+    project_file = tmp_path / filename
+    project_file.write_text("", encoding="utf-8")
+    mech_dir = tmp_path / f"{project_file.stem}_Mech_Files"
+    mech_dir.mkdir()
+    lock_file = mech_dir / ".mech_lock"
+    if with_lock:
+        lock_file.write_text("lock", encoding="utf-8")
+    return project_file, lock_file
+
+
 @pytest.fixture
 def mock_app():
-    """Minimal stand-in for ``App`` with only APIs used by ``save_as``."""
+    """Minimal stand-in for ``App`` with only APIs used by ``save_as`` and ``open``."""
     m = MagicMock()
     m.DataModel.Project.SaveAs = MagicMock()
+    m.DataModel.Project.Open = MagicMock()
     m.log_warning = MagicMock()
     m.log_error = MagicMock()
+    m._remove_lock_file.side_effect = lambda db_file: App._remove_lock_file(m, db_file)
     return m
 
 
 @pytest.mark.embedding
 def test_save_as_remove_lock_unlinks_lock_file(mock_app, tmp_path):
     """When ``remove_lock=True`` and ``.mech_lock`` exists, it is removed before SaveAs."""
-    project_file = tmp_path / "project.mechdat"
-    project_file.write_text("", encoding="utf-8")
-    mech_dir = tmp_path / "project_Mech_Files"
-    mech_dir.mkdir()
-    lock_file = mech_dir / ".mech_lock"
-    lock_file.write_text("lock", encoding="utf-8")
+    project_file, lock_file = _make_project_dir(tmp_path, "project.mechdat", with_lock=True)
 
     App.save_as(mock_app, str(project_file), overwrite=True, remove_lock=True)
 
@@ -66,10 +82,7 @@ def test_save_as_remove_lock_unlinks_lock_file(mock_app, tmp_path):
 @pytest.mark.embedding
 def test_save_as_remove_lock_no_warning_when_lock_missing(mock_app, tmp_path):
     """``remove_lock=True`` does not log when there is no lock file."""
-    project_file = tmp_path / "project.mechdat"
-    project_file.write_text("", encoding="utf-8")
-    mech_dir = tmp_path / "project_Mech_Files"
-    mech_dir.mkdir()
+    project_file, _ = _make_project_dir(tmp_path, "project.mechdat")
 
     App.save_as(mock_app, str(project_file), overwrite=True, remove_lock=True)
 
@@ -80,15 +93,46 @@ def test_save_as_remove_lock_no_warning_when_lock_missing(mock_app, tmp_path):
 @pytest.mark.embedding
 def test_save_as_without_remove_lock_preserves_lock_file(mock_app, tmp_path):
     """``remove_lock=False`` leaves an existing ``.mech_lock`` in place."""
-    project_file = tmp_path / "project.mechdat"
-    project_file.write_text("", encoding="utf-8")
-    mech_dir = tmp_path / "project_Mech_Files"
-    mech_dir.mkdir()
-    lock_file = mech_dir / ".mech_lock"
-    lock_file.write_text("lock", encoding="utf-8")
+    project_file, lock_file = _make_project_dir(tmp_path, "project.mechdat", with_lock=True)
 
     App.save_as(mock_app, str(project_file), overwrite=True, remove_lock=False)
 
     assert lock_file.exists()
     mock_app.DataModel.Project.SaveAs.assert_called_once()
+    mock_app.log_warning.assert_not_called()
+
+
+@pytest.mark.embedding
+def test_open_remove_lock_unlinks_lock_file(mock_app, tmp_path):
+    """When ``remove_lock=True`` and ``.mech_lock`` exists, it is removed before Open."""
+    project_file, lock_file = _make_project_dir(tmp_path, "project.mechdb", with_lock=True)
+
+    App.open(mock_app, str(project_file), remove_lock=True)
+
+    assert not lock_file.exists()
+    mock_app.DataModel.Project.Open.assert_called_once_with(str(project_file))
+    mock_app.log_warning.assert_called_once()
+    assert "Removing the lock file" in mock_app.log_warning.call_args[0][0]
+
+
+@pytest.mark.embedding
+def test_open_remove_lock_no_warning_when_lock_missing(mock_app, tmp_path):
+    """``remove_lock=True`` does not log when there is no lock file."""
+    project_file, _ = _make_project_dir(tmp_path, "project.mechdb")
+
+    App.open(mock_app, str(project_file), remove_lock=True)
+
+    mock_app.DataModel.Project.Open.assert_called_once_with(str(project_file))
+    mock_app.log_warning.assert_not_called()
+
+
+@pytest.mark.embedding
+def test_open_without_remove_lock_preserves_lock_file(mock_app, tmp_path):
+    """``remove_lock=False`` leaves an existing ``.mech_lock`` in place."""
+    project_file, lock_file = _make_project_dir(tmp_path, "project.mechdb", with_lock=True)
+
+    App.open(mock_app, str(project_file), remove_lock=False)
+
+    assert lock_file.exists()
+    mock_app.DataModel.Project.Open.assert_called_once_with(str(project_file))
     mock_app.log_warning.assert_not_called()

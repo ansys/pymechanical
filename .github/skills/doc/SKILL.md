@@ -59,11 +59,21 @@ Sub-sub-subsection
 - Max line length follows library convention (commonly 79–120 chars)
 - Use `..` prefix for RST comments; use `.. todo::` directive for tracked items
 
+**RST comment and todo examples:**
+
+```rst
+.. This is a comment that does not appear in the rendered output.
+
+.. todo::
+
+   Add support for exporting results to CSV format.
+```
+
 ### Inline Formatting
 
 | Need | RST syntax | Notes |
 |------|-----------|-------|
-| Code entities | `` ``double backticks`` `` | Functions, classes, variables — **never** single backtick (renders italic) |
+| Code entities | `` ``double backticks`` `` | Functions, classes, variables — **never** single backtick (renders italic). Follow with a noun describing the object type (class, method, directory, file, etc.). For example: "the ``Mechanical`` class" or "the ``launch_mechanical()`` method". |
 | Bold | `**text**` | Use for UI elements; otherwise, use sparingly |
 | Italic | `*text*` | Use for introducing terms |
 
@@ -109,7 +119,9 @@ Use `.. code-block:: console` for shell commands, `.. code-block:: python` for P
    :alt: Descriptive alt text
    :width: 500px
 
-   Caption in sentence case.
+   For the caption, use full sentences or noun phrases. For example:
+   alt="Architecture of an app that's built with Apps Script."
+   alt="A card message."
 ```
 
 ---
@@ -175,13 +187,15 @@ obj : str
     Name of the object to assign the material to.
 mat : str
     Name of the material.
-timeout : float, optional
-    Time in seconds to wait. The default is ``30``.
+timeout : float, default: 30
+    Time in seconds to wait before timing out.
+method : str or int, default: "auto"
+    Solver method to use. If a string, it must be a valid method name.
+    If an integer, it is interpreted as the method index.
 ```
 
-- Mark optional parameters with `, optional`
-- Describe the default behavior for optional parameters
-- Use `The default is ``value``.` at the end of optional parameter descriptions
+- Use `default: <value>` after the type to indicate default values for optional parameters
+- Keep the description concise; do not repeat the default in prose
 
 ### Returns Section
 
@@ -226,20 +240,6 @@ def working_directory(self):
 Protected methods (single leading underscore `_`) still need clear docstrings even though
 Sphinx does not render them publicly.
 
-### Type Hints
-
-Configure `conf.py` to render type hints automatically:
-
-```python
-extensions = [
-    "sphinx.ext.autodoc.typehints",
-    "sphinx.ext.napoleon",
-    "numpydoc",
-]
-autodoc_typehints = "description"
-```
-
----
 
 ## Deprecation
 
@@ -283,19 +283,6 @@ class DeprecationError(RuntimeError):
         RuntimeError.__init__(self, message)
 ```
 
----
-
-## API Documentation Extensions
-
-| Library type | Extension | Notes |
-|-------------|-----------|-------|
-| Newer libraries | `sphinx-autoapi` | Auto-discovers all Python objects; preferred |
-| Older libraries | `sphinx.ext.autodoc` | Requires manual RST authoring |
-
-AutoAPI renders members in this order:
-Subpackages → Submodules → Exceptions → Classes → Functions → Methods
-
----
 
 ## Documentation Tooling
 
@@ -346,5 +333,4 @@ All code in examples and docstrings must follow PEP 8:
 ## README Files
 
 - Prefer `.rst` over `.md` — RST content can be reused in Sphinx docs via `.. include::`
-- MD content cannot be included in RST files
 - Partial reuse: use `:start-after:` / `:end-before:` with explicit RST targets for selective inclusion

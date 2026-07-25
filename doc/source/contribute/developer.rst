@@ -24,7 +24,7 @@ Contributing as a developer
 
         Install the project in editable mode.
 
-    .. grid-item-card:: :fab:`docker` Adhere to coding style
+    .. grid-item-card:: :fa:`paintbrush` Adhere to coding style
         :padding: 2 2 2 2
         :link: coding-style
         :link-type: ref
@@ -47,7 +47,7 @@ Fork the repository
 
 Forking the repository is the first step to contributing to the project. This
 allows you to have your own copy of the project so you can make changes without
-affection the main project. Once you have made your changes, you can submit a
+affecting the main project. Once you have made your changes, you can submit a
 pull-request to the main project to have your changes reviewed and merged.
 
 .. button-link:: https://github.com/ansys/pymechanical/fork
@@ -65,15 +65,13 @@ pull-request to the main project to have your changes reviewed and merged.
 Clone the repository
 ====================
 
-Make sure you `configure SSH`_ with your GitHub
-account. This allows you to clone the repository without having to use tokens
-or passwords. Also, make sure you have `git`_ installed in your machine.
+Make sure you have `git`_ installed in your machine.
 
-To clone the repository using SSH, run:
+To clone the repository, run:
 
 .. code-block:: bash
 
-    git clone git@github.com:ansys/pymechanical
+    git clone https://github.com/ansys/pymechanical
 
 .. note::
 
@@ -157,7 +155,7 @@ Verify the installation by checking the version of the library:
 Run the tests
 =============
 
-PyMechanical uses `PyTest`_ and `tox`_ for unit testing. Prior to running the tests,
+PyMechanical uses `PyTest`_ for unit testing. Prior to running the tests,
 ensure Mechanical is installed on your system with a valid license and the test
 dependencies are installed. Run this command to install the test dependencies::
 
@@ -191,28 +189,6 @@ See the ``pyproject.toml`` file for a full list of markers (-m) and their descri
 
 To run specific tests based on a keyword, use the ``-k`` argument::
 
-    # Run all tests containing the word ``appdata``
-    # This would run ``test_private_appdata`` and ``test_normal_appdata`` only
-    pytest -k appdata
-
-
-Using ``tox``
--------------
-
-This project takes advantage of `tox`_. This tool automates common development
-tasks (similar to ``Makefile``), but it is oriented towards Python development.
-
-While ``Makefile`` has rules, ``tox`` has environments. In fact, ``tox``
-creates its own virtual environment so that anything being tested is isolated
-from the project to guarantee the project's integrity.
-
-The following environment commands are provided:
-
-- ``tox -e style``: Checks for coding style quality.
-- ``tox -e py``: Checks for unit tests.
-- ``tox -e py-coverage``: Checks for unit testing and code coverage.
-- ``tox -e doc``: Checks for documentation-building process.
-
 
 Remote testing
 --------------
@@ -223,7 +199,7 @@ variables.
 
 **On Linux**
 
-.. code::
+.. code-block:: bash
 
     export PYMECHANICAL_START_INSTANCE=False
     export PYMECHANICAL_PORT=<MECHANICAL Port> (default 10000)
@@ -231,7 +207,7 @@ variables.
 
 **On Windows**
 
-.. code::
+.. code-block:: bat
 
     SET PYMECHANICAL_START_INSTANCE=False
     SET PYMECHANICAL_PORT=<MECHANICAL Port> (default 10000)
@@ -239,7 +215,7 @@ variables.
 
 The environment variables for your operating system tell PyMechanical
 to attempt to connect to the existing Mechanical service by default
-when you use the :func:`launch_mechanical() <ansys.mechanical.core.launch_mechanical>`
+when you use the :func:`launch_mechanical() <mechanical.launch_mechanical>`
 method.
 
 

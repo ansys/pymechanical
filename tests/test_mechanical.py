@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 """Test for Mechanical Module."""
 
 import json
@@ -530,7 +531,7 @@ def test_launch_grpc_not_supported_version():
     cwd = Path.cwd()
 
     if misc.is_windows():
-        exec_file = cwd / "ANSYS Inc" / "v230" / "aisol" / "bin" / "win64" / "AnsysWBU.exe"
+        exec_file = cwd / "ANSYS Inc" / "v230" / "aisol" / "bin" / "winx64" / "AnsysWBU.exe"
     else:
         exec_file = cwd / "ansys_inc" / "v230" / "aisol" / ".workbench"
 

@@ -1,4 +1,4 @@
-.. _ref_remote_examples:
+.. _ref_advanced_embedding_examples:
 
 Advanced examples: Embedding mode
 ----------------------------------

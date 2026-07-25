@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -74,7 +74,7 @@ def _using_interactive_ipython(warn: bool):
             warnings.warn("""Interactive PyMechanical requires pywin32""")
         return False
 
-    if os.environ.get("PYMECHANICAL_NO_INTERCTIVE_IPYTHON") == "1":
+    if os.environ.get("PYMECHANICAL_NO_INTERACTIVE_IPYTHON") == "1":
         return False
     return True
 

@@ -14,7 +14,9 @@ jobs:
   auto-label:
     name: Add skip-doc and skip-tests labels to pre-commit CI PRs
     runs-on: ubuntu-latest
-    if: github.event.pull_request.user.login == 'pre-commit-ci[bot]'
+    if: |
+      github.event.pull_request.user.login == 'pre-commit-ci[bot]' ||
+      github.event.pull_request.user.login == 'pyansys-automation'
     permissions:
       pull-requests: write  # Required to add labels to pull requests
     steps:
