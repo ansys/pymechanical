@@ -121,6 +121,20 @@ def __check_python_interpreter_architecture() -> None:
         raise Exception("Mechanical Embedding requires a 64-bit Python environment.")
 
 
+def _resolve_mkl_dir(tp_dir: Path, prefix: str) -> Path:
+    """Resolve the latest IntelMKL patch directory for a given major.minor prefix.
+
+    Uses glob to find all matching patch versions (e.g. ``2024.2.0``, ``2024.2.3``)
+    and returns the highest one, making the code resilient to Ansys updating
+    the bundled MKL patch version between releases.
+    """
+    candidates = sorted(
+        (tp_dir / "IntelMKL").glob(f"{prefix}.*"),
+        key=lambda p: [int(x) for x in p.name.split(".")],
+    )
+    return candidates[-1] if candidates else tp_dir / "IntelMKL" / prefix
+
+
 def __windows_store_workaround(version: int) -> None:
     """Workaround for Windows store.
 
@@ -173,7 +187,7 @@ def __windows_store_workaround(version: int) -> None:
         paths.extend(
             [
                 awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
-                awp_root_tp / "IntelMKL" / "2023.1.0" / "winx64",
+                _resolve_mkl_dir(awp_root_tp, "2023.1") / "winx64",
                 awp_root_tp / "hdf5" / "1.12.2" / "winx64",
                 awp_root_tp / "qt" / "5.15.16" / "winx64" / "bin",
             ]
@@ -182,7 +196,7 @@ def __windows_store_workaround(version: int) -> None:
         paths.extend(
             [
                 awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
-                awp_root_tp / "IntelMKL" / "2023.1.0" / "winx64",
+                _resolve_mkl_dir(awp_root_tp, "2023.1") / "winx64",
                 awp_root_tp / "hdf5" / "1.12.2" / "winx64",
                 awp_root_tp / "qt" / "5.15.17" / "winx64" / "bin",
             ]
@@ -191,7 +205,7 @@ def __windows_store_workaround(version: int) -> None:
         paths.extend(
             [
                 awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
-                awp_root_tp / "IntelMKL" / "2024.2.3" / "winx64",
+                _resolve_mkl_dir(awp_root_tp, "2024.2") / "winx64",
                 awp_root_tp / "hdf5" / "winx64",
                 awp_root_tp / "qt" / "5.15.18" / "winx64" / "bin",
             ]
@@ -200,8 +214,8 @@ def __windows_store_workaround(version: int) -> None:
         paths.extend(
             [
                 awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
-                awp_root_tp / "IntelMKL" / "2024.2.0" / "winx64",
-                awp_root_tp / "nss" / "3.89" / "winx64",
+                _resolve_mkl_dir(awp_root_tp, "2024.2") / "winx64",
+                awp_root_tp / "hdf5" / "winx64",
                 awp_root_tp / "qt" / "5.15.19" / "winx64" / "bin",
             ]
         )
