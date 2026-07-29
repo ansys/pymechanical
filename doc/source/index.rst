@@ -136,7 +136,7 @@ If you are not sure which mode to pick, see :doc:`getting_started/choose_your_mo
 
     .. grid-item-card:: Blog :fa:`rss`
         :padding: 2 2 2 2
-        :link: blog
+        :link: blog/index
         :link-type: doc
 
         Read the latest news, blogs, tutorials, and updates from the
