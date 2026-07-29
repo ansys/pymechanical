@@ -182,8 +182,53 @@ Key points
   PyMechanical package you install. Mismatches cause ``App()`` to fail
   at initialisation.
 
+Why this workflow benefits Mechanical customers
+===============================================
+
+Reproducible simulation environments
+-------------------------------------
+
+Pinning a specific Mechanical version in a Docker image eliminates
+"works on the same machine" failures. Every engineer on the team and every CI
+runner executes simulations against the same solver binary, libraries,
+and environment variables, so result differences are always caused by
+model changes, not environment drift.
+
+Faster setup for new contributors
+----------------------------------
+
+A new team member or a fresh CI runner needs only Docker and a registry
+credential to start running simulations. There is no manual Ansys
+installer wizard, no environment variable configuration, and no concern
+about incompatible system libraries.
+
+Traceable results
+------------------
+
+Because the image tag is pinned in the workflow YAML (for example,
+``mechanical:v261``), every simulation result in your artifact store
+is linked to an exact solver version. Reproducing a result from six
+months ago is as simple as checking out the commit and re-running the
+pipeline.
+
+Safe solver upgrades
+---------------------
+
+Upgrading Mechanical is a controlled, reviewable change: build a new
+image, update one line in the workflow YAML, open a pull request, and
+run the full regression suite before merging. There is no risk of an
+unintended solver update affecting production simulation results.
+
+Lower infrastructure cost
+--------------------------
+
+Linux container runners are cheaper than Windows runners on most CI
+platforms and require no GUI license server infrastructure. Embedding
+mode also avoids the network overhead of a gRPC remote session, so
+simulations start faster and use fewer system resources per job.
+
 See also
 ========
 
-- :doc:`/getting_started/docker` — advanced Docker configuration options
-- :doc:`/user_guide/embedding/overview` — full embedding API reference
+- :doc:`/getting_started/docker`: advanced Docker configuration options
+- :doc:`/user_guide/embedding/overview`: full embedding API reference
