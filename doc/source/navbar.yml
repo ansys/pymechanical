@@ -44,7 +44,7 @@
 - file: api/index
   title: "API reference"
 
-- file: blog
+- file: blog/index
   title: "Blog"
 
 - link: "#"

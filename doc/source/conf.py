@@ -332,6 +332,13 @@ htmlhelp_basename = "pymechanicaldoc"
 html_sidebars = {
     "changelog": [],
     "contributing": [],
+    "blog/*": [
+        "ablog/postcard.html",
+        "ablog/recentposts.html",
+        "ablog/tagcloud.html",
+        "ablog/categories.html",
+        "ablog/archives.html",
+    ],
 }
 
 # -- Mermaid configuration --------------------------------------------------

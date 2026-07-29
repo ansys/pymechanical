@@ -16,7 +16,7 @@ API reference
 
    .. grid-item-card:: Mechanical scripting API :fa:`code`
       :padding: 2 2 2 2
-      :link: https://scripting.mechanical.docs.pyansys.com/version/stable/api/ansys/mechanical/stubs/v261/index.html
+      :link: https://scripting.mechanical.docs.pyansys.com
 
       Browse the full Mechanical 2026 R1 scripting API — objects,
       methods, and properties exposed inside Mechanical.
