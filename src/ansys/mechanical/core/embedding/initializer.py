@@ -118,7 +118,7 @@ def _get_latest_default_version() -> int:
 def __check_python_interpreter_architecture() -> None:
     """Embedding support only 64 bit architecture."""
     if platform.architecture()[0] != "64bit":
-        raise Exception("Mechanical Embedding requires a 64-bit Python environment.")
+        raise RuntimeError("Mechanical Embedding requires a 64-bit Python environment.")
 
 
 def __windows_store_workaround(version: int) -> None:
@@ -200,8 +200,17 @@ def __windows_store_workaround(version: int) -> None:
         paths.extend(
             [
                 awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
-                awp_root_tp / "IntelMKL" / "2024.2.0" / "winx64",
-                awp_root_tp / "nss" / "3.89" / "winx64",
+                awp_root_tp / "IntelMKL" / "2024.2.3" / "winx64",
+                awp_root_tp / "hdf5" / "winx64",
+                awp_root_tp / "qt" / "5.15.19" / "winx64" / "bin",
+            ]
+        )
+    elif version == 271:  # this might change in the future
+        paths.extend(
+            [
+                awp_root_tp / "IntelCompiler" / "2025.3.2" / "winx64",
+                awp_root_tp / "IntelMKL" / "2024.2.3" / "winx64",
+                awp_root_tp / "hdf5" / "winx64",
                 awp_root_tp / "qt" / "5.15.19" / "winx64" / "bin",
             ]
         )
@@ -233,7 +242,7 @@ def __set_environment(version: int) -> None:
 def __check_for_mechanical_env():
     """Embedding in linux platform must use mechanical-env."""
     if platform.system() == "Linux" and os.environ.get("PYMECHANICAL_EMBEDDING") != "TRUE":
-        raise Exception(
+        raise RuntimeError(
             "On linux, embedding an instance of the Mechanical process using"
             "the App class requires running python inside of a Mechanical environment."
             "Use the `mechanical-env` script to do this. For more information, refer to:"
