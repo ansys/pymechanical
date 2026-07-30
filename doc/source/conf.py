@@ -231,6 +231,9 @@ html_theme_options = {
     "collapse_navigation": True,
     "use_edit_page_button": True,
     "header_links_before_dropdown": 5,  # number of links before the dropdown menu
+    "navigation_dropdown": {
+        "layout_file": "navbar.yml",
+    },
     "additional_breadcrumbs": [
         ("PyAnsys", "https://docs.pyansys.com/"),
     ],
@@ -244,9 +247,15 @@ html_theme_options = {
     "whatsnew": {
         "whatsnew_file_name": "../changelog.d/whatsnew.yml",
         "changelog_file_name": "changelog.rst",
-        "sidebar_pages": ["changelog", "index"],
+        "sidebar_pages": ["changelog"],
     },
     "ansys_sphinx_theme_autoapi": {"project": project},
+    "search_extra_sources": {
+        "PyMechanical MCP": "https://mechanical-mcp.docs.pyansys.com/",
+        "PyMechanical Examples: Remote session": "https://examples.mechanical.docs.pyansys.com/",
+        "PyMechanical Advanced Examples: Embedding": "https://embedding.examples.mechanical.docs.pyansys.com/",
+    },
+    "secondary_sidebar_items": [],
 }
 
 
