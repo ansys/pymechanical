@@ -215,6 +215,11 @@ def __windows_store_workaround(version: int) -> None:
             ]
         )
     else:
+        LOG.warning(
+            f"Mechanical version {version} is not recognized. DLL search paths have not been "
+            "configured for the Windows Store Python workaround. You may encounter dependency "
+            "issues when loading Mechanical."
+        )
         return
 
     # Add each path to the DLL search path
