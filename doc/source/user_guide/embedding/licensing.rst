@@ -9,13 +9,13 @@ Overview
 --------
 
 PyMechanical provides comprehensive license management capabilities through the ``LicenseManager`` class
-for embedded Mechanical applications. This feature enables fine-grained control over Ansys Mechanical
+for embedded Mechanical pp. This feature enables fine-grained control over Ansys Mechanical
 licenses, including the ability to:
 
-- Start applications without checking out a license (read-only mode)
+- Start app without checking out a license (read-only mode)
 - Choose specific licenses to check out
 - Change the order of license preferences
-- Enable or disable specific licenses
+- Turn on or off specific licenses
 - Manage licenses dynamically during a session
 
 .. note::
@@ -27,7 +27,7 @@ What's new
 Recent enhancements to PyMechanical include:
 
 - **License Selection at Startup**: New ``start_license`` parameter in the ``App`` constructor allows you to
-  specify which license to check out when starting the application.
+  specify which license to check out when starting the app.
 - **Read-Only Mode**: New ``readonly`` parameter enables starting Mechanical without checking out a license.
 - **License Manager API**: New ``LicenseManager`` class provides programmatic control over license preferences
   and session licenses.
@@ -85,7 +85,7 @@ These licenses provide pre-processing and post-processing capabilities without s
    When specifying a license keyword with ``start_license``, use only the keyword (for example, ``start_license="meba"``).
    The license names returned by ``get_all_licenses()`` use the full product names (for example, "Ansys Mechanical Premium").
 
-Starting the application
+Starting the app
 -------------------------
 
 Without a license (read-only mode)
@@ -113,7 +113,7 @@ With a specific license
 .. note::
    The ``start_license`` parameter is available in Ansys Mechanical 2026 R1 and later.
 
-You can specify which license to check out when starting the application using the ``start_license`` parameter:
+You can specify which license to check out when starting the app using the ``start_license`` parameter:
 
 .. code-block:: python
 
@@ -132,7 +132,7 @@ You can specify which license to check out when starting the application using t
     app = App(start_license="ansys", version={mechanical_version})
 
 .. tip::
-   Refer to the :ref:`License Keywords and Products <ref_licensing>` section above for a complete list
+    Refer to the :ref:`License Keywords and Products <ref_licensing>` section preceding for a complete list
    of available license keywords.
 
 .. warning::
@@ -193,7 +193,7 @@ Display license status information:
 Checking license status
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Check if a specific license is enabled or disabled:
+Check if a specific license is enabled or turned off:
 
 .. code-block:: python
 
@@ -204,7 +204,7 @@ Check if a specific license is enabled or disabled:
 Enabling and disabling licenses
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Enable or disable specific licenses in your preference list:
+Enable or turn off specific licenses in your preference list:
 
 .. code-block:: python
 
@@ -259,7 +259,7 @@ Unlike preference changes, session license changes are not persisted.
 Disabling session license
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Disable the currently checked-out license to put the application in read-only mode:
+Turn off the currently checked-out license to put the app in read-only mode:
 
 .. code-block:: python
 
@@ -280,7 +280,7 @@ Enabling session license
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Enable a license for the current session. This is useful for temporarily checking out a license
-when the application is in read-only mode:
+when the app is in read-only mode:
 
 .. code-block:: python
 
@@ -441,7 +441,7 @@ If you try to enable a license that is not available:
 
     # If license is not available, app remains in read-only mode
     if app.readonly:
-        print("Warning: Requested license not available. Application is in read-only mode.")
+        print("Warning: Requested license not available. App is in read-only mode.")
         # Try alternative license
         app.license_manager.enable_session_license("Ansys Mechanical Pro")
 
@@ -453,9 +453,9 @@ Always verify the read-only status before performing write operations:
 .. code-block:: python
 
     if app.readonly:
-        print("Application is in read-only mode. No write operations possible.")
+        print("App is in read-only mode. No write operations possible.")
     else:
-        print("Application has an active license. Write operations allowed.")
+        print("App has an active license. Write operations allowed.")
 
 Version compatibility
 ~~~~~~~~~~~~~~~~~~~~~
