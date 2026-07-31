@@ -141,9 +141,10 @@ While standards are useful, it is not practical for every developer to craft
 packets to send over the wire by hand. In many programming languages, libraries,
 and tools wrap around the most popular conventions of internet protocols. These
 libraries and tools can be opinionated in how RPCs can and should be written.
-Some offer low-level method invocation facilities, like gRPC and zeroMQ. Others
+Some offer low-level method invocation facilities like gRPC or zeroMQ. Others
 take a view on how RPCs should be done. Two such views are *Representational
 State Transfer* (REST) and *Remote Method Invocation* (RMI).
+
 
 REST
 ----
