@@ -261,15 +261,15 @@ If you are not sure which mode to pick, see :doc:`getting_started/choose_your_mo
 
 ..         :bdg-info:`Test` :bdg-info:`Documentation` :bdg-info:`Issues`
 
-.. .. toctree::
-..    :hidden:
-..    :maxdepth: 3
+.. toctree::
+   :hidden:
+   :maxdepth: 3
 
-..    getting_started/index
-..    user_guide/index
-..    examples/index
-..    API reference <api/ansys/mechanical/core/index>
-..    contribute
-..    faq
-..    kil/index
-..    changelog
+   getting_started/index
+   user_guide/index
+   examples/index
+   API reference <api/ansys/mechanical/core/index>
+   contribute
+   faq
+   kil/index
+   changelog
