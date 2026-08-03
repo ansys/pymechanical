@@ -1,7 +1,7 @@
 .. post:: 2026-07-28
    :tags: docker, linux, ci-cd, embedding
    :category: How-to
-   :author: ANSYS
+   :author: Ansys
    :location: World
    :language: English
 
@@ -148,7 +148,7 @@ commands inside the container instead of starting the gRPC server.
 ``mechanical-env`` sets the environment variables that PyMechanical needs
 to locate the Mechanical installation.
 ``xvfb-run`` provides an in-memory virtual display — required because
-Mechanical initialises OpenGL even in batch mode.
+Mechanical initializes OpenGL even in batch mode.
 
 Your simulation script uses the standard embedding API:
 
@@ -189,7 +189,7 @@ Reproducible simulation environments
 -------------------------------------
 
 Pinning a specific Mechanical version in a Docker image eliminates
-"works on the same machine" failures. Every engineer on the team and every CI
+"works on my machine" failures. Every engineer on the team and every CI
 runner executes simulations against the same solver binary, libraries,
 and environment variables, so result differences are always caused by
 model changes, not environment drift.
