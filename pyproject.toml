@@ -7,7 +7,7 @@ name = "ansys-mechanical-core"
 version = "0.12.dev0"
 description = "A python wrapper for Ansys Mechanical"
 readme = "README.rst"
-requires-python = ">=3.11,<4.0"
+requires-python = ">=3.12,<4.0"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "Synopsys, Inc. and ANSYS, Inc.", email = "pyansys-core@synopsys.com" }]
@@ -18,8 +18,6 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Information Analysis",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
@@ -33,7 +31,7 @@ dependencies = [
     "ansys-tools-common>=0.4.0",
     "appdirs>=1.4.0",
     "click>=8.1.3",
-    "clr-loader>=0.2.6",
+    "clr-loader>=0.3",
     "grpcio>=1.30.0",
     "protobuf>=5",
     "psutil>=6",
@@ -88,6 +86,10 @@ rpc = [
 
 pim = [
     "ansys-platform-instancemanagement>=1.0.1"
+]
+
+mcp = [
+    "ansys-mechanical-mcp>=0.1.1"
 ]
 
 dev = [
