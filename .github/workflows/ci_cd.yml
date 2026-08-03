@@ -325,7 +325,7 @@ jobs:
       contents: read
     steps:
       - name: Microsoft Teams Notification
-        uses: skitionek/notify-microsoft-teams@0953822ab410e9a50e2abd2d6d8f85230b1ae4d6 # v1.1.0
+        uses: skitionek/notify-microsoft-teams@216b8b28967e7e89b0b64b81dc94aeae90e642ab # v1.3.0
         with:
           webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
           # Message to send to Teams as a webhook notification in JSON Payload format
