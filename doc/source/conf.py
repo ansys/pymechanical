@@ -139,6 +139,7 @@ notfound_urls_prefix = "/../"
 
 # static path
 html_static_path = ["_static"]
+html_css_files = ["css/blog.css"]
 templates_path = ["_templates"]
 # The suffix(es) of source filenames.
 source_suffix = ".rst"
