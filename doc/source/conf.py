@@ -130,6 +130,14 @@ notfound_urls_prefix = "/../"
 # static path
 html_static_path = ["_static"]
 templates_path = ["_templates"]
+html_css_files = [
+    "css/banner.css",
+    "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css",
+]
+html_js_files = [
+    "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js",
+    "js/swiper-init.js",
+]
 # The suffix(es) of source filenames.
 source_suffix = ".rst"
 
