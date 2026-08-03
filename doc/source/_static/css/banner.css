@@ -1,0 +1,235 @@
+/**
+ * CSS Variables
+ * Centralized theme variables for
+ * the PyMechanical landing page banner.
+ */
+:root {
+  /* Banner */
+  --banner-height: 13rem;
+  --banner-gradient: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.1));
+  --banner-animation: slideBannerBackground 20s infinite;
+
+  /* Banner Content */
+  --banner-content-padding: 0.75rem;
+  --banner-content-margin-left: 0.75rem;
+  --banner-h2-size: 2.5rem;
+  --banner-h2-color: #fff;
+  --banner-p-margin: 0.75rem 0;
+  --banner-p-size: 1rem;
+  --banner-p-color: #fff;
+
+  /* Banner Buttons */
+  --banner-btn-bg: #fff;
+  --banner-btn-color: #000;
+  --banner-btn-radius: 0.25rem;
+  --banner-btn-size: 0.75rem;
+  --banner-btn-weight: bold;
+  --banner-btn-padding: 0.75rem 1.25rem;
+  --banner-btn-mr: 1rem;
+  --banner-btn-hover-bg: #939393;
+}
+
+/**
+ * Keyframe animation cycling through Ansys mechanical imagery
+ */
+@keyframes slideBannerBackground {
+  0% {
+    background-image: url("https://images.ansys.com/is/image/ansys/structural-analysis-thumbnail?wid=1850&fmt=png-alpha&op_usm=0.9,1.0,20,0&fit=constrain,0");
+  }
+  33% {
+    background-image: url("https://images.ansys.com/is/image/ansys/engineers-around-ev-design?wid=1850&fmt=png-alpha&op_usm=0.9,1.0,20,0&fit=constrain,0");
+  }
+  66% {
+    background-image: url("https://images.ansys.com/is/image/ansys/ansys-homepage-hero-space?wid=1850&fmt=png-alpha&op_usm=0.9,1.0,20,0&fit=constrain,0");
+  }
+  100% {
+    background-image: url("https://images.ansys.com/is/image/ansys/structural-analysis-thumbnail?wid=1850&fmt=png-alpha&op_usm=0.9,1.0,20,0&fit=constrain,0");
+  }
+}
+
+/**
+ * Banner container
+ */
+.pymechanical-banner {
+  height: var(--banner-height);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background-size: cover;
+  background-position: center;
+  animation: var(--banner-animation);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+/**
+ * Dark gradient overlay
+ */
+.pymechanical-banner::before {
+  z-index: 1;
+  position: absolute;
+  content: "";
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: var(--banner-gradient);
+}
+
+/**
+ * Banner content (sits above the overlay)
+ */
+.pymechanical-banner-content {
+  padding: var(--banner-content-padding);
+  margin-left: var(--banner-content-margin-left);
+  position: relative;
+  z-index: 2;
+}
+
+/**
+ * Banner heading — reset theme margins that push content out of bounds
+ */
+.pymechanical-banner-content h2 {
+  font-size: var(--banner-h2-size);
+  color: var(--banner-h2-color);
+  margin: 0 0 0.5rem 0;
+}
+
+/**
+ * Banner description paragraph
+ */
+.pymechanical-banner-content p {
+  margin: var(--banner-p-margin);
+  font-size: var(--banner-p-size);
+  color: var(--banner-p-color);
+}
+
+/**
+ * Banner CTA buttons
+ */
+.pymechanical-banner-content .btn-banner {
+  background-color: var(--banner-btn-bg);
+  color: var(--banner-btn-color);
+  border: none;
+  border-radius: var(--banner-btn-radius);
+  font-size: var(--banner-btn-size);
+  font-weight: var(--banner-btn-weight);
+  padding: var(--banner-btn-padding);
+  text-transform: uppercase;
+  margin-right: var(--banner-btn-mr);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.3s ease;
+}
+
+/**
+ * Banner CTA buttons - hover
+ */
+.pymechanical-banner-content .btn-banner:hover {
+  background-color: var(--banner-btn-hover-bg);
+  color: var(--banner-btn-color);
+  text-decoration: none;
+}
+
+/**
+ * Examples scroll section
+ */
+.examples-grid-section {
+  margin: 2.5rem 0 2rem 0;
+}
+
+.examples-grid-heading {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.examples-grid-heading .examples-more-link {
+  float: right;
+  font-size: 0.9rem;
+  font-weight: normal;
+}
+
+/* Extra bottom padding leaves room for the Swiper pagination dots */
+.examples-swiper {
+  padding-bottom: 2.5rem !important;
+}
+
+/* Fixed slide height makes every card identical regardless of content length */
+.examples-swiper .swiper-slide {
+  height: 16rem;
+}
+
+.examples-swiper .swiper-pagination-bullet-active {
+  background: #ffb71b;
+}
+
+/**
+ * Individual example card
+ */
+.example-card {
+  background: var(--pst-color-surface, #fff);
+  border: 1px solid var(--pst-color-border, #dee2e6);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+  height: 100%;
+}
+
+.example-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.12);
+}
+
+.example-thumb {
+  width: 100%;
+  height: 7rem;
+  object-fit: cover;
+  border-bottom: 1px solid var(--pst-color-border, #dee2e6);
+}
+
+.example-card-body {
+  padding: 0.75rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.example-card-title {
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin: 0 0 0.4rem 0;
+  color: var(--pst-color-text-base, inherit);
+}
+
+.example-card-desc {
+  font-size: 0.8rem;
+  color: var(--pst-color-text-muted, #6c757d);
+  margin: 0 0 0.5rem 0;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+
+@media (max-width: 1200px) {
+  .pymechanical-banner-content .btn-banner {
+    padding: 0.4rem;
+    margin-right: 0.25rem;
+  }
+
+  .pymechanical-banner-content p {
+    margin: 1rem 0;
+  }
+
+  .pymechanical-banner-content h2 {
+    margin: 0 0 0.5rem 0;
+  }
+}
