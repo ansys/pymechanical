@@ -72,8 +72,6 @@ If you are not sure which mode to pick, see :doc:`getting_started/choose_your_mo
 
 .. raw:: html
 
-   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-
    <section class="examples-grid-section">
      <h2 class="examples-grid-heading">
        Examples gallery
@@ -166,22 +164,6 @@ If you are not sure which mode to pick, see :doc:`getting_started/choose_your_mo
        <div class="swiper-pagination examples-pagination"></div>
      </div>
    </section>
-
-   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-   <script>
-     new Swiper(".examples-swiper", {
-       slidesPerView: 4,
-       spaceBetween: 16,
-       loop: true,
-       autoplay: { delay: 3000, disableOnInteraction: false },
-       pagination: { el: ".examples-pagination", clickable: true },
-       breakpoints: {
-         320:  { slidesPerView: 1, spaceBetween: 12 },
-         768:  { slidesPerView: 2, spaceBetween: 14 },
-         1024: { slidesPerView: 4, spaceBetween: 16 },
-       },
-     });
-   </script>
 
 .. ----
 
