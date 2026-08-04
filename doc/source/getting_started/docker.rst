@@ -13,7 +13,7 @@ Running Mechanical in a containerized environment like Docker or `Apptainer <htt
 - Ability to run in a consistent environment regardless of the host operating system
 - Portability and ease of installation
 - Large-scale cluster deployment using `Kubernetes <https://kubernetes.io/>`_
-- Genuine application isolation through containerization
+- Genuine app isolation through containerization
 
 Build your own Mechanical Docker image
 --------------------------------------
