@@ -1,4 +1,4 @@
-.. post:: 2026-07-28
+.. post:: 2026-08-04
    :tags: docker, linux, ci-cd, embedding
    :category: How-to
    :author: Ansys
