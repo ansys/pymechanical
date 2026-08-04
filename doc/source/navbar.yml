@@ -41,8 +41,11 @@
     - file: examples/remote_examples/index
       title: "Basic examples: Remote session mode"
 
-- file: api/ansys/mechanical/core/index
+- file: api/index
   title: "API reference"
+
+- file: blog/index
+  title: "Blog"
 
 - link: "#"
   title: "More"
