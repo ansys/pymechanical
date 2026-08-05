@@ -9,6 +9,35 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.13.2 <https://github.com/ansys/pymechanical/releases/tag/v0.13.2>`_ - August 05, 2026
+========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Python matrix cicd
+          - `#1721 <https://github.com/ansys/pymechanical/pull/1721>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.13.1
+          - `#1719 <https://github.com/ansys/pymechanical/pull/1719>`_
+
+        * - Bump version to 0.13.dev0 and update pyupgrade to py312-plus
+          - `#1720 <https://github.com/ansys/pymechanical/pull/1720>`_
+
+
 `0.13.1 <https://github.com/ansys/pymechanical/releases/tag/v0.13.1>`_ - August 04, 2026
 ========================================================================================
 
