@@ -1,0 +1,512 @@
+
+
+
+
+
+
+The ``misc.py`` module
+======================
+
+.. py:module:: ansys.mechanical.core.misc
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: misc
+.. tab-set::
+
+
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~is_windows`
+            - Check if the host machine is on Windows.
+
+
+          * - :py:obj:`~is_linux`
+            - Check if the host machine is Linux.
+
+
+          * - :py:obj:`~get_mechanical_bin`
+            - Get the path for the Mechanical executable file based on the release version.
+
+
+          * - :py:obj:`~threaded`
+            - Decorate a function with this decorator to call it using a thread.
+
+
+          * - :py:obj:`~threaded_daemon`
+            - Decorate a function with this decorator to call it using a daemon thread.
+
+
+          * - :py:obj:`~check_valid_ip`
+            - Check if the IP address is valid.
+
+
+          * - :py:obj:`~check_valid_port`
+            - Check if the port is valid.
+
+
+          * - :py:obj:`~check_valid_start_instance`
+            - Check if the value obtained from the environmental variable is valid.
+
+
+          * - :py:obj:`~is_float`
+            - Check if a string can be converted to a float.
+
+
+          * - :py:obj:`~has_grpc_service_pack`
+            - Check if the Mechanical version supports advanced gRPC security options.
+
+
+          * - :py:obj:`~get_service_pack_message`
+            - Get the required service pack message for a given version.
+
+
+          * - :py:obj:`~resolve_certs_dir`
+            - Resolve the certificate directory for mTLS connections.
+
+
+          * - :py:obj:`~verify_server_certificates`
+            - Check if the required server certificate files exist in the specified directory.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Contain miscellaneous functions and methods at the module level.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:function:: is_windows()
+
+   
+   Check if the host machine is on Windows.
+
+
+
+
+
+   :Returns:
+
+       ``True`` :obj:`if` :obj:`the` :obj:`host` :obj:`machine` :obj:`is` :obj:`on` :obj:`Windows`, ``False`` otherwise.
+           ..
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: is_linux() -> bool
+
+   
+   Check if the host machine is Linux.
+
+
+
+
+
+   :Returns:
+
+       ``True`` :obj:`if` :obj:`the` :obj:`host` :obj:`machine` :obj:`is` :obj:`Linux`, ``False`` otherwise.
+           ..
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: get_mechanical_bin(release_version)
+
+   
+   Get the path for the Mechanical executable file based on the release version.
+
+
+   :Parameters:
+
+       **release_version: str**
+           Mechanical version using the three-digit format. For example, ``"252"`` for
+           2025 R2.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: threaded(func)
+
+   
+   Decorate a function with this decorator to call it using a thread.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: threaded_daemon(func)
+
+   
+   Decorate a function with this decorator to call it using a daemon thread.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: check_valid_ip(ip)
+
+   
+   Check if the IP address is valid.
+
+
+   :Parameters:
+
+       **ip** : :class:`python:str`
+           IP address to check.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: check_valid_port(port, lower_bound=1000, high_bound=60000)
+
+   
+   Check if the port is valid.
+
+
+   :Parameters:
+
+       **port** : :class:`python:int`
+           Port to check.
+
+       **lower_bound** : :class:`python:int`, :obj:`optional`
+           Lowest possible value for the port. The default is ``1000``.
+
+       **high_bound** : :class:`python:int`, :obj:`optional`
+           Highest possible value for the port. The default is ``60000``.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: check_valid_start_instance(start_instance)
+
+   
+   Check if the value obtained from the environmental variable is valid.
+
+
+   :Parameters:
+
+       **start_instance** : :class:`python:str`, :ref:`bool <python:bltin-boolean-values>`
+           Value obtained from the corresponding environment variable.
+
+
+
+   :Returns:
+
+       :ref:`bool <python:bltin-boolean-values>`
+           ``True`` if ``start_instance`` is ``True`` or ``"True"``,
+           ``False`` otherwise.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: is_float(input_string)
+
+   
+   Check if a string can be converted to a float.
+
+
+   :Parameters:
+
+       **input_string** : :class:`python:str`
+           String to check.
+
+
+
+   :Returns:
+
+       :ref:`bool <python:bltin-boolean-values>`
+           ``True`` when conversion is possible, ``False`` otherwise.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: has_grpc_service_pack(version)
+
+   
+   Check if the Mechanical version supports advanced gRPC security options.
+
+   Advanced gRPC options (transport modes and host binding) require specific service packs:
+   - 2024 R2 (242): requires SP05+
+   - 2025 R1 (251): requires SP04+
+   - 2025 R2 (252): requires SP03+
+   - 2026 R1 (261)+: all versions supported
+
+   :Parameters:
+
+       **version** : :class:`python:int`
+           Mechanical version number (e.g., 242, 251, 252, 261).
+
+
+
+   :Returns:
+
+       :ref:`bool <python:bltin-boolean-values>`
+           True if version has required service pack for gRPC security, False otherwise.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: get_service_pack_message(version)
+
+   
+   Get the required service pack message for a given version.
+
+
+   :Parameters:
+
+       **version** : :class:`python:int`
+           Mechanical version number (e.g., 241, 242, 251, 252).
+
+
+
+   :Returns:
+
+       :class:`python:str`
+           Message indicating required service pack, or empty string if not applicable.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: resolve_certs_dir(transport_mode, certs_dir=None)
+
+   
+   Resolve the certificate directory for mTLS connections.
+
+   Checks the ANSYS_GRPC_CERTIFICATES environment variable if:
+   - transport_mode is "mtls"
+   - certs_dir is None (not explicitly provided by user)
+   - On Windows: only if the variable is set at user level
+   - On Linux: at any level
+
+   :Parameters:
+
+       **transport_mode** : :class:`python:str`
+           Transport mode being used (insecure, mtls, wnua).
+
+       **certs_dir** : :class:`python:str`, :obj:`optional`
+           Certificate directory path. Default is None, which triggers environment
+           variable lookup for mTLS, then defaults to "certs".
+
+
+
+   :Returns:
+
+       :class:`python:str`
+           Resolved certificate directory path.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: verify_server_certificates(certs_dir: str) -> None
+
+   
+   Check if the required server certificate files exist in the specified directory.
+
+
+   :Parameters:
+
+       **certs_dir** : :class:`python:str`
+           Directory path where the certificate files are expected.
+
+
+
+
+
+
+
+   :Raises:
+
+       :obj:`FileNotFoundError`
+           If any of the required certificate files are missing.
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
