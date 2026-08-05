@@ -192,7 +192,7 @@ jobs:
       - name: Setup Python environment
         uses: ./.github/actions/setup-python-env
         with:
-          python-version: ${{ vars.MAIN_PYTHON_VERSION }}
+          python-version: ${{ matrix.python-version }}
           install-extras: "tests,graphics"
 
       - name: Unit Testing and coverage
@@ -201,6 +201,7 @@ jobs:
           MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
           NUM_CORES: 1
           PYTHONUNBUFFERED: 1
+          LIBGL_ALWAYS_SOFTWARE: 1
         run: |
           . /env/bin/activate
           if [ "${CONTAINER_STABLE_EXIT}" = "true" ]; then
