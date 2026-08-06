@@ -97,6 +97,16 @@ If you are not sure which mode to pick, see :doc:`getting_started/choose_your_mo
 
         :bdg-info:`Embedding` :bdg-info:`Remote` :bdg-info:`Advanced`
 
+    .. grid-item-card:: Blog :fa:`rss`
+        :padding: 2 2 2 2
+        :link: blog/index
+        :link-type: doc
+
+        Read the latest news, blogs, tutorials, and updates from the
+        PyMechanical team.
+
+        :bdg-info:`News` :bdg-info:`How-to` :bdg-info:`Updates`
+
     .. grid-item-card:: API reference :fa:`book-bookmark`
         :padding: 2 2 2 2
         :link: api/index
@@ -134,15 +144,7 @@ If you are not sure which mode to pick, see :doc:`getting_started/choose_your_mo
 
         :bdg-info:`Test` :bdg-info:`Documentation` :bdg-info:`Issues`
 
-    .. grid-item-card:: Blog :fa:`rss`
-        :padding: 2 2 2 2
-        :link: blog/index
-        :link-type: doc
 
-        Read the latest news, blogs, tutorials, and updates from the
-        PyMechanical team.
-
-        :bdg-info:`News` :bdg-info:`How-to` :bdg-info:`Updates`
 
 .. toctree::
    :hidden:

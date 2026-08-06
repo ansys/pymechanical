@@ -41,15 +41,14 @@
     - file: examples/remote_examples/index
       title: "Basic examples: Remote session mode"
 
-- file: api/index
-  title: "API reference"
-
 - file: blog/index
   title: "Blog"
 
 - link: "#"
   title: "More"
   sections:
+    - file: api/index
+      title: "API reference"
     - file: contribute
       title: "Contribute"
     - file: faq
