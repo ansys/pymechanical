@@ -109,3 +109,7 @@
 - name: skip-test
   description: Skips the test job in CI
   color: e4e669
+
+- name: deploy-pr-doc
+  description: Triggers PR documentation deployment in CI
+  color: 0075ca

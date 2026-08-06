@@ -1,0 +1,31 @@
+name: 📖 Documentation issue
+description: Fill a documentation issue here
+title: "Documentation issue located in ..."
+labels: ["documentation"]
+assignees: [""]
+
+body:
+
+  - type: markdown
+    attributes:
+      value: '# 📝 **Modifications**'
+
+  - type: textarea
+    id: modifications
+    attributes:
+      label: Description of the modifications
+      placeholder: Describe what is missing, incorrect, or unclear in the documentation
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: '# 🔗 **References**'
+
+  - type: textarea
+    id: references
+    attributes:
+      label: Useful links and references
+      placeholder: Add links to relevant pages, sections, docstrings, or related issues
+    validations:
+      required: false

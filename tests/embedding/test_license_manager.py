@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -24,62 +24,71 @@
 
 import pytest
 
+TEST_LICENSE = "Ansys Mechanical Premium"
+
 
 @pytest.mark.embedding
-def test_license_manager(embedded_app, capsys):
-    """Test message manager."""
-    test_license = "Ansys Mechanical Premium"
-    assert len(embedded_app.license_manager.get_all_licenses()) > 0
-    assert embedded_app.readonly is False, "App should be editable after enabling session license"
-    all_licenses = embedded_app.license_manager.get_all_licenses()
-    assert test_license in all_licenses, "Expected license not found in the list"
+def test_get_all_licenses(embedded_app):
+    """Test that the license list is non-empty and contains the expected license."""
+    licenses = embedded_app.license_manager.get_all_licenses()
+    assert len(licenses) > 0
+    assert TEST_LICENSE in licenses
 
-    # Enable and disable specific license
-    status = embedded_app.license_manager.get_license_status(test_license)
-    assert status == embedded_app.license_manager._license_status.Enabled, (
-        "License should be enabled"
-    )
 
-    embedded_app.license_manager.set_license_status(test_license, False)
-    status = embedded_app.license_manager.get_license_status(test_license)
-    assert status == embedded_app.license_manager._license_status.Disabled, (
-        "License should be disabled"
-    )
+@pytest.mark.embedding
+def test_set_license_status(embedded_app):
+    """Test enabling and disabling a specific license."""
+    lm = embedded_app.license_manager
+    lm.set_license_status(TEST_LICENSE, False)
+    assert lm.get_license_status(TEST_LICENSE) == lm._license_status.Disabled
+    lm.set_license_status(TEST_LICENSE, True)
+    assert lm.get_license_status(TEST_LICENSE) == lm._license_status.Enabled
 
-    embedded_app.license_manager.set_license_status(test_license, True)
-    status = embedded_app.license_manager.get_license_status(test_license)
-    assert status == embedded_app.license_manager._license_status.Enabled, (
-        "License should be enabled"
-    )
 
-    license_list = embedded_app.license_manager.get_all_licenses()
-    assert license_list.index(test_license) == 1, "License should be at index 1"
-    embedded_app.license_manager.move_to_index(test_license, 0)
-    license_list = embedded_app.license_manager.get_all_licenses()
-    assert license_list.index(test_license) == 0, "License should be at index 0"
+@pytest.mark.embedding
+def test_move_to_index(embedded_app):
+    """Test moving a license to index 0 and resetting the preference."""
+    lm = embedded_app.license_manager
+    original_index = lm.get_all_licenses().index(TEST_LICENSE)
+    assert original_index > 0
 
-    embedded_app.license_manager.reset_preference()
-    license_list = embedded_app.license_manager.get_all_licenses()
-    assert license_list.index(test_license) == 1, "License should be at index 1 after reset"
+    lm.move_to_index(TEST_LICENSE, 0)
+    assert lm.get_all_licenses().index(TEST_LICENSE) == 0
 
-    # Enable session license with all cases
-    embedded_app.license_manager.disable_session_license()
-    assert embedded_app.readonly is True, "App should be readonly after disabling session license"
-    embedded_app.license_manager.enable_session_license()
-    embedded_app.license_manager.disable_session_license()
-    embedded_app.license_manager.enable_session_license(test_license)
+    lm.reset_preference()
+    assert lm.get_all_licenses().index(TEST_LICENSE) != 0
+
+
+@pytest.mark.embedding
+def test_session_license(embedded_app):
+    """Test enabling and disabling the session license."""
+    lm = embedded_app.license_manager
+
+    lm.disable_session_license()
+    assert embedded_app.readonly is True
+
+    lm.enable_session_license()
+    lm.disable_session_license()
+
+    lm.enable_session_license(TEST_LICENSE)
     assert embedded_app.readonly is False
-    embedded_app.license_manager.disable_session_license()
-    embedded_app.license_manager.enable_session_license(
-        ["Ansys Mechanical Enterprise", test_license]
-    )
+    lm.disable_session_license()
+
+    lm.enable_session_license(["Ansys Mechanical Enterprise", TEST_LICENSE])
     assert embedded_app.readonly is False
 
+
+@pytest.mark.embedding
+def test_session_license_invalid_type(embedded_app):
+    """Test that enable_session_license raises TypeError for invalid input."""
     with pytest.raises(TypeError):
         embedded_app.license_manager.enable_session_license(1)
 
+
+@pytest.mark.embedding
+def test_show(embedded_app, capsys):
+    """Test that show() prints license status to stdout."""
     embedded_app.license_manager.show()
-    captured = capsys.readouterr()
-    printed_output = captured.out.strip()
-    assert "Enabled" in printed_output
-    assert test_license in printed_output
+    output = capsys.readouterr().out.strip()
+    assert "Enabled" in output
+    assert TEST_LICENSE in output

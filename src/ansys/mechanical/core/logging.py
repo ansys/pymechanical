@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -408,7 +408,6 @@ class Logger:
         self.logger.addFilter(InstanceFilter())
         self.logger.setLevel(level)
         self.logger.propagate = True
-        self.level = self.logger.level  # TODO: TO REMOVE
 
         # Write logging methods.
         self.debug = self.logger.debug

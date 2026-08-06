@@ -44,7 +44,7 @@ jobs:
       checks: write   # Needed to publish test results and status checks
     steps:
       - name: Login in Github Container registry
-        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
+        uses: docker/login-action@371161bbe7024a29a25c5e19bfcbc0804fe9ad2c # v4.5.2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -129,14 +129,14 @@ jobs:
           echo "::endgroup::"
 
       - name: Testing
-        uses: ansys/actions/tests-pytest@d946b24b9a765f4169bcc94afdb27bd1a0533741 # v10.3.2
+        uses: ansys/actions/tests-pytest@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2 # v10.3.6
         with:
           python-version: ${{ vars.MAIN_PYTHON_VERSION }}
           pytest-markers: '-m remote_session_connect'
           pytest-extra-args: '-s --junitxml remote_results${{ vars.MAIN_PYTHON_VERSION }}.xml'
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@3a81627bfac62268172037048872e8ebd4207e6d # v6.4.1
+        uses: mikepenz/action-junit-report@d9f48fc87bc235f7e214acf696ca5abc0a986f16 # v6.4.2
         if: always()
         with:
           report_paths: '**/remote_results*.xml'
@@ -179,20 +179,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
+        python-version: ['3.12', '3.13', '3.14']
     permissions:
       contents: read
       packages: read  # Required to pull Docker images from GitHub Container Registry
       checks: write   # Needed to publish test results and status checks
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
       - name: Setup Python environment
         uses: ./.github/actions/setup-python-env
         with:
-          python-version: ${{ vars.MAIN_PYTHON_VERSION }}
+          python-version: ${{ matrix.python-version }}
           install-extras: "tests,graphics"
 
       - name: Unit Testing and coverage
@@ -201,6 +201,7 @@ jobs:
           MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
           NUM_CORES: 1
           PYTHONUNBUFFERED: 1
+          LIBGL_ALWAYS_SOFTWARE: 1
         run: |
           . /env/bin/activate
           if [ "${CONTAINER_STABLE_EXIT}" = "true" ]; then
@@ -216,7 +217,7 @@ jobs:
           artifact-name: tests-embedding
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@3a81627bfac62268172037048872e8ebd4207e6d # v6.4.1
+        uses: mikepenz/action-junit-report@d9f48fc87bc235f7e214acf696ca5abc0a986f16 # v6.4.2
         if: always()
         with:
           report_paths: '**/test_results*.xml'
@@ -235,13 +236,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
+        python-version: ['3.12', '3.13', '3.14']
     permissions:
       contents: read
       packages: read  # Required to pull Docker images from GitHub Container Registry
       checks: write   # Needed to publish test results and status checks
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -270,7 +271,7 @@ jobs:
           artifact-name: tests-embedding-scripts
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@3a81627bfac62268172037048872e8ebd4207e6d # v6.4.1
+        uses: mikepenz/action-junit-report@d9f48fc87bc235f7e214acf696ca5abc0a986f16 # v6.4.2
         if: always()
         with:
           report_paths: '**/test_results*.xml'
@@ -289,13 +290,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
+        python-version: ['3.12', '3.13', '3.14']
     permissions:
       contents: read
       packages: read  # Required to pull Docker images from GitHub Container Registry
       checks: write   # Needed to publish test results and status checks
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -325,7 +326,7 @@ jobs:
           fi
 
       - name: Publish Launch Test Report
-        uses: mikepenz/action-junit-report@3a81627bfac62268172037048872e8ebd4207e6d # v6.4.1
+        uses: mikepenz/action-junit-report@d9f48fc87bc235f7e214acf696ca5abc0a986f16 # v6.4.2
         if: always()
         with:
           report_paths: '**/launch_test_results*.xml'

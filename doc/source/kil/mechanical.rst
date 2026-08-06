@@ -25,8 +25,8 @@ Known issues and limitations
 
 .. vale Google.Headings = YES
 
-- In Read Only mode, the application does not display error messages when the geometry is imported in batch mode.
-- Section planes cannot be added through batch mode.
+- In Read Only mode, the app does not display error messages when the geometry is imported in batch mode.
+- Section planes can not be added through batch mode.
 - Mechanical is not thread safe.
 - SpaceClaim geometry (.scdocx) cannot be imported on Linux platforms.
 - On Linux based platforms, Ansys Motion and LSDYNA analysis support are limited.

@@ -52,11 +52,13 @@ Pythonic
 Python.NET
 .NET
 pythonnet
+rpyc
 Remoting
 REST
 RPCs
 spaceclaim
 stdout
+Streamable
 venv
 v0.11
 VPN
@@ -68,3 +70,5 @@ mtls
 SPs
 start_license
 PrepPost
+Synopsys
+synopsys

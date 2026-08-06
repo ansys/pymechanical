@@ -169,7 +169,7 @@ Exporting animations
 --------------------
 
 The ``export_animation()`` method exports animations of results that have multiple time steps
-or mode shapes, such as transient analyses or modal analyses.
+or mode shapes, like transient and modal analyses.
 
 .. code:: python
 

@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 """Fixtures and helpers for testing."""
 
 import datetime
@@ -189,13 +190,21 @@ def ensure_embedding() -> None:
 
 def start_embedding_app(version, pytestconfig) -> datetime.timedelta:
     """Start the embedded Mechanical application."""
+    import logging
+
     from ansys.mechanical.core import App
+    from ansys.mechanical.core.embedding.logger import Configuration
 
     global EMBEDDED_APP
     ensure_embedding()
     start = datetime.datetime.now()
 
     config = AddinConfiguration(pytestconfig.getoption("addin_configuration"))
+
+    _log_level_str = pytestconfig.getoption("--log-embedding", default=None)
+    if _log_level_str is not None:
+        _log_level = getattr(logging, _log_level_str.upper())
+        Configuration.configure(level=_log_level, to_stdout=True)
 
     EMBEDDED_APP = App(version=int(version))
     assert not EMBEDDED_APP.readonly, (
@@ -576,6 +585,16 @@ def pytest_addoption(parser):
         parser.addoption("--ansys-version", default=str(mechanical_version))
 
     # parser.addoption("--debugging", action="store_true")
+    parser.addoption(
+        "--log-embedding",
+        default=None,
+        choices=["debug", "info", "warning", "error"],
+        help=(
+            "Set the embedding log level written to stdout. "
+            "Choices: debug, info, warning, error. "
+            "When omitted, embedding logging is not configured by the test suite."
+        ),
+    )
     parser.addoption("--addin-configuration", default="Mechanical")
     parser.addoption(
         "--remote-server-type",
