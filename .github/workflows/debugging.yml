@@ -1,0 +1,91 @@
+name: Debugging Reproducer Test Matrix
+
+on:
+  workflow_dispatch:
+    inputs:
+      script_path:
+        description: 'Path to test/reproducer python script'
+        required: false
+        default: 'tests/scripts/repro.py'
+      versions:
+        description: 'Mechanical versions to test (comma-separated, e.g. 242,251,252,261)'
+        required: false
+        default: '242,251,252,261'
+      modes:
+        description: 'Execution modes to test (comma-separated, e.g. embedding,remote,batch)'
+        required: false
+        default: 'embedding,remote,batch'
+      run_type:
+        description: 'Target execution engine (auto, docker, local)'
+        required: false
+        default: 'auto'
+  pull_request:
+    paths:
+      - 'src/ansys/mechanical/core/testing/**'
+      - '.github/workflows/debugging.yml'
+
+env:
+  PYMECHANICAL_MATRIX_SCRIPT: ${{ inputs.script_path || 'tests/scripts/repro.py' }}
+  PYMECHANICAL_MATRIX_VERSIONS: ${{ inputs.versions || '242,251,252,261' }}
+  PYMECHANICAL_MATRIX_MODES: ${{ inputs.modes || 'embedding,remote,batch' }}
+  PYMECHANICAL_MATRIX_RUN_TYPE: ${{ inputs.run_type || 'auto' }}
+  PYMECHANICAL_MATRIX_OUTPUT: 'README.md'
+  PYMECHANICAL_MATRIX_LOG: 'matrix_execution.log'
+  ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
+
+permissions:
+  contents: read
+  packages: read
+  checks: write
+
+jobs:
+  run-matrix-test:
+    name: Run Mechanical Matrix Harness
+    runs-on: public-ubuntu-latest-16-cores
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install system dependencies (Xvfb & graphics libraries)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb libgbm1 libxss1
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Execute Matrix Test Runner
+        run: |
+          echo "Starting PyMechanical Matrix Execution..."
+          python -m ansys.mechanical.core.testing.matrix_runner | tee matrix_execution.log
+
+      - name: Display Output Log in Runner
+        if: always()
+        run: |
+          echo "========================================="
+          echo "       FULL MATRIX EXECUTION LOG        "
+          echo "========================================="
+          cat matrix_execution.log || echo "No execution log found"
+
+      - name: Upload Output Log Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: matrix-reproducer-report
+          path: |
+            README.md
+            matrix_execution.log

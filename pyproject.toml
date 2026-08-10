@@ -102,8 +102,9 @@ dev = [
 ]
 
 [project.scripts]
-ansys-mechanical = "ansys.mechanical.core.run:cli"
+ansys-mechanical = "ansys.mechanical.core.run:main"
 ansys-mechanical-ideconfig = "ansys.mechanical.core.ide_config:cli"
+ansys-mechanical-testmatrix = "ansys.mechanical.core.testing.matrix_runner:run_matrix"
 find-mechanical = "ansys.mechanical.core.embedding.find_mechanical:cli"
 
 [tool.pdm.build]

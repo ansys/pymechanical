@@ -512,3 +512,14 @@ def cli(
         certs_dir,
         readonly,
     )
+
+
+def main():
+    """Main CLI entry point for ansys-mechanical."""
+    if len(sys.argv) > 1 and sys.argv[1] in ("test-matrix", "testmatrix"):
+        from ansys.mechanical.core.testing.matrix_runner import cli as matrix_cli
+
+        sys.argv.pop(1)
+        return matrix_cli()
+    return cli()
+
