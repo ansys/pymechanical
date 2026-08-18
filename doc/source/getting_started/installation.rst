@@ -13,12 +13,12 @@ Install Mechanical
 ------------------
 
 Mechanical is installed by default from the Ansys standard installer.
-When you run the standard installer, look under the **Structural Mechanics**
+When you run the standard installer, look under the **Structures**
 heading to verify that the **Mechanical Products** checkbox is selected.
 Although options in the standard installer might change, this image provides
 a reference:
 
-.. figure:: ../images/unified_install_2023R1.jpg
+.. figure:: ../images/unified_install_2026R1.jpg
     :width: 400pt
 
 Install the package
@@ -31,7 +31,7 @@ Install the package
    the `Python Packaging User Guide Tutorial on pip <https://packaging.python.org/en/latest/tutorials/installing-packages/>_`
    before proceeding.
 
-The latest ``ansys.mechanical.core`` package supports Python 3.10 through
+The latest ``ansys.mechanical.core`` package supports Python 3.12 through
 Python 3.14 on Windows, Linux, and Mac.
 
 You should consider installing PyMechanical in a virtual environment.
@@ -45,6 +45,28 @@ Install the latest package from `PyPi
 
    pip install ansys-mechanical-core
 
+Optional extras
+~~~~~~~~~~~~~~~
+
+PyMechanical provides optional extras for additional capabilities:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 50 30
+
+   * - Extra
+     - Description
+     - Install command
+   * - ``graphics``
+     - 3D visualization support
+     - ``pip install ansys-mechanical-core[graphics]``
+   * - ``rpc``
+     - Remote procedure call (rpyc) support
+     - ``pip install ansys-mechanical-core[rpc]``
+   * - ``mcp``
+     - AI assistant integration via `PyMechanical-MCP <https://mechanical-mcp.docs.pyansys.com/>`_
+     - ``pip install ansys-mechanical-core[mcp]``
+
 Install offline
 ---------------
 
@@ -54,19 +76,19 @@ machine architecture from the `Releases page <https://github.com/ansys/pymechani
 of the PyMechanical repository.
 
 Each wheelhouse archive contains all the Python wheels necessary to install
-PyMechanical from scratch on Windows and Linux for Python 3.10 through Python 3.14. You can install
+PyMechanical from scratch on Windows and Linux for Python 3.12 through Python 3.14. You can install
 a wheelhouse archive on an isolated system with a fresh Python installation or on a
 virtual environment.
 
-For example, on Linux with Python 3.10, unzip the wheelhouse archive and install it with
-this code:
+For example, on Linux with Python 3.12, first unzip the wheelhouse archive.
+Then, install it with this code:
 
 .. code-block:: bash
 
-   unzip ansys-mechanical-core-v0.12.dev0-wheelhouse-Linux-3.10 wheelhouse
+   unzip ansys-mechanical-core-v0.12.dev0-wheelhouse-Linux-3.12 wheelhouse
    pip install ansys-mechanical-core -f wheelhouse --no-index --upgrade --ignore-installed
 
-If you are on Windows with Python 3.10, unzip the ``ansys-mechanical-core-v0.12.dev0-wheelhouse-Windows-3.10``
+If you are on Windows with Python 3.12, unzip the ``ansys-mechanical-core-v0.12.dev0-wheelhouse-Windows-3.12``
 wheelhouse archive to a ``wheelhouse`` directory and then install it using ``pip`` as
 in the preceding example.
 

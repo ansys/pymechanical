@@ -80,4 +80,4 @@ You can use the ``additional_switches`` keyword argument to specify additional a
 API reference
 ~~~~~~~~~~~~~
 For more information on controlling how Mechanical launches locally, see the
-`launch_mechanical()`_ method.
+:func:`~mechanical.launch_mechanical` method.

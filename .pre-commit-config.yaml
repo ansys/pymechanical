@@ -8,13 +8,13 @@ exclude: '^tests/embedding/assets/.*$|^tests/parts/.*$'
 repos:
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: c59bba8fb259db0fec2bbb77ad8ba51ea7341b56  # frozen: v0.15.20
+  rev: 65dbdb59d2f2d9c3bdc343c566821ad3319ddaa3  # frozen: v0.16.3
   hooks:
     - id: ruff
     - id: ruff-format
 
 - repo: https://github.com/pre-commit/mirrors-mypy
-  rev: d2823d321df3af8f878f7ee3414dc94d037145b9  # frozen: v2.1.0
+  rev: 7ff8d35ae36a7d2b968f2f90b4c723e292e594ee  # frozen: v2.3.1
   hooks:
     - id: mypy
       additional_dependencies: [types-requests, types-tqdm]
@@ -27,7 +27,7 @@ repos:
   -   id: check-pre-commit-ci-config
 
 - repo: https://github.com/codespell-project/codespell
-  rev: 2ccb47ff45ad361a21071a7eedda4c37e6ae8c5a  # frozen: v2.4.2
+  rev: 57b21406f092110c18776e39b0bda50d37c945c8  # frozen: v2.4.3
   hooks:
   - id: codespell
     args: ["--ignore-words-list", "addin", "--ignore-words", "doc/styles/config/vocabularies/ANSYS/accept.txt", "-w"]
@@ -53,7 +53,7 @@ repos:
   - id: check-added-large-files
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 1a4bb160cab6417b3045e1b37b6b72449243e658  # frozen: 0.37.4
+  rev: c4654a7e007c9619a5eb63c39a456572a0fa1851  # frozen: 0.38.0
   hooks:
     - id: check-github-workflows
 
@@ -76,10 +76,10 @@ repos:
     rev: 75992aaa40730136014f34227e0135f63fc951b4  # frozen: v3.21.2
     hooks:
     -   id: pyupgrade
-        args: ['--py310-plus']
+        args: ['--py312-plus']
 
 - repo: https://github.com/crate-ci/typos
-  rev: 96d9af6217dc2855210655af7e1ff19d23d4e593  # frozen: v1
+  rev: 12ffd4a04b4893ab75db66a59aaad2d996c3e982  # frozen: v1
   hooks:
     - id: typos
       args: ["--config", "doc/styles/typos.toml"]

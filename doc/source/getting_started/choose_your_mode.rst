@@ -99,7 +99,7 @@ and code examples for each mode.
 How the modes work
 ------------------
 
-**Embedding mode** embeds the entire Mechanical application in memory inside
+**Embedding mode** embeds the entire Mechanical app in memory inside
 your Python process using Python.NET (.NET CLR interop). There is no separate
 process or network communication. The Mechanical data model is directly available
 in Python, giving you full CRUD (Create, Read, Update, Delete) access to the

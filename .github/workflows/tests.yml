@@ -44,7 +44,7 @@ jobs:
       checks: write   # Needed to publish test results and status checks
     steps:
       - name: Login in Github Container registry
-        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -129,7 +129,7 @@ jobs:
           echo "::endgroup::"
 
       - name: Testing
-        uses: ansys/actions/tests-pytest@a5b0351dc277d68c2dc1beca2d2674c7dfa4fc55 # v10.3.3
+        uses: ansys/actions/tests-pytest@e2075e950bdec40b816670160e98c4c184c7b281 # v11.0.0
         with:
           python-version: ${{ vars.MAIN_PYTHON_VERSION }}
           pytest-markers: '-m remote_session_connect'
@@ -179,20 +179,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
+        python-version: ['3.12', '3.13', '3.14']
     permissions:
       contents: read
       packages: read  # Required to pull Docker images from GitHub Container Registry
       checks: write   # Needed to publish test results and status checks
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
       - name: Setup Python environment
         uses: ./.github/actions/setup-python-env
         with:
-          python-version: ${{ vars.MAIN_PYTHON_VERSION }}
+          python-version: ${{ matrix.python-version }}
           install-extras: "tests,graphics"
 
       - name: Unit Testing and coverage
@@ -201,6 +201,7 @@ jobs:
           MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
           NUM_CORES: 1
           PYTHONUNBUFFERED: 1
+          LIBGL_ALWAYS_SOFTWARE: 1
         run: |
           . /env/bin/activate
           if [ "${CONTAINER_STABLE_EXIT}" = "true" ]; then
@@ -235,13 +236,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
+        python-version: ['3.12', '3.13', '3.14']
     permissions:
       contents: read
       packages: read  # Required to pull Docker images from GitHub Container Registry
       checks: write   # Needed to publish test results and status checks
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -289,13 +290,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
+        python-version: ['3.12', '3.13', '3.14']
     permissions:
       contents: read
       packages: read  # Required to pull Docker images from GitHub Container Registry
       checks: write   # Needed to publish test results and status checks
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
