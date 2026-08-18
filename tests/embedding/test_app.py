@@ -51,6 +51,7 @@ def test_app_repr(embedded_app):
 
 
 @pytest.mark.embedding
+@pytest.mark.skip_on_linux_version(271)
 def test_deprecation_warning(embedded_app):
     """Test deprecation warnings."""
     harmonic_acoustic = embedded_app.Model.AddHarmonicAcousticAnalysis()

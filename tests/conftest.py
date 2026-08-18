@@ -151,6 +151,16 @@ def pytest_collection_modifyitems(config, items):
                 )
                 item.add_marker(skip_versions)
 
+        if "skip_on_linux_version" in item.keywords:
+            revns = [mark.args for mark in item.iter_markers(name="skip_on_linux_version")][0]
+            ansys_version = int(config.getoption("--ansys-version"))
+
+            if "lin" in sys.platform and ansys_version in revns:
+                skip_versions = pytest.mark.skip(
+                    reason=f"Skipped on Linux for ansys-version {ansys_version}."
+                )
+                item.add_marker(skip_versions)
+
         # Skip on platforms other than Windows
         if "windows_only" in item.keywords and sys.platform != "win32":
             skip_except_windows = pytest.mark.skip(reason="Test requires Windows platform.")
