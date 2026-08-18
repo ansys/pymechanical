@@ -222,7 +222,7 @@ jobs:
       id-token: write      # Needed for OIDC authentication when generating attestations
     steps:
       - name: Build library source and wheel artifacts
-        uses: ansys/actions/build-library@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2 # v10.3.6
+        uses: ansys/actions/build-library@d98e1a4008dab392f8c114a483c2c5624076ccd6 # v11.0.1
         with:
           library-name: ${{ vars.PACKAGE_NAME }}
           python-version: ${{ vars.MAIN_PYTHON_VERSION }}
@@ -239,7 +239,7 @@ jobs:
       contents: write  # Needed to create GitHub releases and upload assets
     steps:
       - name: Release to GitHub
-        uses: ansys/actions/release-github@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2 # v10.3.6
+        uses: ansys/actions/release-github@d98e1a4008dab392f8c114a483c2c5624076ccd6 # v11.0.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           library-name: ${{ vars.PACKAGE_NAME }}
