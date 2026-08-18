@@ -1,0 +1,274 @@
+
+
+
+
+
+
+The ``ipython_shell.py`` module
+===============================
+
+.. py:module:: ansys.mechanical.core.embedding.ipython_shell
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: ipython_shell
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.mechanical.core.embedding.ipython_shell.ShellHooks`
+            - IPython shell lifetime hooks.
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~cleanup`
+            - Cleanup the ipython shell.
+
+
+          * - :py:obj:`~in_ipython`
+            - Return whether Python is running from IPython.
+
+
+          * - :py:obj:`~post_ipython_blocks`
+            - Initiate the IPython worker thread for block execution.
+
+
+          * - :py:obj:`~get_shell_hooks`
+            - Get the shell hooks object.
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~FROM_IPYTHON`
+            - 
+
+
+          * - :py:obj:`~CODE_QUEUE`
+            - 
+
+
+          * - :py:obj:`~RESULT_QUEUE`
+            - 
+
+
+          * - :py:obj:`~SHUTDOWN_EVENT`
+            - 
+
+
+          * - :py:obj:`~EXEC_THREAD`
+            - 
+
+
+          * - :py:obj:`~ORIGINAL_RUN_CELL`
+            - 
+
+
+          * - :py:obj:`~EXECUTION_THREAD_ID`
+            - 
+
+
+          * - :py:obj:`~DEFAULT_IDLE_HOOK`
+            - 
+
+
+          * - :py:obj:`~SHELL_HOOKS`
+            - 
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> ShellHooks</api/ansys/mechanical/core/embedding/ipython_shell/ShellHooks>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Module for scheduling background work in IPython shells.
+
+Interactive Python, or IPython, offers an enhanced Python shell. This module
+schedules all the work of the IPython shell on a background thread, allowing
+the Main thread to be used exclusively for the shell frontend. As a result,
+user-defined functions can be executed during idle time between blocks.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:function:: cleanup()
+
+   
+   Cleanup the ipython shell.
+
+   Must be called before the application exits.
+   May be called from an atexit handler.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: in_ipython()
+
+   
+   Return whether Python is running from IPython.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: post_ipython_blocks()
+
+   
+   Initiate the IPython worker thread for block execution.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: get_shell_hooks()
+
+   
+   Get the shell hooks object.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: FROM_IPYTHON
+
+.. py:data:: CODE_QUEUE
+
+.. py:data:: RESULT_QUEUE
+
+.. py:data:: SHUTDOWN_EVENT
+
+.. py:data:: EXEC_THREAD
+   :value: None
+
+
+.. py:data:: ORIGINAL_RUN_CELL
+   :value: None
+
+
+.. py:data:: EXECUTION_THREAD_ID
+   :type:  int
+   :value: None
+
+
+.. py:data:: DEFAULT_IDLE_HOOK
+
+.. py:data:: SHELL_HOOKS
+
+
+
