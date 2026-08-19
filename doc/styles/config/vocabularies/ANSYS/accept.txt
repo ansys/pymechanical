@@ -51,11 +51,13 @@ Pythonic
 Python.NET
 .NET
 pythonnet
+rpyc
 Remoting
 REST
 RPCs
 spaceclaim
 stdout
+Streamable
 venv
 v0.11
 VPN

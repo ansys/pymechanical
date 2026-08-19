@@ -169,8 +169,8 @@ if [ "$version" -ge "271" ]; then
     LD_LIBRARY_PATH=${LD_LIBRARY_PATH}\
 :${!awp_root}/tp/IntelMKL/2024.2.0/linx64/lib/intel64\
 :${!awp_root}/tp/nss/3.89/lib\
-:${!awp_root}/tp/IntelCompiler/2025.3.2/linx64/lib/intel64\
-:${!awp_root}/tp/qt/5.15.19/linx64/lib\
+:${!awp_root}/tp/IntelCompiler/2025.3.2/linx64/lib\
+:${!awp_root}/tp/qt/6.8.8//linx64/lib\
 :${!awp_root}/tp/openssl/3.5/linx64/lib
 elif [ "$version" = "261" ]; then
     LD_LIBRARY_PATH=${LD_LIBRARY_PATH}\

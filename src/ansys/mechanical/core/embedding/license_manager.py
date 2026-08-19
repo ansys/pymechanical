@@ -39,14 +39,24 @@ class LicenseManager:
         """Initialize the license manager."""
         self._app = app
         self._license_preference = None
+        self._license_coordinator = None
         import Ansys
 
         self._license_status = Ansys.Mechanical.DataModel.Enums.LicenseStatus
 
     def _get_license_manager(self):
+        # On 271+, LicenseCoordinator exposes the same interface as LicensePreference.
+        if self._app.version >= 271:
+            return self._get_coordinator()
         if self._license_preference is None:
             self._license_preference = self._app.ExtAPI.Application.LicensePreference
         return self._license_preference
+
+    def _get_coordinator(self):
+        """Return the LicenseCoordinator (Mechanical 271+)."""
+        if self._license_coordinator is None:
+            self._license_coordinator = self._app.ExtAPI.Application.LicenseCoordinator
+        return self._license_coordinator
 
     def get_all_licenses(self) -> list[str]:
         """Return list of all licenses."""
@@ -93,13 +103,28 @@ class LicenseManager:
         self._get_license_manager().Save()
 
     def show(self) -> None:
-        """Print all active licenses."""
+        """Print all licenses and their status."""
         for lic in self.get_all_licenses():
             print(f"{lic} - {self._get_license_manager().GetLicenseStatus(lic)}")
 
+    def get_current_licenses(self) -> list[str]:
+        """Return the currently active (checked-out) licenses.
+
+        Requires Mechanical 271 or later.
+
+        Returns
+        -------
+        list[str]
+            Names of the currently active licenses.
+        """
+        return list(self._get_coordinator().CurrentLicenses)
+
     def disable_session_license(self) -> None:
         """Disable active license for current session."""
-        self._get_license_manager().DeActivateLicense()
+        if self._app.version >= 271:
+            self._get_coordinator().DeactivateLicenses()
+        else:
+            self._get_license_manager().DeActivateLicense()
 
     def enable_session_license(self, license: str | list[str] | None = None) -> None:
         """Enable license(s) for the current session.
@@ -111,20 +136,33 @@ class LicenseManager:
             If a string, activates that specific license.
             If a list of strings, activates all specified licenses in the order provided.
         """
-        from System import String
-        from System.Collections.Generic import List as DotNetList
+        if self._app.version >= 271:
+            from System import Array, String
 
-        if license is None:
-            self._get_license_manager().ActivateLicense()
-        elif isinstance(license, str):
-            self._get_license_manager().ActivateLicense(String(license))
-        elif isinstance(license, list):
-            licenses = DotNetList[String]()
-            for lic in license:
-                licenses.Add(String(lic))
-            self._get_license_manager().ActivateLicense(licenses)
+            coordinator = self._get_coordinator()
+            if license is None:
+                coordinator.ActivateLicenses()
+            elif isinstance(license, str):
+                coordinator.ActivateLicenses(Array[String]([license]))
+            elif isinstance(license, list):
+                coordinator.ActivateLicenses(Array[String](license))
+            else:
+                raise TypeError("License must be None, a string, or a list of strings.")
         else:
-            raise TypeError("License must be None, a string, or a list of strings.")
+            from System import String
+            from System.Collections.Generic import List as DotNetList
+
+            if license is None:
+                self._get_license_manager().ActivateLicense()
+            elif isinstance(license, str):
+                self._get_license_manager().ActivateLicense(String(license))
+            elif isinstance(license, list):
+                licenses = DotNetList[String]()
+                for lic in license:
+                    licenses.Add(String(lic))
+                self._get_license_manager().ActivateLicense(licenses)
+            else:
+                raise TypeError("License must be None, a string, or a list of strings.")
         LOG.info(f"License(s) {license} enabled for the current session.")
 
     def move_to_index(self, license_name: str, location: int) -> None:

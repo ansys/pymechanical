@@ -79,16 +79,15 @@ async def _read_and_display(cmd, env, do_display: bool):
 def _run(args, env, check=False, display=False):
     if os.name == "nt":
         loop = asyncio.ProactorEventLoop()  # for subprocess' pipes on Windows
-        asyncio.set_event_loop(loop)
     else:
-        loop = asyncio.get_event_loop()
+        loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
     try:
         rc, process, *output = loop.run_until_complete(_read_and_display(args, env, display))
         if rc and check:
             sys.exit(f"child failed with '{rc}' exit code")
     finally:
-        if os.name == "nt":
-            loop.close()
+        loop.close()
     return process, output
 
 
