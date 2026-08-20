@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
   <id>https://mechanical.docs.pyansys.com/</id>
   <title>PyMechanical Blog</title>
-  <updated>2026-08-20T05:00:14.051432+00:00</updated>
+  <updated>2026-08-20T13:21:50.741127+00:00</updated>
   <link href="https://mechanical.docs.pyansys.com/"/>
   <link href="https://mechanical.docs.pyansys.com/blog/atom.xml" rel="self"/>
   <generator uri="https://ablog.readthedocs.io/" version="0.11.13">ABlog</generator>
