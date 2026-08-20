@@ -109,8 +109,6 @@ Overview
             - 
           * - :py:attr:`~logger`
             - 
-          * - :py:attr:`~level`
-            - 
           * - :py:attr:`~debug`
             - 
           * - :py:attr:`~info`
@@ -167,10 +165,6 @@ Attribute detail
 
 
 .. py:attribute:: logger
-
-.. py:attribute:: level
-   :value: 0
-
 
 .. py:attribute:: debug
 

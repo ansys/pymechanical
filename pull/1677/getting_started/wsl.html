@@ -28,11 +28,11 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/ansys-sphinx-theme.css?v=21122cb7" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/ansys-sphinx-theme.css?v=3929cf0b" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
     <link rel="stylesheet" type="text/css" href="../_static/thebelab.css" />
@@ -41,16 +41,17 @@
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/ansys-sphinx-theme.css?v=21122cb7" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/ansys-sphinx-theme.css?v=3929cf0b" />
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" />
     <link rel="stylesheet" type="text/css" href="https://www.nerdfonts.com/assets/css/webfont.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/blog.css?v=bf0d7cf4" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
 
   <!-- Include desired assets -->
@@ -60,7 +61,7 @@
   
     <link href="../_static/css/breadcrumbs.css" rel="stylesheet" />
   
-    <script src="../_static/documentation_options.js?v=142dd74e"></script>
+    <script src="../_static/documentation_options.js?v=e95de808"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/thebelab-helper.js"></script>
@@ -73,7 +74,7 @@
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'getting_started/wsl';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.19.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://mechanical.docs.pyansys.com/versions.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'dev';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
@@ -84,12 +85,12 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="PyMechanical architecture" href="../architecture.html" />
-    <link rel="prev" title="Using Mechanical through Docker" href="docker.html" />
+    <link rel="prev" title="Using Mechanical through Docker" href="docker.html" /> 
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.12.dev0" />
+  <meta name="docsearch:version" content="0.13.dev0" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -99,7 +100,14 @@
   <meta property="og:site_name" content="PyAnsys" />
   <meta name="physics" content="Structures" />
   <meta name="physics" content="Structures" />
-
+ 
+<link
+  rel="alternate"
+  type="application/atom+xml"
+  href="../blog/atom.xml"
+  title="PyMechanical Blog"
+/>
+  
   </head>
   <body data-default-mode="">
   
@@ -178,82 +186,220 @@
     <div class="me-auto navbar-header-items__center">
       
         <div class="navbar-item">
-
-<nav>
-  <ul class="bd-navbar-elements navbar-nav">
-    
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../index.html" title="PyMechanical home">Home</a>
+<nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    <!-- Site Navigation -->
+  </p>
+  <div class="navbar-content docutils container">
+<ul class="navbar-toplevel">
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../index.html" title="Home"><span class="navbar-link-title">Home</span></a></p>
+</div>
 </li>
-
-
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="index.html">
-    Getting started
-  </a>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="index.html" title="Getting started"><span class="navbar-link-title">Getting started</span></a></p>
+<i class="fa-solid fa-chevron-down"></i></div>
+<div class="navbar-dropdown docutils container">
+<ul class="navbar-sublevel">
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="installation.html" title="Installation"><span class="navbar-link-title">Installation</span></a></p>
+</div>
 </li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../user_guide/index.html">
-    User guide
-  </a>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="choose_your_mode.html" title="Choose your mode"><span class="navbar-link-title">Choose your mode</span></a></p>
+</div>
 </li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../examples/index.html">
-    Examples
-  </a>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="running_mechanical.html" title="Launching PyMechanical"><span class="navbar-link-title">Launching PyMechanical</span></a></p>
+</div>
 </li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../api/ansys/mechanical/core/index.html">
-    API reference
-  </a>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="docker.html" title="Docker setup"><span class="navbar-link-title">Docker setup</span></a></p>
+</div>
 </li>
-
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../contribute.html">
-    Contribute
-  </a>
+<li class="active-link"><div class="ref-container docutils container">
+<p><a class="reference internal" href="#" title="WSL"><span class="navbar-link-title">WSL</span></a></p>
+</div>
 </li>
-
-
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../faq.html">
-    FAQs
-  </a>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="troubleshooting.html" title="Troubleshooting"><span class="navbar-link-title">Troubleshooting</span></a></p>
+</div>
 </li>
-
-
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../kil/index.html">
-    Known issues and limitations
-  </a>
+</ul>
+</div>
 </li>
-
-
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../changelog.html">
-    Release notes
-  </a>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../user_guide/index.html" title="User guide"><span class="navbar-link-title">User guide</span></a></p>
+<i class="fa-solid fa-chevron-down"></i></div>
+<div class="navbar-dropdown docutils container">
+<ul class="navbar-sublevel">
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../user_guide/embedding/overview.html" title="Embedding mode"><span class="navbar-link-title">Embedding mode</span></a></p>
+</div>
 </li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../user_guide/remote_session/overview.html" title="Remote session mode"><span class="navbar-link-title">Remote session mode</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../user_guide/scripting/overview.html" title="Scripting fundamentals"><span class="navbar-link-title">Scripting fundamentals</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../user_guide/cli/ansys-mechanical.html" title="CLI"><span class="navbar-link-title">CLI</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference external" href="https://mechanical-mcp.docs.pyansys.com/" title="MCP integration"><span class="navbar-link-title">MCP integration</span></a></p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../examples/index.html" title="Examples"><span class="navbar-link-title">Examples</span></a></p>
+<i class="fa-solid fa-chevron-down"></i></div>
+<div class="navbar-dropdown docutils container">
+<ul class="navbar-sublevel">
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../examples/gallery_examples/index.html" title="Basic examples: Embedding mode"><span class="navbar-link-title">Basic examples: Embedding mode</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../examples/advanced_examples/index.html" title="Advanced examples: Embedding mode"><span class="navbar-link-title">Advanced examples: Embedding mode</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../examples/remote_examples/index.html" title="Basic examples: Remote session mode"><span class="navbar-link-title">Basic examples: Remote session mode</span></a></p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../blog/index.html" title="Blog"><span class="navbar-link-title">Blog</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference external" href="#" title="More"><span class="navbar-link-title">More</span></a></p>
+<i class="fa-solid fa-chevron-down"></i></div>
+<div class="navbar-dropdown docutils container">
+<ul class="navbar-sublevel">
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../api/index.html" title="API reference"><span class="navbar-link-title">API reference</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../contribute.html" title="Contribute"><span class="navbar-link-title">Contribute</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../faq.html" title="FAQ"><span class="navbar-link-title">FAQ</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../kil/index.html" title="Known issues and limitations"><span class="navbar-link-title">Known issues and limitations</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../changelog.html" title="Changelog"><span class="navbar-link-title">Changelog</span></a></p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
 
-                </ul>
-            </li>
-            
-  </ul>
 </nav>
+<style>
+  /* Top navbar styling */
+.navbar-toplevel p {
+  margin: 0;
+  padding-inline-start: 0;
+}
+div.navbar-dropdown {
+    display: none;
+    position: relative;
+    left: -100%;
+    margin-top: 2rem;
+}
+.navbar-sublevel p a.reference {
+  text-decoration: none;
+}
+.navbar-sublevel p a.reference:hover > span.navbar-link-title {
+  text-decoration: underline;
+  color: var(--pst-color-link-hover);
+}
+.navbar-toplevel li {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 0em 0.25em;
+
+}
+
+ul.navbar-toplevel li:hover > div.navbar-dropdown {
+  display: block;
+}
+
+@media (min-width: 960px) {
+    .navbar-expand-lg .navbar-nav {
+        flex-direction: column;
+    }
+}
+
+.navbar-content ul.navbar-sublevel {
+  position: absolute;
+  gap: 1rem;
+  padding: 1em 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+  background-color: white;
+  white-space: pre;
+  box-shadow: 0 5px 15px 0 rgb(0 0 0 / 10%);
+}
+
+div.navbar-content a {
+  display: flex;
+  flex-direction: column;
+  color: var(--ast-navbar-color);
+  align-items: baseline;
+  justify-content: center;
+  font-weight: var(--ast-font-weight-semibold);
+}
+.ref-container {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+  font-family: var(--ast-body-family);
+  line-height: var(--ast-global-line-height);
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+/* Highlight active nav bar link */
+li.active-link {
+  font-weight: var(--ast-font-weight-bold);
+  color: var(--ast-navbar-active-color);
+  border-bottom: 2px solid var(--ast-navbar-active-border-color);
+}
+
+/* Set the first .navbar-persistent--mobile element to have auto left margin */
+/* Disable underline for hovered links in the nav bar */
+.navbar-nav li a:hover {
+  text-decoration: none;
+}
+.navbar-header-items {
+  padding-left: 0;
+}
+</style>
 </div>
       
     </div>
@@ -355,35 +501,51 @@
     </header>
   
   
-    
-<!--
-  Announcement Version Loader
-  Dynamically loads the announcement.html content into the announcement_msg div.
--->
-<div id="announcement_msg" aria-live="polite"></div>
-<script>
-  // Fetch and inject the announcement HTML content
-  fetch("announcement.html")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error: ${response.status} Announcement.html file not found, Please ignore this, if you are in dev/stable documentation`);
-      }
-      return response.text();
-    })
-    .then((text) => {
-      var msgDiv = document.getElementById("announcement_msg");
-      if (msgDiv) {
-        msgDiv.innerHTML = text;
-      }
-    })
-    .catch((error) => {
-      // Log only unexpected fetch errors
-      if (!(error.message && error.message.startsWith("HTTP error: 404"))) {
-        console.error(`Fetch problem: ${error.message} Announcement.html could not be loaded.`);
-      }
-    });
-</script>
+
   
+
+
+
+
+
+
+
+
+
+<div class="ast-announcement-wrap" role="region" aria-label="Announcement" hidden>
+    <div class="ast-announcement info">
+        <span class="ast-announcement-icon" aria-hidden="true"></span>
+        <span class="ast-announcement-text" id="ast-announcement-text"></span>
+        <!-- djlint:off H021-->
+        <!-- for inline styles -->
+        <a class="ast-announcement-details-btn" id="ast-announcement-details-btn"
+           href=""
+           data-ast-url=""
+           aria-label="View notifications"
+           style="display:none">View</a>
+        <!-- djlint:on -->
+        <!-- djlint:off H023-->
+        <!-- use entity reference for &times; -->
+        <button class="ast-announcement-close" id="ast-announcement-close" aria-label="Close announcement">&times;</button>
+        <!-- djlint:on -->
+    </div>
+</div>
+
+<!-- Modal overlay -->
+<!-- djlint:off H023-->
+<!-- use entity reference for &times; -->
+<div class="ast-announcement-overlay" id="ast-announcement-overlay" role="dialog" aria-modal="true" aria-label="Announcement details">
+    <div class="ast-announcement-modal info">
+        <div class="ast-announcement-modal-body"
+             data-ast-items='[]'>
+        </div>
+        <button class="ast-announcement-modal-close" id="ast-announcement-modal-close" aria-label="Close">&times;</button>
+    </div>
+</div>
+<!-- djlint:on -->
+
+<script src="../_static/js/announcement_banner.js"
+        data-base-url="../"></script>
 
 
   <div class="bd-container">
@@ -404,72 +566,220 @@
           
           
             <div class="navbar-item">
-
-<nav>
-  <ul class="bd-navbar-elements navbar-nav">
-    
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../index.html" title="PyMechanical home">Home</a>
+<nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    <!-- Site Navigation -->
+  </p>
+  <div class="navbar-content docutils container">
+<ul class="navbar-toplevel">
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../index.html" title="Home"><span class="navbar-link-title">Home</span></a></p>
+</div>
 </li>
-
-
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="index.html">
-    Getting started
-  </a>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="index.html" title="Getting started"><span class="navbar-link-title">Getting started</span></a></p>
+<i class="fa-solid fa-chevron-down"></i></div>
+<div class="navbar-dropdown docutils container">
+<ul class="navbar-sublevel">
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="installation.html" title="Installation"><span class="navbar-link-title">Installation</span></a></p>
+</div>
 </li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../user_guide/index.html">
-    User guide
-  </a>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="choose_your_mode.html" title="Choose your mode"><span class="navbar-link-title">Choose your mode</span></a></p>
+</div>
 </li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../examples/index.html">
-    Examples
-  </a>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="running_mechanical.html" title="Launching PyMechanical"><span class="navbar-link-title">Launching PyMechanical</span></a></p>
+</div>
 </li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../api/ansys/mechanical/core/index.html">
-    API reference
-  </a>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="docker.html" title="Docker setup"><span class="navbar-link-title">Docker setup</span></a></p>
+</div>
 </li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../contribute.html">
-    Contribute
-  </a>
+<li class="active-link"><div class="ref-container docutils container">
+<p><a class="reference internal" href="#" title="WSL"><span class="navbar-link-title">WSL</span></a></p>
+</div>
 </li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../faq.html">
-    FAQs
-  </a>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="troubleshooting.html" title="Troubleshooting"><span class="navbar-link-title">Troubleshooting</span></a></p>
+</div>
 </li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../kil/index.html">
-    Known issues and limitations
-  </a>
+</ul>
+</div>
 </li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../changelog.html">
-    Release notes
-  </a>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../user_guide/index.html" title="User guide"><span class="navbar-link-title">User guide</span></a></p>
+<i class="fa-solid fa-chevron-down"></i></div>
+<div class="navbar-dropdown docutils container">
+<ul class="navbar-sublevel">
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../user_guide/embedding/overview.html" title="Embedding mode"><span class="navbar-link-title">Embedding mode</span></a></p>
+</div>
 </li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../user_guide/remote_session/overview.html" title="Remote session mode"><span class="navbar-link-title">Remote session mode</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../user_guide/scripting/overview.html" title="Scripting fundamentals"><span class="navbar-link-title">Scripting fundamentals</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../user_guide/cli/ansys-mechanical.html" title="CLI"><span class="navbar-link-title">CLI</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference external" href="https://mechanical-mcp.docs.pyansys.com/" title="MCP integration"><span class="navbar-link-title">MCP integration</span></a></p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../examples/index.html" title="Examples"><span class="navbar-link-title">Examples</span></a></p>
+<i class="fa-solid fa-chevron-down"></i></div>
+<div class="navbar-dropdown docutils container">
+<ul class="navbar-sublevel">
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../examples/gallery_examples/index.html" title="Basic examples: Embedding mode"><span class="navbar-link-title">Basic examples: Embedding mode</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../examples/advanced_examples/index.html" title="Advanced examples: Embedding mode"><span class="navbar-link-title">Advanced examples: Embedding mode</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../examples/remote_examples/index.html" title="Basic examples: Remote session mode"><span class="navbar-link-title">Basic examples: Remote session mode</span></a></p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../blog/index.html" title="Blog"><span class="navbar-link-title">Blog</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference external" href="#" title="More"><span class="navbar-link-title">More</span></a></p>
+<i class="fa-solid fa-chevron-down"></i></div>
+<div class="navbar-dropdown docutils container">
+<ul class="navbar-sublevel">
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../api/index.html" title="API reference"><span class="navbar-link-title">API reference</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../contribute.html" title="Contribute"><span class="navbar-link-title">Contribute</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../faq.html" title="FAQ"><span class="navbar-link-title">FAQ</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../kil/index.html" title="Known issues and limitations"><span class="navbar-link-title">Known issues and limitations</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../changelog.html" title="Changelog"><span class="navbar-link-title">Changelog</span></a></p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
 
-  </ul>
 </nav>
+<style>
+  /* Top navbar styling */
+.navbar-toplevel p {
+  margin: 0;
+  padding-inline-start: 0;
+}
+div.navbar-dropdown {
+    display: none;
+    position: relative;
+    left: -100%;
+    margin-top: 2rem;
+}
+.navbar-sublevel p a.reference {
+  text-decoration: none;
+}
+.navbar-sublevel p a.reference:hover > span.navbar-link-title {
+  text-decoration: underline;
+  color: var(--pst-color-link-hover);
+}
+.navbar-toplevel li {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 0em 0.25em;
+
+}
+
+ul.navbar-toplevel li:hover > div.navbar-dropdown {
+  display: block;
+}
+
+@media (min-width: 960px) {
+    .navbar-expand-lg .navbar-nav {
+        flex-direction: column;
+    }
+}
+
+.navbar-content ul.navbar-sublevel {
+  position: absolute;
+  gap: 1rem;
+  padding: 1em 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+  background-color: white;
+  white-space: pre;
+  box-shadow: 0 5px 15px 0 rgb(0 0 0 / 10%);
+}
+
+div.navbar-content a {
+  display: flex;
+  flex-direction: column;
+  color: var(--ast-navbar-color);
+  align-items: baseline;
+  justify-content: center;
+  font-weight: var(--ast-font-weight-semibold);
+}
+.ref-container {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+  font-family: var(--ast-body-family);
+  line-height: var(--ast-global-line-height);
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+/* Highlight active nav bar link */
+li.active-link {
+  font-weight: var(--ast-font-weight-bold);
+  color: var(--ast-navbar-active-color);
+  border-bottom: 2px solid var(--ast-navbar-active-border-color);
+}
+
+/* Set the first .navbar-persistent--mobile element to have auto left margin */
+/* Disable underline for hovered links in the nav bar */
+.navbar-nav li a:hover {
+  text-decoration: none;
+}
+.navbar-header-items {
+  padding-left: 0;
+}
+</style>
 </div>
           
         
@@ -561,7 +871,8 @@
   </div>
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
-        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
     <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
   </svg>
   <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
@@ -652,8 +963,7 @@
                 
 <div id="searchbox"></div>
                 <article class="bd-article">
-                  
-  <section id="windows-subsystem-for-linux-wsl">
+                   <section id="windows-subsystem-for-linux-wsl">
 <span id="ref-guide-wsl"></span><h1>Windows Subsystem for Linux (WSL)<a class="headerlink" href="#windows-subsystem-for-linux-wsl" title="Link to this heading">#</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -719,7 +1029,7 @@ and run this command:</p>
 </pre></div>
 </div>
 <p>where:</p>
-<ul>
+<ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">-silent</span></code> : Initiates a silent installation, which means no GUI is shown.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-install_dir</span> <span class="pre">/path/</span></code> : Specifies the directory to install the product or
 license manager to. If you want to install to the default location, you can
@@ -727,13 +1037,16 @@ omit the <code class="docutils literal notranslate"><span class="pre">-install_d
 if the symbolic link is set. Otherwise, it defaults to <code class="docutils literal notranslate"><span class="pre">/usr/ansys_inc</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-&lt;product_flag&gt;</span></code> : Specifies the one or more products to install.
 If you omit this argument, all products are installed. The <em>Ansys, Inc.
-Installation Guides</em> in the Ansys Help provides a list of valid
-values for the <code class="docutils literal notranslate"><span class="pre">product_flags</span></code> argument in <a class="reference external" href="https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v261/en/installation/unix_silent.html">Chapter 6</a>
-of the <em>Linux Installation Guide</em> and <a class="reference external" href="https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v261/en/installation/win_silent.html">Chapter 7</a>
-of the <em>Windows Installation Guide</em>.</p>
-<p>In the preceding example for Mechanical, you only need to specify the <code class="docutils literal notranslate"><span class="pre">-mechapdl</span></code> flag.</p>
-</li>
+Installation Guides</em> in the Ansys Help provides a list of valid</p></li>
 </ul>
+<blockquote>
+<div><p>values for the <code class="docutils literal notranslate"><span class="pre">product_flags</span></code> argument in <a class="reference external" href="https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v261/en/installation/unix_silent.html">Chapter 6</a>
+of the <em>Linux Installation Guide</em> and <a class="reference external" href="https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/v261/en/installation/win_silent.html">Chapter 7</a></p>
+<blockquote>
+<div><p>of the <em>Windows Installation Guide</em>.</p>
+<p>In the preceding example for Mechanical, you only need to specify the <code class="docutils literal notranslate"><span class="pre">-mechapdl</span></code> flag.</p>
+</div></blockquote>
+</div></blockquote>
 </li>
 </ol>
 <p>After installing Mechanical directly in <code class="docutils literal notranslate"><span class="pre">/ansys_inc</span></code> or <code class="docutils literal notranslate"><span class="pre">/usr/ansys_inc</span></code>,
@@ -764,10 +1077,10 @@ server, opening the ports might not work properly because the Windows firewall
 seems to block all traffic coming from WSL.  For security purposes, you should
 still try to open ports <code class="docutils literal notranslate"><span class="pre">1055</span></code> and <code class="docutils literal notranslate"><span class="pre">2325</span></code> in the Windows firewall and check if your
 Mechanical installation can communicate with the Windows hosts. If you are having
-problems after setting the firewall rules, you might have to disable the Windows
+problems after setting the firewall rules, you might have to turn off the Windows
 firewall for the WSL ethernet’s virtual interface. Because this might pose some
 unknown side effects and security risks, do so with caution. For more information,
-see <a class="reference internal" href="#disable-the-firewall-on-the-wsl-ethernet">Disable the firewall on the WSL ethernet</a>.</p>
+see <a class="reference internal" href="#turn-off-the-firewall-on-the-wsl-ethernet">Turn off the firewall on the WSL ethernet</a>.</p>
 </section>
 <section id="create-an-environmental-variable-in-wsl-that-points-to-the-license-server-on-the-windows-host">
 <h3>Create an environmental variable in WSL that points to the license server on the Windows host<a class="headerlink" href="#create-an-environmental-variable-in-wsl-that-points-to-the-license-server-on-the-windows-host" title="Link to this heading">#</a></h3>
@@ -803,7 +1116,7 @@ ff02::2<span class="w"> </span>ip6-allrouters
 </div>
 <p>You can add the next lines to your WSL <code class="docutils literal notranslate"><span class="pre">~/.bashrc</span></code> file to create an
 environment variable with the IP address:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">winhostIP</span><span class="o">=</span><span class="k">$(</span>grep<span class="w"> </span>-m<span class="w"> </span><span class="m">1</span><span class="w"> </span>host.docker.internal<span class="w"> </span>/etc/hosts<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">winhostIP</span><span class="o">=</span><span class="k">$(</span>grep<span class="w"> </span>-m<span class="w"> </span><span class="m">1</span><span class="w"> </span>host.docker.internal<span class="w"> </span>/etc/hosts<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'{print $1}'</span><span class="k">)</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">ANSYSLMD_LICENSE_FILE</span><span class="o">=</span><span class="m">1055</span>@<span class="nv">$winhostIP</span>
 </pre></div>
 </div>
@@ -816,8 +1129,8 @@ environment variable with the IP address:</p>
 <div class="highlight-pwsh notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="n">-e</span> <span class="n">ANSYSLMD_LICENSE_FILE</span><span class="p">=</span><span class="n">1055</span><span class="nv">@host</span><span class="p">.</span><span class="n">docker</span><span class="p">.</span><span class="n">internal</span> <span class="p">-</span><span class="n">-restart</span> <span class="n">always</span> <span class="p">-</span><span class="n">-name</span> <span class="n">mechanical</span> <span class="n">-p</span> <span class="n">10000</span><span class="p">:</span><span class="n">10000</span> <span class="n">ghcr</span><span class="p">.</span><span class="n">io</span><span class="p">/</span><span class="n">ansys</span><span class="p">/</span><span class="n">pymechanical</span><span class="p">/</span><span class="n">mechanical</span> <span class="p">&gt;</span> <span class="n">log</span><span class="p">.</span><span class="n">txt</span>
 </pre></div>
 </div>
-<p>Successive runs should restart the container. Or, delete the container and rerun it with
-this code:</p>
+<p>Successive runs should restart the container. Alternatively, you can delete the
+container and then rerun it with this code:</p>
 <div class="highlight-pwsh notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">stop</span> <span class="n">mechanical</span>
 <span class="n">docker</span> <span class="n">container</span> <span class="n">prune</span>
 
@@ -838,13 +1151,13 @@ you should specify the IP address and port using one of the following methods.</
 <p><strong>Method 1</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ansys.mechanical.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">launch_mechanical</span>
 
-<span class="n">mechanical</span> <span class="o">=</span> <span class="n">launch_mechanical</span><span class="p">(</span><span class="n">ip</span><span class="o">=</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">10001</span><span class="p">,</span> <span class="n">start_instance</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">mechanical</span> <span class="o">=</span> <span class="n">launch_mechanical</span><span class="p">(</span><span class="n">ip</span><span class="o">=</span><span class="s2">"127.0.0.1"</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">10001</span><span class="p">,</span> <span class="n">start_instance</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Method 2</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ansys.mechanical.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mechanical</span>
 
-<span class="n">mechanical</span> <span class="o">=</span> <span class="n">Mechanical</span><span class="p">(</span><span class="n">ip</span><span class="o">=</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">10001</span><span class="p">)</span>
+<span class="n">mechanical</span> <span class="o">=</span> <span class="n">Mechanical</span><span class="p">(</span><span class="n">ip</span><span class="o">=</span><span class="s2">"127.0.0.1"</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">10001</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Method 3</strong></p>
@@ -925,17 +1238,17 @@ hostname in the same WSL <code class="docutils literal notranslate"><span class=
 randomly allocated, which is an issue when you define the license server. However,
 updating the <code class="docutils literal notranslate"><span class="pre">.bashrc</span></code> file as mentioned earlier resolves this issue.</p>
 </section>
-<section id="disable-the-firewall-on-the-wsl-ethernet">
-<h2>Disable the firewall on the WSL ethernet<a class="headerlink" href="#disable-the-firewall-on-the-wsl-ethernet" title="Link to this heading">#</a></h2>
-<p>There are two methods for disabling the firewall on the WSL ethernet.</p>
+<section id="turn-off-the-firewall-on-the-wsl-ethernet">
+<h2>Turn off the firewall on the WSL ethernet<a class="headerlink" href="#turn-off-the-firewall-on-the-wsl-ethernet" title="Link to this heading">#</a></h2>
+<p>There are two methods for turning off the firewall on the WSL ethernet.</p>
 <p><strong>Method 1</strong></p>
 <p>This method shows a notification:</p>
-<div class="highlight-pwsh notranslate"><div class="highlight"><pre><span></span><span class="nb">Set-NetFirewallProfile</span> <span class="n">-DisabledInterfaceAliases</span> <span class="s2">&quot;vEthernet (WSL)&quot;</span>
+<div class="highlight-pwsh notranslate"><div class="highlight"><pre><span></span><span class="nb">Set-NetFirewallProfile</span> <span class="n">-DisabledInterfaceAliases</span> <span class="s2">"vEthernet (WSL)"</span>
 </pre></div>
 </div>
 <p><strong>Method 2</strong></p>
 <p>This method does not show a notification:</p>
-<div class="highlight-pwsh notranslate"><div class="highlight"><pre><span></span><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-Command</span> <span class="s2">&quot;Set-NetFirewallProfile -DisabledInterfaceAliases \&quot;</span><span class="n">vEthernet</span> <span class="p">(</span><span class="n">WSL</span><span class="p">)\</span><span class="s2">&quot;&quot;</span>
+<div class="highlight-pwsh notranslate"><div class="highlight"><pre><span></span><span class="n">powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-Command</span> <span class="s2">"Set-NetFirewallProfile -DisabledInterfaceAliases \"</span><span class="n">vEthernet</span> <span class="p">(</span><span class="n">WSL</span><span class="p">)\</span><span class="s2">""</span>
 </pre></div>
 </div>
 <p>On Windows 10, you can use the <a class="reference external" href="https://github.com/cascadium/wsl-windows-toolbar-launcher#firewall-rules">wsl-windows-toolbar-launcher</a>
@@ -989,7 +1302,7 @@ package instead.</p>
 <section id="stop-all-processes-with-a-given-name">
 <h2>Stop all processes with a given name<a class="headerlink" href="#stop-all-processes-with-a-given-name" title="Link to this heading">#</a></h2>
 <p>You can stop all processes with a given name with this command.</p>
-<div class="highlight-pwsh notranslate"><div class="highlight"><pre><span></span><span class="nb">Get-Process</span> <span class="s2">&quot;AnsysWBU&quot;</span> <span class="p">|</span> <span class="nb">Stop-Process</span>
+<div class="highlight-pwsh notranslate"><div class="highlight"><pre><span></span><span class="nb">Get-Process</span> <span class="s2">"AnsysWBU"</span> <span class="p">|</span> <span class="nb">Stop-Process</span>
 </pre></div>
 </div>
 </section>
@@ -1003,6 +1316,9 @@ as shown in the following command. For more information, see the <code class="do
 </section>
 </section>
 
+<div class="section ablog__blog_comments">
+   
+</div>
 
                 </article>
               
@@ -1048,7 +1364,7 @@ as shown in the following command. For more information, see the <code class="do
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ip-addresses-in-wsl-and-the-windows-host">IP addresses in WSL and the Windows host</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#disable-the-firewall-on-the-wsl-ethernet">Disable the firewall on the WSL ethernet</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#turn-off-the-firewall-on-the-wsl-ethernet">Turn off the firewall on the WSL ethernet</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#port-forwarding-on-windows-10">Port forwarding on Windows 10</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#link-ports-between-wsl-and-windows">Link ports between WSL and Windows</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#view-all-forwards">View all forwards</a></li>
@@ -1093,8 +1409,8 @@ as shown in the following command. For more information, see the <code class="do
   
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
 
 
   <!-- Include desired assets -->
@@ -1155,7 +1471,7 @@ const EXTRA_SOURCES = JSON.parse('""');
       <a href="https://sphinxdocs.ansys.com/version/stable/index.html" target="_blank" rel="noopener noreferrer">
         Ansys Sphinx Theme
       </a>
-      1.10.dev0.
+      1.11.dev0.
     
   </span>
   <br />

@@ -249,7 +249,7 @@ Method detail
    ..
        !! processed by numpydoc !!
 
-.. py:method:: show(filter='Severity;DisplayString') -> None
+.. py:method:: show(filter='Severity;DisplayString', max_messages=None) -> None
 
    
    Print all messages with full details.
@@ -259,8 +259,12 @@ Method detail
 
        **filter** : :class:`python:str`, :obj:`optional`
            Semicolon separated list of message attributes to display.
-           Default is "severity;message".
-           if filter is "*", all available attributes will be displayed.
+           Default is ``"Severity;DisplayString"``.
+           If filter is ``"*"``, all available attributes will be displayed.
+
+       **max_messages** : :class:`python:int`, :obj:`optional`
+           Maximum number of messages to display. The default is ``None``,
+           in which case all messages are shown.
 
 
 
@@ -277,13 +281,10 @@ Method detail
    .. rubric:: Examples
 
    >>> app.messages.show()
-   ... severity: info
-   ... message: Sample message.
+   ... Severity: INFO
+   ... DisplayString: Sample message.
 
-   >>> app.messages.show(filter="time_stamp;severity;message")
-   ... time_stamp: 1/30/2025 12:10:35 PM
-   ... severity: info
-   ... message: Sample message.
+   >>> app.messages.show(max_messages=5)
 
    ..
        !! processed by numpydoc !!

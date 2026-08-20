@@ -189,6 +189,54 @@ See the ``pyproject.toml`` file for a full list of markers (-m) and their descri
 
 To run specific tests based on a keyword, use the ``-k`` argument::
 
+    pytest -k test_license_manager
+
+
+Custom ``pytest`` flags
+-----------------------
+
+PyMechanical adds the following custom command-line options to ``pytest``:
+
+``--ansys-version``
+~~~~~~~~~~~~~~~~~~~
+
+Specify the Ansys Mechanical version to use for testing. When omitted, the version is
+detected automatically from the installed Mechanical path::
+
+    pytest -m embedding --ansys-version=261
+
+``--addin-configuration``
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Set the addin configuration name passed to :class:`AddinConfiguration`. Defaults to
+``"Mechanical"``::
+
+    pytest -m embedding --addin-configuration=Mechanical
+
+``--log-embedding``
+~~~~~~~~~~~~~~~~~~~
+
+Enable embedding log output to stdout and set the log level. Accepted values are
+``debug``, ``info``, ``warning``, and ``error``. When omitted, the embedding
+logger is not configured by the test suite::
+
+    # Show all messages including debug output
+    pytest -m embedding --ansys-version=261 --log-embedding=debug
+
+    # Show informational messages and above
+    pytest -m embedding --ansys-version=261 --log-embedding=info
+
+    # Combine with -k to target a single test
+    pytest -m embedding -k test_license_manager --ansys-version=261 --log-embedding=debug
+
+``--remote-server-type``
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Select the RPC protocol used for remote session tests. Accepted values are ``grpc``
+(default) and ``rpyc``::
+
+    pytest -m remote_session_launch --remote-server-type=grpc
+
 
 Remote testing
 --------------
