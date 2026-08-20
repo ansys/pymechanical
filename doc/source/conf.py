@@ -34,7 +34,13 @@ pyvista.BUILDING_GALLERY = True
 
 
 # Whether or not to build the cheatsheet
-BUILD_CHEATSHEET = os.environ.get("BUILD_CHEATSHEET") == "true"
+BUILD_CHEATSHEET = os.environ.get("BUILD_CHEATSHEET", default="true") != "false"
+
+# Whether or not to build the API reference (AutoAPI). AutoAPI generation can be slow,
+# so you can disable it for faster local builds:
+#   set BUILD_API=false        (Windows)
+#   export BUILD_API=false     (Linux/macOS)
+BUILD_API = "true"  # os.environ.get("BUILD_API", default="true") != "false"
 
 # suppress annoying matplotlib bug
 warnings.filterwarnings(
@@ -58,7 +64,6 @@ switcher_version = get_version_match(version)
 # -- General configuration ---------------------------------------------------
 # Sphinx extensions
 extensions = [
-    "ansys_sphinx_theme.extension.autoapi",
     "jupyter_sphinx",
     "notfound.extension",
     "numpydoc",
@@ -71,13 +76,18 @@ extensions = [
     "sphinx_autodoc_typehints",
     "sphinx_copybutton",
     "sphinx_design",
-    "pyvista.ext.plot_directive",
-    "pyvista.ext.viewer_directive",
     "sphinx_click",
+    "ablog",
+    "sphinxcontrib.mermaid",
 ]
+
+if BUILD_API:
+    extensions.insert(0, "ansys_sphinx_theme.extension.autoapi")
 
 if pymechanical.BUILDING_GALLERY:
     extensions.append("sphinx_gallery.gen_gallery")
+    extensions.append("pyvista.ext.plot_directive")
+    extensions.append("pyvista.ext.viewer_directive")
 
 # Intersphinx mapping
 intersphinx_mapping = {
@@ -129,6 +139,7 @@ notfound_urls_prefix = "/../"
 
 # static path
 html_static_path = ["_static"]
+html_css_files = ["css/blog.css"]
 templates_path = ["_templates"]
 html_css_files = [
     "css/banner.css",
@@ -160,6 +171,13 @@ exclude_patterns = [
     ".DS_Store",
     "links.rst",
 ]
+
+# If the API reference is not being built, exclude any stale, previously
+# generated AutoAPI ``.rst`` files left over in ``doc/source/api`` from a prior
+# build. Otherwise, Sphinx still discovers and writes them even though the
+# ``autoapi`` extension itself is not loaded.
+if not BUILD_API:
+    exclude_patterns.append("api/**")
 
 # Get the current Mechanical version
 current_mechanical_version = next(iter(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS.keys()))
@@ -257,7 +275,6 @@ html_theme_options = {
         "changelog_file_name": "changelog.rst",
         "sidebar_pages": ["changelog"],
     },
-    "ansys_sphinx_theme_autoapi": {"project": project},
     "search_extra_sources": {
         "PyMechanical MCP": "https://mechanical-mcp.docs.pyansys.com/",
         "PyMechanical Examples: Remote session": "https://examples.mechanical.docs.pyansys.com/",
@@ -313,6 +330,9 @@ if BUILD_CHEATSHEET:
         "title": "PyMechanical cheat sheet",
     }
 
+if BUILD_API:
+    html_theme_options["ansys_sphinx_theme_autoapi"] = {"project": project}
+
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
@@ -321,6 +341,28 @@ htmlhelp_basename = "pymechanicaldoc"
 html_sidebars = {
     "changelog": [],
     "contributing": [],
+    "blog/*": [
+        "ablog/postcard.html",
+        "ablog/recentposts.html",
+        "ablog/tagcloud.html",
+        "ablog/categories.html",
+        "ablog/archives.html",
+    ],
+}
+
+# -- Mermaid configuration --------------------------------------------------
+mermaid_output_format = "raw"
+mermaid_dark_theme = "dark"
+mermaid_light_theme = "default"
+
+# -- ABlog configuration -----------------------------------------------------
+blog_title = "PyMechanical Blog"
+blog_baseurl = f"https://{cname}/"
+blog_path = "blog"
+blog_post_pattern = ["blog/*.rst"]
+blog_feed_fulltext = True
+blog_authors = {
+    "ANSYS": ("ANSYS Inc.", None),
 }
 
 html_show_sourcelink = False
@@ -359,6 +401,30 @@ if switcher_version != "dev":
 # This hook replaces {mechanical_version} in the raw source before parsing,
 # so it works everywhere including literal blocks and code-block directives.
 
+# Custom autoapi index template: prepend _templates/autoapi/ to Jinja search
+# paths so our index.rst is picked up before the theme's default, while the
+# theme's python/class.rst and python/module.rst templates are still used.
+_CUSTOM_AUTOAPI_TEMPLATES = str(Path(__file__).parent / "_templates" / "autoapi")
+
+
+def _wrap_autoapi_jinja_env(app, config):
+    """Prepend the custom autoapi template dir to the Jinja search path.
+
+    This runs after the theme's config-inited handler (which sets
+    ``autoapi_prepare_jinja_env``), so we can wrap its function rather than
+    replace it, preserving the ``project_name`` / ``autoapi_depth`` globals.
+    """
+    original = config.autoapi_prepare_jinja_env
+
+    def _wrapped(jinja_env):
+        if original:
+            original(jinja_env)
+        loader = jinja_env.loader
+        if hasattr(loader, "searchpath") and _CUSTOM_AUTOAPI_TEMPLATES not in loader.searchpath:
+            loader.searchpath.insert(0, _CUSTOM_AUTOAPI_TEMPLATES)
+
+    config["autoapi_prepare_jinja_env"] = _wrapped
+
 
 def source_read_handler(app, docname, source):
     """Replace version placeholders in RST source before parsing."""
@@ -369,3 +435,5 @@ def source_read_handler(app, docname, source):
 def setup(app):
     """Connect Sphinx events."""
     app.connect("source-read", source_read_handler)
+    if BUILD_API:
+        app.connect("config-inited", _wrap_autoapi_jinja_env)

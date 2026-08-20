@@ -11,23 +11,25 @@ Manually set the executable location
 
 If PyMechanical cannot find your installation, set the path manually:
 
-**On Windows**
+.. tab-set::
 
-.. code-block:: python
+    .. tab-item:: Windows
 
-    from ansys.mechanical.core import launch_mechanical
+        .. code-block:: python
 
-    exec_loc = "C:/Program Files/ANSYS Inc/v{mechanical_version}/aisol/bin/winx64/AnsysWBU.exe"
-    mechanical = launch_mechanical(exec_file=exec_loc)
+            from ansys.mechanical.core import launch_mechanical
 
-**On Linux**
+            exec_loc = "C:/Program Files/ANSYS Inc/v{mechanical_version}/aisol/bin/winx64/AnsysWBU.exe"
+            mechanical = launch_mechanical(exec_file=exec_loc)
 
-.. code-block:: python
+    .. tab-item:: Linux
 
-    from ansys.mechanical.core import launch_mechanical
+        .. code-block:: python
 
-    exec_loc = "/usr/ansys_inc/v{mechanical_version}/aisol/.workbench"
-    mechanical = launch_mechanical(exec_file=exec_loc)
+            from ansys.mechanical.core import launch_mechanical
+
+            exec_loc = "/usr/ansys_inc/v{mechanical_version}/aisol/.workbench"
+            mechanical = launch_mechanical(exec_file=exec_loc)
 
 If Mechanical still fails to launch, pass ``verbose_mechanical=True`` to print
 debug output to the Python console.
