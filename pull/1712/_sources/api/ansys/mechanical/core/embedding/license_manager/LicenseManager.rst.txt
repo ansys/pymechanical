@@ -57,7 +57,9 @@ Overview
           * - :py:attr:`~set_license_status`
             - Set the status of a license and save the preference.
           * - :py:attr:`~show`
-            - Print all active licenses.
+            - Print all licenses and their status.
+          * - :py:attr:`~get_current_licenses`
+            - Return the currently active (checked-out) licenses.
           * - :py:attr:`~disable_session_license`
             - Disable active license for current session.
           * - :py:attr:`~enable_session_license`
@@ -173,12 +175,40 @@ Method detail
 .. py:method:: show() -> None
 
    
-   Print all active licenses.
+   Print all licenses and their status.
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: get_current_licenses() -> list[str]
+
+   
+   Return the currently active (checked-out) licenses.
+
+   Requires Mechanical 271 or later.
+
+
+
+
+   :Returns:
+
+       :class:`python:list`\[:class:`python:str`]
+           Names of the currently active licenses.
 
 
 

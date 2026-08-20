@@ -226,7 +226,7 @@ Import material from xml file and assign it to bodies
  .. code-block:: none
 
 
-    <System.Collections.Generic.List[Material] object at 0x7fd038313440>
+    <System.Collections.Generic.List[Material] object at 0x7f7db85d6dc0>
 
 
 
@@ -804,7 +804,7 @@ Clean up the project
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 30.483 seconds)
+   **Total running time of the script:** (0 minutes 31.281 seconds)
 
 
 .. _sphx_glr_download_examples_gallery_examples_01_basic_cooling_holes_thermal_analysis.py:
