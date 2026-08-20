@@ -1,20 +1,25 @@
 
 .. title:: PyMechanical
 
-.. image:: /_static/logo/pymechanical-logo-light.png
-   :class: only-light
-   :alt: PyMechanical Logo Light
-   :width: 580px
-   :align: center
+.. raw:: html
 
-.. image:: /_static/logo/pymechanical-logo-dark.png
-   :class: only-dark
-   :alt: PyMechanical Logo Dark
-   :width: 580px
-   :align: center
+   <div class="pymechanical-banner">
+     <div class="pymechanical-banner-content">
+       <h2>PyMechanical</h2>
+       <p>
+         Python API to interact with Ansys Mechanical (2024 R2 or later) for,
+         making automation, scripting, and integration easier for engineers and developers.
+       </p>
+       <a href="getting_started/index.html" class="btn-banner">Get started</a>
+       <a href="user_guide/index.html" class="btn-banner">User guide</a>
+       <a href="examples/index.html" class="btn-banner">Examples</a>
+       <a href="api/ansys/mechanical/core/index.html" class="btn-banner">API reference</a>
+       <a href="faq.html" class="btn-banner">FAQs</a>
+       <a href="kil/index.html" class="btn-banner">Known issues</a>
+       <a href="contribute.html" class="btn-banner">Contribute</a>
+     </div>
+   </div>
 
-
-Python API to interact with `Ansys Mechanical`_ (FEA software for structural engineering) in **2024 R2 and later**.
 
 
 PyMechanical provides two distinct modes of interacting with Mechanical.
@@ -116,33 +121,33 @@ If you are not sure which mode to pick, see :doc:`getting_started/choose_your_mo
 
         :bdg-info:`Classes` :bdg-info:`Methods` :bdg-info:`Error handling`
 
-    .. grid-item-card:: FAQs :fa:`fa-solid fa-circle-question`
-        :padding: 2 2 2 2
-        :link: faq
-        :link-type: doc
+..     .. grid-item-card:: FAQs :fa:`fa-solid fa-circle-question`
+..         :padding: 2 2 2 2
+..         :link: faq
+..         :link-type: doc
 
-        Frequently asked questions and their answers.
+..         Frequently asked questions and their answers.
 
-        :bdg-info:`How` :bdg-info:`Why` :bdg-info:`What`
+..         :bdg-info:`How` :bdg-info:`Why` :bdg-info:`What`
 
-    .. grid-item-card:: Known issues and limitations :fa:`fa-solid fa-bug`
-        :padding: 2 2 2 2
-        :link: kil/index
-        :link-type: doc
+..     .. grid-item-card:: Known issues and limitations :fa:`fa-solid fa-bug`
+..         :padding: 2 2 2 2
+..         :link: kil/index
+..         :link-type: doc
 
-        See issues and limitations for both PyMechanical and Mechanical.
+..         See issues and limitations for both PyMechanical and Mechanical.
 
-        :bdg-info:`24R2` :bdg-info:`25R1` :bdg-info:`25R2` :bdg-info:`26R1`
+..         :bdg-info:`24R2` :bdg-info:`25R1` :bdg-info:`25R2` :bdg-info:`26R1`
 
-    .. grid-item-card:: Contribute :fa:`people-group`
-        :padding: 2 2 2 2
-        :link: contribute
-        :link-type: doc
+..     .. grid-item-card:: Contribute :fa:`people-group`
+..         :padding: 2 2 2 2
+..         :link: contribute
+..         :link-type: doc
 
-        Learn how to contribute to the PyMechanical codebase
-        or documentation.
+..         Learn how to contribute to the PyMechanical codebase
+..         or documentation.
 
-        :bdg-info:`Test` :bdg-info:`Documentation` :bdg-info:`Issues`
+..         :bdg-info:`Test` :bdg-info:`Documentation` :bdg-info:`Issues`
 
 
 
