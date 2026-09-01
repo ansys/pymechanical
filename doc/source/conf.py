@@ -267,12 +267,12 @@ html_theme_options = {
         "changelog_file_name": "changelog.rst",
         "sidebar_pages": ["changelog"],
     },
-    "search_extra_sources": {
-        "PyMechanical MCP": "https://mechanical-mcp.docs.pyansys.com/",
-        "PyMechanical Examples: Remote session": "https://examples.mechanical.docs.pyansys.com/",
-        "PyMechanical Advanced Examples: Embedding": "https://embedding.examples.mechanical.docs.pyansys.com/",
+    "ansys_sphinx_theme_autoapi": {"project": project},
+    "news_resources": {
+        "pages": ["index"],
+        "link": "news-and-resources",
+        "title": "News and resources",
     },
-    "secondary_sidebar_items": [],
 }
 
 
