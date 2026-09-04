@@ -1,0 +1,238 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+  <id>https://mechanical.docs.pyansys.com/</id>
+  <title>PyMechanical Blog</title>
+  <updated>2026-09-04T15:10:34.225951+00:00</updated>
+  <link href="https://mechanical.docs.pyansys.com/"/>
+  <link href="https://mechanical.docs.pyansys.com/blog/atom.xml" rel="self"/>
+  <generator uri="https://ablog.readthedocs.io/" version="0.11.13">ABlog</generator>
+  <entry>
+    <id>https://mechanical.docs.pyansys.com/blog/linux-mechanical-docker-cicd.html</id>
+    <title>Run PyMechanical embedding in CI/CD with a Linux Mechanical image</title>
+    <updated>2026-08-04T00:00:00+00:00</updated>
+    <author>
+      <name>Ansys</name>
+    </author>
+    <content type="html">&lt;section id="run-pymechanical-embedding-in-ci-cd-with-a-linux-mechanical-image"&gt;
+&lt;span id="blog-docker-embedding-cicd"&gt;&lt;/span&gt;
+&lt;p&gt;Containerizing Mechanical lets you reproduce simulation environments
+reliably across developer machines and CI runners without managing
+Ansys installations on every host. This post shows how to build a
+minimal Linux image and plug it into a GitHub Actions pipeline using
+PyMechanical’s embedding mode.&lt;/p&gt;
+&lt;section id="workflow-overview"&gt;
+&lt;h2&gt;Workflow overview&lt;/h2&gt;
+&lt;p&gt;The process splits into two phases: &lt;strong&gt;build once&lt;/strong&gt; on a local Linux
+machine, then &lt;strong&gt;run on every CI commit&lt;/strong&gt;.&lt;/p&gt;
+&lt;pre  class="mermaid"&gt;
+        flowchart TB
+    subgraph build [&amp;quot;Build phase (local, one-time)&amp;quot;]
+        direction LR
+        A([&amp;quot;Download installer\nCustomer Portal&amp;quot;]) --&amp;gt; B([&amp;quot;Install Mechanical\nUbuntu 22.04&amp;quot;])
+        B --&amp;gt; C([&amp;quot;docker build&amp;quot;])
+        C --&amp;gt; D([&amp;quot;Push to registry\nGHCR / private&amp;quot;])
+    end
+
+    subgraph ci [&amp;quot;CI/CD phase (every commit)&amp;quot;]
+        direction LR
+        E([&amp;quot;Pull image&amp;quot;]) --&amp;gt; F([&amp;quot;Run container\nbash entrypoint&amp;quot;])
+        F --&amp;gt; G([&amp;quot;xvfb-run mechanical-env\npython simulate.py&amp;quot;])
+        G --&amp;gt; H([&amp;quot;Upload artifacts&amp;quot;])
+    end
+
+    D --&amp;gt; E
+
+    classDef buildNode fill:#e8f0fe,stroke:#4a6fa5,stroke-width:1px,color:#1a237e
+    classDef ciNode fill:#e6f4ea,stroke:#3d8b5f,stroke-width:1px,color:#1b5e20
+
+    class A,B,C,D buildNode
+    class E,F,G,H ciNode
+
+    style build fill:#f4f7fc,stroke:#4a6fa5,stroke-width:1px
+    style ci fill:#f2f9f4,stroke:#3d8b5f,stroke-width:1px
+    &lt;/pre&gt;&lt;/section&gt;
+&lt;section id="part-1-build-the-mechanical-docker-image"&gt;
+&lt;h2&gt;Part 1: Build the Mechanical Docker image&lt;/h2&gt;
+&lt;section id="requirements"&gt;
+&lt;h3&gt;Requirements&lt;/h3&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;p&gt;Ubuntu 22.04 machine with Docker installed&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Valid Ansys account to download the installer from
+&lt;a class="reference external" href="https://download.ansys.com"&gt;download.ansys.com&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;The &lt;a class="reference external" href="https://github.com/ansys/pymechanical"&gt;PyMechanical repository&lt;/a&gt;
+cloned locally (provides the &lt;code class="docutils literal notranslate"&gt;&lt;span class="pre"&gt;Dockerfile&lt;/span&gt;&lt;/code&gt; and &lt;code class="docutils literal notranslate"&gt;&lt;span class="pre"&gt;.dockerignore&lt;/span&gt;&lt;/code&gt;)&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/section&gt;
+&lt;section id="steps"&gt;
+&lt;h3&gt;Steps&lt;/h3&gt;
+&lt;p&gt;Install Mechanical on your Ubuntu machine. To keep the image small,
+install only the Mechanical and LS-DYNA solvers:&lt;/p&gt;
+&lt;div class="highlight-console notranslate"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="go"&gt;sh /path/to/INSTALL \&lt;/span&gt;
+&lt;span class="go"&gt;    -silent -overwrite_preview -mechapdl -lsdyna \&lt;/span&gt;
+&lt;span class="go"&gt;    -install_dir /install/ansys_inc/&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Then build and push the image. Replace &lt;code class="docutils literal notranslate"&gt;&lt;span class="pre"&gt;261&lt;/span&gt;&lt;/code&gt; with your version number:&lt;/p&gt;
+&lt;div class="highlight-console notranslate"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="go"&gt;export VERSION=261&lt;/span&gt;
+&lt;span class="go"&gt;export TAG=ghcr.io/your-org/mechanical:v${VERSION}&lt;/span&gt;
+
+&lt;span class="gp"&gt;# &lt;/span&gt;Go&lt;span class="w"&gt; &lt;/span&gt;to&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;directory&lt;span class="w"&gt; &lt;/span&gt;where&lt;span class="w"&gt; &lt;/span&gt;Mechanical&lt;span class="w"&gt; &lt;/span&gt;is&lt;span class="w"&gt; &lt;/span&gt;installed
+&lt;span class="go"&gt;cd /install/&lt;/span&gt;
+
+&lt;span class="gp"&gt;# &lt;/span&gt;Copy&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;Dockerfile&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt; &lt;/span&gt;.dockerignore&lt;span class="w"&gt; &lt;/span&gt;from&lt;span class="w"&gt; &lt;/span&gt;the&lt;span class="w"&gt; &lt;/span&gt;PyMechanical&lt;span class="w"&gt; &lt;/span&gt;repo
+&lt;span class="go"&gt;cp /path/to/pymechanical/docker/${VERSION}/Dockerfile .&lt;/span&gt;
+&lt;span class="go"&gt;cp /path/to/pymechanical/docker/${VERSION}/.dockerignore .&lt;/span&gt;
+
+&lt;span class="gp"&gt;# &lt;/span&gt;Build&lt;span class="w"&gt; &lt;/span&gt;and&lt;span class="w"&gt; &lt;/span&gt;push
+&lt;span class="go"&gt;docker build -t ${TAG} --build-arg VERSION=${VERSION} .&lt;/span&gt;
+&lt;span class="go"&gt;docker push ${TAG}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;The
+&lt;a class="reference external" href="https://github.com/ansys/pymechanical/tree/main/docker/261/Dockerfile"&gt;Dockerfile&lt;/a&gt;
+copies the installation directory into an Ubuntu 22.04 base image and sets the
+required environment variables and virtual display configuration.&lt;/p&gt;
+&lt;/section&gt;
+&lt;/section&gt;
+&lt;section id="part-2-use-the-image-in-github-actions-embedding-mode"&gt;
+&lt;h2&gt;Part 2: Use the image in GitHub Actions (embedding mode)&lt;/h2&gt;
+&lt;p&gt;Set the Mechanical image as the job &lt;code class="docutils literal notranslate"&gt;&lt;span class="pre"&gt;container&lt;/span&gt;&lt;/code&gt; and override the
+entrypoint to &lt;code class="docutils literal notranslate"&gt;&lt;span class="pre"&gt;/bin/bash&lt;/span&gt;&lt;/code&gt;. This lets the CI step run arbitrary
+commands inside the container instead of starting the gRPC server.&lt;/p&gt;
+&lt;div class="highlight-yaml notranslate"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;jobs&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nt"&gt;simulate&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nt"&gt;runs-on&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;ubuntu-latest&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nt"&gt;container&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="nt"&gt;image&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;ghcr.io/your-org/mechanical:v261&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="nt"&gt;options&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;--entrypoint /bin/bash&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="nt"&gt;steps&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;uses&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;actions/checkout@v4&lt;/span&gt;
+
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;Set up Python and install PyMechanical&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nt"&gt;env&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="nt"&gt;DEBIAN_FRONTEND&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;noninteractive&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="nt"&gt;TZ&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;Etc/UTC&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nt"&gt;run&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p p-Indicator"&gt;|&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="no"&gt;apt update&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="no"&gt;apt install -y git curl&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="no"&gt;curl -LsSf https://astral.sh/uv/install.sh | sh&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="no"&gt;export PATH="$HOME/.local/bin:$PATH"&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="no"&gt;uv python install python3.12&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="no"&gt;uv venv .venv&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="no"&gt;. .venv/bin/activate&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="no"&gt;uv pip install --upgrade pip&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="no"&gt;uv pip install ansys-mechanical-core&lt;/span&gt;
+
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;Run simulation&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nt"&gt;env&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="nt"&gt;ANSYSLMD_LICENSE_FILE&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;1055@${{ secrets.LICENSE_SERVER }}&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nt"&gt;run&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p p-Indicator"&gt;|&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="no"&gt;export PATH="$HOME/.local/bin:$PATH"&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="no"&gt;. .venv/bin/activate&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="no"&gt;xvfb-run mechanical-env python simulate.py&lt;/span&gt;
+
+&lt;span class="w"&gt;      &lt;/span&gt;&lt;span class="p p-Indicator"&gt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;Upload results&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nt"&gt;uses&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;actions/upload-artifact@v4&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nt"&gt;with&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;results&lt;/span&gt;
+&lt;span class="w"&gt;          &lt;/span&gt;&lt;span class="nt"&gt;path&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l l-Scalar l-Scalar-Plain"&gt;results/&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;code class="docutils literal notranslate"&gt;&lt;span class="pre"&gt;mechanical-env&lt;/span&gt;&lt;/code&gt; sets the environment variables that PyMechanical needs
+to locate the Mechanical installation.
+&lt;code class="docutils literal notranslate"&gt;&lt;span class="pre"&gt;xvfb-run&lt;/span&gt;&lt;/code&gt; provides an in-memory virtual display — required because
+Mechanical initializes OpenGL even in batch mode.&lt;/p&gt;
+&lt;p&gt;Your simulation script uses the standard embedding API:&lt;/p&gt;
+&lt;div class="highlight-python notranslate"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;ansys.mechanical.core&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;App&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;pathlib&lt;/span&gt;
+
+&lt;span class="n"&gt;RESULTS_DIR&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pathlib&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Path&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"results"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;RESULTS_DIR&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mkdir&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;exist_ok&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;App&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;globals&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;globals&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Set up the model&lt;/span&gt;
+&lt;span class="n"&gt;Model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;AddStaticStructuralAnalysis&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="c1"&gt;# ... geometry, materials, mesh, boundary conditions&lt;/span&gt;
+
+&lt;span class="n"&gt;Model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Analyses&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Solution&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Solve&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Save results&lt;/span&gt;
+&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;save&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;RESULTS_DIR&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="s2"&gt;"model.mechdb"&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/section&gt;
+&lt;section id="key-points"&gt;
+&lt;h2&gt;Key points&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;No license file in the image.&lt;/strong&gt; Pass &lt;code class="docutils literal notranslate"&gt;&lt;span class="pre"&gt;ANSYSLMD_LICENSE_FILE&lt;/span&gt;&lt;/code&gt; at
+runtime via an environment variable or a GitHub Actions secret.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Embedding mode runs in-process.&lt;/strong&gt; There is no separate gRPC server to
+start or port to expose, which simplifies the pipeline.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Match versions.&lt;/strong&gt; The Mechanical version in the image must match the
+PyMechanical package you install. Mismatches cause &lt;code class="docutils literal notranslate"&gt;&lt;span class="pre"&gt;App()&lt;/span&gt;&lt;/code&gt; to fail
+at initialisation.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/section&gt;
+&lt;section id="why-this-workflow-benefits-mechanical-customers"&gt;
+&lt;h2&gt;Why this workflow benefits Mechanical customers&lt;/h2&gt;
+&lt;section id="reproducible-simulation-environments"&gt;
+&lt;h3&gt;Reproducible simulation environments&lt;/h3&gt;
+&lt;p&gt;Pinning a specific Mechanical version in a Docker image eliminates
+“works on my machine” failures. Every engineer on the team and every CI
+runner executes simulations against the same solver binary, libraries,
+and environment variables, so result differences are always caused by
+model changes, not environment drift.&lt;/p&gt;
+&lt;/section&gt;
+&lt;section id="faster-setup-for-new-contributors"&gt;
+&lt;h3&gt;Faster setup for new contributors&lt;/h3&gt;
+&lt;p&gt;A new team member or a fresh CI runner needs only Docker and a registry
+credential to start running simulations. There is no manual Ansys
+installer wizard, no environment variable configuration, and no concern
+about incompatible system libraries.&lt;/p&gt;
+&lt;/section&gt;
+&lt;section id="traceable-results"&gt;
+&lt;h3&gt;Traceable results&lt;/h3&gt;
+&lt;p&gt;Because the image tag is pinned in the workflow YAML (for example,
+&lt;code class="docutils literal notranslate"&gt;&lt;span class="pre"&gt;mechanical:v261&lt;/span&gt;&lt;/code&gt;), every simulation result in your artifact store
+is linked to an exact solver version. Reproducing a result from six
+months ago is as simple as checking out the commit and re-running the
+pipeline.&lt;/p&gt;
+&lt;/section&gt;
+&lt;section id="safe-solver-upgrades"&gt;
+&lt;h3&gt;Safe solver upgrades&lt;/h3&gt;
+&lt;p&gt;Upgrading Mechanical is a controlled, reviewable change: build a new
+image, update one line in the workflow YAML, open a pull request, and
+run the full regression suite before merging. There is no risk of an
+unintended solver update affecting production simulation results.&lt;/p&gt;
+&lt;/section&gt;
+&lt;section id="lower-infrastructure-cost"&gt;
+&lt;h3&gt;Lower infrastructure cost&lt;/h3&gt;
+&lt;p&gt;Linux container runners are cheaper than Windows runners on most CI
+platforms and require no GUI license server infrastructure. Embedding
+mode also avoids the network overhead of a gRPC remote session, so
+simulations start faster and use fewer system resources per job.&lt;/p&gt;
+&lt;/section&gt;
+&lt;/section&gt;
+&lt;section id="see-also"&gt;
+&lt;h2&gt;See also&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;p&gt;&lt;a class="reference internal" href="getting_started/docker.html"&gt;&lt;span class="doc"&gt;Using Mechanical through Docker&lt;/span&gt;&lt;/a&gt;: advanced Docker configuration options&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a class="reference internal" href="user_guide/embedding/overview.html"&gt;&lt;span class="doc"&gt;Overview&lt;/span&gt;&lt;/a&gt;: full embedding API reference&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/section&gt;
+&lt;/section&gt;
+</content>
+    <link href="https://mechanical.docs.pyansys.com/blog/linux-mechanical-docker-cicd.html"/>
+    <summary>Containerizing Mechanical lets you reproduce simulation environments
+reliably across developer machines and CI runners without managing
+Ansys installations on every host. This post shows how to build a
+minimal Linux image and plug it into a GitHub Actions pipeline using
+PyMechanical’s embedding mode.</summary>
+    <category term="ci-cd" label="ci-cd"/>
+    <category term="docker" label="docker"/>
+    <category term="embedding" label="embedding"/>
+    <category term="linux" label="linux"/>
+    <published>2026-08-04T00:00:00+00:00</published>
+  </entry>
+</feed>

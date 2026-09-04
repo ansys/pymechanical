@@ -1,0 +1,98 @@
+
+
+
+
+
+
+:class:`ScenegraphNodeVisitor`
+==============================
+
+
+.. py:class:: ansys.mechanical.core.embedding.graphics.embedding_plotter.ScenegraphNodeVisitor(app, plot_settings: PlotSettings)
+
+   
+   Class to visit the Mechanical scenegraph nodes.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: ScenegraphNodeVisitor
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~visit_node`
+            - Visit an arbitrary node.
+
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.mechanical.core.embedding.graphics.embedding_plotter import ScenegraphNodeVisitor
+
+
+
+Method detail
+-------------
+
+.. py:method:: visit_node(node: Ansys.Mechanical.Scenegraph.Node) -> Plottable
+
+   
+   Visit an arbitrary node.
+
+   Return a plottable object of that node.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
