@@ -1,4 +1,18 @@
 fragments:
+- title: Model Context Protocol integration
+  version: 0.13.0
+  content: |
+    PyMechanical now provides an optional ``mcp`` extra for integrating Mechanical with AI
+    assistants through the `Model Context Protocol (MCP) <https://modelcontextprotocol.io/>`_.
+    The extra installs `PyMechanical-MCP <https://mechanical-mcp.docs.pyansys.com/>`_.
+
+    Usage:
+    .. code:: shell
+
+       pip install ansys-mechanical-core[mcp]
+
+    For complete details, see the `PyMechanical-MCP documentation <https://mechanical-mcp.docs.pyansys.com/>`_.
+
 - title: Helper functions for common workflows
   version: 0.12.6
   content: |
