@@ -177,7 +177,7 @@ jobs:
       contents: write        # Required to push documentation to gh-pages branch
       pull-requests: write   # Needed to comment on PR with documentation link
     steps:
-      - uses: ansys/actions/doc-deploy-pr@7e89e00c5619374a1da8c2e876309d8b15ff0559 # v11.0.3
+      - uses: ansys/actions/doc-deploy-pr@7e7af221736bc4d9fb84a2ab28f99518e9bca84c # v11.0.5
         with:
           cname: ${{ vars.DOCUMENTATION_CNAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -222,7 +222,7 @@ jobs:
       id-token: write      # Needed for OIDC authentication when generating attestations
     steps:
       - name: Build library source and wheel artifacts
-        uses: ansys/actions/build-library@7e89e00c5619374a1da8c2e876309d8b15ff0559 # v11.0.3
+        uses: ansys/actions/build-library@7e7af221736bc4d9fb84a2ab28f99518e9bca84c # v11.0.5
         with:
           library-name: ${{ vars.PACKAGE_NAME }}
           python-version: ${{ vars.MAIN_PYTHON_VERSION }}
@@ -239,7 +239,7 @@ jobs:
       contents: write  # Needed to create GitHub releases and upload assets
     steps:
       - name: Release to GitHub
-        uses: ansys/actions/release-github@7e89e00c5619374a1da8c2e876309d8b15ff0559 # v11.0.3
+        uses: ansys/actions/release-github@7e7af221736bc4d9fb84a2ab28f99518e9bca84c # v11.0.5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           library-name: ${{ vars.PACKAGE_NAME }}
@@ -278,7 +278,7 @@ jobs:
       contents: write  # Required to push documentation to gh-pages branch
     steps:
       - name: Deploy the latest documentation
-        uses: ansys/actions/doc-deploy-dev@7e89e00c5619374a1da8c2e876309d8b15ff0559 # v11.0.3
+        uses: ansys/actions/doc-deploy-dev@7e7af221736bc4d9fb84a2ab28f99518e9bca84c # v11.0.5
         with:
           cname: ${{ vars.DOCUMENTATION_CNAME }}
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
