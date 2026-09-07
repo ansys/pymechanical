@@ -1,0 +1,85 @@
+
+
+
+
+
+
+:class:`PlotSettings`
+=====================
+
+
+.. py:class:: ansys.mechanical.core.embedding.graphics.embedding_plotter.PlotSettings
+
+   
+   Settings for a plot.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: PlotSettings
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+
+   .. tab-item:: Attributes
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~displacement_scale_factor`
+            - 
+          * - :py:attr:`~point_size`
+            - 
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.mechanical.core.embedding.graphics.embedding_plotter import PlotSettings
+
+
+Attribute detail
+----------------
+
+.. py:attribute:: displacement_scale_factor
+   :type:  float
+   :value: 1.0
+
+
+.. py:attribute:: point_size
+   :value: 5
+
+
+
+
+
+

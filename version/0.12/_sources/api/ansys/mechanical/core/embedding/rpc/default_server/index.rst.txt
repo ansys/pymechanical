@@ -1,0 +1,87 @@
+
+
+
+
+
+
+The ``default_server.py`` module
+================================
+
+.. py:module:: ansys.mechanical.core.embedding.rpc.default_server
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: default_server
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.mechanical.core.embedding.rpc.default_server.DefaultServiceMethods`
+            - Default service methods for MechanicalEmbeddedServer.
+
+
+          * - :py:obj:`~ansys.mechanical.core.embedding.rpc.default_server.MechanicalDefaultServer`
+            - Default server with default service methods.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> DefaultServiceMethods</api/ansys/mechanical/core/embedding/rpc/default_server/DefaultServiceMethods>
+    <span class="nf nf-cod-symbol_class"></span> MechanicalDefaultServer</api/ansys/mechanical/core/embedding/rpc/default_server/MechanicalDefaultServer>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Remote Procedure Call (RPC) server.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+
