@@ -103,6 +103,13 @@ def pytest_report_header(config):
         "PYMECHANICAL_EMBEDDING",
         "PYMECHANICAL_EXPLICIT_INTERFACE",
         "ANSYS_MECHANICAL_EMBEDDING_SUPPORT_OLD_VERSIONS",
+        # Linux display, graphics, and dynamic loader
+        "DISPLAY",
+        "XDG_RUNTIME_DIR",
+        "LIBGL_ALWAYS_SOFTWARE",
+        "MESA_LOADER_DRIVER_OVERRIDE",
+        "QT_QPA_PLATFORM",
+        "LD_LIBRARY_PATH",
         # Solve / misc
         "NUM_CORES",
     ]
