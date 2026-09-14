@@ -129,7 +129,7 @@ jobs:
           echo "::endgroup::"
 
       - name: Testing
-        uses: ansys/actions/tests-pytest@7e7af221736bc4d9fb84a2ab28f99518e9bca84c # v11.0.5
+        uses: ansys/actions/tests-pytest@7410037bfb276c79ae91eb3617b9f5d2876f0c94 # v11.0.8
         with:
           python-version: ${{ vars.MAIN_PYTHON_VERSION }}
           pytest-markers: '-m remote_session_connect'
