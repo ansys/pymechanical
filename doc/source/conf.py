@@ -272,6 +272,10 @@ html_theme_options = {
         "PyMechanical Examples: Remote session": "https://examples.mechanical.docs.pyansys.com/",
         "PyMechanical Advanced Examples: Embedding": "https://embedding.examples.mechanical.docs.pyansys.com/",
     },
+    "mcp_server": {
+        "url": "https://mechanical-mcp.docs.pyansys.com/",
+        "project_name": "PyMechanical MCP Server",
+    },
     "secondary_sidebar_items": [],
 }
 
