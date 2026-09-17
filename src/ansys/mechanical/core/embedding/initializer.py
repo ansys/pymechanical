@@ -126,10 +126,8 @@ def __windows_store_workaround(version: int) -> None:
 
     See https://github.com/ansys/pymechanical/issues/1136
 
-    Windows store Python and other restricted Python distributions (e.g.
-    ``pythoncore`` from winget) use the Win32 API ``SetDefaultDllDirectories``
-    so that the PATH environment variable isn't scanned for any DLL
-    dependency.
+    Windows Store Python uses the Win32 API ``SetDefaultDllDirectories`` so
+    that the PATH environment variable isn't scanned for any DLL dependency.
 
     PyMechanical loads the embedding library which automatically sets
     these Paths, but this uses the PATH environment variable which doesn't
@@ -150,13 +148,8 @@ def __windows_store_workaround(version: int) -> None:
     if sys.platform != "win32":
         return
 
-    # Nothing to do if it isn't a restricted Python distribution
-    # (Windows Store or pythoncore from winget use SetDefaultDllDirectories)
-    _restricted_prefixes = (
-        r"WindowsApps\PythonSoftwareFoundation",
-        r"pythoncore",
-    )
-    if not any(p in sys.base_prefix for p in _restricted_prefixes):
+    # Nothing to do if it isn't a Windows Store Python distribution.
+    if r"WindowsApps\PythonSoftwareFoundation" not in sys.base_prefix:
         return
 
     # Get the AWP_ROOT environment variable for the specified version
@@ -211,7 +204,8 @@ def __windows_store_workaround(version: int) -> None:
                 awp_root_tp / "IntelCompiler" / "2025.3.2" / "winx64",
                 awp_root_tp / "IntelMKL" / "2024.2.3" / "winx64",
                 awp_root_tp / "hdf5" / "winx64",
-                awp_root_tp / "qt" / "5.15.19" / "winx64" / "bin",
+                awp_root_tp / "libtorch" / "2.11" / "winx64" / "lib",
+                awp_root_tp / "qt" / "6.8.8" / "winx64" / "bin",
             ]
         )
     else:
