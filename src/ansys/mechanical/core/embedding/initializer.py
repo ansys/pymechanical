@@ -131,7 +131,7 @@ def __windows_store_workaround(version: int) -> None:
 
     PyMechanical loads the embedding library which automatically sets
     these Paths, but this uses the PATH environment variable which doesn't
-    work for these restricted Python distributions.
+    work for Windows store Python.
 
     We provide a workaround for versions 2024R2 and later that sets
     these paths using `os.add_dll_directory`.
