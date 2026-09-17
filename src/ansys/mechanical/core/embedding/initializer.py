@@ -242,8 +242,8 @@ def __check_for_mechanical_env():
     """Embedding in linux platform must use mechanical-env."""
     if platform.system() == "Linux" and os.environ.get("PYMECHANICAL_EMBEDDING") != "TRUE":
         raise RuntimeError(
-            "On linux, embedding an instance of the Mechanical process using"
-            "the App class requires running python inside of a Mechanical environment."
+            "On linux, embedding an instance of the Mechanical process using "
+            "the App class requires running python inside of a Mechanical environment. "
             "Use the `mechanical-env` script to do this. For more information, refer to:"
             "https://mechanical.docs.pyansys.com/version/stable/"
             "getting_started/running_mechanical.html#embed-a-mechanical-instance"
