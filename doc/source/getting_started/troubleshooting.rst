@@ -11,23 +11,25 @@ Manually set the executable location
 
 If PyMechanical cannot find your installation, set the path manually:
 
-**On Windows**
+.. tab-set::
 
-.. code-block:: python
+    .. tab-item:: Windows
 
-    from ansys.mechanical.core import launch_mechanical
+        .. code-block:: python
 
-    exec_loc = "C:/Program Files/ANSYS Inc/v{mechanical_version}/aisol/bin/winx64/AnsysWBU.exe"
-    mechanical = launch_mechanical(exec_file=exec_loc)
+            from ansys.mechanical.core import launch_mechanical
 
-**On Linux**
+            exec_loc = "C:/Program Files/ANSYS Inc/v{mechanical_version}/aisol/bin/winx64/AnsysWBU.exe"
+            mechanical = launch_mechanical(exec_file=exec_loc)
 
-.. code-block:: python
+    .. tab-item:: Linux
 
-    from ansys.mechanical.core import launch_mechanical
+        .. code-block:: python
 
-    exec_loc = "/usr/ansys_inc/v{mechanical_version}/aisol/.workbench"
-    mechanical = launch_mechanical(exec_file=exec_loc)
+            from ansys.mechanical.core import launch_mechanical
+
+            exec_loc = "/usr/ansys_inc/v{mechanical_version}/aisol/.workbench"
+            mechanical = launch_mechanical(exec_file=exec_loc)
 
 If Mechanical still fails to launch, pass ``verbose_mechanical=True`` to print
 debug output to the Python console.
@@ -119,6 +121,6 @@ Ansys has an extensive developer ecosystem where you can find assistance for a v
 
 - `Developer Portal <https://developer.ansys.com/>`_: Blog posts, documentation, and guide
   - `Developer Forum <https://discuss.ansys.com/>`_: Scripting and usage support for PyAnsys and other Ansys developer tools
-- `Ansys Innovation Space <https://innovationspace.ansys.com/>`_: Product support forum and training materials
+- `Ansys Innovation Space <https://innovation.ansys.com/public/>`_: Product support forum and training materials
 - `GitHub <https://github.com/ansys/pymechanical>`_: Development support, bug reporting, feature requests, and more.
 - `Ansys Learning Hub <https://learninghub.ansys.com/>`_: Training, courses and learning plans

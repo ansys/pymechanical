@@ -97,29 +97,29 @@ Embedding mode
 In embedding mode, Mechanical uses `Python.NET <https://pythonnet.github.io/>`__.
 to run directly inside your Python process. This gives you full object-model access with no network overhead.
 
-Launch on Windows
-~~~~~~~~~~~~~~~~~
+.. tab-set::
 
-.. code:: pycon
+    .. tab-item:: Windows
 
-    >>> from ansys.mechanical.core import App
-    >>> app = App()
-    >>> app
-    Ansys Mechanical [Ansys Mechanical Enterprise]
-    Product Version:{mechanical_version}
-    Software build date: {build_date}
+        .. code:: pycon
 
-Launch on Linux
-~~~~~~~~~~~~~~~
+            >>> from ansys.mechanical.core import App
+            >>> app = App()
+            >>> app
+            Ansys Mechanical [Ansys Mechanical Enterprise]
+            Product Version:{mechanical_version}
+            Software build date: {build_date}
 
-On Linux, certain environment variables must be set before Python starts.
-Use the ``mechanical-env`` script shipped with PyMechanical:
+    .. tab-item:: Linux
 
-.. code:: shell
+        On Linux, certain environment variables must be set before Python starts.
+        Use the ``mechanical-env`` script shipped with PyMechanical:
 
-   $ mechanical-env python
+        .. code:: shell
 
-Then use the same Python code as on Windows.
+           $ mechanical-env python
+
+        Then use the same Python code as on Windows.
 
 For more on embedding, see the :ref:`Embedding mode user guide <ref_embedding_user_guide>`.
 

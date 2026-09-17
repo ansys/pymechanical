@@ -110,9 +110,9 @@ jobs:
       pull-requests: write   # Needed to comment on PR with changelog information
     runs-on: ubuntu-latest
     steps:
-    - uses: ansys/actions/doc-changelog@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2 # v10.3.6
+    - uses: ansys/actions/doc-changelog@7410037bfb276c79ae91eb3617b9f5d2876f0c94 # v11.0.8
       with:
         token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
-        use-conventional-commits: true
+        use-pull-request-title: true
         bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
         bot-email: ${{ secrets.PYANSYS_CI_BOT_EMAIL }}

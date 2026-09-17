@@ -44,7 +44,7 @@ jobs:
       checks: write   # Needed to publish test results and status checks
     steps:
       - name: Login in Github Container registry
-        uses: docker/login-action@371161bbe7024a29a25c5e19bfcbc0804fe9ad2c # v4.5.2
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -129,14 +129,14 @@ jobs:
           echo "::endgroup::"
 
       - name: Testing
-        uses: ansys/actions/tests-pytest@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2 # v10.3.6
+        uses: ansys/actions/tests-pytest@7410037bfb276c79ae91eb3617b9f5d2876f0c94 # v11.0.8
         with:
           python-version: ${{ vars.MAIN_PYTHON_VERSION }}
           pytest-markers: '-m remote_session_connect'
           pytest-extra-args: '-s --junitxml remote_results${{ vars.MAIN_PYTHON_VERSION }}.xml'
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@d9f48fc87bc235f7e214acf696ca5abc0a986f16 # v6.4.2
+        uses: mikepenz/action-junit-report@a9170d5795813c01ab4901ffb045b52bab4ab09d # v6.5.0
         if: always()
         with:
           report_paths: '**/remote_results*.xml'
@@ -217,7 +217,7 @@ jobs:
           artifact-name: tests-embedding
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@d9f48fc87bc235f7e214acf696ca5abc0a986f16 # v6.4.2
+        uses: mikepenz/action-junit-report@a9170d5795813c01ab4901ffb045b52bab4ab09d # v6.5.0
         if: always()
         with:
           report_paths: '**/test_results*.xml'
@@ -271,7 +271,7 @@ jobs:
           artifact-name: tests-embedding-scripts
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@d9f48fc87bc235f7e214acf696ca5abc0a986f16 # v6.4.2
+        uses: mikepenz/action-junit-report@a9170d5795813c01ab4901ffb045b52bab4ab09d # v6.5.0
         if: always()
         with:
           report_paths: '**/test_results*.xml'
@@ -326,7 +326,7 @@ jobs:
           fi
 
       - name: Publish Launch Test Report
-        uses: mikepenz/action-junit-report@d9f48fc87bc235f7e214acf696ca5abc0a986f16 # v6.4.2
+        uses: mikepenz/action-junit-report@a9170d5795813c01ab4901ffb045b52bab4ab09d # v6.5.0
         if: always()
         with:
           report_paths: '**/launch_test_results*.xml'
