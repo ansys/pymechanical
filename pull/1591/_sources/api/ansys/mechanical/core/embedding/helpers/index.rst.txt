@@ -1,0 +1,80 @@
+
+
+
+
+
+
+The ``helpers.py`` module
+=========================
+
+.. py:module:: ansys.mechanical.core.embedding.helpers
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: helpers
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.mechanical.core.embedding.helpers.Helpers`
+            - Helper utilities for Mechanical embedding application.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> Helpers</api/ansys/mechanical/core/embedding/helpers/Helpers>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Helper functions for Embedded App.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+
