@@ -1,0 +1,101 @@
+
+
+
+
+
+
+The ``server.py`` module
+========================
+
+.. py:module:: ansys.mechanical.core.embedding.rpc.server
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: server
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.mechanical.core.embedding.rpc.server.ForegroundAppBackend`
+            - Backend for the python server where mechanical uses the main thread.
+
+
+          * - :py:obj:`~ansys.mechanical.core.embedding.rpc.server.BackgroundAppBackend`
+            - Backend for the python server where mechanical uses the background thread.
+
+
+          * - :py:obj:`~ansys.mechanical.core.embedding.rpc.server.MechanicalService`
+            - Starts Mechanical app services.
+
+
+          * - :py:obj:`~ansys.mechanical.core.embedding.rpc.server.MechanicalEmbeddedServer`
+            - Start rpc server.
+
+
+
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> ForegroundAppBackend</api/ansys/mechanical/core/embedding/rpc/server/ForegroundAppBackend>
+    <span class="nf nf-cod-symbol_class"></span> BackgroundAppBackend</api/ansys/mechanical/core/embedding/rpc/server/BackgroundAppBackend>
+    <span class="nf nf-cod-symbol_class"></span> MechanicalService</api/ansys/mechanical/core/embedding/rpc/server/MechanicalService>
+    <span class="nf nf-cod-symbol_class"></span> MechanicalEmbeddedServer</api/ansys/mechanical/core/embedding/rpc/server/MechanicalEmbeddedServer>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Remote Procedure Call (RPC) server.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+
