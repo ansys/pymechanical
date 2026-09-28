@@ -1,0 +1,35 @@
+{
+    "00_basic/example_01_simple_structural_solve.py": [
+        "ansys.mechanical.core.embedding.messages.MessageManager.remove",
+        "ansys.mechanical.core.mechanical.Mechanical.name"
+    ],
+    "00_basic/example_02_capture_images.py": [
+        "ansys.mechanical.core.mechanical.Mechanical.name"
+    ],
+    "00_basic/example_03_show_object_properties.py": [
+        "ansys.mechanical.core.mechanical.Mechanical.name"
+    ],
+    "01_tips_n_tricks/example_01_run_python_script_output.py": [],
+    "01_tips_n_tricks/example_02_run_python_script_scope.py": [],
+    "basic/example_06_bolt_pretension.py": [
+        "ansys.mechanical.core.embedding.messages.MessageManager.remove",
+        "ansys.mechanical.core.mechanical.Mechanical.name"
+    ],
+    "basic/example_08_lsdyna_taylor_bar.py": [
+        "ansys.mechanical.core.embedding.app.App.open",
+        "ansys.mechanical.core.embedding.app.App.plot",
+        "ansys.mechanical.core.embedding.messages.MessageManager.remove",
+        "ansys.mechanical.core.mechanical.Mechanical.name"
+    ],
+    "basic/example_09_tracemapping.py": [
+        "ansys.mechanical.core.mechanical.Mechanical.name"
+    ],
+    "technology_showcase/example_05_td_026.py": [
+        "ansys.mechanical.core.embedding.messages.MessageManager.remove",
+        "ansys.mechanical.core.mechanical.Mechanical.name"
+    ],
+    "technology_showcase/example_07_td_043.py": [
+        "ansys.mechanical.core.embedding.messages.MessageManager.remove",
+        "ansys.mechanical.core.mechanical.Mechanical.name"
+    ]
+}
