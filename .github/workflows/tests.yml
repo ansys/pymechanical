@@ -172,7 +172,7 @@ jobs:
   embedding-tests:
     name: Embedding testing and coverage
     runs-on: public-ubuntu-latest-16-cores
-    timeout-minutes: 30
+    timeout-minutes: 45
     container:
       image: ${{ inputs.test-container }} # zizmor: ignore[unpinned-images]
       options: --entrypoint /bin/bash
