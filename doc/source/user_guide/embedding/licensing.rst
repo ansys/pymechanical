@@ -58,8 +58,6 @@ These licenses provide full solve capabilities:
      - Ansys Mechanical Pro
    * - ``mech_2``
      - Ansys Mechanical Premium
-   * - ``meba``
-     - Ansys Mechanical Enterprise Solver
    * - ``dyna``
      - Ansys LS-DYNA
 
@@ -82,7 +80,7 @@ These licenses provide pre-processing and post-processing capabilities without s
      - Ansys AUTODYN PrepPost
 
 .. note::
-   When specifying a license keyword with ``start_license``, use only the keyword (for example, ``start_license="meba"``).
+   When specifying a license keyword with ``start_license``, use only the keyword (for example, ``start_license="mech_2"``).
    The license names returned by ``get_all_licenses()`` use the full product names (for example, "Ansys Mechanical Premium").
 
 Starting the app
@@ -118,9 +116,6 @@ You can specify which license to check out when starting the app using the ``sta
 .. code-block:: python
 
     from ansys.mechanical.core import App
-
-    # Start with Mechanical Enterprise Solver license
-    app = App(start_license="meba", version={mechanical_version})
 
     # Start with Mechanical Premium license
     app = App(start_license="mech_2", version={mechanical_version})
@@ -324,7 +319,7 @@ you can use the read-only workaround:
     from ansys.mechanical.core import App
 
     # Method 1: Using start_license parameter (recommended)
-    app = App(start_license="meba", version={mechanical_version})  # Forces Mechanical Premium
+    app = App(start_license="mech_2", version={mechanical_version})  # Forces Mechanical Premium
 
     # Method 2: Using read-only workaround
     app = App(readonly=True, version={mechanical_version})  # Start without license
