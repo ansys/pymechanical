@@ -55,18 +55,29 @@ jobs:
         with:
           python-version: ${{ vars.MAIN_PYTHON_VERSION }}
 
-      - name: Generate gRPC certificates
+      - name: Configure Mechanical version
         env:
           MECHANICAL_VERSION: ${{ matrix.mechanical-version }}
         run: |
-          VERSION_MAJOR_MINOR=$(echo ${MECHANICAL_VERSION} | grep -oP '^\d+\.\d+')
-          VERSION_MAJOR=${VERSION_MAJOR_MINOR%%.*}
-          VERSION_MINOR=${VERSION_MAJOR_MINOR#*.}
-          if (( VERSION_MAJOR > 26 || (VERSION_MAJOR == 26 && VERSION_MINOR >= 1) )); then
-            python -m pip install "ansys-tools-common[other]>=0.5.1"
-            python -c "from pathlib import Path; from ansys.tools.common.utils import generate_test_certificates; generate_test_certificates(output_dir=Path('certs'))"
-            echo "ANSYS_GRPC_CERTIFICATES=${GITHUB_WORKSPACE}/certs" >> ${GITHUB_ENV}
+          if [[ ! ${MECHANICAL_VERSION} =~ ^([0-9]+)\.([0-9]+) ]]; then
+            echo "Invalid Mechanical version: ${MECHANICAL_VERSION}"
+            exit 1
           fi
+          VERSION_MAJOR=${BASH_REMATCH[1]}
+          VERSION_MINOR=${BASH_REMATCH[2]}
+          echo "VERSION_PATH=${VERSION_MAJOR}${VERSION_MINOR}" >> ${GITHUB_ENV}
+          if (( VERSION_MAJOR > 26 || (VERSION_MAJOR == 26 && VERSION_MINOR >= 1) )); then
+            echo "SECURE_GRPC=true" >> ${GITHUB_ENV}
+          else
+            echo "SECURE_GRPC=false" >> ${GITHUB_ENV}
+          fi
+
+      - name: Generate gRPC certificates
+        if: env.SECURE_GRPC == 'true'
+        run: |
+          python -m pip install "ansys-tools-common[other]>=0.5.1"
+          python -c "import os; from pathlib import Path; from ansys.tools.common.utils import generate_test_certificates; generate_test_certificates(output_dir=Path(os.environ['RUNNER_TEMP']) / 'grpc-certs')"
+          echo "ANSYS_GRPC_CERTIFICATES=${RUNNER_TEMP}/grpc-certs" >> ${GITHUB_ENV}
 
       - name: Pull, launch, and validate Mechanical service
         env:
@@ -77,20 +88,14 @@ jobs:
         run: |
           docker pull ${MECHANICAL_IMAGE}
 
-          # Extract version without dots for path (e.g., 27.1.0 -> 271, 27.1_candidate -> 271)
-          VERSION_MAJOR_MINOR=$(echo ${MECHANICAL_VERSION} | grep -oP '^\d+\.\d+')
-          VERSION_MAJOR=${VERSION_MAJOR_MINOR%%.*}
-          VERSION_MINOR=${VERSION_MAJOR_MINOR#*.}
-          VERSION_PATH=$(echo ${VERSION_MAJOR_MINOR} | tr -d '.')
-
           # Mechanical 26.1 and later support secure gRPC.
-          if (( VERSION_MAJOR > 26 || (VERSION_MAJOR == 26 && VERSION_MINOR >= 1) )); then
+          if [[ ${SECURE_GRPC} == "true" ]]; then
             echo "Detected version requiring custom entrypoint - using mTLS transport"
             docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} \
               -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} \
               -e ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH=${ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH} \
               -p ${PYMECHANICAL_PORT}:10000 \
-              -v "${PWD}/certs:/certs:ro" \
+              -v "${ANSYS_GRPC_CERTIFICATES}:/certs:ro" \
               --entrypoint="" \
               --security-opt seccomp=unconfined \
               ${MECHANICAL_IMAGE} \
