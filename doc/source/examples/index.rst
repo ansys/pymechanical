@@ -12,6 +12,15 @@ Examples are organized by the mode they use:
 
 If you are not sure which mode to use, see :ref:`ref_choose_your_mode`.
 
+.. important::
+
+   Some examples use Mechanical features that require a specific license level. For example,
+   harmonic acoustics is not available with an Ansys Mechanical Pro license. If an example
+   fails, verify that your Mechanical license supports all analyses and features used by the
+   example. A license-related failure does not necessarily indicate a problem with your
+   PyMechanical setup. For information on inspecting and selecting licenses, see
+   :ref:`ref_licensing`.
+
 .. === EXAMPLES Gallery (Embedding Mode) ===
 
 ..
