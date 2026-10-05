@@ -378,8 +378,12 @@ def connect_to_mechanical_instance(port=None, clear_on_connect=False):
         "clear_on_connect": clear_on_connect,
         "cleanup_on_exit": False,
     }
-    if os.name != "nt" and not os.environ.get("ANSYS_GRPC_CERTIFICATES"):
-        connection_options["transport_mode"] = "insecure"
+    if os.name != "nt":
+        certs_dir = os.environ.get("ANSYS_GRPC_CERTIFICATES")
+        if certs_dir:
+            connection_options["certs_dir"] = certs_dir
+        else:
+            connection_options["transport_mode"] = "insecure"
     mechanical = pymechanical.connect_to_mechanical(**connection_options)
     return mechanical
 
