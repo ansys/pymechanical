@@ -20,6 +20,12 @@ jobs:
         with:
           python-version: ${{ vars.MAIN_PYTHON_VERSION }}
 
+      - name: Install Git
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git
+          git --version
+
       - name: Install coverage
         run: |
           rm -rf ./env
