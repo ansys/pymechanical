@@ -6,6 +6,12 @@ Choose your mode
 PyMechanical offers two distinct modes for interacting with Ansys Mechanical.
 This page helps you decide which mode is right for your workflow.
 
+.. figure:: /images/pymechanical_architecture_simple.svg
+  :alt: Comparison of PyMechanical embedding and remote session architectures
+  :width: 100%
+
+  PyMechanical embedding and remote session architectures.
+
 
 .. _choose_mode_at_a_glance:
 
