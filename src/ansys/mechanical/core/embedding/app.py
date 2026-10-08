@@ -87,6 +87,13 @@ def _cleanup_private_appdata(profile: UniqueUserProfile):
     profile.cleanup()
 
 
+def _set_temporary_directory(temp: str | Path) -> None:
+    temp_path = str(temp)
+    os.environ["TEMP"] = temp_path
+    os.environ["TMP"] = temp_path
+    os.environ["TMPDIR"] = temp_path
+
+
 def _start_application(
     configuration: AddinConfiguration, version, db_file, _additional_args
 ) -> App:
@@ -154,6 +161,10 @@ class App:
     private_appdata : bool, optional
         Setting for a temporary AppData directory. Default is False.
         Enables running parallel instances of Mechanical.
+    temp : str or pathlib.Path, optional
+        Directory to use for temporary solve files. When ``private_appdata`` is
+        ``True``, this directory takes precedence over the private profile's
+        temporary directory. The default is ``None``.
     globals : dict, optional
         Global variables to be updated. For example, globals().
         Replaces "app.update_globals(globals())".
@@ -194,6 +205,10 @@ class App:
 
     >>> app = App(private_appdata=True, copy_profile=False)
 
+    Set a custom directory for temporary solve files
+
+    >>> app = App(temp="path/to/temp")
+
     Update the global variables with globals
 
     >>> app = App(globals=globals())
@@ -226,6 +241,7 @@ class App:
         db_file: str | None = None,
         private_appdata: bool = False,
         *,
+        temp: str | Path | None = None,
         reuse_instance: bool = False,
         **kwargs: typing.Any,
     ) -> None:
@@ -294,6 +310,8 @@ class App:
             new_profile_name = f"PyMechanical-{os.getpid()}"
             profile = UniqueUserProfile(new_profile_name, copy_profile=copy_profile)
             profile.update_environment(os.environ)
+        if temp is not None:
+            _set_temporary_directory(temp)
 
         pep8_alias = kwargs.get("pep8", False)
         readonly = kwargs.get("readonly", False)
