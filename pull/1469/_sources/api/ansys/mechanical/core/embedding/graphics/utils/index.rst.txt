@@ -1,0 +1,241 @@
+
+
+
+
+
+
+The ``utils.py`` module
+=======================
+
+.. py:module:: ansys.mechanical.core.embedding.graphics.utils
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: utils
+.. tab-set::
+
+
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~bgr_to_rgb_tuple`
+            - Convert bgr integer to rgb tuple.
+
+
+          * - :py:obj:`~get_line_nodes_and_coords`
+            - Extract the nodes and coordinates from the LineTessellationNode.
+
+
+          * - :py:obj:`~get_tri_nodes_and_coords`
+            - Extract the nodes and coordinates from the TriTessellationNode.
+
+
+          * - :py:obj:`~get_tri_result_disp_and_results`
+            - Extract the defomation and results from the TriTessellationResultNode.
+
+
+          * - :py:obj:`~get_scene`
+            - Get the scene of the model.
+
+
+          * - :py:obj:`~get_scene_for_object`
+            - Get the scene for the given object.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Common plotting utilities.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:function:: bgr_to_rgb_tuple(bgr_int: int) -> Tuple[int, int, int]
+
+   
+   Convert bgr integer to rgb tuple.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: get_line_nodes_and_coords(line_tessellation: Ansys.Mechanical.Scenegraph.LineTessellationNode)
+
+   
+   Extract the nodes and coordinates from the LineTessellationNode.
+
+   The TriTessellationNode contains "Coordinates" and "Indices"
+   that are flat arrays. This function converts them to numpy arrays
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: get_tri_nodes_and_coords(tri_tessellation: Ansys.Mechanical.Scenegraph.TriTessellationNode)
+
+   
+   Extract the nodes and coordinates from the TriTessellationNode.
+
+   The TriTessellationNode contains "Coordinates" and "Indices"
+   that are flat arrays. This function converts them to numpy arrays of the appropriate shape.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: get_tri_result_disp_and_results(tri_tessellation: Ansys.Mechanical.Scenegraph.TriTessellationResultNode)
+
+   
+   Extract the defomation and results from the TriTessellationResultNode.
+
+   The TriTessellationResultNode contains "Displacements" and "Results"
+   that are flat arrays. This function converts them to numpy arrays of the appropriate shape.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: get_scene(app: ansys.mechanical.core.embedding.App) -> Ansys.Mechanical.Scenegraph.GroupNode
+
+   
+   Get the scene of the model.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: get_scene_for_object(app: ansys.mechanical.core.embedding.App, obj) -> Ansys.Mechanical.Scenegraph.Node
+
+   
+   Get the scene for the given object.
+
+   2025R2 and before: only geometry is supported
+   later, Mesh and some Results will be supported.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+

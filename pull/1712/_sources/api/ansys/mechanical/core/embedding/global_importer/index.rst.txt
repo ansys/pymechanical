@@ -1,0 +1,98 @@
+
+
+
+
+
+
+The ``global_importer.py`` module
+=================================
+
+.. py:module:: ansys.mechanical.core.embedding.global_importer
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: global_importer
+.. tab-set::
+
+
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~__getattr__`
+            - Support importing app-specific variables from this module.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Import Mechanical globals.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:function:: __getattr__(name: str)
+
+   
+   Support importing app-specific variables from this module.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
