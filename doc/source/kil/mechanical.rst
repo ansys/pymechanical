@@ -20,6 +20,7 @@ Known issues and limitations
   same workflow succeeds in the Mechanical scripting window and in batch mode
   (`#1047 <https://github.com/ansys/pymechanical/issues/1047>`_).
 
+.. vale Google.Headings = NO
 
 24R2
 ^^^^
@@ -35,6 +36,17 @@ Known issues and limitations
 - Geometry children are not populated when running the cooling holes thermal analysis example,
   causing an ``ArgumentOutOfRangeException``. This was fixed in 25R2 and later versions
   (`#1549 <https://github.com/ansys/pymechanical/issues/1549>`_).
+- The ``bracket_model.agdb`` geometry file used by the shape optimization example opens with
+  no parts or bodies. This issue does not occur in Mechanical 25 R1
+  (`#1386 <https://github.com/ansys/pymechanical/issues/1386>`_).
+
+
+25R1
+^^^^
+
+- Scripts that use ``MechanicalPanelEnum`` to access GUI panes run only in the Mechanical GUI.
+  They do not run in batch or embedded mode. Use a remote session instead
+  (`#1225 <https://github.com/ansys/pymechanical/issues/1225>`_).
 
 
 26R1
@@ -60,3 +72,5 @@ Known issues and limitations
   behave reliably in embedded mode, even though the same script succeeds in the
   Mechanical scripting window. This will be addressed in a future release
   (`#1497 <https://github.com/ansys/pymechanical/issues/1497>`_).
+
+.. vale Google.Headings = YES
