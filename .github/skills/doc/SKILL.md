@@ -252,6 +252,7 @@ When deprecating a method or class:
 ```python
 import warnings
 
+
 class FieldAnalysis2D:
     def assignmaterial(self, obj, mat):
         """Assign a material to one or more objects.

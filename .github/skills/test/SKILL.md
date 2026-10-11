@@ -74,9 +74,11 @@ def test_license_manager(embedded_app):
 ```python
 TEST_LICENSE = "Ansys Mechanical Premium"
 
+
 def test_get_all_licenses(embedded_app):
     """Test that at least one license is available."""
     assert len(embedded_app.license_manager.get_all_licenses()) > 0
+
 
 def test_set_license_status(embedded_app):
     """Test enabling and disabling a license."""
@@ -85,6 +87,7 @@ def test_set_license_status(embedded_app):
     assert lm.get_license_status(TEST_LICENSE) == lm._license_status.Disabled
     lm.set_license_status(TEST_LICENSE, True)
     assert lm.get_license_status(TEST_LICENSE) == lm._license_status.Enabled
+
 
 def test_move_to_index(embedded_app):
     """Test moving a license to position zero."""

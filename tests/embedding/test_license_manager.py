@@ -86,6 +86,15 @@ def test_session_license_invalid_type(embedded_app):
 
 
 @pytest.mark.embedding
+@pytest.mark.minimum_version(271)
+def test_get_current_licenses(embedded_app):
+    """Test that get_current_licenses returns the active licenses."""
+    licenses = embedded_app.license_manager.get_current_licenses()
+    assert isinstance(licenses, list)
+    assert len(licenses) > 0
+
+
+@pytest.mark.embedding
 def test_show(embedded_app, capsys):
     """Test that show() prints license status to stdout."""
     embedded_app.license_manager.show()
