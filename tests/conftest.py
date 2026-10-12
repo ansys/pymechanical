@@ -190,13 +190,21 @@ def ensure_embedding() -> None:
 
 def start_embedding_app(version, pytestconfig) -> datetime.timedelta:
     """Start the embedded Mechanical application."""
+    import logging
+
     from ansys.mechanical.core import App
+    from ansys.mechanical.core.embedding.logger import Configuration
 
     global EMBEDDED_APP
     ensure_embedding()
     start = datetime.datetime.now()
 
     config = AddinConfiguration(pytestconfig.getoption("addin_configuration"))
+
+    _log_level_str = pytestconfig.getoption("--log-embedding", default=None)
+    if _log_level_str is not None:
+        _log_level = getattr(logging, _log_level_str.upper())
+        Configuration.configure(level=_log_level, to_stdout=True)
 
     EMBEDDED_APP = App(version=int(version))
     assert not EMBEDDED_APP.readonly, (
@@ -365,19 +373,19 @@ def connect_to_mechanical_instance(port=None, clear_on_connect=False):
     # On WSL/Docker systems, hostname can resolve to bridge IPs (e.g., 172.28.0.1)
     # which are not routable for locally-launched Mechanical instances.
     # For remote/container scenarios, an explicit IP should be passed by the caller.
+    connection_options = {
+        "port": port,
+        "clear_on_connect": clear_on_connect,
+        "cleanup_on_exit": False,
+    }
     if os.name != "nt":
-        # Linux/container uses insecure mode for testing
-        mechanical = pymechanical.connect_to_mechanical(
-            port=port,
-            clear_on_connect=clear_on_connect,
-            cleanup_on_exit=False,
-            transport_mode="insecure",
-        )
-    else:
-        # Windows uses WNUA by default
-        mechanical = pymechanical.connect_to_mechanical(
-            port=port, clear_on_connect=clear_on_connect, cleanup_on_exit=False
-        )
+        certs_dir = os.environ.get("ANSYS_GRPC_CERTIFICATES")
+        if certs_dir:
+            connection_options["certs_dir"] = certs_dir
+            connection_options["transport_mode"] = "mtls"
+        else:
+            connection_options["transport_mode"] = "insecure"
+    mechanical = pymechanical.connect_to_mechanical(**connection_options)
     return mechanical
 
 
@@ -577,6 +585,16 @@ def pytest_addoption(parser):
         parser.addoption("--ansys-version", default=str(mechanical_version))
 
     # parser.addoption("--debugging", action="store_true")
+    parser.addoption(
+        "--log-embedding",
+        default=None,
+        choices=["debug", "info", "warning", "error"],
+        help=(
+            "Set the embedding log level written to stdout. "
+            "Choices: debug, info, warning, error. "
+            "When omitted, embedding logging is not configured by the test suite."
+        ),
+    )
     parser.addoption("--addin-configuration", default="Mechanical")
     parser.addoption(
         "--remote-server-type",

@@ -96,8 +96,8 @@ To install Ansys products in WSL, perform these steps:
    - ``-<product_flag>`` : Specifies the one or more products to install.
      If you omit this argument, all products are installed. The *Ansys, Inc.
      Installation Guides* in the Ansys Help provides a list of valid
-     values for the ``product_flags`` argument in `Chapter 6`_
-     of the *Linux Installation Guide* and `Chapter 7`_
+    values for the ``product_flags`` argument in `Chapter 6`_
+    of the *Linux Installation Guide* and `Chapter 7`_
      of the *Windows Installation Guide*.
 
      In the preceding example for Mechanical, you only need to specify the ``-mechapdl`` flag.
@@ -138,10 +138,10 @@ server, opening the ports might not work properly because the Windows firewall
 seems to block all traffic coming from WSL.  For security purposes, you should
 still try to open ports ``1055`` and ``2325`` in the Windows firewall and check if your
 Mechanical installation can communicate with the Windows hosts. If you are having
-problems after setting the firewall rules, you might have to disable the Windows
+problems after setting the firewall rules, you might have to turn off the Windows
 firewall for the WSL ethernet's virtual interface. Because this might pose some
 unknown side effects and security risks, do so with caution. For more information,
-see `Disable the firewall on the WSL ethernet`_.
+see `Turn off the firewall on the WSL ethernet`_.
 
 
 Create an environmental variable in WSL that points to the license server on the Windows host
@@ -201,8 +201,8 @@ Additionally, run a Docker image of PyMechanical with this command:
 
     docker run -e ANSYSLMD_LICENSE_FILE=1055@host.docker.internal --restart always --name mechanical -p 10000:10000 ghcr.io/ansys/pymechanical/mechanical > log.txt
 
-Successive runs should restart the container. Or, delete the container and rerun it with
-this code:
+Successive runs should restart the container. Alternatively, you can delete the
+container and then rerun it with this code:
 
 .. code:: pwsh
 
@@ -349,10 +349,10 @@ hostname in the same WSL ``/etc/hosts`` file. This is an IP address that is
 randomly allocated, which is an issue when you define the license server. However,
 updating the ``.bashrc`` file as mentioned earlier resolves this issue.
 
-Disable the firewall on the WSL ethernet
+Turn off the firewall on the WSL ethernet
 ****************************************
 
-There are two methods for disabling the firewall on the WSL ethernet.
+There are two methods for turning off the firewall on the WSL ethernet.
 
 **Method 1**
 

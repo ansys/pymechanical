@@ -19,7 +19,7 @@ Known issues and limitations
 
 .. vale Google.Headings = YES
 
-- In Read Only mode, the application does not display error messages when the geometry is imported in batch mode.
+- In Read Only mode, the app does not display error messages when the geometry is imported in batch mode.
 - Section planes can not be added through batch mode.
 - Mechanical is not thread safe.
 - Spaceclaim geometry (.scdocx) can not be imported on Linux platform.

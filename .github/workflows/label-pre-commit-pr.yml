@@ -18,7 +18,8 @@ jobs:
       github.event.pull_request.user.login == 'pre-commit-ci[bot]' ||
       github.event.pull_request.user.login == 'pyansys-automation'
     permissions:
-      pull-requests: write  # Required to add labels to pull requests
+      pull-requests: write  # Required to add labels and approve pull requests
+      contents: write       # Required to enable auto-merge
     steps:
       - name: Add skip-doc and skip-tests labels
         env:
@@ -26,3 +27,15 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO: ${{ github.repository }}
         run: gh pr edit "${PR_NUMBER}" --add-label "skip-doc" --add-label "skip-test" --repo "${REPO}"
+
+      - name: Approve PR
+        env:
+          GH_TOKEN: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: gh pr review --approve "$PR_URL"
+
+      - name: Enable auto-merge
+        env:
+          GH_TOKEN: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: gh pr merge --auto --squash "$PR_URL"

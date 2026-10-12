@@ -6,6 +6,12 @@ Choose your mode
 PyMechanical offers two distinct modes for interacting with Ansys Mechanical.
 This page helps you decide which mode is right for your workflow.
 
+.. figure:: /images/pymechanical_architecture_simple.svg
+  :alt: Comparison of PyMechanical embedding and remote session architectures
+  :width: 100%
+
+  PyMechanical embedding and remote session architectures.
+
 
 .. _choose_mode_at_a_glance:
 
@@ -99,7 +105,7 @@ and code examples for each mode.
 How the modes work
 ------------------
 
-**Embedding mode** embeds the entire Mechanical application in memory inside
+**Embedding mode** embeds the entire Mechanical app in memory inside
 your Python process using Python.NET (.NET CLR interop). There is no separate
 process or network communication. The Mechanical data model is directly available
 in Python, giving you full CRUD (Create, Read, Update, Delete) access to the

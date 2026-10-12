@@ -41,7 +41,7 @@ Version and service pack requirements
 
 .. note::
    - Ansys 2024 R1 (241) and earlier versions **only support insecure mode**.
-   - If your installation does not have the required service pack listed above,
+   - If your installation does not have the required service pack listed preceding,
      only insecure mode is available.
    - To check your service pack version, look at the ``builddate.txt`` file in your
      Ansys installation directory.

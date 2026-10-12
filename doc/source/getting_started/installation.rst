@@ -48,7 +48,7 @@ Install the latest package from `PyPi
 Optional extras
 ~~~~~~~~~~~~~~~
 
-PyMechanical provides optional extras for additional functionality:
+PyMechanical provides optional extras for additional capabilities:
 
 .. list-table::
    :header-rows: 1
@@ -80,8 +80,8 @@ PyMechanical from scratch on Windows and Linux for Python 3.12 through Python 3.
 a wheelhouse archive on an isolated system with a fresh Python installation or on a
 virtual environment.
 
-For example, on Linux with Python 3.12, unzip the wheelhouse archive and install it with
-this code:
+For example, on Linux with Python 3.12, first unzip the wheelhouse archive.
+Then, install it with this code:
 
 .. code-block:: bash
 

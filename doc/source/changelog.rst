@@ -9,6 +9,249 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.13.3 <https://github.com/ansys/pymechanical/releases/tag/v0.13.3>`_ - September 17, 2026
+===========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Extend Windows store workaround
+          - `#1700 <https://github.com/ansys/pymechanical/pull/1700>`_
+
+        * - Add LicenseCoordinator support
+          - `#1723 <https://github.com/ansys/pymechanical/pull/1723>`_
+
+        * - Update Qt library path to 6.8.8 for version 271 and greater
+          - `#1727 <https://github.com/ansys/pymechanical/pull/1727>`_
+
+
+  .. tab-item:: Documentation
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Fix vale warnings
+          - `#1726 <https://github.com/ansys/pymechanical/pull/1726>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.13.2
+          - `#1722 <https://github.com/ansys/pymechanical/pull/1722>`_
+
+        * - Bump the actions group with 5 updates
+          - `#1724 <https://github.com/ansys/pymechanical/pull/1724>`_
+
+        * - Pre-commit automatic update
+          - `#1725 <https://github.com/ansys/pymechanical/pull/1725>`_, `#1733 <https://github.com/ansys/pymechanical/pull/1733>`_, `#1741 <https://github.com/ansys/pymechanical/pull/1741>`_, `#1748 <https://github.com/ansys/pymechanical/pull/1748>`_, `#1755 <https://github.com/ansys/pymechanical/pull/1755>`_, `#1758 <https://github.com/ansys/pymechanical/pull/1758>`_
+
+        * - Bump the actions group with 3 updates
+          - `#1728 <https://github.com/ansys/pymechanical/pull/1728>`_
+
+        * - Bump ansys/actions/tests-pytest from 10.3.6 to 11.0.0
+          - `#1729 <https://github.com/ansys/pymechanical/pull/1729>`_
+
+        * - Bump ansys/actions/build-library from 10.3.6 to 11.0.1
+          - `#1730 <https://github.com/ansys/pymechanical/pull/1730>`_
+
+        * - Bump ansys/actions/release-github from 10.3.6 to 11.0.1
+          - `#1731 <https://github.com/ansys/pymechanical/pull/1731>`_
+
+        * - Bump ansys-mechanical-stubs from 0.1.13 to 0.1.14 in the core group
+          - `#1735 <https://github.com/ansys/pymechanical/pull/1735>`_
+
+        * - Bump the actions group with 6 updates
+          - `#1736 <https://github.com/ansys/pymechanical/pull/1736>`_
+
+        * - Bump ansys/actions/code-style from 10.3.6 to 11.0.2
+          - `#1737 <https://github.com/ansys/pymechanical/pull/1737>`_
+
+        * - Bump ansys/actions/doc-style from 10.3.6 to 11.0.2
+          - `#1738 <https://github.com/ansys/pymechanical/pull/1738>`_
+
+        * - Bump ansys/actions/build-wheelhouse from 10.3.6 to 11.0.2
+          - `#1739 <https://github.com/ansys/pymechanical/pull/1739>`_
+
+        * - Bump ansys/actions/doc-changelog from 10.3.6 to 11.0.3
+          - `#1740 <https://github.com/ansys/pymechanical/pull/1740>`_
+
+        * - Bump ansys-mechanical-stubs from 0.1.14 to 0.1.15 in the core group
+          - `#1742 <https://github.com/ansys/pymechanical/pull/1742>`_
+
+        * - Bump the actions group across 1 directory with 9 updates
+          - `#1743 <https://github.com/ansys/pymechanical/pull/1743>`_
+
+        * - Bump ansys/actions/doc-deploy-dev from 10.3.6 to 11.0.3
+          - `#1744 <https://github.com/ansys/pymechanical/pull/1744>`_
+
+        * - Bump ansys/actions/check-actions-security from 10.3.6 to 11.0.3
+          - `#1745 <https://github.com/ansys/pymechanical/pull/1745>`_
+
+        * - Bump ansys/actions/hk-package-clean-untagged from 10.3.6 to 11.0.3
+          - `#1746 <https://github.com/ansys/pymechanical/pull/1746>`_
+
+        * - Bump ansys/actions/doc-deploy-pr from 10.3.6 to 11.0.3
+          - `#1747 <https://github.com/ansys/pymechanical/pull/1747>`_
+
+        * - Update Sphinx theme version and add MCP server banner
+          - `#1749 <https://github.com/ansys/pymechanical/pull/1749>`_
+
+        * - Add Model Context Protocol integration details to whatsnew
+          - `#1750 <https://github.com/ansys/pymechanical/pull/1750>`_
+
+        * - Bump the actions group with 15 updates
+          - `#1751 <https://github.com/ansys/pymechanical/pull/1751>`_
+
+        * - Bump ansys/actions/doc-deploy-changelog from 10.3.6 to 11.0.6
+          - `#1752 <https://github.com/ansys/pymechanical/pull/1752>`_
+
+        * - Bump ansys/actions/check-vulnerabilities from 10.3.6 to 11.0.5
+          - `#1753 <https://github.com/ansys/pymechanical/pull/1753>`_
+
+        * - Bump ansys/actions/doc-deploy-stable from 10.3.6 to 11.0.5
+          - `#1754 <https://github.com/ansys/pymechanical/pull/1754>`_
+
+        * - Update quarto version from 1.9.36 to 1.10.18 in documentation build
+          - `#1756 <https://github.com/ansys/pymechanical/pull/1756>`_
+
+        * - Bump the actions group with 14 updates
+          - `#1757 <https://github.com/ansys/pymechanical/pull/1757>`_
+
+        * - Add 'https://innovation.ansys.com/*' to linkcheck_ignore list
+          - `#1759 <https://github.com/ansys/pymechanical/pull/1759>`_
+
+
+`0.13.2 <https://github.com/ansys/pymechanical/releases/tag/v0.13.2>`_ - August 05, 2026
+========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Python matrix cicd
+          - `#1721 <https://github.com/ansys/pymechanical/pull/1721>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.13.1
+          - `#1719 <https://github.com/ansys/pymechanical/pull/1719>`_
+
+        * - Bump version to 0.13.dev0 and update pyupgrade to py312-plus
+          - `#1720 <https://github.com/ansys/pymechanical/pull/1720>`_
+
+
+`0.13.1 <https://github.com/ansys/pymechanical/releases/tag/v0.13.1>`_ - August 04, 2026
+========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add doc skill and fix documentation
+          - `#1609 <https://github.com/ansys/pymechanical/pull/1609>`_
+
+        * - Add max-length message display
+          - `#1638 <https://github.com/ansys/pymechanical/pull/1638>`_
+
+        * - Add --log-embedding pytest flag and document custom pytest options
+          - `#1702 <https://github.com/ansys/pymechanical/pull/1702>`_
+
+        * - Add GitHub Copilot instructions and test skill documentation
+          - `#1704 <https://github.com/ansys/pymechanical/pull/1704>`_
+
+        * - Add auto-approve and auto-merge steps for pre-commit CI PRs
+          - `#1718 <https://github.com/ansys/pymechanical/pull/1718>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Register private appdata cleanup before atexit embedded app handler
+          - `#1697 <https://github.com/ansys/pymechanical/pull/1697>`_
+
+        * - License test and split license manager test into individual test functions
+          - `#1703 <https://github.com/ansys/pymechanical/pull/1703>`_
+
+        * - Include coverage.yml in skip-test label check
+          - `#1709 <https://github.com/ansys/pymechanical/pull/1709>`_
+
+
+  .. tab-item:: Documentation
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add blog section and autoapi custom index template
+          - `#1710 <https://github.com/ansys/pymechanical/pull/1710>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.13.0
+          - `#1696 <https://github.com/ansys/pymechanical/pull/1696>`_
+
+        * - Add smoke-test-check job to ci/cd pipeline
+          - `#1698 <https://github.com/ansys/pymechanical/pull/1698>`_
+
+        * - Bump the actions group with 19 updates
+          - `#1705 <https://github.com/ansys/pymechanical/pull/1705>`_
+
+        * - Bump actions/setup-python from 6.3.0 to 7.0.0
+          - `#1706 <https://github.com/ansys/pymechanical/pull/1706>`_
+
+        * - Bump actions/labeler from 6.2.0 to 7.0.0
+          - `#1707 <https://github.com/ansys/pymechanical/pull/1707>`_
+
+        * - Pre-commit automatic update
+          - `#1708 <https://github.com/ansys/pymechanical/pull/1708>`_, `#1717 <https://github.com/ansys/pymechanical/pull/1717>`_
+
+        * - Update missing or outdated files
+          - `#1711 <https://github.com/ansys/pymechanical/pull/1711>`_
+
+        * - Bump ansys/actions to v10.3.6
+          - `#1713 <https://github.com/ansys/pymechanical/pull/1713>`_
+
+        * - Bump ansys-mechanical-stubs from 0.1.12 to 0.1.13 in the core group
+          - `#1715 <https://github.com/ansys/pymechanical/pull/1715>`_
+
+        * - Bump the actions group with 5 updates
+          - `#1716 <https://github.com/ansys/pymechanical/pull/1716>`_
+
+
 `0.13.0 <https://github.com/ansys/pymechanical/releases/tag/v0.13.0>`_ - July 23, 2026
 ======================================================================================
 
