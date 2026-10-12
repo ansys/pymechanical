@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -49,32 +49,32 @@ can be imported with the `import` statement.
 """
 
 import os
+from pathlib import Path
 import sys
 import warnings
 
-from ansys.tools.path import get_mechanical_path
+from ansys.tools.common.path import get_mechanical_path
 
 from ansys.mechanical.core.embedding.app import App
 
 
 def add_mechanical_python_libraries(app_or_version):
     """Add the Mechanical libraries path to sys.path."""
-    installdir = []
     if isinstance(app_or_version, int):
         warnings.warn(
-            "Passing version to add_mechanical_python_libraries() is deprecated."
+            "Passing version to add_mechanical_python_libraries() is deprecated. "
             "Please pass an instance of App() instead.",
             DeprecationWarning,
             stacklevel=2,
         )
-        exe = get_mechanical_path(allow_input=False, version=app_or_version)
-        while os.path.basename(exe) != f"v{app_or_version}":
-            exe = os.path.dirname(exe)
-        installdir.append(exe)
+        exe_path = Path(get_mechanical_path(allow_input=False, version=app_or_version))
+        while exe_path.name != f"v{app_or_version}":
+            exe_path = exe_path.parent
+        install_dir = str(exe_path)
     elif isinstance(app_or_version, App):
-        installdir.append(os.environ[f"AWP_ROOT{app_or_version.version}"])
+        install_dir = os.environ[f"AWP_ROOT{app_or_version.version}"]
     else:
         raise ValueError("Invalid input: expected an integer (version) or an instance of App().")
 
-    location = os.path.join(installdir[0], "Addins", "ACT", "libraries", "Mechanical")
-    sys.path.append(location)
+    location = Path(install_dir) / "Addins" / "ACT" / "libraries" / "Mechanical"
+    sys.path.append(str(location))

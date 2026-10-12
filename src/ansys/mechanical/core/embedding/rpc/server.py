@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -19,9 +19,10 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 """Remote Procedure Call (RPC) server."""
 
-import os
+from pathlib import Path
 import threading
 import time
 import typing
@@ -174,8 +175,8 @@ class MechanicalService(rpyc.Service):
             exposed_set_name = f"exposed_propset_{propname}"
 
             def exposed_propset(arg):
-                """Convert to exposed getter."""
-                f = self._curry_property(prop.fset, propname, True)
+                """Convert to exposed setter."""
+                f = self._curry_property(prop.fset, propname, False)
                 result = f(arg)
                 return result
 
@@ -186,7 +187,7 @@ class MechanicalService(rpyc.Service):
         self._install_method_with_name(method, methodname, methodname)
 
     def _install_method_with_name(self, method, methodname, innername):
-        """Install methods of impl with inner and exposed pairs."""
+        """Install a method with inner and exposed pairs."""
         exposed_name = f"exposed_{methodname}"
 
         def exposed_method(*args, **kwargs):
@@ -219,12 +220,12 @@ class MechanicalService(rpyc.Service):
         if not remote_path:
             raise ValueError("The remote file path is empty.")
 
-        remote_dir = os.path.dirname(remote_path)
+        remote_dir = Path(remote_path).parent
 
         if remote_dir:
-            os.makedirs(remote_dir, exist_ok=True)
+            remote_dir.mkdir(parents=True, exist_ok=True)
 
-        with open(remote_path, "wb") as f:
+        with Path(remote_path).open("wb") as f:
             f.write(file_data)
 
         print(f"File {remote_path} uploaded successfully.")
@@ -232,19 +233,19 @@ class MechanicalService(rpyc.Service):
     def exposed_service_download(self, remote_path):
         """Handle file download request from client."""
         # Check if the remote file exists
-        if not os.path.exists(remote_path):
+        if not Path(remote_path).exists():
             raise FileNotFoundError(f"The file {remote_path} does not exist on the server.")
 
-        if os.path.isdir(remote_path):
+        if Path(remote_path).is_dir():
             files = []
-            for dirpath, _, filenames in os.walk(remote_path):
-                for filename in filenames:
-                    full_path = os.path.join(dirpath, filename)
-                    relative_path = os.path.relpath(full_path, remote_path)
-                    files.append(relative_path)
+            remote_path_obj = Path(remote_path)
+            for file_path in remote_path_obj.rglob("*"):
+                if file_path.is_file():
+                    relative_path = file_path.relative_to(remote_path_obj)
+                    files.append(str(relative_path))
             return {"is_directory": True, "files": files}
 
-        with open(remote_path, "rb") as f:
+        with Path(remote_path).open("rb") as f:
             file_data = f.read()
 
         print(f"File {remote_path} downloaded successfully.")
@@ -262,14 +263,15 @@ class MechanicalEmbeddedServer:
 
     def __init__(
         self,
-        port: int = None,
-        version: int = None,
-        methods: typing.List[typing.Callable] = [],
-        impl: typing.List = [],
+        port: int | None = None,
+        version: int | None = None,
+        methods: list[typing.Callable] = [],
+        impl: list = [],
     ):
         """Initialize the server."""
         self._exited = False
         use_background_app = False
+        self._backend: BackgroundAppBackend | ForegroundAppBackend
         if use_background_app:
             self._app_instance = BackgroundApp(version=version)
             self._backend = BackgroundAppBackend(self._app_instance)
@@ -300,7 +302,7 @@ class MechanicalEmbeddedServer:
 
     def _start_background_app(self) -> None:
         """Start server on specified port."""
-        self._exit_thread: threading.Thread = None
+        self._exit_thread: threading.Thread | None = None
         self._server.start()
         print("Server exited!")
         self._wait_exit()
@@ -377,15 +379,13 @@ class MechanicalEmbeddedServer:
         else:
             self._stop_foreground_app()
 
-    def _install_classes(self, impl: typing.Union[typing.Any, typing.List]) -> None:
+    def _install_classes(self, impl: typing.Any | list) -> None:
         app = self._backend.get_app()
         if impl and not isinstance(impl, list):
             impl = [impl]
         self._impl = [i(app) for i in impl] if impl else []
 
-    def _install_methods(
-        self, methods: typing.Union[typing.Callable, typing.List[typing.Callable]]
-    ) -> None:
+    def _install_methods(self, methods: typing.Callable | list[typing.Callable]) -> None:
         if methods and not isinstance(methods, list):
             methods = [methods]
         self._methods = methods if methods is not None else []

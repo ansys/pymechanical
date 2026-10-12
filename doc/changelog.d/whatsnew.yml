@@ -1,4 +1,103 @@
 fragments:
+- title: Model Context Protocol integration
+  version: 0.13.0
+  content: |
+    PyMechanical now provides an optional ``mcp`` extra for integrating Mechanical with AI
+    assistants through the `Model Context Protocol (MCP) <https://modelcontextprotocol.io/>`_.
+    The extra installs `PyMechanical-MCP <https://mechanical-mcp.docs.pyansys.com/>`_.
+
+    Usage:
+    .. code:: shell
+
+       pip install ansys-mechanical-core[mcp]
+
+    For complete details, see the `PyMechanical-MCP documentation <https://mechanical-mcp.docs.pyansys.com/>`_.
+
+- title: Helper functions for common workflows
+  version: 0.12.6
+  content: |
+    New helper functions simplify common Mechanical workflows through the
+    `Helpers` class.
+    These methods streamline geometry import, material management, visualization, and export operations.
+
+    Available helper functions:
+
+    - **import_geometry()**: Import CAD geometry with flexible options
+    - **import_materials()**: Load material definitions from XML files
+    - **export_image()**: Export high-quality images of the current view
+    - **export_animation()**: Create animations in multiple formats (GIF, MP4, AVI, WMV)
+    - **display_image()**: Show exported images inline in notebooks
+
+    Usage:
+    .. code:: python
+
+        from ansys.mechanical.core import App
+
+        app = App()
+        helpers = app.helpers
+
+        # Import geometry and materials
+        helpers.import_geometry("bracket.x_t")
+        helpers.import_materials("steel_aluminum.xml")
+
+        # Configure and export visualization
+        helpers.export_image(obj=app.Model.Geometry, file_path="geometry_image.png")
+
+    For complete details, see the `Helpers User Guide <https://mechanical.docs.pyansys.com/version/stable/user_guide/embedding/helpers.html>`_.
+
+- title: gRPC Security with mTLS, WNUA, and Insecure Transport Modes
+  version: 0.12.0
+  content: |
+    PyMechanical now supports comprehensive gRPC security with three transport modes: ``mtls`` (mutual TLS,
+    Linux default), ``wnua`` (Windows Named User Authentication, Windows default), and ``insecure`` mode.
+    Platform-aware defaults are automatically selected based on the operating system.
+
+    The implementation includes automatic service pack detection and validation, custom gRPC channel options
+    support, and new CLI flags (``--transport-mode``, ``--certs-dir``, ``--grpc-host``).
+    All launch and connection APIs (``launch_mechanical()``, ``connect_to_mechanical()``, etc.) now support
+    ``transport_mode``, ``certs_dir``, ``grpc_options``, and ``host`` parameters for configuring gRPC security.
+
+
+    Usage:
+    .. code:: python
+
+       from ansys.mechanical.core import launch_mechanical
+
+       # Platform defaults (mTLS on Linux, WNUA on Windows)
+       mechanical = launch_mechanical()
+
+       # For older versions without required service packs
+       mechanical = launch_mechanical(transport_mode="insecure")
+
+
+    For complete details, see the `gRPC Security User Guide <https://mechanical.docs.pyansys.com/version/stable/user_guide/remote_session/grpc_security.html>`_.
+
+- title: PEP 8 aliases for Mechanical APIs
+  version: 0.11.30
+  content: |
+    Mechanical APIs now support PEP 8 aliases for improved usability and consistency when used with PyMechanical.
+
+    To enable PEP 8 aliases
+
+
+    .. code:: python
+
+      from ansys.mechanical.core import App
+
+      # Initialize the app and update globals
+      app = App(globals=globals(), pep8=True)
+
+    Example on how to use the PEP 8 aliases are given below
+
+
+    .. code:: python
+
+      from ansys.mechanical.core import App
+
+      app = App(globals=globals(), pep8=True)
+      Model.add_static_structural_analysis()  # Model.AddStaticStructuralAnalysis
+      Model.name = "Test"  # Model.Name = "Test"
+
 - title: Globals parameter in the embedded app
   version: 0.11.14
   content: |

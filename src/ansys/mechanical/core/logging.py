@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -25,7 +25,7 @@
 This module supplies the general framework for logging in PyMechanical. This module is
 built upon the `logging <https://docs.python.org/3/library/logging.html>`_ package.
 The intent is not for this module to replace the ``logging`` package but rather to provide
-a way for the ``logging`` package and PyMechancial to interact.
+a way for the ``logging`` package and PyMechanical to interact.
 
 The loggers used in the module include the name of the instance, which
 is intended to be unique.  This name is printed in all the active
@@ -196,9 +196,8 @@ class PyMechanicalCustomAdapter(logging.LoggerAdapter):
     be specified once.
     """
 
-    level = (
-        None  # This is maintained for compatibility with ``suppress_logging``, but it does nothing.
-    )
+    # Maintained for compatibility with ``suppress_logging``, but it does nothing.
+    level = None
     file_handler = None
     stdout_handler = None
 
@@ -218,9 +217,9 @@ class PyMechanicalCustomAdapter(logging.LoggerAdapter):
         """Process the message."""
         kwargs["extra"] = {}
         # These are the extra parameters to send to the log.
-        kwargs["extra"][
-            "instance_name"
-        ] = self.extra.name  # Here self.extra is the argument to pass to the log records.
+        kwargs["extra"]["instance_name"] = (
+            self.extra.name
+        )  # Here self.extra is the argument to pass to the log records.
         return msg, kwargs
 
     def log_to_file(self, filename=FILE_NAME, level=LOG_LEVEL):
@@ -256,7 +255,7 @@ class PyMechanicalCustomAdapter(logging.LoggerAdapter):
         self.logger = add_stdout_handler(self.logger, level=level)
         self.std_out_handler = self.logger.std_out_handler
 
-    def setLevel(self, level="DEBUG"):
+    def setLevel(self, level="DEBUG"):  # noqa: N802
         """Change the log level of the object and the attached handlers.
 
         Parameters
@@ -370,15 +369,15 @@ class Logger:
     created when a Mechanical instance is created.
 
     >>> from ansys.mechanical.core import launch_mechanical
-    >>> mechanical = launch_mechanical(loglevel='DEBUG')
-    >>> mechanical.log.info('This is a useful message')
+    >>> mechanical = launch_mechanical(loglevel="DEBUG")
+    >>> mechanical.log.info("This is a useful message")
     INFO -  -  <ipython-input-24-80df150fe31f> - <module> - This is LOG debug message.
 
     Import the PyMechanical global logger and add a file output handler.
 
     >>> import os
     >>> from ansys.mechanical.core import LOG
-    >>> file_path = os.path.join(os.getcwd(), 'pymechanical.log')
+    >>> file_path = os.path.join(os.getcwd(), "pymechanical.log")
     >>> LOG.log_to_file(file_path)
 
     """
@@ -386,7 +385,7 @@ class Logger:
     file_handler = None
     std_out_handler = None
     _level = logging.DEBUG
-    _instances = {}
+    _instances: dict[str, "PyMechanicalCustomAdapter"] = {}
 
     def __init__(self, level=logging.DEBUG, to_file=False, to_stdout=True, filename=FILE_NAME):
         """Customize the logger for PyMechanical.
@@ -409,7 +408,6 @@ class Logger:
         self.logger.addFilter(InstanceFilter())
         self.logger.setLevel(level)
         self.logger.propagate = True
-        self.level = self.logger.level  # TODO: TO REMOVE
 
         # Write logging methods.
         self.debug = self.logger.debug
@@ -448,7 +446,7 @@ class Logger:
 
         >>> from ansys.mechanical.core import LOG
         >>> import os
-        >>> file_path = os.path.join(os.getcwd(), 'pymechanical.log')
+        >>> file_path = os.path.join(os.getcwd(), "pymechanical.log")
         >>> LOG.log_to_file(file_path)
 
         """
@@ -460,17 +458,17 @@ class Logger:
         Parameters
         ----------
         level : str, optional
-            Level of logging, such as ``DUBUG``. The default is ``LOG_LEVEL``.
+            Level of logging, such as ``DEBUG``. The default is ``LOG_LEVEL``.
         """
         add_stdout_handler(self, level=level)
 
-    def setLevel(self, level="DEBUG"):
+    def setLevel(self, level="DEBUG"):  # noqa: N802
         """Change the log level of the object and the attached handlers.
 
         Parameters
         ----------
         level : str, optional
-            Level of logging, such as ``DUBUG``. The default is ``LOG_LEVEL``.
+            Level of logging, such as ``DEBUG``. The default is ``LOG_LEVEL``.
         """
         if isinstance(level, str):
             level = string_to_loglevel[level.upper()]
@@ -490,7 +488,7 @@ class Logger:
         suffix : str
             Name for the child logger.
         level : str, optional
-            Level of logging, such as ``DUBUG``. The default is ``LOG_LEVEL``.
+            Level of logging, such as ``DEBUG``. The default is ``LOG_LEVEL``.
         """
         logger = logging.getLogger(suffix)
         logger.std_out_handler = None
@@ -606,7 +604,27 @@ class Logger:
         self._instances[new_name] = self._add_mechanical_instance_logger(
             new_name, mechanical_instance, level
         )
+
+        if name != new_name:
+            print(
+                f"name:{name} already exists. Creating a unique name:{new_name} before adding it."
+            )
+
         return self._instances[new_name]
+
+    def remove_instance_logger(self, name):
+        """Remove a logger for a Mechanical instance.
+
+        Parameters
+        ----------
+        name : str
+            Name of the instance logger to be removed.
+        """
+        if name in self._instances.keys():
+            self._instances[name].info(f"Removed instance logger: {name}")
+            del self._instances[name]
+        else:
+            self.logger.warning(f"Instance logger '{name}' does not exist")
 
     def __getitem__(self, key):
         """Get the instance logger based on a key.

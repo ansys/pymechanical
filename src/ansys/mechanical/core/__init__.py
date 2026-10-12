@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -21,23 +21,23 @@
 # SOFTWARE.
 
 """Initialize the package level imports."""
+
 import logging
 import os
+from pathlib import Path
 
-from ansys.tools.path import find_mechanical
+from ansys.tools.common.path import find_mechanical
 import appdirs
 
-USER_DATA_PATH = appdirs.user_data_dir(appname="ansys_mechanical_core", appauthor="Ansys")
+USER_DATA_PATH = Path(appdirs.user_data_dir(appname="ansys_mechanical_core", appauthor="Ansys"))
 """User data directory."""
 
-if not os.path.exists(USER_DATA_PATH):
-    os.makedirs(USER_DATA_PATH)
+USER_DATA_PATH.mkdir(parents=True, exist_ok=True)
 
-EXAMPLES_PATH = os.path.join(USER_DATA_PATH, "examples")
+EXAMPLES_PATH = USER_DATA_PATH / "examples"
 """Examples path."""
 
-if not os.path.exists(EXAMPLES_PATH):
-    os.makedirs(EXAMPLES_PATH)
+EXAMPLES_PATH.mkdir(parents=True, exist_ok=True)
 
 from ansys.mechanical.core.logging import Logger
 
@@ -46,6 +46,11 @@ LOG = Logger(level=logging.ERROR, to_file=False, to_stdout=True)
 
 
 from ansys.mechanical.core._version import __version__
+
+# Package metadata
+__author__ = "ANSYS, Inc."
+__email__ = "pyansys.core@ansys.com"
+__license__ = "MIT"
 
 # import few classes / functions
 from ansys.mechanical.core.mechanical import (
@@ -62,13 +67,44 @@ try:
 
     HAS_EMBEDDING = True
     """Whether or not Mechanical embedding is being used."""
-except:
+except ImportError:
     HAS_EMBEDDING = False
 
-LOCAL_PORTS = []
+LOCAL_PORTS: list[int] = []
 """Manage the package level ports."""
 
 from ansys.mechanical.core.pool import LocalMechanicalPool
 
 BUILDING_GALLERY = False
-"""Whether or not to build gallery examples."""
+"""Control documentation gallery behavior and embedded-app instance sharing.
+
+When ``True``:
+
+- Sphinx enables the example gallery during documentation builds (see ``doc/source/conf.py``).
+- For the embedded :class:`~ansys.mechanical.core.embedding.app.App`, multiple
+  ``App()`` constructions reuse one underlying Mechanical instance so examples can
+  run without exhausting resources.
+
+To opt out of embedded instance sharing for a single ``App`` while leaving this
+flag unchanged (for example when ``BUILDING_GALLERY`` is set globally), pass
+``reuse_instance=True`` to the constructor.
+"""
+
+__all__ = [
+    "__version__",
+    "App",
+    "BUILDING_GALLERY",
+    "EXAMPLES_PATH",
+    "HAS_EMBEDDING",
+    "LOCAL_PORTS",
+    "LOG",
+    "LocalMechanicalPool",
+    "Mechanical",
+    "USER_DATA_PATH",
+    "change_default_mechanical_path",
+    "close_all_local_instances",
+    "connect_to_mechanical",
+    "get_mechanical_path",
+    "global_variables",
+    "launch_mechanical",
+]

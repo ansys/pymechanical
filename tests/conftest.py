@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -20,17 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+"""Fixtures and helpers for testing."""
+
 import datetime
 import os
 import pathlib
 from pathlib import Path
-import platform
 import shutil
 import subprocess
 import sys
 import time
 
-import ansys.tools.path as atp
+import ansys.tools.common.path as atp
 import pytest
 
 import ansys.mechanical.core as pymechanical
@@ -63,7 +64,7 @@ valid_rver = [str(each) for each in SUPPORTED_MECHANICAL_VERSIONS]
 
 EXEC_FILE = None
 for rver in valid_rver:
-    if os.path.isfile(get_mechanical_bin(rver)):
+    if Path(get_mechanical_bin(rver)).is_file():
         EXEC_FILE = get_mechanical_bin(rver)
         break
 
@@ -73,412 +74,62 @@ for rver in valid_rver:
 # minimum version on linux.
 # Override this if running on CI/CD and PYMAPDL_PORT has been specified
 ON_CI = "PYMECHANICAL_START_INSTANCE" in os.environ and "PYMECHANICAL_PORT" in os.environ
-HAS_GRPC = int(rver) >= 232 or ON_CI
+HAS_GRPC = int(rver) >= 242 or ON_CI
+
+
+def pytest_report_header(config):
+    """Add Ansys Mechanical session info to the pytest report header."""
+    width = shutil.get_terminal_size((80, 20))[0]
+
+    # --- Determine version ---
+    cli_version = config.getoption("--ansys-version", default=None)
+    if cli_version:
+        version_str = f"{cli_version}"
+
+    text = []
+    text.append(" PyMechanical test session ".center(width, "-"))
+    text.append(f"Ansys Mechanical version : {version_str}")
+    text.append(f"Session flags            : ON_CI ({ON_CI})")
+    text.append(f"Platform                 : {sys.platform}")
+
+    # --- Relevant environment variables (only shown when set) ---
+    watched_env_vars = [
+        # gRPC / remote session
+        "PYMECHANICAL_START_INSTANCE",
+        "PYMECHANICAL_PORT",
+        "PYMECHANICAL_IP",
+        "ANSYS_GRPC_CERTIFICATES",
+        # Embedding
+        "PYMECHANICAL_EMBEDDING",
+        "PYMECHANICAL_EXPLICIT_INTERFACE",
+        "ANSYS_MECHANICAL_EMBEDDING_SUPPORT_OLD_VERSIONS",
+        # Solve / misc
+        "NUM_CORES",
+    ]
+    env_lines = [f"{k}='{os.environ[k]}'" for k in watched_env_vars if k in os.environ]
+    if env_lines:
+        text.append(" Environment variables ".center(width, "-"))
+        text.append(", ".join(env_lines))
+    text.append("-" * width)
+    return "\n".join(text)
 
 
 def pytest_collection_modifyitems(config, items):
+    """Modify the collected test items."""
     keywordexpr = config.option.keyword
     markexpr = config.option.markexpr
-    if keywordexpr or markexpr:
-        return  # command line has a -k or -m, let pytest handle it
+    apply_default_skips = not (keywordexpr or markexpr)
 
-    # skip embedding tests unless the mark is specified
-    skip_embedding = pytest.mark.skip(
-        reason="""embedding not selected for pytest run
-        (`pytest -m embedding` or `pytest -m embedding_scripts`).  Skip by default"""
-    )
-    [
-        item.add_marker(skip_embedding)
-        for item in items
-        if ("embedding" or "embedding_scripts") in item.keywords
-    ]
-
-    # TODO - skip python_env tests unless the mark is specified. (The below doesn't work!)
-    # skip_python_env = pytest.mark.skip(
-    #     reason="python_env not selected for pytest run (`pytest -m python_env`).  Skip by default"
-    # )
-    # [item.add_marker(skip_python_env) for item in items if "python_env" in item.keywords]
-
-
-@pytest.fixture()
-def selection(embedded_app):
-    class Selection:
-        def __init__(self):
-            self._mgr = embedded_app.ExtAPI.SelectionManager
-
-        def UpdateSelection(self, api, input, type):
-            new_selection = self._mgr.CreateSelectionInfo(type)
-            new_selection.Ids = input
-            self._mgr.NewSelection(new_selection)
-
-    yield Selection()
-
-
-@pytest.fixture()
-def assets():
-    """Return the test assets folder.
-
-    TODO - share this with the mechanical remote tests.
-    """
-    ROOT_FOLDER = pathlib.Path(__file__).parent
-    return ROOT_FOLDER / "assets"
-
-
-def ensure_embedding() -> None:
-    from ansys.mechanical.core import HAS_EMBEDDING
-
-    if not HAS_EMBEDDING:
-        raise Exception("Cannot run embedded tests if Mechanical embedding is not installed")
-
-
-def start_embedding_app(version, pytestconfig) -> datetime.timedelta:
-    from ansys.mechanical.core import App
-
-    global EMBEDDED_APP
-    ensure_embedding()
-    start = datetime.datetime.now()
-
-    config = AddinConfiguration(pytestconfig.getoption("addin_configuration"))
-
-    EMBEDDED_APP = App(version=int(version))
-    assert (
-        not EMBEDDED_APP.readonly
-    ), "Can't run test cases, Mechanical is in readonly mode! Check license configuration."
-    startup_time = (datetime.datetime.now() - start).total_seconds()
-    num_cores = os.environ.get("NUM_CORES", None)
-    if num_cores is not None:
-        config = EMBEDDED_APP.ExtAPI.Application.SolveConfigurations["My Computer"]
-        config.SolveProcessSettings.MaxNumberOfCores = int(num_cores)
-    return startup_time
-
-
-EMBEDDED_APP = None
-
-
-@pytest.fixture(scope="session")
-def embedded_app(pytestconfig, request):
-    global EMBEDDED_APP
-    startup_time = start_embedding_app(pytestconfig.getoption("ansys_version"), pytestconfig)
-    terminal_reporter = request.config.pluginmanager.getplugin("terminalreporter")
-    if terminal_reporter is not None:
-        terminal_reporter.write_line(f"\t{startup_time}\tStarting Mechanical")
-    yield EMBEDDED_APP
-    EMBEDDED_APP._dispose()
-
-
-@pytest.fixture(autouse=True)
-def mke_app_reset(request):
-    global EMBEDDED_APP
-    if EMBEDDED_APP is None:
-        # embedded app was not started - no need to do anything
-        return
-    terminal_reporter = request.config.pluginmanager.getplugin("terminalreporter")
-    if terminal_reporter is not None:
-        terminal_reporter.write_line(f"starting test {request.function.__name__} - file new")
-    EMBEDDED_APP.new()
-
-
-# set to True if you want to see all the subprocess stdout/stderr
-_PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE = False
-
-
-@pytest.fixture()
-def run_subprocess(pytestconfig):
-    version = pytestconfig.getoption("ansys_version")
-
-    def func(args, env=None, check: bool = None):
-        if check is None:
-            check = True
-            if os.name != "nt":
-                if int(version) < 251:
-                    check = False
-        process, output = ansys.mechanical.core.run._run(
-            args, env, check, _PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE
-        )
-        # process, stdout, stderr
-        return process, output[0], output[1]
-
-    return func
-
-
-@pytest.fixture(scope="session")
-def rootdir():
-    """Return the root directory of the local clone of the PyMechanical GitHub repository."""
-    base = pathlib.Path(__file__).parent
-    yield base.parent
-
-
-@pytest.fixture()
-def disable_cli():
-    ansys.mechanical.core.run.DRY_RUN = True
-    yield
-    ansys.mechanical.core.run.DRY_RUN = False
-
-
-@pytest.fixture()
-def test_env():
-    """Create a virtual environment scoped to the test."""
-    venv_name = "test_env"
-
-    base = pathlib.Path(__file__).parent
-
-    if "win" in sys.platform:
-        exe_dir = "Scripts"
-        exe_name = "python.exe"
-    else:
-        exe_dir = "bin"
-        exe_name = "python"
-
-    venv_dir = os.path.join(base, "." + venv_name)
-    venv_bin = os.path.join(venv_dir, exe_dir)
-
-    # Set up path to use the virtual environment
-    env_copy = os.environ.copy()
-    env_copy["PATH"] = venv_bin + os.pathsep + os.environ.get("PATH", "")
-
-    # object describing the python environment
-    class TestEnv:
-        # environment variable needed to run inside the environment
-        env = env_copy
-        # python executable inside the environment
-        python = os.path.join(venv_bin, exe_name)
-
-    test_env_object = TestEnv()
-
-    # Create virtual environment
-    subprocess.run([sys.executable, "-m", "venv", venv_dir], env=env_copy)
-    # print(f"created virtual environment in {venv_dir}")
-
-    # Upgrade pip
-    cmdline = [test_env_object.python, "-m", "pip", "install", "-U", "pip"]
-    subprocess.check_call(cmdline, env=test_env_object.env)
-
-    yield test_env_object
-
-    # print(f"\ndeleting virtual environment in {venv_dir}")
-    shutil.rmtree(venv_dir)
-    # print(f"deleted virtual environment in {venv_dir}\n")
-
-
-@pytest.fixture(scope="session")
-def graphics_test_mechdb_file():
-    """Download mechdb files for graphics export test."""
-    mechdb_file = download_file("graphics_test.mechdb", "pymechanical", "test_files")
-    yield mechdb_file
-
-
-def launch_mechanical_instance(cleanup_on_exit=False):
-    print("launching mechanical instance")
-    return pymechanical.launch_mechanical(
-        allow_input=False,
-        verbose_mechanical=True,
-        cleanup_on_exit=cleanup_on_exit,
-        log_mechanical="pymechanical_log.txt",
-    )
-
-
-def connect_to_mechanical_instance(port=None, clear_on_connect=False):
-    print("connecting to a existing mechanical instance")
-    hostname = platform.uname().node  # your machine name
-
-    # ip needs to be passed or start instance takes precedence
-    # typical for container scenarios use connect
-    # and needs to be treated as remote scenarios
-    mechanical = pymechanical.connect_to_mechanical(
-        ip=hostname, port=port, clear_on_connect=clear_on_connect, cleanup_on_exit=False
-    )
-    return mechanical
-
-
-def launch_rpc_embedded_server(port: int, version: int, server_script: str):
-    """Start the server as a subprocess using `port`."""
-    env_copy = os.environ.copy()
-    p = subprocess.Popen([sys.executable, server_script, str(port), str(version)], env=env_copy)
-    return p
-
-
-def connect_rpc_embedded_server(port: int):
-    from ansys.mechanical.core.embedding.rpc.client import Client
-
-    client = Client("localhost", port)
-    return client
-
-
-def _launch_mechanical_rpyc_server(rootdir: str, version: int):
-    """Start rpyc server process, return the process object."""
-    from ansys.mechanical.core.embedding.rpc.utils import get_free_port
-
-    server_py = Path(rootdir) / "tests" / "scripts" / "rpc_server_embedded.py"
-    port = get_free_port()
-    embedded_server = launch_rpc_embedded_server(
-        port=port, version=version, server_script=server_py
-    )
-    return embedded_server, port
-
-
-def _get_mechanical_server():
-    if not pymechanical.mechanical.get_start_instance():
-        mechanical = connect_to_mechanical_instance()
-    else:
-        mechanical = launch_mechanical_instance()
-    return mechanical
-
-
-def _stop_python_server(mechanical, server_process):
-    mechanical.exit()
-    start_time = time.time()
-    while server_process.poll() is None:
-        if time.time() - start_time > 10:
-            try:
-                server_process.terminate()
-                server_process.wait()
-            except subprocess.TimeoutExpired:
-                server_process.kill()
-            break
-        time.sleep(0.5)
-
-
-def _stop_mechanical_server(mechanical):
-    assert "Ansys Mechanical" in str(mechanical)
-    if pymechanical.mechanical.get_start_instance():
-        print(f"get_start_instance() returned True. exiting mechanical.")
-        mechanical.exit(force=True)
-        assert mechanical.exited
-        assert "Mechanical exited" in str(mechanical)
-        with pytest.raises(MechanicalExitedError):
-            mechanical.run_python_script("3+4")
-
-
-@pytest.fixture(scope="session")
-def mechanical_session(pytestconfig, rootdir):
-    print("Mechanical session fixture")
-    is_python_server = pytestconfig.getoption("remote_server_type") == "rpyc"
-    version = int(pytestconfig.getoption("ansys_version"))
-    if is_python_server:
-        print("Mechanical session fixture - starting subprocess")
-        server_process, port = _launch_mechanical_rpyc_server(rootdir, version)
-        print(f"connecting to {port}")
-        mechanical = connect_rpc_embedded_server(port=port)
-    else:
-        server_process = None
-        mechanical = _get_mechanical_server()
-
-    print("Yielding server")
-    yield (mechanical, server_process)
-    print("Stopping server")
-    if is_python_server:
-        _stop_python_server(mechanical, server_process)
-    else:
-        _stop_mechanical_server(mechanical)
-    print("mechanical rpc session fixture exited cleanly")
-
-
-@pytest.fixture(autouse=True)
-def mke_app_reset(request, printer):
-    global EMBEDDED_APP
-    if EMBEDDED_APP is None:
-        # embedded app was not started - no need to do anything
-        return
-    printer(f"starting test {request.function.__name__} - file new")
-    EMBEDDED_APP.new()
-
-
-@pytest.fixture()
-def mechanical(request, printer, mechanical_session):
-    mechanical, server_process = mechanical_session
-    if server_process is not None:
-        ret = server_process.poll()
-        if ret is not None:
-            raise Exception(f"The server process has terminated with error code {ret}")
-    assert mechanical.is_alive, "The server process has not terminated but connection has been lost"
-    yield mechanical
-
-
-# used only once
-@pytest.fixture(scope="function")
-def mechanical_meshing():
-    print("current working directory: ", os.getcwd())
-
-    mechanical_meshing = pymechanical.launch_mechanical(
-        additional_switches=["-AppModeMesh"],
-        additional_envs=dict(ENV_VARIABLE="1"),
-        verbose_mechanical=True,
-        cleanup_on_exit=False,
-    )
-
-    print(mechanical_meshing)
-    yield mechanical_meshing
-
-    mechanical_meshing.exit(force=True)
-
-
-# used only once
-@pytest.fixture(scope="function")
-def mechanical_result():
-    print("current working directory: ", os.getcwd())
-
-    mechanical_result = pymechanical.launch_mechanical(
-        additional_switches=["-AppModeRest"], verbose_mechanical=True
-    )
-
-    print(mechanical_result)
-    yield mechanical_result
-
-    mechanical_result.exit(force=True)
-
-
-@pytest.fixture(scope="session")
-def mechanical_pool():
-    if not pymechanical.mechanical.get_start_instance():
-        return None
-
-    path = atp.get_mechanical_path()
-
-    exec_file = path
-    instances_count = 2
-
-    pool = LocalMechanicalPool(instances_count, exec_file=exec_file)
-
-    print(pool)
-    assert len(pool.ports) == instances_count
-
-    instance, index = pool.next_available(return_index=True)
-    assert index == 0
-
-    instance = pool.next_available()
-    assert instance is not None
-
-    assert pool[0] is not None
-    assert pool[1] is not None
-
-    yield pool
-
-    assert f"Mechanical pool with {instances_count} active instances" in str(pool)
-    pool.exit(block=True)
-
-
-def pytest_addoption(parser):
-    mechanical_path = atp.get_mechanical_path(False)
-
-    if mechanical_path is None:
-        parser.addoption("--ansys-version", default="251")
-    else:
-        mechanical_version = atp.version_from_path("mechanical", mechanical_path)
-        parser.addoption("--ansys-version", default=str(mechanical_version))
-
-    # parser.addoption("--debugging", action="store_true")
-    parser.addoption("--addin-configuration", default="Mechanical")
-    parser.addoption(
-        "--remote-server-type",
-        default="grpc",
-        help="Specify RPC protocol",
-        choices=["grpc", "rpyc"],
-    )
-
-
-def pytest_collection_modifyitems(config, items):
-    """Skips tests marked minimum_version if ansys-version is less than mark argument."""
     for item in items:
+        # skip embedding tests unless the mark is specified via -k or -m
+        if apply_default_skips:
+            if "embedding" in item.keywords or "embedding_scripts" in item.keywords:
+                skip_embedding = pytest.mark.skip(
+                    reason="""embedding not selected for pytest run
+        (`pytest -m embedding` or `pytest -m embedding_scripts`).  Skip by default"""
+                )
+                item.add_marker(skip_embedding)
+
         # Skip tests that are less than the minimum version
         if "minimum_version" in item.keywords:
             revn = [mark.args[0] for mark in item.iter_markers(name="minimum_version")]
@@ -509,3 +160,445 @@ def pytest_collection_modifyitems(config, items):
         if "linux_only" in item.keywords and "lin" not in sys.platform:
             skip_except_linux = pytest.mark.skip(reason="Test requires Linux platform.")
             item.add_marker(skip_except_linux)
+
+        # Skip python_env tests unless the mark is specified via -k or -m
+        if apply_default_skips and "python_env" in item.keywords:
+            skip_python_env = pytest.mark.skip(
+                reason="python_env not selected for pytest run"
+                " (`pytest -m python_env`). Skip by default"
+            )
+            item.add_marker(skip_python_env)
+
+
+@pytest.fixture()
+def assets():
+    """Return the test assets folder.
+
+    # TODO : share this with the mechanical remote tests.
+    """
+    root_folder = pathlib.Path(__file__).parent
+    return root_folder / "assets"
+
+
+def ensure_embedding() -> None:
+    """Ensure that embedding is available."""
+    from ansys.mechanical.core import HAS_EMBEDDING
+
+    if not HAS_EMBEDDING:
+        raise Exception("Cannot run embedded tests if Mechanical embedding is not installed")
+
+
+def start_embedding_app(version, pytestconfig) -> datetime.timedelta:
+    """Start the embedded Mechanical application."""
+    import logging
+
+    from ansys.mechanical.core import App
+    from ansys.mechanical.core.embedding.logger import Configuration
+
+    global EMBEDDED_APP
+    ensure_embedding()
+    start = datetime.datetime.now()
+
+    config = AddinConfiguration(pytestconfig.getoption("addin_configuration"))
+
+    _log_level_str = pytestconfig.getoption("--log-embedding", default=None)
+    if _log_level_str is not None:
+        _log_level = getattr(logging, _log_level_str.upper())
+        Configuration.configure(level=_log_level, to_stdout=True)
+
+    EMBEDDED_APP = App(version=int(version))
+    assert not EMBEDDED_APP.readonly, (
+        "Can't run test cases, Mechanical is in readonly mode! Check license configuration."
+    )
+    startup_time = (datetime.datetime.now() - start).total_seconds()
+    num_cores = os.environ.get("NUM_CORES", None)
+    if num_cores is not None:
+        config = EMBEDDED_APP.ExtAPI.Application.SolveConfigurations["My Computer"]
+        config.SolveProcessSettings.MaxNumberOfCores = int(num_cores)
+    return startup_time
+
+
+EMBEDDED_APP = None
+
+
+@pytest.fixture(scope="session")
+def embedded_app(pytestconfig, request):
+    """Fixture that creates an embedded Mechanical application."""
+    global EMBEDDED_APP
+    startup_time = start_embedding_app(pytestconfig.getoption("ansys_version"), pytestconfig)
+    terminal_reporter = request.config.pluginmanager.getplugin("terminalreporter")
+    if terminal_reporter is not None:
+        terminal_reporter.write_line(f"\t{startup_time}\tStarting Mechanical")
+    yield EMBEDDED_APP
+    EMBEDDED_APP._dispose()
+
+
+@pytest.fixture(autouse=True)
+def make_app_reset(request):
+    """Fixture that resets the embedded Mechanical application before each test."""
+    global EMBEDDED_APP
+    if EMBEDDED_APP is None:
+        # embedded app was not started - no need to do anything
+        return
+    terminal_reporter = request.config.pluginmanager.getplugin("terminalreporter")
+    if terminal_reporter is not None:
+        terminal_reporter.write_line(f"starting test {request.function.__name__} - file new")
+    EMBEDDED_APP.new()
+
+
+# set to True if you want to see all the subprocess stdout/stderr
+_PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE = False
+
+
+@pytest.fixture()
+def run_subprocess(pytestconfig):
+    """Return a function that runs a subprocess with the given args and env."""
+    version = pytestconfig.getoption("ansys_version")
+
+    def func(args, env=None, check: bool = None):
+        if check is None:
+            check = True
+            if os.name != "nt":
+                if int(version) < 251:
+                    check = False
+        process, output = ansys.mechanical.core.run._run(
+            args, env, check, _PRINT_SUBPROCESS_OUTPUT_TO_CONSOLE
+        )
+        # process, stdout, stderr
+        return process, output[0], output[1]
+
+    return func
+
+
+@pytest.fixture(scope="session")
+def rootdir():
+    """Return the root directory of the local clone of the PyMechanical GitHub repository."""
+    base = pathlib.Path(__file__).parent
+    yield base.parent
+
+
+@pytest.fixture()
+def disable_cli():
+    """Disable command line interface."""
+    ansys.mechanical.core.run.DRY_RUN = True
+    yield
+    ansys.mechanical.core.run.DRY_RUN = False
+
+
+@pytest.fixture()
+def test_env():
+    """Create a virtual environment scoped to the test."""
+    venv_name = "test_env"
+
+    base = pathlib.Path(__file__).parent
+
+    if "win" in sys.platform:
+        exe_dir = "Scripts"
+        exe_name = "python.exe"
+    else:
+        exe_dir = "bin"
+        exe_name = "python"
+
+    venv_dir = base / f".{venv_name}"
+    venv_bin = venv_dir / exe_dir
+    python_exe = venv_bin / exe_name
+    # Set up path to use the virtual environment
+    env_copy = os.environ.copy()
+    env_copy["PATH"] = str(venv_bin) + os.pathsep + os.environ.get("PATH", "")
+
+    # object describing the python environment
+    class TestEnv:
+        # environment variable needed to run inside the environment
+        env = env_copy
+        # python executable inside the environment
+        python = str(python_exe)
+
+    test_env_object = TestEnv()
+
+    # Create virtual environment
+    subprocess.run([sys.executable, "-m", "venv", venv_dir], env=env_copy)
+    # print(f"created virtual environment in {venv_dir}")
+
+    # Upgrade pip
+    cmdline = [test_env_object.python, "-m", "pip", "install", "-U", "pip"]
+    subprocess.check_call(cmdline, env=test_env_object.env)
+
+    yield test_env_object
+
+    # print(f"\ndeleting virtual environment in {venv_dir}")
+    shutil.rmtree(venv_dir)
+    # print(f"deleted virtual environment in {venv_dir}\n")
+
+
+@pytest.fixture(scope="session")
+def graphics_test_mechdb_file():
+    """Download mechdb files for graphics export test."""
+    mechdb_file = download_file("graphics_test.mechdb", "pymechanical", "test_files")
+    yield mechdb_file
+
+
+def launch_mechanical_instance(cleanup_on_exit=False):
+    """Launch a new Mechanical instance."""
+    print("launching mechanical instance")
+    if os.name != "nt":
+        # on linux, and container start with insecure mode for testing
+        return pymechanical.launch_mechanical(
+            allow_input=False,
+            verbose_mechanical=True,
+            cleanup_on_exit=cleanup_on_exit,
+            log_mechanical="pymechanical_log.txt",
+            host="0.0.0.0",
+            transport_mode="insecure",
+        )
+    return pymechanical.launch_mechanical(
+        allow_input=False,
+        verbose_mechanical=True,
+        cleanup_on_exit=cleanup_on_exit,
+        log_mechanical="pymechanical_log.txt",
+    )
+
+
+def connect_to_mechanical_instance(port=None, clear_on_connect=False):
+    """Connect to an existing Mechanical instance.
+
+    For local instances, don't pass an IP (defaults to 127.0.0.1).
+    This ensures proper connection regardless of hostname resolution issues
+    on systems with WSL/Docker Desktop installed.
+
+    If you need to connect to a remote/container instance, pass an explicit IP.
+    """
+    print("connecting to a existing mechanical instance")
+
+    # Don't pass hostname - let it default to 127.0.0.1 for local connections.
+    # On WSL/Docker systems, hostname can resolve to bridge IPs (e.g., 172.28.0.1)
+    # which are not routable for locally-launched Mechanical instances.
+    # For remote/container scenarios, an explicit IP should be passed by the caller.
+    connection_options = {
+        "port": port,
+        "clear_on_connect": clear_on_connect,
+        "cleanup_on_exit": False,
+    }
+    if os.name != "nt":
+        certs_dir = os.environ.get("ANSYS_GRPC_CERTIFICATES")
+        if certs_dir:
+            connection_options["certs_dir"] = certs_dir
+            connection_options["transport_mode"] = "mtls"
+        else:
+            connection_options["transport_mode"] = "insecure"
+    mechanical = pymechanical.connect_to_mechanical(**connection_options)
+    return mechanical
+
+
+def launch_rpc_embedded_server(port: int, version: int, server_script: str):
+    """Start the server as a subprocess using `port`."""
+    env_copy = os.environ.copy()
+    p = subprocess.Popen([sys.executable, server_script, str(port), str(version)], env=env_copy)
+    return p
+
+
+def connect_rpc_embedded_server(port: int):
+    """Connect to the rpc server."""
+    from ansys.mechanical.core.embedding.rpc.client import Client
+
+    client = Client("localhost", port)
+    return client
+
+
+def _launch_mechanical_rpyc_server(rootdir: str, version: int):
+    """Start rpyc server process, return the process object."""
+    from ansys.mechanical.core.embedding.rpc.utils import get_free_port
+
+    server_py = Path(rootdir) / "tests" / "scripts" / "rpc_server_embedded.py"
+    port = get_free_port()
+    embedded_server = launch_rpc_embedded_server(
+        port=port, version=version, server_script=server_py
+    )
+    return embedded_server, port
+
+
+def _get_mechanical_server():
+    """Get a mechanical server, either by connecting or launching."""
+    if not pymechanical.mechanical.get_start_instance():
+        mechanical = connect_to_mechanical_instance()
+    else:
+        mechanical = launch_mechanical_instance()
+    return mechanical
+
+
+def _stop_python_server(mechanical, server_process):
+    """Stop the python rpc server process."""
+    mechanical.exit()
+    start_time = time.time()
+    while server_process.poll() is None:
+        if time.time() - start_time > 10:
+            try:
+                server_process.terminate()
+                server_process.wait()
+            except subprocess.TimeoutExpired:
+                server_process.kill()
+            break
+        time.sleep(0.5)
+
+
+def _stop_mechanical_server(mechanical):
+    """Stop the mechanical server."""
+    assert "Ansys Mechanical" in str(mechanical)
+    if pymechanical.mechanical.get_start_instance():
+        print("get_start_instance() returned True. Exiting mechanical.")
+        mechanical.exit(force=True)
+        assert mechanical.exited
+        assert "Mechanical exited" in str(mechanical)
+        with pytest.raises(MechanicalExitedError):
+            mechanical.run_python_script("3+4")
+
+
+@pytest.fixture(scope="session")
+def mechanical_session(pytestconfig, rootdir):
+    """Fixture that creates a Mechanical instance for the session."""
+    print("Mechanical session fixture")
+    is_python_server = pytestconfig.getoption("remote_server_type") == "rpyc"
+    version = int(pytestconfig.getoption("ansys_version"))
+    if is_python_server:
+        print("Mechanical session fixture - starting subprocess")
+        server_process, port = _launch_mechanical_rpyc_server(rootdir, version)
+        print(f"connecting to {port}")
+        mechanical = connect_rpc_embedded_server(port=port)
+    else:
+        server_process = None
+        mechanical = _get_mechanical_server()
+
+    print("Yielding server")
+    yield (mechanical, server_process)
+    print("Stopping server")
+    if is_python_server:
+        _stop_python_server(mechanical, server_process)
+    else:
+        _stop_mechanical_server(mechanical)
+    print("mechanical rpc session fixture exited cleanly")
+
+
+@pytest.fixture()
+def mechanical(request, printer, mechanical_session):
+    """Fixture that creates a Mechanical instance for a test."""
+    mechanical, server_process = mechanical_session
+    if server_process is not None:
+        ret = server_process.poll()
+        if ret is not None:
+            raise Exception(f"The server process has terminated with error code {ret}")
+    assert mechanical.is_alive, "The server process has not terminated but connection has been lost"
+    yield mechanical
+
+
+# used only once
+@pytest.fixture(scope="function")
+def mechanical_meshing():
+    """Fixture that creates a Mechanical instance in meshing mode."""
+    print("current working directory: ", Path.cwd())
+    if os.name != "nt":
+        # on linux, always cleanup to avoid orphaned processes
+        mechanical_meshing = pymechanical.launch_mechanical(
+            additional_switches=["-AppModeMesh"],
+            additional_envs=dict(ENV_VARIABLE="1"),
+            verbose_mechanical=True,
+            cleanup_on_exit=True,
+            transport_mode="insecure",
+        )
+    else:
+        mechanical_meshing = pymechanical.launch_mechanical(
+            additional_switches=["-AppModeMesh"],
+            additional_envs=dict(ENV_VARIABLE="1"),
+            verbose_mechanical=True,
+            cleanup_on_exit=False,
+        )
+
+    print(mechanical_meshing)
+    yield mechanical_meshing
+
+    mechanical_meshing.exit(force=True)
+
+
+# used only once
+@pytest.fixture(scope="function")
+def mechanical_result():
+    """Fixture that creates a Mechanical instance in result mode."""
+    print("current working directory: ", Path.cwd())
+    if os.name != "nt":
+        # on linux, always cleanup to avoid orphaned processes
+        mechanical_result = pymechanical.launch_mechanical(
+            additional_switches=["-AppModeRest"],
+            verbose_mechanical=True,
+            transport_mode="insecure",
+        )
+    else:
+        mechanical_result = pymechanical.launch_mechanical(
+            additional_switches=["-AppModeRest"], verbose_mechanical=True
+        )
+
+    print(mechanical_result)
+    yield mechanical_result
+
+    mechanical_result.exit(force=True)
+
+
+@pytest.fixture(scope="session")
+def mechanical_pool():
+    """Fixture that creates a local pool of Mechanical instances."""
+    if not pymechanical.mechanical.get_start_instance():
+        return None
+
+    path = atp.get_mechanical_path()
+
+    exec_file = path
+    instances_count = 2
+
+    if os.name != "nt":
+        pool = LocalMechanicalPool(instances_count, exec_file=exec_file, transport_mode="insecure")
+    else:
+        pool = LocalMechanicalPool(instances_count, exec_file=exec_file)
+
+    print(pool)
+    assert len(pool.ports) == instances_count
+
+    instance, index = pool.next_available(return_index=True)
+    assert index == 0
+
+    instance = pool.next_available()
+    assert instance is not None
+
+    assert pool[0] is not None
+    assert pool[1] is not None
+
+    yield pool
+
+    assert f"Mechanical pool with {instances_count} active instances" in str(pool)
+    pool.exit(block=True)
+
+
+def pytest_addoption(parser):
+    """Add command line options for pytest."""
+    mechanical_path = atp.get_mechanical_path(False)
+
+    if mechanical_path is None:
+        parser.addoption("--ansys-version", default="251")
+    else:
+        mechanical_version = atp.version_from_path("mechanical", mechanical_path)
+        parser.addoption("--ansys-version", default=str(mechanical_version))
+
+    # parser.addoption("--debugging", action="store_true")
+    parser.addoption(
+        "--log-embedding",
+        default=None,
+        choices=["debug", "info", "warning", "error"],
+        help=(
+            "Set the embedding log level written to stdout. "
+            "Choices: debug, info, warning, error. "
+            "When omitted, embedding logging is not configured by the test suite."
+        ),
+    )
+    parser.addoption("--addin-configuration", default="Mechanical")
+    parser.addoption(
+        "--remote-server-type",
+        default="grpc",
+        help="Specify RPC protocol",
+        choices=["grpc", "rpyc"],
+    )

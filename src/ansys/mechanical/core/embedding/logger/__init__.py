@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -30,7 +30,8 @@ Usage
 Configuring logger
 ~~~~~~~~~~~~~~~~~~
 
-Configuring the logger can be done using the :class:`Configuration <ansys.mechanical.core.embedding.logger.Configuration>` class:
+Configuring the logger can be done using the
+:class:`Configuration <ansys.mechanical.core.embedding.logger.Configuration>` class:
 
 .. code:: python
   import ansys.mechanical.core as mech
@@ -39,7 +40,8 @@ Configuring the logger can be done using the :class:`Configuration <ansys.mechan
   Configuration.configure(level=logging.INFO, to_stdout=True, base_directory=None)
   app = mech.App(version=252)
 
-Then, the :class:`Logger <ansys.mechanical.core.embedding.logger.Logger>` class can be used to write messages to the log:
+Then, the :class:`Logger <ansys.mechanical.core.embedding.logger.Logger>` class can
+be used to write messages to the log:
 
 .. code:: python
 
@@ -51,20 +53,19 @@ Then, the :class:`Logger <ansys.mechanical.core.embedding.logger.Logger>` class 
 import logging
 import os
 import typing
+import warnings
 
 from ansys.mechanical.core.embedding import initializer
 from ansys.mechanical.core.embedding.logger import environ, linux_api, sinks, windows_api
 
-LOGGING_SINKS: typing.Set[int] = set()
+LOGGING_SINKS: set[int] = set()
 """Constant for logging sinks."""
 
 LOGGING_CONTEXT: str = "PYMECHANICAL"
 """Constant for logging context."""
 
 
-def _get_backend() -> (
-    typing.Union[windows_api.APIBackend, linux_api.APIBackend, environ.EnvironBackend]
-):
+def _get_backend() -> windows_api.APIBackend | linux_api.APIBackend | environ.EnvironBackend:
     """Get the appropriate logger backend.
 
     Before embedding is initialized, logging is configured via environment variables.
@@ -77,7 +78,7 @@ def _get_backend() -> (
     Setting the base directory only works before initializing.
     Actually logging a message or flushing the log only works after initializing.
     """
-    # TODO - use abc instead of a union type?
+    # TODO : Use abc instead of a union type?
     embedding_initialized = initializer.INITIALIZED_VERSION is not None
     if not embedding_initialized:
         return environ.EnvironBackend()
@@ -90,13 +91,20 @@ class Configuration:
     """Configures logger for Mechanical embedding."""
 
     @classmethod
-    def configure(cls, level=logging.WARNING, directory=None, base_directory=None, to_stdout=True):
+    def configure(
+        cls,
+        level=logging.WARNING,
+        directory=None,
+        base_directory=None,
+        to_stdout=True,
+        wbtracing=None,
+    ):
         """Configure the logger for PyMechanical embedding.
 
         Parameters
         ----------
         level : int, optional
-            Level of logging that is defined in the ``logging`` package. The default is 'DEBUG'.
+            Level of logging that is defined in the ``logging`` package. The default is 'WARNING'.
             Options are ``"DEBUG"``, ``"INFO"``, ``"WARNING"``, and ``"ERROR"``.
         directory : str, optional
             Directory to write log file to. The default is ``None``, but by default the log
@@ -108,6 +116,13 @@ class Configuration:
         to_stdout : bool, optional
             Whether to write log messages to the standard output, which is the
             command line. The default is ``True``.
+        wbtracing : bool, optional
+            Whether to enable WBTRACING for COM-level diagnostic output.
+            The default is ``None``, which preserves the current setting.
+            When enabled, trace messages from Mechanical's internal COM
+            implementation are written to stdout. Setting this after
+            Mechanical is initialized will have no effect on the running
+            instance but will persist in the environment.
         """
         # Set up the global log configuration.
         cls.set_log_directory(directory)
@@ -121,6 +136,10 @@ class Configuration:
         # Commit the sink-specific log configuration global state to the backend.
         cls._commit_enabled_configuration()
         cls.set_log_level(level)
+
+        # Configure WBTRACING if specified.
+        if wbtracing is not None:
+            cls.set_wbtracing(wbtracing)
 
     @classmethod
     def set_log_to_stdout(cls, value: bool) -> None:
@@ -164,6 +183,37 @@ class Configuration:
     def _commit_enabled_configuration(cls) -> None:
         for sink in LOGGING_SINKS:
             _get_backend().enable(sink)
+
+    @classmethod
+    def set_wbtracing(cls, enabled: bool) -> None:
+        """Enable or disable WBTRACING for COM-level diagnostic output.
+
+        WBTRACING enables trace-level diagnostic output from Mechanical's
+        internal COM implementation. When enabled, trace messages are
+        written to stdout.
+
+        .. note::
+           Setting this after Mechanical has been initialized will have no
+           effect on the running instance. The env var is set for completeness
+           (e.g. for a future instance in the same process), but a warning
+           is issued.
+
+        Parameters
+        ----------
+        enabled : bool
+            Whether to enable WBTRACING.
+        """
+        if initializer.INITIALIZED_VERSION is not None:
+            warnings.warn(
+                "WBTRACING was set after Mechanical is already initialized. "
+                "It will have no effect on the current instance.",
+                UserWarning,
+                stacklevel=2,
+            )
+        if enabled:
+            os.environ["WBTRACING"] = "1"
+        else:
+            os.environ.pop("WBTRACING", None)
 
     @classmethod
     def _store_stdout_sink_enabled(cls, value: bool) -> None:

@@ -44,15 +44,14 @@ updates:
           - "jupyter*"
           - "matplotlib"
           - "numpy*"
-          - "pandas"
-          - "panel"
-          - "plotly"
           - "pypandoc"
           - "pythreejs"
           - "pyvista"
         update-types:
         - "minor"
         - "patch"
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -73,3 +72,5 @@ updates:
           update-types:
           - "minor"
           - "patch"
+    cooldown:
+      default-days: 7

@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 """Run embedded instance for analytics."""
+
 import argparse
 
 import ansys.mechanical.core as pymechanical
@@ -32,3 +33,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     app = pymechanical.App(version=int(args.version))
     app.Model.AddNamedSelection()
+    # this is to catch a bug where analytics were failing to generate json when
+    # app is closed.
+    if app.version > 261:
+        app.close()

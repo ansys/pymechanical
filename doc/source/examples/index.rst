@@ -1,30 +1,56 @@
 .. _ref_examples:
 
+========
 Examples
 ========
 
-Here are examples using Mechanical with the ``ansys-mechanical-core`` library through
-an embedded instance or remote session.
+Here is a series of examples using Mechanical with the PyMechanical.
+Examples are organized by the mode they use:
 
-.. grid:: 1 2 2 2
+- **Embedding mode** examples use the ``App`` class for direct object model access.
+- **Remote session mode** examples use the ``launch_mechanical()`` and ``run_python_script()`` methods.
 
-   .. grid-item-card:: Embedding Examples
-      :padding: 2 2 2 2
-      :link: https://embedding.examples.mechanical.docs.pyansys.com/examples/index.html
+If you are not sure which mode to use, see :ref:`ref_choose_your_mode`.
 
-      Uses PyMechanical to embed an instance of Mechanical directly within Python as a Python object.
+.. important::
 
-   .. grid-item-card:: Remote Session Examples
-      :padding: 2 2 2 2
-      :link: https://examples.mechanical.docs.pyansys.com/examples/index.html
+   Some examples use Mechanical features that require a specific license level. For example,
+   harmonic acoustics is not available with an Ansys Mechanical Pro license. If an example
+   fails, verify that your Mechanical license supports all analyses and features used by the
+   example. A license-related failure does not necessarily indicate a problem with your
+   PyMechanical setup. For information on inspecting and selecting licenses, see
+   :ref:`ref_licensing`.
 
-      Uses PyMechanical as a client to a remote Mechanical instance.
+.. === EXAMPLES Gallery (Embedding Mode) ===
 
-.. grid:: 1
+..
+   We have to include this rather than include it in a tree.
 
-   .. grid-item-card:: Embedding Instance & Remote Session Example
-      :padding: 2 2 2 2
-      :link: gallery_examples/embedding_n_remote/embedding_remote.html
+.. include:: gallery_examples/index.rst
+   :start-line: 2
 
-      Demonstrates the same model setup in both an embedded instance and remote session,
-      as well as examples using a combination of embedded instances and remote sessions.
+
+.. === ADVANCED EXAMPLES (Embedding Mode) ===
+
+.. toctree::
+    :hidden:
+    :maxdepth: 3
+
+    Advanced examples: Embedding mode <https://embedding.examples.mechanical.docs.pyansys.com/examples/index.html>
+
+
+.. include:: advanced_examples/index.rst
+   :start-line: 2
+
+
+.. === REMOTE EXAMPLES ===
+
+.. toctree::
+    :hidden:
+    :maxdepth: 3
+
+    Basic examples: Remote session mode <https://examples.mechanical.docs.pyansys.com/index.html>
+
+
+.. include:: remote_examples/index.rst
+   :start-line: 2

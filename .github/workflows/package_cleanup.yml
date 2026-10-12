@@ -4,17 +4,22 @@ on:
   schedule:
     - cron: '00 22 * * *'
 
-permissions:
-  contents: write
-  packages: write
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+permissions: {}
 
 jobs:
   cleanup:
     name: "Delete untagged package versions"
     runs-on: ubuntu-latest
+    permissions:
+      contents: write        # Required to access repository metadata
+      packages: write        # Needed to delete untagged package versions
     steps:
       - name: "Delete untagged package versions"
-        uses: ansys/actions/hk-package-clean-untagged@v10
+        uses: ansys/actions/hk-package-clean-untagged@7410037bfb276c79ae91eb3617b9f5d2876f0c94 # v11.0.8
         with:
           package-org: 'ansys'
           package-name: 'mechanical'

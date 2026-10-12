@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -21,18 +21,29 @@
 # SOFTWARE.
 
 """Configuration system for embedded mechanical."""
+
 import os
 
 
 class AddinConfiguration:
-    """Configuration class for Mechanical."""
+    """Configuration class for Mechanical.
 
-    def __init__(self, addin_configuration: str = "Mechanical", **kwargs):
+    Parameters
+    ----------
+    addin_configuration : str, optional
+        WB1 addin configuration name. Default is "Mechanical".
+    no_act_addins : bool, optional
+        Whether to disable all ACT addins. On Linux this defaults to True;
+        on Windows it defaults to False.
+    """
+
+    def __init__(self, addin_configuration: str = "Mechanical", no_act_addins: bool | None = None):
         """Construct a new Configuration instance."""
-        # by default, disable ACT addins on linux
-        disable_act_addins: bool = os.name != "nt"
+        if no_act_addins is None:
+            # by default, disable ACT addins on linux
+            no_act_addins = os.name != "nt"
 
-        self._no_act_addins = kwargs.get("disable_act_addins", disable_act_addins)
+        self._no_act_addins = no_act_addins
         self._addin_configuration = addin_configuration
 
     @property

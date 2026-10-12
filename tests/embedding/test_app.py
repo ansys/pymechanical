@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -20,7 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Miscellaneous embedding tests"""
+"""Miscellaneous embedding tests."""
+
+import logging
 import os
 from pathlib import Path
 import shutil
@@ -31,8 +33,10 @@ import time
 
 import pytest
 
-from ansys.mechanical.core.embedding.app import is_initialized
+from ansys.mechanical.core.embedding.app import _normalize_file_path, is_initialized
 from ansys.mechanical.core.embedding.cleanup_gui import cleanup_gui
+from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
+from ansys.mechanical.core.embedding.logger import Logger
 from ansys.mechanical.core.embedding.ui import _launch_ui
 import ansys.mechanical.core.embedding.utils as utils
 
@@ -47,8 +51,8 @@ def test_app_repr(embedded_app):
 
 
 @pytest.mark.embedding
-@pytest.mark.minimum_version(241)
 def test_deprecation_warning(embedded_app):
+    """Test deprecation warnings."""
     harmonic_acoustic = embedded_app.Model.AddHarmonicAcousticAnalysis()
     with pytest.warns(UserWarning):
         harmonic_acoustic.SystemID
@@ -59,43 +63,58 @@ def test_deprecation_warning(embedded_app):
 @pytest.mark.embedding
 def test_app_save_open(embedded_app, tmp_path: pytest.TempPathFactory):
     """Test save and open of the Application class."""
-    import System
     import clr  # noqa: F401
+    import System
 
     # save without a save_as throws an exception
     with pytest.raises(System.Exception):
         embedded_app.save()
 
     embedded_app.DataModel.Project.Name = "PROJECT 1"
-    project_file = os.path.join(tmp_path, f"{NamedTemporaryFile().name}.mechdat")
-    embedded_app.save_as(project_file)
+    project_file = tmp_path / f"{NamedTemporaryFile().name}.mechdat"
+    project_file_str = str(project_file)
 
-    project_file_directory = os.path.splitext(project_file)[0] + "_Mech_Files"
-    assert project_file_directory == os.path.normpath(embedded_app.project_directory)
+    embedded_app.save_as(project_file_str)
+
+    project_file_directory = str(project_file.with_suffix("")) + "_Mech_Files" + os.sep
+    assert project_file_directory == embedded_app.project_directory
 
     with pytest.raises(Exception):
-        embedded_app.save_as(project_file)
-    embedded_app.save_as(project_file, overwrite=True)
+        embedded_app.save_as(project_file_str)
+    embedded_app.save_as(project_file_str, overwrite=True)
     embedded_app.new()
-    embedded_app.open(project_file)
+    embedded_app.open(project_file_str)
     assert embedded_app.DataModel.Project.Name == "PROJECT 1"
     embedded_app.DataModel.Project.Name = "PROJECT 2"
     embedded_app.save()
     embedded_app.new()
-    embedded_app.open(project_file)
+    embedded_app.open(project_file_str)
     assert embedded_app.DataModel.Project.Name == "PROJECT 2"
     embedded_app.new()
 
 
+def test_normalize_file_path_returns_absolute_path(tmp_path):
+    """Test filename-only paths are normalized to absolute paths."""
+    original_cwd = Path.cwd()
+    try:
+        os.chdir(tmp_path)
+        normalized = _normalize_file_path("filename_only_test.mechdat")
+    finally:
+        os.chdir(original_cwd)
+
+    assert Path(normalized).is_absolute()
+    assert Path(normalized) == tmp_path / "filename_only_test.mechdat"
+
+
 @pytest.mark.embedding
-def test_app_update_globals_after_open(embedded_app, assets):
+def test_app_update_globals_after_open(embedded_app, assets, graphics_test_mechdb_file):
     """Test save and open of the Application class."""
     embedded_app.update_globals(globals())
     # unless the global "Model" has been redirected to point to the new model from the project file
     # this will throw an exception
     embedded_app.new()
-    embedded_app.open(os.path.join(assets, "cube-hole.mechdb"))
-    Model.AddNamedSelection()
+    embedded_app.open(str(graphics_test_mechdb_file))
+    Model.AddNamedSelection()  # noqa
 
 
 @pytest.mark.embedding
@@ -103,7 +122,7 @@ def test_explicit_interface(embedded_app):
     """Test save and open of the Application class."""
     embedded_app.update_globals(globals())
     try:
-        namedselection = Model.AddNamedSelection()
+        namedselection = embedded_app.Model.AddNamedSelection()
         ids = list(namedselection.Ids)
         assert len(ids) == 0, f"Expected an empty Ids list, but got {ids}."
     except AttributeError as e:
@@ -118,7 +137,7 @@ def test_app_version(embedded_app):
     """Test version of the Application class."""
     version = embedded_app.version
     assert type(version) is int
-    assert version >= 241
+    assert version >= min(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS)
 
 
 @pytest.mark.embedding
@@ -132,12 +151,12 @@ def test_nonblock_sleep(embedded_app):
 
 @pytest.mark.embedding
 def test_app_print_tree(embedded_app, capsys, assets):
-    """Test printing hierarchical tree of Mechanical ExtAPI object"""
+    """Test printing hierarchical tree of Mechanical ExtAPI object."""
     embedded_app.update_globals(globals())
-    geometry_file = os.path.join(assets, "Eng157.x_t")
-    geometry_import = Model.GeometryImportGroup.AddGeometryImport()
+    geometry_file = str(Path(assets) / "Eng157.x_t")
+    geometry_import = embedded_app.Model.GeometryImportGroup.AddGeometryImport()
     geometry_import.Import(geometry_file)
-    allbodies = Model.GetChildren(DataModelObjectCategory.Body, True)
+    allbodies = embedded_app.Model.GetChildren(DataModelObjectCategory.Body, True)  # noqa: F821
     allbodies[0].Suppressed = True
     embedded_app.print_tree()
     captured = capsys.readouterr()
@@ -152,10 +171,10 @@ def test_app_print_tree(embedded_app, capsys, assets):
     assert "truncating after" in printed_output
 
     with pytest.raises(AttributeError):
-        embedded_app.print_tree(DataModel)
+        embedded_app.print_tree(embedded_app.DataModel)
 
-    Modal = Model.AddModalAnalysis()
-    Modal.Solution.Solve(True)
+    modal = embedded_app.Model.AddModalAnalysis()
+    modal.Solution.Solve(True)
     embedded_app.print_tree()
     captured = capsys.readouterr()
     printed_output = captured.out.strip()
@@ -163,7 +182,7 @@ def test_app_print_tree(embedded_app, capsys, assets):
 
 
 # @pytest.mark.embedding
-@pytest.mark.skip(reason="This test hangs on Linux with Python 3.10-3.13")
+@pytest.mark.skip(reason="This test hangs on Linux with Python 3.11-3.14")
 def test_app_poster(embedded_app, printer):
     """The getters of app should be usable after a new().
 
@@ -175,7 +194,6 @@ def test_app_poster(embedded_app, printer):
     that they properly redirect the calls to the appropriate C#
     object after a new()
     """
-
     version = embedded_app.version
     if os.name != "nt" and version < 242:
         """This test is effectively disabled for versions older than 242 on linux.
@@ -191,7 +209,7 @@ def test_app_poster(embedded_app, printer):
     error = []
 
     def change_name_async(poster):
-        """Change_name_async will run a background thread
+        """Change_name_async will run a background thread.
 
         It will change the name of the project to "foo"
         """
@@ -267,7 +285,6 @@ def test_app_getters_notstale(embedded_app):
 @pytest.mark.python_env
 def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
     """Test Python.NET warning of the embedded instance using a test-scoped Python environment."""
-
     # set these to None to see output in the terminal
     stdout = subprocess.DEVNULL
     stderr = subprocess.DEVNULL
@@ -290,9 +307,9 @@ def test_warning_message(test_env, pytestconfig, run_subprocess, rootdir):
     )
 
     # Initialize with pythonnet
-    embedded_pythonnet_py = os.path.join(rootdir, "tests", "scripts", "pythonnet_warning.py")
+    embedded_pythonnet_py = Path(rootdir) / "tests" / "scripts" / "pythonnet_warning.py"
     process, stdout, stderr = run_subprocess(
-        [test_env.python, embedded_pythonnet_py, pytestconfig.getoption("ansys_version")]
+        [test_env.python, str(embedded_pythonnet_py), pytestconfig.getoption("ansys_version")]
     )
 
     # If UserWarning & pythonnet are in the stderr output, set warning to True.
@@ -308,27 +325,40 @@ def test_building_gallery(pytestconfig, run_subprocess, rootdir):
     """Test for building gallery check.
 
     When building the gallery, each example file creates another instance of the app.
-    When the BUILDING_GALLERY flag is enabled, only one instance is kept.
+    When the BUILDING_GALLERY flag is enabled, only one instance is kept (unless a
+    constructor uses ``reuse_instance=True`` to opt out of sharing).
     This is to test the bug fixed in https://github.com/ansys/pymechanical/pull/784
     and will fail on PyMechanical version 0.11.0
     """
     version = pytestconfig.getoption("ansys_version")
 
-    embedded_gallery_py = os.path.join(rootdir, "tests", "scripts", "build_gallery_test.py")
+    embedded_gallery_py = Path(rootdir) / "tests" / "scripts" / "build_gallery_test.py"
 
     process, stdout, stderr = run_subprocess(
-        [sys.executable, embedded_gallery_py, version, "False"], None, False
+        [sys.executable, str(embedded_gallery_py), version, "False"], None, False
     )
     stderr = stderr.decode()
 
     # Assert Exception
     assert "Cannot have more than one embedded mechanical instance" in stderr
 
-    process, stdout, stderr = run_subprocess([sys.executable, embedded_gallery_py, version, "True"])
+    process, stdout, stderr = run_subprocess(
+        [sys.executable, str(embedded_gallery_py), version, "True"]
+    )
     stdout = stdout.decode()
 
     # Assert stdout after launching multiple instances
     assert "Multiple App launched with building gallery flag on" in stdout
+
+
+@pytest.mark.embedding_scripts
+def test_reuse_instance_bypasses_gallery_sharing(pytestconfig, run_subprocess, rootdir):
+    """When BUILDING_GALLERY is True, ``reuse_instance=True`` skips the sharing path."""
+    version = pytestconfig.getoption("ansys_version")
+    script = Path(rootdir) / "tests" / "scripts" / "reuse_instance_test.py"
+    _process, stdout, stderr = run_subprocess([sys.executable, str(script), version])
+    stdout = stdout.decode()
+    assert "reuse_instance bypassed gallery sharing as expected" in stdout
 
 
 @pytest.mark.embedding
@@ -337,7 +367,7 @@ def test_shims_import_material(embedded_app, assets):
     from ansys.mechanical.core.embedding import shims
 
     embedded_app.update_globals(globals())
-    material_file = os.path.join(assets, "eng200_material.xml")
+    material_file = str(Path(assets) / "eng200_material.xml")
     with pytest.warns(DeprecationWarning):
         shims.import_materials(embedded_app, material_file)
 
@@ -345,13 +375,13 @@ def test_shims_import_material(embedded_app, assets):
 @pytest.mark.embedding
 def test_rm_lockfile(embedded_app, tmp_path: pytest.TempPathFactory):
     """Test lock file is removed on close of embedded application."""
-    mechdat_path = os.path.join(tmp_path, "test.mechdat")
-    embedded_app.save(mechdat_path)
+    mechdat_path = tmp_path / "test.mechdat"
+    embedded_app.save(str(mechdat_path))
     embedded_app.close()
 
-    lockfile_path = os.path.join(embedded_app.project_directory, ".mech_lock")
+    lockfile_path = Path(embedded_app.project_directory) / ".mech_lock"
     # Assert lock file path does not exist
-    assert not os.path.exists(lockfile_path)
+    assert not lockfile_path.exists()
 
 
 @pytest.mark.embedding
@@ -410,9 +440,9 @@ def test_launch_ui(embedded_app, tmp_path: pytest.TempPathFactory):
     with pytest.raises(Exception):
         _launch_ui(embedded_app, m)
 
-    mechdb_path = os.path.join(tmp_path, "test.mechdb")
+    mechdb_path = tmp_path / "test.mechdb"
     # Save a test.mechdb file
-    embedded_app.save(mechdb_path)
+    embedded_app.save(str(mechdb_path))
     # Launch the UI with the mock class
     _launch_ui(embedded_app, False, m)
     # Close the embedded_app
@@ -429,13 +459,38 @@ def test_launch_ui(embedded_app, tmp_path: pytest.TempPathFactory):
 @pytest.mark.embedding
 def test_launch_gui(embedded_app, tmp_path: pytest.TempPathFactory, capfd):
     """Test the GUI is launched for an embedded app."""
-    mechdb_path = os.path.join(tmp_path, "test.mechdb")
-    embedded_app.save(mechdb_path)
+    mechdb_path = tmp_path / "test.mechdb"
+    embedded_app.save(str(mechdb_path))
     embedded_app.launch_gui(delete_tmp_on_close=False, dry_run=True)
     embedded_app.close()
     out, err = capfd.readouterr()
-    assert f"ansys-mechanical --project-file" in out
+    assert "ansys-mechanical --project-file" in out
     assert f"--graphical --revision {str(embedded_app.version)}" in out
+    assert f"Opened a new mechanical session based on {mechdb_path}" in out
+
+
+@pytest.mark.embedding
+def test_launch_gui_with_underscores_in_filename(
+    embedded_app, tmp_path: pytest.TempPathFactory, capfd
+):
+    """Test GUI launch works for mechdb filenames containing underscores."""
+    mechdb_path = tmp_path / "test_with_underscores.mechdb"
+    embedded_app.save(str(mechdb_path))
+    embedded_app.launch_gui(delete_tmp_on_close=False, dry_run=True)
+    embedded_app.close()
+    out, err = capfd.readouterr()
+    assert f"Opened a new mechanical session based on {mechdb_path}" in out
+
+
+@pytest.mark.embedding
+def test_launch_gui_readonly(embedded_app, tmp_path: pytest.TempPathFactory, capfd):
+    """Test the GUI can be launched in read-only mode for an embedded app."""
+    mechdb_path = tmp_path / "test_readonly.mechdb"
+    embedded_app.save(str(mechdb_path))
+    embedded_app.launch_gui(delete_tmp_on_close=False, dry_run=True, readonly=True)
+    embedded_app.close()
+    out, err = capfd.readouterr()
+    assert "--readonly" in out
     assert f"Opened a new mechanical session based on {mechdb_path}" in out
 
 
@@ -448,10 +503,36 @@ def test_launch_gui_exception(embedded_app):
     embedded_app.close()
 
 
+@pytest.mark.embedding
+def test_launch_gui_no_exe(embedded_app, monkeypatch, tmp_path: pytest.TempPathFactory, capfd):
+    """Test executable is retrieved directly when ansys-mechanical can't find path."""
+    mechdb_path = tmp_path / "test.mechdb"
+    embedded_app.save(str(mechdb_path))
+
+    # Patch get_mechanical_path to return None
+    def mock_popen(args=[]):
+        raise Exception("Could not find Mechanical executable")
+
+    monkeypatch.setattr(
+        "ansys.mechanical.core.embedding.ui.Popen",
+        mock_popen,
+    )
+
+    with pytest.raises(Exception):
+        embedded_app.launch_gui()
+
+        out, err = capfd.readouterr()
+        assert "Could not find Mechanical executable" in err
+        assert Logger.can_log_message(logging.INFO) is True
+        assert Logger.can_log_message(logging.WARNING) is True
+
+    embedded_app.close()
+
+
 @pytest.mark.embedding_scripts
 def test_tempfile_cleanup(tmp_path: pytest.TempPathFactory):
     """Test cleanup function to remove the temporary mechdb file and folder."""
-    assert os.path.isdir(tmp_path)
+    assert tmp_path.is_dir()
     temp_file = tmp_path / "tempfiletest.mechdb"
     temp_folder = tmp_path / "tempfiletest_Mech_Files"
 
@@ -503,13 +584,13 @@ def test_attribute_error(tmp_path: pytest.TempPathFactory, pytestconfig, rootdir
     assert temp_folder.exists()
 
     # Copy the run_embedded_app.py script to tmp_path
-    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+    embedded_py = Path(rootdir) / "tests" / "scripts" / "run_embedded_app.py"
     tmp_file_script = tmp_path / "run_embedded_app.py"
     shutil.copyfile(embedded_py, tmp_file_script)
 
     # Run the script and assert the AttributeError is raised
     stdout, stderr = subprocess.Popen(
-        [sys.executable, tmp_file_script, "--version", version],
+        [sys.executable, str(tmp_file_script), "--version", version],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     ).communicate()
@@ -526,15 +607,15 @@ def test_app_execute_script_from_file(embedded_app, rootdir, printer):
     embedded_app.update_globals(globals())
 
     printer("Running run_python_error.py")
-    error_script_path = os.path.join(rootdir, "tests", "scripts", "run_python_error.py")
+    error_script_path = Path(rootdir) / "tests" / "scripts" / "run_python_error.py"
     with pytest.raises(Exception) as exc_info:
         # This will throw an exception since no module named test available
-        embedded_app.execute_script_from_file(error_script_path)
+        embedded_app.execute_script_from_file(str(error_script_path))
     assert "name 'get_myname' is not defined" in str(exc_info.value)
 
     printer("Running run_python_success.py")
-    succes_script_path = os.path.join(rootdir, "tests", "scripts", "run_python_success.py")
-    result = embedded_app.execute_script_from_file(succes_script_path)
+    success_script_path = Path(rootdir) / "tests" / "scripts" / "run_python_success.py"
+    result = embedded_app.execute_script_from_file(str(success_script_path))
     assert result == "test"
 
 
@@ -542,11 +623,11 @@ def test_app_execute_script_from_file(embedded_app, rootdir, printer):
 def test_app_lock_file_open(embedded_app, tmp_path: pytest.TempPathFactory, caplog):
     """Test the lock file is removed on open if remove_lock=True."""
     embedded_app.DataModel.Project.Name = "PROJECT 1"
-    project_file = os.path.join(tmp_path, f"{NamedTemporaryFile().name}.mechdat")
-    embedded_app.save_as(project_file)
+    project_file = tmp_path / f"{NamedTemporaryFile().name}.mechdat"
+    embedded_app.save_as(str(project_file))
     with pytest.raises(Exception):
-        embedded_app.save_as(project_file)
-    embedded_app.save_as(project_file, overwrite=True)
+        embedded_app.save_as(str(project_file))
+    embedded_app.save_as(str(project_file), overwrite=True)
 
     lock_file = Path(embedded_app.project_directory) / ".mech_lock"
 
@@ -554,9 +635,8 @@ def test_app_lock_file_open(embedded_app, tmp_path: pytest.TempPathFactory, capl
     assert lock_file.exists()
 
     # Assert a warning is emitted if the lock file is going to be removed
-
     with caplog.at_level("WARNING"):
-        embedded_app.open(project_file, remove_lock=True)
+        embedded_app.open(str(project_file), remove_lock=True)
 
     assert any("Removing the lock file" in message for message in caplog.messages)
 
@@ -571,12 +651,12 @@ def test_app_initialized(embedded_app):
 def test_app_not_initialized(run_subprocess, pytestconfig, rootdir):
     """Test the app is not initialized."""
     version = pytestconfig.getoption("ansys_version")
-    embedded_py = os.path.join(rootdir, "tests", "scripts", "run_embedded_app.py")
+    embedded_py = Path(rootdir) / "tests" / "scripts" / "run_embedded_app.py"
 
     process, stdout, stderr = run_subprocess(
         [
             sys.executable,
-            embedded_py,
+            str(embedded_py),
             "--version",
             version,
             "--test_not_initialized",
@@ -585,3 +665,83 @@ def test_app_not_initialized(run_subprocess, pytestconfig, rootdir):
     stdout = stdout.decode()
 
     assert "The app is not initialized" in stdout
+
+
+@pytest.mark.embedding
+def test_app_start_readonly(run_subprocess, pytestconfig, rootdir, printer):
+    """Test the app is started in read-only mode."""
+    version = pytestconfig.getoption("ansys_version")
+    embedded_py = Path(rootdir) / "tests" / "scripts" / "run_embedded_app.py"
+    printer(f"Testing readonly for version {version}")
+    process, stdout, stderr = run_subprocess(
+        [
+            sys.executable,
+            str(embedded_py),
+            "--version",
+            version,
+            "--test_readonly",
+        ]
+    )
+    stdout = stdout.decode()
+    if int(version) < 261:
+        assert "The app is not in read-only mode" in stdout
+    else:
+        assert "The app is started in read-only mode" in stdout
+
+
+@pytest.mark.minimum_version(261)
+@pytest.mark.embedding
+def test_app_start_license(run_subprocess, pytestconfig, rootdir, printer):
+    """Test that the app is started with a specific license."""
+    version = pytestconfig.getoption("ansys_version")
+    embedded_py = Path(rootdir) / "tests" / "scripts" / "run_embedded_app.py"
+    printer(f"Testing start_license for version {version}")
+    process, stdout, stderr = run_subprocess(
+        [
+            sys.executable,
+            str(embedded_py),
+            "--version",
+            version,
+            "--test_start_license",
+        ]
+    )
+    stdout = stdout.decode()
+    printer(f"Output:\n{stdout}")
+    assert "Ansys Mechanical Enterprise PrepPost" in stdout
+
+
+@pytest.mark.minimum_version(261)
+@pytest.mark.embedding
+def test_app_feature_flags(run_subprocess, pytestconfig, rootdir, printer):
+    """Test app feature flags.
+
+    Only supported in 26R1 and later, as arguments are accepted from this version onward.
+    """
+    version = pytestconfig.getoption("ansys_version")
+    embedded_py = Path(rootdir) / "tests" / "scripts" / "run_embedded_app.py"
+    printer(f"Testing feature flags for version {version}")
+    process, stdout, stderr = run_subprocess(
+        [
+            sys.executable,
+            str(embedded_py),
+            "--version",
+            version,
+            "--test_feature_flags",
+        ]
+    )
+    stdout = stdout.decode()
+    assert "ThermalShells is enabled" in stdout
+    assert "MultistageHarmonic is enabled" in stdout
+
+    # Test that feature flags are not enabled by default
+    process, stdout, stderr = run_subprocess(
+        [
+            sys.executable,
+            str(embedded_py),
+            "--version",
+            version,
+        ]
+    )
+    stdout = stdout.decode()
+    assert "ThermalShells is enabled" not in stdout
+    assert "MultistageHarmonic is enabled" not in stdout

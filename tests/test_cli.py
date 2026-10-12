@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -20,18 +20,25 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+"""Test for Command Line Interface (CLI) functionality."""
+
+import json
 import os
 from pathlib import Path
 import subprocess
 import sys
 
-import ansys.tools.path as atp
+import ansys.tools.common.path as atp
 from click.testing import CliRunner
 import pytest
 
-from ansys.mechanical.core.ide_config import cli as ideconfig_cli
-from ansys.mechanical.core.ide_config import get_stubs_location, get_stubs_versions
-from ansys.mechanical.core.run import _cli_impl
+from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
+from ansys.mechanical.core.ide_config import (
+    cli as ideconfig_cli,
+    get_stubs_location,
+    get_stubs_versions,
+)
+from ansys.mechanical.core.run import _cli_impl, cli
 
 STUBS_LOC = get_stubs_location()
 STUBS_REVNS = get_stubs_versions(STUBS_LOC)
@@ -41,6 +48,7 @@ MAX_STUBS_REVN = max(STUBS_REVNS)
 
 @pytest.mark.cli
 def test_cli_default(disable_cli, pytestconfig):
+    """Test for default CLI arguments."""
     version = int(pytestconfig.getoption("ansys_version"))
     args, env = _cli_impl(exe="AnsysWBU.exe", version=version, port=11)
     assert os.environ == env
@@ -52,6 +60,7 @@ def test_cli_default(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_debug(disable_cli, pytestconfig):
+    """Test for CLI debug argument."""
     version = int(pytestconfig.getoption("ansys_version"))
     _, env = _cli_impl(exe="AnsysWBU.exe", version=version, debug=True, port=11)
     assert "WBDEBUG_STOP" in env
@@ -59,13 +68,23 @@ def test_cli_debug(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_graphical(disable_cli, pytestconfig):
+    """Test for CLI graphical argument."""
     version = int(pytestconfig.getoption("ansys_version"))
     args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, graphical=True)
     assert "-b" not in args
 
 
 @pytest.mark.cli
+def test_cli_graphical_readonly(disable_cli, pytestconfig):
+    """Test for CLI readonly argument in graphical mode."""
+    version = int(pytestconfig.getoption("ansys_version"))
+    args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, graphical=True, readonly=True)
+    assert "-readonly" in args
+
+
+@pytest.mark.cli
 def test_cli_appdata(disable_cli, pytestconfig):
+    """Test for CLI private appdata argument."""
     version = int(pytestconfig.getoption("ansys_version"))
     _, env = _cli_impl(exe="AnsysWBU.exe", version=version, private_appdata=True, port=11)
     var_to_compare = "TEMP" if os.name == "nt" else "HOME"
@@ -74,6 +93,7 @@ def test_cli_appdata(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_errors(disable_cli, pytestconfig):
+    """Test for CLI error conditions."""
     version = int(pytestconfig.getoption("ansys_version"))
     # can't mix project file and input script
     with pytest.raises(Exception):
@@ -97,6 +117,7 @@ def test_cli_errors(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_appmode(disable_cli, pytestconfig):
+    """Test for CLI appmode argument."""
     version = int(pytestconfig.getoption("ansys_version"))
     args, _ = _cli_impl(
         exe="AnsysWBU.exe", version=version, show_welcome_screen=True, graphical=True
@@ -105,14 +126,8 @@ def test_cli_appmode(disable_cli, pytestconfig):
 
 
 @pytest.mark.cli
-def test_cli_231(disable_cli):
-    args, _ = _cli_impl(exe="AnsysWBU.exe", version=231, port=11)
-    assert "-nosplash" in args
-    assert "-notabctrl" in args
-
-
-@pytest.mark.cli
 def test_cli_port(disable_cli, pytestconfig):
+    """Test for CLI port argument."""
     version = int(pytestconfig.getoption("ansys_version"))
     args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, port=11)
     assert "-grpc" in args
@@ -121,6 +136,7 @@ def test_cli_port(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_project(disable_cli, pytestconfig):
+    """Test for CLI project argument."""
     version = int(pytestconfig.getoption("ansys_version"))
     args, _ = _cli_impl(
         exe="AnsysWBU.exe", version=version, project_file="foo.mechdb", graphical=True
@@ -130,7 +146,22 @@ def test_cli_project(disable_cli, pytestconfig):
 
 
 @pytest.mark.cli
+def test_cli_project_readonly(disable_cli, pytestconfig):
+    """Test for CLI readonly argument with project file."""
+    version = int(pytestconfig.getoption("ansys_version"))
+    args, _ = _cli_impl(
+        exe="AnsysWBU.exe",
+        version=version,
+        project_file="foo.mechdb",
+        graphical=True,
+        readonly=True,
+    )
+    assert "-readonly" in args
+
+
+@pytest.mark.cli
 def test_cli_script(disable_cli, pytestconfig):
+    """Test for CLI script argument."""
     version = int(pytestconfig.getoption("ansys_version"))
     args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, input_script="foo.py", graphical=True)
     assert "-script" in args
@@ -139,6 +170,7 @@ def test_cli_script(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_scriptargs(disable_cli, pytestconfig):
+    """Test for CLI scriptargs argument."""
     version = int(pytestconfig.getoption("ansys_version"))
     args, _ = _cli_impl(
         exe="AnsysWBU.exe",
@@ -155,6 +187,7 @@ def test_cli_scriptargs(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_scriptargs_no_script(disable_cli, pytestconfig):
+    """Test for CLI scriptargs argument without script."""
     version = int(pytestconfig.getoption("ansys_version"))
     with pytest.raises(Exception):
         _cli_impl(
@@ -167,6 +200,7 @@ def test_cli_scriptargs_no_script(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_scriptargs_singlequote(disable_cli, pytestconfig):
+    """Test for CLI scriptargs argument with single quotes."""
     version = int(pytestconfig.getoption("ansys_version"))
     args, _ = _cli_impl(
         exe="AnsysWBU.exe",
@@ -183,6 +217,7 @@ def test_cli_scriptargs_singlequote(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_scriptargs_doublequote(disable_cli, pytestconfig):
+    """Test for CLI scriptargs argument with double quotes."""
     version = int(pytestconfig.getoption("ansys_version"))
     with pytest.raises(Exception):
         _cli_impl(
@@ -196,6 +231,7 @@ def test_cli_scriptargs_doublequote(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_features(disable_cli, pytestconfig):
+    """Test for CLI features argument."""
     version = int(pytestconfig.getoption("ansys_version"))
     with pytest.warns(UserWarning):
         args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, features="a;b;c", port=11)
@@ -215,18 +251,11 @@ def test_cli_features(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_exit(disable_cli, pytestconfig):
+    """Test for CLI exit argument."""
     version = int(pytestconfig.getoption("ansys_version"))
-    # Regardless of version, `exit` does nothing on its own
-    args, _ = _cli_impl(exe="AnsysWBU.exe", version=232, exit=True, port=11)
-    assert "-x" not in args
 
     args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, exit=True, port=11)
     assert "-x" not in args
-
-    # On versions earlier than 2024R1, `exit` throws a warning but does nothing
-    with pytest.warns(UserWarning):
-        args, _ = _cli_impl(exe="AnsysWBU.exe", version=232, exit=True, input_script="foo.py")
-        assert "-x" not in args
 
     # In UI mode, exit must be manually specified
     args, _ = _cli_impl(exe="AnsysWBU.exe", version=version, input_script="foo.py", graphical=True)
@@ -247,25 +276,37 @@ def test_cli_exit(disable_cli, pytestconfig):
 
 @pytest.mark.cli
 def test_cli_batch_required_args(disable_cli):
-    # ansys-mechanical -r 241 => exception
+    """Test for CLI batch required arguments."""
+    # ansys-mechanical -r <version> => exception
     with pytest.raises(Exception):
-        _cli_impl(exe="AnsysWBU.exe", version=241)
+        _cli_impl(exe="AnsysWBU.exe", version=max(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS))
 
-    # ansys-mechanical -r 241 -g => no exception
+    # ansys-mechanical -r <version> -g => no exception
     try:
-        _cli_impl(exe="AnsysWBU.exe", version=241, graphical=True)
+        _cli_impl(
+            exe="AnsysWBU.exe", version=max(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS), graphical=True
+        )
     except Exception as e:
         assert False, f"cli raised an exception: {e}"
 
-    # ansys-mechanical -r 241 -i input.py => no exception
+    # ansys-mechanical -r <version> -i input.py => no exception
     try:
-        _cli_impl(exe="AnsysWBU.exe", version=241, input_script="input.py")
+        _cli_impl(
+            exe="AnsysWBU.exe",
+            version=max(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS),
+            input_script="input.py",
+        )
     except Exception as e:
         assert False, f"cli raised an exception: {e}"
 
-    # ansys-mechanical -r 241 -port 11 => no exception
+    # ansys-mechanical -r <version> -port 11 => no exception
     try:
-        _cli_impl(exe="AnsysWBU.exe", version=241, port=11)
+        _cli_impl(
+            exe="AnsysWBU.exe",
+            version=max(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS),
+            port=11,
+            transport_mode="insecure",
+        )
     except Exception as e:
         assert False, f"cli raised an exception: {e}"
 
@@ -304,46 +345,64 @@ def test_ideconfig_cli_ide_exception(pytestconfig):
 
 @pytest.mark.cli
 @pytest.mark.version_range(MIN_STUBS_REVN, MAX_STUBS_REVN)
-def test_ideconfig_cli_user_settings(capfd, pytestconfig):
-    """Test the IDE configuration prints correct information for user settings."""
+def test_ideconfig_cli_user_settings(pytestconfig, tmp_path, monkeypatch):
+    """Test the IDE configuration updates user settings.json."""
     # Get the revision number
     revision = int(pytestconfig.getoption("ansys_version"))
     stubs_location = get_stubs_location()
-    # Get the path to the settings.json file based on operating system env vars
+    # Point user settings to a temporary directory
+    if "win" in sys.platform:
+        monkeypatch.setenv("APPDATA", str(tmp_path))
+    elif "lin" in sys.platform:
+        monkeypatch.setenv("HOME", str(tmp_path))
     settings_json = get_settings_location()
+    settings_json.parent.mkdir(parents=True, exist_ok=True)
+    settings_json.write_text('{"editor.tabSize": 4}', encoding="utf-8")
 
     runner = CliRunner()
     result = runner.invoke(
         ideconfig_cli, ["--ide", "vscode", "--target", "user", "--revision", str(revision)]
     )
     stdout = result.output.replace("\\\\", "\\")
+    settings_data = json.loads(settings_json.read_text(encoding="utf-8"))
 
     assert result.exit_code == 0
-    assert f"Update {settings_json} with the following information" in stdout
+    assert f"Updated {settings_json} with the following information" in stdout
     assert str(stubs_location) in stdout
+    assert settings_data["editor.tabSize"] == 4
+    assert str(stubs_location / f"v{revision}") in settings_data["python.autoComplete.extraPaths"]
+    assert str(stubs_location / f"v{revision}") in settings_data["python.analysis.extraPaths"]
 
 
 @pytest.mark.cli
 @pytest.mark.version_range(MIN_STUBS_REVN, MAX_STUBS_REVN)
-def test_ideconfig_cli_workspace_settings(pytestconfig):
-    """Test the IDE configuration prints correct information for workplace settings."""
+def test_ideconfig_cli_workspace_settings(pytestconfig, tmp_path, monkeypatch):
+    """Test the IDE configuration updates workspace settings.json."""
     # Set the revision number
     revision = int(pytestconfig.getoption("ansys_version"))
     stubs_location = get_stubs_location()
-    # Get the path to the settings.json file based on the current directory & .vscode folder
-    settings_json = Path.cwd() / ".vscode" / "settings.json"
+    # Set a temporary workspace with a .vscode/settings.json file
+    workspace = tmp_path / "workspace"
+    settings_json = workspace / ".vscode" / "settings.json"
+    settings_json.parent.mkdir(parents=True, exist_ok=True)
+    settings_json.write_text('{"files.trimTrailingWhitespace": true}', encoding="utf-8")
+    monkeypatch.chdir(workspace)
 
     runner = CliRunner()
     result = runner.invoke(
         ideconfig_cli, ["--ide", "vscode", "--target", "workspace", "--revision", str(revision)]
     )
     stdout = result.output.replace("\\\\", "\\")
+    settings_data = json.loads(settings_json.read_text(encoding="utf-8"))
 
     # Assert the correct settings.json file and stubs location is in the output
     assert result.exit_code == 0
-    assert f"Update {settings_json} with the following information" in stdout
+    assert f"Updated {settings_json} with the following information" in stdout
     assert str(stubs_location) in stdout
     assert "Please ensure the .vscode folder is in the root of your project or repository" in stdout
+    assert settings_data["files.trimTrailingWhitespace"] is True
+    assert str(stubs_location / f"v{revision}") in settings_data["python.autoComplete.extraPaths"]
+    assert str(stubs_location / f"v{revision}") in settings_data["python.analysis.extraPaths"]
 
 
 @pytest.mark.cli
@@ -457,7 +516,7 @@ def test_ideconfig_revision_max_min():
         stdout = result.output.replace("\\\\", "\\")
 
         assert result.exit_code == 0
-        assert f"Update {settings_json} with the following information" in stdout
+        assert f"Updated {settings_json} with the following information" in stdout
         assert str(stubs_location) in stdout
         assert str(MAX_STUBS_REVN) in stdout
 
@@ -483,5 +542,66 @@ def test_ideconfig_no_revision():
     stdout = result.output.replace("\\\\", "\\")
 
     assert result.exit_code == 0
-    assert f"Update {settings_json} with the following information" in stdout
+    assert f"Updated {settings_json} with the following information" in stdout
     assert str(stubs_location) in stdout
+
+
+@pytest.mark.cli
+def test_cli_engine_type_args(disable_cli, pytestconfig):
+    """Test engine type selection arguments."""
+    # Must specify version and transport_mode when using port to avoid SP04 check errors
+    args, _ = _cli_impl(exe="AnsysWBU.exe", port=11, version=261, transport_mode="insecure")
+    assert "-engineType" not in args
+
+    # Select ironpython engine type
+    args, _ = _cli_impl(exe="AnsysWBU.exe", enginetype="ironpython", input_script="foo.py")
+    assert "-engineType" in args
+    assert "ironpython" in args
+
+    # Select cpython engine type
+    args, _ = _cli_impl(exe="AnsysWBU.exe", enginetype="cpython", input_script="foo.py")
+    assert "-engineType" in args
+    assert "cpython" in args
+
+
+@pytest.mark.cli
+def test_cli_engine_type_selection(disable_cli, pytestconfig):
+    """Test engine type selection errors."""
+    version = int(pytestconfig.getoption("ansys_version"))
+    # Invalid engine type - this should be caught by Click's Choice validation
+    with pytest.raises(Exception) as e:
+        _cli_impl(
+            exe="AnsysWBU.exe", version=version, enginetype="invalid_engine", input_script="foo.py"
+        )
+    assert "Invalid engine type" in str(e.value)
+
+    # Test enginetype without input script should fail
+    with pytest.raises(Exception) as e:
+        _cli_impl(exe="AnsysWBU.exe", version=version, enginetype="cpython")
+    assert "Cannot specify engine type without an input script" in str(e.value)
+
+
+@pytest.mark.cli
+def test_cli_enginetype_errors(disable_cli, pytestconfig):
+    """Test engine type validation errors."""
+    # Test enginetype without input script should fail
+    runner = CliRunner()
+    version = int(pytestconfig.getoption("ansys_version"))
+    # Test enginetype with version other than 261 should fail
+    if version < 261:
+        result = runner.invoke(
+            cli,
+            [
+                "--revision",
+                str(int(pytestconfig.getoption("ansys_version"))),
+                "--input-script",
+                "foo.py",
+                "--enginetype",
+                "cpython",
+            ],
+        )
+        assert result.exit_code != 0
+        assert (
+            "--enginetype option for cpython is only applicable for version 261 or later."
+            in result.output
+        )

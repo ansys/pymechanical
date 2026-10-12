@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -41,11 +41,11 @@ def _exit(background_app: "BackgroundApp"):
 class BackgroundApp:
     """Background App."""
 
-    __app: mech.App = None
-    __app_thread: threading.Thread = None
+    __app: mech.App | None = None
+    __app_thread: threading.Thread | None = None
     __stopped: bool = False
     __stop_signaled: bool = False
-    __poster: Poster = None
+    __poster: Poster | None = None
 
     def __init__(self, **kwargs):
         """Construct an instance of BackgroundApp."""
@@ -79,6 +79,8 @@ class BackgroundApp:
     def _post(self, callable: typing.Callable, try_post: bool = False):
         if BackgroundApp.__stopped:
             raise RuntimeError("Cannot use BackgroundApp after stopping it.")
+        if BackgroundApp.__poster is None:
+            raise RuntimeError("BackgroundApp poster not initialized.")
         if try_post:
             return BackgroundApp.__poster.try_post(callable)
         return BackgroundApp.__poster.post(callable)
@@ -102,14 +104,16 @@ class BackgroundApp:
                 break
 
     def _start_app(self, **kwargs) -> None:
-        BackgroundApp.__app = mech.App(**kwargs)
-        BackgroundApp.__poster = BackgroundApp.__app.poster
+        app = mech.App(**kwargs)
+        BackgroundApp.__app = app
+        BackgroundApp.__poster = app.poster
         atexit.register(_exit, self)
         while True:
             if BackgroundApp.__stop_signaled:
                 break
             try:
                 utils.sleep(40)
-            except:
-                raise Exception("BackgroundApp cannot sleep.")  # pragma: no cover
+            except Exception as e:  # pragma: no cover
+                raise RuntimeError("BackgroundApp cannot sleep.") from e  # pragma: no cover
+        app._dispose()
         BackgroundApp.__stopped = True

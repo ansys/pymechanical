@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -31,6 +31,7 @@
 import ctypes
 import logging
 import os
+from pathlib import Path
 
 from ansys.mechanical.core.embedding import initializer
 from ansys.mechanical.core.embedding.logger import sinks
@@ -38,8 +39,7 @@ from ansys.mechanical.core.embedding.logger import sinks
 
 def _get_dll():
     installdir = os.environ[f"AWP_ROOT{initializer.INITIALIZED_VERSION}"]
-    dll = ctypes.CDLL(os.path.join(installdir, "aisol/dll/linx64/libAns.Common.WBLogger.so"))
-
+    dll = ctypes.CDLL(str(Path(installdir) / "aisol/dll/linx64/libAns.Common.WBLogger.so"))
     dll.wb_logger_enable_sink.argtypes = [ctypes.c_int32]
 
     dll.wb_logger_disable_sink.argtypes = [ctypes.c_int32]
@@ -67,7 +67,7 @@ def _get_sink_id(standard_sink_type: int) -> ctypes.c_int32:
     }[standard_sink_type]
 
 
-def _str_to_utf8_ptr(value: str) -> ctypes.c_char_p:
+def _str_to_utf8_ptr(value: str):  # type: ignore[return-value]
     return ctypes.create_string_buffer(value.encode())
 
 
@@ -117,6 +117,7 @@ class APIBackend:
         """Set the log level for Mechanical based on the Python log level."""
         if level == logging.NOTSET:
             self.disable(sink)
+            return
 
         sinkid = _get_sink_id(sink)
         wb_level = _to_wb_logger_severity(level)

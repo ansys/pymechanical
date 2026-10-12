@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -22,8 +22,14 @@
 
 """Hook to register obsolete warnings."""
 
+from __future__ import annotations
+
 import typing
+from typing import TYPE_CHECKING
 import warnings
+
+if TYPE_CHECKING:
+    from ansys.mechanical.core.embedding import App
 
 # TODO: Investigate `warnings.showwarning = my_special_function` in order to better
 #       control the printing behavior of warnings. But this is global state, so the
@@ -61,17 +67,11 @@ def _on_obsolete_message(sender: typing.Any, args: typing.Any):
         warnings.warn(message, UserWarning, stacklevel=2)
 
 
-def connect_warnings(app: "ansys.mechanical.core.embedding.app.App"):
+def connect_warnings(app: App):
     """Connect Mechanical warnings to the `warnings` Python module."""
-    if int(app.version) < 241:
-        return
-
     app._app.OnObsoleteMessage += _on_obsolete_message
 
 
-def disconnect_warnings(app):
+def disconnect_warnings(app: App):
     """Disconnect Mechanical warnings from the `warnings` Python module."""
-    if int(app.version) < 241:
-        return
-
     app._app.OnObsoleteMessage -= _on_obsolete_message

@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 """A class to speed up bulk user interactions using Ansys ACT Mechanical Transaction."""
 
 
@@ -29,8 +30,7 @@ class Transaction:  # When ansys-pythonnet issue #14 is fixed, this class will b
     Example
     -------
     >>> with Transaction() as transaction:
-    ...     pass   # Perform bulk user interactions here
-    ...
+    ...     pass  # Perform bulk user interactions here
     """
 
     def __init__(self):

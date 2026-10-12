@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -29,7 +29,7 @@ Ansys Inc/v{NNN}/ACT/apis/Mechanical.py
 from ansys.mechanical.core.embedding.app import is_initialized
 
 if not is_initialized():
-    raise Exception("Enums cannot be imported until the embedded app is initialized.")
+    raise RuntimeError("Enums cannot be imported until the embedded app is initialized.")
 
 import clr
 
@@ -39,4 +39,7 @@ clr.AddReference("Ansys.ACT.Interfaces")
 from Ansys.ACT.Interfaces.Common import *  # noqa isort: skip
 from Ansys.Mechanical.DataModel.Enums import *  # noqa isort: skip
 from Ansys.ACT.Interfaces.Analysis import *  # noqa isort: skip
+from Ansys.ACT.Interfaces.Geometry import *  # noqa isort: skip
+from Ansys.ACT.Mechanical.Fields import *  # noqa isort: skip
+from Ansys.ACT.Interfaces.Mesh import *  # noqa isort: skip
 import Ansys  # noqa  isort: skip

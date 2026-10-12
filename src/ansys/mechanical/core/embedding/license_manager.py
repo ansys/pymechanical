@@ -1,0 +1,199 @@
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
+# SPDX-License-Identifier: MIT
+#
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+"""License Manager."""
+
+from typing import Any
+
+from ansys.mechanical.core import LOG
+
+
+class LicenseManager:
+    """Class to manage licenses in Ansys Mechanical.
+
+    This class provides methods to enable, disable, and check the status of licenses.
+    It also allows for moving licenses to specific indices in the license preference list.
+    It is initialized with an instance of the Ansys Mechanical application.
+    """
+
+    def __init__(self, app):
+        """Initialize the license manager."""
+        self._app = app
+        self._license_preference = None
+        self._license_coordinator = None
+        import Ansys
+
+        self._license_status = Ansys.Mechanical.DataModel.Enums.LicenseStatus
+
+    def _get_license_manager(self):
+        # On 271+, LicenseCoordinator exposes the same interface as LicensePreference.
+        if self._app.version >= 271:
+            return self._get_coordinator()
+        if self._license_preference is None:
+            self._license_preference = self._app.ExtAPI.Application.LicensePreference
+        return self._license_preference
+
+    def _get_coordinator(self):
+        """Return the LicenseCoordinator (Mechanical 271+)."""
+        if self._license_coordinator is None:
+            self._license_coordinator = self._app.ExtAPI.Application.LicenseCoordinator
+        return self._license_coordinator
+
+    def get_all_licenses(self) -> list[str]:
+        """Return list of all licenses."""
+        return self._get_license_manager().GetAllLicenses()
+
+    def get_license_status(
+        self, license_name: str
+    ) -> Any:  # Returns Ansys.Mechanical.DataModel.Enums.LicenseStatus
+        """Return status of the specific license.
+
+        Parameters
+        ----------
+        license_name : str
+            Name of the license to check.
+
+        Returns
+        -------
+        "Ansys.Mechanical.DataModel.Enums.LicenseStatus"
+            The status of the license.
+        """
+        LOG.info(
+            f"{license_name} status: {self._get_license_manager().GetLicenseStatus(license_name)}"
+        )
+        return self._get_license_manager().GetLicenseStatus(license_name)
+
+    def set_license_status(self, license_name: str, status: bool) -> None:
+        """Set the status of a license and save the preference.
+
+        Parameters
+        ----------
+        license_name : str
+            Name of the license to set the status for.
+        status : bool
+            True to enable the license, False to disable it.
+        """
+        if status:
+            self._get_license_manager().SetLicenseStatus(license_name, self._license_status.Enabled)
+            LOG.info(f"{license_name} is enabled.")
+        else:
+            self._get_license_manager().SetLicenseStatus(
+                license_name, self._license_status.Disabled
+            )
+            LOG.info(f"{license_name} is disabled.")
+        self._get_license_manager().Save()
+
+    def show(self) -> None:
+        """Print all licenses and their status."""
+        for lic in self.get_all_licenses():
+            print(f"{lic} - {self._get_license_manager().GetLicenseStatus(lic)}")
+
+    def get_current_licenses(self) -> list[str]:
+        """Return the currently active (checked-out) licenses.
+
+        Requires Mechanical 271 or later.
+
+        Returns
+        -------
+        list[str]
+            Names of the currently active licenses.
+        """
+        return list(self._get_coordinator().CurrentLicenses)
+
+    def disable_session_license(self) -> None:
+        """Disable active license for current session."""
+        if self._app.version >= 271:
+            self._get_coordinator().DeactivateLicenses()
+        else:
+            self._get_license_manager().DeActivateLicense()
+
+    def enable_session_license(self, license: str | list[str] | None = None) -> None:
+        """Enable license(s) for the current session.
+
+        Parameters
+        ----------
+        license : Optional[Union[str, List[str]]], optional
+            If None, activates the first enabled license in the priority order.
+            If a string, activates that specific license.
+            If a list of strings, activates all specified licenses in the order provided.
+        """
+        if self._app.version >= 271:
+            from System import Array, String
+
+            coordinator = self._get_coordinator()
+            if license is None:
+                coordinator.ActivateLicenses()
+            elif isinstance(license, str):
+                coordinator.ActivateLicenses(Array[String]([license]))
+            elif isinstance(license, list):
+                coordinator.ActivateLicenses(Array[String](license))
+            else:
+                raise TypeError("License must be None, a string, or a list of strings.")
+        else:
+            from System import String
+            from System.Collections.Generic import List as DotNetList
+
+            if license is None:
+                self._get_license_manager().ActivateLicense()
+            elif isinstance(license, str):
+                self._get_license_manager().ActivateLicense(String(license))
+            elif isinstance(license, list):
+                licenses = DotNetList[String]()
+                for lic in license:
+                    licenses.Add(String(lic))
+                self._get_license_manager().ActivateLicense(licenses)
+            else:
+                raise TypeError("License must be None, a string, or a list of strings.")
+        LOG.info(f"License(s) {license} enabled for the current session.")
+
+    def move_to_index(self, license_name: str, location: int) -> None:
+        """Move a license preference.
+
+        Move license to zero-based index location in the license preference list.
+        This is useful for setting the preferred license location.
+
+        Parameters
+        ----------
+        license_name : str
+            License name.
+        location : int
+            Location to move the license to.
+
+        Examples
+        --------
+        Move Ansys Mechanical Premium to the first location.
+
+        >>> license_manager = LicenseManager(app)
+        >>> license_manager.move_to_index("Ansys Mechanical Premium", 0)
+        """
+        LOG.info(f"Moving license preference for {license_name} to location {location}")
+        self._get_license_manager().MoveLicenseToLocation(license_name, location)
+        self._get_license_manager().Save()
+
+    def reset_preference(self) -> None:
+        """Reset the license preference.
+
+        This method will reset the license location order and the status of all licenses
+        to the default state.
+        """
+        LOG.info("Resetting license preferences to default state.")
+        self._get_license_manager().Reset()

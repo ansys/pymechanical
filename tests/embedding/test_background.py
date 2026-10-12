@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -20,10 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Miscellaneous embedding tests"""
+"""Miscellaneous embedding tests."""
+
 import os
+from pathlib import Path
 import sys
-import typing
 
 import pytest
 
@@ -32,11 +33,10 @@ from .test_logger import _assert_success
 
 def _run_background_app_test(
     run_subprocess, rootdir: str, pytestconfig, testname: str, pass_expected: bool = True
-) -> typing.Tuple[bytes, bytes]:
+) -> tuple[bytes, bytes]:
     """Run the process and return stdout and stderr after it finishes."""
-
     version = pytestconfig.getoption("ansys_version")
-    script = os.path.join(rootdir, "tests", "scripts", "background_app_test.py")
+    script = str(Path(rootdir) / "tests" / "scripts" / "background_app_test.py")
 
     subprocess_pass_expected = pass_expected
     if pass_expected and os.name != "nt":

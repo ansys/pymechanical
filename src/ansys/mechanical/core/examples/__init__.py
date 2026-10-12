@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -21,4 +21,10 @@
 # SOFTWARE.
 
 """Initialize the package level imports."""
-from .downloads import delete_downloads, download_file  # noqa: F401
+
+from .downloads import delete_downloads, download_file
+
+__all__ = [
+    "delete_downloads",
+    "download_file",
+]
