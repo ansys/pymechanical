@@ -8,13 +8,13 @@ exclude: '^tests/embedding/assets/.*$|^tests/parts/.*$'
 repos:
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: e8f7d69b957a30acb2c875078d5fd012de24b64c  # frozen: v0.16.7
+  rev: f12be1ebaa5351c1fc76472de98db2c3446c8253  # frozen: v0.16.10
   hooks:
     - id: ruff
     - id: ruff-format
 
 - repo: https://github.com/pre-commit/mirrors-mypy
-  rev: 7ff8d35ae36a7d2b968f2f90b4c723e292e594ee  # frozen: v2.3.1
+  rev: 2834ec6639549dd6796205c8f011dedcd587288b  # frozen: v2.4.0
   hooks:
     - id: mypy
       additional_dependencies: [types-requests, types-tqdm]
@@ -53,7 +53,7 @@ repos:
   - id: check-added-large-files
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: c4654a7e007c9619a5eb63c39a456572a0fa1851  # frozen: 0.38.0
+  rev: 4f85d46a92dc17713078e5de73f8a13190edf6fc  # frozen: 0.38.2
   hooks:
     - id: check-github-workflows
 
@@ -79,7 +79,7 @@ repos:
         args: ['--py312-plus']
 
 - repo: https://github.com/crate-ci/typos
-  rev: c132f8b9e3ac7f8f0625490b1cb5b906d1d6a63a  # frozen: v1
+  rev: dd369349b73c245acd4dd4154a4bdf771d052150  # frozen: typos-dict-v0.14.2
   hooks:
     - id: typos
       args: ["--config", "doc/styles/typos.toml"]
