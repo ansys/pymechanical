@@ -9,6 +9,69 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.13.4 <https://github.com/ansys/pymechanical/releases/tag/v0.13.4>`_ - October 12, 2026
+=========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Enhance secure testing with mTLS support and gRPC certificate generation
+          - `#1769 <https://github.com/ansys/pymechanical/pull/1769>`_
+
+        * - Add architecture diagram for embedding and remote session modes
+          - `#1774 <https://github.com/ansys/pymechanical/pull/1774>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update kil section
+          - `#1591 <https://github.com/ansys/pymechanical/pull/1591>`_
+
+        * - Background app test
+          - `#1767 <https://github.com/ansys/pymechanical/pull/1767>`_
+
+        * - Add license requirement notice for Mechanical features in examples
+          - `#1768 <https://github.com/ansys/pymechanical/pull/1768>`_
+
+        * - Update license keyword examples in documentation
+          - `#1771 <https://github.com/ansys/pymechanical/pull/1771>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.13.3
+          - `#1760 <https://github.com/ansys/pymechanical/pull/1760>`_
+
+        * - Bump the actions group with 5 updates
+          - `#1762 <https://github.com/ansys/pymechanical/pull/1762>`_
+
+        * - Pre-commit automatic update
+          - `#1763 <https://github.com/ansys/pymechanical/pull/1763>`_, `#1765 <https://github.com/ansys/pymechanical/pull/1765>`_, `#1772 <https://github.com/ansys/pymechanical/pull/1772>`_
+
+        * - Bump the actions group with 4 updates
+          - `#1764 <https://github.com/ansys/pymechanical/pull/1764>`_
+
+        * - Increase timeout for embedding tests from 30 to 45 minutes
+          - `#1766 <https://github.com/ansys/pymechanical/pull/1766>`_
+
+        * - Update ansys-pythonnet dependency to version 3.2.0rc1
+          - `#1778 <https://github.com/ansys/pymechanical/pull/1778>`_
+
+
 `0.13.3 <https://github.com/ansys/pymechanical/releases/tag/v0.13.3>`_ - September 17, 2026
 ===========================================================================================
 
