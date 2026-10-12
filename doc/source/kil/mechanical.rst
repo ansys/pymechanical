@@ -58,19 +58,18 @@ Known issues and limitations
   automation of batch workflows
   (`#1400 <https://github.com/ansys/pymechanical/issues/1400>`_).
 - Calling ``Graphics.LabelManager.CreateProbeLabel()`` in embedded mode causes a fatal
-  crash (``AnsysWBU.exe`` encountered a problem). A fix is planned for a future release
+  crash (``AnsysWBU.exe`` encountered a problem)
   (`#1531 <https://github.com/ansys/pymechanical/issues/1531>`_).
 - ``Graphics.Scene.Factory2D.CreateText()`` terminates the process with a
   ``StackOverflowException`` when called in embedded mode. This is a known Ansys
-  Mechanical defect and will be addressed in a future release
+  Mechanical defect
   (`#1521 <https://github.com/ansys/pymechanical/issues/1521>`_).
 - A fatal crash (``AnsysWBU.exe`` encountered a problem) occurs when
-  ``Graphics.LabelManager.CreateLabel()`` is called on a figure in embedded mode.
-  A fix is planned for an upcoming release
+  ``Graphics.LabelManager.CreateLabel()`` is called on a figure in embedded mode
   (`#1520 <https://github.com/ansys/pymechanical/issues/1520>`_).
 - ``Graphics.SectionPlanes.CreateSectionPlane()`` with a coordinate system does not
   behave reliably in embedded mode, even though the same script succeeds in the
-  Mechanical scripting window. This will be addressed in a future release
+  Mechanical scripting window
   (`#1497 <https://github.com/ansys/pymechanical/issues/1497>`_).
 
 .. vale Google.Headings = YES
