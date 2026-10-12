@@ -28,7 +28,7 @@ runs:
         curl -LsSf https://astral.sh/uv/install.sh | sh
         export PATH="$HOME/.local/bin:$PATH"
         uv python install python${PYTHON_VERSION}
-        uv venv /env
+        uv venv --python ${PYTHON_VERSION} /env
 
     - name: Install packages for testing
       shell: bash

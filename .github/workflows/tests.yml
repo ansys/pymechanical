@@ -179,7 +179,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.12', '3.13', '3.14']
+        python-version: ['3.12', '3.13', '3.14', '3.15']
     permissions:
       contents: read
       packages: read  # Required to pull Docker images from GitHub Container Registry
@@ -192,7 +192,7 @@ jobs:
       - name: Setup Python environment
         uses: ./.github/actions/setup-python-env
         with:
-          python-version: ${{ vars.MAIN_PYTHON_VERSION }}
+          python-version: ${{ matrix.python-version }}
           install-extras: "tests,graphics"
 
       - name: Unit Testing and coverage
@@ -235,7 +235,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.12', '3.13', '3.14']
+        python-version: ['3.12', '3.13', '3.14', '3.15']
     permissions:
       contents: read
       packages: read  # Required to pull Docker images from GitHub Container Registry
@@ -248,7 +248,7 @@ jobs:
       - name: Setup Python environment
         uses: ./.github/actions/setup-python-env
         with:
-          python-version: ${{ vars.MAIN_PYTHON_VERSION }}
+          python-version: ${{ matrix.python-version }}
           install-extras: "tests"
           extra-apt-packages: "lsb-release"
 
@@ -289,7 +289,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.11', '3.12', '3.13', '3.14']
+        python-version: ['3.12', '3.13', '3.14', '3.15']
     permissions:
       contents: read
       packages: read  # Required to pull Docker images from GitHub Container Registry
@@ -302,7 +302,7 @@ jobs:
       - name: Setup Python environment
         uses: ./.github/actions/setup-python-env
         with:
-          python-version: ${{ vars.MAIN_PYTHON_VERSION }}
+          python-version: ${{ matrix.python-version }}
           install-extras: "tests"
 
       - name: Set environment variable
