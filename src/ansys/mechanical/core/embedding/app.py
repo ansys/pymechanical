@@ -424,15 +424,9 @@ class App:
     def save(self, path=None):
         """Save the project."""
         if path is not None:
-            if os.path.isabs(path):
-                self.DataModel.Project.Save(path)
-            else:
-                cwd = os.getcwd()
-                path = os.path.join(cwd, path)
-            self.DataModel.Project.Save(path)
+            self.DataModel.Project.Save(_normalize_file_path(path))
         else:
             self.DataModel.Project.Save()
-        LOG.info(f"Project saved to {path}")
 
     def save_as(self, path: str, overwrite: bool = False, remove_lock: bool = False):
         """
@@ -454,11 +448,9 @@ class App:
         Exception
             If the file already exists at the specified path and `overwrite` is False.
         """
-        if not os.path.isabs(path):
-            cwd = os.getcwd()
-            path = os.path.join(cwd, path)
-        if not os.path.exists(path):
-            self.DataModel.Project.SaveAs(path)
+        normalized_path = _normalize_file_path(path)
+        if not Path(normalized_path).exists():
+            self.DataModel.Project.SaveAs(normalized_path)
             return
 
         if not overwrite:
@@ -466,40 +458,28 @@ class App:
                 f"File already exists in {path}, Use ``overwrite`` flag to "
                 "replace the existing file."
             )
-        if self.version < 241:  # pragma: no cover
-            file_name = os.path.basename(path)
-            file_dir = os.path.dirname(path)
-            associated_dir = os.path.join(file_dir, os.path.splitext(file_name)[0] + "_Mech_Files")
 
-            # Remove existing files and associated folder
-            os.remove(path)
-            if os.path.exists(associated_dir):
-                shutil.rmtree(associated_dir)
-            # Save the new file
-            self.DataModel.Project.SaveAs(path)
-        else:
-            if remove_lock:
-                file_path = Path(path)
-                associated_dir = file_path.parent / f"{file_path.stem}_Mech_Files"
-                lock_file = associated_dir / ".mech_lock"
-                # Remove the lock file if it exists before saving the project file
-                if lock_file.exists():
-                    self.log_warning(f"Removing the lock file, {lock_file}... ")
-                    lock_file.unlink()
-            try:
-                self.DataModel.Project.SaveAs(path, overwrite)
-            except Exception as e:
-                error_msg = str(e)
-                if "The project is locked by" in error_msg:
-                    self.log_error(
-                        f"Failed to save project as {path}: {error_msg}\n"
-                        "Hint: The project file is locked. "
-                        "Try using the 'remove_lock=True' option when saving the project."
-                    )
-                else:
-                    self.log_error(f"Failed to save project as {path}: {error_msg}")
-                raise e
-        LOG.info(f"Project saved as {path}")
+        if remove_lock:
+            file_path = Path(normalized_path)
+            associated_dir = file_path.parent / f"{file_path.stem}_Mech_Files"
+            lock_file = associated_dir / ".mech_lock"
+            # Remove the lock file if it exists before saving the project file
+            if lock_file.exists():
+                self.log_warning(f"Removing the lock file, {lock_file}... ")
+                lock_file.unlink()
+        try:
+            self.DataModel.Project.SaveAs(normalized_path, overwrite)
+        except Exception as e:
+            error_msg = str(e)
+            if "The project is locked by" in error_msg:
+                self.log_error(
+                    f"Failed to save project as {path}: {error_msg}\n"
+                    "Hint: The project file is locked. "
+                    "Try using the 'remove_lock=True' option when saving the project."
+                )
+            else:
+                self.log_error(f"Failed to save project as {path}: {error_msg}")
+            raise e
 
     def launch_gui(
         self, delete_tmp_on_close: bool = True, dry_run: bool = False, readonly: bool = False
