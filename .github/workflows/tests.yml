@@ -197,6 +197,63 @@ jobs:
           path: mechanical_tests_log-${{ matrix.mechanical-version }}.txt
           retention-days: 7
 
+  rpyc-tests:
+    name: RPyC testing and coverage
+    runs-on: public-ubuntu-latest-16-cores
+    timeout-minutes: 30
+    container:
+      image: ${{ inputs.test-container }} # zizmor: ignore[unpinned-images]
+      options: --entrypoint /bin/bash
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.12', '3.13', '3.14']
+    permissions:
+      contents: read
+      packages: read
+      checks: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Python environment
+        uses: ./.github/actions/setup-python-env
+        with:
+          python-version: ${{ matrix.python-version }}
+          install-extras: "tests"
+
+      - name: RPyC testing and coverage
+        env:
+          CONTAINER_STABLE_EXIT: ${{ inputs.container-stable-exit }}
+          MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
+          TEST_REVN: ${{ inputs.test-revn }}
+          NUM_CORES: 1
+          PYTHONUNBUFFERED: 1
+        run: |
+          . /env/bin/activate
+          if [ "${CONTAINER_STABLE_EXIT}" = "true" ]; then
+            xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc --ansys-version "${TEST_REVN}" -s --junitxml rpyc_test_results${MATRIX_PYTHON_VERSION}.xml
+          else
+            xvfb-run mechanical-env pytest -m remote_session_connect --remote-server-type=rpyc --ansys-version "${TEST_REVN}" -s --junitxml rpyc_test_results${MATRIX_PYTHON_VERSION}.xml || true
+          fi
+
+      - name: Publish RPyC Test Report
+        uses: mikepenz/action-junit-report@a9170d5795813c01ab4901ffb045b52bab4ab09d # v6.5.0
+        if: always()
+        with:
+          report_paths: '**/rpyc_test_results*.xml'
+          check_name: RPyC Test Report ${{ matrix.python-version }}
+          detailed_summary: true
+          include_passed: true
+          fail_on_failure: true
+
+      - name: Upload coverage artifacts
+        uses: ./.github/actions/upload-coverage
+        if: vars.MAIN_PYTHON_VERSION == matrix.python-version
+        with:
+          artifact-name: tests-rpyc
+
   embedding-tests:
     name: Embedding testing and coverage
     runs-on: public-ubuntu-latest-16-cores
