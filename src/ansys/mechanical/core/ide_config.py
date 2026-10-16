@@ -168,12 +168,14 @@ def _vscode_impl(
     settings_json = Path(settings_json)
     settings_json.parent.mkdir(parents=True, exist_ok=True)
     data = _read_settings_json(settings_json)
-    data["python.autoComplete.extraPaths"] = _normalize_paths(
-        data.get("python.autoComplete.extraPaths"), stubs_path
-    )
-    data["python.analysis.extraPaths"] = _normalize_paths(
-        data.get("python.analysis.extraPaths"), stubs_path
-    )
+    updated_settings = {
+        key: _normalize_paths(data.get(key), path) for key, path in settings_json_data.items()
+    }
+    if all(data.get(key) == paths for key, paths in updated_settings.items()):
+        print(f"The settings have already been added to {settings_json}.")
+        return
+
+    data.update(updated_settings)
     settings_json.write_text(json.dumps(data, indent=4), encoding="utf-8")
 
     # Pretty print dictionary

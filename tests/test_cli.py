@@ -406,6 +406,73 @@ def test_ideconfig_cli_workspace_settings(pytestconfig, tmp_path, monkeypatch):
 
 
 @pytest.mark.cli
+@pytest.mark.embedding
+@pytest.mark.parametrize("target", ["user", "workspace"])
+def test_ideconfig_cli_settings_already_added(tmp_path, monkeypatch, target):
+    """Test repeated configuration reports existing settings without rewriting them."""
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("APPDATA", str(tmp_path))
+    monkeypatch.setenv("HOME", str(tmp_path))
+    settings_json = (
+        get_settings_location() if target == "user" else tmp_path / ".vscode" / "settings.json"
+    )
+    runner = CliRunner()
+    arguments = ["--target", target, "--revision", str(MAX_STUBS_REVN)]
+    first_result = runner.invoke(ideconfig_cli, arguments)
+    assert first_result.exit_code == 0
+    original_text = settings_json.read_text(encoding="utf-8") + "\n"
+    settings_json.write_text(original_text, encoding="utf-8")
+
+    result = runner.invoke(ideconfig_cli, arguments)
+
+    assert result.exit_code == 0
+    assert "settings have already been added" in result.output
+    assert "Updated" not in result.output
+    assert settings_json.read_text(encoding="utf-8") == original_text
+
+
+@pytest.mark.cli
+@pytest.mark.embedding
+@pytest.mark.parametrize(
+    "existing_key", ["python.autoComplete.extraPaths", "python.analysis.extraPaths"]
+)
+@pytest.mark.parametrize("existing_is_list", [False, True])
+@pytest.mark.parametrize("existing_has_path", [False, True])
+def test_ideconfig_cli_settings_partially_added(
+    tmp_path, monkeypatch, existing_key, existing_is_list, existing_has_path
+):
+    """Test incomplete settings gain missing paths without duplicating existing paths."""
+    monkeypatch.chdir(tmp_path)
+    settings_json = tmp_path / ".vscode" / "settings.json"
+    settings_json.parent.mkdir()
+    stubs_path = str(STUBS_LOC / f"v{MAX_STUBS_REVN}")
+    other_path = str(tmp_path / "other-stubs")
+    existing_paths = [other_path, stubs_path] if existing_has_path else [other_path]
+    existing_value = existing_paths if existing_is_list else existing_paths[-1]
+    settings_json.write_text(
+        json.dumps({"editor.tabSize": 4, existing_key: existing_value}), encoding="utf-8"
+    )
+
+    result = CliRunner().invoke(
+        ideconfig_cli, ["--target", "workspace", "--revision", str(MAX_STUBS_REVN)]
+    )
+    settings_data = json.loads(settings_json.read_text(encoding="utf-8"))
+
+    assert result.exit_code == 0
+    assert "Updated" in result.output
+    assert "settings have already been added" not in result.output
+    expected_data = {
+        "editor.tabSize": 4,
+        "python.autoComplete.extraPaths": [stubs_path],
+        "python.analysis.extraPaths": [stubs_path],
+    }
+    expected_data[existing_key] = (
+        [other_path, stubs_path] if existing_is_list or not existing_has_path else [stubs_path]
+    )
+    assert settings_data == expected_data
+
+
+@pytest.mark.cli
 @pytest.mark.python_env
 @pytest.mark.version_range(MIN_STUBS_REVN, MAX_STUBS_REVN)
 def test_ideconfig_cli_venv(test_env, run_subprocess, rootdir, pytestconfig):
@@ -492,8 +559,10 @@ def test_ideconfig_cli_default(test_env, run_subprocess, rootdir, pytestconfig):
 
 
 @pytest.mark.cli
-def test_ideconfig_revision_max_min():
+def test_ideconfig_revision_max_min(tmp_path, monkeypatch):
     """Test the IDE configuration location when no arguments are supplied."""
+    monkeypatch.setenv("APPDATA", str(tmp_path))
+    monkeypatch.setenv("HOME", str(tmp_path))
     # Set the revision number to be greater than the maximum stubs revision number
     stubs_location = get_stubs_location()
     # Get the path to the settings.json file based on operating system env vars
@@ -529,8 +598,10 @@ def test_ideconfig_revision_max_min():
 
 
 @pytest.mark.cli
-def test_ideconfig_no_revision():
+def test_ideconfig_no_revision(tmp_path, monkeypatch):
     """Test the IDE configuration when no revision is supplied."""
+    monkeypatch.setenv("APPDATA", str(tmp_path))
+    monkeypatch.setenv("HOME", str(tmp_path))
     # Set the revision number to be greater than the maximum stubs revision number
     stubs_location = get_stubs_location()
     # Get the path to the settings.json file based on operating system env vars
