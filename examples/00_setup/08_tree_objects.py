@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -183,7 +183,7 @@ print(new_contact_list)
 # Using GetObjectsByName
 # ~~~~~~~~~~~~~~~~~~~~~~
 # Access a specific object by its name.
-bb = DataModel.GetObjectsByName("Connector\Solid1")[0]
+bb = DataModel.GetObjectsByName(r"Connector\Solid1")[0]
 
 # %%
 # Accessing a Named Selection
