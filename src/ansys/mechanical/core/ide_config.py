@@ -96,6 +96,7 @@ def _normalize_paths(existing_value, new_path: str) -> list[str]:
     else:
         paths = []
 
+    # Collapse revisions from this stubs installation while preserving unrelated paths and order.
     normalized_paths = []
     stubs_directory = Path(new_path).parent
     for path in paths:
@@ -181,10 +182,12 @@ def _vscode_impl(
     updated_settings = {
         key: _normalize_paths(data.get(key), path) for key, path in settings_json_data.items()
     }
+    # Leave the file untouched when both settings already contain the requested paths.
     if all(data.get(key) == paths for key, paths in updated_settings.items()):
         print(f"The settings have already been added to {settings_json}.")
         return
 
+    # Normalization only removes replaced revision paths; detect them to choose the update message.
     version_updated = False
     for key, paths in updated_settings.items():
         existing_paths = data.get(key)
