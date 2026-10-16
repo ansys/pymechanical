@@ -228,6 +228,30 @@ jobs:
           python-version: ${{ vars.MAIN_PYTHON_VERSION }}
           attest-provenance: true
 
+      - name: Validate installed wheel outside the checkout
+        shell: bash
+        working-directory: ${{ runner.temp }}
+        run: |
+          python -m venv wheel-validation
+          source wheel-validation/bin/activate
+          python -m pip install "${GITHUB_WORKSPACE}"/dist/*.whl
+          python -m pip check
+          python -I - <<'PY'
+          from importlib.metadata import version
+          from pathlib import Path
+          import sys
+
+          import ansys.mechanical.core as mechanical
+
+          assert Path(mechanical.__file__).resolve().is_relative_to(Path(sys.prefix).resolve())
+          assert mechanical.__version__ == version("ansys-mechanical-core")
+          PY
+          ansys-mechanical --help
+          ansys-mechanical-ideconfig --help
+          find-mechanical --help
+          test -x "${VIRTUAL_ENV}/bin/mechanical-env"
+          bash -n "${VIRTUAL_ENV}/bin/mechanical-env"
+
   # ── Release ────────────────────────────────────────────────────────────
   release:
     name: Release project to GitHub
