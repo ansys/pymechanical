@@ -26,7 +26,7 @@
 
 .. # Mechanical related
 
-.. _Mechanical API Documentation: https://scripting.mechanical.docs.pyansys.com/version/dev/api/index.html
+.. _Mechanical API Documentation: https://scripting.mechanical.docs.pyansys.com/
 .. _Mechanical scripting interface APIs: https://developer.ansys.com/docs/mechanical-scripting-interface/api/index.md
 .. _ACT API Reference Guide: https://ansyshelp.ansys.com/account/secured?returnurl=/Views/Secured/corp/%%VERSION%%/en/act_ref/act_ref.html
 
@@ -35,7 +35,6 @@
 .. _Ansys Mechanical: https://www.ansys.com/products/structures/ansys-mechanical
 
 .. _Contributor Covenant Code of Conduct: https://www.contributor-covenant.org/version/2/1/code_of_conduct/
-.. _configure SSH: https://docs.github.com/en/authentication/connecting-to-github-with-ssh
 .. _git: https://git-scm.com/
 
 
@@ -46,9 +45,7 @@
 .. _win32com: https://pypi.org/project/pywin32/
 .. _ctypes: https://docs.python.org/3/library/ctypes.html
 .. _pip: https://pypi.org/project/pip/
-.. _Tox: https://tox.wiki/en/stable/
 .. _Sphinx: https://www.sphinx-doc.org/en/master/
-.. _reStructuredText: https://docutils.sourceforge.io/rst.html
 .. _Markdown: https://www.markdownguide.org/
 .. _myst-parser: https://myst-parser.readthedocs.io/en/latest/
 .. _jupytext: https://jupytext.readthedocs.io/en/latest/

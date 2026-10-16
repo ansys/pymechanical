@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -84,6 +84,21 @@ def test_message_show(embedded_app):
 
     messages_str = str(embedded_app.messages._show_string(filter="unknown"))
     assert "Specified attribute not found" in messages_str
+
+
+@pytest.mark.embedding
+def test_message_show_max_messages(embedded_app):
+    """Test that max_messages limits the number of messages shown."""
+    embedded_app.messages.clear()
+    embedded_app.messages.add("info", "First message")
+    embedded_app.messages.add("warning", "Second message")
+    embedded_app.messages.add("error", "Third message")
+    assert len(embedded_app.messages) == 3
+
+    messages_str = str(embedded_app.messages._show_string(max_messages=1))
+    assert "Third message" in messages_str
+    assert "First message" not in messages_str
+    assert "Second message" not in messages_str
 
 
 @pytest.mark.embedding

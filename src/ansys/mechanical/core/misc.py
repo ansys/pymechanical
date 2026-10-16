@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -48,8 +48,8 @@ def get_mechanical_bin(release_version):
     Parameters
     ----------
     release_version: str
-        Mechanical version using the three-digit format. For example, ``"252"`` for
-        2025 R2.
+        Mechanical version using the three-digit format. For example, ``"261"`` for
+        2026 R1.
     """
     if is_windows():  # pragma: no cover
         program_files = os.getenv("PROGRAMFILES", str(Path("c:") / "Program Files"))

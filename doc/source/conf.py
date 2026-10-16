@@ -22,7 +22,8 @@ from sphinx_gallery.sorting import FileNameSortKey
 import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core.embedding.initializer import SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS
 
-# necessary when building the sphinx gallery
+# Documentation gallery: enables Sphinx-Gallery and embedded ``App`` instance
+# reuse across gallery scripts. Per-constructor opt-out: ``App(..., reuse_instance=True)``.
 pymechanical.BUILDING_GALLERY = True
 
 # Ensure that offscreen rendering is used for docs generation
@@ -33,7 +34,13 @@ pyvista.BUILDING_GALLERY = True
 
 
 # Whether or not to build the cheatsheet
-BUILD_CHEATSHEET = os.environ.get("BUILD_CHEATSHEET") == "true"
+BUILD_CHEATSHEET = os.environ.get("BUILD_CHEATSHEET", default="true") != "false"
+
+# Whether or not to build the API reference (AutoAPI). AutoAPI generation can be slow,
+# so you can disable it for faster local builds:
+#   set BUILD_API=false        (Windows)
+#   export BUILD_API=false     (Linux/macOS)
+BUILD_API = "true"  # os.environ.get("BUILD_API", default="true") != "false"
 
 # suppress annoying matplotlib bug
 warnings.filterwarnings(
@@ -57,7 +64,6 @@ switcher_version = get_version_match(version)
 # -- General configuration ---------------------------------------------------
 # Sphinx extensions
 extensions = [
-    "ansys_sphinx_theme.extension.autoapi",
     "jupyter_sphinx",
     "notfound.extension",
     "numpydoc",
@@ -70,13 +76,18 @@ extensions = [
     "sphinx_autodoc_typehints",
     "sphinx_copybutton",
     "sphinx_design",
-    "pyvista.ext.plot_directive",
-    "pyvista.ext.viewer_directive",
     "sphinx_click",
+    "ablog",
+    "sphinxcontrib.mermaid",
 ]
+
+if BUILD_API:
+    extensions.insert(0, "ansys_sphinx_theme.extension.autoapi")
 
 if pymechanical.BUILDING_GALLERY:
     extensions.append("sphinx_gallery.gen_gallery")
+    extensions.append("pyvista.ext.plot_directive")
+    extensions.append("pyvista.ext.viewer_directive")
 
 # Intersphinx mapping
 intersphinx_mapping = {
@@ -84,13 +95,14 @@ intersphinx_mapping = {
     "scipy": ("https://docs.scipy.org/doc/scipy/", None),
     "numpy": ("https://numpy.org/devdocs", None),
     "matplotlib": ("https://matplotlib.org/stable", None),
+    "pandas": ("https://pandas.pydata.org/docs/", None),
     "grpc": ("https://grpc.github.io/grpc/python/", None),
     "pypim": ("https://pypim.docs.pyansys.com/version/dev/", None),
+    "pyvista": ("https://docs.pyvista.org/version/stable/", None),
 }
 
 
 suppress_warnings = ["label.*", "autoapi.python_import_resolution", "design.grid", "config.cache"]
-# supress_warnings = ["ref.option"]
 
 
 # numpydoc configuration
@@ -127,6 +139,7 @@ notfound_urls_prefix = "/../"
 
 # static path
 html_static_path = ["_static"]
+html_css_files = ["css/blog.css"]
 templates_path = ["_templates"]
 # The suffix(es) of source filenames.
 source_suffix = ".rst"
@@ -150,6 +163,13 @@ exclude_patterns = [
     ".DS_Store",
     "links.rst",
 ]
+
+# If the API reference is not being built, exclude any stale, previously
+# generated AutoAPI ``.rst`` files left over in ``doc/source/api`` from a prior
+# build. Otherwise, Sphinx still discovers and writes them even though the
+# ``autoapi`` extension itself is not loaded.
+if not BUILD_API:
+    exclude_patterns.append("api/**")
 
 # Get the current Mechanical version
 current_mechanical_version = next(iter(SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS.keys()))
@@ -203,6 +223,7 @@ sphinx_gallery_conf = {
     # Files to ignore
     "ignore_pattern": "flycheck*",  # noqa: E501
     "thumbnail_size": (350, 350),
+    "matplotlib_animations": True,
 }
 
 # -- Options for HTML output -------------------------------------------------
@@ -228,6 +249,9 @@ html_theme_options = {
     "collapse_navigation": True,
     "use_edit_page_button": True,
     "header_links_before_dropdown": 5,  # number of links before the dropdown menu
+    "navigation_dropdown": {
+        "layout_file": "navbar.yml",
+    },
     "additional_breadcrumbs": [
         ("PyAnsys", "https://docs.pyansys.com/"),
     ],
@@ -241,9 +265,18 @@ html_theme_options = {
     "whatsnew": {
         "whatsnew_file_name": "../changelog.d/whatsnew.yml",
         "changelog_file_name": "changelog.rst",
-        "sidebar_pages": ["changelog", "index"],
+        "sidebar_pages": ["changelog"],
     },
-    "ansys_sphinx_theme_autoapi": {"project": project},
+    "search_extra_sources": {
+        "PyMechanical MCP": "https://mechanical-mcp.docs.pyansys.com/",
+        "PyMechanical Examples: Remote session": "https://examples.mechanical.docs.pyansys.com/",
+        "PyMechanical Advanced Examples: Embedding": "https://embedding.examples.mechanical.docs.pyansys.com/",
+    },
+    "mcp_server": {
+        "url": "https://mechanical-mcp.docs.pyansys.com/",
+        "project_name": "PyMechanical MCP Server",
+    },
+    "secondary_sidebar_items": [],
 }
 
 
@@ -293,6 +326,9 @@ if BUILD_CHEATSHEET:
         "title": "PyMechanical cheat sheet",
     }
 
+if BUILD_API:
+    html_theme_options["ansys_sphinx_theme_autoapi"] = {"project": project}
+
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
@@ -301,70 +337,31 @@ htmlhelp_basename = "pymechanicaldoc"
 html_sidebars = {
     "changelog": [],
     "contributing": [],
+    "blog/*": [
+        "ablog/postcard.html",
+        "ablog/recentposts.html",
+        "ablog/tagcloud.html",
+        "ablog/categories.html",
+        "ablog/archives.html",
+    ],
+}
+
+# -- Mermaid configuration --------------------------------------------------
+mermaid_output_format = "raw"
+mermaid_dark_theme = "dark"
+mermaid_light_theme = "default"
+
+# -- ABlog configuration -----------------------------------------------------
+blog_title = "PyMechanical Blog"
+blog_baseurl = f"https://{cname}/"
+blog_path = "blog"
+blog_post_pattern = ["blog/*.rst"]
+blog_feed_fulltext = True
+blog_authors = {
+    "ANSYS": ("ANSYS Inc.", None),
 }
 
 html_show_sourcelink = False
-
-# -- Options for LaTeX output ------------------------------------------------
-latex_elements = {}
-
-# Grouping the document tree into LaTeX files. List of tuples
-# (source start file, target name, title,
-#  author, documentclass [howto, manual, or own class]).
-latex_documents = [
-    (
-        master_doc,
-        f"pymechanical-Documentation-{version}.tex",
-        "ansys.mechanical.core Documentation",
-        author,
-        "manual",
-    ),
-]
-
-
-# -- Options for manual page output ------------------------------------------
-
-# One entry per manual page. List of tuples
-# (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, "ansys.mechanical.core", "ansys.mechanical.core Documentation", [author], 1)
-]
-
-
-# -- Options for Texinfo output ----------------------------------------------
-
-# Grouping the document tree into Texinfo files. List of tuples
-# (source start file, target name, title, author,
-#  dir menu entry, description, category)
-texinfo_documents = [
-    (
-        master_doc,
-        "ansys.mechanical.core",
-        "ansys.mechanical.core Documentation",
-        author,
-        "ansys.mechanical.core",
-        "Pythonic interface to Mechanical using gRPC",
-        "Engineering Software",
-    ),
-]
-
-
-# -- Options for Epub output -------------------------------------------------
-
-# Bibliographic Dublin Core info.
-epub_title = project
-
-# The unique identifier of the text. This can be a ISBN number
-# or the project homepage.
-#
-# epub_identifier = ''
-
-# A unique identification for the text.
-#
-# epub_uid = ''
-
-# A list of files that should not be packed into the epub file.
-epub_exclude_files = ["search.html"]
 
 # -- Linkcheck config --------------------------------------------------------
 
@@ -372,11 +369,12 @@ linkcheck_ignore = [
     "https://github.com/ansys/pymechanical/pkgs/container/.*",
     "https://ansyshelp.ansys.com/*",
     "https://answers.microsoft.com/en-us/windows/forum/all/*",
-    "https://docutils.sourceforge.io/*",
     "https://download.ansys.com/*",
     "https://support.ansys.com/*",
     "https://discuss.ansys.com/*",
+    "https://innovation.ansys.com/*",
     "https://www.ansys.com/*",
+    "https://developer.ansys.com/*",
     "../api/*",
 ]
 
@@ -393,3 +391,46 @@ if switcher_version != "dev":
     linkcheck_ignore.append(
         f"https://github.com/ansys/pymechanical/releases/tag/v{pymechanical.__version__}"
     )
+
+
+# -- Source-read substitution for version placeholders in code blocks ---------
+# Standard RST substitutions (|name|) don't work inside code blocks.
+# This hook replaces {mechanical_version} in the raw source before parsing,
+# so it works everywhere including literal blocks and code-block directives.
+
+# Custom autoapi index template: prepend _templates/autoapi/ to Jinja search
+# paths so our index.rst is picked up before the theme's default, while the
+# theme's python/class.rst and python/module.rst templates are still used.
+_CUSTOM_AUTOAPI_TEMPLATES = str(Path(__file__).parent / "_templates" / "autoapi")
+
+
+def _wrap_autoapi_jinja_env(app, config):
+    """Prepend the custom autoapi template dir to the Jinja search path.
+
+    This runs after the theme's config-inited handler (which sets
+    ``autoapi_prepare_jinja_env``), so we can wrap its function rather than
+    replace it, preserving the ``project_name`` / ``autoapi_depth`` globals.
+    """
+    original = config.autoapi_prepare_jinja_env
+
+    def _wrapped(jinja_env):
+        if original:
+            original(jinja_env)
+        loader = jinja_env.loader
+        if hasattr(loader, "searchpath") and _CUSTOM_AUTOAPI_TEMPLATES not in loader.searchpath:
+            loader.searchpath.insert(0, _CUSTOM_AUTOAPI_TEMPLATES)
+
+    config["autoapi_prepare_jinja_env"] = _wrapped
+
+
+def source_read_handler(app, docname, source):
+    """Replace version placeholders in RST source before parsing."""
+    source[0] = source[0].replace("{mechanical_version}", str(current_mechanical_version))
+    source[0] = source[0].replace("{build_date}", "06/03/2026 09:51:20")
+
+
+def setup(app):
+    """Connect Sphinx events."""
+    app.connect("source-read", source_read_handler)
+    if BUILD_API:
+        app.connect("config-inited", _wrap_autoapi_jinja_env)

@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 """Fixtures and helpers for testing."""
 
 import datetime
@@ -73,32 +74,100 @@ for rver in valid_rver:
 # minimum version on linux.
 # Override this if running on CI/CD and PYMAPDL_PORT has been specified
 ON_CI = "PYMECHANICAL_START_INSTANCE" in os.environ and "PYMECHANICAL_PORT" in os.environ
-HAS_GRPC = int(rver) >= 241 or ON_CI
+HAS_GRPC = int(rver) >= 242 or ON_CI
+
+
+def pytest_report_header(config):
+    """Add Ansys Mechanical session info to the pytest report header."""
+    width = shutil.get_terminal_size((80, 20))[0]
+
+    # --- Determine version ---
+    cli_version = config.getoption("--ansys-version", default=None)
+    if cli_version:
+        version_str = f"{cli_version}"
+
+    text = []
+    text.append(" PyMechanical test session ".center(width, "-"))
+    text.append(f"Ansys Mechanical version : {version_str}")
+    text.append(f"Session flags            : ON_CI ({ON_CI})")
+    text.append(f"Platform                 : {sys.platform}")
+
+    # --- Relevant environment variables (only shown when set) ---
+    watched_env_vars = [
+        # gRPC / remote session
+        "PYMECHANICAL_START_INSTANCE",
+        "PYMECHANICAL_PORT",
+        "PYMECHANICAL_IP",
+        "ANSYS_GRPC_CERTIFICATES",
+        # Embedding
+        "PYMECHANICAL_EMBEDDING",
+        "PYMECHANICAL_EXPLICIT_INTERFACE",
+        "ANSYS_MECHANICAL_EMBEDDING_SUPPORT_OLD_VERSIONS",
+        # Solve / misc
+        "NUM_CORES",
+    ]
+    env_lines = [f"{k}='{os.environ[k]}'" for k in watched_env_vars if k in os.environ]
+    if env_lines:
+        text.append(" Environment variables ".center(width, "-"))
+        text.append(", ".join(env_lines))
+    text.append("-" * width)
+    return "\n".join(text)
 
 
 def pytest_collection_modifyitems(config, items):
     """Modify the collected test items."""
     keywordexpr = config.option.keyword
     markexpr = config.option.markexpr
-    if keywordexpr or markexpr:
-        return  # command line has a -k or -m, let pytest handle it
+    apply_default_skips = not (keywordexpr or markexpr)
 
-    # skip embedding tests unless the mark is specified
-    skip_embedding = pytest.mark.skip(
-        reason="""embedding not selected for pytest run
+    for item in items:
+        # skip embedding tests unless the mark is specified via -k or -m
+        if apply_default_skips:
+            if "embedding" in item.keywords or "embedding_scripts" in item.keywords:
+                skip_embedding = pytest.mark.skip(
+                    reason="""embedding not selected for pytest run
         (`pytest -m embedding` or `pytest -m embedding_scripts`).  Skip by default"""
-    )
-    [
-        item.add_marker(skip_embedding)
-        for item in items
-        if ("embedding" or "embedding_scripts") in item.keywords
-    ]
+                )
+                item.add_marker(skip_embedding)
 
-    # TODO : skip python_env tests unless the mark is specified. (The below doesn't work!)
-    # skip_python_env = pytest.mark.skip(
-    #     reason="python_env not selected for pytest run (`pytest -m python_env`).  Skip by default"
-    # )
-    # [item.add_marker(skip_python_env) for item in items if "python_env" in item.keywords]
+        # Skip tests that are less than the minimum version
+        if "minimum_version" in item.keywords:
+            revn = [mark.args[0] for mark in item.iter_markers(name="minimum_version")]
+            if int(config.getoption("--ansys-version")) < revn[0]:
+                skip_versions = pytest.mark.skip(
+                    reason=f"Requires ansys-version greater than or equal to {revn[0]}."
+                )
+                item.add_marker(skip_versions)
+
+        # Skip tests that are outside of the provided version range. For example,
+        # @pytest.mark.version_range(241,251)
+        if "version_range" in item.keywords:
+            revns = [mark.args for mark in item.iter_markers(name="version_range")][0]
+            ansys_version = int(config.getoption("--ansys-version"))
+
+            if (ansys_version < revns[0]) or (ansys_version > revns[1]):
+                skip_versions = pytest.mark.skip(
+                    reason=f"Requires ansys-version in the range {revns[0]} to {revns[1]}."
+                )
+                item.add_marker(skip_versions)
+
+        # Skip on platforms other than Windows
+        if "windows_only" in item.keywords and sys.platform != "win32":
+            skip_except_windows = pytest.mark.skip(reason="Test requires Windows platform.")
+            item.add_marker(skip_except_windows)
+
+        # Skip on platforms other than Linux
+        if "linux_only" in item.keywords and "lin" not in sys.platform:
+            skip_except_linux = pytest.mark.skip(reason="Test requires Linux platform.")
+            item.add_marker(skip_except_linux)
+
+        # Skip python_env tests unless the mark is specified via -k or -m
+        if apply_default_skips and "python_env" in item.keywords:
+            skip_python_env = pytest.mark.skip(
+                reason="python_env not selected for pytest run"
+                " (`pytest -m python_env`). Skip by default"
+            )
+            item.add_marker(skip_python_env)
 
 
 @pytest.fixture()
@@ -121,13 +190,21 @@ def ensure_embedding() -> None:
 
 def start_embedding_app(version, pytestconfig) -> datetime.timedelta:
     """Start the embedded Mechanical application."""
+    import logging
+
     from ansys.mechanical.core import App
+    from ansys.mechanical.core.embedding.logger import Configuration
 
     global EMBEDDED_APP
     ensure_embedding()
     start = datetime.datetime.now()
 
     config = AddinConfiguration(pytestconfig.getoption("addin_configuration"))
+
+    _log_level_str = pytestconfig.getoption("--log-embedding", default=None)
+    if _log_level_str is not None:
+        _log_level = getattr(logging, _log_level_str.upper())
+        Configuration.configure(level=_log_level, to_stdout=True)
 
     EMBEDDED_APP = App(version=int(version))
     assert not EMBEDDED_APP.readonly, (
@@ -157,7 +234,7 @@ def embedded_app(pytestconfig, request):
 
 
 @pytest.fixture(autouse=True)
-def mke_app_reset(request):
+def make_app_reset(request):
     """Fixture that resets the embedded Mechanical application before each test."""
     global EMBEDDED_APP
     if EMBEDDED_APP is None:
@@ -296,19 +373,19 @@ def connect_to_mechanical_instance(port=None, clear_on_connect=False):
     # On WSL/Docker systems, hostname can resolve to bridge IPs (e.g., 172.28.0.1)
     # which are not routable for locally-launched Mechanical instances.
     # For remote/container scenarios, an explicit IP should be passed by the caller.
+    connection_options = {
+        "port": port,
+        "clear_on_connect": clear_on_connect,
+        "cleanup_on_exit": False,
+    }
     if os.name != "nt":
-        # Linux/container uses insecure mode for testing
-        mechanical = pymechanical.connect_to_mechanical(
-            port=port,
-            clear_on_connect=clear_on_connect,
-            cleanup_on_exit=False,
-            transport_mode="insecure",
-        )
-    else:
-        # Windows uses WNUA by default
-        mechanical = pymechanical.connect_to_mechanical(
-            port=port, clear_on_connect=clear_on_connect, cleanup_on_exit=False
-        )
+        certs_dir = os.environ.get("ANSYS_GRPC_CERTIFICATES")
+        if certs_dir:
+            connection_options["certs_dir"] = certs_dir
+            connection_options["transport_mode"] = "mtls"
+        else:
+            connection_options["transport_mode"] = "insecure"
+    mechanical = pymechanical.connect_to_mechanical(**connection_options)
     return mechanical
 
 
@@ -508,6 +585,16 @@ def pytest_addoption(parser):
         parser.addoption("--ansys-version", default=str(mechanical_version))
 
     # parser.addoption("--debugging", action="store_true")
+    parser.addoption(
+        "--log-embedding",
+        default=None,
+        choices=["debug", "info", "warning", "error"],
+        help=(
+            "Set the embedding log level written to stdout. "
+            "Choices: debug, info, warning, error. "
+            "When omitted, embedding logging is not configured by the test suite."
+        ),
+    )
     parser.addoption("--addin-configuration", default="Mechanical")
     parser.addoption(
         "--remote-server-type",
@@ -515,38 +602,3 @@ def pytest_addoption(parser):
         help="Specify RPC protocol",
         choices=["grpc", "rpyc"],
     )
-
-
-def pytest_collection_modifyitems(config, items):
-    """Skips tests marked minimum_version if ansys-version is less than mark argument."""
-    for item in items:
-        # Skip tests that are less than the minimum version
-        if "minimum_version" in item.keywords:
-            revn = [mark.args[0] for mark in item.iter_markers(name="minimum_version")]
-            if int(config.getoption("--ansys-version")) < revn[0]:
-                skip_versions = pytest.mark.skip(
-                    reason=f"Requires ansys-version greater than or equal to {revn[0]}."
-                )
-                item.add_marker(skip_versions)
-
-        # Skip tests that are outside of the provided version range. For example,
-        # @pytest.mark.version_range(241,251)
-        if "version_range" in item.keywords:
-            revns = [mark.args for mark in item.iter_markers(name="version_range")][0]
-            ansys_version = int(config.getoption("--ansys-version"))
-
-            if (ansys_version < revns[0]) or (ansys_version > revns[1]):
-                skip_versions = pytest.mark.skip(
-                    reason=f"Requires ansys-version in the range {revns[0]} to {revns[1]}."
-                )
-                item.add_marker(skip_versions)
-
-        # Skip on platforms other than Windows
-        if "windows_only" in item.keywords and sys.platform != "win32":
-            skip_except_windows = pytest.mark.skip(reason="Test requires Windows platform.")
-            item.add_marker(skip_except_windows)
-
-        # Skip on platforms other than Linux
-        if "linux_only" in item.keywords and "lin" not in sys.platform:
-            skip_except_linux = pytest.mark.skip(reason="Test requires Linux platform.")
-            item.add_marker(skip_except_linux)

@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -25,7 +25,6 @@
 import os
 from pathlib import Path
 import sys
-import typing
 
 import pytest
 
@@ -34,7 +33,7 @@ from .test_logger import _assert_success
 
 def _run_background_app_test(
     run_subprocess, rootdir: str, pytestconfig, testname: str, pass_expected: bool = True
-) -> typing.Tuple[bytes, bytes]:
+) -> tuple[bytes, bytes]:
     """Run the process and return stdout and stderr after it finishes."""
     version = pytestconfig.getoption("ansys_version")
     script = str(Path(rootdir) / "tests" / "scripts" / "background_app_test.py")
@@ -57,7 +56,6 @@ def _run_background_app_test(
 
 @pytest.mark.embedding_scripts
 @pytest.mark.embedding_backgroundapp
-@pytest.mark.skipif(sys.platform == "win32", reason="Test not working on Windows")
 def test_background_app_multiple_instances(rootdir, run_subprocess, pytestconfig):
     """Multiple instances of background app can be used."""
     stderr = _run_background_app_test(

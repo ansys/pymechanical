@@ -3,6 +3,14 @@
 Threading
 =========
 
+.. note::
+
+   Threading considerations apply to **both** embedding mode and remote session mode,
+   though the details differ:
+
+   - **Embedding:** All API calls must run on the Python thread that created the ``App`` instance.
+   - **Remote session:** Python code sent to the server must not use threading to call Mechanical APIs.
+
 Concurrency and threads
 -----------------------
 
@@ -32,10 +40,10 @@ CPUs operate at the speed of electrons and can often do trillions of operations 
 second. If there is only one program running on a CPU and a private section of memory
 that the program needs, it can shuttle data to and from that memory extremely quickly.
 
-When there are multiple programs or threads running on a CPU, things can get tricker.
+When there are multiple programs or threads running on a CPU, things can get trickier.
 Consider a (contrived) example with a simple program that increments an integer:
 
-.. code::
+.. code-block:: c
 
     i++
 
@@ -90,17 +98,17 @@ problems for the typical user.
 Mechanical's threading model
 ----------------------------
 
-Mechanical is a large-scale application with multiple concurrent threads running at
-any one time. However, it exhibits *thread affinity*, where a single thread is privileged above
+Mechanical is a large-scale app with multiple concurrent threads running at
+any one time. However, it exhibits *thread affinity*, where a single thread is privileged over
 all others with respect to data access and mutation. If the user interface (UI) is running,
 this thread is typically called the UI thread, and in batch mode, it is typically called the
 main thread. Some of the data structures used by Mechanical's code are thread-compatible.
 Some of the APIs use task posting. However, in the general case, **using any Mechanical
 API on a non-privileged thread carries a risk of race conditions**. It is difficult to quantify
 the risk or to distinguish which operations are most likely to be vulnerable to them due to
-the large scale of the Mechanical application's code.
+the large scale of the Mechanical codebase.
 
-As such, Mechanical APIs **MUST** only be run on the UI thread or main thread, in interactive and batch
+As such, Mechanical APIs **MUST** only be run on the UI thread or main thread, in interactive mode and batch mode,
 mode respectively. For PyMechanical, this means the following:
 
 - For an embedded instance, all scripting APIs are executed on the Python thread that constructed

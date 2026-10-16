@@ -59,7 +59,7 @@ questions, and sharing their work with the community.
 Report bugs
 ===========
 
-If you encounter a bug or an issue while using the project, please report it.
+If you encounter a bug or an issue while using the project, report it.
 Your feedback helps to identify problems.
 
 - Search the `PyMechanical issue`_ to see if the issue has already been reported.

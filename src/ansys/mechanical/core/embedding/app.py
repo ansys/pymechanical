@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -42,6 +42,7 @@ from ansys.mechanical.core.embedding.mechanical_warnings import (
 from ansys.mechanical.core.embedding.poster import Poster
 import ansys.mechanical.core.embedding.shell as shell
 from ansys.mechanical.core.embedding.ui import launch_ui
+from ansys.mechanical.core.embedding.utils import GetterWrapper
 from ansys.mechanical.core.feature_flags import get_command_line_arguments
 
 if typing.TYPE_CHECKING:
@@ -53,11 +54,12 @@ try:
     import ansys.tools.visualization_interface  # noqa: F401
 
     HAS_ANSYS_GRAPHICS = True
-    """Whether or not PyVista exists."""
+    """Whether or not ansys-tools-visualization-interface is available."""
 except ImportError:
     HAS_ANSYS_GRAPHICS = False
 
-shell.initialize_ipython_shell()
+# TODO: Re-enable when pywin bug is fixed
+# shell.initialize_ipython_shell()
 
 
 def _get_default_addin_configuration() -> AddinConfiguration:
@@ -65,8 +67,11 @@ def _get_default_addin_configuration() -> AddinConfiguration:
     return configuration
 
 
-INSTANCES = []
+_INSTANCES: list[App] = []
 """List of instances."""
+
+_INITIALIZED: bool = False
+"""Whether the embedded application has been initialized."""
 
 
 def _atexit_embedded_app(instances):  # pragma: nocover
@@ -83,8 +88,8 @@ def _cleanup_private_appdata(profile: UniqueUserProfile):
 
 
 def _start_application(
-    configuration: AddinConfiguration, version, db_file, _addtional_args
-) -> "App":
+    configuration: AddinConfiguration, version, db_file, _additional_args
+) -> App:
     import clr
 
     clr.AddReference("Ansys.Mechanical.Embedding")
@@ -97,7 +102,7 @@ def _start_application(
     if version < 261:
         return Ansys.Mechanical.Embedding.Application(db_file, addin_configuration_name)
     return Ansys.Mechanical.Embedding.Application(
-        db_file, addin_configuration_name, _addtional_args
+        db_file, addin_configuration_name, _additional_args
     )
 
 
@@ -105,10 +110,11 @@ def _additional_args(readonly: bool, feature_flags: list, start_license: str, ve
     """Generate additional command line arguments for the application."""
     additional_args = ""
     if version < 261:
-        LOG.warning(
-            "The readonly, feature_flags and start_license arguments are only supported "
-            "with version 2026R1 and later."
-        )
+        if readonly or feature_flags or start_license:
+            LOG.warning(
+                "The readonly, feature_flags and start_license arguments are only supported "
+                "with version 2026R1 and later."
+            )
         return additional_args
     if readonly:
         additional_args += " -readonly"
@@ -118,36 +124,22 @@ def _additional_args(readonly: bool, feature_flags: list, start_license: str, ve
     if start_license:
         if readonly:
             LOG.warning("The start_license argument is ignored when readonly is set to True.")
-        additional_args += f"-p {start_license}"
+        additional_args += f" -p {start_license}"
     return additional_args
 
 
-def is_initialized():
+def _normalize_file_path(path: str | Path) -> str:
+    """Return an absolute filesystem path as a string.
+
+    Mechanical save APIs can reject filename-only inputs on some platforms.
+    Normalizing to an absolute path ensures consistent behavior.
+    """
+    return str(Path(path).resolve())
+
+
+def is_initialized() -> bool:
     """Check if the app has been initialized."""
-    return len(INSTANCES) != 0
-
-
-class GetterWrapper(object):
-    """Wrapper class around an attribute of an object."""
-
-    def __init__(self, obj, getter):
-        """Create a new instance of GetterWrapper."""
-        # immortal class which provides wrapped object
-        self.__dict__["_immortal_object"] = obj
-        # function to get the wrapped object from the immortal class
-        self.__dict__["_get_wrapped_object"] = getter
-
-    def __getattr__(self, attr):
-        """Wrap getters to the wrapped object."""
-        if attr in self.__dict__:
-            return getattr(self, attr)
-        return getattr(self._get_wrapped_object(self._immortal_object), attr)
-
-    def __setattr__(self, attr, value):
-        """Wrap setters to the wrapped object."""
-        if attr in self.__dict__:
-            setattr(self, attr, value)
-        setattr(self._get_wrapped_object(self._immortal_object), attr, value)
+    return _INITIALIZED
 
 
 class App:
@@ -180,13 +172,23 @@ class App:
     feature_flags : list, optional
         List of feature flag names to enable. Default is [].
         Available flags include: 'ThermalShells', 'MultistageHarmonic', 'CPython'.
+    remove_lock : bool, optional
+        Whether to remove the lock file if it exists before opening the project file
+        specified by ``db_file``. Default is False.
+    reuse_instance : bool, optional
+        When ``True``, gallery instance sharing is skipped for this constructor,
+        so initialization follows the same path as when the module-level
+        ``BUILDING_GALLERY`` flag is ``False``. Use this to opt out of gallery
+        sharing without assigning ``pymechanical.BUILDING_GALLERY = False`` (for
+        example when the flag is set globally for documentation builds).
+        Default is ``False``.
 
     Examples
     --------
     Create App with Mechanical project file and version:
 
     >>> from ansys.mechanical.core import App
-    >>> app = App(db_file="path/to/file.mechdat", version=252)
+    >>> app = App(db_file="path/to/file.mechdat", version=261)
 
     Disable copying the user profile when private appdata is enabled
 
@@ -200,8 +202,7 @@ class App:
 
     >>> from ansys.mechanical.core.embedding import AddinConfiguration
     >>> from ansys.mechanical.core import App
-    >>> config = AddinConfiguration("Mechanical")
-    >>> config.no_act_addins = True
+    >>> config = AddinConfiguration("Mechanical", no_act_addins=True)
     >>> app = App(config=config)
 
     Set log level
@@ -220,10 +221,21 @@ class App:
 
     """
 
-    def __init__(self, db_file=None, private_appdata=False, **kwargs):
+    def __init__(
+        self,
+        db_file: str | None = None,
+        private_appdata: bool = False,
+        *,
+        reuse_instance: bool = False,
+        **kwargs: typing.Any,
+    ) -> None:
         """Construct an instance of the mechanical Application."""
-        global INSTANCES
+        global _INSTANCES, _INITIALIZED
         from ansys.mechanical.core import BUILDING_GALLERY
+
+        use_gallery_sharing = BUILDING_GALLERY and not reuse_instance
+
+        remove_lock = kwargs.get("remove_lock", False)
 
         self._enable_logging = kwargs.get("enable_logging", True)
         if self._enable_logging:
@@ -234,7 +246,7 @@ class App:
         self.log_info("Starting Mechanical Application")
 
         # Get the globals dictionary from kwargs
-        globals = kwargs.get("globals")
+        user_globals = kwargs.get("globals")
 
         # Get the interactive mode from kwargs
         self._interactive_mode = kwargs.get("interactive", False)
@@ -253,27 +265,27 @@ class App:
 
         # If the building gallery flag is set, we need to share the instance
         # This can apply to running the `make -C doc html` command
-        if BUILDING_GALLERY:
-            if len(INSTANCES) != 0:
+        if use_gallery_sharing:
+            if _INITIALIZED:
                 # Get the first instance of the app
-                instance: App = INSTANCES[0]
+                instance: App = _INSTANCES[0]
                 # Point to the same underlying application object
                 instance._share(self)
                 # Update the globals if provided in kwargs
-                if globals:
+                if user_globals:
                     # The next line is covered by test_globals_kwarg_building_gallery
-                    instance.update_globals(globals)  # pragma: nocover
+                    instance.update_globals(user_globals)  # pragma: nocover
                 # Open the mechdb file if provided
                 if db_file is not None:
-                    self.open(db_file)
+                    self.open(db_file, remove_lock=remove_lock)
                 return
-        if len(INSTANCES) > 0:
-            raise Exception("Cannot have more than one embedded mechanical instance!")
+        if _INITIALIZED:
+            raise RuntimeError("Cannot have more than one embedded mechanical instance!")
 
         self._version = initializer.initialize(version)
 
         if self._version < 261 and self.interactive:
-            raise Exception("Interactive mode is only supported starting with version 261")
+            raise RuntimeError("Interactive mode is only supported starting with version 261")
 
         configuration = kwargs.get("config", _get_default_addin_configuration())
 
@@ -291,30 +303,37 @@ class App:
         self._prepare_interactive_mode()
         runtime.initialize(self._version, pep8_aliases=pep8_alias)
 
+        if remove_lock and db_file is not None:
+            self._remove_lock_file(db_file)
+
         self._app = _start_application(configuration, self._version, db_file, additional_args)
 
         self._disposed = False
-        atexit.register(_atexit_embedded_app, INSTANCES)
-        INSTANCES.append(self)
+        _INSTANCES.append(self)
+        # Must register before _atexit_embedded_app so cleanup runs after Dispose (atexit is LIFO).
+        if private_appdata:
+            atexit.register(_cleanup_private_appdata, profile)
+        if not _INITIALIZED:
+            atexit.register(_atexit_embedded_app, _INSTANCES)
+            _INITIALIZED = True
 
         self._handle_interactive_shell()
 
         connect_warnings(self)
         self._poster = None
 
-        # Clean up the private appdata directory on exit if private_appdata is True
-        if private_appdata:
-            atexit.register(_cleanup_private_appdata, profile)
-
-        self._updated_scopes: typing.List[typing.Dict[str, typing.Any]] = []
+        self._updated_scopes: list[dict[str, typing.Any]] = []
         self._subscribe()
-        if globals:
-            self.update_globals(globals)
+        if user_globals:
+            self.update_globals(user_globals)
 
         # Licensing API is available only for version 2025R2 and later
         self._license_manager = None
         if self.version >= 252:
             self._license_manager = LicenseManager(self)
+
+        # Initialize helpers
+        self._helpers = None
 
     def __repr__(self):
         """Get the product info."""
@@ -345,10 +364,10 @@ class App:
         if not self.interactive:
             return
         if self._version < 261:
-            raise Exception("Interactive mode is only supported starting with version 261")
+            raise RuntimeError("Interactive mode is only supported starting with version 261")
         if os.name != "nt":
             if os.environ.get("ANSYS_MECHANICAL_EMBEDDING_LINUX_UI", False) is False:
-                raise Exception("Interactive mode is only supported on windows")
+                raise RuntimeError("Interactive mode is only supported on windows")
         os.environ["ANSYS_MECHANICAL_EMBEDDING_START_WITH_UI"] = "1"
 
     def _handle_interactive_shell(self):
@@ -358,6 +377,17 @@ class App:
         shell.start_interactive_shell(self)
         self._started_interactive_shell = True
 
+    def _remove_lock_file(self, db_file):
+        """Remove the lock file for the given project file if it exists."""
+        file_path = Path(db_file)
+        lock_file = file_path.parent / f"{file_path.stem}_Mech_Files" / ".mech_lock"
+        if lock_file.exists():
+            self.log_warning(
+                f"Removing the lock file, {lock_file}, before opening the project. "
+                "This may corrupt the project file."
+            )
+            lock_file.unlink()
+
     def wait_with_dialog(self):
         """Block python while an interactive pop-up is displayed.
 
@@ -365,9 +395,9 @@ class App:
         not be blocked.
         """
         if not self.interactive:
-            raise Exception("wait_with_dialog is only supported in interactive mode!")
+            raise RuntimeError("wait_with_dialog is only supported in interactive mode!")
         if self.version < 261:
-            raise Exception("wait_with_dialog is only supported with Mechanical 261")
+            raise RuntimeError("wait_with_dialog is only supported with Mechanical 261")
         # Wait with dialog open
         self._app.BlockingModalDialog("Wait with dialog", "PyMechanical")
 
@@ -388,21 +418,13 @@ class App:
         """
         self.log_info(f"Opening {db_file} ...")
         if remove_lock:
-            lock_file = Path(self.DataModel.Project.ProjectDirectory) / ".mech_lock"
-            # Remove the lock file if it exists before opening the project file
-            if lock_file.exists():
-                self.log_warning(
-                    f"Removing the lock file, {lock_file}, before opening the project. "
-                    "This may corrupt the project file."
-                )
-                lock_file.unlink()
-
+            self._remove_lock_file(db_file)
         self.DataModel.Project.Open(db_file)
 
     def save(self, path=None):
         """Save the project."""
         if path is not None:
-            self.DataModel.Project.Save(path)
+            self.DataModel.Project.Save(_normalize_file_path(path))
         else:
             self.DataModel.Project.Save()
 
@@ -426,18 +448,19 @@ class App:
         Exception
             If the file already exists at the specified path and `overwrite` is False.
         """
-        if not Path(path).exists():
-            self.DataModel.Project.SaveAs(path)
+        normalized_path = _normalize_file_path(path)
+        if not Path(normalized_path).exists():
+            self.DataModel.Project.SaveAs(normalized_path)
             return
 
         if not overwrite:
-            raise Exception(
+            raise FileExistsError(
                 f"File already exists in {path}, Use ``overwrite`` flag to "
                 "replace the existing file."
             )
 
         if remove_lock:
-            file_path = Path(path)
+            file_path = Path(normalized_path)
             associated_dir = file_path.parent / f"{file_path.stem}_Mech_Files"
             lock_file = associated_dir / ".mech_lock"
             # Remove the lock file if it exists before saving the project file
@@ -445,7 +468,7 @@ class App:
                 self.log_warning(f"Removing the lock file, {lock_file}... ")
                 lock_file.unlink()
         try:
-            self.DataModel.Project.SaveAs(path, overwrite)
+            self.DataModel.Project.SaveAs(normalized_path, overwrite)
         except Exception as e:
             error_msg = str(e)
             if "The project is locked by" in error_msg:
@@ -458,9 +481,23 @@ class App:
                 self.log_error(f"Failed to save project as {path}: {error_msg}")
             raise e
 
-    def launch_gui(self, delete_tmp_on_close: bool = True, dry_run: bool = False):
-        """Launch the GUI."""
-        launch_ui(self, delete_tmp_on_close, dry_run)
+    def launch_gui(
+        self, delete_tmp_on_close: bool = True, dry_run: bool = False, readonly: bool = False
+    ):
+        """Launch the GUI.
+
+        Parameters
+        ----------
+        delete_tmp_on_close : bool, optional
+            Whether to delete the temporary project copy once the GUI exits.
+            Default is ``True``.
+        dry_run : bool, optional
+            Whether to print the launch command instead of launching the GUI.
+            Default is ``False``.
+        readonly : bool, optional
+            Whether to launch the GUI in read-only mode. Default is ``False``.
+        """
+        launch_ui(self, delete_tmp_on_close, dry_run, readonly)
 
     def new(self):
         """Clear to a new application."""
@@ -498,10 +535,10 @@ class App:
         script_result = self.script_engine.ExecuteCode(script, script_scope, light_mode, args, rets)
         error_msg = "Failed to execute the script"
         if script_result is None:
-            raise Exception(error_msg)
+            raise RuntimeError(error_msg)
         if script_result.Error is not None:
             error_msg += f": {script_result.Error.Message}"
-            raise Exception(error_msg)
+            raise RuntimeError(error_msg)
         return script_result.Value
 
     def execute_script_from_file(self, file_path=None):
@@ -509,24 +546,27 @@ class App:
         file_path = Path(file_path)
         if not file_path.is_file():
             raise FileNotFoundError(f"The file {file_path} does not exist.")
-        text_file = file_path.open("r", encoding="utf-8")
-        data = text_file.read()
-        text_file.close()
-        return self.execute_script(data)
+        data = file_path.read_text(encoding="utf-8")
+        try:
+            return self.execute_script(data)
+        except RuntimeError as e:
+            raise RuntimeError(f"Error in '{file_path}': {e}") from e
 
-    def plotter(self, obj=None) -> None:
+    def plotter(self, obj=None) -> typing.Any | None:
         """Return ``ansys.tools.visualization_interface.Plotter`` object."""
         if not HAS_ANSYS_GRAPHICS:
             LOG.warning(
                 "Use ``pip install ansys-mechanical-core[graphics]`` to enable this option."
             )
-            return
+            return None
 
         if self.version < 242:
             LOG.warning("Plotting is only supported with version 2024R2 and later!")
-            return
+            return None
 
-        # TODO : Check if anything loaded inside app or else show warning and return
+        if self.Model.Geometry.Children.Count == 0:
+            LOG.warning("No geometry is loaded. Open a model before plotting.")
+            return None
 
         from ansys.mechanical.core.embedding.graphics.embedding_plotter import to_plotter
 
@@ -546,7 +586,17 @@ class App:
         >>> app.plot()
         """
         if self.interactive:
-            raise Exception("Plotting is not allowed in interactive mode")
+            raise RuntimeError("Plotting is not allowed in interactive mode")
+
+        import sys
+
+        if sys.platform != "win32" and not any(
+            os.environ.get(var) for var in ("DISPLAY", "WAYLAND_DISPLAY")
+        ):
+            raise RuntimeError(
+                "No display is available. Use 'xvfb-run' to run the application "
+                "on a system without a display."
+            )
 
         _plotter = self.plotter(obj)
 
@@ -618,14 +668,24 @@ class App:
     def license_manager(self):
         """Return license manager."""
         if self._license_manager is None:
-            raise Exception("LicenseManager is only available for version 252 and later.")
+            raise RuntimeError("LicenseManager is only available for version 252 and later.")
         return self._license_manager
+
+    @property
+    def helpers(self):
+        """Return the Helpers instance."""
+        if self._helpers is None:
+            from ansys.mechanical.core.embedding.helpers import Helpers
+
+            self._helpers = Helpers(self)
+        return self._helpers
 
     def _share(self, other) -> None:
         """Shares the state of self with other.
 
         Other is another instance of App.
-        This is used when the BUILDING_GALLERY flag is on.
+        This is used when the BUILDING_GALLERY flag is on and the constructor
+        was not called with ``reuse_instance=True``.
         In that mode, multiple instance of App are used, but
         they all point to the same underlying application
         object. Because of that, special care needs to be
@@ -637,13 +697,26 @@ class App:
         self.new()
 
         # set up the type hint (typing.Self is python3.11+)
-        other: App = other
 
         # copy `self` state to other.
         other._app = self._app
         other._version = self._version
         other._poster = self._poster
         other._updated_scopes = self._updated_scopes
+        other._helpers = self._helpers
+
+        # Share logging configuration
+        other._enable_logging = self._enable_logging
+        other._log = self._log
+        other._log_level = self._log_level
+
+        # Share interactive mode and shell state
+        other._interactive_mode = self._interactive_mode
+        other._started_interactive_shell = self._started_interactive_shell
+
+        # Share lazy-loaded instances
+        other._messages = self._messages
+        other._license_manager = self._license_manager
 
         # all events will be handled by the original App instance
         other._subscribed = False
@@ -670,9 +743,7 @@ class App:
     def _on_workbench_ready(self, sender, args) -> None:
         self._update_all_globals()
 
-    def update_globals(
-        self, globals_dict: typing.Dict[str, typing.Any], enums: bool = True
-    ) -> None:
+    def update_globals(self, globals_dict: dict[str, typing.Any], enums: bool = True) -> None:
         """Update global variables.
 
         When scripting inside Mechanical, the Mechanical UI automatically
@@ -718,18 +789,20 @@ class App:
         if not hasattr(node, "Name"):
             raise AttributeError("Object must have a 'Name' attribute")
 
+        state_icons = {
+            "UnderDefined": " (?)",
+            "Solved": " (✓)",
+            "FullyDefined": " (✓)",
+            "NotSolved": " (⚡︎)",
+            "Obsolete": " (⚡︎)",
+            "SolveFailed": " (✕)",
+        }
+
         node_name = node.Name
         if hasattr(node, "Suppressed") and node.Suppressed is True:
             node_name += " (Suppressed)"
         if hasattr(node, "ObjectState"):
-            if str(node.ObjectState) == "UnderDefined":
-                node_name += " (?)"
-            elif str(node.ObjectState) == "Solved" or str(node.ObjectState) == "FullyDefined":
-                node_name += " (✓)"
-            elif str(node.ObjectState) == "NotSolved" or str(node.ObjectState) == "Obsolete":
-                node_name += " (⚡︎)"
-            elif str(node.ObjectState) == "SolveFailed":
-                node_name += " (✕)"
+            node_name += state_icons.get(str(node.ObjectState), "")
         print(f"{indentation}├── {node_name}")
         lines_count += 1
 
@@ -789,7 +862,6 @@ class App:
         """
         if node is None:
             node = self.DataModel.Project
-
         self._print_tree(node, max_lines, lines_count, indentation)
 
     def log_debug(self, message):

@@ -1,0 +1,370 @@
+name: Tests # zizmor: ignore[concurrency-limits]
+
+on:
+  workflow_call:
+    inputs:
+      test-container:
+        type: string
+        required: true
+      test-revn:
+        type: string
+        required: true
+      test-docker-image-version:
+        type: string
+        required: true
+      container-stable-exit:
+        type: string
+        required: true
+      matrix-json:
+        type: string
+        required: true
+
+env:
+  PYMECHANICAL_PORT: '10000'
+  PYMECHANICAL_START_INSTANCE: 'false'
+  DOCKER_MECH_CONTAINER_NAME: mechanical
+  ANSYSLMD_LICENSE_FILE: 1055@${{ secrets.LICENSE_SERVER }}
+  ANSYS_WORKBENCH_LOGGING_CONSOLE: 0
+  ANSYS_WORKBENCH_LOGGING: 0
+  ANSYS_WORKBENCH_LOGGING_FILTER_LEVEL: 2
+
+permissions: {}
+
+jobs:
+  remote-connect:
+    name: Remote connect testing and coverage - Mechanical ${{ matrix.mechanical-version }}
+    runs-on: public-ubuntu-latest-16-cores
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(inputs.matrix-json) }}
+    permissions:
+      contents: read
+      packages: read  # Required to pull Docker images from GitHub Container Registry
+      checks: write   # Needed to publish test results and status checks
+    steps:
+      - name: Login in Github Container registry
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ vars.MAIN_PYTHON_VERSION }}
+
+      - name: Configure Mechanical version
+        env:
+          MECHANICAL_VERSION: ${{ matrix.mechanical-version }}
+        run: |
+          if [[ ! ${MECHANICAL_VERSION} =~ ^([0-9]+)\.([0-9]+) ]]; then
+            echo "Invalid Mechanical version: ${MECHANICAL_VERSION}"
+            exit 1
+          fi
+          VERSION_MAJOR=${BASH_REMATCH[1]}
+          VERSION_MINOR=${BASH_REMATCH[2]}
+          echo "VERSION_PATH=${VERSION_MAJOR}${VERSION_MINOR}" >> ${GITHUB_ENV}
+          if (( VERSION_MAJOR > 26 || (VERSION_MAJOR == 26 && VERSION_MINOR >= 1) )); then
+            echo "SECURE_GRPC=true" >> ${GITHUB_ENV}
+          else
+            echo "SECURE_GRPC=false" >> ${GITHUB_ENV}
+          fi
+
+      - name: Generate gRPC certificates
+        if: env.SECURE_GRPC == 'true'
+        run: |
+          python -m pip install "ansys-tools-common[other]>=0.5.1"
+          python -c "import os; from pathlib import Path; from ansys.tools.common.utils import generate_test_certificates; generate_test_certificates(output_dir=Path(os.environ['RUNNER_TEMP']) / 'grpc-certs')"
+          echo "ANSYS_GRPC_CERTIFICATES=${RUNNER_TEMP}/grpc-certs" >> ${GITHUB_ENV}
+
+      - name: Pull, launch, and validate Mechanical service
+        env:
+          MECHANICAL_IMAGE: ${{ vars.DOCKER_PACKAGE }}:${{ matrix.mechanical-version }}
+          MECHANICAL_VERSION: ${{ matrix.mechanical-version }}
+          ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH: 0
+          LICENSE_SERVER: ${{ secrets.LICENSE_SERVER }}
+        run: |
+          docker pull ${MECHANICAL_IMAGE}
+
+          # Mechanical 26.1 and later support secure gRPC.
+          if [[ ${SECURE_GRPC} == "true" ]]; then
+            echo "Detected version requiring custom entrypoint - using mTLS transport"
+            docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} \
+              -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} \
+              -e ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH=${ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH} \
+              -p ${PYMECHANICAL_PORT}:10000 \
+              -v "${ANSYS_GRPC_CERTIFICATES}:/certs:ro" \
+              --entrypoint="" \
+              --security-opt seccomp=unconfined \
+              ${MECHANICAL_IMAGE} \
+              tini -- xvfb-run /install/ansys_inc/v${VERSION_PATH}/aisol/.workbench \
+              -dsapplet -b -grpc 10000 --grpc-host 0.0.0.0 \
+              --transport-mode mtls --certs-dir /certs
+          else
+            echo "Using default entrypoint for version ${MECHANICAL_VERSION}"
+            docker run -d --name ${DOCKER_MECH_CONTAINER_NAME} \
+              -e ANSYSLMD_LICENSE_FILE=1055@${LICENSE_SERVER} \
+              -e ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH=${ANSYS_WORKBENCH_LOGGING_AUTO_FLUSH} \
+              -p ${PYMECHANICAL_PORT}:10000 \
+              ${MECHANICAL_IMAGE}
+          fi
+
+          # Wait for Mechanical to initialize with intelligent polling
+          max_wait=300  # Maximum wait time in seconds
+          check_interval=10  # Check every 10 seconds
+          elapsed=0
+
+          echo "Waiting for Mechanical to initialize..."
+          while [ $elapsed -lt $max_wait ]; do
+            docker logs ${DOCKER_MECH_CONTAINER_NAME} > log.txt
+            if grep -q 'WB Initialize Done' log.txt 2>/dev/null; then
+              echo "Mechanical initialized successfully after ${elapsed} seconds"
+              break
+            fi
+            echo "Waiting for initialization... (${elapsed}/${max_wait}s)"
+            sleep $check_interval
+            elapsed=$((elapsed + check_interval))
+          done
+
+          # Final check
+          docker logs ${DOCKER_MECH_CONTAINER_NAME} > log.txt
+          if ! grep -q 'WB Initialize Done' log.txt 2>/dev/null; then
+            echo "ERROR: Mechanical failed to initialize within ${max_wait} seconds"
+            echo "=== Last 50 lines of log.txt ==="
+            tail -n 50 log.txt || echo "No log file found"
+            exit 1
+          fi
+
+      - name: Display info
+        if: github.event_name == 'schedule'
+        id: capture_info
+        env:
+          DOCKER_PACKAGE: ${{ vars.DOCKER_PACKAGE }}
+          MECH_VERSION: ${{ matrix.mechanical-version }}
+          TEST_REVN: ${{ inputs.test-revn }}
+        run: |
+          IMAGE_NAME=${DOCKER_PACKAGE}:${MECH_VERSION}
+          BUILD_DATE=$(docker run --rm --entrypoint head $IMAGE_NAME -n 1 /install/ansys_inc/v${TEST_REVN}/aisol/CommonFiles/builddate.txt)
+          PUSHED_AT=$(docker inspect --format='{{.Created}}' $IMAGE_NAME)
+          echo "docker_info=$IMAGE_NAME was pushed at: $PUSHED_AT" >> $GITHUB_OUTPUT
+          echo "::group::Docker Info"
+          echo "docker_info=$PUSHED_AT" >> $GITHUB_OUTPUT
+          echo "build_info=$BUILD_DATE" >> $GITHUB_OUTPUT
+          echo "$IMAGE_NAME pushed at $PUSHED_AT"
+          echo "Build date : $BUILD_DATE"
+          echo "::endgroup::"
+
+      - name: Testing
+        uses: ansys/actions/tests-pytest@7410037bfb276c79ae91eb3617b9f5d2876f0c94 # v11.0.8
+        with:
+          python-version: ${{ vars.MAIN_PYTHON_VERSION }}
+          pytest-markers: '-m remote_session_connect'
+          pytest-extra-args: '-s --junitxml remote_results${{ vars.MAIN_PYTHON_VERSION }}.xml'
+
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@b7b80d7ac5b1da46d6aaff9fb57ad50d8453bcb3 # v6.6.0
+        if: always()
+        with:
+          report_paths: '**/remote_results*.xml'
+          check_name: Remote Connect Test Report ${{ matrix.mechanical-version }}
+          detailed_summary: true
+          include_passed: true
+          fail_on_failure: true
+
+      - name: Upload coverage artifacts
+        uses: ./.github/actions/upload-coverage
+        if: matrix.mechanical-version == inputs.test-docker-image-version
+        with:
+          artifact-name: tests
+
+      - name: Get Mechanical container logs
+        if: always()
+        env:
+          MECH_VERSION: ${{ matrix.mechanical-version }}
+        run: |
+          docker logs ${DOCKER_MECH_CONTAINER_NAME} > mechanical_tests_log-${MECH_VERSION}.txt 2>&1
+          echo CONTAINER LOGS OUTPUT
+          cat mechanical_tests_log-${MECH_VERSION}.txt
+          echo CPU info
+          lscpu
+
+      - name: Upload container logs
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: mechanical_tests_log-${{ matrix.mechanical-version }}
+          path: mechanical_tests_log-${{ matrix.mechanical-version }}.txt
+          retention-days: 7
+
+  embedding-tests:
+    name: Embedding testing and coverage
+    runs-on: public-ubuntu-latest-16-cores
+    timeout-minutes: 45
+    container:
+      image: ${{ inputs.test-container }} # zizmor: ignore[unpinned-images]
+      options: --entrypoint /bin/bash
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.12', '3.13', '3.14']
+    permissions:
+      contents: read
+      packages: read  # Required to pull Docker images from GitHub Container Registry
+      checks: write   # Needed to publish test results and status checks
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Python environment
+        uses: ./.github/actions/setup-python-env
+        with:
+          python-version: ${{ matrix.python-version }}
+          install-extras: "tests,graphics"
+
+      - name: Unit Testing and coverage
+        env:
+          CONTAINER_STABLE_EXIT: ${{ inputs.container-stable-exit }}
+          MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
+          NUM_CORES: 1
+          PYTHONUNBUFFERED: 1
+          LIBGL_ALWAYS_SOFTWARE: 1
+        run: |
+          . /env/bin/activate
+          if [ "${CONTAINER_STABLE_EXIT}" = "true" ]; then
+            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${MATRIX_PYTHON_VERSION}.xml
+          else
+            xvfb-run mechanical-env pytest -m embedding -s --junitxml test_results${MATRIX_PYTHON_VERSION}.xml || true
+          fi
+
+      - name: Upload coverage artifacts
+        uses: ./.github/actions/upload-coverage
+        if: vars.MAIN_PYTHON_VERSION == matrix.python-version
+        with:
+          artifact-name: tests-embedding
+
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@b7b80d7ac5b1da46d6aaff9fb57ad50d8453bcb3 # v6.6.0
+        if: always()
+        with:
+          report_paths: '**/test_results*.xml'
+          check_name: Test Report ${{ matrix.python-version }}
+          detailed_summary: true
+          include_passed: true
+          fail_on_failure: true
+
+  embedding-scripts-tests:
+    name: Embedding scripts testing and coverage
+    runs-on: public-ubuntu-latest-16-cores
+    timeout-minutes: 30
+    container:
+      image: ${{ inputs.test-container }} # zizmor: ignore[unpinned-images]
+      options: --entrypoint /bin/bash
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.12', '3.13', '3.14']
+    permissions:
+      contents: read
+      packages: read  # Required to pull Docker images from GitHub Container Registry
+      checks: write   # Needed to publish test results and status checks
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Python environment
+        uses: ./.github/actions/setup-python-env
+        with:
+          python-version: ${{ vars.MAIN_PYTHON_VERSION }}
+          install-extras: "tests"
+          extra-apt-packages: "lsb-release"
+
+      - name: Embedding scripts unit testing and coverage
+        env:
+          MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
+          MAIN_PYTHON_VERSION: ${{ vars.MAIN_PYTHON_VERSION }}
+          NUM_CORES: 1
+          PYTHONUNBUFFERED: 1
+        run: |
+          . /env/bin/activate
+          mechanical-env pytest -m embedding_scripts -s --junitxml test_results_embedding_scripts${MAIN_PYTHON_VERSION}.xml
+          pytest -m cli -s --junitxml test_results_cli_scripts${MAIN_PYTHON_VERSION}.xml
+
+      - name: Upload coverage artifacts
+        uses: ./.github/actions/upload-coverage
+        if: vars.MAIN_PYTHON_VERSION == matrix.python-version
+        with:
+          artifact-name: tests-embedding-scripts
+
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@b7b80d7ac5b1da46d6aaff9fb57ad50d8453bcb3 # v6.6.0
+        if: always()
+        with:
+          report_paths: '**/test_results*.xml'
+          check_name: Test Report ${{ matrix.python-version }}
+          detailed_summary: true
+          include_passed: true
+          fail_on_failure: true
+
+  launch-tests:
+    name: Launch testing and coverage
+    runs-on: public-ubuntu-latest-16-cores
+    timeout-minutes: 30
+    container:
+      image: ${{ inputs.test-container }} # zizmor: ignore[unpinned-images]
+      options: --entrypoint /bin/bash
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.12', '3.13', '3.14']
+    permissions:
+      contents: read
+      packages: read  # Required to pull Docker images from GitHub Container Registry
+      checks: write   # Needed to publish test results and status checks
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Python environment
+        uses: ./.github/actions/setup-python-env
+        with:
+          python-version: ${{ vars.MAIN_PYTHON_VERSION }}
+          install-extras: "tests"
+
+      - name: Set environment variable
+        env:
+          TEST_REVN: ${{ inputs.test-revn }}
+        run: echo "ANSYSCL${TEST_REVN}_DIR=/install/ansys_inc/v${TEST_REVN}/licensingclient" >> $GITHUB_ENV
+
+      - name: Unit Testing and coverage
+        env:
+          CONTAINER_STABLE_EXIT: ${{ inputs.container-stable-exit }}
+          MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
+        run: |
+          unset PYMECHANICAL_PORT
+          unset PYMECHANICAL_START_INSTANCE
+          . /env/bin/activate
+          if [ "${CONTAINER_STABLE_EXIT}" = "true" ]; then
+            pytest -m remote_session_launch -s --junitxml launch_test_results${MATRIX_PYTHON_VERSION}.xml
+          else
+            pytest -m remote_session_launch -s --junitxml launch_test_results${MATRIX_PYTHON_VERSION}.xml || true
+          fi
+
+      - name: Publish Launch Test Report
+        uses: mikepenz/action-junit-report@b7b80d7ac5b1da46d6aaff9fb57ad50d8453bcb3 # v6.6.0
+        if: always()
+        with:
+          report_paths: '**/launch_test_results*.xml'
+          check_name: Launch Test Report ${{ matrix.python-version }}
+          detailed_summary: true
+          include_passed: true
+          fail_on_failure: true
+
+      - name: Upload coverage artifacts
+        uses: ./.github/actions/upload-coverage
+        if: vars.MAIN_PYTHON_VERSION == matrix.python-version
+        with:
+          artifact-name: tests-remote-session-launch

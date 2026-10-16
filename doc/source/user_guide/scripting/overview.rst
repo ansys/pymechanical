@@ -1,7 +1,12 @@
 .. _ref_scripting:
 
-Overview
-=========
+Scripting fundamentals
+=======================
+
+.. note::
+
+   The concepts on this page apply to **both** embedding mode and remote session mode.
+   Regardless of which mode you use, the underlying Mechanical API is the same.
 
 You could already perform scripting of Mechanical with Python from inside
 Mechanical. PyMechanical leverages the same APIs but allows you to run your
@@ -35,10 +40,10 @@ a **Fixed Support** and a **Pressure** are added to the **Outline**.
 Mechanical entities
 -------------------
 
-Mechanical has an extensive set of entities that represent all the functionality provided
+Mechanical has an extensive set of entities that represent all the capabilities provided
 by Mechanical. Here are descriptions of the entities at Mechanical's core:
 
-* CAD: CAD entities, which are usually imported from a CAD application
+* CAD: CAD entities, which are usually imported from a CAD app
 * Mesh: The discretized geometry that is appropriate for Mechanical's solvers
 * Materials: Engineering material models that come from **Engineering Data**, which is a subsystem of Ansys Workbench
 * Objects: The entities in the **Outline** that represent the model, analyses, solutions, and results
