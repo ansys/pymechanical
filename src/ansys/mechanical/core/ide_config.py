@@ -96,9 +96,20 @@ def _normalize_paths(existing_value, new_path: str) -> list[str]:
     else:
         paths = []
 
-    if new_path not in paths:
-        paths.append(new_path)
-    return paths
+    # Collapse revisions from this stubs installation while preserving unrelated paths and order.
+    normalized_paths = []
+    stubs_directory = Path(new_path).parent
+    for path in paths:
+        existing_path = Path(path)
+        if existing_path.parent == stubs_directory and re.fullmatch(r"v\d+", existing_path.name):
+            if new_path not in normalized_paths:
+                normalized_paths.append(new_path)
+        else:
+            normalized_paths.append(path)
+
+    if new_path not in normalized_paths:
+        normalized_paths.append(new_path)
+    return normalized_paths
 
 
 def _clean_jsonc(text: str) -> str:
@@ -168,12 +179,24 @@ def _vscode_impl(
     settings_json = Path(settings_json)
     settings_json.parent.mkdir(parents=True, exist_ok=True)
     data = _read_settings_json(settings_json)
-    data["python.autoComplete.extraPaths"] = _normalize_paths(
-        data.get("python.autoComplete.extraPaths"), stubs_path
-    )
-    data["python.analysis.extraPaths"] = _normalize_paths(
-        data.get("python.analysis.extraPaths"), stubs_path
-    )
+    updated_settings = {
+        key: _normalize_paths(data.get(key), path) for key, path in settings_json_data.items()
+    }
+    # Leave the file untouched when both settings already contain the requested paths.
+    if all(data.get(key) == paths for key, paths in updated_settings.items()):
+        print(f"The settings have already been added to {settings_json}.")
+        return
+
+    # Normalization only removes replaced revision paths; detect them to choose the update message.
+    version_updated = False
+    for key, paths in updated_settings.items():
+        existing_paths = data.get(key)
+        if isinstance(existing_paths, str):
+            existing_paths = [existing_paths]
+        if isinstance(existing_paths, list):
+            version_updated |= any(str(path) not in paths for path in existing_paths)
+
+    data.update(updated_settings)
     settings_json.write_text(json.dumps(data, indent=4), encoding="utf-8")
 
     # Pretty print dictionary
@@ -182,7 +205,10 @@ def _vscode_impl(
         indent=4,
     )
 
-    print(f"Updated {settings_json} with the following information:\n")
+    if version_updated:
+        print(f"Updated the autocomplete path to version {revision} in {settings_json}.\n")
+    else:
+        print(f"Updated {settings_json} with the following information:\n")
 
     if target == "workspace":
         print(
