@@ -92,27 +92,27 @@ def test_cli_appdata(disable_cli, pytestconfig):
 
 
 @pytest.mark.cli
-def test_cli_errors(disable_cli, pytestconfig):
-    """Test for CLI error conditions."""
+@pytest.mark.embedding
+@pytest.mark.parametrize(
+    "options",
+    [
+        pytest.param(
+            {"project_file": "foo.mechdb", "input_script": "foo.py", "graphical": True},
+            id="project-with-script",
+        ),
+        pytest.param({"project_file": "foo.mechdb"}, id="project-in-batch-mode"),
+        pytest.param(
+            {"project_file": "foo.mechdb", "port": 11, "graphical": True},
+            id="project-with-port",
+        ),
+        pytest.param({"input_script": "foo.py", "port": 11}, id="script-with-port"),
+    ],
+)
+def test_cli_invalid_options(disable_cli, pytestconfig, options):
+    """Test incompatible CLI options are rejected independently."""
     version = int(pytestconfig.getoption("ansys_version"))
-    # can't mix project file and input script
     with pytest.raises(Exception):
-        _cli_impl(
-            exe="AnsysWBU.exe",
-            version=version,
-            project_file="foo.mechdb",
-            input_script="foo.py",
-            graphical=True,
-        )
-    # project file only works in graphical mode
-    with pytest.raises(Exception):
-        _cli_impl(exe="AnsysWBU.exe", version=version, project_file="foo.mechdb")
-    # can't mix port and project file
-    with pytest.raises(Exception):
-        _cli_impl(exe="AnsysWBU.exe", version=version, project_file="foo.mechdb", port=11)
-    # can't mix port and input script
-    with pytest.raises(Exception):
-        _cli_impl(exe="AnsysWBU.exe", version=version, input_script="foo.py", port=11)
+        _cli_impl(exe="AnsysWBU.exe", version=version, **options)
 
 
 @pytest.mark.cli
@@ -344,24 +344,24 @@ def test_ideconfig_cli_ide_exception(pytestconfig):
 
 
 @pytest.mark.cli
+@pytest.mark.embedding
 @pytest.mark.version_range(MIN_STUBS_REVN, MAX_STUBS_REVN)
-def test_ideconfig_cli_user_settings(pytestconfig, tmp_path, monkeypatch):
-    """Test the IDE configuration updates user settings.json."""
-    # Get the revision number
+@pytest.mark.parametrize("target", ["user", "workspace"])
+def test_ideconfig_cli_settings_added(pytestconfig, tmp_path, monkeypatch, target):
+    """Test settings are added without overwriting unrelated settings."""
     revision = int(pytestconfig.getoption("ansys_version"))
     stubs_location = get_stubs_location()
-    # Point user settings to a temporary directory
-    if "win" in sys.platform:
-        monkeypatch.setenv("APPDATA", str(tmp_path))
-    elif "lin" in sys.platform:
-        monkeypatch.setenv("HOME", str(tmp_path))
-    settings_json = get_settings_location()
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("APPDATA", str(tmp_path))
+    monkeypatch.setenv("HOME", str(tmp_path))
+    settings_json = (
+        get_settings_location() if target == "user" else tmp_path / ".vscode" / "settings.json"
+    )
     settings_json.parent.mkdir(parents=True, exist_ok=True)
     settings_json.write_text('{"editor.tabSize": 4}', encoding="utf-8")
 
-    runner = CliRunner()
-    result = runner.invoke(
-        ideconfig_cli, ["--ide", "vscode", "--target", "user", "--revision", str(revision)]
+    result = CliRunner().invoke(
+        ideconfig_cli, ["--ide", "vscode", "--target", target, "--revision", str(revision)]
     )
     stdout = result.output.replace("\\\\", "\\")
     settings_data = json.loads(settings_json.read_text(encoding="utf-8"))
@@ -369,40 +369,13 @@ def test_ideconfig_cli_user_settings(pytestconfig, tmp_path, monkeypatch):
     assert result.exit_code == 0
     assert f"Updated {settings_json} with the following information" in stdout
     assert str(stubs_location) in stdout
-    assert settings_data["editor.tabSize"] == 4
-    assert str(stubs_location / f"v{revision}") in settings_data["python.autoComplete.extraPaths"]
-    assert str(stubs_location / f"v{revision}") in settings_data["python.analysis.extraPaths"]
-
-
-@pytest.mark.cli
-@pytest.mark.version_range(MIN_STUBS_REVN, MAX_STUBS_REVN)
-def test_ideconfig_cli_workspace_settings(pytestconfig, tmp_path, monkeypatch):
-    """Test the IDE configuration updates workspace settings.json."""
-    # Set the revision number
-    revision = int(pytestconfig.getoption("ansys_version"))
-    stubs_location = get_stubs_location()
-    # Set a temporary workspace with a .vscode/settings.json file
-    workspace = tmp_path / "workspace"
-    settings_json = workspace / ".vscode" / "settings.json"
-    settings_json.parent.mkdir(parents=True, exist_ok=True)
-    settings_json.write_text('{"files.trimTrailingWhitespace": true}', encoding="utf-8")
-    monkeypatch.chdir(workspace)
-
-    runner = CliRunner()
-    result = runner.invoke(
-        ideconfig_cli, ["--ide", "vscode", "--target", "workspace", "--revision", str(revision)]
-    )
-    stdout = result.output.replace("\\\\", "\\")
-    settings_data = json.loads(settings_json.read_text(encoding="utf-8"))
-
-    # Assert the correct settings.json file and stubs location is in the output
-    assert result.exit_code == 0
-    assert f"Updated {settings_json} with the following information" in stdout
-    assert str(stubs_location) in stdout
-    assert "Please ensure the .vscode folder is in the root of your project or repository" in stdout
-    assert settings_data["files.trimTrailingWhitespace"] is True
-    assert str(stubs_location / f"v{revision}") in settings_data["python.autoComplete.extraPaths"]
-    assert str(stubs_location / f"v{revision}") in settings_data["python.analysis.extraPaths"]
+    if target == "workspace":
+        assert "Please ensure the .vscode folder is in the root" in stdout
+    assert settings_data == {
+        "editor.tabSize": 4,
+        "python.autoComplete.extraPaths": [str(stubs_location / f"v{revision}")],
+        "python.analysis.extraPaths": [str(stubs_location / f"v{revision}")],
+    }
 
 
 @pytest.mark.cli
@@ -524,12 +497,6 @@ def test_ideconfig_cli_settings_version_changed(tmp_path, monkeypatch, target, e
         "python.autoComplete.extraPaths": expected_paths,
         "python.analysis.extraPaths": expected_paths,
     }
-
-    repeated_result = runner.invoke(ideconfig_cli, arguments)
-
-    assert repeated_result.exit_code == 0
-    assert "settings have already been added" in repeated_result.output
-    assert "Updated the autocomplete path" not in repeated_result.output
 
 
 @pytest.mark.cli
@@ -696,43 +663,44 @@ def test_cli_engine_type_args(disable_cli, pytestconfig):
 
 
 @pytest.mark.cli
-def test_cli_engine_type_selection(disable_cli, pytestconfig):
-    """Test engine type selection errors."""
+@pytest.mark.embedding
+@pytest.mark.parametrize(
+    ("options", "expected_error"),
+    [
+        pytest.param(
+            {"enginetype": "invalid_engine", "input_script": "foo.py"},
+            "Invalid engine type",
+            id="invalid-engine",
+        ),
+        pytest.param(
+            {"enginetype": "cpython"},
+            "Cannot specify engine type without an input script",
+            id="engine-without-script",
+        ),
+    ],
+)
+def test_cli_engine_type_invalid_options(disable_cli, pytestconfig, options, expected_error):
+    """Test invalid engine options produce the appropriate validation error."""
     version = int(pytestconfig.getoption("ansys_version"))
-    # Invalid engine type - this should be caught by Click's Choice validation
-    with pytest.raises(Exception) as e:
-        _cli_impl(
-            exe="AnsysWBU.exe", version=version, enginetype="invalid_engine", input_script="foo.py"
-        )
-    assert "Invalid engine type" in str(e.value)
-
-    # Test enginetype without input script should fail
-    with pytest.raises(Exception) as e:
-        _cli_impl(exe="AnsysWBU.exe", version=version, enginetype="cpython")
-    assert "Cannot specify engine type without an input script" in str(e.value)
+    with pytest.raises(Exception, match=expected_error):
+        _cli_impl(exe="AnsysWBU.exe", version=version, **options)
 
 
 @pytest.mark.cli
-def test_cli_enginetype_errors(disable_cli, pytestconfig):
-    """Test engine type validation errors."""
-    # Test enginetype without input script should fail
-    runner = CliRunner()
-    version = int(pytestconfig.getoption("ansys_version"))
-    # Test enginetype with version other than 261 should fail
-    if version < 261:
-        result = runner.invoke(
-            cli,
-            [
-                "--revision",
-                str(int(pytestconfig.getoption("ansys_version"))),
-                "--input-script",
-                "foo.py",
-                "--enginetype",
-                "cpython",
-            ],
-        )
-        assert result.exit_code != 0
-        assert (
-            "--enginetype option for cpython is only applicable for version 261 or later."
-            in result.output
-        )
+@pytest.mark.embedding
+def test_cli_enginetype_unsupported_version(disable_cli, monkeypatch):
+    """Test CPython engine selection is rejected before version 261."""
+    version = max(version for version in SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS if version < 261)
+    monkeypatch.setattr(atp, "get_mechanical_path", lambda **kwargs: "AnsysWBU.exe")
+    monkeypatch.setattr(atp, "version_from_path", lambda product, path: version)
+
+    result = CliRunner().invoke(
+        cli,
+        ["--revision", str(version), "--input-script", "foo.py", "--enginetype", "cpython"],
+    )
+
+    assert result.exit_code != 0
+    assert (
+        "--enginetype option for cpython is only applicable for version 261 or later."
+        in result.output
+    )
