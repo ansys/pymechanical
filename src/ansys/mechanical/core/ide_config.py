@@ -96,9 +96,19 @@ def _normalize_paths(existing_value, new_path: str) -> list[str]:
     else:
         paths = []
 
-    if new_path not in paths:
-        paths.append(new_path)
-    return paths
+    normalized_paths = []
+    stubs_directory = Path(new_path).parent
+    for path in paths:
+        existing_path = Path(path)
+        if existing_path.parent == stubs_directory and re.fullmatch(r"v\d+", existing_path.name):
+            if new_path not in normalized_paths:
+                normalized_paths.append(new_path)
+        else:
+            normalized_paths.append(path)
+
+    if new_path not in normalized_paths:
+        normalized_paths.append(new_path)
+    return normalized_paths
 
 
 def _clean_jsonc(text: str) -> str:
@@ -175,6 +185,14 @@ def _vscode_impl(
         print(f"The settings have already been added to {settings_json}.")
         return
 
+    version_updated = False
+    for key, paths in updated_settings.items():
+        existing_paths = data.get(key)
+        if isinstance(existing_paths, str):
+            existing_paths = [existing_paths]
+        if isinstance(existing_paths, list):
+            version_updated |= any(str(path) not in paths for path in existing_paths)
+
     data.update(updated_settings)
     settings_json.write_text(json.dumps(data, indent=4), encoding="utf-8")
 
@@ -184,7 +202,10 @@ def _vscode_impl(
         indent=4,
     )
 
-    print(f"Updated {settings_json} with the following information:\n")
+    if version_updated:
+        print(f"Updated the autocomplete path to version {revision} in {settings_json}.\n")
+    else:
+        print(f"Updated {settings_json} with the following information:\n")
 
     if target == "workspace":
         print(

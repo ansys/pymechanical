@@ -473,6 +473,66 @@ def test_ideconfig_cli_settings_partially_added(
 
 
 @pytest.mark.cli
+@pytest.mark.embedding
+@pytest.mark.parametrize("target", ["user", "workspace"])
+@pytest.mark.parametrize("existing_kind", ["string", "list", "multiple", "current_first"])
+def test_ideconfig_cli_settings_version_changed(tmp_path, monkeypatch, target, existing_kind):
+    """Test revision changes replace existing stubs paths and report the requested version."""
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("APPDATA", str(tmp_path))
+    monkeypatch.setenv("HOME", str(tmp_path))
+    settings_json = (
+        get_settings_location() if target == "user" else tmp_path / ".vscode" / "settings.json"
+    )
+    settings_json.parent.mkdir(parents=True, exist_ok=True)
+    old_revision = MIN_STUBS_REVN if MIN_STUBS_REVN != MAX_STUBS_REVN else MAX_STUBS_REVN - 1
+    old_path = str(STUBS_LOC / f"v{old_revision}")
+    requested_path = str(STUBS_LOC / f"v{MAX_STUBS_REVN}")
+    unrelated_path = str(tmp_path / "other-stubs")
+    other_installation = str(tmp_path / "other-env" / "ansys" / "mechanical" / "stubs" / "v252")
+    existing_values = {
+        "string": old_path,
+        "list": [unrelated_path, old_path, other_installation],
+        "multiple": [unrelated_path, old_path, requested_path, old_path, other_installation],
+        "current_first": [unrelated_path, requested_path, old_path, other_installation],
+    }
+    settings_json.write_text(
+        json.dumps(
+            {
+                "editor.tabSize": 4,
+                "python.autoComplete.extraPaths": existing_values[existing_kind],
+                "python.analysis.extraPaths": existing_values[existing_kind],
+            }
+        ),
+        encoding="utf-8",
+    )
+    runner = CliRunner()
+    arguments = ["--target", target, "--revision", str(MAX_STUBS_REVN)]
+
+    result = runner.invoke(ideconfig_cli, arguments)
+    settings_data = json.loads(settings_json.read_text(encoding="utf-8"))
+
+    expected_paths = (
+        [requested_path]
+        if existing_kind == "string"
+        else [unrelated_path, requested_path, other_installation]
+    )
+    assert result.exit_code == 0
+    assert f"Updated the autocomplete path to version {MAX_STUBS_REVN}" in result.output
+    assert settings_data == {
+        "editor.tabSize": 4,
+        "python.autoComplete.extraPaths": expected_paths,
+        "python.analysis.extraPaths": expected_paths,
+    }
+
+    repeated_result = runner.invoke(ideconfig_cli, arguments)
+
+    assert repeated_result.exit_code == 0
+    assert "settings have already been added" in repeated_result.output
+    assert "Updated the autocomplete path" not in repeated_result.output
+
+
+@pytest.mark.cli
 @pytest.mark.python_env
 @pytest.mark.version_range(MIN_STUBS_REVN, MAX_STUBS_REVN)
 def test_ideconfig_cli_venv(test_env, run_subprocess, rootdir, pytestconfig):
