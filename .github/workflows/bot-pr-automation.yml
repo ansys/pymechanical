@@ -1,0 +1,107 @@
+name: Bot PR automation
+
+# Labels, approves, and enables auto-merge for Dependabot and pre-commit CI PRs.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dependabot-skip-labels:
+    name: "Apply skip labels for irrelevant action updates"
+    runs-on: ubuntu-latest
+    # Dependabot edits a workflow in-place when bumping an action used there,
+    # so the changed files tell us which CI suites are relevant.
+    if: |
+      startsWith(github.head_ref, 'dependabot/github_actions/') &&
+      github.base_ref == 'main'
+    permissions:
+      pull-requests: write   # Required to add labels to the Dependabot PR
+    steps:
+      - name: Apply skip labels based on changed files
+        env:
+          GH_TOKEN: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          REPO: ${{ github.repository }}
+        run: |
+          changed=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json files --jq '[.files[].path] | join(" ")')
+          echo "Changed files: $changed"
+
+          if ! echo "$changed" | grep -qE "tests\.yml|coverage\.yml"; then
+            echo "tests.yml and coverage.yml not modified — adding skip-test"
+            gh pr edit "$PR_URL" --add-label "skip-test"
+          fi
+
+          if ! echo "$changed" | grep -q "docs.yml"; then
+            echo "docs.yml not modified — adding skip-doc"
+            gh pr edit "$PR_URL" --add-label "skip-doc"
+          fi
+
+  dependabot-automerge:
+    name: "Auto-merge Dependabot PRs"
+    runs-on: ubuntu-latest
+    needs: dependabot-skip-labels
+    # Run even when the labeling job is skipped (non github_actions updates).
+    if: |
+      !cancelled() &&
+      needs.dependabot-skip-labels.result != 'failure' &&
+      startsWith(github.head_ref, 'dependabot/')
+    permissions:
+      pull-requests: write   # Required to merge and comment on Dependabot PRs
+      contents: write        # Needed to merge pull requests into main branch
+    steps:
+      - name: Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Approve a PR
+        run: gh pr review --approve "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+
+      - name: Enable auto-merge for Dependabot PRs
+        if: steps.metadata.outputs.update-type != 'version-update:semver-major'
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+
+  pre-commit-automerge:
+    name: "Label and auto-merge pre-commit CI PRs"
+    runs-on: ubuntu-latest
+    if: |
+      github.event.action == 'opened' &&
+      (github.event.pull_request.user.login == 'pre-commit-ci[bot]' ||
+       github.event.pull_request.user.login == 'pyansys-automation')
+    permissions:
+      pull-requests: write  # Required to add labels and approve pull requests
+      contents: write       # Required to enable auto-merge
+    steps:
+      - name: Add skip-doc and skip-tests labels
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: gh pr edit "${PR_NUMBER}" --add-label "skip-doc" --add-label "skip-test" --repo "${REPO}"
+
+      - name: Approve PR
+        env:
+          GH_TOKEN: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: gh pr review --approve "$PR_URL"
+
+      - name: Enable auto-merge
+        env:
+          GH_TOKEN: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: gh pr merge --auto --squash "$PR_URL"
