@@ -63,10 +63,12 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+RUN useradd --create-home --user-group --shell /bin/bash pymech-user
+
 # Copying files
 WORKDIR /install/
 
-COPY . .
+COPY --chown=pymech-user:pymech-user . .
 
 # License server
 # (Optional)
@@ -95,5 +97,7 @@ EXPOSE 10000
 
 # Set working directory
 WORKDIR /install/ansys_inc/v${VERSION}/aisol/
+
+USER pymech-user
 
 ENTRYPOINT ["tini", "--", "xvfb-run", "./.workbench", "-dsapplet", "-AppModeMech", "-b", "-grpc", "10000"]

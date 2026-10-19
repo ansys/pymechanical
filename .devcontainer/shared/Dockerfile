@@ -18,7 +18,9 @@ RUN apt-get update \
 ARG UV_VERSION=0.7.0
 RUN curl -LsSf https://astral.sh/uv/install.sh | UV_INSTALL_DIR=/usr/local/bin sh
 
-RUN useradd --create-home --user-group --shell /bin/bash pymech-user \
+# Rebuilt Mechanical images already include pymech-user.
+RUN (id pymech-user >/dev/null 2>&1 \
+        || useradd --create-home --user-group --shell /bin/bash pymech-user) \
     && install -d -o pymech-user -g pymech-user /workspaces
 
 USER pymech-user
