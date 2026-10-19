@@ -21,7 +21,7 @@ Build your own Mechanical Docker image
 .. note::
    The provided Docker configuration is **experimental** and is intended to produce a
    minimal image for running PyMechanical tests. The
-   `.dockerignore <https://github.com/ansys/pymechanical/blob/main/docker/261/.dockerignore>`_
+   `.dockerignore <https://github.com/ansys/pymechanical/blob/main/docker/{mechanical_version}/.dockerignore>`_
    file deliberately excludes a large number of Mechanical installation files to reduce
    image size. If you encounter issues with missing capabilities or components in your
    container, review and modify the ``.dockerignore`` file to include the additional
@@ -30,8 +30,8 @@ Build your own Mechanical Docker image
 The Mechanical Docker image provided in the PyMechanical repository is for internal use. Users must
 build it from a local Mechanical installation. Instructions are provided in the PyMechanical
 repository under `Make container <https://github.com/ansys/pymechanical/blob/main/docker/make_container.rst>`_,
-which uses the `Dockerfile <https://github.com/ansys/pymechanical/blob/main/docker/261/Dockerfile>`_ and
-`.dockerignore <https://github.com/ansys/pymechanical/blob/main/docker/261/.dockerignore>`_.
+which uses the `Dockerfile <https://github.com/ansys/pymechanical/blob/main/docker/{mechanical_version}/Dockerfile>`_ and
+`.dockerignore <https://github.com/ansys/pymechanical/blob/main/docker/{mechanical_version}/.dockerignore>`_.
 
 **Step 1: Download Mechanical**
 
