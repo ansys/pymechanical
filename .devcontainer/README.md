@@ -19,6 +19,11 @@ writing examples for PyMechanical.**
 - **pre-commit** hooks (installed automatically)
 - **VS Code extensions**: Python, Ruff, mypy
 
+The container, VS Code terminals, and setup commands run as the non-root `pymech-user`
+user. Python is installed in this user's home directory. To add system packages,
+update the shared Dockerfile before the `USER pymech-user` instruction and rebuild the
+container. Rebuild existing Codespaces to apply this user change.
+
 ## How to start a Codespace
 
 There is **no default configuration** — this is intentional. The Mechanical image is ~25 GB
