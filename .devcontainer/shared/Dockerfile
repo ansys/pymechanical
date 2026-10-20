@@ -17,7 +17,7 @@ ARG UV_VERSION=0.7.0
 RUN curl -LsSf https://astral.sh/uv/install.sh | UV_INSTALL_DIR=/usr/local/bin sh
 
 # Pre-download the target CPython version so postCreateCommand is fast.
-ARG PYTHON_VERSION=3.12
+ARG PYTHON_VERSION=3.15
 RUN uv python install ${PYTHON_VERSION}
 
 # Override the Workbench gRPC entrypoint so the container can idle in bash.
