@@ -117,6 +117,9 @@ are described in the ``.dockerignore`` file for your version in the `Docker conf
 The Docker container configuration needed to build the container is described in the
 ``Dockerfile`` for your version in the `Docker configurations`_.
 
+The image runs as the non-root ``pymech-user`` user, which owns the files under ``/install``.
+To run a container as root, pass the ``--user root`` option to the ``docker run`` command.
+
 
 Summary
 =======
