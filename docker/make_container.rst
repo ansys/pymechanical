@@ -122,6 +122,9 @@ are described in the `.dockerignore file <https://github.com/ansys/pymechanical/
 The Docker container configuration needed to build the container is described in the
 `Dockerfile <https://github.com/ansys/pymechanical/tree/main/docker/261/Dockerfile>`_.
 
+The image runs as the non-root ``pymech-user`` user, which owns the files under ``/install``.
+To run a container as root, pass the ``--user root`` option to the ``docker run`` command.
+
 
 Summary
 =======

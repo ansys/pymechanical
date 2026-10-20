@@ -67,10 +67,12 @@ RUN DEBIAN_FRONTEND=noninteractive \
     && locale-gen ja_JP.utf8 \
     && locale-gen zh_CN.utf8
 
+RUN useradd --create-home --user-group --shell /bin/bash pymech-user
+
 # Copying files
 WORKDIR /install/
 
-COPY . .
+COPY --chown=pymech-user:pymech-user . .
 
 # License server
 # (Optional)
@@ -96,5 +98,7 @@ EXPOSE 10000
 
 # Set working directory
 WORKDIR /install/ansys_inc/v${VERSION}/aisol/
+
+USER pymech-user
 
 ENTRYPOINT ["tini", "--", "xvfb-run", "./.workbench", "-dsapplet", "-AppModeMech", "-b", "-grpc", "10000"]
