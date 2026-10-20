@@ -22,6 +22,7 @@
 
 """Use the Poster class to post functions to Mechanical's main thread."""
 
+import threading
 import typing
 
 
@@ -79,7 +80,30 @@ class Poster:
 
         Returns the result of `callable` if any.
         """
+        if self._poster.IsUIThread():
+            return callable()
+
         import System
 
-        func = System.Func[System.Object](callable)
-        return self._poster.Get[System.Object](func)
+        if not hasattr(self._poster, "PostAsync"):
+            func = System.Func[System.Object](callable)
+            return self._poster.Get[System.Object](func)
+
+        completed = threading.Event()
+        result = []
+        error = []
+
+        def wrapped():
+            try:
+                result.append(callable())
+            except BaseException as exception:
+                error.append(exception)
+            finally:
+                completed.set()
+
+        action = System.Action(wrapped)
+        self._poster.PostAsync(action)
+        completed.wait()
+        if error:
+            raise error[0]
+        return result[0]

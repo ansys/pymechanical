@@ -8,13 +8,13 @@ exclude: '^tests/embedding/assets/.*$|^tests/parts/.*$'
 repos:
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: 65dbdb59d2f2d9c3bdc343c566821ad3319ddaa3  # frozen: v0.16.3
+  rev: 38bfb07c0c64c304f47eb52090f8288150c77730  # frozen: v0.17.1
   hooks:
     - id: ruff
     - id: ruff-format
 
 - repo: https://github.com/pre-commit/mirrors-mypy
-  rev: 7ff8d35ae36a7d2b968f2f90b4c723e292e594ee  # frozen: v2.3.1
+  rev: 2834ec6639549dd6796205c8f011dedcd587288b  # frozen: v2.4.0
   hooks:
     - id: mypy
       additional_dependencies: [types-requests, types-tqdm]
@@ -53,7 +53,7 @@ repos:
   - id: check-added-large-files
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: c4654a7e007c9619a5eb63c39a456572a0fa1851  # frozen: 0.38.0
+  rev: 4f85d46a92dc17713078e5de73f8a13190edf6fc  # frozen: 0.38.2
   hooks:
     - id: check-github-workflows
 
@@ -73,13 +73,13 @@ repos:
       additional_dependencies: ['bandit[toml]']
 
 -   repo: https://github.com/asottile/pyupgrade
-    rev: 75992aaa40730136014f34227e0135f63fc951b4  # frozen: v3.21.2
+    rev: f22ea0651f4355c655cc581f67813c991c74a312  # frozen: v3.22.0
     hooks:
     -   id: pyupgrade
         args: ['--py312-plus']
 
 - repo: https://github.com/crate-ci/typos
-  rev: 12ffd4a04b4893ab75db66a59aaad2d996c3e982  # frozen: v1
+  rev: 9023c1f779400877cafdd98052113fc777e2cfdc  # frozen: v1.51.1
   hooks:
     - id: typos
       args: ["--config", "doc/styles/typos.toml"]

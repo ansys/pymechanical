@@ -104,8 +104,9 @@ class BackgroundApp:
                 break
 
     def _start_app(self, **kwargs) -> None:
-        BackgroundApp.__app = mech.App(**kwargs)
-        BackgroundApp.__poster = BackgroundApp.__app.poster
+        app = mech.App(**kwargs)
+        BackgroundApp.__app = app
+        BackgroundApp.__poster = app.poster
         atexit.register(_exit, self)
         while True:
             if BackgroundApp.__stop_signaled:
@@ -114,4 +115,5 @@ class BackgroundApp:
                 utils.sleep(40)
             except Exception as e:  # pragma: no cover
                 raise RuntimeError("BackgroundApp cannot sleep.") from e  # pragma: no cover
+        app._dispose()
         BackgroundApp.__stopped = True

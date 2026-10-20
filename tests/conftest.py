@@ -373,19 +373,19 @@ def connect_to_mechanical_instance(port=None, clear_on_connect=False):
     # On WSL/Docker systems, hostname can resolve to bridge IPs (e.g., 172.28.0.1)
     # which are not routable for locally-launched Mechanical instances.
     # For remote/container scenarios, an explicit IP should be passed by the caller.
+    connection_options = {
+        "port": port,
+        "clear_on_connect": clear_on_connect,
+        "cleanup_on_exit": False,
+    }
     if os.name != "nt":
-        # Linux/container uses insecure mode for testing
-        mechanical = pymechanical.connect_to_mechanical(
-            port=port,
-            clear_on_connect=clear_on_connect,
-            cleanup_on_exit=False,
-            transport_mode="insecure",
-        )
-    else:
-        # Windows uses WNUA by default
-        mechanical = pymechanical.connect_to_mechanical(
-            port=port, clear_on_connect=clear_on_connect, cleanup_on_exit=False
-        )
+        certs_dir = os.environ.get("ANSYS_GRPC_CERTIFICATES")
+        if certs_dir:
+            connection_options["certs_dir"] = certs_dir
+            connection_options["transport_mode"] = "mtls"
+        else:
+            connection_options["transport_mode"] = "insecure"
+    mechanical = pymechanical.connect_to_mechanical(**connection_options)
     return mechanical
 
 

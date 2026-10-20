@@ -53,7 +53,7 @@ jobs:
       - name: Install quarto to build cheatsheet
         run: | # zizmor: ignore[template-injection]
           echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
-          gh release download v1.9.36 --repo github.com/quarto-dev/quarto-cli --pattern *linux-amd64.deb
+          gh release download v1.10.18  --repo github.com/quarto-dev/quarto-cli --pattern *linux-amd64.deb
           apt install ./quarto*linux-amd64.deb -y
           quarto install tinytex --log-level warning
 
@@ -92,7 +92,7 @@ jobs:
           make -C doc linkcheck
 
       - name: Upload HTML Documentation
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: documentation-html
           path: doc/_build/html

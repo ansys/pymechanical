@@ -52,7 +52,7 @@ jobs:
       contents: write        # Needed to create changelog entries in repository
       pull-requests: write   # Required to create pull requests for changelog updates
     steps:
-      - uses: ansys/actions/doc-deploy-changelog@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2 # v10.3.6
+      - uses: ansys/actions/doc-deploy-changelog@7410037bfb276c79ae91eb3617b9f5d2876f0c94 # v11.0.8
         with:
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
           bot-user: ${{ secrets.PYANSYS_CI_BOT_USERNAME }}
@@ -177,7 +177,7 @@ jobs:
       contents: write        # Required to push documentation to gh-pages branch
       pull-requests: write   # Needed to comment on PR with documentation link
     steps:
-      - uses: ansys/actions/doc-deploy-pr@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2 # v10.3.6
+      - uses: ansys/actions/doc-deploy-pr@7410037bfb276c79ae91eb3617b9f5d2876f0c94 # v11.0.8
         with:
           cname: ${{ vars.DOCUMENTATION_CNAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -222,11 +222,35 @@ jobs:
       id-token: write      # Needed for OIDC authentication when generating attestations
     steps:
       - name: Build library source and wheel artifacts
-        uses: ansys/actions/build-library@d98e1a4008dab392f8c114a483c2c5624076ccd6 # v11.0.1
+        uses: ansys/actions/build-library@7410037bfb276c79ae91eb3617b9f5d2876f0c94 # v11.0.8
         with:
           library-name: ${{ vars.PACKAGE_NAME }}
           python-version: ${{ vars.MAIN_PYTHON_VERSION }}
           attest-provenance: true
+
+      - name: Validate installed wheel outside the checkout
+        shell: bash
+        working-directory: ${{ runner.temp }}
+        run: |
+          python -m venv wheel-validation
+          source wheel-validation/bin/activate
+          python -m pip install "${GITHUB_WORKSPACE}"/dist/*.whl
+          python -m pip check
+          python -I - <<'PY'
+          from importlib.metadata import version
+          from pathlib import Path
+          import sys
+
+          import ansys.mechanical.core as mechanical
+
+          assert Path(mechanical.__file__).resolve().is_relative_to(Path(sys.prefix).resolve())
+          assert mechanical.__version__ == version("ansys-mechanical-core")
+          PY
+          ansys-mechanical --help
+          ansys-mechanical-ideconfig --help
+          find-mechanical --help
+          test -x "${VIRTUAL_ENV}/bin/mechanical-env"
+          bash -n "${VIRTUAL_ENV}/bin/mechanical-env"
 
   # ── Release ────────────────────────────────────────────────────────────
   release:
@@ -239,7 +263,7 @@ jobs:
       contents: write  # Needed to create GitHub releases and upload assets
     steps:
       - name: Release to GitHub
-        uses: ansys/actions/release-github@d98e1a4008dab392f8c114a483c2c5624076ccd6 # v11.0.1
+        uses: ansys/actions/release-github@7410037bfb276c79ae91eb3617b9f5d2876f0c94 # v11.0.8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           library-name: ${{ vars.PACKAGE_NAME }}
@@ -255,7 +279,7 @@ jobs:
       contents: write  # Needed to download release artifacts
     steps:
       - name: "Download the library artifacts from build-library step"
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: ${{ vars.PACKAGE_NAME }}-artifacts
           path: ${{ vars.PACKAGE_NAME }}-artifacts
@@ -278,7 +302,7 @@ jobs:
       contents: write  # Required to push documentation to gh-pages branch
     steps:
       - name: Deploy the latest documentation
-        uses: ansys/actions/doc-deploy-dev@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2 # v10.3.6
+        uses: ansys/actions/doc-deploy-dev@7410037bfb276c79ae91eb3617b9f5d2876f0c94 # v11.0.8
         with:
           cname: ${{ vars.DOCUMENTATION_CNAME }}
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
@@ -294,7 +318,7 @@ jobs:
       contents: write  # Required to push stable documentation to gh-pages branch
     steps:
       - name: Deploy the stable documentation
-        uses: ansys/actions/doc-deploy-stable@9dc4e3161033d2c2485fbf9687d40cfb7a661fb2 # v10.3.6
+        uses: ansys/actions/doc-deploy-stable@7410037bfb276c79ae91eb3617b9f5d2876f0c94 # v11.0.8
         with:
           cname: ${{ vars.DOCUMENTATION_CNAME }}
           token: ${{ secrets.PYANSYS_CI_BOT_TOKEN }}
@@ -325,7 +349,7 @@ jobs:
       contents: read
     steps:
       - name: Microsoft Teams Notification
-        uses: skitionek/notify-microsoft-teams@216b8b28967e7e89b0b64b81dc94aeae90e642ab # v1.3.0
+        uses: skitionek/notify-microsoft-teams@78b3f572ad77dd4f53f9f97ba97957e4abac31fa # v1.3.3
         with:
           webhook_url: ${{ secrets.MSTEAMS_WEBHOOK }}
           # Message to send to Teams as a webhook notification in JSON Payload format

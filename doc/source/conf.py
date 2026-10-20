@@ -273,6 +273,11 @@ html_theme_options = {
         "link": "news-and-resources",
         "title": "News and resources",
     },
+    "mcp_server": {
+        "url": "https://mechanical-mcp.docs.pyansys.com/",
+        "project_name": "PyMechanical MCP Server",
+    },
+    "secondary_sidebar_items": [],
 }
 
 
@@ -368,6 +373,7 @@ linkcheck_ignore = [
     "https://download.ansys.com/*",
     "https://support.ansys.com/*",
     "https://discuss.ansys.com/*",
+    "https://innovation.ansys.com/*",
     "https://www.ansys.com/*",
     "https://developer.ansys.com/*",
     "../api/*",
