@@ -44,7 +44,7 @@ jupyter:
 #| eval: false
 from ansys.mechanical.core import App
 
-app = App(version=261, globals=globals())
+app = App(globals=globals())
 print(app)
 ```
 Access entry points from Python:
@@ -101,7 +101,7 @@ from ansys.mechanical.core.embedding.logger import (
 Configuration.configure(
     level=logging.WARNING, to_stdout=True
 )
-app = App(version=261, globals=globals())
+app = App(globals=globals())
 Logger.error("Test Error Message")
 ```
 Log from app methods:
@@ -208,7 +208,7 @@ mechanical = launch_mechanical(batch=False)
 ## Launch using the CLI
 ```{python}
 #| eval: false
-ansys-mechanical -r 261 --port 10000 -g
+ansys-mechanical --port 10000 -g
 ```
 ## Launch a specific version
 ```{python}

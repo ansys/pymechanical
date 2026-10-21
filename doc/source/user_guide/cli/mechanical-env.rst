@@ -21,7 +21,7 @@ Arguments
 ----------
 
 ``-r, --version <version>``
-   Specify the version of Ansys Mechanical to use. Example: ``252`` or ``261``.
+   Specify the version of Ansys Mechanical to use. Example: ``{mechanical_version}``.
 
 ``-p, --path <path>``
    Specify the installation path of Ansys Mechanical if not using the default path.
