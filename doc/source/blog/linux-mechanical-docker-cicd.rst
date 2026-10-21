@@ -75,11 +75,11 @@ install only the Mechanical and LS-DYNA solvers:
        -silent -overwrite_preview -mechapdl -lsdyna \
        -install_dir /install/ansys_inc/
 
-Then build and push the image. Replace ``261`` with your version number:
+Then build and push the image. Replace ``{mechanical_version}`` with your version number:
 
 .. code-block:: console
 
-   export VERSION=261
+   export VERSION={mechanical_version}
    export TAG=ghcr.io/your-org/mechanical:v${VERSION}
 
    # Go to the directory where Mechanical is installed
@@ -94,7 +94,7 @@ Then build and push the image. Replace ``261`` with your version number:
    docker push ${TAG}
 
 The
-`Dockerfile <https://github.com/ansys/pymechanical/tree/main/docker/261/Dockerfile>`_
+`Dockerfile <https://github.com/ansys/pymechanical/tree/main/docker/{mechanical_version}/Dockerfile>`_
 copies the installation directory into an Ubuntu 22.04 base image and sets the
 required environment variables and virtual display configuration.
 
@@ -111,7 +111,7 @@ commands inside the container instead of starting the gRPC server.
      simulate:
        runs-on: ubuntu-latest
        container:
-         image: ghcr.io/your-org/mechanical:v261
+         image: ghcr.io/your-org/mechanical:v{mechanical_version}
          options: --entrypoint /bin/bash
        steps:
          - uses: actions/checkout@v4
@@ -206,7 +206,7 @@ Traceable results
 ------------------
 
 Because the image tag is pinned in the workflow YAML (for example,
-``mechanical:v261``), every simulation result in your artifact store
+``mechanical:v{mechanical_version}``), every simulation result in your artifact store
 is linked to an exact solver version. Reproducing a result from six
 months ago is as simple as checking out the commit and re-running the
 pipeline.

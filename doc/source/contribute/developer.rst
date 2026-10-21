@@ -203,7 +203,7 @@ PyMechanical adds the following custom command-line options to ``pytest``:
 Specify the Ansys Mechanical version to use for testing. When omitted, the version is
 detected automatically from the installed Mechanical path::
 
-    pytest -m embedding --ansys-version=261
+    pytest -m embedding --ansys-version={mechanical_version}
 
 ``--addin-configuration``
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -221,13 +221,13 @@ Enable embedding log output to stdout and set the log level. Accepted values are
 logger is not configured by the test suite::
 
     # Show all messages including debug output
-    pytest -m embedding --ansys-version=261 --log-embedding=debug
+    pytest -m embedding --ansys-version={mechanical_version} --log-embedding=debug
 
     # Show informational messages and above
-    pytest -m embedding --ansys-version=261 --log-embedding=info
+    pytest -m embedding --ansys-version={mechanical_version} --log-embedding=info
 
     # Combine with -k to target a single test
-    pytest -m embedding -k test_license_manager --ansys-version=261 --log-embedding=debug
+    pytest -m embedding -k test_license_manager --ansys-version={mechanical_version} --log-embedding=debug
 
 ``--remote-server-type``
 ~~~~~~~~~~~~~~~~~~~~~~~~
