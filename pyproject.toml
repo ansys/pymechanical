@@ -48,6 +48,8 @@ Changelog = "https://mechanical.docs.pyansys.com/version/stable/changelog.html"
 
 [project.optional-dependencies]
 tests = [
+    "numpy>=2.2.6,<3",
+    "pillow>=10",
     "pytest>=9.0.2,<10",
     "pytest-cov>=7.0.0,<8",
     "pytest-print>=1.2.0,<2",
