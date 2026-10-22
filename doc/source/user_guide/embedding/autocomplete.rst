@@ -20,7 +20,7 @@ Usage:
 
 .. code:: shell
 
-    ansys-mechanical-ideconfig --ide vscode --target user --revision 261
+    ansys-mechanical-ideconfig --ide vscode --target user --revision {mechanical_version}
 
 Terminal output for Windows user's settings.json file:
 

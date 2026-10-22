@@ -22,7 +22,7 @@ jobs:
     timeout-minutes: 30
     container:
       image: ${{ inputs.test-container }} # zizmor: ignore[unpinned-images]
-      options: --entrypoint /bin/bash
+      options: --entrypoint /bin/bash --user root
     permissions:
       contents: read
       packages: read  # Required to pull Docker images from GitHub Container Registry

@@ -22,11 +22,8 @@ Requirements
 * A valid Ansys account. Your Ansys reseller should have
   provided you with an account.
 
-* These files are provided:
-
-  * `Dockerfile <https://github.com/ansys/pymechanical/tree/main/docker/261/Dockerfile>`_
-
-  * `.dockerignore <https://github.com/ansys/pymechanical/tree/main/docker/261/.dockerignore>`_
+* The ``Dockerfile`` and ``.dockerignore`` files for your Mechanical version from the
+  `Docker configurations <https://github.com/ansys/pymechanical/tree/main/docker>`_.
 
 
 Procedure
@@ -83,23 +80,21 @@ all the files you need in the image into this directory.
 
 The steps to copy these files and build the image are provided in the following script,
 which you should modify to adapt it to your needs.
+Replace ``<version>`` with your installed Mechanical version number.
+Choose a version listed in the `Docker configurations`_.
 
 .. code:: bash
 
-    # Create env vars for the Dockerfile
-    export ANS_MAJOR_VERSION=26
-    export ANS_MINOR_VERSION=1
-    export ANS_VERSION=${ANS_MAJOR_VERSION}${ANS_MINOR_VERSION}
-
-    export TAG=mechanical:${ANS_MAJOR_VERSION}.${ANS_MINOR_VERSION}
-
-    # example: if Mechanical v261 is installed under usr/install/ansys_inc/v261
+    # example: if Mechanical is installed under /usr/install/ansys_inc/
     # use export MECHANICAL_INSTALL_LOCATION=/usr/install/
     export MECHANICAL_INSTALL_LOCATION=/path_to_mechanical_installation/
 
     # example: if pymechanical is cloned under /some_location/pymechanical
     # use /some_location for path-to-pymechanical
     export PYMECHANICAL_LOCATION=/path-to-pymechanical
+
+    export ANS_VERSION="<version>"
+    export TAG=mechanical:${ANS_VERSION}
 
     # Create working directory
     cd ${MECHANICAL_INSTALL_LOCATION}
@@ -117,10 +112,13 @@ Take note of the these paths:
 * ``path_to_mechanical_installation`` is the path to where you have locally installed Mechanical.
 
 Not all installation files are copied. In fact, the files ignored during the copying
-are described in the `.dockerignore file <https://github.com/ansys/pymechanical/tree/main/docker/261/.dockerignore>`_.
+are described in the ``.dockerignore`` file for your version in the `Docker configurations`_.
 
 The Docker container configuration needed to build the container is described in the
-`Dockerfile <https://github.com/ansys/pymechanical/tree/main/docker/261/Dockerfile>`_.
+``Dockerfile`` for your version in the `Docker configurations`_.
+
+The image runs as the non-root ``pymech-user`` user, which owns the files under ``/install``.
+To run a container as root, pass the ``--user root`` option to the ``docker run`` command.
 
 
 Summary

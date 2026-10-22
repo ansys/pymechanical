@@ -203,7 +203,7 @@ jobs:
     timeout-minutes: 45
     container:
       image: ${{ inputs.test-container }} # zizmor: ignore[unpinned-images]
-      options: --entrypoint /bin/bash
+      options: --entrypoint /bin/bash --user root
     strategy:
       fail-fast: false
       matrix:
@@ -260,7 +260,7 @@ jobs:
     timeout-minutes: 30
     container:
       image: ${{ inputs.test-container }} # zizmor: ignore[unpinned-images]
-      options: --entrypoint /bin/bash
+      options: --entrypoint /bin/bash --user root
     strategy:
       fail-fast: false
       matrix:
@@ -314,7 +314,7 @@ jobs:
     timeout-minutes: 30
     container:
       image: ${{ inputs.test-container }} # zizmor: ignore[unpinned-images]
-      options: --entrypoint /bin/bash
+      options: --entrypoint /bin/bash --user root
     strategy:
       fail-fast: false
       matrix:

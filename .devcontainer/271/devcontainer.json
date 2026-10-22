@@ -25,8 +25,7 @@
     "storage": "128gb"
   },
 
-  // The Mechanical image only has root; Codespaces requires an explicit declaration.
-  "remoteUser": "root",
+  "remoteUser": "pymech-user",
 
   // Match the docker-compose.yml shm and CI --security-opt flags required
   // for Mechanical's OpenMPI / gRPC launch to succeed.
