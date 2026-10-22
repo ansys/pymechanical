@@ -23,7 +23,9 @@
 """Tests for embedding helper methods."""
 
 from pathlib import Path
+import shutil
 
+from PIL import Image
 import pytest
 
 
@@ -193,7 +195,7 @@ def test_export_image_validation_errors(embedded_app, assets, tmp_path, printer)
 
 
 @pytest.mark.embedding
-@pytest.mark.parametrize("animation_format", ["GIF", "AVI", "MP4", "WMV"])
+@pytest.mark.parametrize("animation_format", ["AVI", "MP4", "WMV"])
 def test_export_animation_basic(
     embedded_app, tmp_path, printer, graphics_test_mechdb_file, animation_format
 ):
@@ -222,6 +224,33 @@ def test_export_animation_basic(
     )
     _is_readable(animation_path)
     printer(f"Exported {animation_format} successfully")
+
+
+@pytest.mark.embedding
+def test_export_animation_gif_readable(embedded_app, tmp_path, graphics_test_mechdb_file):
+    """Test that GIF export produces a correctly sized, decodable animation."""
+    from ansys.mechanical.core.embedding.enum_importer import DataModelObjectCategory
+
+    project_path = tmp_path / "graphics_test.mechdb"
+    shutil.copyfile(graphics_test_mechdb_file, project_path)
+    embedded_app.open(str(project_path))
+    result = embedded_app.DataModel.GetObjectsByType(DataModelObjectCategory.DeformationResult)[0]
+    animation_path = tmp_path / "animation.gif"
+    size = (640, 480)
+    embedded_app.helpers.export_animation(
+        obj=result,
+        file_path=str(animation_path),
+        width=size[0],
+        height=size[1],
+    )
+
+    with Image.open(animation_path) as animation:
+        assert animation.format == "GIF"
+        assert animation.n_frames > 1
+        for frame_index in range(animation.n_frames):
+            animation.seek(frame_index)
+            animation.load()
+            assert animation.size == size
 
 
 @pytest.mark.embedding
