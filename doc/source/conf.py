@@ -273,6 +273,11 @@ html_theme_options = {
         "link": "news-and-resources",
         "title": "News and resources",
     },
+    "search_extra_sources": {
+        "PyMechanical MCP": "https://mechanical-mcp.docs.pyansys.com/",
+        "PyMechanical Examples: Remote session": "https://examples.mechanical.docs.pyansys.com/",
+        "PyMechanical Advanced Examples: Embedding": "https://embedding.examples.mechanical.docs.pyansys.com/",
+    },
     "mcp_server": {
         "url": "https://mechanical-mcp.docs.pyansys.com/",
         "project_name": "PyMechanical MCP Server",
