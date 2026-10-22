@@ -41,7 +41,7 @@ Choose the one that fits your workflow:
 
             Model.AddStaticStructuralAnalysis()
 
-        :bdg-info:`In-process` :bdg-info:`Direct API` :bdg-info:`fast`
+        :bdg-secondary:`In-process` :bdg-secondary:`Direct API` :bdg-secondary:`fast`
 
     .. grid-item-card:: Remote session mode :fa:`server`
         :padding: 2 2 2 2
@@ -61,7 +61,7 @@ Choose the one that fits your workflow:
 
             app.run_python_script("Model.AddStaticStructuralAnalysis()")
 
-        :bdg-info:`gRPC` :bdg-info:`GUI` :bdg-info:`Remote`
+        :bdg-secondary:`gRPC` :bdg-secondary:`GUI` :bdg-secondary:`Remote`
 
 If you are not sure which mode to pick, see :doc:`getting_started/choose_your_mode`.
 
@@ -77,7 +77,7 @@ If you are not sure which mode to pick, see :doc:`getting_started/choose_your_mo
 
         Install PyMechanical, choose your mode, and run your first script.
 
-        :bdg-info:`Install` :bdg-info:`Choose mode` :bdg-info:`Quick start`
+        :bdg-secondary:`Install` :bdg-secondary:`Choose mode` :bdg-secondary:`Quick start`
 
     .. grid-item-card:: User guide :fa:`window-maximize`
         :padding: 2 2 2 2
@@ -86,7 +86,7 @@ If you are not sure which mode to pick, see :doc:`getting_started/choose_your_mo
 
         Learn how to use embedding mode, remote sessions, scripting, and CLI tools.
 
-        :bdg-info:`Embedding` :bdg-info:`Remote` :bdg-info:`Scripting`
+        :bdg-secondary:`Embedding` :bdg-secondary:`Remote` :bdg-secondary:`Scripting`
 
     .. grid-item-card:: Examples :fa:`scroll`
         :padding: 2 2 2 2
@@ -95,7 +95,7 @@ If you are not sure which mode to pick, see :doc:`getting_started/choose_your_mo
 
         Explore examples, which are organized by mode and simulation type.
 
-        :bdg-info:`Embedding` :bdg-info:`Remote` :bdg-info:`Advanced`
+        :bdg-secondary:`Embedding` :bdg-secondary:`Remote` :bdg-secondary:`Advanced`
 
     .. grid-item-card:: Blog :fa:`rss`
         :padding: 2 2 2 2
@@ -105,7 +105,7 @@ If you are not sure which mode to pick, see :doc:`getting_started/choose_your_mo
         Read the latest news, blogs, tutorials, and updates from the
         PyMechanical team.
 
-        :bdg-info:`News` :bdg-info:`How-to` :bdg-info:`Updates`
+        :bdg-secondary:`News` :bdg-secondary:`How-to` :bdg-secondary:`Updates`
 
     .. grid-item-card:: API reference :fa:`book-bookmark`
         :padding: 2 2 2 2
@@ -114,7 +114,7 @@ If you are not sure which mode to pick, see :doc:`getting_started/choose_your_mo
 
         Understand PyMechanical and Mechanical API endpoints and their capabilities.
 
-        :bdg-info:`Classes` :bdg-info:`Methods` :bdg-info:`Error handling`
+        :bdg-secondary:`Classes` :bdg-secondary:`Methods` :bdg-secondary:`Error handling`
 
     .. grid-item-card:: FAQs :fa:`fa-solid fa-circle-question`
         :padding: 2 2 2 2
@@ -123,7 +123,7 @@ If you are not sure which mode to pick, see :doc:`getting_started/choose_your_mo
 
         Frequently asked questions and their answers.
 
-        :bdg-info:`How` :bdg-info:`Why` :bdg-info:`What`
+        :bdg-secondary:`How` :bdg-secondary:`Why` :bdg-secondary:`What`
 
     .. grid-item-card:: Known issues and limitations :fa:`fa-solid fa-bug`
         :padding: 2 2 2 2
@@ -132,7 +132,7 @@ If you are not sure which mode to pick, see :doc:`getting_started/choose_your_mo
 
         See issues and limitations for both PyMechanical and Mechanical.
 
-        :bdg-info:`24R2` :bdg-info:`25R1` :bdg-info:`25R2` :bdg-info:`26R1`
+        :bdg-secondary:`24R2` :bdg-secondary:`25R1` :bdg-secondary:`25R2` :bdg-secondary:`26R1`
 
     .. grid-item-card:: Contribute :fa:`people-group`
         :padding: 2 2 2 2
@@ -142,7 +142,7 @@ If you are not sure which mode to pick, see :doc:`getting_started/choose_your_mo
         Learn how to contribute to the PyMechanical codebase
         or documentation.
 
-        :bdg-info:`Test` :bdg-info:`Documentation` :bdg-info:`Issues`
+        :bdg-secondary:`Test` :bdg-secondary:`Documentation` :bdg-secondary:`Issues`
 
 
 
