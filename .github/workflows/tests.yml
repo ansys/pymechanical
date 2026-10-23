@@ -174,7 +174,7 @@ jobs:
           fail_on_failure: true
 
       - name: Upload coverage artifacts
-        uses: ./.github/actions/upload-coverage
+        uses: $/.github/actions/upload-coverage
         if: matrix.mechanical-version == inputs.test-docker-image-version
         with:
           artifact-name: tests
@@ -218,7 +218,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Python environment
-        uses: ./.github/actions/setup-python-env
+        uses: $/.github/actions/setup-python-env
         with:
           python-version: ${{ matrix.python-version }}
           install-extras: "tests,graphics"
@@ -239,7 +239,7 @@ jobs:
           fi
 
       - name: Upload coverage artifacts
-        uses: ./.github/actions/upload-coverage
+        uses: $/.github/actions/upload-coverage
         if: vars.MAIN_PYTHON_VERSION == matrix.python-version
         with:
           artifact-name: tests-embedding
@@ -275,7 +275,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Python environment
-        uses: ./.github/actions/setup-python-env
+        uses: $/.github/actions/setup-python-env
         with:
           python-version: ${{ vars.MAIN_PYTHON_VERSION }}
           install-extras: "tests"
@@ -293,7 +293,7 @@ jobs:
           pytest -m cli -s --junitxml test_results_cli_scripts${MAIN_PYTHON_VERSION}.xml
 
       - name: Upload coverage artifacts
-        uses: ./.github/actions/upload-coverage
+        uses: $/.github/actions/upload-coverage
         if: vars.MAIN_PYTHON_VERSION == matrix.python-version
         with:
           artifact-name: tests-embedding-scripts
@@ -329,7 +329,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Python environment
-        uses: ./.github/actions/setup-python-env
+        uses: $/.github/actions/setup-python-env
         with:
           python-version: ${{ vars.MAIN_PYTHON_VERSION }}
           install-extras: "tests"
@@ -364,7 +364,7 @@ jobs:
           fail_on_failure: true
 
       - name: Upload coverage artifacts
-        uses: ./.github/actions/upload-coverage
+        uses: $/.github/actions/upload-coverage
         if: vars.MAIN_PYTHON_VERSION == matrix.python-version
         with:
           artifact-name: tests-remote-session-launch

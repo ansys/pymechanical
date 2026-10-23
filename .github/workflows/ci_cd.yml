@@ -60,7 +60,7 @@ jobs:
 
   # ── Style & security checks ───────────────────────────────────────────
   style:
-    uses: ./.github/workflows/style.yml
+    uses: $/.github/workflows/style.yml
     permissions:
       contents: read
       security-events: write # Required to upload SARIF results from security scanning
@@ -68,7 +68,7 @@ jobs:
 
   # ── Revision & container configuration ─────────────────────────────────
   revn-config:
-    uses: ./.github/workflows/revn-config.yml
+    uses: $/.github/workflows/revn-config.yml
     permissions:
       contents: read
       packages: read     # Required to pull Docker images from GitHub Container Registry
@@ -79,7 +79,7 @@ jobs:
   # ── Build & smoke tests ───────────────────────────────────────────────
   smoke-tests:
     needs: [style]
-    uses: ./.github/workflows/smoke-tests.yml
+    uses: $/.github/workflows/smoke-tests.yml
     permissions:
       contents: read
     secrets: inherit # zizmor: ignore[secrets-inherit]
@@ -96,7 +96,7 @@ jobs:
         with:
           persist-credentials: false
           sparse-checkout: .github/actions
-      - uses: ./.github/actions/status-check
+      - uses: $/.github/actions/status-check
         with:
           job-name: "Smoke Tests"
           result: ${{ needs.smoke-tests.result }}
@@ -105,7 +105,7 @@ jobs:
   tests:
     if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-test') }}
     needs: [style, revn-config, smoke-test-check]
-    uses: ./.github/workflows/tests.yml
+    uses: $/.github/workflows/tests.yml
     permissions:
       contents: read
       packages: read  # Required to pull Docker images from GitHub Container Registry
@@ -130,7 +130,7 @@ jobs:
         with:
           persist-credentials: false
           sparse-checkout: .github/actions
-      - uses: ./.github/actions/status-check
+      - uses: $/.github/actions/status-check
         with:
           job-name: "Tests"
           result: ${{ needs.tests.result }}
@@ -139,7 +139,7 @@ jobs:
   docs:
     if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-doc') }}
     needs: [style, revn-config]
-    uses: ./.github/workflows/docs.yml
+    uses: $/.github/workflows/docs.yml
     permissions:
       contents: read
       packages: read  # Required to pull Docker images from GitHub Container Registry
@@ -160,7 +160,7 @@ jobs:
         with:
           persist-credentials: false
           sparse-checkout: .github/actions
-      - uses: ./.github/actions/status-check
+      - uses: $/.github/actions/status-check
         with:
           job-name: "Documentation"
           result: ${{ needs.docs.result }}
@@ -189,7 +189,7 @@ jobs:
   coverage:
     if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-test') }}
     needs: [tests]
-    uses: ./.github/workflows/coverage.yml
+    uses: $/.github/workflows/coverage.yml
     permissions:
       contents: read
     secrets: inherit # zizmor: ignore[secrets-inherit]
@@ -206,7 +206,7 @@ jobs:
         with:
           persist-credentials: false
           sparse-checkout: .github/actions
-      - uses: ./.github/actions/status-check
+      - uses: $/.github/actions/status-check
         with:
           job-name: "Coverage"
           result: ${{ needs.coverage.result }}
