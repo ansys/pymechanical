@@ -1,0 +1,158 @@
+.. vale off
+
+
+
+
+
+
+
+The ``embedding_plotter.py`` module
+===================================
+
+.. py:module:: ansys.mechanical.core.embedding.graphics.embedding_plotter
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: embedding_plotter
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.mechanical.core.embedding.graphics.embedding_plotter.Plottable`
+            - Plottable object.
+
+
+          * - :py:obj:`~ansys.mechanical.core.embedding.graphics.embedding_plotter.PlotSettings`
+            - Settings for a plot.
+
+
+          * - :py:obj:`~ansys.mechanical.core.embedding.graphics.embedding_plotter.ScenegraphNodeVisitor`
+            - Class to visit the Mechanical scenegraph nodes.
+
+
+
+    .. tab-item:: Enums
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.mechanical.core.embedding.graphics.embedding_plotter.MeshOrientedTransformResizeStyle`
+            - Dynamic resize style flag for mesh oriented transform nodes.
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~to_plotter`
+            - Convert the scene for `obj` to an ``ansys.tools.visualization_interface.Plotter`` instance.
+
+
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> Plottable</api/ansys/mechanical/core/embedding/graphics/embedding_plotter/Plottable>
+    <span class="nf nf-cod-symbol_class"></span> PlotSettings</api/ansys/mechanical/core/embedding/graphics/embedding_plotter/PlotSettings>
+    <span class="nf nf-cod-symbol_class"></span> ScenegraphNodeVisitor</api/ansys/mechanical/core/embedding/graphics/embedding_plotter/ScenegraphNodeVisitor>
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_enum"></span> MeshOrientedTransformResizeStyle</api/ansys/mechanical/core/embedding/graphics/embedding_plotter/MeshOrientedTransformResizeStyle>
+
+
+
+
+
+
+
+
+Description
+-----------
+
+PyVista plotter.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:function:: to_plotter(app: ansys.mechanical.core.embedding.App, obj=None, plot_settings: PlotSettings = None) -> ansys.tools.visualization_interface.Plotter
+
+   
+   Convert the scene for `obj` to an ``ansys.tools.visualization_interface.Plotter`` instance.
+
+   If the `obj` is None, default to the Geometry object.
+   Geometry, Mesh, and some Results are currently supported.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+.. vale on

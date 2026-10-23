@@ -1,0 +1,6 @@
+/* ansys-sphinx-theme >=1.9.0 hides bd-sidebar-primary on pages that have neither
+   nav.bd-links li (TOC) nor .ast-sidebar-widget.  Blog pages only populate the
+   sidebar with ablog's own elements (ablog-sidebar-item), so override that rule. */
+.bd-sidebar-primary:has(.ablog-sidebar-item) {
+    display: flex !important;
+}

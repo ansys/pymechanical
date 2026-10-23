@@ -1,0 +1,122 @@
+
+
+
+
+
+
+:class:`ForegroundAppBackend`
+=============================
+
+
+.. py:class:: ansys.mechanical.core.embedding.rpc.server.ForegroundAppBackend(app: ansys.mechanical.core.embedding.app.App)
+
+   
+   Backend for the python server where mechanical uses the main thread.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: ForegroundAppBackend
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~try_post`
+            - Try to post to mechanical's main thread.
+          * - :py:attr:`~get_app`
+            - Get the app object.
+
+
+
+
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.mechanical.core.embedding.rpc.server import ForegroundAppBackend
+
+
+
+Method detail
+-------------
+
+.. py:method:: try_post(callable: Callable) -> Any
+
+   
+   Try to post to mechanical's main thread.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: get_app() -> ansys.mechanical.core.embedding.app.App
+
+   
+   Get the app object.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
