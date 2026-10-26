@@ -22,7 +22,7 @@ jobs:
     timeout-minutes: 30
     container:
       image: ${{ inputs.test-container }} # zizmor: ignore[unpinned-images]
-      options: --entrypoint /bin/bash
+      options: --entrypoint /bin/bash --user root
     permissions:
       contents: read
       packages: read  # Required to pull Docker images from GitHub Container Registry
@@ -34,11 +34,11 @@ jobs:
           persist-credentials: false
 
       - name: Setup Python environment
-        uses: ./.github/actions/setup-python-env
+        uses: $/.github/actions/setup-python-env
         with:
           python-version: ${{ vars.MAIN_PYTHON_VERSION }}
           install-extras: "doc"
-          extra-apt-packages: "make poppler-utils zip pandoc libgl1-mesa-glx mesa-utils npm texlive-latex-extra texlive-fonts-extra libjbig-dev"
+          extra-apt-packages: "make poppler-utils zip pandoc libgl1-mesa-glx mesa-utils npm texlive-latex-extra libjbig-dev texlive-xetex texlive-fonts-extra texlive-fonts-recommended texlive-luatex texlive-science latexmk fonts-lmodern"
 
       - name: Install gh cli
         run: |
@@ -92,7 +92,7 @@ jobs:
           make -C doc linkcheck
 
       - name: Upload HTML Documentation
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: documentation-html
           path: doc/_build/html
