@@ -95,6 +95,13 @@ in the preceding example.
 Verify your installation
 ------------------------
 
+To see your PyMechanical version, Python version, platform, and detected
+Mechanical installation, run this command:
+
+.. code-block:: console
+
+   ansys-mechanical --info
+
 Verify that PyMechanical can find your Mechanical installation:
 
 .. code:: pycon
