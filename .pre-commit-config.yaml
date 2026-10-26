@@ -74,7 +74,7 @@ repos:
         args: ['--py312-plus']
 
 - repo: https://github.com/crate-ci/typos
-  rev: 9023c1f779400877cafdd98052113fc777e2cfdc  # frozen: v1.51.1
+  rev: b859c0df7f391deba73030f79b957e62b4d81dc6  # frozen: varcon-core-v5.0.7
   hooks:
     - id: typos
       args: ["--config", "doc/styles/typos.toml"]
