@@ -9,6 +9,88 @@ This document contains the release notes for the project.
 
 .. towncrier release notes start
 
+`0.13.5 <https://github.com/ansys/pymechanical/releases/tag/v0.13.5>`_ - October 26, 2026
+=========================================================================================
+
+.. tab-set::
+
+
+  .. tab-item:: Added
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add wheel validation step to CI workflow
+          - `#1780 <https://github.com/ansys/pymechanical/pull/1780>`_
+
+        * - Update devcontainer to use non-root user 'pymech-user'
+          - `#1785 <https://github.com/ansys/pymechanical/pull/1785>`_
+
+        * - Add optional dependencies for testing and new scenegraph tests
+          - `#1792 <https://github.com/ansys/pymechanical/pull/1792>`_
+
+        * - Add welcome screen with system info and CLI option to display it
+          - `#1796 <https://github.com/ansys/pymechanical/pull/1796>`_
+
+
+  .. tab-item:: Fixed
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Improve Poster class to handle async calls and update test_app_poster
+          - `#1770 <https://github.com/ansys/pymechanical/pull/1770>`_
+
+        * - Update documentation to use {mechanical_version} placeholder for version references
+          - `#1786 <https://github.com/ansys/pymechanical/pull/1786>`_
+
+        * - Badges in Readme
+          - `#1797 <https://github.com/ansys/pymechanical/pull/1797>`_
+
+
+  .. tab-item:: Documentation
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Add news and resources
+          - `#1677 <https://github.com/ansys/pymechanical/pull/1677>`_
+
+
+  .. tab-item:: Maintenance
+
+    .. list-table::
+        :header-rows: 0
+        :widths: auto
+
+        * - Update CHANGELOG for v0.13.4
+          - `#1779 <https://github.com/ansys/pymechanical/pull/1779>`_
+
+        * - Pre-commit automatic update
+          - `#1781 <https://github.com/ansys/pymechanical/pull/1781>`_, `#1789 <https://github.com/ansys/pymechanical/pull/1789>`_
+
+        * - Bump the actions group with 7 updates
+          - `#1782 <https://github.com/ansys/pymechanical/pull/1782>`_
+
+        * - Bump actions/setup-python from 5.6.0 to 7.0.0
+          - `#1783 <https://github.com/ansys/pymechanical/pull/1783>`_
+
+        * - Bump the actions group with 4 updates
+          - `#1787 <https://github.com/ansys/pymechanical/pull/1787>`_
+
+        * - Consolidate Dependabot and pre-commit CI workflows into a single automation file
+          - `#1788 <https://github.com/ansys/pymechanical/pull/1788>`_
+
+        * - Bump the actions group with 3 updates
+          - `#1794 <https://github.com/ansys/pymechanical/pull/1794>`_
+
+        * - Bump ansys/actions to v11.1.3
+          - `#1795 <https://github.com/ansys/pymechanical/pull/1795>`_
+
+
 `0.13.4 <https://github.com/ansys/pymechanical/releases/tag/v0.13.4>`_ - October 12, 2026
 =========================================================================================
 
