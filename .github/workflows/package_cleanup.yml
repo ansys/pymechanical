@@ -19,7 +19,7 @@ jobs:
       packages: write        # Needed to delete untagged package versions
     steps:
       - name: "Delete untagged package versions"
-        uses: ansys/actions/hk-package-clean-untagged@7410037bfb276c79ae91eb3617b9f5d2876f0c94 # v11.0.8
+        uses: ansys/actions/hk-package-clean-untagged@a5c8d0d92928e144130a3c64aa7200b9547785de # v11.1.3
         with:
           package-org: 'ansys'
           package-name: 'mechanical'

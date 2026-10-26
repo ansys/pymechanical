@@ -12,7 +12,7 @@ API reference
       Understand ``{{ project_name }}`` endpoints, their capabilities, and how
       to interact with them programmatically.
 
-      :bdg-info:`Classes` :bdg-info:`Methods` :bdg-info:`Error handling`
+      :bdg-secondary:`Classes` :bdg-secondary:`Methods` :bdg-secondary:`Error handling`
 
    .. grid-item-card:: Mechanical scripting API :fa:`code`
       :padding: 2 2 2 2
@@ -21,7 +21,7 @@ API reference
       Browse the full Mechanical 2026 R1 scripting API — objects,
       methods, and properties exposed inside Mechanical.
 
-      :bdg-info:`Mechanical API` :bdg-info:`2026 R1`
+      :bdg-secondary:`Mechanical API` :bdg-secondary:`2026 R1`
 
 .. toctree::
    :titlesonly:
