@@ -31,6 +31,7 @@ import sys
 import ansys.tools.common.path as atp
 import click
 
+from ansys.mechanical.core._welcome import render_welcome
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 from ansys.mechanical.core.feature_flags import get_command_line_arguments, get_feature_flag_names
 from ansys.mechanical.core.misc import has_grpc_service_pack
@@ -345,8 +346,23 @@ def _cli_impl(
         profile.cleanup()
 
 
+def _show_info(ctx: click.Context, _param: click.Parameter, value: bool) -> None:
+    if not value or ctx.resilient_parsing:
+        return
+    render_welcome()
+    ctx.exit()
+
+
 @click.command()
 @click.help_option("--help", "-h")
+@click.option(
+    "--info",
+    is_flag=True,
+    is_eager=True,
+    expose_value=False,
+    callback=_show_info,
+    help="Show the PyMechanical welcome screen with system information and exit.",
+)
 @click.option(
     "-p",
     "--project-file",
@@ -484,6 +500,10 @@ def cli(
         $ ansys-mechanical -r 261 -g
 
         Starting Ansys Mechanical version 2026R1 in graphical mode...
+
+    Show the PyMechanical welcome screen with system information:
+
+        $ ansys-mechanical --info
     """
     exe = atp.get_mechanical_path(allow_input=False, version=revision)
     version = atp.version_from_path("mechanical", exe)
