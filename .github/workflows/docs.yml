@@ -34,11 +34,11 @@ jobs:
           persist-credentials: false
 
       - name: Setup Python environment
-        uses: ./.github/actions/setup-python-env
+        uses: $/.github/actions/setup-python-env
         with:
           python-version: ${{ vars.MAIN_PYTHON_VERSION }}
           install-extras: "doc"
-          extra-apt-packages: "make poppler-utils zip pandoc libgl1-mesa-glx mesa-utils npm texlive-latex-extra texlive-fonts-extra libjbig-dev"
+          extra-apt-packages: "make poppler-utils zip pandoc libgl1-mesa-glx mesa-utils npm texlive-latex-extra libjbig-dev texlive-xetex texlive-fonts-extra texlive-fonts-recommended texlive-luatex texlive-science latexmk fonts-lmodern"
 
       - name: Install gh cli
         run: |
