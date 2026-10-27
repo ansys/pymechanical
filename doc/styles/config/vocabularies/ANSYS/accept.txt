@@ -30,6 +30,8 @@ github
 Globals
 globaly
 (?i)hostname
+HPC
+HPS
 idempotency
 interop
 IPython
@@ -56,6 +58,7 @@ rpyc
 Remoting
 REST
 RPCs
+RSM
 spaceclaim
 stdout
 Streamable
