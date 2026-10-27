@@ -1,0 +1,167 @@
+
+
+
+
+
+
+The ``shell.py`` module
+=======================
+
+.. py:module:: ansys.mechanical.core.embedding.shell
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+.. py:currentmodule:: shell
+.. tab-set::
+
+
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~start_interactive_shell`
+            - Start the interactive IPython shell.
+
+
+          * - :py:obj:`~end_interactive_shell`
+            - End the interactive IPython shell.
+
+
+          * - :py:obj:`~initialize_ipython_shell`
+            - Initialize the interactive IPython shell.
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~HAS_WIN32`
+            - 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Shell interaction for PyMechanical embedding.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:function:: start_interactive_shell(app)
+
+   
+   Start the interactive IPython shell.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: end_interactive_shell()
+
+   
+   End the interactive IPython shell.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: initialize_ipython_shell()
+
+   
+   Initialize the interactive IPython shell.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: HAS_WIN32
+   :value: True
+
+
+
+
