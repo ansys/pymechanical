@@ -29,6 +29,7 @@ generateHosts
 github
 Globals
 globaly
+GPUs
 (?i)hostname
 HPC
 HPS
