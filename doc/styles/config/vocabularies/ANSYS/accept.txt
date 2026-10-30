@@ -29,7 +29,10 @@ generateHosts
 github
 Globals
 globaly
+GPUs
 (?i)hostname
+HPC
+HPS
 idempotency
 interop
 IPython
@@ -56,6 +59,7 @@ rpyc
 Remoting
 REST
 RPCs
+RSM
 spaceclaim
 stdout
 Streamable
