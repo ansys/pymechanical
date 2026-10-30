@@ -255,13 +255,13 @@ temp_bc.Magnitude.Output.DiscreteValues = [Quantity("22[C]"), Quantity("50[C]"),
 # Create a convection load
 # ~~~~~~~~~~~~~~~~~~~~~~~~
 # analysis = app.Model.AddSteadyStateThermalAnalysis()
-try:
-    named_sel = app.Model.NamedSelections.Children[0]
-except:
+named_selections = app.Model.NamedSelections.Children
+named_sel = named_selections[0] if named_selections.Count > 0 else None
+if named_sel is None:
     print("Named Selection not found")
 
 convection = Model.Analyses[0].AddConvection()
-if named_sel != None:
+if named_sel is not None:
     convection.Location = named_sel
 
 convection.AmbientTemperature.Inputs[0].DiscreteValues = [
@@ -285,8 +285,8 @@ convection.FilmCoefficient.Output.DiscreteValues = [
 # %%
 # Apply Tabular Pressure for 5 Load Steps
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-pressureLoad = Model.Analyses[0].AddPressure()
-pressureLoad.Magnitude.Inputs[0].DiscreteValues = [
+pressure_load = Model.Analyses[0].AddPressure()
+pressure_load.Magnitude.Inputs[0].DiscreteValues = [
     Quantity("0 [sec]"),
     Quantity("1 [sec]"),
     Quantity("2 [sec]"),
@@ -294,7 +294,7 @@ pressureLoad.Magnitude.Inputs[0].DiscreteValues = [
     Quantity("4 [sec]"),
     Quantity("5 [sec]"),
 ]
-pressureLoad.Magnitude.Output.DiscreteValues = [
+pressure_load.Magnitude.Output.DiscreteValues = [
     Quantity("0 [MPa]"),
     Quantity("10 [MPa]"),
     Quantity("30 [MPa]"),

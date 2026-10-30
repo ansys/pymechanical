@@ -156,22 +156,22 @@ for group in dataobjects:
 # Retrieve names of all contact groups
 names = dataobjects.NamesByType("ContactGroup")
 for name in names:
-    connet_data_objects = dataobjects.GetByName(name).DataObjects
-    c_names = connet_data_objects.Names
+    connect_data_objects = dataobjects.GetByName(name).DataObjects
+    c_names = connect_data_objects.Names
     for c_name in c_names:
-        type_c = connet_data_objects.GetByName(c_name).Type
+        type_c = connect_data_objects.GetByName(c_name).Type
         if type_c == "ConnectionGroup":
-            contacts_list = connet_data_objects.GetByName(c_name).DataObjects.NamesByType(
+            contacts_list = connect_data_objects.GetByName(c_name).DataObjects.NamesByType(
                 "ContactRegion"
             )
             for contact in contacts_list:
                 contact_type = (
-                    connet_data_objects.GetByName(c_name)
+                    connect_data_objects.GetByName(c_name)
                     .DataObjects.GetByName(contact)
                     .PropertyValue("ContactType")
                 )
                 contact_state = (
-                    connet_data_objects.GetByName(c_name)
+                    connect_data_objects.GetByName(c_name)
                     .DataObjects.GetByName(contact)
                     .PropertyValue("Suppressed")
                 )

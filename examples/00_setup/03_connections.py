@@ -67,8 +67,8 @@ app.print_tree()
 all_contacts = Model.Connections.GetChildren(DataModelObjectCategory.ContactRegion, True)
 
 # Print count of all contact regions
-numContacts = all_contacts.Count
-print("There are %s contact regions" % (numContacts))
+num_contacts = all_contacts.Count
+print("There are %s contact regions" % (num_contacts))
 
 # Print details of each contact region
 for contact in all_contacts:

@@ -30,7 +30,7 @@ This section contains a few utility scripts for result objects.
 """
 
 # sphinx_gallery_start_ignore
-import os
+from pathlib import Path
 
 # Import Mechanical API core and example utilities
 from ansys.mechanical.core import App
@@ -166,7 +166,7 @@ results = DataModel.GetObjectsByType(DataModelObjectCategory.Result)
 for result in results:
     result.Activate()
     Graphics.Camera.SetSpecificViewOrientation(ViewOrientationType.Front)
-    image_path = os.path.join(os.getcwd(), "out", result.Name + ".png")
+    image_path = Path.cwd() / "out" / (result.Name + ".png")
     Graphics.ExportImage(
         str(image_path),
         GraphicsImageExportFormat.PNG,
@@ -177,8 +177,6 @@ print("Done with Exporting Results")
 
 # sphinx_gallery_start_ignore
 # Save the project as a .mechdat file
-from pathlib import Path
-
 output_path = Path.cwd() / "out"
 test_mechdat_path = str(output_path / "test.mechdat")
 # app.save_as(test_mechdat_path, overwrite=True)

@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2025 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -96,11 +96,11 @@ meshdata = DataModel.MeshDataByName("Global")
 print(use_nsel.Ids[0])
 
 # Retrieve body entity from geometry
-geoBody = DataModel.GeoData.GeoEntityById(use_nsel.Ids[0])
-body = Model.Geometry.GetBody(geoBody)
+geo_body = DataModel.GeoData.GeoEntityById(use_nsel.Ids[0])
+body = Model.Geometry.GetBody(geo_body)
 
 # Get mesh region corresponding to that body and print element count
-meshregion = meshdata.MeshRegionById(geoBody.Id)
+meshregion = meshdata.MeshRegionById(geo_body.Id)
 print(body.Name, meshregion.ElementCount)
 
 # %%
