@@ -27,7 +27,7 @@ USER pymech-user
 ENV HOME=/home/pymech-user
 
 # Pre-download the target CPython version so postCreateCommand is fast.
-ARG PYTHON_VERSION=3.12
+ARG PYTHON_VERSION=3.15
 RUN uv python install ${PYTHON_VERSION}
 
 # Override the Workbench gRPC entrypoint so the container can idle in bash.

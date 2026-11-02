@@ -12,7 +12,7 @@ writing examples for PyMechanical.**
 ## What is pre-installed
 
 - **Ansys Mechanical** at `/install/ansys_inc/v<version>/` (depends on the config you selected)
-- **Python 3.12** with a virtual environment at `.venv`
+- **Python 3.15** with a virtual environment at `.venv`
 - **PyMechanical** (editable install with all extras: `tests`, `graphics`,
   `doc`, `rpc`, `pim`)
 - **uv** package manager
