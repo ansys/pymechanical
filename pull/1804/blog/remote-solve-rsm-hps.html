@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Submit remote solves to RSM queues and HPS &#8212; PyMechanical</title>
+  
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/ansys-sphinx-theme.css?v=e717c1d8" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=c83e6b79" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/ansys-sphinx-theme.css?v=e717c1d8" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://www.nerdfonts.com/assets/css/webfont.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/blog.css?v=bf0d7cf4" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+
+  <!-- Include desired assets -->
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  
+
+  
+    <link href="../_static/css/breadcrumbs.css" rel="stylesheet" />
+  
+    <script src="../_static/documentation_options.js?v=e95de808"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/thebelab-helper.js"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=49e1bf35"></script>
+    <script src="../_static/sg-tags.js?v=d80f6fa4"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'blog/remote-solve-rsm-hps';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://mechanical.docs.pyansys.com/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'dev';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../_static/ansys-favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Contribute" href="../contribute.html" />
+    <link rel="prev" title="Run PyMechanical embedding in CI/CD with a Linux Mechanical image" href="linux-mechanical-docker-cicd.html" /> 
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.13.dev0" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  <meta property="og:site_name" content="PyAnsys" />
+  <meta name="physics" content="Structures" />
+  <meta name="physics" content="Structures" />
+ 
+<link
+  rel="alternate"
+  type="application/atom+xml"
+  href="../blog/atom.xml"
+  title="PyMechanical Blog"
+/>
+  
+  
+  
+  
+  
+  <meta name="robots" content="noindex, follow" />
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="https://docs.pyansys.com/">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/pyansys_logo_transparent_black.png" class="logo__image only-light" alt="PyMechanical - Home"/>
+    <img src="../_static/pyansys_logo_transparent_white.png" class="logo__image only-dark pst-js-only" alt="PyMechanical - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    <!-- Site Navigation -->
+  </p>
+  <div class="navbar-content docutils container">
+<ul class="navbar-toplevel">
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../index.html" title="Home"><span class="navbar-link-title">Home</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../getting_started/index.html" title="Getting started"><span class="navbar-link-title">Getting started</span></a></p>
+<i class="fa-solid fa-chevron-down"></i></div>
+<div class="navbar-dropdown docutils container">
+<ul class="navbar-sublevel">
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../getting_started/installation.html" title="Installation"><span class="navbar-link-title">Installation</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../getting_started/choose_your_mode.html" title="Choose your mode"><span class="navbar-link-title">Choose your mode</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../getting_started/running_mechanical.html" title="Launching PyMechanical"><span class="navbar-link-title">Launching PyMechanical</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../getting_started/docker.html" title="Docker setup"><span class="navbar-link-title">Docker setup</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../getting_started/wsl.html" title="WSL"><span class="navbar-link-title">WSL</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../getting_started/troubleshooting.html" title="Troubleshooting"><span class="navbar-link-title">Troubleshooting</span></a></p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../user_guide/index.html" title="User guide"><span class="navbar-link-title">User guide</span></a></p>
+<i class="fa-solid fa-chevron-down"></i></div>
+<div class="navbar-dropdown docutils container">
+<ul class="navbar-sublevel">
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../user_guide/embedding/overview.html" title="Embedding mode"><span class="navbar-link-title">Embedding mode</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../user_guide/remote_session/overview.html" title="Remote session mode"><span class="navbar-link-title">Remote session mode</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../user_guide/scripting/overview.html" title="Scripting fundamentals"><span class="navbar-link-title">Scripting fundamentals</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../user_guide/cli/ansys-mechanical.html" title="CLI"><span class="navbar-link-title">CLI</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference external" href="https://mechanical-mcp.docs.pyansys.com/" title="MCP integration"><span class="navbar-link-title">MCP integration</span></a></p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../examples/index.html" title="Examples"><span class="navbar-link-title">Examples</span></a></p>
+<i class="fa-solid fa-chevron-down"></i></div>
+<div class="navbar-dropdown docutils container">
+<ul class="navbar-sublevel">
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../examples/gallery_examples/index.html" title="Basic examples: Embedding mode"><span class="navbar-link-title">Basic examples: Embedding mode</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../examples/advanced_examples/index.html" title="Advanced examples: Embedding mode"><span class="navbar-link-title">Advanced examples: Embedding mode</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../examples/remote_examples/index.html" title="Basic examples: Remote session mode"><span class="navbar-link-title">Basic examples: Remote session mode</span></a></p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="index.html" title="Blog"><span class="navbar-link-title">Blog</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference external" href="#" title="More"><span class="navbar-link-title">More</span></a></p>
+<i class="fa-solid fa-chevron-down"></i></div>
+<div class="navbar-dropdown docutils container">
+<ul class="navbar-sublevel">
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../api/index.html" title="API reference"><span class="navbar-link-title">API reference</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../contribute.html" title="Contribute"><span class="navbar-link-title">Contribute</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../faq.html" title="FAQ"><span class="navbar-link-title">FAQ</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../kil/index.html" title="Known issues and limitations"><span class="navbar-link-title">Known issues and limitations</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../changelog.html" title="Changelog"><span class="navbar-link-title">Changelog</span></a></p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+
+</nav>
+<style>
+  /* Top navbar styling */
+.navbar-toplevel p {
+  margin: 0;
+  padding-inline-start: 0;
+}
+div.navbar-dropdown {
+    display: none;
+    position: relative;
+    left: -100%;
+    margin-top: 2rem;
+}
+.navbar-sublevel p a.reference {
+  text-decoration: none;
+}
+.navbar-sublevel p a.reference:hover > span.navbar-link-title {
+  text-decoration: underline;
+  color: var(--pst-color-link-hover);
+}
+.navbar-toplevel li {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 0em 0.25em;
+
+}
+
+ul.navbar-toplevel li:hover > div.navbar-dropdown {
+  display: block;
+}
+
+@media (min-width: 960px) {
+    .navbar-expand-lg .navbar-nav {
+        flex-direction: column;
+    }
+}
+
+.navbar-content ul.navbar-sublevel {
+  position: absolute;
+  gap: 1rem;
+  padding: 1em 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+  background-color: white;
+  white-space: pre;
+  box-shadow: 0 5px 15px 0 rgb(0 0 0 / 10%);
+}
+
+div.navbar-content a {
+  display: flex;
+  flex-direction: column;
+  color: var(--ast-navbar-color);
+  align-items: baseline;
+  justify-content: center;
+  font-weight: var(--ast-font-weight-semibold);
+}
+.ref-container {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+  font-family: var(--ast-body-family);
+  line-height: var(--ast-global-line-height);
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+/* Highlight active nav bar link */
+li.active-link {
+  font-weight: var(--ast-font-weight-bold);
+  color: var(--ast-navbar-active-color);
+  border-bottom: 2px solid var(--ast-navbar-active-border-color);
+}
+
+/* Set the first .navbar-persistent--mobile element to have auto left margin */
+/* Disable underline for hovered links in the nav bar */
+.navbar-nav li a:hover {
+  text-decoration: none;
+}
+.navbar-header-items {
+  padding-left: 0;
+}
+</style>
+</div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+<div class="search-bar pst-js-only" id="search-bar">
+  <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="search" class="form-control" name="q" placeholder="Search the docs ..."
+      aria-label="Search the docs ..." autocomplete="off" autocorrect="off"
+      autocapitalize="off" spellcheck="false" />
+    <span class="search-button__kbd-shortcut">
+      <kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd>
+    </span>
+  </form>
+  
+  <div id="static-search-results" class="static-search-results" style="display:none;" tabindex="0"></div>
+  
+</div></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical/discussions" title="Support" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa fa-comment fa-fw fa-lg" aria-hidden="true"></i><span class="visually-hidden">Support</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+</div>
+
+    </header>
+  
+  
+
+  
+
+
+
+
+
+
+
+
+
+<div class="ast-announcement-wrap" role="region" aria-label="Announcement" hidden>
+    <div class="ast-announcement info">
+        <span class="ast-announcement-icon" aria-hidden="true"></span>
+        <span class="ast-announcement-text" id="ast-announcement-text"></span>
+        <!-- djlint:off H021-->
+        <!-- for inline styles -->
+        <a class="ast-announcement-details-btn" id="ast-announcement-details-btn"
+           href=""
+           data-ast-url=""
+           aria-label="View notifications"
+           style="display:none">View</a>
+        <!-- djlint:on -->
+        <!-- djlint:off H023-->
+        <!-- use entity reference for &times; -->
+        <button type="button" class="ast-announcement-close" id="ast-announcement-close" aria-label="Close announcement">&times;</button>
+        <!-- djlint:on -->
+    </div>
+</div>
+
+<!-- Modal overlay -->
+<!-- djlint:off H023-->
+<!-- use entity reference for &times; -->
+<div class="ast-announcement-overlay" id="ast-announcement-overlay" role="dialog" aria-modal="true" aria-label="Announcement details">
+    <div class="ast-announcement-modal info">
+        <div class="ast-announcement-modal-body"
+             data-ast-items='[]'>
+        </div>
+        <button type="button" class="ast-announcement-modal-close" id="ast-announcement-modal-close" aria-label="Close">&times;</button>
+    </div>
+</div>
+<!-- djlint:on -->
+
+<script src="../_static/js/announcement_banner.js"
+        data-base-url="../"></script>
+
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    <!-- Site Navigation -->
+  </p>
+  <div class="navbar-content docutils container">
+<ul class="navbar-toplevel">
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../index.html" title="Home"><span class="navbar-link-title">Home</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../getting_started/index.html" title="Getting started"><span class="navbar-link-title">Getting started</span></a></p>
+<i class="fa-solid fa-chevron-down"></i></div>
+<div class="navbar-dropdown docutils container">
+<ul class="navbar-sublevel">
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../getting_started/installation.html" title="Installation"><span class="navbar-link-title">Installation</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../getting_started/choose_your_mode.html" title="Choose your mode"><span class="navbar-link-title">Choose your mode</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../getting_started/running_mechanical.html" title="Launching PyMechanical"><span class="navbar-link-title">Launching PyMechanical</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../getting_started/docker.html" title="Docker setup"><span class="navbar-link-title">Docker setup</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../getting_started/wsl.html" title="WSL"><span class="navbar-link-title">WSL</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../getting_started/troubleshooting.html" title="Troubleshooting"><span class="navbar-link-title">Troubleshooting</span></a></p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../user_guide/index.html" title="User guide"><span class="navbar-link-title">User guide</span></a></p>
+<i class="fa-solid fa-chevron-down"></i></div>
+<div class="navbar-dropdown docutils container">
+<ul class="navbar-sublevel">
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../user_guide/embedding/overview.html" title="Embedding mode"><span class="navbar-link-title">Embedding mode</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../user_guide/remote_session/overview.html" title="Remote session mode"><span class="navbar-link-title">Remote session mode</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../user_guide/scripting/overview.html" title="Scripting fundamentals"><span class="navbar-link-title">Scripting fundamentals</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../user_guide/cli/ansys-mechanical.html" title="CLI"><span class="navbar-link-title">CLI</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference external" href="https://mechanical-mcp.docs.pyansys.com/" title="MCP integration"><span class="navbar-link-title">MCP integration</span></a></p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../examples/index.html" title="Examples"><span class="navbar-link-title">Examples</span></a></p>
+<i class="fa-solid fa-chevron-down"></i></div>
+<div class="navbar-dropdown docutils container">
+<ul class="navbar-sublevel">
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../examples/gallery_examples/index.html" title="Basic examples: Embedding mode"><span class="navbar-link-title">Basic examples: Embedding mode</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../examples/advanced_examples/index.html" title="Advanced examples: Embedding mode"><span class="navbar-link-title">Advanced examples: Embedding mode</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../examples/remote_examples/index.html" title="Basic examples: Remote session mode"><span class="navbar-link-title">Basic examples: Remote session mode</span></a></p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="index.html" title="Blog"><span class="navbar-link-title">Blog</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference external" href="#" title="More"><span class="navbar-link-title">More</span></a></p>
+<i class="fa-solid fa-chevron-down"></i></div>
+<div class="navbar-dropdown docutils container">
+<ul class="navbar-sublevel">
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../api/index.html" title="API reference"><span class="navbar-link-title">API reference</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../contribute.html" title="Contribute"><span class="navbar-link-title">Contribute</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../faq.html" title="FAQ"><span class="navbar-link-title">FAQ</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../kil/index.html" title="Known issues and limitations"><span class="navbar-link-title">Known issues and limitations</span></a></p>
+</div>
+</li>
+<li><div class="ref-container docutils container">
+<p><a class="reference internal" href="../changelog.html" title="Changelog"><span class="navbar-link-title">Changelog</span></a></p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+
+</nav>
+<style>
+  /* Top navbar styling */
+.navbar-toplevel p {
+  margin: 0;
+  padding-inline-start: 0;
+}
+div.navbar-dropdown {
+    display: none;
+    position: relative;
+    left: -100%;
+    margin-top: 2rem;
+}
+.navbar-sublevel p a.reference {
+  text-decoration: none;
+}
+.navbar-sublevel p a.reference:hover > span.navbar-link-title {
+  text-decoration: underline;
+  color: var(--pst-color-link-hover);
+}
+.navbar-toplevel li {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 0em 0.25em;
+
+}
+
+ul.navbar-toplevel li:hover > div.navbar-dropdown {
+  display: block;
+}
+
+@media (min-width: 960px) {
+    .navbar-expand-lg .navbar-nav {
+        flex-direction: column;
+    }
+}
+
+.navbar-content ul.navbar-sublevel {
+  position: absolute;
+  gap: 1rem;
+  padding: 1em 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+  background-color: white;
+  white-space: pre;
+  box-shadow: 0 5px 15px 0 rgb(0 0 0 / 10%);
+}
+
+div.navbar-content a {
+  display: flex;
+  flex-direction: column;
+  color: var(--ast-navbar-color);
+  align-items: baseline;
+  justify-content: center;
+  font-weight: var(--ast-font-weight-semibold);
+}
+.ref-container {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+  font-family: var(--ast-body-family);
+  line-height: var(--ast-global-line-height);
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+/* Highlight active nav bar link */
+li.active-link {
+  font-weight: var(--ast-font-weight-bold);
+  color: var(--ast-navbar-active-color);
+  border-bottom: 2px solid var(--ast-navbar-active-border-color);
+}
+
+/* Set the first .navbar-persistent--mobile element to have auto left margin */
+/* Disable underline for hovered links in the nav bar */
+.navbar-nav li a:hover {
+  text-decoration: none;
+}
+.navbar-header-items {
+  padding-left: 0;
+}
+</style>
+</div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="search-bar pst-js-only" id="search-bar">
+  <form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="search" class="form-control" name="q" placeholder="Search the docs ..."
+      aria-label="Search the docs ..." autocomplete="off" autocorrect="off"
+      autocapitalize="off" spellcheck="false" />
+    <span class="search-button__kbd-shortcut">
+      <kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd>
+    </span>
+  </form>
+  
+  <div id="static-search-results" class="static-search-results" style="display:none;" tabindex="0"></div>
+  
+</div></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/ansys/pymechanical/discussions" title="Support" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa fa-comment fa-fw fa-lg" aria-hidden="true"></i><span class="visually-hidden">Support</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<div class="ablog-sidebar-item ablog__postcard">
+   
+  <h2>
+     
+    <i class="fa fa-calendar"></i>
+    
+    <span>26 October 2026</span>
+    
+  </h2>
+  <ul>
+    <div class="ablog-sidebar-item ablog__postcard2">
+   
+  <li id="ablog-sidebar-item author ablog__author">
+    <span>
+      
+      <i class="fa-fw fa fa-user"></i>
+      
+    </span>
+     
+    <a href="author/ansys.html">Ansys</a>
+      
+  </li>
+   
+  <li id="ablog-sidebar-item location ablog__location">
+    <span>
+      
+      <i class="fa-fw fa fa-location-arrow"></i>
+      
+    </span>
+     
+    <a href="location/world.html">World</a>
+      
+  </li>
+   
+  <li id="ablog-sidebar-item language ablog__language">
+    <span>
+      
+      <i class="fa-fw fa fa-language"></i>
+      
+    </span>
+     
+    <a href="language/english.html">English</a>
+      
+  </li>
+   
+  <li id="ablog-sidebar-item category ablog__category">
+    <span>
+      
+      <i class="fa-fw fa fa-folder-open"></i>
+      
+    </span>
+     
+    <a href="category/how-to.html">How-to</a>
+      
+  </li>
+   
+  <li id="ablog-sidebar-item tags ablog__tags">
+    <span>
+       
+      <i class="fa-fw fa fa-tags"></i>
+       
+    </span>
+     
+    <a href="tag/rsm.html">rsm</a>
+        
+    <a href="tag/hps.html">hps</a>
+        
+    <a href="tag/hpc.html">hpc</a>
+        
+    <a href="tag/remote-solve.html">remote-solve</a>
+        
+    <a href="tag/embedding.html">embedding</a>
+      
+  </li>
+   
+</div>
+  </ul>
+</div>
+</div>
+        <div class="sidebar-primary-item">
+<div class="ablog-sidebar-item ablog__recentposts">
+  <h3>
+    <a href="../blog.html">Recent Posts</a>
+  </h3>
+  <ul>
+     
+    <li>
+      <a href="linux-mechanical-docker-cicd.html">
+        04 August - Run PyMechanical embedding in CI/CD with a Linux Mechanical image
+      </a>
+    </li>
+    
+  </ul>
+</div>
+</div>
+        <div class="sidebar-primary-item">
+<div class="ablog-sidebar-item ablog__tagcloud">
+  <link
+    rel="stylesheet"
+    href="../_static/ablog/tagcloud.css"
+    type="text/css"
+  />
+  <h3><a href="tag.html">Tags</a></h3>
+  <ul class="ablog-cloud">
+     
+    <li class="ablog-cloud ablog-cloud-1">
+      <a href="tag/ci-cd.html">ci-cd</a>
+    </li>
+      
+    <li class="ablog-cloud ablog-cloud-1">
+      <a href="tag/docker.html">docker</a>
+    </li>
+      
+    <li class="ablog-cloud ablog-cloud-5">
+      <a href="tag/embedding.html">embedding</a>
+    </li>
+      
+    <li class="ablog-cloud ablog-cloud-1">
+      <a href="tag/hpc.html">hpc</a>
+    </li>
+      
+    <li class="ablog-cloud ablog-cloud-1">
+      <a href="tag/hps.html">hps</a>
+    </li>
+      
+    <li class="ablog-cloud ablog-cloud-1">
+      <a href="tag/linux.html">linux</a>
+    </li>
+      
+    <li class="ablog-cloud ablog-cloud-1">
+      <a href="tag/remote-solve.html">remote-solve</a>
+    </li>
+      
+    <li class="ablog-cloud ablog-cloud-1">
+      <a href="tag/rsm.html">rsm</a>
+    </li>
+     
+  </ul>
+</div>
+</div>
+        <div class="sidebar-primary-item">
+<div class="ablog-sidebar-item ablog__categories">
+  <h3>
+    <a href="category.html">Categories</a>
+  </h3>
+  <ul>
+     
+    <li>
+      <a href="category/how-to.html">How-to (2)</a>
+    </li>
+     
+  </ul>
+</div>
+</div>
+        <div class="sidebar-primary-item">
+<div class="ablog-sidebar-item ablog__archives">
+  <h3>
+    <a href="archive.html">Archives</a>
+  </h3>
+  <ul>
+     
+    <li>
+      <a href="2026.html">2026 (2)</a>
+    </li>
+     
+  </ul>
+</div>
+</div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+         
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="https://docs.pyansys.com/" class="nav-link">PyAnsys</a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a
+        href="../index.html"
+        class="nav-link"
+        aria-label="Home"
+      >
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+     
+    <li class="breadcrumb-item">
+      <a href="index.html" class="nav-link">Blog</a>
+    </li>
+      
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Submit remote solves to RSM queues and HPS</span></li>
+    
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+  
+
+  
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                   <section id="submit-remote-solves-to-rsm-queues-and-hps">
+<span id="blog-remote-solve-rsm-hps"></span><h1>Submit remote solves to RSM queues and HPS<a class="headerlink" href="#submit-remote-solves-to-rsm-queues-and-hps" title="Link to this heading">#</a></h1>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The RSM workflows in this post require Ansys Remote Solve Manager (RSM).
+This includes the <code class="docutils literal notranslate"><span class="pre">Local</span></code> queue, the <code class="docutils literal notranslate"><span class="pre">My</span> <span class="pre">Computer,</span> <span class="pre">Background</span></code>
+configuration, and cluster queues. If RSM isn’t available with your
+Mechanical installation, install it separately. If RSM is missing or broken,
+<code class="docutils literal notranslate"><span class="pre">ExtAPI.Application.RSMQueues</span></code> doesn’t list a <code class="docutils literal notranslate"><span class="pre">Local</span></code> queue.</p>
+</div>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">solution.Solve()</span></code> runs the solver in the same process and on the
+same machine as Mechanical. For larger models, you can send the job somewhere
+else instead: to a background process, to an HPC cluster through the Ansys
+Remote Solve Manager (RSM), or to Ansys HPC Platform Services (HPS).</p>
+<p>Mechanical controls where a job runs with <em>solve process configurations</em>. These
+are the same entries that you see under <strong>Solve Process Settings</strong> in the
+Mechanical UI. This post shows how to create and use them from a PyMechanical
+script. The snippets use the embedded <code class="docutils literal notranslate"><span class="pre">App</span></code> class, but the same code runs in
+the Mechanical scripting console or through <code class="docutils literal notranslate"><span class="pre">run_python_script()</span></code> in a remote
+session.</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/remote_solve_configurations.svg"><img alt="A PyMechanical script uses a solve configuration to send the job to the local RSM queue, an RSM cluster queue, or HPC Platform Services" src="../_images/remote_solve_configurations.svg" style="width: 560px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">A solve configuration routes the job to an RSM queue or to HPS.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="solve-configurations-and-queues">
+<h2>Solve configurations and queues<a class="headerlink" href="#solve-configurations-and-queues" title="Link to this heading">#</a></h2>
+<p>A solve configuration has two parts:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Settings</span></code>: where the job goes. This is the RSM queue name, or the HPS
+server URL, the job name, and the license.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SolveProcessSettings</span></code>: how the solver runs. This includes the core count,
+distributed solve, and license queuing.</p></li>
+</ul>
+<p>To list the RSM queues and the existing solve configurations, run this code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ansys.mechanical.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">App</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="nb">globals</span><span class="o">=</span><span class="nb">globals</span><span class="p">())</span>
+
+<span class="k">for</span> <span class="n">queue</span> <span class="ow">in</span> <span class="n">ExtAPI</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">RSMQueues</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">queue</span><span class="o">.</span><span class="n">Name</span><span class="p">,</span> <span class="n">queue</span><span class="o">.</span><span class="n">HPCType</span><span class="p">,</span> <span class="n">queue</span><span class="o">.</span><span class="n">HPCConfiguration</span><span class="p">)</span>
+
+<span class="n">configs</span> <span class="o">=</span> <span class="n">ExtAPI</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">SolveConfigurations</span>
+<span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="n">configs</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">Name</span><span class="p">,</span> <span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">Settings</span><span class="o">.</span><span class="n">Name</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>On a fresh installation, the output shows the <code class="docutils literal notranslate"><span class="pre">Local</span></code> queue and the
+<code class="docutils literal notranslate"><span class="pre">My</span> <span class="pre">Computer</span></code> and <code class="docutils literal notranslate"><span class="pre">My</span> <span class="pre">Computer,</span> <span class="pre">Background</span></code> configurations.</p>
+</section>
+<section id="solve-through-the-local-rsm-queue">
+<h2>Solve through the local RSM queue<a class="headerlink" href="#solve-through-the-local-rsm-queue" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">Local</span></code> queue runs the job through RSM on your own machine. It is a
+quick way to test the submission workflow before you point it at a cluster.</p>
+<section id="save-the-project-first">
+<h3>Save the project first<a class="headerlink" href="#save-the-project-first" title="Link to this heading">#</a></h3>
+<p>RSM transfers the solver input files from the project folder. You must save
+the project before you submit a job through RSM. If the project is not saved,
+the solve fails with the message <code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">general</span> <span class="pre">failure</span> <span class="pre">occurred</span> <span class="pre">during</span> <span class="pre">the</span>
+<span class="pre">solution</span> <span class="pre">process</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">app</span><span class="o">.</span><span class="n">save_as</span><span class="p">(</span><span class="sa">r</span><span class="s2">"C:\work\valve.mechdb"</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="create-the-configuration">
+<h3>Create the configuration<a class="headerlink" href="#create-the-configuration" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config_name</span> <span class="o">=</span> <span class="s2">"PyMechanical RSM"</span>
+
+<span class="c1"># Configurations persist in your Mechanical user settings.</span>
+<span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">configs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">Name</span> <span class="o">==</span> <span class="n">config_name</span><span class="p">:</span>
+        <span class="n">configs</span><span class="o">.</span><span class="n">Remove</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">Ansys</span><span class="o">.</span><span class="n">ACT</span><span class="o">.</span><span class="n">Mechanical</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">SolveProcessSettings</span><span class="o">.</span><span class="n">SolveConfiguration</span><span class="p">()</span>
+<span class="n">config</span><span class="o">.</span><span class="n">Name</span> <span class="o">=</span> <span class="n">config_name</span>
+<span class="n">configs</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+<span class="n">config</span><span class="o">.</span><span class="n">Settings</span><span class="o">.</span><span class="n">Name</span> <span class="o">=</span> <span class="s2">"Local"</span>
+<span class="n">config</span><span class="o">.</span><span class="n">Settings</span><span class="o">.</span><span class="n">JobName</span> <span class="o">=</span> <span class="s2">"pymech_valve"</span>
+<span class="n">config</span><span class="o">.</span><span class="n">SolveProcessSettings</span><span class="o">.</span><span class="n">MaxNumberOfCores</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">config</span><span class="o">.</span><span class="n">SolveProcessSettings</span><span class="o">.</span><span class="n">DistributeSolution</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p>Mechanical checks some values as soon as you set them:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Settings.Name</span></code> must match a queue in <code class="docutils literal notranslate"><span class="pre">RSMQueues</span></code>. Otherwise, you get
+<code class="docutils literal notranslate"><span class="pre">The</span> <span class="pre">given</span> <span class="pre">value</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">the</span> <span class="pre">name</span> <span class="pre">of</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">RSM</span> <span class="pre">Queue</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Settings.JobName</span></code> must be shorter than 16 characters and contain no
+spaces.</p></li>
+</ul>
+</section>
+<section id="submit-the-job-and-get-the-results">
+<h3>Submit the job and get the results<a class="headerlink" href="#submit-the-job-and-get-the-results" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">solution</span> <span class="o">=</span> <span class="n">Model</span><span class="o">.</span><span class="n">Analyses</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">Solution</span>
+<span class="n">solution</span><span class="o">.</span><span class="n">Solve</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">config_name</span><span class="p">)</span>
+<span class="n">solution</span><span class="o">.</span><span class="n">GetResults</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">Status</span><span class="p">)</span>  <span class="c1"># Done</span>
+<span class="n">solution</span><span class="o">.</span><span class="n">EvaluateAllResults</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Solve()</span></code> submits the job and returns while the solver runs. At this point,
+<code class="docutils literal notranslate"><span class="pre">solution.Status</span></code> is still <code class="docutils literal notranslate"><span class="pre">SolveRequired</span></code>. <code class="docutils literal notranslate"><span class="pre">GetResults()</span></code> waits for the
+job to finish and downloads the result files into the project.</p>
+<p>For the valve model from the <a class="reference internal" href="../examples/gallery_examples/01_basic/valve.html#ref-basic-valve"><span class="std std-ref">Basic valve implementation</span></a> example, the RSM solve gives
+exactly the same maximum deformation and stress as an in-process solve.</p>
+<p>The built-in <code class="docutils literal notranslate"><span class="pre">My</span> <span class="pre">Computer,</span> <span class="pre">Background</span></code> configuration works the same way. To
+run the job in a background process without creating a configuration, call
+<code class="docutils literal notranslate"><span class="pre">solution.Solve(True,</span> <span class="pre">&quot;My</span> <span class="pre">Computer,</span> <span class="pre">Background&quot;)</span></code>.</p>
+</section>
+</section>
+<section id="solve-on-a-remote-hpc-cluster">
+<h2>Solve on a remote HPC cluster<a class="headerlink" href="#solve-on-a-remote-hpc-cluster" title="Link to this heading">#</a></h2>
+<p>To send jobs to a cluster, use the RSM Configuration app to define the
+cluster (Windows HPC, LSF, PBS Professional, SLURM, or UGE) and at least one
+queue. Submit a test job from RSM to confirm that the setup works. The queue
+then shows up in <code class="docutils literal notranslate"><span class="pre">RSMQueues</span></code>, and the script changes only in the queue name
+and the resources:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span><span class="o">.</span><span class="n">Settings</span><span class="o">.</span><span class="n">Name</span> <span class="o">=</span> <span class="s2">"&lt;your RSM queue&gt;"</span>
+<span class="n">config</span><span class="o">.</span><span class="n">Settings</span><span class="o">.</span><span class="n">License</span> <span class="o">=</span> <span class="s2">"Ansys Mechanical Enterprise"</span>
+<span class="n">config</span><span class="o">.</span><span class="n">SolveProcessSettings</span><span class="o">.</span><span class="n">MaxNumberOfCores</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">config</span><span class="o">.</span><span class="n">SolveProcessSettings</span><span class="o">.</span><span class="n">LicenseQueuing</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="n">solution</span><span class="o">.</span><span class="n">Solve</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">config_name</span><span class="p">)</span>
+<span class="n">solution</span><span class="o">.</span><span class="n">GetResults</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>RSM uses the credentials cached by the RSM Configuration app, so the
+script doesn’t need a user name or password.</p>
+</section>
+<section id="solve-with-hps">
+<h2>Solve with HPS<a class="headerlink" href="#solve-with-hps" title="Link to this heading">#</a></h2>
+<p>Ansys HPC Platform Services (HPS) runs Mechanical jobs on compute resources
+managed by an HPS server. You don’t need PyHPS for this. Mechanical submits the
+job itself. To target HPS,
+set <code class="docutils literal notranslate"><span class="pre">SolutionExecutionTarget</span></code> to <code class="docutils literal notranslate"><span class="pre">&quot;HPC</span> <span class="pre">Platform</span> <span class="pre">Services&quot;</span></code> instead of
+choosing an RSM queue. The server URL and user name use the <code class="docutils literal notranslate"><span class="pre">DCSUrl</span></code> and
+<code class="docutils literal notranslate"><span class="pre">DCSUsername</span></code> properties.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="n">hps_url</span> <span class="o">=</span> <span class="s2">"https://&lt;hps-server&gt;:8443/hps"</span>
+<span class="n">hps_config_name</span> <span class="o">=</span> <span class="s2">"PyMechanical HPS"</span>
+
+<span class="n">hps_configs</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">Name</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">configs</span>
+    <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">Settings</span><span class="o">.</span><span class="n">SolutionExecutionTarget</span> <span class="o">==</span> <span class="s2">"HPC Platform Services"</span>
+<span class="p">]</span>
+
+<span class="k">if</span> <span class="n">hps_configs</span><span class="p">:</span>
+    <span class="n">hps_config_name</span> <span class="o">=</span> <span class="n">hps_configs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">Ansys</span><span class="o">.</span><span class="n">ACT</span><span class="o">.</span><span class="n">Mechanical</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">SolveProcessSettings</span><span class="o">.</span><span class="n">SolveConfiguration</span><span class="p">()</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">Name</span> <span class="o">=</span> <span class="n">hps_config_name</span>
+    <span class="n">configs</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+    <span class="n">config</span><span class="o">.</span><span class="n">Settings</span><span class="o">.</span><span class="n">SolutionExecutionTarget</span> <span class="o">=</span> <span class="s2">"HPC Platform Services"</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">Settings</span><span class="o">.</span><span class="n">DCSUrl</span> <span class="o">=</span> <span class="n">hps_url</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">Settings</span><span class="o">.</span><span class="n">DCSUsername</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"USERNAME"</span><span class="p">)</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">Settings</span><span class="o">.</span><span class="n">License</span> <span class="o">=</span> <span class="s2">"Ansys Mechanical Enterprise"</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">SolveProcessSettings</span><span class="o">.</span><span class="n">MaxNumberOfCores</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">SolveProcessSettings</span><span class="o">.</span><span class="n">LicenseQueuing</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">SolveProcessSettings</span><span class="o">.</span><span class="n">DCSAutoDownloadResults</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p>Setting <code class="docutils literal notranslate"><span class="pre">SolutionExecutionTarget</span></code> clears <code class="docutils literal notranslate"><span class="pre">Settings.Name</span></code>, because an HPS
+configuration doesn’t use an RSM queue. To reuse a configuration that already
+exists, search by <code class="docutils literal notranslate"><span class="pre">SolutionExecutionTarget</span></code> instead of by name.</p>
+<p>The first time you use a new HPS configuration, open <strong>Solve Process Settings</strong>
+in Mechanical and sign in to the HPS server. Mechanical keeps the session, so
+the script never handles a password. After you sign in, submit the job the same
+way as with RSM:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">solution</span><span class="o">.</span><span class="n">Solve</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">hps_config_name</span><span class="p">)</span>
+<span class="n">solution</span><span class="o">.</span><span class="n">GetResults</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">SolveProcessSettings.HPSCloudBurstComputeRequirements</span></code> exposes the HPS
+compute resource, queue, and CPUs and GPUs per node for jobs that burst to
+cloud resources.</p>
+</section>
+<section id="clean-up">
+<h2>Clean up<a class="headerlink" href="#clean-up" title="Link to this heading">#</a></h2>
+<p>Solve configurations are saved in your Mechanical user settings and stay
+there after the script ends. If you created a configuration only for one
+script, remove it at the end:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">configs</span><span class="o">.</span><span class="n">Remove</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Save the project before you submit a job to any queue.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">Solve(True,</span> <span class="pre">config_name)</span></code> to submit and <code class="docutils literal notranslate"><span class="pre">GetResults()</span></code> to wait for the
+job and download the results.</p></li>
+<li><p>For an RSM queue, set <code class="docutils literal notranslate"><span class="pre">Settings.Name</span></code>. Keep <code class="docutils literal notranslate"><span class="pre">JobName</span></code> shorter than 16
+characters and free of spaces.</p></li>
+<li><p>For HPS, set <code class="docutils literal notranslate"><span class="pre">SolutionExecutionTarget</span> <span class="pre">=</span> <span class="pre">&quot;HPC</span> <span class="pre">Platform</span> <span class="pre">Services&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">DCSUrl</span></code>, and <code class="docutils literal notranslate"><span class="pre">DCSUsername</span></code>. Sign in once through <strong>Solve Process
+Settings</strong>.</p></li>
+<li><p>Remove temporary configurations, because they persist across sessions.</p></li>
+</ul>
+<p>For more information, see <em>Solve Process Settings</em> in the Mechanical User’s
+Guide and the Remote Solve Manager User’s Guide in the Ansys Help.</p>
+</section>
+</section>
+
+<div class="section ablog__blog_comments">
+     
+<div class="section ablog__prev-next">
+  <span class="ablog__prev">
+     
+    <a href="linux-mechanical-docker-cicd.html">
+      
+      <i class="fa fa-arrow-circle-left"></i>
+      
+      <span>Run PyMechanical embedding in CI/CD with a Linux Mechanical image</span>
+    </a>
+    
+  </span>
+  <span class="ablog__spacer">&nbsp;</span>
+  <span class="ablog__next">
+    
+  </span>
+</div>
+  
+</div>
+
+                </article>
+              
+
+              
+              
+              
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+
+  <!-- Include desired assets -->
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.7/require.min.js"></script>
+
+<script>
+// Passing the search options to the search.js file
+const SEARCH_OPTIONS = JSON.parse('{"includeMatches": true, "includeScore": true, "keys": [{"name": "section", "weight": 3}, {"name": "title", "weight": 3}, {"name": "text", "weight": 1}, {"name": "objectID", "weight": 0.5}], "limit": 10, "threshold": 0.2}');
+const SEARCH_FILE = "../_static/search.json";
+const ADVANCE_SEARCH_PATH = "../search.html";
+const EXTRA_SOURCES = JSON.parse('{"PyMechanical Advanced Examples: Embedding": "https://embedding.examples.mechanical.docs.pyansys.com/", "PyMechanical Examples: Remote session": "https://examples.mechanical.docs.pyansys.com/", "PyMechanical MCP": "https://mechanical-mcp.docs.pyansys.com/"}');
+</script>
+
+
+<script src="../_static/js/search.js"></script>
+
+  
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<!--
+  Theme Version Footer
+  Displays the Sphinx theme version and the last updated date.
+  Accessibility and semantic improvements included.
+-->
+<footer class="theme-version" aria-label="Theme version and last update">
+  <span>
+    
+      Built with the
+      <a href="https://sphinxdocs.ansys.com/version/stable/index.html" target="_blank" rel="noopener noreferrer">
+        Ansys Sphinx Theme
+      </a>
+      1.12.1.
+    
+  </span>
+  <br />
+  <span>Last updated on <time id="ast_build_date"></time></span>
+</footer>
+<script>
+  // Set the last updated date in a readable format
+  (function() {
+    var options = { day: "numeric", month: "long", year: "numeric" };
+    var ast_lastModifiedDate = new Date(document.lastModified);
+    var ast_build_date = ast_lastModifiedDate.toLocaleDateString("en-US", options);
+    var dateElem = document.getElementById("ast_build_date");
+    if (dateElem) {
+      dateElem.textContent = ast_build_date;
+    }
+  })();
+</script></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

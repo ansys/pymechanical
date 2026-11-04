@@ -1,0 +1,309 @@
+.. vale off
+
+
+
+:class:`LicenseManager`
+=======================
+
+.. py:class:: ansys.mechanical.core.embedding.license_manager.LicenseManager(app)
+
+   
+   Class to manage licenses in Ansys Mechanical.
+
+   This class provides methods to enable, disable, and check the status of licenses.
+   It also allows for moving licenses to specific indices in the license preference list.
+   It is initialized with an instance of the Ansys Mechanical application.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: LicenseManager
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~get_all_licenses`
+            - Return list of all licenses.
+          * - :py:attr:`~get_license_status`
+            - Return status of the specific license.
+          * - :py:attr:`~set_license_status`
+            - Set the status of a license and save the preference.
+          * - :py:attr:`~show`
+            - Print all active licenses.
+          * - :py:attr:`~disable_session_license`
+            - Disable active license for current session.
+          * - :py:attr:`~enable_session_license`
+            - Enable license(s) for the current session.
+          * - :py:attr:`~move_to_index`
+            - Move a license preference.
+          * - :py:attr:`~reset_preference`
+            - Reset the license preference.
+
+
+
+
+
+
+
+
+Import detail
+-------------
+
+    from ansys.mechanical.core.embedding.license_manager import LicenseManager
+
+
+
+
+
+Method detail
+-------------
+.. py:method:: get_all_licenses() -> list[str]
+
+   
+   Return list of all licenses.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: get_license_status(license_name: str) -> Ansys.Mechanical.DataModel.Enums.LicenseStatus
+
+   
+   Return status of the specific license.
+
+
+   :Parameters:
+
+       **license_name** : :class:`python:str`
+           Name of the license to check.
+
+
+
+   :Returns:
+
+       "Ansys.Mechanical.DataModel.Enums.LicenseStatus"
+           The status of the license.
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: set_license_status(license_name: str, status: bool) -> None
+
+   
+   Set the status of a license and save the preference.
+
+
+   :Parameters:
+
+       **license_name** : :class:`python:str`
+           Name of the license to set the status for.
+
+       **status** : :ref:`bool <python:bltin-boolean-values>`
+           True to enable the license, False to disable it.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: show() -> None
+
+   
+   Print all active licenses.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: disable_session_license() -> None
+
+   
+   Disable active license for current session.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: enable_session_license(license: Optional[Union[str, List[str]]] = None) -> None
+
+   
+   Enable license(s) for the current session.
+
+
+   :Parameters:
+
+       **license** : :obj:`Optional`\[:obj:`Union`\[:class:`python:str`, :obj:`List`\[:class:`python:str`]]], :obj:`optional`
+           If None, activates the first enabled license in the priority order.
+           If a string, activates that specific license.
+           If a list of strings, activates all specified licenses in the order provided.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: move_to_index(license_name: str, location: int) -> None
+
+   
+   Move a license preference.
+
+   Move license to zero-based index location in the license preference list.
+   This is useful for setting the preferred license location.
+
+   :Parameters:
+
+       **license_name** : :class:`python:str`
+           License name.
+
+       **location** : :class:`python:int`
+           Location to move the license to.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   .. rubric:: Examples
+
+   Move Ansys Mechanical Premium to the first location.
+
+   >>> license_manager = LicenseManager(app)
+   >>> license_manager.move_to_index("Ansys Mechanical Premium", 0)
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: reset_preference() -> None
+
+   
+   Reset the license preference.
+
+   This method will reset the license location order and the status of all licenses
+   to the default state.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. vale on

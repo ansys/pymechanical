@@ -1,0 +1,234 @@
+.. vale off
+
+
+
+:class:`ShellHooks`
+===================
+
+.. py:class:: ansys.mechanical.core.embedding.ipython_shell.ShellHooks
+
+   
+   IPython shell lifetime hooks.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+.. py:currentmodule:: ShellHooks
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+   .. tab-item:: Methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~start`
+            - Signal handler when the shell starts.
+          * - :py:attr:`~idle`
+            - Signal handler when the shell is idle.
+          * - :py:attr:`~end`
+            - Signal handler when the shell ends.
+
+
+   .. tab-item:: Properties
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~idle_hook`
+            - Function to call between IPython block executions.
+          * - :py:attr:`~start_hook`
+            - Function to call at the start of the block thread.
+          * - :py:attr:`~end_hook`
+            - Function to call when the shell is exited.
+
+
+
+
+
+
+
+Import detail
+-------------
+
+    from ansys.mechanical.core.embedding.ipython_shell import ShellHooks
+
+
+Property detail
+---------------
+.. py:property:: idle_hook
+   :type: callable
+
+
+   
+   Function to call between IPython block executions.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: start_hook
+   :type: callable
+
+
+   
+   Function to call at the start of the block thread.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:property:: end_hook
+   :type: callable
+
+
+   
+   Function to call when the shell is exited.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+Method detail
+-------------
+.. py:method:: start()
+
+   
+   Signal handler when the shell starts.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: idle()
+
+   
+   Signal handler when the shell is idle.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: end()
+
+   
+   Signal handler when the shell ends.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+.. vale on
