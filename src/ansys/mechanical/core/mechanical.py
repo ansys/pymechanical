@@ -797,8 +797,6 @@ class Mechanical:
                     break
             except ReferenceError:
                 break
-            # except Exception:
-            #     continue
 
     def _create_channel(self):
         """Create an secure and insecure gRPC channel."""
@@ -1245,8 +1243,8 @@ class Mechanical:
         self._busy = True
         try:
             self._stub.Shutdown(request)
-        except grpc._channel._InactiveRpcError:
-            self.log_warning("Mechanical exit failed: {str(error}.")
+        except grpc._channel._InactiveRpcError as error:
+            self.log_warning(f"Mechanical exit failed: {error}.")
         finally:
             self._busy = False
 
@@ -1257,8 +1255,8 @@ class Mechanical:
             self.log_debug("PyPIM delete has started.")
             try:
                 self._remote_instance.delete()
-            except Exception:
-                self.log_warning("Remote instance delete failed: {str(error}.")
+            except Exception as error:
+                self.log_warning(f"Remote instance delete failed: {error}.")
             self.log_debug("PyPIM delete has finished.")
 
             self._remote_instance = None
@@ -1812,8 +1810,8 @@ for dirPath, _, fileNames in os.walk(rootDir):
 
         for file in files:
             # create similar hierarchy locally
-            new_path = file.replace(parent_directory, destination_directory)
-            new_path_dir = str(Path(new_path).parent)
+            new_path = Path(destination_directory) / Path(file).relative_to(parent_directory)
+            new_path_dir = str(new_path.parent)
             temp_files = self.download(
                 files=file, target_dir=new_path_dir, progress_bar=progress_bar
             )
@@ -1845,15 +1843,7 @@ for dirPath, _, fileNames in os.walk(rootDir):
     @staticmethod
     def __readfile(file_path):
         """Get the contents of the file as a string."""
-        # open text file in read mode
-        file_path = Path(file_path)
-        text_file = file_path.open("r", encoding="utf-8")
-        # read whole file to a string
-        data = text_file.read()
-        # close file
-        text_file.close()
-
-        return data
+        return Path(file_path).read_text(encoding="utf-8")
 
     def _get_python_script_api_version(self) -> int:
         if self._python_script_api_version == -1:
