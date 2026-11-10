@@ -130,6 +130,6 @@ process isolation but does not expose the full object model directly.
 
 .. seealso::
 
-   - :doc:`../architecture` — Detailed technical architecture
-   - :doc:`installation` — Install PyMechanical
-   - :doc:`running_mechanical` — Launch and connect to Mechanical
+   - :doc:`../architecture`: Detailed technical architecture
+   - :doc:`installation`: Install PyMechanical
+   - :doc:`running_mechanical`: Launch and connect to Mechanical
