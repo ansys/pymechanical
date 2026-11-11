@@ -1,0 +1,49 @@
+
+:orphan:
+
+.. _sphx_glr_sg_execution_times:
+
+
+Computation times
+=================
+**03:42.811** total execution time for 5 files **from all galleries**:
+
+.. container::
+
+  .. raw:: html
+
+    <style scoped>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+    </style>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script type="text/javascript" class="init">
+    $(document).ready( function () {
+        $('table.sg-datatable').DataTable({order: [[1, 'desc']]});
+    } );
+    </script>
+
+  .. list-table::
+   :header-rows: 1
+   :class: table table-striped sg-datatable
+
+   * - Example
+     - Time
+     - Mem (MB)
+   * - :ref:`sphx_glr_examples_gallery_examples_01_basic_bolt_pretension.py` (``../../examples/01_basic/bolt_pretension.py``)
+     - 01:56.134
+     - 0.0
+   * - :ref:`sphx_glr_examples_gallery_examples_01_basic_topology_optimization_cantilever_beam.py` (``../../examples/01_basic/topology_optimization_cantilever_beam.py``)
+     - 00:39.220
+     - 0.0
+   * - :ref:`sphx_glr_examples_gallery_examples_01_basic_cooling_holes_thermal_analysis.py` (``../../examples/01_basic/cooling_holes_thermal_analysis.py``)
+     - 00:28.757
+     - 0.0
+   * - :ref:`sphx_glr_examples_gallery_examples_01_basic_valve.py` (``../../examples/01_basic/valve.py``)
+     - 00:19.660
+     - 0.0
+   * - :ref:`sphx_glr_examples_gallery_examples_01_basic_steady_state_thermal_analysis.py` (``../../examples/01_basic/steady_state_thermal_analysis.py``)
+     - 00:19.040
+     - 0.0
