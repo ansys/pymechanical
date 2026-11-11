@@ -18,7 +18,7 @@ API reference
       :padding: 2 2 2 2
       :link: https://scripting.mechanical.docs.pyansys.com
 
-      Browse the full Mechanical 2026 R1 scripting API — objects,
+      Browse the full Mechanical 2026 R1 scripting API—objects,
       methods, and properties exposed inside Mechanical.
 
       :bdg-secondary:`Mechanical API` :bdg-secondary:`2026 R1`

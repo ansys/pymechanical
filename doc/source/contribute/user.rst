@@ -24,7 +24,7 @@ questions, and sharing their work with the community.
         :link: request-a-new-feature
         :link-type: ref
 
-        Got an idea for a new feature? Share it!
+        Got an idea for a new feature? Share it.
 
     .. grid-item-card:: :fa:`vial-circle-check` Test a new feature
         :padding: 2 2 2 2
