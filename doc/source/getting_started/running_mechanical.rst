@@ -125,4 +125,4 @@ For more on embedding, see the :ref:`Embedding mode user guide <ref_embedding_us
 
 .. seealso::
 
-   :doc:`troubleshooting` — executable not found, licensing, VPN, and debug tips.
+   :doc:`troubleshooting`: Executable not found, licensing, VPN, and debug tips.
