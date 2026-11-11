@@ -3,7 +3,7 @@
 Autocomplete
 ============
 
-The ``ansys-mechanical-stubs`` package provides typehints for Mechanical scripting.
+The ``ansys-mechanical-stubs`` package provides type hints for Mechanical scripting.
 This package is automatically installed when you install PyMechanical.
 
 Setting up autocomplete in VS Code
