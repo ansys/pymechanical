@@ -36,7 +36,6 @@ dependencies = [
     "protobuf>=5",
     "psutil>=6",
     "tqdm>=4.45.0",
-    "requests>=2,<3"
 ]
 
 [project.urls]
@@ -76,6 +75,7 @@ doc = [
     "ansys-tools-visualization-interface>=0.2.6",
     "ablog>=0.11.0,<1",
     "sphinxcontrib-mermaid>=2.0.2,<3",
+    "requests>=2,<3",
 ]
 
 graphics = [
