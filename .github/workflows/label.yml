@@ -72,19 +72,22 @@ jobs:
         echo "names=$names" >> "$GITHUB_OUTPUT"
 
     - name: Suggest to add labels
-      uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
       # Execute only when no labels have been applied to the pull request
       if: steps.labels.outputs.names == '[]'
-      with:
-        issue-number: ${{ github.event.pull_request.number }}
-        body: |
-          Please add one of the following labels to add this contribution to the Release Notes :point_down:
-          - [bug](https://github.com/ansys/pymechanical/pulls?q=label%3Abug+)
-          - [documentation](https://github.com/ansys/pymechanical/pulls?q=label%3Adocumentation+)
-          - [enhancement](https://github.com/ansys/pymechanical/pulls?q=label%3Aenhancement+)
-          - [good first issue](https://github.com/ansys/pymechanical/pulls?q=label%3Agood+first+issue)
-          - [maintenance](https://github.com/ansys/pymechanical/pulls?q=label%3Amaintenance+)
-          - [release](https://github.com/ansys/pymechanical/pulls?q=label%3Arelease+)
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        REPO: ${{ github.repository }}
+      run: |
+        gh pr comment "$PR_NUMBER" --repo "$REPO" --body-file - <<'EOF'
+        Please add one of the following labels to add this contribution to the Release Notes :point_down:
+        - [bug](https://github.com/ansys/pymechanical/pulls?q=label%3Abug+)
+        - [documentation](https://github.com/ansys/pymechanical/pulls?q=label%3Adocumentation+)
+        - [enhancement](https://github.com/ansys/pymechanical/pulls?q=label%3Aenhancement+)
+        - [good first issue](https://github.com/ansys/pymechanical/pulls?q=label%3Agood+first+issue)
+        - [maintenance](https://github.com/ansys/pymechanical/pulls?q=label%3Amaintenance+)
+        - [release](https://github.com/ansys/pymechanical/pulls?q=label%3Arelease+)
+        EOF
 
   changelog-fragment:
     name: "Create changelog fragment"
