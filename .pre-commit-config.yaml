@@ -53,7 +53,7 @@ repos:
     - id: check-github-workflows
 
 - repo: https://github.com/zizmorcore/zizmor-pre-commit
-  rev: c92afdf2c6ca336aaa8f39e2bd8d48f62dbd8e1f  # frozen: v1.31.1
+  rev: 06a39750ec31860bb44f2acf67182c40016cd1e7  # frozen: v1.32.0
   hooks:
     - id: zizmor
       args: ["--pedantic"]
@@ -73,7 +73,7 @@ repos:
         args: ['--py312-plus']
 
 - repo: https://github.com/crate-ci/typos
-  rev: 6b8d5532f97e7efe2bf6907daac17b3c9f8926ba  # frozen: v1.52.2
+  rev: b859c0df7f391deba73030f79b957e62b4d81dc6  # frozen: varcon-core-v5.0.7
   hooks:
     - id: typos
       args: ["--config", "doc/styles/typos.toml"]
