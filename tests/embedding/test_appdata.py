@@ -29,6 +29,7 @@ from unittest import mock
 
 import pytest
 
+from ansys.mechanical.core.embedding.app import _set_temporary_directory
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 
 
@@ -65,6 +66,31 @@ def test_private_appdata(pytestconfig, run_subprocess, rootdir):
     )
     stdout = stdout.decode()
     assert "ShowTriad value is True" in stdout
+
+
+@pytest.mark.embedding_scripts
+@pytest.mark.python_env
+def test_app_custom_temp_overrides_private_appdata(pytestconfig, run_subprocess, rootdir, tmp_path):
+    """Test App uses a custom temp directory with private appdata."""
+    version = pytestconfig.getoption("ansys_version")
+    embedded_py = Path(rootdir) / "tests" / "scripts" / "run_embedded_app.py"
+
+    process, stdout, stderr = run_subprocess(
+        [
+            sys.executable,
+            str(embedded_py),
+            "--version",
+            version,
+            "--private_appdata",
+            "True",
+            "--temp",
+            str(tmp_path),
+            "--action",
+            "Temp",
+        ]
+    )
+
+    assert f"Temporary directory is {tmp_path}" in stdout.decode()
 
 
 @pytest.mark.embedding_scripts
@@ -157,6 +183,18 @@ def test_uniqueprofile_env():
         env["TEMP"] = str(Path(profile.location) / "AppData" / "Local" / "Temp")
     else:
         env["HOME"] = str(profile.location)
+
+
+@pytest.mark.embedding
+def test_custom_temp_overrides_private_appdata(tmp_path):
+    """Test a custom temp directory takes precedence over private appdata."""
+    profile = UniqueUserProfile("test_temp_override", copy_profile=False, dry_run=True)
+    with mock.patch.object(sys, "platform", "win32"), mock.patch.dict(os.environ, {}, clear=True):
+        profile.update_environment(os.environ)
+        _set_temporary_directory(tmp_path)
+
+        temp_variables = {name: os.environ[name] for name in ("TEMP", "TMP", "TMPDIR")}
+        assert temp_variables == dict.fromkeys(temp_variables, str(tmp_path))
 
 
 @pytest.mark.embedding

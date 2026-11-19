@@ -23,6 +23,7 @@
 """Launch embedded instance."""
 
 import argparse
+import os
 
 import ansys.mechanical.core as pymechanical
 from ansys.mechanical.core.embedding.app import is_initialized
@@ -79,6 +80,7 @@ def launch_app(args):
             private_appdata=args.private_appdata,
             copy_profile=False,
             globals=globals(),
+            temp=args.temp,
         )
     return app
 
@@ -116,11 +118,19 @@ def print_showtriad(args):
     app.close()
 
 
+def print_temp(args):
+    """Return the effective temporary directory."""
+    app = launch_app(args)
+    print("Temporary directory is " + os.environ["TEMP"])
+    app.close()
+
+
 if __name__ == "__main__":
     # Set up argparse for command line arguments from subprocess.
     parser = argparse.ArgumentParser(description="Launch embedded instance of app.")
     parser.add_argument("--version", type=str, help="Mechanical version")
     parser.add_argument("--private_appdata", type=str, help="Private appdata")
+    parser.add_argument("--temp", type=str, help="Temporary directory")
     parser.add_argument("--action", type=str, help="Action to perform")
     parser.add_argument("--debug", action="store_true")  # 'store_true' implies default=False
     parser.add_argument(
@@ -143,5 +153,7 @@ if __name__ == "__main__":
         set_showtriad(args, True)
     elif action == "TestGlobals":
         test_globals(args)
+    elif action == "Temp":
+        print_temp(args)
     else:
         launch_app(args)
