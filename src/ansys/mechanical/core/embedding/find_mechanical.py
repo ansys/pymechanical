@@ -22,7 +22,6 @@
 
 """Cli for finding mechanical installation."""
 
-import os
 from pathlib import Path
 import sys
 
@@ -89,15 +88,17 @@ def cli(version: int, path: str | None = None) -> tuple[int, str]:
         print(_version_from_given_path, str(Path(path) / "aisol"))
         sys.exit(0)
 
-    from_environment = bool(_installation.installed()) or f"AWP_ROOT{version}" in os.environ
-    if not from_environment:
-        click.echo(
-            "No AWP_ROOT### env. variables pointing to a v<version> folder found. "
-            "Falling back to default locations: "
-            "/usr/ansys_inc, /ansys_inc, /install/ansys_inc.",
-            err=True,
-        )
+    found = _installation.from_environment(version)
+    if found is not None:
+        print(found.version, str(found.aisol))
+        sys.exit(0)
 
+    click.echo(
+        "No AWP_ROOT### env. variables pointing to a v<version> folder found. "
+        "Falling back to default locations: "
+        "/usr/ansys_inc, /ansys_inc, /install/ansys_inc.",
+        err=True,
+    )
     found = _installation.find(version)
     if found is None:
         raise click.ClickException(
@@ -108,8 +109,6 @@ def cli(version: int, path: str | None = None) -> tuple[int, str]:
             "/path/to/.workbench"
         )
 
-    # ansys-tools-path results print the executable folder, as before the resolver existed.
-    folder = found.aisol if from_environment else found.executable.parent
-    print(found.version, str(folder))
+    print(found.version, str(found.executable.parent))
 
     sys.exit(0)
