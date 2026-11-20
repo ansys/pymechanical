@@ -188,14 +188,20 @@ def has_grpc_service_pack(version):
 
     Parameters
     ----------
-    version : int
-        Mechanical version number (e.g., 242, 251, 252, 261).
+    version : int, str, or Installation
+        Mechanical version number (e.g., 242, 251, 252, 261), or the installation to
+        check. An installation is checked directly; a version number checks the
+        installation that :func:`ansys.mechanical.core._installation.find` returns.
 
     Returns
     -------
     bool
         True if version has required service pack for gRPC security, False otherwise.
     """
+    installation = version if isinstance(version, _installation.Installation) else None
+    if installation is not None:
+        version = installation.version
+
     # Handle None version
     if version is None:
         return False
@@ -228,7 +234,8 @@ def has_grpc_service_pack(version):
 
     required_sp = min_service_pack[version]
 
-    installation = _installation.find(version, prefer_locator=True)
+    if installation is None:
+        installation = _installation.find(version, prefer_locator=True)
     if installation is None:
         return False
 
