@@ -30,6 +30,10 @@ from pathlib import Path
 import ansys.tools.common.path as atp
 
 
+def _platform_folder() -> str:
+    return "winx64" if os.name == "nt" else "linx64"
+
+
 @dataclass(frozen=True)
 class Installation:
     """Provides the version and root folder of a Mechanical installation.
@@ -71,7 +75,32 @@ class Installation:
         >>> bin_dir.name in ("winx64", "linx64")
         True
         """
-        return self.aisol / "bin" / ("winx64" if os.name == "nt" else "linx64")
+        return self.aisol / "bin" / _platform_folder()
+
+    @property
+    def dll_dir(self) -> Path:
+        """Platform-specific folder holding the Mechanical shared libraries.
+
+        Examples
+        --------
+        >>> dll_dir = Installation(261, Path("/ansys_inc/v261")).dll_dir
+        >>> dll_dir.parent.as_posix()
+        '/ansys_inc/v261/aisol/dll'
+        >>> dll_dir.name in ("winx64", "linx64")
+        True
+        """
+        return self.aisol / "dll" / _platform_folder()
+
+    @property
+    def act_libraries_dir(self) -> Path:
+        """Folder holding the Mechanical Python libraries of the ACT add-in.
+
+        Examples
+        --------
+        >>> Installation(261, Path("/ansys_inc/v261")).act_libraries_dir.as_posix()
+        '/ansys_inc/v261/Addins/ACT/libraries/Mechanical'
+        """
+        return self.root / "Addins" / "ACT" / "libraries" / "Mechanical"
 
     @property
     def executable(self) -> Path:
@@ -125,13 +154,13 @@ def for_version(version: int, environ: Mapping[str, str] | None = None) -> Insta
     root = environ.get(f"AWP_ROOT{version}")
     if root is not None:
         return Installation(version, Path(root))
-    found = installed(environ).get(version)
-    if found is None:
+    discovered = installed(environ).get(version)
+    if discovered is None:
         raise RuntimeError(
             f"AWP_ROOT{version} environment variable not found. Set it to the Mechanical "
             f"{version} installation, such as /path/to/ansys_inc/v{version}."
         )
-    return found
+    return discovered
 
 
 def installed(environ: Mapping[str, str] | None = None) -> dict[int, Installation]:
@@ -166,15 +195,26 @@ def installed(environ: Mapping[str, str] | None = None) -> dict[int, Installatio
     return found
 
 
+def _locate(version: int | None, locator: Callable[..., str | None] | None) -> Installation | None:
+    exe = (locator or atp.get_mechanical_path)(allow_input=False, version=version)
+    if not exe:
+        return None
+    exe_path = Path(exe)
+    root = next((p.parent for p in exe_path.parents if p.name.lower() == "aisol"), exe_path.parent)
+    return Installation(atp.version_from_path("mechanical", exe), root)
+
+
 def find(
     version: int | None = None,
     environ: Mapping[str, str] | None = None,
     locator: Callable[..., str | None] | None = None,
+    prefer_locator: bool = False,
 ) -> Installation | None:
     """Find a Mechanical installation, preferring ``AWP_ROOT*`` variables.
 
     The search order is ``AWP_ROOT<version>``, then the requested version from the
     environment, then the latest version from the environment, then ``locator``.
+    With ``prefer_locator``, ``locator`` comes first and the environment is the fallback.
     The root of a located executable is the folder above its ``aisol`` folder.
 
     Parameters
@@ -185,8 +225,10 @@ def find(
         Environment to read. ``None`` reads ``os.environ``.
     locator : Callable, default: None
         Called as ``locator(allow_input=False, version=version)`` to get the
-        executable path when no ``AWP_ROOT*`` variable is usable. ``None`` uses
-        ``ansys.tools.common.path.get_mechanical_path``.
+        executable path. ``None`` uses ``ansys.tools.common.path.get_mechanical_path``,
+        which honors a path saved with ``ansys-tools-path``.
+    prefer_locator : bool, default: False
+        Whether ``locator`` takes precedence over the ``AWP_ROOT*`` variables.
 
     Returns
     -------
@@ -199,16 +241,15 @@ def find(
     261
     """
     environ = os.environ if environ is None else environ
+    if prefer_locator:
+        located = _locate(version, locator)
+        if located is not None:
+            return located
     if version is not None and f"AWP_ROOT{version}" in environ:
         return for_version(version, environ)
-    found = installed(environ)
-    if version in found:
-        return found[version]
-    if found:
-        return found[max(found)]
-    exe = (locator or atp.get_mechanical_path)(allow_input=False, version=version)
-    if not exe:
-        return None
-    exe_path = Path(exe)
-    root = next((p.parent for p in exe_path.parents if p.name.lower() == "aisol"), exe_path.parent)
-    return Installation(atp.version_from_path("mechanical", exe), root)
+    by_version = installed(environ)
+    if version in by_version:
+        return by_version[version]
+    if by_version:
+        return by_version[max(by_version)]
+    return None if prefer_locator else _locate(version, locator)

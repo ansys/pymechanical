@@ -36,8 +36,7 @@ from subprocess import Popen  # nosec: B404
 import sys
 import tempfile
 
-import ansys.tools.common.path as atp
-
+from ansys.mechanical.core import _installation
 from ansys.mechanical.core.embedding.logger import Logger
 
 
@@ -129,7 +128,7 @@ class UILauncher:
             except Exception:
                 Logger.warning(f"Failed to launch Mechanical GUI with args: {args}")
                 Logger.info("Retrieving the path to the Mechanical executable directly...")
-                exe = atp.get_mechanical_path(allow_input=False, version=app.version)
+                exe = _installation.for_version(app.version).executable
                 args = [
                     str(exe),
                     "--project-file",

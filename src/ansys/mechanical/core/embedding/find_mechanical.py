@@ -22,7 +22,6 @@
 
 """Cli for finding mechanical installation."""
 
-import os
 from pathlib import Path
 import sys
 
@@ -89,7 +88,8 @@ def cli(version: int, path: str | None = None) -> tuple[int, str]:
         print(_version_from_given_path, str(Path(path) / "aisol"))
         sys.exit(0)
 
-    from_environment = bool(_installation.installed()) or f"AWP_ROOT{version}" in os.environ
+    found = _installation.find(version, locator=lambda **_: None)
+    from_environment = found is not None
     if not from_environment:
         click.echo(
             "No AWP_ROOT### env. variables pointing to a v<version> folder found. "
@@ -97,8 +97,7 @@ def cli(version: int, path: str | None = None) -> tuple[int, str]:
             "/usr/ansys_inc, /ansys_inc, /install/ansys_inc.",
             err=True,
         )
-
-    found = _installation.find(version)
+        found = _installation.find(version)
     if found is None:
         raise click.ClickException(
             "Mechanical installation not found in default locations. "

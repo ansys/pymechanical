@@ -132,6 +132,40 @@ def test_find_returns_none_when_nothing_found():
 
 
 @pytest.mark.embedding
+def test_find_prefers_locator_over_environment_when_requested():
+    """Test that find returns the located install before AWP_ROOT with prefer_locator."""
+
+    def locator(allow_input, version):
+        return "/saved/v252/aisol/.workbench"
+
+    found = _installation.find(None, {"AWP_ROOT261": "/ansys_inc/v261"}, locator, True)
+
+    assert (found.version, found.root) == (252, Path("/saved/v252"))
+
+
+@pytest.mark.embedding
+def test_find_falls_back_to_environment_when_preferred_locator_finds_nothing():
+    """Test that find reads AWP_ROOT when the preferred locator returns nothing."""
+    found = _installation.find(
+        None, {"AWP_ROOT261": "/ansys_inc/v261"}, lambda allow_input, version: None, True
+    )
+
+    assert found.root == Path("/ansys_inc/v261")
+
+
+@pytest.mark.embedding
+def test_find_calls_preferred_locator_once_when_nothing_found():
+    """Test that find doesn't retry the locator after a preferred lookup fails."""
+    calls = []
+
+    def locator(allow_input, version):
+        calls.append(version)
+
+    assert _installation.find(None, {}, locator, True) is None
+    assert len(calls) == 1
+
+
+@pytest.mark.embedding
 def test_get_mechanical_bin_uses_awp_root_as_install_root(monkeypatch, tmp_path):
     """Test that get_mechanical_bin doesn't append the version folder to AWP_ROOT."""
     root = tmp_path / "v261"
