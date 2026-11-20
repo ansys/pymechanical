@@ -21,7 +21,7 @@
    :target: https://app.codecov.io/gh/ansys/pymechanical
    :alt: Codecov
 
-.. |GH-CI| image:: https://github.com/ansys/pymechanical/actions/workflows/ci_cd.yml/badge.svg
+.. |GH-CI| image:: https://github.com/ansys/pymechanical/actions/workflows/ci_cd.yml/badge.svg?branch=main&event=schedule
    :target: https://github.com/ansys/pymechanical/actions/workflows/ci_cd.yml
    :alt: GH-CI
 
@@ -33,11 +33,11 @@
    :target: https://github.com/astral-sh/ruff
    :alt: Ruff
 
-.. |pre-commit| image:: https://results.pre-commit.ci/badge/github/ansys/pymechanical/main.svg?style=flat
-   :target: https://results.pre-commit.ci/latest/github/ansys/pymechanical/main
+.. |pre-commit| image:: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
+   :target: https://pre-commit.com/
    :alt: pre-commit
 
-.. |deep-wiki| image:: https://deepwiki.com/badge.svg
+.. |deep-wiki| image:: https://img.shields.io/badge/Ask-DeepWiki-blue
    :target: https://deepwiki.com/ansys/pymechanical
    :alt: Ask DeepWiki
 

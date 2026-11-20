@@ -72,3 +72,12 @@ start_license
 PrepPost
 Synopsys
 synopsys
+Amrit
+subgraph
+ci
+classDef
+buildNode
+ciNode
+choose_your_mode
+running_mechanical
+faq
