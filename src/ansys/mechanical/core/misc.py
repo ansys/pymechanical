@@ -28,6 +28,8 @@ from pathlib import Path
 import socket
 from threading import Thread
 
+from ansys.mechanical.core import _installation
+
 
 def is_windows():
     """Check if the host machine is on Windows.
@@ -51,18 +53,16 @@ def get_mechanical_bin(release_version):
         Mechanical version using the three-digit format. For example, ``"261"`` for
         2026 R1.
     """
+    try:
+        return str(_installation.for_version(int(release_version)).executable)
+    except RuntimeError:
+        pass
     if is_windows():  # pragma: no cover
         program_files = os.getenv("PROGRAMFILES", str(Path("c:") / "Program Files"))
-        ans_root = os.getenv(
-            f"AWP_ROOT{release_version}",
-            str(Path(program_files) / "ANSYS Inc" / f"v{release_version}"),
-        )
-        mechanical_bin = Path(ans_root) / "aisol" / "bin" / "winx64" / "AnsysWBU.exe"
+        root = Path(program_files) / "ANSYS Inc" / f"v{release_version}"
     else:
-        ans_root = os.getenv(f"AWP_ROOT{release_version}", str(Path("/") / "usr" / "ansys_inc"))
-        mechanical_bin = Path(ans_root) / f"v{release_version}" / "aisol" / ".workbench"
-
-    return str(mechanical_bin)
+        root = Path("/") / "usr" / "ansys_inc" / f"v{release_version}"
+    return str(_installation.Installation(int(release_version), root).executable)
 
 
 def threaded(func):

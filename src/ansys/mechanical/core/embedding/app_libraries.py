@@ -48,13 +48,13 @@ can be imported with the `import` statement.
 
 """
 
-import os
 from pathlib import Path
 import sys
 import warnings
 
 from ansys.tools.common.path import get_mechanical_path
 
+from ansys.mechanical.core import _installation
 from ansys.mechanical.core.embedding.app import App
 
 
@@ -72,7 +72,7 @@ def add_mechanical_python_libraries(app_or_version):
             exe_path = exe_path.parent
         install_dir = str(exe_path)
     elif isinstance(app_or_version, App):
-        install_dir = os.environ[f"AWP_ROOT{app_or_version.version}"]
+        install_dir = str(_installation.for_version(app_or_version.version).root)
     else:
         raise ValueError("Invalid input: expected an integer (version) or an instance of App().")
 
