@@ -24,11 +24,11 @@
 
 from importlib.metadata import distribution
 import os
-from pathlib import Path
 import platform
 import sys
 import warnings
 
+from ansys.mechanical.core import _installation
 from ansys.mechanical.core.embedding.loader import load_clr
 from ansys.mechanical.core.embedding.resolver import resolve
 from ansys.mechanical.core.mechanical import LOG
@@ -46,10 +46,7 @@ SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS = {
 
 
 def __add_sys_path(version: int) -> None:
-    install_path = Path(os.environ[f"AWP_ROOT{version}"])
-    platform_string = "winx64" if os.name == "nt" else "linx64"
-    bin_path = install_path / "aisol" / "bin" / platform_string
-    sys.path.append(str(bin_path.resolve()))
+    sys.path.append(str(_installation.for_version(version).bin_dir.resolve()))
 
 
 def __workaround_material_server(version: int) -> None:
@@ -86,29 +83,21 @@ def _get_latest_default_version() -> int:
     For Linux, only one is expected since ``mechanical-env`` takes care of that.
     If multiple versions are detected, the latest one is selected.
     """
-    awp_roots = [value for key, value in os.environ.items() if key.startswith("AWP_ROOT")]
-    if not awp_roots:
+    versions_found = sorted(_installation.installed())
+    if not versions_found:
         raise RuntimeError(
-            "No AWP_ROOT### environment variables found.\n"
+            "No AWP_ROOT### environment variables pointing to a v<version> folder found.\n"
             "Ensure Mechanical is installed.\n"
             "To set the environment variable manually, use:\n"
             "  AWP_ROOT<version>=/path/to/ansys_inc/v<version>\n"
             "  Example: AWP_ROOT261=/path/to/ansys_inc/v261"
         )
 
-    versions_found = []
-    for path in awp_roots:
-        resolved_path = Path(path).resolve()
-        folder = resolved_path.name
-        if folder.startswith("v") and folder[1:].isdigit():
-            version = int(folder[1:])
-            versions_found.append(version)
-
     LOG.info(f"Available versions of Mechanical: {versions_found}")
 
-    latest_version = max(versions_found)
+    latest_version = versions_found[-1]
 
-    if len(awp_roots) > 1:
+    if len(versions_found) > 1:
         LOG.warning(
             f"Multiple versions of Mechanical found! Using latest version {latest_version} ..."
         )
@@ -153,10 +142,11 @@ def __windows_store_workaround(version: int) -> None:
         return
 
     # Get the AWP_ROOT environment variable for the specified version
-    awp_root = Path(os.environ[f"AWP_ROOT{version}"])
+    installation = _installation.for_version(version)
+    awp_root = installation.root
     # Set paths to the aisol and framework DLLs
     paths = [
-        awp_root / "aisol" / "bin" / "winx64",
+        installation.bin_dir,
         awp_root / "Framework" / "bin" / "Win64",
     ]
     # Set the path to the tp directory within the AWP_ROOTXYZ directory
@@ -326,7 +316,7 @@ def initialize(version: int | None = None):
         pass
 
     # load the CLR with mono that is shipped with the unified ansys installer
-    load_clr(os.environ[f"AWP_ROOT{version}"])
+    load_clr(str(_installation.for_version(version).root))
 
     # attach the resolver
     resolve(version)

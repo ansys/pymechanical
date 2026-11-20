@@ -29,6 +29,8 @@ import sys
 import ansys.tools.common.path as atp
 import click
 
+from ansys.mechanical.core import _installation
+
 
 @click.command()
 @click.help_option("--help", "-h")
@@ -87,33 +89,17 @@ def cli(version: int, path: str | None = None) -> tuple[int, str]:
         print(_version_from_given_path, str(Path(path) / "aisol"))
         sys.exit(0)
 
-    awp_roots = [value for key, value in os.environ.items() if key.startswith("AWP_ROOT")]
-
-    if awp_roots:
-        versions_found = []
-        for awp_root in awp_roots:
-            vfolder = Path(awp_root).name
-            _version = vfolder.lstrip("v")
-            versions_found.append(int(_version))
-        if version in versions_found:
-            print(version, str(Path(os.environ[f"AWP_ROOT{version}"]) / "aisol"))
-            sys.exit(0)
-        if versions_found:
-            latest_version = max(versions_found)
-            print(latest_version, str(Path(os.environ[f"AWP_ROOT{latest_version}"]) / "aisol"))
-            sys.exit(0)
-    else:
+    from_environment = bool(_installation.installed()) or f"AWP_ROOT{version}" in os.environ
+    if not from_environment:
         click.echo(
-            "No AWP_ROOT### env. variables found. "
+            "No AWP_ROOT### env. variables pointing to a v<version> folder found. "
             "Falling back to default locations: "
             "/usr/ansys_inc, /ansys_inc, /install/ansys_inc.",
             err=True,
         )
 
-    _exe = atp.get_mechanical_path(allow_input=False, version=version)
-    if _exe:
-        _version = atp.version_from_path("mechanical", _exe)
-    else:
+    found = _installation.find(version)
+    if found is None:
         raise click.ClickException(
             "Mechanical installation not found in default locations. "
             "Specify the Ansys installation path with: "
@@ -122,7 +108,8 @@ def cli(version: int, path: str | None = None) -> tuple[int, str]:
             "/path/to/.workbench"
         )
 
-    _path = str(Path(_exe).parent)
-    print(_version, _path)
+    # ansys-tools-path results print the executable folder, as before the resolver existed.
+    folder = found.aisol if from_environment else found.executable.parent
+    print(found.version, str(folder))
 
     sys.exit(0)
