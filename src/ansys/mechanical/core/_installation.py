@@ -195,6 +195,44 @@ def installed(environ: Mapping[str, str] | None = None) -> dict[int, Installatio
     return found
 
 
+def from_environment(
+    version: int | None = None, environ: Mapping[str, str] | None = None
+) -> Installation | None:
+    """Find a Mechanical installation from ``AWP_ROOT*`` variables only.
+
+    The search order is ``AWP_ROOT<version>``, then the requested version from the
+    environment, then the latest version from the environment.
+
+    Parameters
+    ----------
+    version : int, default: None
+        Preferred Mechanical version.
+    environ : Mapping[str, str], default: None
+        Environment to read. ``None`` reads ``os.environ``.
+
+    Returns
+    -------
+    Installation or None
+        Installation found, or ``None`` if no ``AWP_ROOT*`` variable is usable.
+
+    Examples
+    --------
+    >>> from_environment(242, {"AWP_ROOT261": "/ansys_inc/v261"}).version
+    261
+    >>> from_environment(261, {}) is None
+    True
+    """
+    environ = os.environ if environ is None else environ
+    if version is not None and f"AWP_ROOT{version}" in environ:
+        return for_version(version, environ)
+    by_version = installed(environ)
+    if version in by_version:
+        return by_version[version]
+    if by_version:
+        return by_version[max(by_version)]
+    return None
+
+
 def _locate(version: int | None, locator: Callable[..., str | None] | None) -> Installation | None:
     exe = (locator or atp.get_mechanical_path)(allow_input=False, version=version)
     if not exe:
@@ -212,8 +250,7 @@ def find(
 ) -> Installation | None:
     """Find a Mechanical installation, preferring ``AWP_ROOT*`` variables.
 
-    The search order is ``AWP_ROOT<version>``, then the requested version from the
-    environment, then the latest version from the environment, then ``locator``.
+    The search order is :func:`from_environment`, then ``locator``.
     With ``prefer_locator``, ``locator`` comes first and the environment is the fallback.
     The root of a located executable is the folder above its ``aisol`` folder.
 
@@ -240,16 +277,6 @@ def find(
     >>> find(242, {"AWP_ROOT261": "/ansys_inc/v261"}).version
     261
     """
-    environ = os.environ if environ is None else environ
     if prefer_locator:
-        located = _locate(version, locator)
-        if located is not None:
-            return located
-    if version is not None and f"AWP_ROOT{version}" in environ:
-        return for_version(version, environ)
-    by_version = installed(environ)
-    if version in by_version:
-        return by_version[version]
-    if by_version:
-        return by_version[max(by_version)]
-    return None if prefer_locator else _locate(version, locator)
+        return _locate(version, locator) or from_environment(version, environ)
+    return from_environment(version, environ) or _locate(version, locator)
