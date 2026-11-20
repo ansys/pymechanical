@@ -228,23 +228,11 @@ def has_grpc_service_pack(version):
 
     required_sp = min_service_pack[version]
 
-    # Get the executable path to find builddate.txt
-    from ansys.tools.common.path import get_mechanical_path
-
-    exe_path = get_mechanical_path(allow_input=False, version=version)
-
-    if exe_path is None:
+    installation = _installation.find(version, prefer_locator=True)
+    if installation is None:
         return False
 
-    exe_path = Path(exe_path)
-
-    # Navigate to version root directory where builddate.txt is located
-    if is_windows():
-        version_root = exe_path.parent.parent.parent.parent
-    else:
-        version_root = exe_path.parent.parent
-
-    builddate_file = version_root / "builddate.txt"
+    builddate_file = installation.root / "builddate.txt"
 
     if not builddate_file.exists():
         return False

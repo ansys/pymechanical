@@ -37,8 +37,8 @@ from ansys.mechanical.core.embedding.logger import sinks
 
 
 def _get_dll():
-    installdir = _installation.for_version(initializer.INITIALIZED_VERSION).root
-    dll = ctypes.CDLL(str(installdir / "aisol/dll/linx64/libAns.Common.WBLogger.so"))
+    dll_dir = _installation.for_version(initializer.INITIALIZED_VERSION).dll_dir
+    dll = ctypes.CDLL(str(dll_dir / "libAns.Common.WBLogger.so"))
     dll.wb_logger_enable_sink.argtypes = [ctypes.c_int32]
 
     dll.wb_logger_disable_sink.argtypes = [ctypes.c_int32]
