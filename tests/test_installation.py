@@ -31,7 +31,7 @@ import pytest
 
 from ansys.mechanical.core import _installation
 from ansys.mechanical.core.embedding.find_mechanical import cli as find_mechanical_cli
-from ansys.mechanical.core.misc import get_mechanical_bin
+from ansys.mechanical.core.misc import get_mechanical_bin, has_grpc_service_pack
 
 
 def _clear_awp_roots(monkeypatch):
@@ -82,6 +82,28 @@ def test_find_mechanical_cli_reports_awp_roots_without_version_folder(monkeypatc
     result = CliRunner().invoke(find_mechanical_cli, [])
 
     assert "No AWP_ROOT### env. variables pointing to a v<version> folder found" in result.stderr
+
+
+@pytest.mark.embedding
+def test_find_mechanical_cli_prints_aisol_of_given_path(tmp_path):
+    """Test that find-mechanical -p prints the version and aisol folder of the path."""
+    root = tmp_path / "v252"
+    root.mkdir()
+
+    result = CliRunner().invoke(find_mechanical_cli, ["-p", str(root)])
+
+    assert result.stdout.strip() == f"252 {root / 'aisol'}"
+
+
+@pytest.mark.embedding
+def test_find_mechanical_cli_rejects_path_of_other_version(tmp_path):
+    """Test that find-mechanical fails when -r doesn't match the -p version."""
+    root = tmp_path / "v252"
+    root.mkdir()
+
+    result = CliRunner().invoke(find_mechanical_cli, ["-p", str(root), "-r", "261"])
+
+    assert "does not match the specified version 261" in result.output
 
 
 @pytest.mark.embedding
@@ -187,3 +209,64 @@ def test_for_version_raises_when_root_not_set():
     """Test that for_version names the missing AWP_ROOT variable."""
     with pytest.raises(RuntimeError, match="AWP_ROOT261"):
         _installation.for_version(261, {})
+
+
+@pytest.mark.embedding
+@pytest.mark.parametrize(
+    "path",
+    [
+        "C:/Program Files/ANSYS Inc/v251/aisol/bin/winx64/AnsysWBU.exe",
+        "C:/Program Files/ANSYS Inc/v251/aisol/.workbench",
+        "C:/Program Files/ANSYS Inc/v251/aisol",
+    ],
+)
+def test_from_path_uses_folder_above_aisol_as_root(path):
+    """Test that from_path takes the folder above aisol as the root for paths inside it."""
+    found = _installation.from_path(path)
+
+    assert (found.version, found.root) == (251, Path("C:/Program Files/ANSYS Inc/v251"))
+
+
+@pytest.mark.embedding
+def test_from_path_uses_installation_folder_as_root(tmp_path):
+    """Test that from_path takes an existing folder outside aisol as the root."""
+    root = tmp_path / "v252"
+    root.mkdir()
+
+    assert _installation.from_path(root) == _installation.Installation(252, root)
+
+
+@pytest.mark.embedding
+def test_from_path_reads_release_folder_version(tmp_path):
+    """Test that from_path reads the version from a 2026R1-style folder."""
+    root = tmp_path / "2026R1"
+    root.mkdir()
+
+    assert _installation.from_path(root).version == 261
+
+
+@pytest.mark.embedding
+def test_from_path_raises_when_version_unknown():
+    """Test that from_path lets the version parsing error through."""
+    with pytest.raises(RuntimeError):
+        _installation.from_path("/custom/mechanical.exe")
+
+
+@pytest.mark.embedding
+def test_has_grpc_service_pack_reads_given_installation(tmp_path):
+    """Test that has_grpc_service_pack reads builddate.txt from the given installation."""
+    root = tmp_path / "v252"
+    root.mkdir()
+    (root / "builddate.txt").write_text("2025 R2 SP03\n", encoding="utf-8")
+
+    assert has_grpc_service_pack(_installation.Installation(252, root)) is True
+
+
+@pytest.mark.embedding
+def test_has_grpc_service_pack_rejects_given_installation_without_service_pack(tmp_path):
+    """Test that has_grpc_service_pack is False when the given installation lacks the pack."""
+    root = tmp_path / "v252"
+    root.mkdir()
+    (root / "builddate.txt").write_text("2025 R2\n", encoding="utf-8")
+
+    assert has_grpc_service_pack(_installation.Installation(252, root)) is False

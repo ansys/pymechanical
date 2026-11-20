@@ -233,13 +233,47 @@ def from_environment(
     return None
 
 
+def from_path(path: str | os.PathLike[str]) -> Installation:
+    """Get the installation that contains a path.
+
+    The root is the folder above ``aisol`` when ``path`` is inside it. Otherwise,
+    the root is ``path`` itself for an existing folder, or its parent for a file.
+
+    Parameters
+    ----------
+    path : str or os.PathLike
+        Mechanical executable, or a folder of the installation.
+
+    Returns
+    -------
+    Installation
+        Installation that contains ``path``.
+
+    Raises
+    ------
+    RuntimeError
+        If the version can't be read from ``path``.
+
+    Examples
+    --------
+    >>> installation = from_path("/ansys_inc/v261/aisol/.workbench")
+    >>> installation.version, installation.root.as_posix()
+    (261, '/ansys_inc/v261')
+    """
+    path = Path(path)
+    aisol = next((p for p in (path, *path.parents) if p.name.lower() == "aisol"), None)
+    if aisol is not None:
+        root = aisol.parent
+    elif path.is_dir():
+        root = path
+    else:
+        root = path.parent
+    return Installation(atp.version_from_path("mechanical", str(path)), root)
+
+
 def _locate(version: int | None, locator: Callable[..., str | None] | None) -> Installation | None:
     exe = (locator or atp.get_mechanical_path)(allow_input=False, version=version)
-    if not exe:
-        return None
-    exe_path = Path(exe)
-    root = next((p.parent for p in exe_path.parents if p.name.lower() == "aisol"), exe_path.parent)
-    return Installation(atp.version_from_path("mechanical", exe), root)
+    return from_path(exe) if exe else None
 
 
 def find(
@@ -252,7 +286,7 @@ def find(
 
     The search order is :func:`from_environment`, then ``locator``.
     With ``prefer_locator``, ``locator`` comes first and the environment is the fallback.
-    The root of a located executable is the folder above its ``aisol`` folder.
+    The root of a located executable follows :func:`from_path`.
 
     Parameters
     ----------
