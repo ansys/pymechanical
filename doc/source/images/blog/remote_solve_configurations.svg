@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="170" viewBox="0 0 560 170" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a6fa5"/>
+    </marker>
+  </defs>
+  <rect width="560" height="170" fill="#ffffff"/>
+  <g fill="#e8f0fe" stroke="#4a6fa5" stroke-width="1.2">
+    <rect x="10" y="67" width="140" height="36" rx="18"/>
+    <rect x="200" y="67" width="140" height="36" rx="18"/>
+    <rect x="390" y="12" width="160" height="36" rx="18"/>
+    <rect x="390" y="67" width="160" height="36" rx="18"/>
+    <rect x="390" y="122" width="160" height="36" rx="18"/>
+  </g>
+  <g fill="#1a237e" text-anchor="middle" dominant-baseline="central">
+    <text x="80" y="85">PyMechanical script</text>
+    <text x="270" y="85">Solve configuration</text>
+    <text x="470" y="30">RSM queue: Local</text>
+    <text x="470" y="85">RSM queue: cluster</text>
+    <text x="470" y="140">HPC Platform Services</text>
+  </g>
+  <g fill="none" stroke="#4a6fa5" stroke-width="1.4" marker-end="url(#arrow)">
+    <path d="M150,85 L198,85"/>
+    <path d="M340,85 C365,85 365,30 388,30"/>
+    <path d="M340,85 L388,85"/>
+    <path d="M340,85 C365,85 365,140 388,140"/>
+  </g>
+</svg>
