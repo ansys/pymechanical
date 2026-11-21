@@ -157,5 +157,6 @@ If you are not sure which mode to pick, see :doc:`getting_started/choose_your_mo
    blog/index
    contribute
    faq
+   contribute
    kil/index
    changelog

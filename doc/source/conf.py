@@ -128,6 +128,9 @@ numpydoc_validation_checks = {
 numpydoc_validation_exclude = {  # set of regex
     # grpc files
     r"\.*pb2\.*",
+    # Exclude built-in exception attributes from all exception classes
+    r".*__cause__$",
+    r".*__context__$",
 }
 
 # Favicon
