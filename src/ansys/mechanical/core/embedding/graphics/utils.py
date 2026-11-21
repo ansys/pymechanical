@@ -30,6 +30,8 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
+from ansys.mechanical.core._capabilities import Capabilities
+
 if TYPE_CHECKING:
     from ansys.mechanical.core.embedding import App
 
@@ -147,7 +149,7 @@ def _get_scene_for_object(app: App, obj) -> typing.Any:  # Returns Ansys.Mechani
     if obj.DataModelObjectCategory == DataModelObjectCategory.Geometry:
         scene = get_scene(app)
         return scene
-    if app.version < 261:
+    if not Capabilities(app.version).object_scenegraph:
         return None
     active_objects = app.Tree.ActiveObjects
     app.Tree.Activate([obj])
