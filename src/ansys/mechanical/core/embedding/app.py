@@ -30,6 +30,7 @@ from pathlib import Path
 import typing
 
 from ansys.mechanical.core import LOG
+from ansys.mechanical.core._capabilities import Capabilities
 from ansys.mechanical.core.embedding import initializer, runtime
 from ansys.mechanical.core.embedding.addins import AddinConfiguration
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
@@ -99,7 +100,7 @@ def _start_application(
         os.environ["ANSYS_MECHANICAL_STANDALONE_NO_ACT_EXTENSIONS"] = "1"
 
     addin_configuration_name = configuration.addin_configuration
-    if version < 261:
+    if not Capabilities(version).startup_arguments:
         return Ansys.Mechanical.Embedding.Application(db_file, addin_configuration_name)
     return Ansys.Mechanical.Embedding.Application(
         db_file, addin_configuration_name, _additional_args
@@ -109,7 +110,7 @@ def _start_application(
 def _additional_args(readonly: bool, feature_flags: list, start_license: str, version: int) -> str:
     """Generate additional command line arguments for the application."""
     additional_args = ""
-    if version < 261:
+    if not Capabilities(version).startup_arguments:
         if readonly or feature_flags or start_license:
             LOG.warning(
                 "The readonly, feature_flags and start_license arguments are only supported "
@@ -284,7 +285,7 @@ class App:
 
         self._version = initializer.initialize(version)
 
-        if self._version < 261 and self.interactive:
+        if not Capabilities(self._version).interactive and self.interactive:
             raise RuntimeError("Interactive mode is only supported starting with version 261")
 
         configuration = kwargs.get("config", _get_default_addin_configuration())
@@ -329,7 +330,7 @@ class App:
 
         # Licensing API is available only for version 2025R2 and later
         self._license_manager = None
-        if self.version >= 252:
+        if Capabilities(self.version).license_manager:
             self._license_manager = LicenseManager(self)
 
         # Initialize helpers
@@ -363,7 +364,7 @@ class App:
     def _prepare_interactive_mode(self):
         if not self.interactive:
             return
-        if self._version < 261:
+        if not Capabilities(self._version).interactive:
             raise RuntimeError("Interactive mode is only supported starting with version 261")
         if os.name != "nt":
             if os.environ.get("ANSYS_MECHANICAL_EMBEDDING_LINUX_UI", False) is False:
@@ -396,7 +397,7 @@ class App:
         """
         if not self.interactive:
             raise RuntimeError("wait_with_dialog is only supported in interactive mode!")
-        if self.version < 261:
+        if not Capabilities(self.version).interactive:
             raise RuntimeError("wait_with_dialog is only supported with Mechanical 261")
         # Wait with dialog open
         self._app.BlockingModalDialog("Wait with dialog", "PyMechanical")
@@ -560,7 +561,7 @@ class App:
             )
             return None
 
-        if self.version < 242:
+        if not Capabilities(self.version).plotting:
             LOG.warning("Plotting is only supported with version 2024R2 and later!")
             return None
 
