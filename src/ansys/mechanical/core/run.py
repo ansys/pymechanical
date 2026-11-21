@@ -515,7 +515,7 @@ def cli(
     exe = str(installation.executable)
     version = installation.version
     # Validate enginetype usage - must be used with input script and version 261
-    if enginetype and enginetype != "ironpython" and version < 261:
+    if enginetype and enginetype != "ironpython" and not installation.capabilities.cpython_engine:
         raise click.ClickException(
             "--enginetype option for cpython is only applicable for version 261 or later."
         )

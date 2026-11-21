@@ -196,7 +196,7 @@ class LocalMechanicalPool:
                     )
 
         if not self._remote:  # pragma: no cover
-            if _installation.from_path(exec_file).version < 232:
+            if not _installation.from_path(exec_file).capabilities.grpc_launch:
                 raise VersionError("A local Mechanical pool requires Mechanical 2023 R2 or later.")
 
         ports = None
