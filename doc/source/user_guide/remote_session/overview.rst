@@ -45,7 +45,7 @@ option decides whether product exits at the end of the PyMechanical script or no
 .. note::
    ``version`` argument is used only if PyPIM is configured. For general cases, use ``exec_file``
 
-You can send genuine Python class commands to the application when Mechanical is active.
+You can send genuine Python class commands to the app when Mechanical is active.
 For example, you can send a Python script:
 
 .. code:: python

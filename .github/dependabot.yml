@@ -74,3 +74,23 @@ updates:
           - "patch"
     cooldown:
       default-days: 7
+
+  - package-ecosystem: "pre-commit"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 7
+      exclude:
+        - "ansys/pre-commit-hooks/*"
+    labels:
+      - "maintenance"
+    commit-message:
+      prefix: "CHORE"
+    groups:
+      pre-commit-hooks:
+        patterns:
+          - "*"
+    assignees:
+      - "koubaa"
+      - "samigithub2022"

@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -27,6 +27,8 @@ import os
 from pathlib import Path
 import socket
 from threading import Thread
+
+from ansys.mechanical.core import _installation
 
 
 def is_windows():
@@ -61,18 +63,16 @@ def get_mechanical_bin(release_version):
         Mechanical version using the three-digit format. For example, ``"261"`` for
         2026 R1.
     """
+    try:
+        return str(_installation.for_version(int(release_version)).executable)
+    except RuntimeError:
+        pass
     if is_windows():  # pragma: no cover
         program_files = os.getenv("PROGRAMFILES", str(Path("c:") / "Program Files"))
-        ans_root = os.getenv(
-            f"AWP_ROOT{release_version}",
-            str(Path(program_files) / "ANSYS Inc" / f"v{release_version}"),
-        )
-        mechanical_bin = Path(ans_root) / "aisol" / "bin" / "winx64" / "AnsysWBU.exe"
+        root = Path(program_files) / "ANSYS Inc" / f"v{release_version}"
     else:
-        ans_root = os.getenv(f"AWP_ROOT{release_version}", str(Path("/") / "usr" / "ansys_inc"))
-        mechanical_bin = Path(ans_root) / f"v{release_version}" / "aisol" / ".workbench"
-
-    return str(mechanical_bin)
+        root = Path("/") / "usr" / "ansys_inc" / f"v{release_version}"
+    return str(_installation.Installation(int(release_version), root).executable)
 
 
 def threaded(func):
@@ -238,23 +238,11 @@ def has_grpc_service_pack(version):
 
     required_sp = min_service_pack[version]
 
-    # Get the executable path to find builddate.txt
-    from ansys.tools.common.path import get_mechanical_path
-
-    exe_path = get_mechanical_path(allow_input=False, version=version)
-
-    if exe_path is None:
+    installation = _installation.find(version, prefer_locator=True)
+    if installation is None:
         return False
 
-    exe_path = Path(exe_path)
-
-    # Navigate to version root directory where builddate.txt is located
-    if is_windows():
-        version_root = exe_path.parent.parent.parent.parent
-    else:
-        version_root = exe_path.parent.parent
-
-    builddate_file = version_root / "builddate.txt"
+    builddate_file = installation.root / "builddate.txt"
 
     if not builddate_file.exists():
         return False

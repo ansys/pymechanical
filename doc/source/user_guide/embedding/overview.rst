@@ -75,7 +75,7 @@ The scripting occurs inside Mechanical's command line interface. For instance, c
   ns = DataModel.Project.Model.AddNamedSelection()
   ns.Name = "Jarvis"
 
-The above code can be written as a Python file, such as ``file.py`` with only the following content:
+The preceding code can be written as a Python file, such as ``file.py`` with only the following content:
 
 .. code:: python
 

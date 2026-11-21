@@ -34,7 +34,7 @@ You can access each individual instance of Mechanical with this code:
 
 Because this is a *self-healing pool*, if an instance of Mechanical stops
 during a batch process, this instance is automatically restarted. When creating
-the pool, you can disable this behavior by setting ``restart_failed=False``.
+the pool, you can turn off this behavior by setting ``restart_failed=False``.
 
 Run a set of input files
 ------------------------

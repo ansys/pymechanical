@@ -18,7 +18,7 @@ them. In addition, it is necessary to first initialize the embedded instance of 
 because these libraries may expect the .NET Common Language Runtime to be initialized as well
 as for the appropriate C# libraries to be loaded.
 
-To use the above function, run the following:
+To use the preceding function, run the following:
 
 .. code:: python
 

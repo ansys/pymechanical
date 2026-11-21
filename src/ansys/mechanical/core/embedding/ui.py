@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -19,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 """Run Mechanical UI from Python."""
 
 from __future__ import annotations
@@ -35,8 +36,7 @@ from subprocess import Popen  # nosec: B404
 import sys
 import tempfile
 
-import ansys.tools.common.path as atp
-
+from ansys.mechanical.core import _installation
 from ansys.mechanical.core.embedding.logger import Logger
 
 
@@ -128,7 +128,7 @@ class UILauncher:
             except Exception:
                 Logger.warning(f"Failed to launch Mechanical GUI with args: {args}")
                 Logger.info("Retrieving the path to the Mechanical executable directly...")
-                exe = atp.get_mechanical_path(allow_input=False, version=app.version)
+                exe = _installation.for_version(app.version).executable
                 args = [
                     str(exe),
                     "--project-file",

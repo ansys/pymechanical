@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -30,16 +30,15 @@
 
 import ctypes
 import logging
-import os
-from pathlib import Path
 
+from ansys.mechanical.core import _installation
 from ansys.mechanical.core.embedding import initializer
 from ansys.mechanical.core.embedding.logger import sinks
 
 
 def _get_dll():
-    installdir = os.environ[f"AWP_ROOT{initializer.INITIALIZED_VERSION}"]
-    dll = ctypes.CDLL(str(Path(installdir) / "aisol/dll/linx64/libAns.Common.WBLogger.so"))
+    dll_dir = _installation.for_version(initializer.INITIALIZED_VERSION).dll_dir
+    dll = ctypes.CDLL(str(dll_dir / "libAns.Common.WBLogger.so"))
     dll.wb_logger_enable_sink.argtypes = [ctypes.c_int32]
 
     dll.wb_logger_disable_sink.argtypes = [ctypes.c_int32]

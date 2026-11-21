@@ -2,14 +2,13 @@
 <!-- What does this PR do? One or two sentences. -->
 
 
-Fixes #<!-- issue number -->
-
-
 ## Changes
 <!-- Bullet list of key changes. -->
 
 -
 
+
+Fixes #<!-- issue number -->
 
 ## Type of change
 - [ ] Bug fix

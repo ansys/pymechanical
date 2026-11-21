@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -58,7 +58,8 @@ try:
 except ImportError:
     HAS_ANSYS_GRAPHICS = False
 
-shell.initialize_ipython_shell()
+# TODO: Re-enable when pywin bug is fixed
+# shell.initialize_ipython_shell()
 
 
 def _get_default_addin_configuration() -> AddinConfiguration:
@@ -109,10 +110,11 @@ def _additional_args(readonly: bool, feature_flags: list, start_license: str, ve
     """Generate additional command line arguments for the application."""
     additional_args = ""
     if version < 261:
-        LOG.warning(
-            "The readonly, feature_flags and start_license arguments are only supported "
-            "with version 2026R1 and later."
-        )
+        if readonly or feature_flags or start_license:
+            LOG.warning(
+                "The readonly, feature_flags and start_license arguments are only supported "
+                "with version 2026R1 and later."
+            )
         return additional_args
     if readonly:
         additional_args += " -readonly"
@@ -308,6 +310,9 @@ class App:
 
         self._disposed = False
         _INSTANCES.append(self)
+        # Must register before _atexit_embedded_app so cleanup runs after Dispose (atexit is LIFO).
+        if private_appdata:
+            atexit.register(_cleanup_private_appdata, profile)
         if not _INITIALIZED:
             atexit.register(_atexit_embedded_app, _INSTANCES)
             _INITIALIZED = True
@@ -316,10 +321,6 @@ class App:
 
         connect_warnings(self)
         self._poster = None
-
-        # Clean up the private appdata directory on exit if private_appdata is True
-        if private_appdata:
-            atexit.register(_cleanup_private_appdata, profile)
 
         self._updated_scopes: list[dict[str, typing.Any]] = []
         self._subscribe()
@@ -563,7 +564,9 @@ class App:
             LOG.warning("Plotting is only supported with version 2024R2 and later!")
             return None
 
-        # TODO : Check if anything loaded inside app or else show warning and return
+        if self.Model.Geometry.Children.Count == 0:
+            LOG.warning("No geometry is loaded. Open a model before plotting.")
+            return None
 
         from ansys.mechanical.core.embedding.graphics.embedding_plotter import to_plotter
 

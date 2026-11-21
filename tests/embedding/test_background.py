@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -56,7 +56,6 @@ def _run_background_app_test(
 
 @pytest.mark.embedding_scripts
 @pytest.mark.embedding_backgroundapp
-@pytest.mark.skipif(sys.platform == "win32", reason="Test not working on Windows")
 def test_background_app_multiple_instances(rootdir, run_subprocess, pytestconfig):
     """Multiple instances of background app can be used."""
     stderr = _run_background_app_test(

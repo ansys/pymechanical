@@ -32,6 +32,7 @@ globaly
 (?i)hostname
 idempotency
 interop
+IPython
 isort
 (?i)linux
 Martin
@@ -51,11 +52,13 @@ Pythonic
 Python.NET
 .NET
 pythonnet
+rpyc
 Remoting
 REST
 RPCs
 spaceclaim
 stdout
+Streamable
 venv
 v0.11
 VPN
@@ -67,3 +70,14 @@ mtls
 SPs
 start_license
 PrepPost
+Synopsys
+synopsys
+Amrit
+subgraph
+ci
+classDef
+buildNode
+ciNode
+choose_your_mode
+running_mechanical
+faq

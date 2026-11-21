@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -43,7 +43,7 @@ def _get_method_to_check(method_info: typing.Any) -> typing.Any:
     """
     if not method_info.IsSpecialName:
         return method_info
-    type_props = [prop for prop in method_info.DeclaringType.GetProperties()]
+    type_props = [*method_info.DeclaringType.GetProperties()]
     getters = [t for t in type_props if t.GetGetMethod() == method_info]
     setters = [t for t in type_props if t.GetSetMethod() == method_info]
     if len(getters) > 0:

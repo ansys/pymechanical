@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -181,8 +181,7 @@ def test_app_print_tree(embedded_app, capsys, assets):
     assert all(symbol in printed_output for symbol in ["?", "⚡︎", "✕", "✓"])
 
 
-# @pytest.mark.embedding
-@pytest.mark.skip(reason="This test hangs on Linux with Python 3.10-3.14")
+@pytest.mark.embedding
 def test_app_poster(embedded_app, printer):
     """The getters of app should be usable after a new().
 

@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -24,11 +24,11 @@
 
 from importlib.metadata import distribution
 import os
-from pathlib import Path
 import platform
 import sys
 import warnings
 
+from ansys.mechanical.core import _installation
 from ansys.mechanical.core.embedding.loader import load_clr
 from ansys.mechanical.core.embedding.resolver import resolve
 from ansys.mechanical.core.mechanical import LOG
@@ -46,10 +46,7 @@ SUPPORTED_MECHANICAL_EMBEDDING_VERSIONS = {
 
 
 def __add_sys_path(version: int) -> None:
-    install_path = Path(os.environ[f"AWP_ROOT{version}"])
-    platform_string = "winx64" if os.name == "nt" else "linx64"
-    bin_path = install_path / "aisol" / "bin" / platform_string
-    sys.path.append(str(bin_path.resolve()))
+    sys.path.append(str(_installation.for_version(version).bin_dir.resolve()))
 
 
 def __workaround_material_server(version: int) -> None:
@@ -86,29 +83,21 @@ def _get_latest_default_version() -> int:
     For Linux, only one is expected since ``mechanical-env`` takes care of that.
     If multiple versions are detected, the latest one is selected.
     """
-    awp_roots = [value for key, value in os.environ.items() if key.startswith("AWP_ROOT")]
-    if not awp_roots:
+    versions_found = sorted(_installation.installed())
+    if not versions_found:
         raise RuntimeError(
-            "No AWP_ROOT### environment variables found.\n"
+            "No AWP_ROOT### environment variables pointing to a v<version> folder found.\n"
             "Ensure Mechanical is installed.\n"
             "To set the environment variable manually, use:\n"
             "  AWP_ROOT<version>=/path/to/ansys_inc/v<version>\n"
             "  Example: AWP_ROOT261=/path/to/ansys_inc/v261"
         )
 
-    versions_found = []
-    for path in awp_roots:
-        resolved_path = Path(path).resolve()
-        folder = resolved_path.name
-        if folder.startswith("v") and folder[1:].isdigit():
-            version = int(folder[1:])
-            versions_found.append(version)
-
     LOG.info(f"Available versions of Mechanical: {versions_found}")
 
-    latest_version = max(versions_found)
+    latest_version = versions_found[-1]
 
-    if len(awp_roots) > 1:
+    if len(versions_found) > 1:
         LOG.warning(
             f"Multiple versions of Mechanical found! Using latest version {latest_version} ..."
         )
@@ -116,7 +105,7 @@ def _get_latest_default_version() -> int:
 
 
 def __check_python_interpreter_architecture() -> None:
-    """Embedding supports only 64-bit architecture."""
+    """Embedding support only 64 bit architecture."""
     if platform.architecture()[0] != "64bit":
         raise RuntimeError("Mechanical Embedding requires a 64-bit Python environment.")
 
@@ -126,15 +115,14 @@ def __windows_store_workaround(version: int) -> None:
 
     See https://github.com/ansys/pymechanical/issues/1136
 
-    Windows store Python uses the Win32 API SetDefaultDllDirectories
-    so that the PATH environment variable isn't scanned for any DLL
-    dependency.
+    Windows Store Python uses the Win32 API ``SetDefaultDllDirectories`` so
+    that the PATH environment variable isn't scanned for any DLL dependency.
 
     PyMechanical loads the embedding library which automatically sets
     these Paths, but this uses the PATH environment variable which doesn't
     work for Windows store Python.
 
-    We provide a workaround for versions 2024R2 and 2025R1 that sets
+    We provide a workaround for versions 2024R2 and later that sets
     these paths using `os.add_dll_directory`.
 
     Note:   This workaround does not include DLL paths used in FSI
@@ -149,45 +137,74 @@ def __windows_store_workaround(version: int) -> None:
     if sys.platform != "win32":
         return
 
-    # Nothing to do if it isn't a Windows store application
+    # Nothing to do if it isn't a Windows Store Python distribution.
     if r"WindowsApps\PythonSoftwareFoundation" not in sys.base_prefix:
         return
 
     # Get the AWP_ROOT environment variable for the specified version
-    awp_root = Path(os.environ[f"AWP_ROOT{version}"])
+    installation = _installation.for_version(version)
+    awp_root = installation.root
     # Set paths to the aisol and framework DLLs
     paths = [
-        awp_root / "aisol" / "bin" / "winx64",
+        installation.bin_dir,
         awp_root / "Framework" / "bin" / "Win64",
     ]
     # Set the path to the tp directory within the AWP_ROOTXYZ directory
     awp_root_tp = awp_root / "tp"
-    # Version-specific DLL path configurations for IntelMKL, HDF5, and Qt
-    _dll_path_configs: dict[int, dict[str, str | None]] = {
-        242: {"IntelMKL": "2023.1.0", "hdf5": "1.12.2", "qt": "5.15.16"},
-        251: {"IntelMKL": "2023.1.0", "hdf5": "1.12.2", "qt": "5.15.17"},
-        252: {"IntelMKL": "2024.2.3", "hdf5": None, "qt": "5.15.18"},
-    }
-
-    config = _dll_path_configs.get(version)
-    if config is None:
-        return
-
-    intel_mkl = config["IntelMKL"]
-    hdf5 = config["hdf5"]
-    qt = config["qt"]
-    if intel_mkl is None:
-        raise ValueError("IntelMKL version is not configured for this version.")
-    if qt is None:
-        raise ValueError("Qt version is not configured for this version.")
-
-    paths.append(awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64")
-    paths.append(awp_root_tp / "IntelMKL" / intel_mkl / "winx64")
-    if hdf5 is not None:
-        paths.append(awp_root_tp / "hdf5" / hdf5 / "winx64")
+    # Add paths to the IntelCompiler, IntelMKL, HDF5, and Qt DLLs for 2024R2 and 2025R1
+    if version == 242:
+        paths.extend(
+            [
+                awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
+                awp_root_tp / "IntelMKL" / "2023.1.0" / "winx64",
+                awp_root_tp / "hdf5" / "1.12.2" / "winx64",
+                awp_root_tp / "qt" / "5.15.16" / "winx64" / "bin",
+            ]
+        )
+    elif version == 251:
+        paths.extend(
+            [
+                awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
+                awp_root_tp / "IntelMKL" / "2023.1.0" / "winx64",
+                awp_root_tp / "hdf5" / "1.12.2" / "winx64",
+                awp_root_tp / "qt" / "5.15.17" / "winx64" / "bin",
+            ]
+        )
+    elif version == 252:
+        paths.extend(
+            [
+                awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
+                awp_root_tp / "IntelMKL" / "2024.2.3" / "winx64",
+                awp_root_tp / "hdf5" / "winx64",
+                awp_root_tp / "qt" / "5.15.18" / "winx64" / "bin",
+            ]
+        )
+    elif version == 261:
+        paths.extend(
+            [
+                awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
+                awp_root_tp / "IntelMKL" / "2024.2.3" / "winx64",
+                awp_root_tp / "hdf5" / "winx64",
+                awp_root_tp / "qt" / "5.15.19" / "winx64" / "bin",
+            ]
+        )
+    elif version == 271:  # this might change in the future
+        paths.extend(
+            [
+                awp_root_tp / "IntelCompiler" / "2025.3.2" / "winx64",
+                awp_root_tp / "IntelMKL" / "2024.2.3" / "winx64",
+                awp_root_tp / "hdf5" / "winx64",
+                awp_root_tp / "libtorch" / "2.11" / "winx64" / "lib",
+                awp_root_tp / "qt" / "6.8.8" / "winx64" / "bin",
+            ]
+        )
     else:
-        paths.append(awp_root_tp / "hdf5" / "winx64")
-    paths.append(awp_root_tp / "qt" / qt / "winx64" / "bin")
+        LOG.warning(
+            f"Mechanical version {version} is not recognized. DLL search paths have not been "
+            "configured for the Windows Store Python workaround. You may encounter dependency "
+            "issues when loading Mechanical."
+        )
+        return
 
     # Add each path to the DLL search path
     for path in paths:
@@ -217,7 +234,7 @@ def __check_for_mechanical_env():
         raise RuntimeError(
             "On linux, embedding an instance of the Mechanical process using "
             "the App class requires running python inside of a Mechanical environment. "
-            "Use the `mechanical-env` script to do this. For more information, refer to: "
+            "Use the `mechanical-env` script to do this. For more information, refer to:"
             "https://mechanical.docs.pyansys.com/version/stable/"
             "getting_started/running_mechanical.html#embed-a-mechanical-instance"
         )
@@ -299,7 +316,7 @@ def initialize(version: int | None = None):
         pass
 
     # load the CLR with mono that is shipped with the unified ansys installer
-    load_clr(os.environ[f"AWP_ROOT{version}"])
+    load_clr(str(_installation.for_version(version).root))
 
     # attach the resolver
     resolve(version)

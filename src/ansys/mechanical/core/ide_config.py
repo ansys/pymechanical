@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2026 ANSYS, Inc. and/or its affiliates.
+# Copyright (C) 2022 - 2026 Synopsys, Inc. and ANSYS, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
 #
@@ -30,8 +30,9 @@ import site
 import sys
 import warnings
 
-import ansys.tools.common.path as atp
 import click
+
+from ansys.mechanical.core import _installation
 
 
 def get_stubs_location():
@@ -278,8 +279,13 @@ def cli(ide: str, target: str, revision: int) -> None:
 
     """
     if not revision:
-        exe = atp.get_mechanical_path(allow_input=False, version=revision)
-        version = atp.version_from_path("mechanical", exe)
+        installation = _installation.find(prefer_locator=True)
+        if installation is None:
+            raise click.ClickException(
+                "Mechanical installation not found. Set the AWP_ROOT<version> environment "
+                "variable or pass --revision."
+            )
+        version = installation.version
     else:
         version = revision
 
