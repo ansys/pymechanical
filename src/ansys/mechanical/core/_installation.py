@@ -29,6 +29,44 @@ from pathlib import Path
 
 import ansys.tools.common.path as atp
 
+from ansys.mechanical.core._capabilities import Capabilities
+from ansys.mechanical.core._limitations import Limitations
+
+_WINDOWS_STORE_TP_DIRS = {
+    242: (
+        "IntelCompiler/2023.1.0/winx64",
+        "IntelMKL/2023.1.0/winx64",
+        "hdf5/1.12.2/winx64",
+        "qt/5.15.16/winx64/bin",
+    ),
+    251: (
+        "IntelCompiler/2023.1.0/winx64",
+        "IntelMKL/2023.1.0/winx64",
+        "hdf5/1.12.2/winx64",
+        "qt/5.15.17/winx64/bin",
+    ),
+    252: (
+        "IntelCompiler/2023.1.0/winx64",
+        "IntelMKL/2024.2.3/winx64",
+        "hdf5/winx64",
+        "qt/5.15.18/winx64/bin",
+    ),
+    261: (
+        "IntelCompiler/2023.1.0/winx64",
+        "IntelMKL/2024.2.3/winx64",
+        "hdf5/winx64",
+        "qt/5.15.19/winx64/bin",
+    ),
+    # 271 might change in the future.
+    271: (
+        "IntelCompiler/2025.3.2/winx64",
+        "IntelMKL/2024.2.3/winx64",
+        "hdf5/winx64",
+        "libtorch/2.11/winx64/lib",
+        "qt/6.8.8/winx64/bin",
+    ),
+}
+
 
 def _platform_folder() -> str:
     return "winx64" if os.name == "nt" else "linx64"
@@ -120,6 +158,52 @@ class Installation:
         if os.name == "nt":
             return self.bin_dir / "AnsysWBU.exe"
         return self.aisol / ".workbench"
+
+    @property
+    def capabilities(self) -> Capabilities:
+        """Capabilities of this installation's version.
+
+        Examples
+        --------
+        >>> Installation(261, Path("/ansys_inc/v261")).capabilities.interactive
+        True
+        """
+        return Capabilities(self.version)
+
+    @property
+    def limitations(self) -> Limitations:
+        """Known defects of this installation's version that need a workaround.
+
+        Examples
+        --------
+        >>> Installation(241, Path("/ansys_inc/v241")).limitations.material_server_race
+        True
+        """
+        return Limitations(self.version)
+
+    @property
+    def windows_store_dll_dirs(self) -> list[Path] | None:
+        """Folders Windows Store Python must add to its DLL search path.
+
+        Windows Store Python doesn't search ``PATH`` for DLLs, so these folders are
+        added explicitly. ``None`` means the version isn't recognized.
+
+        Examples
+        --------
+        >>> dirs = Installation(261, Path("/ansys_inc/v261")).windows_store_dll_dirs
+        >>> dirs[1].as_posix()
+        '/ansys_inc/v261/Framework/bin/Win64'
+        >>> Installation(999, Path("/ansys_inc/v999")).windows_store_dll_dirs is None
+        True
+        """
+        tp_dirs = _WINDOWS_STORE_TP_DIRS.get(self.version)
+        if tp_dirs is None:
+            return None
+        return [
+            self.bin_dir,
+            self.root / "Framework" / "bin" / "Win64",
+            *(self.root / "tp" / tp_dir for tp_dir in tp_dirs),
+        ]
 
 
 def for_version(version: int, environ: Mapping[str, str] | None = None) -> Installation:

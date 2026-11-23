@@ -280,7 +280,7 @@ def check_valid_mechanical():
     installation = _installation.find(prefer_locator=True)
     if installation is None:
         return False
-    return not (installation.version < 232 and os.name != "posix")
+    return installation.capabilities.grpc_launch or os.name == "posix"
 
 
 def change_default_mechanical_path(exe_loc):
@@ -2125,7 +2125,7 @@ def launch_grpc(
 
     """
     # verify version
-    if _installation.from_path(exec_file).version < 232:
+    if not _installation.from_path(exec_file).capabilities.grpc_launch:
         raise VersionError("The Mechanical gRPC interface requires Mechanical 2023 R2 or later.")
 
     # get the next available port

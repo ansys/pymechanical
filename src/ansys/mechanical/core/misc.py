@@ -29,6 +29,7 @@ import socket
 from threading import Thread
 
 from ansys.mechanical.core import _installation
+from ansys.mechanical.core._capabilities import Capabilities
 
 
 def is_windows():
@@ -213,26 +214,11 @@ def has_grpc_service_pack(version):
         except (ValueError, TypeError):
             return False
 
-    # Version 261+ has built-in support
-    if version >= 261:
+    required_sp = Capabilities(version).grpc_service_pack
+    if required_sp is None:
+        return False
+    if required_sp == 0:
         return True
-
-    # Versions before 242 don't support secure gRPC
-    if version < 242:
-        return False
-
-    # Define minimum required service pack for each version
-    min_service_pack = {
-        242: 5,  # 2024 R2 requires SP05
-        251: 4,  # 2025 R1 requires SP04
-        252: 3,  # 2025 R2 requires SP03
-    }
-
-    # If version not in our supported list, assume no support
-    if version not in min_service_pack:
-        return False
-
-    required_sp = min_service_pack[version]
 
     if installation is None:
         installation = _installation.find(version, prefer_locator=True)
@@ -278,24 +264,17 @@ def get_service_pack_message(version):
     str
         Message indicating required service pack, or empty string if not applicable.
     """
-    service_pack_requirements = {
-        242: "SP05",  # 2024 R2
-        251: "SP04",  # 2025 R1
-        252: "SP03",  # 2025 R2
-    }
-
     if version == 241:
         # 2024 R1 does not support secure gRPC at all
         return (
             "Update to Ansys 2024 R2 or later with required service pack for secure gRPC support."
         )
-    elif version in service_pack_requirements:
-        sp_required = service_pack_requirements[version]
-        return f"Update to Service Pack {sp_required} or later for secure gRPC support."
-    elif version >= 261:
+    required_sp = Capabilities(version).grpc_service_pack
+    if required_sp:
+        return f"Update to Service Pack SP{required_sp:02d} or later for secure gRPC support."
+    if required_sp == 0:
         return ""  # Version 261+ has built-in support
-    else:
-        return "Update to Ansys 2024 R2 or later for secure gRPC support."
+    return "Update to Ansys 2024 R2 or later for secure gRPC support."
 
 
 def is_linux() -> bool:
