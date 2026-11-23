@@ -31,6 +31,7 @@ import sys
 import ansys.tools.common.path as atp
 import click
 
+from ansys.mechanical.core import _installation
 from ansys.mechanical.core._welcome import render_welcome
 from ansys.mechanical.core.embedding.appdata import UniqueUserProfile
 from ansys.mechanical.core.feature_flags import get_command_line_arguments, get_feature_flag_names
@@ -505,10 +506,16 @@ def cli(
 
         $ ansys-mechanical --info
     """
-    exe = atp.get_mechanical_path(allow_input=False, version=revision)
-    version = atp.version_from_path("mechanical", exe)
+    installation = _installation.find(revision, prefer_locator=True)
+    if installation is None:
+        raise click.ClickException(
+            "Mechanical installation not found. Set the AWP_ROOT<version> environment variable "
+            "or save the path with: save-ansys-path --name mechanical /path/to/.workbench"
+        )
+    exe = str(installation.executable)
+    version = installation.version
     # Validate enginetype usage - must be used with input script and version 261
-    if enginetype and enginetype != "ironpython" and version < 261:
+    if enginetype and enginetype != "ironpython" and not installation.capabilities.cpython_engine:
         raise click.ClickException(
             "--enginetype option for cpython is only applicable for version 261 or later."
         )

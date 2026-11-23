@@ -48,7 +48,7 @@ import ansys.tools.common.path as atp
 import grpc
 
 import ansys.mechanical.core as pymechanical
-from ansys.mechanical.core import LOG
+from ansys.mechanical.core import LOG, _installation
 from ansys.mechanical.core.errors import (
     MechanicalExitedError,
     MechanicalRuntimeError,
@@ -277,11 +277,10 @@ def check_valid_mechanical():
 
 
     """
-    mechanical_path = atp.get_mechanical_path(False)
-    if mechanical_path is None:
+    installation = _installation.find(prefer_locator=True)
+    if installation is None:
         return False
-    mechanical_version = atp.version_from_path("mechanical", mechanical_path)
-    return not (mechanical_version < 232 and os.name != "posix")
+    return installation.capabilities.grpc_launch or os.name == "posix"
 
 
 def change_default_mechanical_path(exe_loc):
@@ -2126,7 +2125,7 @@ def launch_grpc(
 
     """
     # verify version
-    if atp.version_from_path("mechanical", exec_file) < 232:
+    if not _installation.from_path(exec_file).capabilities.grpc_launch:
         raise VersionError("The Mechanical gRPC interface requires Mechanical 2023 R2 or later.")
 
     # get the next available port
@@ -2181,7 +2180,7 @@ def launch_rpyc(
     verbose=False,
 ) -> tuple[int, subprocess.Popen]:
     """Start Mechanical locally in RPyC mode."""
-    _version = atp.version_from_path("mechanical", exec_file)
+    _version = _installation.from_path(exec_file).version
 
     if not batch:
         raise Exception("The rpyc backend does not support graphical mode!")
@@ -2596,7 +2595,7 @@ def launch_mechanical(
             )
 
             # TODO : Version argument is ignored...
-            version = atp.version_from_path("mechanical", exec_file)
+            version = _installation.from_path(exec_file).version
 
             start_param["local"] = True
             start_param["transport_mode"] = transport_mode

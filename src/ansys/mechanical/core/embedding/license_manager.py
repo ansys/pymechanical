@@ -25,6 +25,7 @@
 from typing import Any
 
 from ansys.mechanical.core import LOG
+from ansys.mechanical.core._capabilities import Capabilities
 
 
 class LicenseManager:
@@ -46,7 +47,7 @@ class LicenseManager:
 
     def _get_license_manager(self):
         # On 271+, LicenseCoordinator exposes the same interface as LicensePreference.
-        if self._app.version >= 271:
+        if Capabilities(self._app.version).license_coordinator:
             return self._get_coordinator()
         if self._license_preference is None:
             self._license_preference = self._app.ExtAPI.Application.LicensePreference
@@ -121,7 +122,7 @@ class LicenseManager:
 
     def disable_session_license(self) -> None:
         """Disable active license for current session."""
-        if self._app.version >= 271:
+        if Capabilities(self._app.version).license_coordinator:
             self._get_coordinator().DeactivateLicenses()
         else:
             self._get_license_manager().DeActivateLicense()
@@ -136,7 +137,7 @@ class LicenseManager:
             If a string, activates that specific license.
             If a list of strings, activates all specified licenses in the order provided.
         """
-        if self._app.version >= 271:
+        if Capabilities(self._app.version).license_coordinator:
             from System import Array, String
 
             coordinator = self._get_coordinator()

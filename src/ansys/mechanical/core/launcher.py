@@ -29,9 +29,7 @@ from pathlib import Path
 # Subprocess is needed to start the backend. Excluding bandit check.
 import subprocess  # nosec: B404
 
-import ansys.tools.common.path as atp
-
-from ansys.mechanical.core import LOG
+from ansys.mechanical.core import LOG, _installation
 from ansys.mechanical.core.misc import (
     get_service_pack_message,
     has_grpc_service_pack,
@@ -205,8 +203,9 @@ class MechanicalLauncher:
         args_list.append(str(self.port))
 
         # Check if version supports advanced gRPC features (SP04+)
-        version = atp.version_from_path("mechanical", exe_path) if exe_path else None
-        supports_grpc = has_grpc_service_pack(version) if version else True
+        installation = _installation.from_path(exe_path) if exe_path else None
+        version = installation.version if installation else None
+        supports_grpc = has_grpc_service_pack(installation) if installation else True
 
         # Validate transport mode requirements
         if not supports_grpc and self.transport_mode.lower() != "insecure":

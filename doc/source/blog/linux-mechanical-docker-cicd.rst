@@ -147,7 +147,7 @@ commands inside the container instead of starting the gRPC server.
 
 ``mechanical-env`` sets the environment variables that PyMechanical needs
 to locate the Mechanical installation.
-``xvfb-run`` provides an in-memory virtual display — required because
+``xvfb-run`` provides an in-memory virtual display, which is required because
 Mechanical initializes OpenGL even in batch mode.
 
 Your simulation script uses the standard embedding API:

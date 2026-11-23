@@ -3,13 +3,13 @@ exclude: '^tests/embedding/assets/.*$|^tests/parts/.*$'
 repos:
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: f368fb366ff7f2f808dd324b83a6d32267799e19  # frozen: v0.17.2
+  rev: ef6cf06c079dd6b299dfc720b0f14400c9d168e1  # frozen: v0.17.5
   hooks:
     - id: ruff
     - id: ruff-format
 
 - repo: https://github.com/pre-commit/mirrors-mypy
-  rev: 2834ec6639549dd6796205c8f011dedcd587288b  # frozen: v2.4.0
+  rev: ad26ebfa797fcb9b8f83275937c1c1d6e126719c  # frozen: v2.4.1
   hooks:
     - id: mypy
       additional_dependencies: [types-requests, types-tqdm]
@@ -29,7 +29,7 @@ repos:
     exclude: "doc/styles/typos\\.toml"
 
 - repo: https://github.com/ansys/pre-commit-hooks
-  rev: 55c5b6a5439abd847613579c6924da750e8b78b2  # frozen: v0.8.0
+  rev: dbcd0a4ad0060f78ac3c7d53d342f510edc48eab  # frozen: v0.8.1
   hooks:
   - id: add-license-headers
     args:
@@ -52,12 +52,11 @@ repos:
   hooks:
     - id: check-github-workflows
 
-#  Disabling because of warnings
-# - repo: https://github.com/zizmorcore/zizmor-pre-commit
-#   rev: ea2eb407b4cbce87cf0d502f36578950494f5ac9  # frozen: v1.23.1
-#   hooks:
-#     - id: zizmor
-#       args: ["--pedantic"]
+- repo: https://github.com/zizmorcore/zizmor-pre-commit
+  rev: c92afdf2c6ca336aaa8f39e2bd8d48f62dbd8e1f  # frozen: v1.31.1
+  hooks:
+    - id: zizmor
+      args: ["--pedantic"]
 
 # Security checks with bandit
 - repo: https://github.com/PyCQA/bandit
@@ -74,7 +73,7 @@ repos:
         args: ['--py312-plus']
 
 - repo: https://github.com/crate-ci/typos
-  rev: 9023c1f779400877cafdd98052113fc777e2cfdc  # frozen: v1.51.1
+  rev: 6b8d5532f97e7efe2bf6907daac17b3c9f8926ba  # frozen: v1.52.2
   hooks:
     - id: typos
       args: ["--config", "doc/styles/typos.toml"]

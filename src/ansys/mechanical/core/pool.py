@@ -26,8 +26,7 @@ from pathlib import Path
 import time
 import warnings
 
-from ansys.tools.common.path import version_from_path
-
+from ansys.mechanical.core import _installation
 from ansys.mechanical.core.errors import VersionError
 from ansys.mechanical.core.mechanical import (
     _HAS_TQDM,
@@ -197,7 +196,7 @@ class LocalMechanicalPool:
                     )
 
         if not self._remote:  # pragma: no cover
-            if version_from_path("mechanical", exec_file) < 232:
+            if not _installation.from_path(exec_file).capabilities.grpc_launch:
                 raise VersionError("A local Mechanical pool requires Mechanical 2023 R2 or later.")
 
         ports = None
