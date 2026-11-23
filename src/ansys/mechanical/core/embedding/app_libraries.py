@@ -48,13 +48,10 @@ can be imported with the `import` statement.
 
 """
 
-import os
-from pathlib import Path
 import sys
 import warnings
 
-from ansys.tools.common.path import get_mechanical_path
-
+from ansys.mechanical.core import _installation
 from ansys.mechanical.core.embedding.app import App
 
 
@@ -67,14 +64,12 @@ def add_mechanical_python_libraries(app_or_version):
             DeprecationWarning,
             stacklevel=2,
         )
-        exe_path = Path(get_mechanical_path(allow_input=False, version=app_or_version))
-        while exe_path.name != f"v{app_or_version}":
-            exe_path = exe_path.parent
-        install_dir = str(exe_path)
+        installation = _installation.find(app_or_version, prefer_locator=True)
+        if installation is None:
+            raise FileNotFoundError(f"Mechanical {app_or_version} installation not found.")
     elif isinstance(app_or_version, App):
-        install_dir = os.environ[f"AWP_ROOT{app_or_version.version}"]
+        installation = _installation.for_version(app_or_version.version)
     else:
         raise ValueError("Invalid input: expected an integer (version) or an instance of App().")
 
-    location = Path(install_dir) / "Addins" / "ACT" / "libraries" / "Mechanical"
-    sys.path.append(str(location))
+    sys.path.append(str(installation.act_libraries_dir))
