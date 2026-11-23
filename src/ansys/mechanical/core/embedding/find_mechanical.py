@@ -22,10 +22,8 @@
 
 """Cli for finding mechanical installation."""
 
-from pathlib import Path
 import sys
 
-import ansys.tools.common.path as atp
 import click
 
 from ansys.mechanical.core import _installation
@@ -76,16 +74,13 @@ def cli(version: int, path: str | None = None) -> tuple[int, str]:
     # 3. If multiple AWP_ROOT variables are found, use the highest version
     # 4. If no AWP_ROOT variables are found, use the default from ansys-tools-path
     # 5. If the default path is not found, check saved ansys path from config file
-    if path and version:
-        if version != atp.version_from_path("mechanical", path):
+    if path:
+        installation = _installation.from_path(path)
+        if version and version != installation.version:
             raise click.BadParameter(
                 f"The provided path {path} does not match the specified version {version}."
             )
-        print(version, str(Path(path) / "aisol"))
-        sys.exit(0)
-    if path and not version:
-        _version_from_given_path = atp.version_from_path("mechanical", path)
-        print(_version_from_given_path, str(Path(path) / "aisol"))
+        print(installation.version, str(installation.aisol))
         sys.exit(0)
 
     found = _installation.from_environment(version)
