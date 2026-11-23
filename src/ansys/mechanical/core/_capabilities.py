@@ -29,7 +29,10 @@ _GRPC_SERVICE_PACKS = {242: 5, 251: 4, 252: 3}
 
 @dataclass(frozen=True)
 class Capabilities:
-    """Provides what a Mechanical version supports and which workarounds it needs.
+    """Provides what a Mechanical version supports.
+
+    Known defects that need a workaround are in
+    :class:`~ansys.mechanical.core._limitations.Limitations` instead.
 
     Examples
     --------
@@ -158,39 +161,6 @@ class Capabilities:
         return self.version >= 261
 
     @property
-    def material_server_serial(self) -> bool:
-        """Whether the material server must run serially to avoid a shutdown race.
-
-        Examples
-        --------
-        >>> Capabilities(241).material_server_serial
-        True
-        """
-        return self.version == 241
-
-    @property
-    def unoptimized_startup(self) -> bool:
-        """Whether embedding on Windows must use the unoptimized startup.
-
-        Examples
-        --------
-        >>> Capabilities(242).unoptimized_startup
-        True
-        """
-        return self.version < 251
-
-    @property
-    def clr_host_lite_opt_in(self) -> bool:
-        """Whether the lite CLR host must be turned on for embedding.
-
-        Examples
-        --------
-        >>> Capabilities(251).clr_host_lite_opt_in
-        True
-        """
-        return self.version in (251, 252)
-
-    @property
     def clr_host_lite_default(self) -> bool:
         """Whether embedding uses the lite CLR host unless turned off.
 
@@ -200,14 +170,3 @@ class Capabilities:
         True
         """
         return self.version > 252
-
-    @property
-    def libx11_shutdown_crash(self) -> bool:
-        """Whether a preloaded ``libX11.so`` crashes Python on shutdown on Linux.
-
-        Examples
-        --------
-        >>> Capabilities(251).libx11_shutdown_crash
-        True
-        """
-        return self.version >= 251

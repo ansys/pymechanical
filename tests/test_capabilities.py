@@ -38,7 +38,6 @@ from ansys.mechanical.core.misc import get_service_pack_message
         ("grpc_launch", 231, 232),
         ("plotting", 241, 242),
         ("linux_function_codec", 241, 242),
-        ("libx11_shutdown_crash", 242, 251),
         ("license_manager", 251, 252),
         ("interactive", 252, 261),
         ("startup_arguments", 252, 261),
@@ -64,28 +63,10 @@ def test_grpc_service_pack_by_release(version, expected):
 
 
 @pytest.mark.embedding
-@pytest.mark.parametrize(
-    "version, opt_in, default",
-    [(242, False, False), (251, True, False), (252, True, False), (261, False, True)],
-)
-def test_clr_host_lite_by_release(version, opt_in, default):
-    """Test which releases opt in to the lite CLR host and which use it by default."""
-    capabilities = Capabilities(version)
-
-    assert (capabilities.clr_host_lite_opt_in, capabilities.clr_host_lite_default) == (
-        opt_in,
-        default,
-    )
-
-
-@pytest.mark.embedding
-@pytest.mark.parametrize(
-    "name, versions",
-    [("material_server_serial", (241,)), ("unoptimized_startup", (241, 242))],
-)
-def test_workaround_applies_only_to_old_releases(name, versions):
-    """Test that version workarounds stop at the release that fixed them."""
-    assert [v for v in (241, 242, 251, 261) if getattr(Capabilities(v), name)] == list(versions)
+@pytest.mark.parametrize("version, expected", [(251, False), (252, False), (261, True)])
+def test_clr_host_lite_default_from_2026_r1(version, expected):
+    """Test that the lite CLR host is the default from 2026 R1."""
+    assert Capabilities(version).clr_host_lite_default is expected
 
 
 @pytest.mark.embedding

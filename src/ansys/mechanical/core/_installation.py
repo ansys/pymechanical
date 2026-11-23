@@ -30,6 +30,7 @@ from pathlib import Path
 import ansys.tools.common.path as atp
 
 from ansys.mechanical.core._capabilities import Capabilities
+from ansys.mechanical.core._limitations import Limitations
 
 _WINDOWS_STORE_TP_DIRS = {
     242: (
@@ -168,6 +169,17 @@ class Installation:
         True
         """
         return Capabilities(self.version)
+
+    @property
+    def limitations(self) -> Limitations:
+        """Known defects of this installation's version that need a workaround.
+
+        Examples
+        --------
+        >>> Installation(241, Path("/ansys_inc/v241")).limitations.material_server_race
+        True
+        """
+        return Limitations(self.version)
 
     @property
     def windows_store_dll_dirs(self) -> list[Path] | None:

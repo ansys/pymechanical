@@ -30,6 +30,7 @@ import warnings
 
 from ansys.mechanical.core import _installation
 from ansys.mechanical.core._capabilities import Capabilities
+from ansys.mechanical.core._limitations import Limitations
 from ansys.mechanical.core.embedding.loader import load_clr
 from ansys.mechanical.core.embedding.resolver import resolve
 from ansys.mechanical.core.mechanical import LOG
@@ -58,7 +59,7 @@ def __workaround_material_server(version: int) -> None:
     starts by default on a background thread, which may lead to
     a race condition on shutdown.
     """
-    if Capabilities(version).material_server_serial:
+    if Limitations(version).material_server_race:
         os.environ["ENGRDATA_SERVER_SERIAL"] = "1"
 
 
@@ -158,17 +159,17 @@ def __windows_store_workaround(version: int) -> None:
 
 def __set_environment(version: int) -> None:
     """Set environment variables to configure embedding."""
-    capabilities = Capabilities(version)
+    limitations = Limitations(version)
     if os.name == "nt":  # pragma: no cover
-        if capabilities.unoptimized_startup:
+        if limitations.unoptimized_startup:
             os.environ["MECHANICAL_STARTUP_UNOPTIMIZED"] = "1"
 
     # Set an environment variable to use the custom CLR host
     # for embedding.
-    if capabilities.clr_host_lite_opt_in:
+    if limitations.clr_host_lite_opt_in:
         if "PYMECHANICAL_NO_CLR_HOST_LITE" not in os.environ:
             os.environ["ANSYS_MECHANICAL_EMBEDDING_CLR_HOST"] = "1"
-    if capabilities.clr_host_lite_default:
+    if Capabilities(version).clr_host_lite_default:
         if "PYMECHANICAL_NO_CLR_HOST_LITE" in os.environ:
             os.environ["ANSYS_MECHANICAL_EMBEDDING_CLR_HOST"] = "0"
 
@@ -202,7 +203,7 @@ def __check_loaded_libs(version: int | None = None):  # pragma: no cover
     if platform.system() != "Linux":
         return
 
-    if version is None or not Capabilities(version).libx11_shutdown_crash:
+    if version is None or not Limitations(version).libx11_shutdown_crash:
         return
 
     # For 2025 R1, PyMechanical will crash on shutdown if libX11.so is already loaded
