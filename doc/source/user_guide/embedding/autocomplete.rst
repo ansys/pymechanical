@@ -37,8 +37,8 @@ Terminal output for Windows user's settings.json file:
         ]
     }
 
-The command preserves existing settings and appends the Mechanical stubs path if it is not
-already present.
+If the user specifies a different revision than the one currently in the ``settings.json`` file, the command
+updates the autocomplete paths in the ``settings.json`` file with the new revision.
 
 .. note::
 
