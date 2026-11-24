@@ -81,6 +81,7 @@ extensions = [
     "sphinxcontrib.mermaid",
 ]
 
+
 if BUILD_API:
     extensions.insert(0, "ansys_sphinx_theme.extension.autoapi")
 
@@ -283,6 +284,12 @@ html_theme_options = {
         "project_name": "PyMechanical MCP Server",
     },
     "secondary_sidebar_items": [],
+    "cheatsheet": {
+        "file": "cheatsheet/cheat_sheet.qmd",
+        "title": "PyMechanical cheat sheet",
+        "version": "main",
+        "pages": ["index"],
+    },
 }
 
 
@@ -326,11 +333,8 @@ if intersphinx_pymechanical(switcher_version):
     )
 
 
-if BUILD_CHEATSHEET:
-    html_theme_options["cheatsheet"] = {
-        "file": "cheatsheet/cheat_sheet.qmd",
-        "title": "PyMechanical cheat sheet",
-    }
+if not BUILD_CHEATSHEET:
+    html_theme_options.pop("cheatsheet")
 
 if BUILD_API:
     html_theme_options["ansys_sphinx_theme_autoapi"] = {"project": project}

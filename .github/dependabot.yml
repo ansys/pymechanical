@@ -1,18 +1,31 @@
 version: 2
 updates:
 
-  - package-ecosystem: "pip" # See documentation for possible values
+  - package-ecosystem: "uv" # Updates pyproject.toml and uv.lock
     directory: "/" # Location of package manifests
+    target-branch: "main"
     schedule:
       interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 10
+    rebase-strategy: "auto"
+    pull-request-branch-name:
+      separator: "-"
     assignees:
       - "pyansys-ci-bot"
     commit-message:
-      prefix: "CHORE"
+      prefix: "build(deps)"
     labels:
       - "maintenance"
       - "dependencies"
       - "dependabot"
+    ignore:
+      # Major protobuf releases must stay aligned with the generated gRPC
+      # stubs in ansys-api-mechanical, so update them manually.
+      - dependency-name: "protobuf"
+        update-types: ["version-update:semver-major"]
     groups:
       core:
         patterns:
@@ -50,13 +63,28 @@ updates:
         update-types:
         - "minor"
         - "patch"
+      # Catch-all group for any dependency not matched by the groups above.
+      other:
+        patterns:
+          - "*"
+        update-types:
+        - "minor"
+        - "patch"
     cooldown:
       default-days: 7
 
   - package-ecosystem: "github-actions"
     directory: "/"
+    target-branch: "main"
     schedule:
       interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 10
+    rebase-strategy: "auto"
+    pull-request-branch-name:
+      separator: "-"
     assignees:
       - "pyansys-ci-bot"
     labels:
@@ -64,7 +92,7 @@ updates:
       - "dependencies"
       - "dependabot"
     commit-message:
-      prefix: "CHORE"
+      prefix: "build(actions)"
     groups:
        actions:
           patterns:
@@ -77,8 +105,16 @@ updates:
 
   - package-ecosystem: "pre-commit"
     directory: "/"
+    target-branch: "main"
     schedule:
       interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 10
+    rebase-strategy: "auto"
+    pull-request-branch-name:
+      separator: "-"
     cooldown:
       default-days: 7
       exclude:
@@ -86,7 +122,7 @@ updates:
     labels:
       - "maintenance"
     commit-message:
-      prefix: "CHORE"
+      prefix: "build(pre-commit)"
     groups:
       pre-commit-hooks:
         patterns:
