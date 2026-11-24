@@ -189,7 +189,6 @@ verbose = 0
 #   so it can never pass for the PDM backend. Remove once fixed upstream.
 ignore = ["DOC012", "DOC013", "DOC014", "DOC015", "DOC020", "DOC021", "PM019", "PM030"]
 
-
 # ========================================================
 # Pytest and Coverage Configuration
 # ========================================================
