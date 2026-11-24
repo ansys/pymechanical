@@ -3,7 +3,7 @@ exclude: '^tests/embedding/assets/.*$|^tests/parts/.*$|^uv\.lock$'
 repos:
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: ef6cf06c079dd6b299dfc720b0f14400c9d168e1  # frozen: v0.17.5
+  rev: 9026c9127e153371d7a78dfcb0c45ae2046a3d10  # frozen: v0.17.6
   hooks:
     - id: ruff
     - id: ruff-format
@@ -56,7 +56,7 @@ repos:
     - id: check-github-workflows
 
 - repo: https://github.com/zizmorcore/zizmor-pre-commit
-  rev: c92afdf2c6ca336aaa8f39e2bd8d48f62dbd8e1f  # frozen: v1.31.1
+  rev: c7d31dc612dffdd4d3b2f2b88b9660d3ab057ee8  # frozen: v1.33.1
   hooks:
     - id: zizmor
       args: ["--pedantic"]

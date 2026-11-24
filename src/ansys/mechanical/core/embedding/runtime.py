@@ -25,6 +25,7 @@
 from importlib.metadata import distribution
 import os
 
+from ansys.mechanical.core._capabilities import Capabilities
 from ansys.mechanical.core.embedding.logger import Logger
 
 
@@ -93,7 +94,7 @@ def initialize(version: int, pep8_aliases: bool = False) -> None:
     """
     Logger.info("Initialize pythonnet interop handling")
     __register_container_codecs()
-    if version >= 242 or os.name == "nt":
+    if Capabilities(version).linux_function_codec or os.name == "nt":
         # function codec is distributed with pymechanical on linux only
         # at version 242 or later
         Logger.debug("Registering function codec")

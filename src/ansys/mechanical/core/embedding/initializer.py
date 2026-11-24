@@ -29,6 +29,8 @@ import sys
 import warnings
 
 from ansys.mechanical.core import _installation
+from ansys.mechanical.core._capabilities import Capabilities
+from ansys.mechanical.core._limitations import Limitations
 from ansys.mechanical.core.embedding.loader import load_clr
 from ansys.mechanical.core.embedding.resolver import resolve
 from ansys.mechanical.core.mechanical import LOG
@@ -57,7 +59,7 @@ def __workaround_material_server(version: int) -> None:
     starts by default on a background thread, which may lead to
     a race condition on shutdown.
     """
-    if version in [241]:
+    if Limitations(version).material_server_race:
         os.environ["ENGRDATA_SERVER_SERIAL"] = "1"
 
 
@@ -141,64 +143,8 @@ def __windows_store_workaround(version: int) -> None:
     if r"WindowsApps\PythonSoftwareFoundation" not in sys.base_prefix:
         return
 
-    # Get the AWP_ROOT environment variable for the specified version
-    installation = _installation.for_version(version)
-    awp_root = installation.root
-    # Set paths to the aisol and framework DLLs
-    paths = [
-        installation.bin_dir,
-        awp_root / "Framework" / "bin" / "Win64",
-    ]
-    # Set the path to the tp directory within the AWP_ROOTXYZ directory
-    awp_root_tp = awp_root / "tp"
-    # Add paths to the IntelCompiler, IntelMKL, HDF5, and Qt DLLs for 2024R2 and 2025R1
-    if version == 242:
-        paths.extend(
-            [
-                awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
-                awp_root_tp / "IntelMKL" / "2023.1.0" / "winx64",
-                awp_root_tp / "hdf5" / "1.12.2" / "winx64",
-                awp_root_tp / "qt" / "5.15.16" / "winx64" / "bin",
-            ]
-        )
-    elif version == 251:
-        paths.extend(
-            [
-                awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
-                awp_root_tp / "IntelMKL" / "2023.1.0" / "winx64",
-                awp_root_tp / "hdf5" / "1.12.2" / "winx64",
-                awp_root_tp / "qt" / "5.15.17" / "winx64" / "bin",
-            ]
-        )
-    elif version == 252:
-        paths.extend(
-            [
-                awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
-                awp_root_tp / "IntelMKL" / "2024.2.3" / "winx64",
-                awp_root_tp / "hdf5" / "winx64",
-                awp_root_tp / "qt" / "5.15.18" / "winx64" / "bin",
-            ]
-        )
-    elif version == 261:
-        paths.extend(
-            [
-                awp_root_tp / "IntelCompiler" / "2023.1.0" / "winx64",
-                awp_root_tp / "IntelMKL" / "2024.2.3" / "winx64",
-                awp_root_tp / "hdf5" / "winx64",
-                awp_root_tp / "qt" / "5.15.19" / "winx64" / "bin",
-            ]
-        )
-    elif version == 271:  # this might change in the future
-        paths.extend(
-            [
-                awp_root_tp / "IntelCompiler" / "2025.3.2" / "winx64",
-                awp_root_tp / "IntelMKL" / "2024.2.3" / "winx64",
-                awp_root_tp / "hdf5" / "winx64",
-                awp_root_tp / "libtorch" / "2.11" / "winx64" / "lib",
-                awp_root_tp / "qt" / "6.8.8" / "winx64" / "bin",
-            ]
-        )
-    else:
+    paths = _installation.for_version(version).windows_store_dll_dirs
+    if paths is None:
         LOG.warning(
             f"Mechanical version {version} is not recognized. DLL search paths have not been "
             "configured for the Windows Store Python workaround. You may encounter dependency "
@@ -213,17 +159,17 @@ def __windows_store_workaround(version: int) -> None:
 
 def __set_environment(version: int) -> None:
     """Set environment variables to configure embedding."""
+    limitations = Limitations(version)
     if os.name == "nt":  # pragma: no cover
-        if version < 251:
+        if limitations.unoptimized_startup:
             os.environ["MECHANICAL_STARTUP_UNOPTIMIZED"] = "1"
 
     # Set an environment variable to use the custom CLR host
     # for embedding.
-    # In the future (>252), it would always be used.
-    if version == 251 or version == 252:
+    if limitations.clr_host_lite_opt_in:
         if "PYMECHANICAL_NO_CLR_HOST_LITE" not in os.environ:
             os.environ["ANSYS_MECHANICAL_EMBEDDING_CLR_HOST"] = "1"
-    if version > 252:
+    if Capabilities(version).clr_host_lite_default:
         if "PYMECHANICAL_NO_CLR_HOST_LITE" in os.environ:
             os.environ["ANSYS_MECHANICAL_EMBEDDING_CLR_HOST"] = "0"
 
@@ -257,7 +203,7 @@ def __check_loaded_libs(version: int | None = None):  # pragma: no cover
     if platform.system() != "Linux":
         return
 
-    if version is None or version < 251:
+    if version is None or not Limitations(version).libx11_shutdown_crash:
         return
 
     # For 2025 R1, PyMechanical will crash on shutdown if libX11.so is already loaded
