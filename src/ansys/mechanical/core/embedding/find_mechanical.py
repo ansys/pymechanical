@@ -60,8 +60,8 @@ def cli(version: int, path: str | None = None) -> tuple[int, str]:
         Optional path to the Ansys installation directory.
         eg: "usr/ansys_inc/v251/"
 
-    Example
-    -------
+    Examples
+    --------
     Get the version and location of the installation directory.
 
     >>> find-mechanical -r 251
