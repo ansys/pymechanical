@@ -142,3 +142,14 @@ Documentation and support
 * `Issues <https://github.com/ansys/pymechanical/issues>`_ — report bugs or request features
 * `Discussions <https://github.com/ansys/pymechanical/discussions>`_ — ask questions
 * `Contributing guide <https://mechanical.docs.pyansys.com/version/stable/contributing.html>`_
+
+License
+-------
+
+PyMechanical is licensed under the MIT license. For more information, see the
+`LICENSE <https://github.com/ansys/pymechanical/blob/main/LICENSE>`_ file.
+
+PyMechanical makes no commercial claim over Ansys whatsoever. This library extends the
+functionality of Ansys Mechanical by adding a Python interface to Mechanical without
+changing the core behavior or license of the original software. The use of PyMechanical
+requires a legally licensed copy of Ansys Mechanical.

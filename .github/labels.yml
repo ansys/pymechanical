@@ -42,6 +42,15 @@
   description: Involves the GitHub workflow files
   color: b5f226
 
+- name: ci
+  description: Continuous integration configuration and tooling
+  color: b5f226
+
+- name: tests
+  description: Changes to the test suite
+  color: bfe5bf
+
+
 - name: future
   description: To be implemented in the future
   color: 5319e7

@@ -16,8 +16,16 @@ bug:
 
 dependencies:
 - changed-files:
-  - any-glob-to-any-file: ['pyproject.toml']
+  - any-glob-to-any-file: ['pyproject.toml', 'uv.lock']
 
 ci/cd:
 - changed-files:
   - any-glob-to-any-file: ['.github/**/*', 'docker/**/*']
+
+ci:
+- changed-files:
+  - any-glob-to-any-file: ['.github/workflows/**/*', '.github/actions/**/*']
+
+tests:
+- changed-files:
+  - any-glob-to-any-file: ['tests/**/*']

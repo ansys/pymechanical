@@ -1,5 +1,5 @@
 [build-system]
-requires = ["pdm-backend"]
+requires = ["pdm-backend>=2.4,<3"]
 build-backend = "pdm.backend"
 
 [project]
@@ -44,6 +44,7 @@ Homepage = "https://github.com/ansys/pymechanical"
 Documentation = "https://mechanical.docs.pyansys.com"
 Repository = "https://github.com/ansys/pymechanical"
 Issues = "https://github.com/ansys/pymechanical/issues"
+Discussions = "https://github.com/ansys/pymechanical/discussions"
 Changelog = "https://mechanical.docs.pyansys.com/version/stable/changelog.html"
 
 [project.optional-dependencies]
@@ -165,6 +166,28 @@ known-first-party = ["ansys.mechanical.core"]
 
 [tool.bandit]
 exclude_dirs = ["examples", "tests"]
+
+[tool.interrogate]
+# Docstring coverage. Raise fail-under as coverage improves.
+fail-under = 80
+ignore-init-method = true
+ignore-init-module = true
+ignore-magic = true
+ignore-private = true
+ignore-semiprivate = true
+exclude = ["tests", "examples", "doc", "docker"]
+verbose = 0
+
+[tool.pyansys-quality-report]
+# Rules intentionally not followed by this repository:
+# - DOC012/DOC013/DOC014/DOC015/DOC020/DOC021: the docs use ``getting_started/`` and
+#   ``user_guide/`` folders and underscore page names. Renaming them would
+#   change the published documentation URLs.
+# - PM019: tox was removed on purpose (#1625); no task runner is used.
+# - PM030: false positive in ansys/pre-commit-hooks v0.8.4. The rule normalizes
+#   the requirement to ``pdm_backend`` but compares it against ``pdm-backend``,
+#   so it can never pass for the PDM backend. Remove once fixed upstream.
+ignore = ["DOC012", "DOC013", "DOC014", "DOC015", "DOC020", "DOC021", "PM019", "PM030"]
 
 # ========================================================
 # Pytest and Coverage Configuration

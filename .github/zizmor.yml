@@ -1,0 +1,6 @@
+# zizmor configuration: https://docs.zizmor.sh/configuration/
+rules:
+  # Workflows read repository secrets directly instead of through
+  # deployment environments; this is the accepted PyAnsys pattern.
+  secrets-outside-env:
+    disable: true

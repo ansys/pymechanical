@@ -1,4 +1,4 @@
-exclude: '^tests/embedding/assets/.*$|^tests/parts/.*$'
+exclude: '^tests/embedding/assets/.*$|^tests/parts/.*$|^uv\.lock$'
 
 repos:
 
@@ -37,6 +37,9 @@ repos:
   - id: tech-review
     args:
     - --product=mechanical
+  - id: pyansys-quality-report
+    args: [--show-all]
+    verbose: true
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # frozen: v6.0.0
@@ -78,3 +81,22 @@ repos:
     - id: typos
       args: ["--config", "doc/styles/typos.toml"]
       exclude: "doc/styles/config/vocabularies"
+
+- repo: https://github.com/gitleaks/gitleaks
+  rev: 83d9cd684c87d95d656c1458ef04895a7f1cbd8e  # frozen: v8.30.1
+  hooks:
+    - id: gitleaks
+
+# Keep uv.lock in sync with pyproject.toml. uv.lock itself is excluded globally
+# (see top), so the hook triggers on pyproject.toml or uv.toml changes.
+- repo: https://github.com/astral-sh/uv-pre-commit
+  rev: 00eaed0068329eb6ca6bcb8de7b46c372d8d1c19  # frozen: 0.13.9
+  hooks:
+    - id: uv-lock
+
+- repo: https://github.com/econchick/interrogate
+  rev: 4894019dc8876092bc9b6d56878798c550fad998  # frozen: 1.7.0
+  hooks:
+    - id: interrogate
+      args: [--config, pyproject.toml, src]
+      pass_filenames: false

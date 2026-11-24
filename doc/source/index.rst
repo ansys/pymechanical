@@ -144,6 +144,15 @@ If you are not sure which mode to pick, see :doc:`getting_started/choose_your_mo
 
         :bdg-secondary:`Test` :bdg-secondary:`Documentation` :bdg-secondary:`Issues`
 
+    .. grid-item-card:: Changelog :fa:`fa-solid fa-clock-rotate-left`
+        :padding: 2 2 2 2
+        :link: changelog
+        :link-type: doc
+
+        See what changed in each PyMechanical release.
+
+        :bdg-secondary:`Features` :bdg-secondary:`Fixes` :bdg-secondary:`Releases`
+
 
 
 .. toctree::
