@@ -15,3 +15,4 @@ News, tutorials, and updates from the PyMechanical team.
    :hidden:
 
    linux-mechanical-docker-cicd
+   remote-solve-rsm-hps
