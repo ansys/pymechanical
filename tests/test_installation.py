@@ -270,3 +270,56 @@ def test_has_grpc_service_pack_rejects_given_installation_without_service_pack(t
     (root / "builddate.txt").write_text("2025 R2\n", encoding="utf-8")
 
     assert has_grpc_service_pack(_installation.Installation(252, root)) is False
+
+
+def _installation_with_builddate(tmp_path, version, text):
+    root = tmp_path / f"v{version}"
+    root.mkdir()
+    if text is not None:
+        (root / "builddate.txt").write_text(text, encoding="utf-8")
+    return _installation.Installation(version, root)
+
+
+@pytest.mark.embedding
+@pytest.mark.parametrize(
+    "text, expected",
+    [
+        ("2025 R2 SP03\n", 3),
+        ("Build 2025-06-01\nService Pack SP04\n", 4),
+        ("2025 R2\n", None),
+        (None, None),
+    ],
+)
+def test_service_pack_reads_builddate(tmp_path, text, expected):
+    """Test that service_pack reads the installed pack from builddate.txt."""
+    assert _installation_with_builddate(tmp_path, 252, text).service_pack == expected
+
+
+@pytest.mark.embedding
+@pytest.mark.parametrize(
+    "version, text, expected",
+    [
+        (241, "2024 R1 SP05\n", False),  # no build of 241 supports secure gRPC
+        (242, "2024 R2 SP04\n", False),  # 242 needs SP05
+        (242, "2024 R2 SP05\n", True),
+        (251, "2025 R1 SP04\n", True),
+        (252, "2025 R2 SP02\n", False),  # 252 needs SP03
+        (252, "2025 R2 SP10\n", True),  # later packs satisfy the requirement
+        (252, None, False),  # no builddate.txt
+        (261, None, True),  # every build of 261 supports it
+    ],
+)
+def test_secure_grpc_compares_installed_and_required_service_pack(
+    tmp_path, version, text, expected
+):
+    """Test that secure_grpc compares the installed pack with the version's requirement."""
+    assert _installation_with_builddate(tmp_path, version, text).secure_grpc is expected
+
+
+@pytest.mark.embedding
+def test_has_grpc_service_pack_reads_requirement_of_requested_version(tmp_path, monkeypatch):
+    """Test that a version number keeps its own requirement when find falls back."""
+    fallback = _installation_with_builddate(tmp_path, 261, "2026 R1\n")
+    monkeypatch.setattr(_installation, "find", lambda *_args, **_kwargs: fallback)
+
+    assert has_grpc_service_pack(252) is False

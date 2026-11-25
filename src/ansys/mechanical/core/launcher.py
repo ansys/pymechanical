@@ -32,7 +32,6 @@ import subprocess  # nosec: B404
 from ansys.mechanical.core import LOG, _installation
 from ansys.mechanical.core.misc import (
     get_service_pack_message,
-    has_grpc_service_pack,
     is_linux,
     resolve_certs_dir,
 )
@@ -205,7 +204,7 @@ class MechanicalLauncher:
         # Check if version supports advanced gRPC features (SP04+)
         installation = _installation.from_path(exe_path) if exe_path else None
         version = installation.version if installation else None
-        supports_grpc = has_grpc_service_pack(installation) if installation else True
+        supports_grpc = installation.secure_grpc if installation else True
 
         # Validate transport mode requirements
         if not supports_grpc and self.transport_mode.lower() != "insecure":
