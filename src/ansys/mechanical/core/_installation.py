@@ -26,6 +26,7 @@ from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 import os
 from pathlib import Path
+import re
 
 import ansys.tools.common.path as atp
 
@@ -66,6 +67,9 @@ _WINDOWS_STORE_TP_DIRS = {
         "qt/6.8.8/winx64/bin",
     ),
 }
+
+
+_SERVICE_PACK_PATTERN = re.compile(r"SP(\d{2})")
 
 
 def _platform_folder() -> str:
@@ -180,6 +184,48 @@ class Installation:
         True
         """
         return Limitations(self.version)
+
+    @property
+    def service_pack(self) -> int | None:
+        """Service pack installed, read from ``builddate.txt``.
+
+        ``None`` means ``builddate.txt`` is missing or names no service pack.
+
+        Examples
+        --------
+        >>> Installation(252, Path("/ansys_inc/v252")).service_pack is None
+        True
+        """
+        builddate_file = self.root / "builddate.txt"
+        if not builddate_file.is_file():
+            return None
+        with builddate_file.open("r", encoding="utf-8", errors="ignore") as f:
+            text = f"{f.readline()} {f.readline()}".upper()
+        packs = [int(number) for number in _SERVICE_PACK_PATTERN.findall(text)]
+        return max(packs, default=None)
+
+    @property
+    def secure_grpc(self) -> bool:
+        """Whether this installation supports the secure gRPC transport modes.
+
+        The version must support them, and the installed service pack must be at
+        least :attr:`Capabilities.grpc_service_pack
+        <ansys.mechanical.core._capabilities.Capabilities.grpc_service_pack>`.
+
+        Examples
+        --------
+        >>> Installation(261, Path("/ansys_inc/v261")).secure_grpc
+        True
+        >>> Installation(241, Path("/ansys_inc/v241")).secure_grpc
+        False
+        """
+        required = self.capabilities.grpc_service_pack
+        if required is None:
+            return False
+        if required == 0:
+            return True
+        installed_pack = self.service_pack
+        return installed_pack is not None and installed_pack >= required
 
     @property
     def windows_store_dll_dirs(self) -> list[Path] | None:

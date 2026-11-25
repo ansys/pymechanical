@@ -482,3 +482,44 @@ class TestCLITransportModeEdgeCases:
                 exe="AnsysWBU.exe", version=261, port=10000, transport_mode="mtls", certs_dir=""
             )
         assert "certificates directory does not exist" in str(exc_info.value).lower()
+
+
+@pytest.mark.cli
+def test_cli_reads_service_pack_of_given_installation(disable_cli, tmp_path):
+    """Test that the CLI asks the installation it launches, not a version lookup."""
+    from ansys.mechanical.core._installation import Installation
+
+    root = tmp_path / "v252"
+    root.mkdir()
+    (root / "builddate.txt").write_text("2025 R2 SP03\n", encoding="utf-8")
+
+    args, _ = _cli_impl(
+        exe="AnsysWBU.exe",
+        version=252,
+        port=10000,
+        transport_mode="insecure",
+        installation=Installation(252, root),
+    )
+
+    assert "--transport-mode" in args
+
+
+@pytest.mark.cli
+def test_cli_rejects_secure_mode_for_installation_without_service_pack(disable_cli, tmp_path):
+    """Test that the CLI rejects a secure mode when the installation lacks the pack."""
+    import click
+
+    from ansys.mechanical.core._installation import Installation
+
+    root = tmp_path / "v252"
+    root.mkdir()
+    (root / "builddate.txt").write_text("2025 R2\n", encoding="utf-8")
+
+    with pytest.raises(click.ClickException, match="does not support"):
+        _cli_impl(
+            exe="AnsysWBU.exe",
+            version=252,
+            port=10000,
+            transport_mode="mtls",
+            installation=Installation(252, root),
+        )

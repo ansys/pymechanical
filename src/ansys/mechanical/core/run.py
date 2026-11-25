@@ -111,6 +111,7 @@ def _cli_impl(
     grpc_host: str | None = None,
     certs_dir: str | None = None,
     readonly: bool = False,
+    installation: _installation.Installation | None = None,
 ):
     if project_file and input_script:
         raise click.ClickException("Cannot open a project file *and* run a script.")
@@ -135,11 +136,17 @@ def _cli_impl(
             f"Invalid engine type '{enginetype}'. Valid options are: ironpython, cpython"
         )
 
+    # Ask the installation being launched; fall back to a version lookup without one.
+    supports_grpc = False
+    if port:
+        if installation is not None:
+            supports_grpc = installation.secure_grpc
+        elif version:
+            supports_grpc = has_grpc_service_pack(version)
+
     # Validate and set defaults for gRPC options
     if port:
-        # Get version for service pack detection
         detected_version = version
-        supports_grpc = has_grpc_service_pack(detected_version) if detected_version else False
 
         # Check if version supports advanced gRPC features
         if not supports_grpc:
@@ -245,7 +252,7 @@ def _cli_impl(
         args.append(str(port))
 
         # Only add advanced gRPC options if version supports them
-        if has_grpc_service_pack(version):
+        if supports_grpc:
             # Add transport mode
             args.append("--transport-mode")
             args.append(transport_mode)
@@ -300,7 +307,7 @@ def _cli_impl(
             #        the user only sees the message when the server is ready.
             print(f"Serving on port {port}")
 
-            if has_grpc_service_pack(version):
+            if supports_grpc:
                 print("Transport mode: insecure (legacy - no advanced gRPC support)")
                 print("Using insecure connection - no authentication or encryption")
             else:
@@ -538,4 +545,5 @@ def cli(
         grpc_host,
         certs_dir,
         readonly,
+        installation,
     )

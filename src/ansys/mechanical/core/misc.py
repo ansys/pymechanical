@@ -191,64 +191,38 @@ def has_grpc_service_pack(version):
     ----------
     version : int, str, or Installation
         Mechanical version number (e.g., 242, 251, 252, 261), or the installation to
-        check. An installation is checked directly; a version number checks the
-        installation that :func:`ansys.mechanical.core._installation.find` returns.
+        check. Prefer passing the installation: it is checked directly through
+        ``Installation.secure_grpc``. A version number checks the installation that
+        :func:`ansys.mechanical.core._installation.find` returns, which might not be
+        the one you launch.
 
     Returns
     -------
     bool
         True if version has required service pack for gRPC security, False otherwise.
     """
-    installation = version if isinstance(version, _installation.Installation) else None
-    if installation is not None:
-        version = installation.version
+    if isinstance(version, _installation.Installation):
+        return version.secure_grpc
 
-    # Handle None version
-    if version is None:
-        return False
-
-    # Convert string to int if needed
     if isinstance(version, str):
         try:
             version = int(version)
-        except (ValueError, TypeError):
+        except ValueError:
             return False
+    if version is None:
+        return False
 
+    # Avoid an installation lookup when the version alone answers the question.
     required_sp = Capabilities(version).grpc_service_pack
-    if required_sp is None:
+    if required_sp is None or required_sp == 0:
+        return required_sp == 0
+
+    found = _installation.find(version, prefer_locator=True)
+    if found is None:
         return False
-    if required_sp == 0:
-        return True
-
-    if installation is None:
-        installation = _installation.find(version, prefer_locator=True)
-    if installation is None:
-        return False
-
-    builddate_file = installation.root / "builddate.txt"
-
-    if not builddate_file.exists():
-        return False
-
-    # Read builddate.txt and check for service pack
-    try:
-        with builddate_file.open("r", encoding="utf-8", errors="ignore") as f:
-            line1 = f.readline().strip()
-            line2 = f.readline().strip()
-    except UnicodeDecodeError:
-        with builddate_file.open("r", encoding="latin1", errors="ignore") as f:
-            line1 = f.readline().strip()
-            line2 = f.readline().strip()
-
-    combined_text = f"{line1} {line2}".upper()
-
-    # Check if the installed service pack meets the requirement
-    for sp_num in range(required_sp, 20):
-        sp_tag = f"SP{sp_num:02d}"
-        if sp_tag in combined_text:
-            return True
-
-    return False
+    # ``find`` can fall back to another version. Keep the requested version's
+    # requirement and read the service pack from the folder it found.
+    return _installation.Installation(version, found.root).secure_grpc
 
 
 def get_service_pack_message(version):
