@@ -211,6 +211,8 @@ sphinx_gallery_conf = {
     # path where to save gallery generated examples
     "gallery_dirs": ["examples/gallery_examples"],  # Pattern to search for example files
     "filename_pattern": r"\.py",
+    "junit": "../test-results/sphinx-gallery/junit.xml",
+    "min_reported_time": 0,
     # Remove the "Download all examples" button from the top level gallery
     "download_all_examples": False,
     # Sort gallery example by file name instead of number of lines (default)
