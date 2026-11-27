@@ -1,0 +1,152 @@
+
+
+
+
+
+
+:class:`GetterWrapper`
+======================
+
+
+.. py:class:: ansys.mechanical.core.embedding.utils.GetterWrapper(obj, getter)
+
+   
+   Wrapper class around an attribute of an object.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+.. py:currentmodule:: GetterWrapper
+
+Overview
+--------
+
+.. tab-set::
+
+
+
+
+
+
+
+   .. tab-item:: Special methods
+
+      .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+          * - :py:attr:`~__getattr__`
+            - Wrap getters to the wrapped object.
+          * - :py:attr:`~__setattr__`
+            - Wrap setters to the wrapped object.
+          * - :py:attr:`~__repr__`
+            - Return the repr of the wrapped object.
+
+
+
+
+Import detail
+-------------
+
+.. code-block:: python
+
+    from ansys.mechanical.core.embedding.utils import GetterWrapper
+
+
+
+Method detail
+-------------
+
+.. py:method:: __getattr__(attr)
+
+   
+   Wrap getters to the wrapped object.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: __setattr__(attr, value)
+
+   
+   Wrap setters to the wrapped object.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:method:: __repr__()
+
+   
+   Return the repr of the wrapped object.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+
+
+
+
+.. ansys-minigallery:: ansys.mechanical.core.embedding.utils.GetterWrapper

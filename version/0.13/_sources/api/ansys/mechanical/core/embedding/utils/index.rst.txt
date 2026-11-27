@@ -1,0 +1,189 @@
+
+
+
+
+
+
+The ``utils.py`` module
+=======================
+
+.. py:module:: ansys.mechanical.core.embedding.utils
+
+
+Summary
+-------
+
+
+
+
+
+
+
+
+
+
+.. py:currentmodule:: utils
+.. tab-set::
+
+
+
+
+    .. tab-item:: Classes
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~ansys.mechanical.core.embedding.utils.GetterWrapper`
+            - Wrapper class around an attribute of an object.
+
+
+
+
+
+    .. tab-item:: Functions
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~sleep`
+            - Non-blocking sleep for `ms` milliseconds.
+
+
+          * - :py:obj:`~drain`
+            - Execute all pending work on the main thread.
+
+
+          * - :py:obj:`~load_library_windows`
+            - Load a library into the python process on windows.
+
+
+
+
+    .. tab-item:: Constants
+
+        .. list-table::
+          :header-rows: 0
+          :widths: auto
+
+
+          * - :py:obj:`~TEST_HELPER`
+            - 
+
+
+
+
+
+
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :hidden:
+
+    <span class="nf nf-cod-symbol_class"></span> GetterWrapper</api/ansys/mechanical/core/embedding/utils/GetterWrapper>
+
+
+
+
+
+
+
+
+
+Description
+-----------
+
+Miscellaneous utilities.
+
+..
+    !! processed by numpydoc !!
+
+
+
+
+
+
+Module detail
+-------------
+
+.. py:function:: sleep(ms: int) -> None
+
+   
+   Non-blocking sleep for `ms` milliseconds.
+
+   Mechanical should still work during the sleep.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: drain() -> None
+
+   
+   Execute all pending work on the main thread.
+
+   Blocks until all the UI messages and other scheduled work complete.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: load_library_windows(library: str) -> int
+
+   
+   Load a library into the python process on windows.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: TEST_HELPER
+   :value: None
+
+
+
+

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 650" font-family="Segoe UI, Arial, sans-serif">
+
+  <!-- ================= Styles ================= -->
+  <defs>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1d4ed8"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0m.,0 L10,5 L0,10 z" fill="#047857"/>
+    </marker>
+
+    <style>
+      .title       { font-size: 22px; font-weight: 700; fill: #111827; }
+      .subtitle    { font-size: 13px; fill: #4b5563; }
+      .mode-title  { font-size: 17px; font-weight: 700; }
+      .box-title   { font-size: 13px; font-weight: 700; fill: #111827; }
+      .box-text    { font-size: 12px; fill: #1f2937; }
+      .box-sub     { font-size: 11px; fill: #4b5563; font-style: italic; }
+      .edge-label  { font-size: 11px; fill: #374151; font-weight: 600; }
+      .divider     { stroke: #d1d5db; stroke-width: 1; stroke-dasharray: 6 4; }
+    </style>
+  </defs>
+
+  <!-- ================= Header ================= -->
+  <text x="590" y="36" text-anchor="middle" class="title">PyMechanical — Two Ways to Drive Ansys Mechanical</text>
+  <text x="590" y="58" text-anchor="middle" class="subtitle">
+    Run Mechanical inside Python (Embedding), or talk to a separate Mechanical (Remote Session)
+  </text>
+
+  <!-- Vertical divider between the two modes -->
+  <line x1="590" y1="82" x2="590" y2="600" class="divider"/>
+
+  <!-- ======================================================= -->
+  <!-- ================ LEFT: EMBEDDING MODE ================= -->
+  <!-- ======================================================= -->
+  <text x="295" y="104" text-anchor="middle" class="mode-title" fill="#047857">EMBEDDING</text>
+  <text x="295" y="124" text-anchor="middle" class="subtitle">app = App()  —  Mechanical runs inside Python</text>
+
+  <!-- Python process boundary -->
+  <rect x="40" y="145" width="510" height="430" rx="14" ry="14"
+        fill="#ecfdf5" stroke="#047857" stroke-width="2"/>
+  <text x="60" y="168" class="box-title" fill="#047857">One process (Python + Mechanical together)</text>
+
+  <!-- 1. User code -->
+  <rect x="70" y="185" width="450" height="58" rx="8" ry="8"
+        fill="#ffffff" stroke="#065f46" stroke-width="1.4"/>
+  <text x="86" y="207" class="box-title">Your Python script</text>
+  <text x="86" y="226" class="box-text">app.Model, app.DataModel, app.Graphics ...</text>
+
+  <!-- 2. App -->
+  <rect x="70" y="268" width="450" height="68" rx="8" ry="8"
+        fill="#ffffff" stroke="#065f46" stroke-width="1.4"/>
+  <text x="86" y="290" class="box-title">App</text>
+  <text x="86" y="309" class="box-text">The Python entry point. Starts Mechanical and</text>
+  <text x="86" y="326" class="box-text">gives you direct access to its objects.</text>
+
+  <!-- 3. Startup -->
+  <rect x="70" y="361" width="450" height="68" rx="8" ry="8"
+        fill="#ffffff" stroke="#065f46" stroke-width="1.4"/>
+  <text x="86" y="383" class="box-title">Startup</text>
+  <text x="86" y="402" class="box-text">Finds your Ansys install and loads Mechanical's</text>
+  <text x="86" y="419" class="box-text">libraries into the running Python process.</text>
+
+  <!-- 4. Mechanical engine -->
+  <rect x="70" y="454" width="450" height="76" rx="8" ry="8"
+        fill="#ffffff" stroke="#065f46" stroke-width="1.4"/>
+  <text x="86" y="477" class="box-title">Mechanical engine (in-process)</text>
+  <text x="86" y="497" class="box-text">The real Mechanical application, loaded directly</text>
+  <text x="86" y="514" class="box-text">in memory — no network, calls are immediate.</text>
+
+  <!-- Arrows down (left side) -->
+  <line x1="295" y1="243" x2="295" y2="266" stroke="#047857" stroke-width="1.6" marker-end="url(#arrow-green)"/>
+  <line x1="295" y1="336" x2="295" y2="359" stroke="#047857" stroke-width="1.6" marker-end="url(#arrow-green)"/>
+  <line x1="295" y1="429" x2="295" y2="452" stroke="#047857" stroke-width="1.6" marker-end="url(#arrow-green)"/>
+
+  <text x="303" y="259" class="edge-label">direct calls</text>
+  <text x="303" y="352" class="edge-label">on first use</text>
+  <text x="303" y="445" class="edge-label">loads</text>
+
+
+  <!-- ======================================================= -->
+  <!-- ============== RIGHT: REMOTE SESSION ================= -->
+  <!-- ======================================================= -->
+  <text x="885" y="104" text-anchor="middle" class="mode-title" fill="#1d4ed8">REMOTE SESSION</text>
+  <text x="885" y="124" text-anchor="middle" class="subtitle">app = launch_mechanical()  —  talk to a separate Mechanical</text>
+
+  <!-- Python client process -->
+  <rect x="630" y="145" width="510" height="200" rx="14" ry="14"
+        fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="650" y="168" class="box-title" fill="#1d4ed8">Python side (lightweight client)</text>
+
+  <!-- User code -->
+  <rect x="660" y="185" width="450" height="58" rx="8" ry="8"
+        fill="#ffffff" stroke="#1e40af" stroke-width="1.4"/>
+  <text x="676" y="207" class="box-title">Your Python script</text>
+  <text x="676" y="226" class="box-text">app.run_python_script("..."),  upload / download</text>
+
+  <!-- Mechanical client -->
+  <rect x="660" y="268" width="450" height="60" rx="8" ry="8"
+        fill="#ffffff" stroke="#1e40af" stroke-width="1.4"/>
+  <text x="676" y="290" class="box-title">Mechanical client</text>
+  <text x="676" y="309" class="box-text">Launches or connects to Mechanical, then sends</text>
+  <text x="676" y="322" class="box-text">scripts and files over the connection.</text>
+
+  <!-- Network -->
+  <line x1="885" y1="345" x2="885" y2="398" stroke="#1d4ed8" stroke-width="2.2" marker-end="url(#arrow-blue)"/>
+  <text x="898" y="368" class="edge-label" fill="#1d4ed8">network connection</text>
+  <text x="898" y="384" class="box-sub">same machine or a remote host</text>
+
+  <!-- Mechanical server process -->
+  <rect x="630" y="408" width="510" height="180" rx="14" ry="14"
+        fill="#fef2f2" stroke="#b91c1c" stroke-width="2"/>
+  <text x="650" y="431" class="box-title" fill="#b91c1c">Separate Mechanical process</text>
+
+  <!-- Service -->
+  <rect x="660" y="448" width="450" height="56" rx="8" ry="8"
+        fill="#ffffff" stroke="#991b1b" stroke-width="1.4"/>
+  <text x="676" y="470" class="box-title">Listens for requests</text>
+  <text x="676" y="489" class="box-text">Receives your scripts, runs them, sends results back.</text>
+
+  <!-- Mechanical engine -->
+  <rect x="660" y="518" width="450" height="56" rx="8" ry="8"
+        fill="#ffffff" stroke="#991b1b" stroke-width="1.4"/>
+  <text x="676" y="540" class="box-title">Mechanical engine</text>
+  <text x="676" y="559" class="box-text">The full Mechanical application, running on its own.</text>
+
+  <!-- Right-side arrows -->
+  <line x1="885" y1="243" x2="885" y2="266" stroke="#1d4ed8" stroke-width="1.6" marker-end="url(#arrow-blue)"/>
+  <line x1="885" y1="504" x2="885" y2="516" stroke="#1d4ed8" stroke-width="1.6" marker-end="url(#arrow-blue)"/>
+
+</svg>

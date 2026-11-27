@@ -1,0 +1,86 @@
+
+Overview
+--------
+
+The `App <../api/ansys/mechanical/core/embedding/app/App.html>`_ class provides
+a Mechanical instance:
+
+.. code:: python
+
+   from ansys.mechanical.core import App
+
+   app = App()
+   ns = app.DataModel.Project.Model.AddNamedSelection()
+
+The `App`_ class has access to the global scripting entry points that are
+available from built-in Mechanical scripting:
+
+* ExtAPI: ``Application.ExtAPI``
+* DataModel: ``Application.DataModel``
+* Model: ``Application.DataModel.Project.Model``
+* Tree: ``Application.DataModel.Tree``
+* Graphics: ``Application.ExtAPI.Graphics``
+
+Besides scripting entry points, many other types and objects are available from
+built-in Mechanical scripting. To learn how to import scripting entry points,
+namespaces, and types, see :ref:`ref_embedding_user_guide_globals`.
+
+
+Running PyMechanical embedding scripts inside Mechanical with IronPython
+------------------------------------------------------------------------
+
+If your PyMechanical embedding script does not use any other third-party Python package, such as `NumPy`,
+it is possible to adapt it so that it can run inside of Mechanical with IronPython.
+The scripting occurs inside Mechanical's command line interface. For instance, consider the following PyMechanical code:
+
+.. code:: python
+
+  from ansys.mechanical.core import App
+
+  app = App(globals=globals())
+  ns = DataModel.Project.Model.AddNamedSelection()
+  ns.Name = "Jarvis"
+
+The above code can be written as a Python file, such as ``file.py`` with only the following content:
+
+.. code:: python
+
+  ns = DataModel.Project.Model.AddNamedSelection()
+  ns.Name = "Jarvis"
+
+Because the file does not contain the PyMechanical import statements, you can run
+``file.py`` using the command line inside Mechanical.
+
+**Using command line interface (CLI)**
+
+This can be achieved on both the Windows and Linux platforms using
+``ansys-mechanical`` cli from the virtual environment where ``ansys-mechanical-core``
+has been installed. Activate the virtual environment and then use CLI to run the scripts.
+If multiple Mechanical versions are installed in the same system,
+versions can be specified using ``-r`` flag. Use ``-h`` for more information.
+
+.. code::
+
+    ansys-mechanical -i file.py
+
+.. note::
+
+   Alternately user can use the following commands in the command prompt of Windows and the terminal
+   for Linux systems.
+
+   **On Windows**
+
+   .. code::
+
+      "C:/Program Files/ANSYS Inc/v252/aisol/bin/winx64/AnsysWBU.exe -DSApplet -AppModeMech -script file.py"
+
+   PowerShell users can run the preceding command without including the opening and
+   closing quotation marks.
+
+   **On Linux**
+
+   .. code::
+
+      /usr/ansys_inc/v252/aisol/.workbench -DSApplet -AppModeMech -script file.py
+
+   On either Windows or Linux, add the command line argument ``-b`` to run the script in batch mode.
